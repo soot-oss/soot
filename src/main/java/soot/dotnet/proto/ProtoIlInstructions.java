@@ -3,31 +3,57 @@
 
 package soot.dotnet.proto;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2022 Fraunhofer SIT
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 public final class ProtoIlInstructions {
-  private ProtoIlInstructions() {}
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
+  private ProtoIlInstructions() {
   }
 
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
+  public static void registerAllExtensions(com.google.protobuf.ExtensionRegistryLite registry) {
   }
+
+  public static void registerAllExtensions(com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions((com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+
   public interface IlFunctionMsgOrBuilder extends
       // @@protoc_insertion_point(interface_extends:IlFunctionMsg)
       com.google.protobuf.MessageOrBuilder {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return Whether the body field is set.
      */
     boolean hasBody();
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return The body.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody();
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
      */
@@ -36,57 +62,58 @@ public final class ProtoIlInstructions {
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> 
-        getVariablesList();
+    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> getVariablesList();
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariables(int index);
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
     int getVariablesCount();
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> 
-        getVariablesOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> getVariablesOrBuilderList();
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder getVariablesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder getVariablesOrBuilder(int index);
   }
+
   /**
    * Protobuf type {@code IlFunctionMsg}
    */
-  public static final class IlFunctionMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class IlFunctionMsg extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IlFunctionMsg)
       IlFunctionMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use IlFunctionMsg.newBuilder() to construct.
     private IlFunctionMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private IlFunctionMsg() {
       variables_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new IlFunctionMsg();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private IlFunctionMsg(
-        com.google.protobuf.CodedInputStream input,
+
+    private IlFunctionMsg(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -94,8 +121,7 @@ public final class ProtoIlInstructions {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -109,7 +135,8 @@ public final class ProtoIlInstructions {
               if (body_ != null) {
                 subBuilder = body_.toBuilder();
               }
-              body_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              body_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(body_);
                 body_ = subBuilder.buildPartial();
@@ -122,13 +149,12 @@ public final class ProtoIlInstructions {
                 variables_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              variables_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.parser(), extensionRegistry));
+              variables_
+                  .add(input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.parser(), extensionRegistry));
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -138,8 +164,7 @@ public final class ProtoIlInstructions {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           variables_ = java.util.Collections.unmodifiableList(variables_);
@@ -148,37 +173,41 @@ public final class ProtoIlInstructions {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlFunctionMsg_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlFunctionMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.class,
+              soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder.class);
     }
 
     public static final int BODY_FIELD_NUMBER = 1;
     private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg body_;
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return Whether the body field is set.
      */
     @java.lang.Override
     public boolean hasBody() {
       return body_ != null;
     }
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return The body.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
       return body_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
     }
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
      */
@@ -189,6 +218,7 @@ public final class ProtoIlInstructions {
 
     public static final int VARIABLES_FIELD_NUMBER = 2;
     private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> variables_;
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
@@ -196,14 +226,16 @@ public final class ProtoIlInstructions {
     public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> getVariablesList() {
       return variables_;
     }
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>
         getVariablesOrBuilderList() {
       return variables_;
     }
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
@@ -211,6 +243,7 @@ public final class ProtoIlInstructions {
     public int getVariablesCount() {
       return variables_.size();
     }
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
@@ -218,29 +251,31 @@ public final class ProtoIlInstructions {
     public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariables(int index) {
       return variables_.get(index);
     }
+
     /**
      * <code>repeated .IlVariableMsg variables = 2;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder getVariablesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder getVariablesOrBuilder(int index) {
       return variables_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (body_ != null) {
         output.writeMessage(1, getBody());
       }
@@ -253,16 +288,15 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (body_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getBody());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, getBody());
       }
       for (int i = 0; i < variables_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, variables_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(2, variables_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -272,21 +306,23 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg)) {
         return super.equals(obj);
       }
       soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg) obj;
 
-      if (hasBody() != other.hasBody()) return false;
+      if (hasBody() != other.hasBody())
+        return false;
       if (hasBody()) {
-        if (!getBody()
-            .equals(other.getBody())) return false;
+        if (!getBody().equals(other.getBody()))
+          return false;
       }
-      if (!getVariablesList()
-          .equals(other.getVariablesList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getVariablesList().equals(other.getVariablesList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -310,114 +346,108 @@ public final class ProtoIlInstructions {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parseFrom(com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code IlFunctionMsg}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:IlFunctionMsg)
         soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlFunctionMsg_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlFunctionMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.class,
+                soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.newBuilder()
@@ -425,17 +455,17 @@ public final class ProtoIlInstructions {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getVariablesFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -455,8 +485,7 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlFunctionMsg_descriptor;
       }
 
@@ -476,7 +505,8 @@ public final class ProtoIlInstructions {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg buildPartial() {
-        soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg result = new soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg(this);
+        soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg result
+            = new soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg(this);
         int from_bitField0_ = bitField0_;
         if (bodyBuilder_ == null) {
           result.body_ = body_;
@@ -500,38 +530,37 @@ public final class ProtoIlInstructions {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg)other);
+          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -539,7 +568,8 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance())
+          return this;
         if (other.hasBody()) {
           mergeBody(other.getBody());
         }
@@ -561,9 +591,8 @@ public final class ProtoIlInstructions {
               variablesBuilder_ = null;
               variables_ = other.variables_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              variablesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getVariablesFieldBuilder() : null;
+              variablesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getVariablesFieldBuilder() : null;
             } else {
               variablesBuilder_.addAllMessages(other.variables_);
             }
@@ -580,10 +609,8 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -597,20 +624,24 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       private int bitField0_;
 
       private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg body_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> bodyBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> bodyBuilder_;
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
+       * 
        * @return Whether the body field is set.
        */
       public boolean hasBody() {
         return bodyBuilder_ != null || body_ != null;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
+       * 
        * @return The body.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
@@ -620,6 +651,7 @@ public final class ProtoIlInstructions {
           return bodyBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
@@ -636,11 +668,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
-      public Builder setBody(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
+      public Builder setBody(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
         if (bodyBuilder_ == null) {
           body_ = builderForValue.build();
           onChanged();
@@ -650,14 +682,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
       public Builder mergeBody(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (bodyBuilder_ == null) {
           if (body_ != null) {
-            body_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(body_).mergeFrom(value).buildPartial();
+            body_ = soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(body_).mergeFrom(value)
+                .buildPartial();
           } else {
             body_ = value;
           }
@@ -668,6 +701,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
@@ -682,14 +716,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getBodyBuilder() {
-        
+
         onChanged();
         return getBodyFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
@@ -697,38 +733,36 @@ public final class ProtoIlInstructions {
         if (bodyBuilder_ != null) {
           return bodyBuilder_.getMessageOrBuilder();
         } else {
-          return body_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
+          return body_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>
           getBodyFieldBuilder() {
         if (bodyBuilder_ == null) {
-          bodyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
-                  getBody(),
-                  getParentForChildren(),
-                  isClean());
+          bodyBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
+                  getBody(), getParentForChildren(), isClean());
           body_ = null;
         }
         return bodyBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> variables_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> variables_
+          = java.util.Collections.emptyList();
+
       private void ensureVariablesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           variables_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg>(variables_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> variablesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> variablesBuilder_;
 
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
@@ -740,6 +774,7 @@ public final class ProtoIlInstructions {
           return variablesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
@@ -750,6 +785,7 @@ public final class ProtoIlInstructions {
           return variablesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
@@ -760,11 +796,11 @@ public final class ProtoIlInstructions {
           return variablesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public Builder setVariables(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg value) {
+      public Builder setVariables(int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg value) {
         if (variablesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -777,11 +813,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public Builder setVariables(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
+      public Builder setVariables(int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
         if (variablesBuilder_ == null) {
           ensureVariablesIsMutable();
           variables_.set(index, builderForValue.build());
@@ -791,6 +827,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
@@ -807,11 +844,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public Builder addVariables(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg value) {
+      public Builder addVariables(int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg value) {
         if (variablesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -824,11 +861,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public Builder addVariables(
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
+      public Builder addVariables(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
         if (variablesBuilder_ == null) {
           ensureVariablesIsMutable();
           variables_.add(builderForValue.build());
@@ -838,11 +875,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public Builder addVariables(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
+      public Builder addVariables(int index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
         if (variablesBuilder_ == null) {
           ensureVariablesIsMutable();
           variables_.add(index, builderForValue.build());
@@ -852,21 +889,22 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public Builder addAllVariables(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> values) {
+      public Builder
+          addAllVariables(java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg> values) {
         if (variablesBuilder_ == null) {
           ensureVariablesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, variables_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, variables_);
           onChanged();
         } else {
           variablesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
@@ -880,6 +918,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
@@ -893,82 +932,81 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder getVariablesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder getVariablesBuilder(int index) {
         return getVariablesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder getVariablesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder getVariablesOrBuilder(int index) {
         if (variablesBuilder_ == null) {
-          return variables_.get(index);  } else {
+          return variables_.get(index);
+        } else {
           return variablesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> 
-           getVariablesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>
+          getVariablesOrBuilderList() {
         if (variablesBuilder_ != null) {
           return variablesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(variables_);
         }
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder addVariablesBuilder() {
-        return getVariablesFieldBuilder().addBuilder(
+        return getVariablesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .IlVariableMsg variables = 2;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder addVariablesBuilder(int index) {
+        return getVariablesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance());
       }
+
       /**
        * <code>repeated .IlVariableMsg variables = 2;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder addVariablesBuilder(
-          int index) {
-        return getVariablesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .IlVariableMsg variables = 2;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder> 
-           getVariablesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder> getVariablesBuilderList() {
         return getVariablesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>
           getVariablesFieldBuilder() {
         if (variablesBuilder_ == null) {
-          variablesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>(
-                  variables_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          variablesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>(
+                  variables_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           variables_ = null;
         }
         return variablesBuilder_;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:IlFunctionMsg)
     }
@@ -983,16 +1021,15 @@ public final class ProtoIlInstructions {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IlFunctionMsg>
-        PARSER = new com.google.protobuf.AbstractParser<IlFunctionMsg>() {
-      @java.lang.Override
-      public IlFunctionMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new IlFunctionMsg(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<IlFunctionMsg> PARSER
+        = new com.google.protobuf.AbstractParser<IlFunctionMsg>() {
+          @java.lang.Override
+          public IlFunctionMsg parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new IlFunctionMsg(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<IlFunctionMsg> parser() {
       return PARSER;
@@ -1021,8 +1058,8 @@ public final class ProtoIlInstructions {
      *
      * <code>repeated .IlBlock blocks = 1;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock> 
-        getBlocksList();
+    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock> getBlocksList();
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1031,6 +1068,7 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlBlock blocks = 1;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlock getBlocks(int index);
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1039,6 +1077,7 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlBlock blocks = 1;</code>
      */
     int getBlocksCount();
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1046,8 +1085,8 @@ public final class ProtoIlInstructions {
      *
      * <code>repeated .IlBlock blocks = 1;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> 
-        getBlocksOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> getBlocksOrBuilderList();
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1055,39 +1094,38 @@ public final class ProtoIlInstructions {
      *
      * <code>repeated .IlBlock blocks = 1;</code>
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder getBlocksOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder getBlocksOrBuilder(int index);
   }
+
   /**
    * Protobuf type {@code IlBlockContainerMsg}
    */
-  public static final class IlBlockContainerMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class IlBlockContainerMsg extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IlBlockContainerMsg)
       IlBlockContainerMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use IlBlockContainerMsg.newBuilder() to construct.
     private IlBlockContainerMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private IlBlockContainerMsg() {
       blocks_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new IlBlockContainerMsg();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private IlBlockContainerMsg(
-        com.google.protobuf.CodedInputStream input,
+
+    private IlBlockContainerMsg(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -1095,8 +1133,7 @@ public final class ProtoIlInstructions {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -1110,13 +1147,11 @@ public final class ProtoIlInstructions {
                 blocks_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlBlock>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              blocks_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlock.parser(), extensionRegistry));
+              blocks_.add(input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlock.parser(), extensionRegistry));
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -1126,8 +1161,7 @@ public final class ProtoIlInstructions {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           blocks_ = java.util.Collections.unmodifiableList(blocks_);
@@ -1136,21 +1170,21 @@ public final class ProtoIlInstructions {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlockContainerMsg_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlockContainerMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.class,
+              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder.class);
     }
 
     public static final int BLOCKS_FIELD_NUMBER = 1;
     private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock> blocks_;
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1162,6 +1196,7 @@ public final class ProtoIlInstructions {
     public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock> getBlocksList() {
       return blocks_;
     }
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1170,10 +1205,10 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlBlock blocks = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> 
-        getBlocksOrBuilderList() {
+    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> getBlocksOrBuilderList() {
       return blocks_;
     }
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1185,6 +1220,7 @@ public final class ProtoIlInstructions {
     public int getBlocksCount() {
       return blocks_.size();
     }
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1196,6 +1232,7 @@ public final class ProtoIlInstructions {
     public soot.dotnet.proto.ProtoIlInstructions.IlBlock getBlocks(int index) {
       return blocks_.get(index);
     }
+
     /**
      * <pre>
      * IL BlockContainer
@@ -1204,25 +1241,26 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlBlock blocks = 1;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder getBlocksOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder getBlocksOrBuilder(int index) {
       return blocks_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       for (int i = 0; i < blocks_.size(); i++) {
         output.writeMessage(1, blocks_.get(i));
       }
@@ -1232,12 +1270,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       for (int i = 0; i < blocks_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, blocks_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, blocks_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1247,16 +1285,18 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg) obj;
+      soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg other
+          = (soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg) obj;
 
-      if (!getBlocksList()
-          .equals(other.getBlocksList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getBlocksList().equals(other.getBlocksList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -1276,114 +1316,109 @@ public final class ProtoIlInstructions {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code IlBlockContainerMsg}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:IlBlockContainerMsg)
         soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlockContainerMsg_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlockContainerMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.class,
+                soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder()
@@ -1391,17 +1426,17 @@ public final class ProtoIlInstructions {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getBlocksFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -1415,8 +1450,7 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlockContainerMsg_descriptor;
       }
 
@@ -1436,7 +1470,8 @@ public final class ProtoIlInstructions {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg buildPartial() {
-        soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg result = new soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg(this);
+        soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg result
+            = new soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg(this);
         int from_bitField0_ = bitField0_;
         if (blocksBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
@@ -1455,38 +1490,37 @@ public final class ProtoIlInstructions {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg)other);
+          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -1494,7 +1528,8 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance())
+          return this;
         if (blocksBuilder_ == null) {
           if (!other.blocks_.isEmpty()) {
             if (blocks_.isEmpty()) {
@@ -1513,9 +1548,8 @@ public final class ProtoIlInstructions {
               blocksBuilder_ = null;
               blocks_ = other.blocks_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              blocksBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getBlocksFieldBuilder() : null;
+              blocksBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getBlocksFieldBuilder() : null;
             } else {
               blocksBuilder_.addAllMessages(other.blocks_);
             }
@@ -1532,10 +1566,8 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -1549,19 +1581,19 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock> blocks_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock> blocks_ = java.util.Collections.emptyList();
+
       private void ensureBlocksIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           blocks_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlBlock>(blocks_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlock, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> blocksBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlock, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> blocksBuilder_;
 
       /**
        * <pre>
@@ -1577,6 +1609,7 @@ public final class ProtoIlInstructions {
           return blocksBuilder_.getMessageList();
         }
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1591,6 +1624,7 @@ public final class ProtoIlInstructions {
           return blocksBuilder_.getCount();
         }
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1605,6 +1639,7 @@ public final class ProtoIlInstructions {
           return blocksBuilder_.getMessage(index);
         }
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1612,8 +1647,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public Builder setBlocks(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock value) {
+      public Builder setBlocks(int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock value) {
         if (blocksBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1626,6 +1660,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1633,8 +1668,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public Builder setBlocks(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder builderForValue) {
+      public Builder setBlocks(int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder builderForValue) {
         if (blocksBuilder_ == null) {
           ensureBlocksIsMutable();
           blocks_.set(index, builderForValue.build());
@@ -1644,6 +1678,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1664,6 +1699,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1671,8 +1707,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public Builder addBlocks(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock value) {
+      public Builder addBlocks(int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock value) {
         if (blocksBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1685,6 +1720,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1692,8 +1728,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public Builder addBlocks(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder builderForValue) {
+      public Builder addBlocks(soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder builderForValue) {
         if (blocksBuilder_ == null) {
           ensureBlocksIsMutable();
           blocks_.add(builderForValue.build());
@@ -1703,6 +1738,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1710,8 +1746,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public Builder addBlocks(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder builderForValue) {
+      public Builder addBlocks(int index, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder builderForValue) {
         if (blocksBuilder_ == null) {
           ensureBlocksIsMutable();
           blocks_.add(index, builderForValue.build());
@@ -1721,6 +1756,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1728,18 +1764,17 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public Builder addAllBlocks(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlock> values) {
+      public Builder addAllBlocks(java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlock> values) {
         if (blocksBuilder_ == null) {
           ensureBlocksIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, blocks_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, blocks_);
           onChanged();
         } else {
           blocksBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1757,6 +1792,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1774,6 +1810,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1781,10 +1818,10 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder getBlocksBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder getBlocksBuilder(int index) {
         return getBlocksFieldBuilder().getBuilder(index);
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1792,13 +1829,14 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder getBlocksOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder getBlocksOrBuilder(int index) {
         if (blocksBuilder_ == null) {
-          return blocks_.get(index);  } else {
+          return blocks_.get(index);
+        } else {
           return blocksBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1806,14 +1844,14 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> 
-           getBlocksOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> getBlocksOrBuilderList() {
         if (blocksBuilder_ != null) {
           return blocksBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(blocks_);
         }
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1822,9 +1860,9 @@ public final class ProtoIlInstructions {
        * <code>repeated .IlBlock blocks = 1;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder addBlocksBuilder() {
-        return getBlocksFieldBuilder().addBuilder(
-            soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance());
+        return getBlocksFieldBuilder().addBuilder(soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance());
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1832,11 +1870,10 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder addBlocksBuilder(
-          int index) {
-        return getBlocksFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance());
+      public soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder addBlocksBuilder(int index) {
+        return getBlocksFieldBuilder().addBuilder(index, soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance());
       }
+
       /**
        * <pre>
        * IL BlockContainer
@@ -1844,36 +1881,31 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlBlock blocks = 1;</code>
        */
-      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder> 
-           getBlocksBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder> getBlocksBuilderList() {
         return getBlocksFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlock, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlock, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder>
           getBlocksFieldBuilder() {
         if (blocksBuilder_ == null) {
-          blocksBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlock, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder>(
-                  blocks_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          blocksBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlock, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder>(
+                  blocks_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           blocks_ = null;
         }
         return blocksBuilder_;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:IlBlockContainerMsg)
     }
@@ -1888,16 +1920,15 @@ public final class ProtoIlInstructions {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IlBlockContainerMsg>
-        PARSER = new com.google.protobuf.AbstractParser<IlBlockContainerMsg>() {
-      @java.lang.Override
-      public IlBlockContainerMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new IlBlockContainerMsg(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<IlBlockContainerMsg> PARSER
+        = new com.google.protobuf.AbstractParser<IlBlockContainerMsg>() {
+          @java.lang.Override
+          public IlBlockContainerMsg parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new IlBlockContainerMsg(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<IlBlockContainerMsg> parser() {
       return PARSER;
@@ -1922,79 +1953,81 @@ public final class ProtoIlInstructions {
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> 
-        getListOfIlInstructionsList();
+    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> getListOfIlInstructionsList();
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getListOfIlInstructions(int index);
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
     int getListOfIlInstructionsCount();
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
         getListOfIlInstructionsOrBuilderList();
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getListOfIlInstructionsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getListOfIlInstructionsOrBuilder(int index);
 
     /**
      * <code>string block_name = 2;</code>
+     * 
      * @return The blockName.
      */
     java.lang.String getBlockName();
+
     /**
      * <code>string block_name = 2;</code>
+     * 
      * @return The bytes for blockName.
      */
-    com.google.protobuf.ByteString
-        getBlockNameBytes();
+    com.google.protobuf.ByteString getBlockNameBytes();
   }
+
   /**
    * Protobuf type {@code IlBlock}
    */
-  public static final class IlBlock extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class IlBlock extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IlBlock)
       IlBlockOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use IlBlock.newBuilder() to construct.
     private IlBlock(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private IlBlock() {
       listOfIlInstructions_ = java.util.Collections.emptyList();
       blockName_ = "";
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new IlBlock();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private IlBlock(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+
+    private IlBlock(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -2019,8 +2052,7 @@ public final class ProtoIlInstructions {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -2030,8 +2062,7 @@ public final class ProtoIlInstructions {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           listOfIlInstructions_ = java.util.Collections.unmodifiableList(listOfIlInstructions_);
@@ -2040,21 +2071,21 @@ public final class ProtoIlInstructions {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlock_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlock_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoIlInstructions.IlBlock.class, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlBlock.class,
+              soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder.class);
     }
 
     public static final int LIST_OF_IL_INSTRUCTIONS_FIELD_NUMBER = 1;
     private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> listOfIlInstructions_;
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
@@ -2062,14 +2093,16 @@ public final class ProtoIlInstructions {
     public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> getListOfIlInstructionsList() {
       return listOfIlInstructions_;
     }
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
         getListOfIlInstructionsOrBuilderList() {
       return listOfIlInstructions_;
     }
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
@@ -2077,6 +2110,7 @@ public final class ProtoIlInstructions {
     public int getListOfIlInstructionsCount() {
       return listOfIlInstructions_.size();
     }
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
@@ -2084,19 +2118,21 @@ public final class ProtoIlInstructions {
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getListOfIlInstructions(int index) {
       return listOfIlInstructions_.get(index);
     }
+
     /**
      * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getListOfIlInstructionsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getListOfIlInstructionsOrBuilder(int index) {
       return listOfIlInstructions_.get(index);
     }
 
     public static final int BLOCK_NAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object blockName_;
+
     /**
      * <code>string block_name = 2;</code>
+     * 
      * @return The blockName.
      */
     @java.lang.Override
@@ -2105,25 +2141,23 @@ public final class ProtoIlInstructions {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         blockName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string block_name = 2;</code>
+     * 
      * @return The bytes for blockName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getBlockNameBytes() {
+    public com.google.protobuf.ByteString getBlockNameBytes() {
       java.lang.Object ref = blockName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         blockName_ = b;
         return b;
       } else {
@@ -2132,19 +2166,21 @@ public final class ProtoIlInstructions {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       for (int i = 0; i < listOfIlInstructions_.size(); i++) {
         output.writeMessage(1, listOfIlInstructions_.get(i));
       }
@@ -2157,12 +2193,12 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       for (int i = 0; i < listOfIlInstructions_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, listOfIlInstructions_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, listOfIlInstructions_.get(i));
       }
       if (!getBlockNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, blockName_);
@@ -2175,18 +2211,19 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoIlInstructions.IlBlock)) {
         return super.equals(obj);
       }
       soot.dotnet.proto.ProtoIlInstructions.IlBlock other = (soot.dotnet.proto.ProtoIlInstructions.IlBlock) obj;
 
-      if (!getListOfIlInstructionsList()
-          .equals(other.getListOfIlInstructionsList())) return false;
-      if (!getBlockName()
-          .equals(other.getBlockName())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getListOfIlInstructionsList().equals(other.getListOfIlInstructionsList()))
+        return false;
+      if (!getBlockName().equals(other.getBlockName()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -2208,114 +2245,108 @@ public final class ProtoIlInstructions {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        com.google.protobuf.CodedInputStream input)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlBlock parseFrom(com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoIlInstructions.IlBlock prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code IlBlock}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:IlBlock)
         soot.dotnet.proto.ProtoIlInstructions.IlBlockOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlock_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlock_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoIlInstructions.IlBlock.class, soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlBlock.class,
+                soot.dotnet.proto.ProtoIlInstructions.IlBlock.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoIlInstructions.IlBlock.newBuilder()
@@ -2323,17 +2354,17 @@ public final class ProtoIlInstructions {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getListOfIlInstructionsFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -2349,8 +2380,7 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlBlock_descriptor;
       }
 
@@ -2390,38 +2420,37 @@ public final class ProtoIlInstructions {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoIlInstructions.IlBlock) {
-          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlBlock)other);
+          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlBlock) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -2429,7 +2458,8 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlBlock other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlBlock.getDefaultInstance())
+          return this;
         if (listOfIlInstructionsBuilder_ == null) {
           if (!other.listOfIlInstructions_.isEmpty()) {
             if (listOfIlInstructions_.isEmpty()) {
@@ -2448,9 +2478,9 @@ public final class ProtoIlInstructions {
               listOfIlInstructionsBuilder_ = null;
               listOfIlInstructions_ = other.listOfIlInstructions_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              listOfIlInstructionsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getListOfIlInstructionsFieldBuilder() : null;
+              listOfIlInstructionsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getListOfIlInstructionsFieldBuilder()
+                      : null;
             } else {
               listOfIlInstructionsBuilder_.addAllMessages(other.listOfIlInstructions_);
             }
@@ -2471,10 +2501,8 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoIlInstructions.IlBlock parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -2488,19 +2516,21 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> listOfIlInstructions_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> listOfIlInstructions_
+          = java.util.Collections.emptyList();
+
       private void ensureListOfIlInstructionsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          listOfIlInstructions_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg>(listOfIlInstructions_);
+          listOfIlInstructions_
+              = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg>(listOfIlInstructions_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> listOfIlInstructionsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> listOfIlInstructionsBuilder_;
 
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
@@ -2512,6 +2542,7 @@ public final class ProtoIlInstructions {
           return listOfIlInstructionsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
@@ -2522,6 +2553,7 @@ public final class ProtoIlInstructions {
           return listOfIlInstructionsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
@@ -2532,11 +2564,11 @@ public final class ProtoIlInstructions {
           return listOfIlInstructionsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public Builder setListOfIlInstructions(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+      public Builder setListOfIlInstructions(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (listOfIlInstructionsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2549,11 +2581,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public Builder setListOfIlInstructions(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setListOfIlInstructions(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (listOfIlInstructionsBuilder_ == null) {
           ensureListOfIlInstructionsIsMutable();
           listOfIlInstructions_.set(index, builderForValue.build());
@@ -2563,6 +2596,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
@@ -2579,11 +2613,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public Builder addListOfIlInstructions(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+      public Builder addListOfIlInstructions(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (listOfIlInstructionsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2596,11 +2630,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public Builder addListOfIlInstructions(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder
+          addListOfIlInstructions(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (listOfIlInstructionsBuilder_ == null) {
           ensureListOfIlInstructionsIsMutable();
           listOfIlInstructions_.add(builderForValue.build());
@@ -2610,11 +2645,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public Builder addListOfIlInstructions(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder addListOfIlInstructions(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (listOfIlInstructionsBuilder_ == null) {
           ensureListOfIlInstructionsIsMutable();
           listOfIlInstructions_.add(index, builderForValue.build());
@@ -2624,6 +2660,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
@@ -2631,14 +2668,14 @@ public final class ProtoIlInstructions {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> values) {
         if (listOfIlInstructionsBuilder_ == null) {
           ensureListOfIlInstructionsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, listOfIlInstructions_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, listOfIlInstructions_);
           onChanged();
         } else {
           listOfIlInstructionsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
@@ -2652,6 +2689,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
@@ -2665,81 +2703,84 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getListOfIlInstructionsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getListOfIlInstructionsBuilder(int index) {
         return getListOfIlInstructionsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getListOfIlInstructionsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getListOfIlInstructionsOrBuilder(int index) {
         if (listOfIlInstructionsBuilder_ == null) {
-          return listOfIlInstructions_.get(index);  } else {
+          return listOfIlInstructions_.get(index);
+        } else {
           return listOfIlInstructionsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
-           getListOfIlInstructionsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
+          getListOfIlInstructionsOrBuilderList() {
         if (listOfIlInstructionsBuilder_ != null) {
           return listOfIlInstructionsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(listOfIlInstructions_);
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addListOfIlInstructionsBuilder() {
-        return getListOfIlInstructionsFieldBuilder().addBuilder(
+        return getListOfIlInstructionsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addListOfIlInstructionsBuilder(int index) {
+        return getListOfIlInstructionsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
       }
+
       /**
        * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addListOfIlInstructionsBuilder(
-          int index) {
-        return getListOfIlInstructionsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .IlInstructionMsg list_of_il_instructions = 1;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder> 
-           getListOfIlInstructionsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder>
+          getListOfIlInstructionsBuilderList() {
         return getListOfIlInstructionsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getListOfIlInstructionsFieldBuilder() {
         if (listOfIlInstructionsBuilder_ == null) {
-          listOfIlInstructionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  listOfIlInstructions_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          listOfIlInstructionsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  listOfIlInstructions_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           listOfIlInstructions_ = null;
         }
         return listOfIlInstructionsBuilder_;
       }
 
       private java.lang.Object blockName_ = "";
+
       /**
        * <code>string block_name = 2;</code>
+       * 
        * @return The blockName.
        */
       public java.lang.String getBlockName() {
         java.lang.Object ref = blockName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           blockName_ = s;
           return s;
@@ -2747,76 +2788,79 @@ public final class ProtoIlInstructions {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string block_name = 2;</code>
+       * 
        * @return The bytes for blockName.
        */
-      public com.google.protobuf.ByteString
-          getBlockNameBytes() {
+      public com.google.protobuf.ByteString getBlockNameBytes() {
         java.lang.Object ref = blockName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           blockName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string block_name = 2;</code>
-       * @param value The blockName to set.
+       * 
+       * @param value
+       *          The blockName to set.
        * @return This builder for chaining.
        */
-      public Builder setBlockName(
-          java.lang.String value) {
+      public Builder setBlockName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         blockName_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string block_name = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearBlockName() {
-        
+
         blockName_ = getDefaultInstance().getBlockName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string block_name = 2;</code>
-       * @param value The bytes for blockName to set.
+       * 
+       * @param value
+       *          The bytes for blockName to set.
        * @return This builder for chaining.
        */
-      public Builder setBlockNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setBlockNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         blockName_ = value;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:IlBlock)
     }
@@ -2831,11 +2875,9 @@ public final class ProtoIlInstructions {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IlBlock>
-        PARSER = new com.google.protobuf.AbstractParser<IlBlock>() {
+    private static final com.google.protobuf.Parser<IlBlock> PARSER = new com.google.protobuf.AbstractParser<IlBlock>() {
       @java.lang.Override
-      public IlBlock parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
+      public IlBlock parsePartialFrom(com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
         return new IlBlock(input, extensionRegistry);
@@ -2864,11 +2906,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
+     * 
      * @return The enum numeric value on the wire for opCode.
      */
     int getOpCodeValue();
+
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
+     * 
      * @return The opCode.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode getOpCode();
@@ -2879,18 +2924,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
+     * 
      * @return Whether the method field is set.
      */
     boolean hasMethod();
+
     /**
      * <pre>
      * CALL LDMEMBERTOKEN
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
+     * 
      * @return The method.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getMethod();
+
     /**
      * <pre>
      * CALL LDMEMBERTOKEN
@@ -2903,26 +2952,27 @@ public final class ProtoIlInstructions {
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> 
-        getArgumentsList();
+    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> getArgumentsList();
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArguments(int index);
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
     int getArgumentsCount();
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
-        getArgumentsOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> getArgumentsOrBuilderList();
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getArgumentsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getArgumentsOrBuilder(int index);
 
     /**
      * <pre>
@@ -2930,18 +2980,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
+     * 
      * @return Whether the valueInstruction field is set.
      */
     boolean hasValueInstruction();
+
     /**
      * <pre>
      * LEAVE STOBJ STLOC
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
+     * 
      * @return The valueInstruction.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getValueInstruction();
+
     /**
      * <pre>
      * LEAVE STOBJ STLOC
@@ -2957,40 +3011,46 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
+     * 
      * @return The valueConstantString.
      */
     java.lang.String getValueConstantString();
+
     /**
      * <pre>
      * LDSTR LDC_I4
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
+     * 
      * @return The bytes for valueConstantString.
      */
-    com.google.protobuf.ByteString
-        getValueConstantStringBytes();
+    com.google.protobuf.ByteString getValueConstantStringBytes();
 
     /**
      * <code>int32 value_constant_int32 = 16;</code>
+     * 
      * @return The valueConstantInt32.
      */
     int getValueConstantInt32();
 
     /**
      * <code>int64 value_constant_int64 = 38;</code>
+     * 
      * @return The valueConstantInt64.
      */
     long getValueConstantInt64();
 
     /**
      * <code>float value_constant_float = 39;</code>
+     * 
      * @return The valueConstantFloat.
      */
     float getValueConstantFloat();
 
     /**
      * <code>double value_constant_double = 40;</code>
+     * 
      * @return The valueConstantDouble.
      */
     double getValueConstantDouble();
@@ -3001,18 +3061,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
+     * 
      * @return Whether the target field is set.
      */
     boolean hasTarget();
+
     /**
      * <pre>
      * STOBJ LDFLDA LDOBJ
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
+     * 
      * @return The target.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTarget();
+
     /**
      * <pre>
      * STOBJ LDFLDA LDOBJ
@@ -3028,18 +3092,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
+     * 
      * @return Whether the type field is set.
      */
     boolean hasType();
+
     /**
      * <pre>
      * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
+     * 
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
+
     /**
      * <pre>
      * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -3055,18 +3123,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
+     * 
      * @return Whether the field field is set.
      */
     boolean hasField();
+
     /**
      * <pre>
      * LDFLDA LDMEMBERTOKEN
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
+     * 
      * @return The field.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition getField();
+
     /**
      * <pre>
      * LDFLDA LDMEMBERTOKEN
@@ -3082,18 +3154,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
+     * 
      * @return Whether the variable field is set.
      */
     boolean hasVariable();
+
     /**
      * <pre>
      * LDLOC STLOC TryCatchHandler
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
+     * 
      * @return The variable.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable();
+
     /**
      * <pre>
      * LDLOC STLOC TryCatchHandler
@@ -3109,40 +3185,50 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
+     * 
      * @return The enum numeric value on the wire for operator.
      */
     int getOperatorValue();
+
     /**
      * <pre>
      * TODO may insert Result type + Underlying type
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
+     * 
      * @return The operator.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator getOperator();
 
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
+     * 
      * @return The enum numeric value on the wire for sign.
      */
     int getSignValue();
+
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
+     * 
      * @return The sign.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign getSign();
 
     /**
      * <code>.IlInstructionMsg left = 14;</code>
+     * 
      * @return Whether the left field is set.
      */
     boolean hasLeft();
+
     /**
      * <code>.IlInstructionMsg left = 14;</code>
+     * 
      * @return The left.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getLeft();
+
     /**
      * <code>.IlInstructionMsg left = 14;</code>
      */
@@ -3150,14 +3236,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg right = 15;</code>
+     * 
      * @return Whether the right field is set.
      */
     boolean hasRight();
+
     /**
      * <code>.IlInstructionMsg right = 15;</code>
+     * 
      * @return The right.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getRight();
+
     /**
      * <code>.IlInstructionMsg right = 15;</code>
      */
@@ -3169,27 +3259,32 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string target_label = 18;</code>
+     * 
      * @return The targetLabel.
      */
     java.lang.String getTargetLabel();
+
     /**
      * <pre>
      * BRANCH
      * </pre>
      *
      * <code>string target_label = 18;</code>
+     * 
      * @return The bytes for targetLabel.
      */
-    com.google.protobuf.ByteString
-        getTargetLabelBytes();
+    com.google.protobuf.ByteString getTargetLabelBytes();
 
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
+     * 
      * @return The enum numeric value on the wire for comparisonKind.
      */
     int getComparisonKindValue();
+
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
+     * 
      * @return The comparisonKind.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind getComparisonKind();
@@ -3200,18 +3295,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
+     * 
      * @return Whether the condition field is set.
      */
     boolean hasCondition();
+
     /**
      * <pre>
      * IF_INSTRUCTION
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
+     * 
      * @return The condition.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getCondition();
+
     /**
      * <pre>
      * IF_INSTRUCTION
@@ -3223,14 +3322,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
+     * 
      * @return Whether the trueInst field is set.
      */
     boolean hasTrueInst();
+
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
+     * 
      * @return The trueInst.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTrueInst();
+
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
      */
@@ -3238,14 +3341,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
+     * 
      * @return Whether the falseInst field is set.
      */
     boolean hasFalseInst();
+
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
+     * 
      * @return The falseInst.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFalseInst();
+
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
      */
@@ -3257,18 +3364,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
+     * 
      * @return Whether the array field is set.
      */
     boolean hasArray();
+
     /**
      * <pre>
      *LDLEN LDELEMA
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
+     * 
      * @return The array.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArray();
+
     /**
      * <pre>
      *LDLEN LDELEMA
@@ -3280,33 +3391,42 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
+     * 
      * @return The enum numeric value on the wire for conversionKind.
      */
     int getConversionKindValue();
+
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
+     * 
      * @return The conversionKind.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind getConversionKind();
 
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
+     * 
      * @return The enum numeric value on the wire for inputType.
      */
     int getInputTypeValue();
+
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
+     * 
      * @return The inputType.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getInputType();
 
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
+     * 
      * @return The enum numeric value on the wire for targetType.
      */
     int getTargetTypeValue();
+
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
+     * 
      * @return The targetType.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType getTargetType();
@@ -3317,18 +3437,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
+     * 
      * @return Whether the argument field is set.
      */
     boolean hasArgument();
+
     /**
      * <pre>
      * CONV CASTCLASS ISINST BOX UNBOXANY
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
+     * 
      * @return The argument.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArgument();
+
     /**
      * <pre>
      * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -3344,15 +3468,18 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
+     * 
      * @return The enum numeric value on the wire for resultType.
      */
     int getResultTypeValue();
+
     /**
      * <pre>
      * CONV LDLEN UNBOXANY
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
+     * 
      * @return The resultType.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getResultType();
@@ -3364,8 +3491,8 @@ public final class ProtoIlInstructions {
      *
      * <code>repeated .IlInstructionMsg indices = 31;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> 
-        getIndicesList();
+    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> getIndicesList();
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -3374,6 +3501,7 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlInstructionMsg indices = 31;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getIndices(int index);
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -3382,6 +3510,7 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlInstructionMsg indices = 31;</code>
      */
     int getIndicesCount();
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -3389,8 +3518,8 @@ public final class ProtoIlInstructions {
      *
      * <code>repeated .IlInstructionMsg indices = 31;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
-        getIndicesOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> getIndicesOrBuilderList();
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -3398,8 +3527,7 @@ public final class ProtoIlInstructions {
      *
      * <code>repeated .IlInstructionMsg indices = 31;</code>
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getIndicesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getIndicesOrBuilder(int index);
 
     /**
      * <pre>
@@ -3407,18 +3535,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
+     * 
      * @return Whether the tryBlock field is set.
      */
     boolean hasTryBlock();
+
     /**
      * <pre>
      * TRY
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
+     * 
      * @return The tryBlock.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getTryBlock();
+
     /**
      * <pre>
      * TRY
@@ -3431,37 +3563,42 @@ public final class ProtoIlInstructions {
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> 
-        getHandlersList();
+    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> getHandlersList();
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg getHandlers(int index);
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
     int getHandlersCount();
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> 
-        getHandlersOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> getHandlersOrBuilderList();
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder getHandlersOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder getHandlersOrBuilder(int index);
 
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
+     * 
      * @return Whether the finallyBlock field is set.
      */
     boolean hasFinallyBlock();
+
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
+     * 
      * @return The finallyBlock.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFinallyBlock();
+
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
      */
@@ -3469,14 +3606,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
+     * 
      * @return Whether the faultBlock field is set.
      */
     boolean hasFaultBlock();
+
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
+     * 
      * @return The faultBlock.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFaultBlock();
+
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
      */
@@ -3488,18 +3629,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
+     * 
      * @return Whether the body field is set.
      */
     boolean hasBody();
+
     /**
      * <pre>
      * TRYCATCHHANDLER
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
+     * 
      * @return The body.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody();
+
     /**
      * <pre>
      * TRYCATCHHANDLER
@@ -3515,18 +3660,22 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
+     * 
      * @return Whether the keyInstr field is set.
      */
     boolean hasKeyInstr();
+
     /**
      * <pre>
      * SWITCH_INSTR
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
+     * 
      * @return The keyInstr.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getKeyInstr();
+
     /**
      * <pre>
      * SWITCH_INSTR
@@ -3538,14 +3687,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
+     * 
      * @return Whether the defaultInst field is set.
      */
     boolean hasDefaultInst();
+
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
+     * 
      * @return The defaultInst.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getDefaultInst();
+
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
      */
@@ -3554,39 +3707,43 @@ public final class ProtoIlInstructions {
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> 
-        getSwitchSectionsList();
+    java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> getSwitchSectionsList();
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg getSwitchSections(int index);
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
     int getSwitchSectionsCount();
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder>
         getSwitchSectionsOrBuilderList();
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder getSwitchSectionsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder getSwitchSectionsOrBuilder(int index);
   }
+
   /**
    * Protobuf type {@code IlInstructionMsg}
    */
-  public static final class IlInstructionMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class IlInstructionMsg extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IlInstructionMsg)
       IlInstructionMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use IlInstructionMsg.newBuilder() to construct.
     private IlInstructionMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private IlInstructionMsg() {
       opCode_ = 0;
       arguments_ = java.util.Collections.emptyList();
@@ -3605,19 +3762,17 @@ public final class ProtoIlInstructions {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new IlInstructionMsg();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private IlInstructionMsg(
-        com.google.protobuf.CodedInputStream input,
+
+    private IlInstructionMsg(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -3625,8 +3780,7 @@ public final class ProtoIlInstructions {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -3646,7 +3800,8 @@ public final class ProtoIlInstructions {
               if (method_ != null) {
                 subBuilder = method_.toBuilder();
               }
-              method_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
+              method_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(method_);
                 method_ = subBuilder.buildPartial();
@@ -3668,7 +3823,8 @@ public final class ProtoIlInstructions {
               if (valueInstruction_ != null) {
                 subBuilder = valueInstruction_.toBuilder();
               }
-              valueInstruction_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              valueInstruction_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(valueInstruction_);
                 valueInstruction_ = subBuilder.buildPartial();
@@ -3687,7 +3843,8 @@ public final class ProtoIlInstructions {
               if (target_ != null) {
                 subBuilder = target_.toBuilder();
               }
-              target_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              target_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(target_);
                 target_ = subBuilder.buildPartial();
@@ -3713,7 +3870,8 @@ public final class ProtoIlInstructions {
               if (field_ != null) {
                 subBuilder = field_.toBuilder();
               }
-              field_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.parser(), extensionRegistry);
+              field_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(field_);
                 field_ = subBuilder.buildPartial();
@@ -3794,7 +3952,8 @@ public final class ProtoIlInstructions {
               if (condition_ != null) {
                 subBuilder = condition_.toBuilder();
               }
-              condition_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              condition_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(condition_);
                 condition_ = subBuilder.buildPartial();
@@ -3807,7 +3966,8 @@ public final class ProtoIlInstructions {
               if (trueInst_ != null) {
                 subBuilder = trueInst_.toBuilder();
               }
-              trueInst_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              trueInst_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(trueInst_);
                 trueInst_ = subBuilder.buildPartial();
@@ -3820,7 +3980,8 @@ public final class ProtoIlInstructions {
               if (falseInst_ != null) {
                 subBuilder = falseInst_.toBuilder();
               }
-              falseInst_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              falseInst_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(falseInst_);
                 falseInst_ = subBuilder.buildPartial();
@@ -3857,7 +4018,8 @@ public final class ProtoIlInstructions {
               if (argument_ != null) {
                 subBuilder = argument_.toBuilder();
               }
-              argument_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              argument_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(argument_);
                 argument_ = subBuilder.buildPartial();
@@ -3892,7 +4054,8 @@ public final class ProtoIlInstructions {
               if (tryBlock_ != null) {
                 subBuilder = tryBlock_.toBuilder();
               }
-              tryBlock_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              tryBlock_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(tryBlock_);
                 tryBlock_ = subBuilder.buildPartial();
@@ -3914,7 +4077,8 @@ public final class ProtoIlInstructions {
               if (finallyBlock_ != null) {
                 subBuilder = finallyBlock_.toBuilder();
               }
-              finallyBlock_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              finallyBlock_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(finallyBlock_);
                 finallyBlock_ = subBuilder.buildPartial();
@@ -3927,7 +4091,8 @@ public final class ProtoIlInstructions {
               if (faultBlock_ != null) {
                 subBuilder = faultBlock_.toBuilder();
               }
-              faultBlock_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              faultBlock_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(faultBlock_);
                 faultBlock_ = subBuilder.buildPartial();
@@ -3940,7 +4105,8 @@ public final class ProtoIlInstructions {
               if (body_ != null) {
                 subBuilder = body_.toBuilder();
               }
-              body_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              body_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(body_);
                 body_ = subBuilder.buildPartial();
@@ -3968,7 +4134,8 @@ public final class ProtoIlInstructions {
               if (keyInstr_ != null) {
                 subBuilder = keyInstr_.toBuilder();
               }
-              keyInstr_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              keyInstr_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(keyInstr_);
                 keyInstr_ = subBuilder.buildPartial();
@@ -3981,7 +4148,8 @@ public final class ProtoIlInstructions {
               if (defaultInst_ != null) {
                 subBuilder = defaultInst_.toBuilder();
               }
-              defaultInst_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              defaultInst_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(defaultInst_);
                 defaultInst_ = subBuilder.buildPartial();
@@ -3999,8 +4167,7 @@ public final class ProtoIlInstructions {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -4010,8 +4177,7 @@ public final class ProtoIlInstructions {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           arguments_ = java.util.Collections.unmodifiableList(arguments_);
@@ -4029,24 +4195,22 @@ public final class ProtoIlInstructions {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlInstructionMsg_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlInstructionMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.class,
+              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder.class);
     }
 
     /**
      * Protobuf enum {@code IlInstructionMsg.IlOpCode}
      */
-    public enum IlOpCode
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlOpCode implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE_OP = 0;</code>
        */
@@ -4326,9 +4490,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>CALL_INDIRECT = 72;</code>
        */
-      CALL_INDIRECT(72),
-      UNRECOGNIZED(-1),
-      ;
+      CALL_INDIRECT(72), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE_OP = 0;</code>
@@ -4611,17 +4773,16 @@ public final class ProtoIlInstructions {
        */
       public static final int CALL_INDIRECT_VALUE = 72;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -4631,121 +4792,188 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlOpCode forNumber(int value) {
         switch (value) {
-          case 0: return NONE_OP;
-          case 1: return NOP;
-          case 4: return CALL;
-          case 5: return LEAVE;
-          case 6: return LDSTR;
-          case 7: return STOBJ;
-          case 8: return LDFLDA;
-          case 9: return LDC_I4;
-          case 10: return LDLOC;
-          case 11: return LDOBJ;
-          case 12: return STLOC;
-          case 13: return NEWOBJ;
-          case 14: return CALLVIRT;
-          case 15: return BINARY_NUMERIC_INSTRUCTION;
-          case 16: return BRANCH;
-          case 17: return COMP;
-          case 18: return IF_INSTRUCTION;
-          case 19: return LDSFLDA;
-          case 20: return LDNULL;
-          case 21: return LDLEN;
-          case 22: return CONV;
-          case 23: return NEWARR;
-          case 24: return LDELEMA;
-          case 25: return CASTCLASS;
-          case 26: return ISINST;
-          case 27: return BOX;
-          case 28: return UNBOXANY;
-          case 29: return UNBOX;
-          case 30: return TRY_CATCH;
-          case 31: return LDLOCA;
-          case 32: return DEFAULT_VALUE;
-          case 33: return NOT;
-          case 34: return TRY_FINALLY;
-          case 35: return TRY_FAULT;
-          case 36: return BLOCK_CONTAINER;
-          case 37: return BLOCK;
-          case 38: return TRY_CATCH_HANDLER;
-          case 39: return RETHROW;
-          case 40: return THROW;
-          case 41: return DEBUG_BREAK;
-          case 42: return CK_FINITE;
-          case 44: return CP_BLK;
-          case 45: return CP_OBJ;
-          case 46: return DUP;
-          case 47: return INIT_BLK;
-          case 48: return INIT_OBJ;
-          case 49: return LDC_I8;
-          case 50: return LDC_R4;
-          case 51: return LDC_R8;
-          case 52: return LD_FLD;
-          case 53: return LD_FTN;
-          case 54: return LD_SFLD;
-          case 55: return LD_TOKEN;
-          case 56: return LD_VIRT_FTN;
-          case 57: return LOC_ALLOC;
-          case 58: return MK_REF_ANY;
-          case 59: return NO;
-          case 60: return READONLY;
-          case 61: return REF_ANY_TYPE;
-          case 62: return REF_ANY_VAL;
-          case 63: return SIZE_OF;
-          case 64: return ST_SFLD;
-          case 65: return SWITCH;
-          case 66: return TAIL;
-          case 67: return UNALIGNED;
-          case 68: return VOLATILE;
-          case 69: return LD_MEMBER_TOKEN;
-          case 70: return LD_TYPE_TOKEN;
-          case 71: return INVALID_BRANCH;
-          case 72: return CALL_INDIRECT;
-          default: return null;
+          case 0:
+            return NONE_OP;
+          case 1:
+            return NOP;
+          case 4:
+            return CALL;
+          case 5:
+            return LEAVE;
+          case 6:
+            return LDSTR;
+          case 7:
+            return STOBJ;
+          case 8:
+            return LDFLDA;
+          case 9:
+            return LDC_I4;
+          case 10:
+            return LDLOC;
+          case 11:
+            return LDOBJ;
+          case 12:
+            return STLOC;
+          case 13:
+            return NEWOBJ;
+          case 14:
+            return CALLVIRT;
+          case 15:
+            return BINARY_NUMERIC_INSTRUCTION;
+          case 16:
+            return BRANCH;
+          case 17:
+            return COMP;
+          case 18:
+            return IF_INSTRUCTION;
+          case 19:
+            return LDSFLDA;
+          case 20:
+            return LDNULL;
+          case 21:
+            return LDLEN;
+          case 22:
+            return CONV;
+          case 23:
+            return NEWARR;
+          case 24:
+            return LDELEMA;
+          case 25:
+            return CASTCLASS;
+          case 26:
+            return ISINST;
+          case 27:
+            return BOX;
+          case 28:
+            return UNBOXANY;
+          case 29:
+            return UNBOX;
+          case 30:
+            return TRY_CATCH;
+          case 31:
+            return LDLOCA;
+          case 32:
+            return DEFAULT_VALUE;
+          case 33:
+            return NOT;
+          case 34:
+            return TRY_FINALLY;
+          case 35:
+            return TRY_FAULT;
+          case 36:
+            return BLOCK_CONTAINER;
+          case 37:
+            return BLOCK;
+          case 38:
+            return TRY_CATCH_HANDLER;
+          case 39:
+            return RETHROW;
+          case 40:
+            return THROW;
+          case 41:
+            return DEBUG_BREAK;
+          case 42:
+            return CK_FINITE;
+          case 44:
+            return CP_BLK;
+          case 45:
+            return CP_OBJ;
+          case 46:
+            return DUP;
+          case 47:
+            return INIT_BLK;
+          case 48:
+            return INIT_OBJ;
+          case 49:
+            return LDC_I8;
+          case 50:
+            return LDC_R4;
+          case 51:
+            return LDC_R8;
+          case 52:
+            return LD_FLD;
+          case 53:
+            return LD_FTN;
+          case 54:
+            return LD_SFLD;
+          case 55:
+            return LD_TOKEN;
+          case 56:
+            return LD_VIRT_FTN;
+          case 57:
+            return LOC_ALLOC;
+          case 58:
+            return MK_REF_ANY;
+          case 59:
+            return NO;
+          case 60:
+            return READONLY;
+          case 61:
+            return REF_ANY_TYPE;
+          case 62:
+            return REF_ANY_VAL;
+          case 63:
+            return SIZE_OF;
+          case 64:
+            return ST_SFLD;
+          case 65:
+            return SWITCH;
+          case 66:
+            return TAIL;
+          case 67:
+            return UNALIGNED;
+          case 68:
+            return VOLATILE;
+          case 69:
+            return LD_MEMBER_TOKEN;
+          case 70:
+            return LD_TYPE_TOKEN;
+          case 71:
+            return INVALID_BRANCH;
+          case 72:
+            return CALL_INDIRECT;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlOpCode>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlOpCode> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlOpCode> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlOpCode>() {
-              public IlOpCode findValueByNumber(int number) {
-                return IlOpCode.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlOpCode> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlOpCode>() {
+            public IlOpCode findValueByNumber(int number) {
+              return IlOpCode.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final IlOpCode[] VALUES = values();
 
-      public static IlOpCode valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlOpCode valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -4769,8 +4997,7 @@ public final class ProtoIlInstructions {
      *
      * Protobuf enum {@code IlInstructionMsg.IlBinaryNumericOperator}
      */
-    public enum IlBinaryNumericOperator
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlBinaryNumericOperator implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE_BINARY = 0;</code>
        */
@@ -4814,9 +5041,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>ShiftRight = 10;</code>
        */
-      ShiftRight(10),
-      UNRECOGNIZED(-1),
-      ;
+      ShiftRight(10), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE_BINARY = 0;</code>
@@ -4863,17 +5088,16 @@ public final class ProtoIlInstructions {
        */
       public static final int ShiftRight_VALUE = 10;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -4883,62 +5107,70 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlBinaryNumericOperator forNumber(int value) {
         switch (value) {
-          case 0: return NONE_BINARY;
-          case 1: return Add;
-          case 2: return Sub;
-          case 3: return Mul;
-          case 4: return Div;
-          case 5: return Rem;
-          case 6: return BitAnd;
-          case 7: return BitOr;
-          case 8: return BitXor;
-          case 9: return ShiftLeft;
-          case 10: return ShiftRight;
-          default: return null;
+          case 0:
+            return NONE_BINARY;
+          case 1:
+            return Add;
+          case 2:
+            return Sub;
+          case 3:
+            return Mul;
+          case 4:
+            return Div;
+          case 5:
+            return Rem;
+          case 6:
+            return BitAnd;
+          case 7:
+            return BitOr;
+          case 8:
+            return BitXor;
+          case 9:
+            return ShiftLeft;
+          case 10:
+            return ShiftRight;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlBinaryNumericOperator>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlBinaryNumericOperator> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlBinaryNumericOperator> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlBinaryNumericOperator>() {
-              public IlBinaryNumericOperator findValueByNumber(int number) {
-                return IlBinaryNumericOperator.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlBinaryNumericOperator> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlBinaryNumericOperator>() {
+            public IlBinaryNumericOperator findValueByNumber(int number) {
+              return IlBinaryNumericOperator.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(1);
       }
 
       private static final IlBinaryNumericOperator[] VALUES = values();
 
-      public static IlBinaryNumericOperator valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlBinaryNumericOperator valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -4962,8 +5194,7 @@ public final class ProtoIlInstructions {
      *
      * Protobuf enum {@code IlInstructionMsg.IlSign}
      */
-    public enum IlSign
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlSign implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE_SIGN = 0;</code>
        */
@@ -4975,9 +5206,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>Unsigned = 2;</code>
        */
-      Unsigned(2),
-      UNRECOGNIZED(-1),
-      ;
+      Unsigned(2), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE_SIGN = 0;</code>
@@ -4992,17 +5221,16 @@ public final class ProtoIlInstructions {
        */
       public static final int Unsigned_VALUE = 2;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -5012,54 +5240,54 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlSign forNumber(int value) {
         switch (value) {
-          case 0: return NONE_SIGN;
-          case 1: return Signed;
-          case 2: return Unsigned;
-          default: return null;
+          case 0:
+            return NONE_SIGN;
+          case 1:
+            return Signed;
+          case 2:
+            return Unsigned;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlSign>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlSign> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlSign> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlSign>() {
-              public IlSign findValueByNumber(int number) {
-                return IlSign.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlSign> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlSign>() {
+            public IlSign findValueByNumber(int number) {
+              return IlSign.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(2);
       }
 
       private static final IlSign[] VALUES = values();
 
-      public static IlSign valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlSign valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -5083,8 +5311,7 @@ public final class ProtoIlInstructions {
      *
      * Protobuf enum {@code IlInstructionMsg.IlComparisonKind}
      */
-    public enum IlComparisonKind
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlComparisonKind implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE_KIND = 0;</code>
        */
@@ -5112,9 +5339,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>GreaterThanOrEqual = 6;</code>
        */
-      GreaterThanOrEqual(6),
-      UNRECOGNIZED(-1),
-      ;
+      GreaterThanOrEqual(6), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE_KIND = 0;</code>
@@ -5145,17 +5370,16 @@ public final class ProtoIlInstructions {
        */
       public static final int GreaterThanOrEqual_VALUE = 6;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -5165,58 +5389,62 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlComparisonKind forNumber(int value) {
         switch (value) {
-          case 0: return NONE_KIND;
-          case 1: return Equality;
-          case 2: return Inequality;
-          case 3: return LessThan;
-          case 4: return LessThanOrEqual;
-          case 5: return GreaterThan;
-          case 6: return GreaterThanOrEqual;
-          default: return null;
+          case 0:
+            return NONE_KIND;
+          case 1:
+            return Equality;
+          case 2:
+            return Inequality;
+          case 3:
+            return LessThan;
+          case 4:
+            return LessThanOrEqual;
+          case 5:
+            return GreaterThan;
+          case 6:
+            return GreaterThanOrEqual;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlComparisonKind>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlComparisonKind> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlComparisonKind> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlComparisonKind>() {
-              public IlComparisonKind findValueByNumber(int number) {
-                return IlComparisonKind.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlComparisonKind> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlComparisonKind>() {
+            public IlComparisonKind findValueByNumber(int number) {
+              return IlComparisonKind.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(3);
       }
 
       private static final IlComparisonKind[] VALUES = values();
 
-      public static IlComparisonKind valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlComparisonKind valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -5240,8 +5468,7 @@ public final class ProtoIlInstructions {
      *
      * Protobuf enum {@code IlInstructionMsg.IlConversionKind}
      */
-    public enum IlConversionKind
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlConversionKind implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE_CONVERSION = 0;</code>
        */
@@ -5289,9 +5516,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>ObjectInterior = 11;</code>
        */
-      ObjectInterior(11),
-      UNRECOGNIZED(-1),
-      ;
+      ObjectInterior(11), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE_CONVERSION = 0;</code>
@@ -5342,17 +5567,16 @@ public final class ProtoIlInstructions {
        */
       public static final int ObjectInterior_VALUE = 11;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -5362,63 +5586,72 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlConversionKind forNumber(int value) {
         switch (value) {
-          case 0: return NONE_CONVERSION;
-          case 1: return Invalid;
-          case 2: return Nop;
-          case 3: return IntToFloat;
-          case 4: return FloatToInt;
-          case 5: return FloatPrecisionChange;
-          case 6: return SignExtend;
-          case 7: return ZeroExtend;
-          case 8: return Truncate;
-          case 9: return StopGCTracking;
-          case 10: return StartGCTracking;
-          case 11: return ObjectInterior;
-          default: return null;
+          case 0:
+            return NONE_CONVERSION;
+          case 1:
+            return Invalid;
+          case 2:
+            return Nop;
+          case 3:
+            return IntToFloat;
+          case 4:
+            return FloatToInt;
+          case 5:
+            return FloatPrecisionChange;
+          case 6:
+            return SignExtend;
+          case 7:
+            return ZeroExtend;
+          case 8:
+            return Truncate;
+          case 9:
+            return StopGCTracking;
+          case 10:
+            return StartGCTracking;
+          case 11:
+            return ObjectInterior;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlConversionKind>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlConversionKind> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlConversionKind> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlConversionKind>() {
-              public IlConversionKind findValueByNumber(int number) {
-                return IlConversionKind.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlConversionKind> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlConversionKind>() {
+            public IlConversionKind findValueByNumber(int number) {
+              return IlConversionKind.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(4);
       }
 
       private static final IlConversionKind[] VALUES = values();
 
-      public static IlConversionKind valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlConversionKind valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -5438,8 +5671,7 @@ public final class ProtoIlInstructions {
     /**
      * Protobuf enum {@code IlInstructionMsg.IlStackType}
      */
-    public enum IlStackType
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlStackType implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE_STACK_TYPE = 0;</code>
        */
@@ -5479,9 +5711,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>Void = 9;</code>
        */
-      Void(9),
-      UNRECOGNIZED(-1),
-      ;
+      Void(9), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE_STACK_TYPE = 0;</code>
@@ -5524,17 +5754,16 @@ public final class ProtoIlInstructions {
        */
       public static final int Void_VALUE = 9;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -5544,61 +5773,68 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlStackType forNumber(int value) {
         switch (value) {
-          case 0: return NONE_STACK_TYPE;
-          case 1: return Unknown_STACK;
-          case 2: return I4_STACK;
-          case 3: return I_STACK;
-          case 4: return I8_STACK;
-          case 5: return F4;
-          case 6: return F8;
-          case 7: return O;
-          case 8: return Ref_STACK;
-          case 9: return Void;
-          default: return null;
+          case 0:
+            return NONE_STACK_TYPE;
+          case 1:
+            return Unknown_STACK;
+          case 2:
+            return I4_STACK;
+          case 3:
+            return I_STACK;
+          case 4:
+            return I8_STACK;
+          case 5:
+            return F4;
+          case 6:
+            return F8;
+          case 7:
+            return O;
+          case 8:
+            return Ref_STACK;
+          case 9:
+            return Void;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlStackType>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlStackType> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlStackType> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlStackType>() {
-              public IlStackType findValueByNumber(int number) {
-                return IlStackType.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlStackType> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlStackType>() {
+            public IlStackType findValueByNumber(int number) {
+              return IlStackType.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(5);
       }
 
       private static final IlStackType[] VALUES = values();
 
-      public static IlStackType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlStackType valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -5618,8 +5854,7 @@ public final class ProtoIlInstructions {
     /**
      * Protobuf enum {@code IlInstructionMsg.IlPrimitiveType}
      */
-    public enum IlPrimitiveType
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlPrimitiveType implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE_PRIMITIVE_TYPE = 0;</code>
        */
@@ -5687,9 +5922,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>Unknown = 16;</code>
        */
-      Unknown(16),
-      UNRECOGNIZED(-1),
-      ;
+      Unknown(16), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE_PRIMITIVE_TYPE = 0;</code>
@@ -5760,17 +5993,16 @@ public final class ProtoIlInstructions {
        */
       public static final int Unknown_VALUE = 16;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -5780,68 +6012,82 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlPrimitiveType forNumber(int value) {
         switch (value) {
-          case 0: return NONE_PRIMITIVE_TYPE;
-          case 1: return None;
-          case 2: return I1;
-          case 3: return I2;
-          case 4: return I4;
-          case 5: return I8;
-          case 6: return R4;
-          case 7: return R8;
-          case 8: return U1;
-          case 9: return U2;
-          case 10: return U4;
-          case 11: return U8;
-          case 12: return I;
-          case 13: return U;
-          case 14: return Ref;
-          case 15: return R;
-          case 16: return Unknown;
-          default: return null;
+          case 0:
+            return NONE_PRIMITIVE_TYPE;
+          case 1:
+            return None;
+          case 2:
+            return I1;
+          case 3:
+            return I2;
+          case 4:
+            return I4;
+          case 5:
+            return I8;
+          case 6:
+            return R4;
+          case 7:
+            return R8;
+          case 8:
+            return U1;
+          case 9:
+            return U2;
+          case 10:
+            return U4;
+          case 11:
+            return U8;
+          case 12:
+            return I;
+          case 13:
+            return U;
+          case 14:
+            return Ref;
+          case 15:
+            return R;
+          case 16:
+            return Unknown;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlPrimitiveType>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlPrimitiveType> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlPrimitiveType> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlPrimitiveType>() {
-              public IlPrimitiveType findValueByNumber(int number) {
-                return IlPrimitiveType.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlPrimitiveType> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlPrimitiveType>() {
+            public IlPrimitiveType findValueByNumber(int number) {
+              return IlPrimitiveType.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(6);
       }
 
       private static final IlPrimitiveType[] VALUES = values();
 
-      public static IlPrimitiveType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlPrimitiveType valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -5860,49 +6106,61 @@ public final class ProtoIlInstructions {
 
     public static final int OP_CODE_FIELD_NUMBER = 1;
     private int opCode_;
+
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
+     * 
      * @return The enum numeric value on the wire for opCode.
      */
-    @java.lang.Override public int getOpCodeValue() {
+    @java.lang.Override
+    public int getOpCodeValue() {
       return opCode_;
     }
+
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
+     * 
      * @return The opCode.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode getOpCode() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode getOpCode() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.valueOf(opCode_);
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.valueOf(opCode_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.UNRECOGNIZED : result;
     }
 
     public static final int METHOD_FIELD_NUMBER = 4;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition method_;
+
     /**
      * <pre>
      * CALL LDMEMBERTOKEN
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
+     * 
      * @return Whether the method field is set.
      */
     @java.lang.Override
     public boolean hasMethod() {
       return method_ != null;
     }
+
     /**
      * <pre>
      * CALL LDMEMBERTOKEN
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
+     * 
      * @return The method.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getMethod() {
       return method_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : method_;
     }
+
     /**
      * <pre>
      * CALL LDMEMBERTOKEN
@@ -5917,6 +6175,7 @@ public final class ProtoIlInstructions {
 
     public static final int ARGUMENTS_FIELD_NUMBER = 5;
     private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> arguments_;
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
@@ -5924,14 +6183,16 @@ public final class ProtoIlInstructions {
     public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> getArgumentsList() {
       return arguments_;
     }
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
         getArgumentsOrBuilderList() {
       return arguments_;
     }
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
@@ -5939,6 +6200,7 @@ public final class ProtoIlInstructions {
     public int getArgumentsCount() {
       return arguments_.size();
     }
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
@@ -5946,41 +6208,47 @@ public final class ProtoIlInstructions {
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArguments(int index) {
       return arguments_.get(index);
     }
+
     /**
      * <code>repeated .IlInstructionMsg arguments = 5;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getArgumentsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getArgumentsOrBuilder(int index) {
       return arguments_.get(index);
     }
 
     public static final int VALUE_INSTRUCTION_FIELD_NUMBER = 6;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg valueInstruction_;
+
     /**
      * <pre>
      * LEAVE STOBJ STLOC
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
+     * 
      * @return Whether the valueInstruction field is set.
      */
     @java.lang.Override
     public boolean hasValueInstruction() {
       return valueInstruction_ != null;
     }
+
     /**
      * <pre>
      * LEAVE STOBJ STLOC
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
+     * 
      * @return The valueInstruction.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getValueInstruction() {
-      return valueInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : valueInstruction_;
+      return valueInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+          : valueInstruction_;
     }
+
     /**
      * <pre>
      * LEAVE STOBJ STLOC
@@ -5995,12 +6263,14 @@ public final class ProtoIlInstructions {
 
     public static final int VALUE_CONSTANT_STRING_FIELD_NUMBER = 7;
     private volatile java.lang.Object valueConstantString_;
+
     /**
      * <pre>
      * LDSTR LDC_I4
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
+     * 
      * @return The valueConstantString.
      */
     @java.lang.Override
@@ -6009,29 +6279,27 @@ public final class ProtoIlInstructions {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         valueConstantString_ = s;
         return s;
       }
     }
+
     /**
      * <pre>
      * LDSTR LDC_I4
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
+     * 
      * @return The bytes for valueConstantString.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getValueConstantStringBytes() {
+    public com.google.protobuf.ByteString getValueConstantStringBytes() {
       java.lang.Object ref = valueConstantString_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         valueConstantString_ = b;
         return b;
       } else {
@@ -6041,8 +6309,10 @@ public final class ProtoIlInstructions {
 
     public static final int VALUE_CONSTANT_INT32_FIELD_NUMBER = 16;
     private int valueConstantInt32_;
+
     /**
      * <code>int32 value_constant_int32 = 16;</code>
+     * 
      * @return The valueConstantInt32.
      */
     @java.lang.Override
@@ -6052,8 +6322,10 @@ public final class ProtoIlInstructions {
 
     public static final int VALUE_CONSTANT_INT64_FIELD_NUMBER = 38;
     private long valueConstantInt64_;
+
     /**
      * <code>int64 value_constant_int64 = 38;</code>
+     * 
      * @return The valueConstantInt64.
      */
     @java.lang.Override
@@ -6063,8 +6335,10 @@ public final class ProtoIlInstructions {
 
     public static final int VALUE_CONSTANT_FLOAT_FIELD_NUMBER = 39;
     private float valueConstantFloat_;
+
     /**
      * <code>float value_constant_float = 39;</code>
+     * 
      * @return The valueConstantFloat.
      */
     @java.lang.Override
@@ -6074,8 +6348,10 @@ public final class ProtoIlInstructions {
 
     public static final int VALUE_CONSTANT_DOUBLE_FIELD_NUMBER = 40;
     private double valueConstantDouble_;
+
     /**
      * <code>double value_constant_double = 40;</code>
+     * 
      * @return The valueConstantDouble.
      */
     @java.lang.Override
@@ -6085,30 +6361,35 @@ public final class ProtoIlInstructions {
 
     public static final int TARGET_FIELD_NUMBER = 8;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg target_;
+
     /**
      * <pre>
      * STOBJ LDFLDA LDOBJ
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
+     * 
      * @return Whether the target field is set.
      */
     @java.lang.Override
     public boolean hasTarget() {
       return target_ != null;
     }
+
     /**
      * <pre>
      * STOBJ LDFLDA LDOBJ
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
+     * 
      * @return The target.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTarget() {
       return target_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : target_;
     }
+
     /**
      * <pre>
      * STOBJ LDFLDA LDOBJ
@@ -6123,30 +6404,35 @@ public final class ProtoIlInstructions {
 
     public static final int TYPE_FIELD_NUMBER = 9;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
+
     /**
      * <pre>
      * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
+     * 
      * @return Whether the type field is set.
      */
     @java.lang.Override
     public boolean hasType() {
       return type_ != null;
     }
+
     /**
      * <pre>
      * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
+     * 
      * @return The type.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
       return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
     }
+
     /**
      * <pre>
      * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -6161,30 +6447,35 @@ public final class ProtoIlInstructions {
 
     public static final int FIELD_FIELD_NUMBER = 10;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition field_;
+
     /**
      * <pre>
      * LDFLDA LDMEMBERTOKEN
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
+     * 
      * @return Whether the field field is set.
      */
     @java.lang.Override
     public boolean hasField() {
       return field_ != null;
     }
+
     /**
      * <pre>
      * LDFLDA LDMEMBERTOKEN
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
+     * 
      * @return The field.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition getField() {
       return field_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance() : field_;
     }
+
     /**
      * <pre>
      * LDFLDA LDMEMBERTOKEN
@@ -6199,30 +6490,35 @@ public final class ProtoIlInstructions {
 
     public static final int VARIABLE_FIELD_NUMBER = 11;
     private soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg variable_;
+
     /**
      * <pre>
      * LDLOC STLOC TryCatchHandler
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
+     * 
      * @return Whether the variable field is set.
      */
     @java.lang.Override
     public boolean hasVariable() {
       return variable_ != null;
     }
+
     /**
      * <pre>
      * LDLOC STLOC TryCatchHandler
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
+     * 
      * @return The variable.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable() {
       return variable_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance() : variable_;
     }
+
     /**
      * <pre>
      * LDLOC STLOC TryCatchHandler
@@ -6237,68 +6533,88 @@ public final class ProtoIlInstructions {
 
     public static final int OPERATOR_FIELD_NUMBER = 12;
     private int operator_;
+
     /**
      * <pre>
      * TODO may insert Result type + Underlying type
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
+     * 
      * @return The enum numeric value on the wire for operator.
      */
-    @java.lang.Override public int getOperatorValue() {
+    @java.lang.Override
+    public int getOperatorValue() {
       return operator_;
     }
+
     /**
      * <pre>
      * TODO may insert Result type + Underlying type
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
+     * 
      * @return The operator.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator getOperator() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator getOperator() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.valueOf(operator_);
-      return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.UNRECOGNIZED : result;
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.valueOf(operator_);
+      return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.UNRECOGNIZED
+          : result;
     }
 
     public static final int SIGN_FIELD_NUMBER = 20;
     private int sign_;
+
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
+     * 
      * @return The enum numeric value on the wire for sign.
      */
-    @java.lang.Override public int getSignValue() {
+    @java.lang.Override
+    public int getSignValue() {
       return sign_;
     }
+
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
+     * 
      * @return The sign.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign getSign() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign getSign() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.valueOf(sign_);
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.valueOf(sign_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.UNRECOGNIZED : result;
     }
 
     public static final int LEFT_FIELD_NUMBER = 14;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg left_;
+
     /**
      * <code>.IlInstructionMsg left = 14;</code>
+     * 
      * @return Whether the left field is set.
      */
     @java.lang.Override
     public boolean hasLeft() {
       return left_ != null;
     }
+
     /**
      * <code>.IlInstructionMsg left = 14;</code>
+     * 
      * @return The left.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getLeft() {
       return left_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : left_;
     }
+
     /**
      * <code>.IlInstructionMsg left = 14;</code>
      */
@@ -6309,22 +6625,27 @@ public final class ProtoIlInstructions {
 
     public static final int RIGHT_FIELD_NUMBER = 15;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg right_;
+
     /**
      * <code>.IlInstructionMsg right = 15;</code>
+     * 
      * @return Whether the right field is set.
      */
     @java.lang.Override
     public boolean hasRight() {
       return right_ != null;
     }
+
     /**
      * <code>.IlInstructionMsg right = 15;</code>
+     * 
      * @return The right.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getRight() {
       return right_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : right_;
     }
+
     /**
      * <code>.IlInstructionMsg right = 15;</code>
      */
@@ -6335,12 +6656,14 @@ public final class ProtoIlInstructions {
 
     public static final int TARGET_LABEL_FIELD_NUMBER = 18;
     private volatile java.lang.Object targetLabel_;
+
     /**
      * <pre>
      * BRANCH
      * </pre>
      *
      * <code>string target_label = 18;</code>
+     * 
      * @return The targetLabel.
      */
     @java.lang.Override
@@ -6349,29 +6672,27 @@ public final class ProtoIlInstructions {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         targetLabel_ = s;
         return s;
       }
     }
+
     /**
      * <pre>
      * BRANCH
      * </pre>
      *
      * <code>string target_label = 18;</code>
+     * 
      * @return The bytes for targetLabel.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getTargetLabelBytes() {
+    public com.google.protobuf.ByteString getTargetLabelBytes() {
       java.lang.Object ref = targetLabel_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         targetLabel_ = b;
         return b;
       } else {
@@ -6381,49 +6702,61 @@ public final class ProtoIlInstructions {
 
     public static final int COMPARISON_KIND_FIELD_NUMBER = 21;
     private int comparisonKind_;
+
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
+     * 
      * @return The enum numeric value on the wire for comparisonKind.
      */
-    @java.lang.Override public int getComparisonKindValue() {
+    @java.lang.Override
+    public int getComparisonKindValue() {
       return comparisonKind_;
     }
+
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
+     * 
      * @return The comparisonKind.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind getComparisonKind() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind getComparisonKind() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.valueOf(comparisonKind_);
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.valueOf(comparisonKind_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.UNRECOGNIZED : result;
     }
 
     public static final int CONDITION_FIELD_NUMBER = 22;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg condition_;
+
     /**
      * <pre>
      * IF_INSTRUCTION
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
+     * 
      * @return Whether the condition field is set.
      */
     @java.lang.Override
     public boolean hasCondition() {
       return condition_ != null;
     }
+
     /**
      * <pre>
      * IF_INSTRUCTION
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
+     * 
      * @return The condition.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getCondition() {
       return condition_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : condition_;
     }
+
     /**
      * <pre>
      * IF_INSTRUCTION
@@ -6438,22 +6771,27 @@ public final class ProtoIlInstructions {
 
     public static final int TRUE_INST_FIELD_NUMBER = 23;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg trueInst_;
+
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
+     * 
      * @return Whether the trueInst field is set.
      */
     @java.lang.Override
     public boolean hasTrueInst() {
       return trueInst_ != null;
     }
+
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
+     * 
      * @return The trueInst.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTrueInst() {
       return trueInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : trueInst_;
     }
+
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
      */
@@ -6464,22 +6802,27 @@ public final class ProtoIlInstructions {
 
     public static final int FALSE_INST_FIELD_NUMBER = 24;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg falseInst_;
+
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
+     * 
      * @return Whether the falseInst field is set.
      */
     @java.lang.Override
     public boolean hasFalseInst() {
       return falseInst_ != null;
     }
+
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
+     * 
      * @return The falseInst.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFalseInst() {
       return falseInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : falseInst_;
     }
+
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
      */
@@ -6490,30 +6833,35 @@ public final class ProtoIlInstructions {
 
     public static final int ARRAY_FIELD_NUMBER = 30;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg array_;
+
     /**
      * <pre>
      *LDLEN LDELEMA
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
+     * 
      * @return Whether the array field is set.
      */
     @java.lang.Override
     public boolean hasArray() {
       return array_ != null;
     }
+
     /**
      * <pre>
      *LDLEN LDELEMA
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
+     * 
      * @return The array.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArray() {
       return array_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : array_;
     }
+
     /**
      * <pre>
      *LDLEN LDELEMA
@@ -6528,87 +6876,113 @@ public final class ProtoIlInstructions {
 
     public static final int CONVERSION_KIND_FIELD_NUMBER = 25;
     private int conversionKind_;
+
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
+     * 
      * @return The enum numeric value on the wire for conversionKind.
      */
-    @java.lang.Override public int getConversionKindValue() {
+    @java.lang.Override
+    public int getConversionKindValue() {
       return conversionKind_;
     }
+
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
+     * 
      * @return The conversionKind.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind getConversionKind() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind getConversionKind() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.valueOf(conversionKind_);
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.valueOf(conversionKind_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.UNRECOGNIZED : result;
     }
 
     public static final int INPUT_TYPE_FIELD_NUMBER = 26;
     private int inputType_;
+
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
+     * 
      * @return The enum numeric value on the wire for inputType.
      */
-    @java.lang.Override public int getInputTypeValue() {
+    @java.lang.Override
+    public int getInputTypeValue() {
       return inputType_;
     }
+
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
+     * 
      * @return The inputType.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getInputType() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getInputType() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(inputType_);
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(inputType_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.UNRECOGNIZED : result;
     }
 
     public static final int TARGET_TYPE_FIELD_NUMBER = 28;
     private int targetType_;
+
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
+     * 
      * @return The enum numeric value on the wire for targetType.
      */
-    @java.lang.Override public int getTargetTypeValue() {
+    @java.lang.Override
+    public int getTargetTypeValue() {
       return targetType_;
     }
+
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
+     * 
      * @return The targetType.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType getTargetType() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType getTargetType() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.valueOf(targetType_);
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.valueOf(targetType_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.UNRECOGNIZED : result;
     }
 
     public static final int ARGUMENT_FIELD_NUMBER = 29;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg argument_;
+
     /**
      * <pre>
      * CONV CASTCLASS ISINST BOX UNBOXANY
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
+     * 
      * @return Whether the argument field is set.
      */
     @java.lang.Override
     public boolean hasArgument() {
       return argument_ != null;
     }
+
     /**
      * <pre>
      * CONV CASTCLASS ISINST BOX UNBOXANY
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
+     * 
      * @return The argument.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArgument() {
       return argument_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : argument_;
     }
+
     /**
      * <pre>
      * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -6623,33 +6997,41 @@ public final class ProtoIlInstructions {
 
     public static final int RESULT_TYPE_FIELD_NUMBER = 27;
     private int resultType_;
+
     /**
      * <pre>
      * CONV LDLEN UNBOXANY
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
+     * 
      * @return The enum numeric value on the wire for resultType.
      */
-    @java.lang.Override public int getResultTypeValue() {
+    @java.lang.Override
+    public int getResultTypeValue() {
       return resultType_;
     }
+
     /**
      * <pre>
      * CONV LDLEN UNBOXANY
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
+     * 
      * @return The resultType.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getResultType() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getResultType() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(resultType_);
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result
+          = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(resultType_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.UNRECOGNIZED : result;
     }
 
     public static final int INDICES_FIELD_NUMBER = 31;
     private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> indices_;
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -6661,6 +7043,7 @@ public final class ProtoIlInstructions {
     public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> getIndicesList() {
       return indices_;
     }
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -6669,10 +7052,11 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlInstructionMsg indices = 31;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
         getIndicesOrBuilderList() {
       return indices_;
     }
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -6684,6 +7068,7 @@ public final class ProtoIlInstructions {
     public int getIndicesCount() {
       return indices_.size();
     }
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -6695,6 +7080,7 @@ public final class ProtoIlInstructions {
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getIndices(int index) {
       return indices_.get(index);
     }
+
     /**
      * <pre>
      * NEWARR LDELEMA
@@ -6703,37 +7089,41 @@ public final class ProtoIlInstructions {
      * <code>repeated .IlInstructionMsg indices = 31;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getIndicesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getIndicesOrBuilder(int index) {
       return indices_.get(index);
     }
 
     public static final int TRY_BLOCK_FIELD_NUMBER = 32;
     private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg tryBlock_;
+
     /**
      * <pre>
      * TRY
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
+     * 
      * @return Whether the tryBlock field is set.
      */
     @java.lang.Override
     public boolean hasTryBlock() {
       return tryBlock_ != null;
     }
+
     /**
      * <pre>
      * TRY
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
+     * 
      * @return The tryBlock.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getTryBlock() {
       return tryBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : tryBlock_;
     }
+
     /**
      * <pre>
      * TRY
@@ -6748,6 +7138,7 @@ public final class ProtoIlInstructions {
 
     public static final int HANDLERS_FIELD_NUMBER = 33;
     private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> handlers_;
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
@@ -6755,14 +7146,16 @@ public final class ProtoIlInstructions {
     public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> getHandlersList() {
       return handlers_;
     }
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder>
         getHandlersOrBuilderList() {
       return handlers_;
     }
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
@@ -6770,6 +7163,7 @@ public final class ProtoIlInstructions {
     public int getHandlersCount() {
       return handlers_.size();
     }
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
@@ -6777,33 +7171,39 @@ public final class ProtoIlInstructions {
     public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg getHandlers(int index) {
       return handlers_.get(index);
     }
+
     /**
      * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder getHandlersOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder getHandlersOrBuilder(int index) {
       return handlers_.get(index);
     }
 
     public static final int FINALLY_BLOCK_FIELD_NUMBER = 34;
     private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg finallyBlock_;
+
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
+     * 
      * @return Whether the finallyBlock field is set.
      */
     @java.lang.Override
     public boolean hasFinallyBlock() {
       return finallyBlock_ != null;
     }
+
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
+     * 
      * @return The finallyBlock.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFinallyBlock() {
-      return finallyBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : finallyBlock_;
+      return finallyBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+          : finallyBlock_;
     }
+
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
      */
@@ -6814,22 +7214,28 @@ public final class ProtoIlInstructions {
 
     public static final int FAULT_BLOCK_FIELD_NUMBER = 35;
     private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg faultBlock_;
+
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
+     * 
      * @return Whether the faultBlock field is set.
      */
     @java.lang.Override
     public boolean hasFaultBlock() {
       return faultBlock_ != null;
     }
+
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
+     * 
      * @return The faultBlock.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFaultBlock() {
-      return faultBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : faultBlock_;
+      return faultBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+          : faultBlock_;
     }
+
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
      */
@@ -6840,30 +7246,35 @@ public final class ProtoIlInstructions {
 
     public static final int BODY_FIELD_NUMBER = 37;
     private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg body_;
+
     /**
      * <pre>
      * TRYCATCHHANDLER
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
+     * 
      * @return Whether the body field is set.
      */
     @java.lang.Override
     public boolean hasBody() {
       return body_ != null;
     }
+
     /**
      * <pre>
      * TRYCATCHHANDLER
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
+     * 
      * @return The body.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
       return body_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
     }
+
     /**
      * <pre>
      * TRYCATCHHANDLER
@@ -6878,30 +7289,35 @@ public final class ProtoIlInstructions {
 
     public static final int KEY_INSTR_FIELD_NUMBER = 41;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg keyInstr_;
+
     /**
      * <pre>
      * SWITCH_INSTR
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
+     * 
      * @return Whether the keyInstr field is set.
      */
     @java.lang.Override
     public boolean hasKeyInstr() {
       return keyInstr_ != null;
     }
+
     /**
      * <pre>
      * SWITCH_INSTR
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
+     * 
      * @return The keyInstr.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getKeyInstr() {
       return keyInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : keyInstr_;
     }
+
     /**
      * <pre>
      * SWITCH_INSTR
@@ -6916,22 +7332,28 @@ public final class ProtoIlInstructions {
 
     public static final int DEFAULT_INST_FIELD_NUMBER = 42;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg defaultInst_;
+
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
+     * 
      * @return Whether the defaultInst field is set.
      */
     @java.lang.Override
     public boolean hasDefaultInst() {
       return defaultInst_ != null;
     }
+
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
+     * 
      * @return The defaultInst.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getDefaultInst() {
-      return defaultInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : defaultInst_;
+      return defaultInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+          : defaultInst_;
     }
+
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
      */
@@ -6942,6 +7364,7 @@ public final class ProtoIlInstructions {
 
     public static final int SWITCH_SECTIONS_FIELD_NUMBER = 43;
     private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> switchSections_;
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
@@ -6949,14 +7372,16 @@ public final class ProtoIlInstructions {
     public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> getSwitchSectionsList() {
       return switchSections_;
     }
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder>
         getSwitchSectionsOrBuilderList() {
       return switchSections_;
     }
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
@@ -6964,6 +7389,7 @@ public final class ProtoIlInstructions {
     public int getSwitchSectionsCount() {
       return switchSections_.size();
     }
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
@@ -6971,29 +7397,31 @@ public final class ProtoIlInstructions {
     public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg getSwitchSections(int index) {
       return switchSections_.get(index);
     }
+
     /**
      * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder getSwitchSectionsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder getSwitchSectionsOrBuilder(int index) {
       return switchSections_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (opCode_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.NONE_OP.getNumber()) {
         output.writeEnum(1, opCode_);
       }
@@ -7021,7 +7449,8 @@ public final class ProtoIlInstructions {
       if (variable_ != null) {
         output.writeMessage(11, getVariable());
       }
-      if (operator_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.NONE_BINARY.getNumber()) {
+      if (operator_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.NONE_BINARY
+          .getNumber()) {
         output.writeEnum(12, operator_);
       }
       if (left_ != null) {
@@ -7051,7 +7480,8 @@ public final class ProtoIlInstructions {
       if (falseInst_ != null) {
         output.writeMessage(24, getFalseInst());
       }
-      if (conversionKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.NONE_CONVERSION.getNumber()) {
+      if (conversionKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.NONE_CONVERSION
+          .getNumber()) {
         output.writeEnum(25, conversionKind_);
       }
       if (inputType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.NONE_STACK_TYPE.getNumber()) {
@@ -7060,7 +7490,8 @@ public final class ProtoIlInstructions {
       if (resultType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.NONE_STACK_TYPE.getNumber()) {
         output.writeEnum(27, resultType_);
       }
-      if (targetType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.NONE_PRIMITIVE_TYPE.getNumber()) {
+      if (targetType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.NONE_PRIMITIVE_TYPE
+          .getNumber()) {
         output.writeEnum(28, targetType_);
       }
       if (argument_ != null) {
@@ -7111,154 +7542,123 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (opCode_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.NONE_OP.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, opCode_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, opCode_);
       }
       if (method_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getMethod());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(4, getMethod());
       }
       for (int i = 0; i < arguments_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, arguments_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(5, arguments_.get(i));
       }
       if (valueInstruction_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, getValueInstruction());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(6, getValueInstruction());
       }
       if (!getValueConstantStringBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, valueConstantString_);
       }
       if (target_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(8, getTarget());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(8, getTarget());
       }
       if (type_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, getType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(9, getType());
       }
       if (field_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, getField());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(10, getField());
       }
       if (variable_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(11, getVariable());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(11, getVariable());
       }
-      if (operator_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.NONE_BINARY.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(12, operator_);
+      if (operator_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.NONE_BINARY
+          .getNumber()) {
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(12, operator_);
       }
       if (left_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(14, getLeft());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(14, getLeft());
       }
       if (right_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, getRight());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(15, getRight());
       }
       if (valueConstantInt32_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(16, valueConstantInt32_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(16, valueConstantInt32_);
       }
       if (!getTargetLabelBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(18, targetLabel_);
       }
       if (sign_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.NONE_SIGN.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(20, sign_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(20, sign_);
       }
       if (comparisonKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.NONE_KIND.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(21, comparisonKind_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(21, comparisonKind_);
       }
       if (condition_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(22, getCondition());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(22, getCondition());
       }
       if (trueInst_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(23, getTrueInst());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(23, getTrueInst());
       }
       if (falseInst_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(24, getFalseInst());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(24, getFalseInst());
       }
-      if (conversionKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.NONE_CONVERSION.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(25, conversionKind_);
+      if (conversionKind_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.NONE_CONVERSION
+          .getNumber()) {
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(25, conversionKind_);
       }
       if (inputType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.NONE_STACK_TYPE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(26, inputType_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(26, inputType_);
       }
       if (resultType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.NONE_STACK_TYPE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(27, resultType_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(27, resultType_);
       }
-      if (targetType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.NONE_PRIMITIVE_TYPE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(28, targetType_);
+      if (targetType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.NONE_PRIMITIVE_TYPE
+          .getNumber()) {
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(28, targetType_);
       }
       if (argument_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(29, getArgument());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(29, getArgument());
       }
       if (array_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(30, getArray());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(30, getArray());
       }
       for (int i = 0; i < indices_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(31, indices_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(31, indices_.get(i));
       }
       if (tryBlock_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(32, getTryBlock());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(32, getTryBlock());
       }
       for (int i = 0; i < handlers_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(33, handlers_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(33, handlers_.get(i));
       }
       if (finallyBlock_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(34, getFinallyBlock());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(34, getFinallyBlock());
       }
       if (faultBlock_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(35, getFaultBlock());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(35, getFaultBlock());
       }
       if (body_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(37, getBody());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(37, getBody());
       }
       if (valueConstantInt64_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(38, valueConstantInt64_);
+        size += com.google.protobuf.CodedOutputStream.computeInt64Size(38, valueConstantInt64_);
       }
       if (valueConstantFloat_ != 0F) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeFloatSize(39, valueConstantFloat_);
+        size += com.google.protobuf.CodedOutputStream.computeFloatSize(39, valueConstantFloat_);
       }
       if (valueConstantDouble_ != 0D) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(40, valueConstantDouble_);
+        size += com.google.protobuf.CodedOutputStream.computeDoubleSize(40, valueConstantDouble_);
       }
       if (keyInstr_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(41, getKeyInstr());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(41, getKeyInstr());
       }
       if (defaultInst_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(42, getDefaultInst());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(42, getDefaultInst());
       }
       for (int i = 0; i < switchSections_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(43, switchSections_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(43, switchSections_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -7268,139 +7668,168 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg) obj;
+      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg other
+          = (soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg) obj;
 
-      if (opCode_ != other.opCode_) return false;
-      if (hasMethod() != other.hasMethod()) return false;
+      if (opCode_ != other.opCode_)
+        return false;
+      if (hasMethod() != other.hasMethod())
+        return false;
       if (hasMethod()) {
-        if (!getMethod()
-            .equals(other.getMethod())) return false;
+        if (!getMethod().equals(other.getMethod()))
+          return false;
       }
-      if (!getArgumentsList()
-          .equals(other.getArgumentsList())) return false;
-      if (hasValueInstruction() != other.hasValueInstruction()) return false;
+      if (!getArgumentsList().equals(other.getArgumentsList()))
+        return false;
+      if (hasValueInstruction() != other.hasValueInstruction())
+        return false;
       if (hasValueInstruction()) {
-        if (!getValueInstruction()
-            .equals(other.getValueInstruction())) return false;
+        if (!getValueInstruction().equals(other.getValueInstruction()))
+          return false;
       }
-      if (!getValueConstantString()
-          .equals(other.getValueConstantString())) return false;
-      if (getValueConstantInt32()
-          != other.getValueConstantInt32()) return false;
-      if (getValueConstantInt64()
-          != other.getValueConstantInt64()) return false;
-      if (java.lang.Float.floatToIntBits(getValueConstantFloat())
-          != java.lang.Float.floatToIntBits(
-              other.getValueConstantFloat())) return false;
-      if (java.lang.Double.doubleToLongBits(getValueConstantDouble())
-          != java.lang.Double.doubleToLongBits(
-              other.getValueConstantDouble())) return false;
-      if (hasTarget() != other.hasTarget()) return false;
+      if (!getValueConstantString().equals(other.getValueConstantString()))
+        return false;
+      if (getValueConstantInt32() != other.getValueConstantInt32())
+        return false;
+      if (getValueConstantInt64() != other.getValueConstantInt64())
+        return false;
+      if (java.lang.Float.floatToIntBits(getValueConstantFloat()) != java.lang.Float
+          .floatToIntBits(other.getValueConstantFloat()))
+        return false;
+      if (java.lang.Double.doubleToLongBits(getValueConstantDouble()) != java.lang.Double
+          .doubleToLongBits(other.getValueConstantDouble()))
+        return false;
+      if (hasTarget() != other.hasTarget())
+        return false;
       if (hasTarget()) {
-        if (!getTarget()
-            .equals(other.getTarget())) return false;
+        if (!getTarget().equals(other.getTarget()))
+          return false;
       }
-      if (hasType() != other.hasType()) return false;
+      if (hasType() != other.hasType())
+        return false;
       if (hasType()) {
-        if (!getType()
-            .equals(other.getType())) return false;
+        if (!getType().equals(other.getType()))
+          return false;
       }
-      if (hasField() != other.hasField()) return false;
+      if (hasField() != other.hasField())
+        return false;
       if (hasField()) {
-        if (!getField()
-            .equals(other.getField())) return false;
+        if (!getField().equals(other.getField()))
+          return false;
       }
-      if (hasVariable() != other.hasVariable()) return false;
+      if (hasVariable() != other.hasVariable())
+        return false;
       if (hasVariable()) {
-        if (!getVariable()
-            .equals(other.getVariable())) return false;
+        if (!getVariable().equals(other.getVariable()))
+          return false;
       }
-      if (operator_ != other.operator_) return false;
-      if (sign_ != other.sign_) return false;
-      if (hasLeft() != other.hasLeft()) return false;
+      if (operator_ != other.operator_)
+        return false;
+      if (sign_ != other.sign_)
+        return false;
+      if (hasLeft() != other.hasLeft())
+        return false;
       if (hasLeft()) {
-        if (!getLeft()
-            .equals(other.getLeft())) return false;
+        if (!getLeft().equals(other.getLeft()))
+          return false;
       }
-      if (hasRight() != other.hasRight()) return false;
+      if (hasRight() != other.hasRight())
+        return false;
       if (hasRight()) {
-        if (!getRight()
-            .equals(other.getRight())) return false;
+        if (!getRight().equals(other.getRight()))
+          return false;
       }
-      if (!getTargetLabel()
-          .equals(other.getTargetLabel())) return false;
-      if (comparisonKind_ != other.comparisonKind_) return false;
-      if (hasCondition() != other.hasCondition()) return false;
+      if (!getTargetLabel().equals(other.getTargetLabel()))
+        return false;
+      if (comparisonKind_ != other.comparisonKind_)
+        return false;
+      if (hasCondition() != other.hasCondition())
+        return false;
       if (hasCondition()) {
-        if (!getCondition()
-            .equals(other.getCondition())) return false;
+        if (!getCondition().equals(other.getCondition()))
+          return false;
       }
-      if (hasTrueInst() != other.hasTrueInst()) return false;
+      if (hasTrueInst() != other.hasTrueInst())
+        return false;
       if (hasTrueInst()) {
-        if (!getTrueInst()
-            .equals(other.getTrueInst())) return false;
+        if (!getTrueInst().equals(other.getTrueInst()))
+          return false;
       }
-      if (hasFalseInst() != other.hasFalseInst()) return false;
+      if (hasFalseInst() != other.hasFalseInst())
+        return false;
       if (hasFalseInst()) {
-        if (!getFalseInst()
-            .equals(other.getFalseInst())) return false;
+        if (!getFalseInst().equals(other.getFalseInst()))
+          return false;
       }
-      if (hasArray() != other.hasArray()) return false;
+      if (hasArray() != other.hasArray())
+        return false;
       if (hasArray()) {
-        if (!getArray()
-            .equals(other.getArray())) return false;
+        if (!getArray().equals(other.getArray()))
+          return false;
       }
-      if (conversionKind_ != other.conversionKind_) return false;
-      if (inputType_ != other.inputType_) return false;
-      if (targetType_ != other.targetType_) return false;
-      if (hasArgument() != other.hasArgument()) return false;
+      if (conversionKind_ != other.conversionKind_)
+        return false;
+      if (inputType_ != other.inputType_)
+        return false;
+      if (targetType_ != other.targetType_)
+        return false;
+      if (hasArgument() != other.hasArgument())
+        return false;
       if (hasArgument()) {
-        if (!getArgument()
-            .equals(other.getArgument())) return false;
+        if (!getArgument().equals(other.getArgument()))
+          return false;
       }
-      if (resultType_ != other.resultType_) return false;
-      if (!getIndicesList()
-          .equals(other.getIndicesList())) return false;
-      if (hasTryBlock() != other.hasTryBlock()) return false;
+      if (resultType_ != other.resultType_)
+        return false;
+      if (!getIndicesList().equals(other.getIndicesList()))
+        return false;
+      if (hasTryBlock() != other.hasTryBlock())
+        return false;
       if (hasTryBlock()) {
-        if (!getTryBlock()
-            .equals(other.getTryBlock())) return false;
+        if (!getTryBlock().equals(other.getTryBlock()))
+          return false;
       }
-      if (!getHandlersList()
-          .equals(other.getHandlersList())) return false;
-      if (hasFinallyBlock() != other.hasFinallyBlock()) return false;
+      if (!getHandlersList().equals(other.getHandlersList()))
+        return false;
+      if (hasFinallyBlock() != other.hasFinallyBlock())
+        return false;
       if (hasFinallyBlock()) {
-        if (!getFinallyBlock()
-            .equals(other.getFinallyBlock())) return false;
+        if (!getFinallyBlock().equals(other.getFinallyBlock()))
+          return false;
       }
-      if (hasFaultBlock() != other.hasFaultBlock()) return false;
+      if (hasFaultBlock() != other.hasFaultBlock())
+        return false;
       if (hasFaultBlock()) {
-        if (!getFaultBlock()
-            .equals(other.getFaultBlock())) return false;
+        if (!getFaultBlock().equals(other.getFaultBlock()))
+          return false;
       }
-      if (hasBody() != other.hasBody()) return false;
+      if (hasBody() != other.hasBody())
+        return false;
       if (hasBody()) {
-        if (!getBody()
-            .equals(other.getBody())) return false;
+        if (!getBody().equals(other.getBody()))
+          return false;
       }
-      if (hasKeyInstr() != other.hasKeyInstr()) return false;
+      if (hasKeyInstr() != other.hasKeyInstr())
+        return false;
       if (hasKeyInstr()) {
-        if (!getKeyInstr()
-            .equals(other.getKeyInstr())) return false;
+        if (!getKeyInstr().equals(other.getKeyInstr()))
+          return false;
       }
-      if (hasDefaultInst() != other.hasDefaultInst()) return false;
+      if (hasDefaultInst() != other.hasDefaultInst())
+        return false;
       if (hasDefaultInst()) {
-        if (!getDefaultInst()
-            .equals(other.getDefaultInst())) return false;
+        if (!getDefaultInst().equals(other.getDefaultInst()))
+          return false;
       }
-      if (!getSwitchSectionsList()
-          .equals(other.getSwitchSectionsList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getSwitchSectionsList().equals(other.getSwitchSectionsList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -7430,14 +7859,12 @@ public final class ProtoIlInstructions {
       hash = (37 * hash) + VALUE_CONSTANT_INT32_FIELD_NUMBER;
       hash = (53 * hash) + getValueConstantInt32();
       hash = (37 * hash) + VALUE_CONSTANT_INT64_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getValueConstantInt64());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(getValueConstantInt64());
       hash = (37 * hash) + VALUE_CONSTANT_FLOAT_FIELD_NUMBER;
-      hash = (53 * hash) + java.lang.Float.floatToIntBits(
-          getValueConstantFloat());
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(getValueConstantFloat());
       hash = (37 * hash) + VALUE_CONSTANT_DOUBLE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          java.lang.Double.doubleToLongBits(getValueConstantDouble()));
+      hash = (53 * hash)
+          + com.google.protobuf.Internal.hashLong(java.lang.Double.doubleToLongBits(getValueConstantDouble()));
       if (hasTarget()) {
         hash = (37 * hash) + TARGET_FIELD_NUMBER;
         hash = (53 * hash) + getTarget().hashCode();
@@ -7539,114 +7966,109 @@ public final class ProtoIlInstructions {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code IlInstructionMsg}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:IlInstructionMsg)
         soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlInstructionMsg_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlInstructionMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.class,
+                soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder()
@@ -7654,20 +8076,20 @@ public final class ProtoIlInstructions {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getArgumentsFieldBuilder();
           getIndicesFieldBuilder();
           getHandlersFieldBuilder();
           getSwitchSectionsFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -7841,8 +8263,7 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlInstructionMsg_descriptor;
       }
 
@@ -7862,7 +8283,8 @@ public final class ProtoIlInstructions {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg buildPartial() {
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg result = new soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg(this);
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg result
+            = new soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg(this);
         int from_bitField0_ = bitField0_;
         result.opCode_ = opCode_;
         if (methodBuilder_ == null) {
@@ -8017,38 +8439,37 @@ public final class ProtoIlInstructions {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg)other);
+          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -8056,7 +8477,8 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance())
+          return this;
         if (other.opCode_ != 0) {
           setOpCodeValue(other.getOpCodeValue());
         }
@@ -8081,9 +8503,8 @@ public final class ProtoIlInstructions {
               argumentsBuilder_ = null;
               arguments_ = other.arguments_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              argumentsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getArgumentsFieldBuilder() : null;
+              argumentsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getArgumentsFieldBuilder() : null;
             } else {
               argumentsBuilder_.addAllMessages(other.arguments_);
             }
@@ -8184,9 +8605,8 @@ public final class ProtoIlInstructions {
               indicesBuilder_ = null;
               indices_ = other.indices_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              indicesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getIndicesFieldBuilder() : null;
+              indicesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getIndicesFieldBuilder() : null;
             } else {
               indicesBuilder_.addAllMessages(other.indices_);
             }
@@ -8213,9 +8633,8 @@ public final class ProtoIlInstructions {
               handlersBuilder_ = null;
               handlers_ = other.handlers_;
               bitField0_ = (bitField0_ & ~0x00000004);
-              handlersBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getHandlersFieldBuilder() : null;
+              handlersBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getHandlersFieldBuilder() : null;
             } else {
               handlersBuilder_.addAllMessages(other.handlers_);
             }
@@ -8254,9 +8673,8 @@ public final class ProtoIlInstructions {
               switchSectionsBuilder_ = null;
               switchSections_ = other.switchSections_;
               bitField0_ = (bitField0_ & ~0x00000008);
-              switchSectionsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getSwitchSectionsFieldBuilder() : null;
+              switchSectionsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getSwitchSectionsFieldBuilder() : null;
             } else {
               switchSectionsBuilder_.addAllMessages(other.switchSections_);
             }
@@ -8273,10 +8691,8 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -8290,82 +8706,100 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       private int bitField0_;
 
       private int opCode_ = 0;
+
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
+       * 
        * @return The enum numeric value on the wire for opCode.
        */
-      @java.lang.Override public int getOpCodeValue() {
+      @java.lang.Override
+      public int getOpCodeValue() {
         return opCode_;
       }
+
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-       * @param value The enum numeric value on the wire for opCode to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for opCode to set.
        * @return This builder for chaining.
        */
       public Builder setOpCodeValue(int value) {
-        
+
         opCode_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
+       * 
        * @return The opCode.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode getOpCode() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.valueOf(opCode_);
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.valueOf(opCode_);
         return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-       * @param value The opCode to set.
+       * 
+       * @param value
+       *          The opCode to set.
        * @return This builder for chaining.
        */
       public Builder setOpCode(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         opCode_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearOpCode() {
-        
+
         opCode_ = 0;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition method_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> methodBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> methodBuilder_;
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
        * </pre>
        *
        * <code>.MethodDefinition method = 4;</code>
+       * 
        * @return Whether the method field is set.
        */
       public boolean hasMethod() {
         return methodBuilder_ != null || method_ != null;
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
        * </pre>
        *
        * <code>.MethodDefinition method = 4;</code>
+       * 
        * @return The method.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getMethod() {
@@ -8375,6 +8809,7 @@ public final class ProtoIlInstructions {
           return methodBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
@@ -8395,6 +8830,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
@@ -8402,8 +8838,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.MethodDefinition method = 4;</code>
        */
-      public Builder setMethod(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder setMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (methodBuilder_ == null) {
           method_ = builderForValue.build();
           onChanged();
@@ -8413,6 +8848,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
@@ -8423,8 +8859,8 @@ public final class ProtoIlInstructions {
       public Builder mergeMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (methodBuilder_ == null) {
           if (method_ != null) {
-            method_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(method_).mergeFrom(value).buildPartial();
+            method_ = soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(method_).mergeFrom(value)
+                .buildPartial();
           } else {
             method_ = value;
           }
@@ -8435,6 +8871,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
@@ -8453,6 +8890,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
@@ -8461,10 +8899,11 @@ public final class ProtoIlInstructions {
        * <code>.MethodDefinition method = 4;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getMethodBuilder() {
-        
+
         onChanged();
         return getMethodFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
@@ -8476,10 +8915,10 @@ public final class ProtoIlInstructions {
         if (methodBuilder_ != null) {
           return methodBuilder_.getMessageOrBuilder();
         } else {
-          return method_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : method_;
+          return method_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : method_;
         }
       }
+
       /**
        * <pre>
        * CALL LDMEMBERTOKEN
@@ -8487,31 +8926,29 @@ public final class ProtoIlInstructions {
        *
        * <code>.MethodDefinition method = 4;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
           getMethodFieldBuilder() {
         if (methodBuilder_ == null) {
-          methodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
-                  getMethod(),
-                  getParentForChildren(),
-                  isClean());
+          methodBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
+                  getMethod(), getParentForChildren(), isClean());
           method_ = null;
         }
         return methodBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> arguments_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> arguments_
+          = java.util.Collections.emptyList();
+
       private void ensureArgumentsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           arguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg>(arguments_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> argumentsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> argumentsBuilder_;
 
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
@@ -8523,6 +8960,7 @@ public final class ProtoIlInstructions {
           return argumentsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
@@ -8533,6 +8971,7 @@ public final class ProtoIlInstructions {
           return argumentsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
@@ -8543,11 +8982,11 @@ public final class ProtoIlInstructions {
           return argumentsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public Builder setArguments(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+      public Builder setArguments(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (argumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8560,11 +8999,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public Builder setArguments(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setArguments(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (argumentsBuilder_ == null) {
           ensureArgumentsIsMutable();
           arguments_.set(index, builderForValue.build());
@@ -8574,6 +9014,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
@@ -8590,11 +9031,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public Builder addArguments(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+      public Builder addArguments(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (argumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8607,11 +9048,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public Builder addArguments(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder addArguments(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (argumentsBuilder_ == null) {
           ensureArgumentsIsMutable();
           arguments_.add(builderForValue.build());
@@ -8621,11 +9062,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public Builder addArguments(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder addArguments(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (argumentsBuilder_ == null) {
           ensureArgumentsIsMutable();
           arguments_.add(index, builderForValue.build());
@@ -8635,21 +9077,22 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public Builder addAllArguments(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> values) {
+      public Builder
+          addAllArguments(java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> values) {
         if (argumentsBuilder_ == null) {
           ensureArgumentsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, arguments_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, arguments_);
           onChanged();
         } else {
           argumentsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
@@ -8663,6 +9106,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
@@ -8676,100 +9120,106 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getArgumentsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getArgumentsBuilder(int index) {
         return getArgumentsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getArgumentsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getArgumentsOrBuilder(int index) {
         if (argumentsBuilder_ == null) {
-          return arguments_.get(index);  } else {
+          return arguments_.get(index);
+        } else {
           return argumentsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
-           getArgumentsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
+          getArgumentsOrBuilderList() {
         if (argumentsBuilder_ != null) {
           return argumentsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(arguments_);
         }
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addArgumentsBuilder() {
-        return getArgumentsFieldBuilder().addBuilder(
+        return getArgumentsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .IlInstructionMsg arguments = 5;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addArgumentsBuilder(int index) {
+        return getArgumentsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
       }
+
       /**
        * <code>repeated .IlInstructionMsg arguments = 5;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addArgumentsBuilder(
-          int index) {
-        return getArgumentsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .IlInstructionMsg arguments = 5;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder> 
-           getArgumentsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder> getArgumentsBuilderList() {
         return getArgumentsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getArgumentsFieldBuilder() {
         if (argumentsBuilder_ == null) {
-          argumentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  arguments_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          argumentsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  arguments_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           arguments_ = null;
         }
         return argumentsBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg valueInstruction_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> valueInstructionBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> valueInstructionBuilder_;
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
        * </pre>
        *
        * <code>.IlInstructionMsg value_instruction = 6;</code>
+       * 
        * @return Whether the valueInstruction field is set.
        */
       public boolean hasValueInstruction() {
         return valueInstructionBuilder_ != null || valueInstruction_ != null;
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
        * </pre>
        *
        * <code>.IlInstructionMsg value_instruction = 6;</code>
+       * 
        * @return The valueInstruction.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getValueInstruction() {
         if (valueInstructionBuilder_ == null) {
-          return valueInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : valueInstruction_;
+          return valueInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : valueInstruction_;
         } else {
           return valueInstructionBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
@@ -8790,6 +9240,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
@@ -8797,8 +9248,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg value_instruction = 6;</code>
        */
-      public Builder setValueInstruction(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setValueInstruction(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (valueInstructionBuilder_ == null) {
           valueInstruction_ = builderForValue.build();
           onChanged();
@@ -8808,6 +9258,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
@@ -8818,8 +9269,8 @@ public final class ProtoIlInstructions {
       public Builder mergeValueInstruction(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (valueInstructionBuilder_ == null) {
           if (valueInstruction_ != null) {
-            valueInstruction_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(valueInstruction_).mergeFrom(value).buildPartial();
+            valueInstruction_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(valueInstruction_)
+                .mergeFrom(value).buildPartial();
           } else {
             valueInstruction_ = value;
           }
@@ -8830,6 +9281,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
@@ -8848,6 +9300,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
@@ -8856,10 +9309,11 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg value_instruction = 6;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getValueInstructionBuilder() {
-        
+
         onChanged();
         return getValueInstructionFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
@@ -8871,10 +9325,11 @@ public final class ProtoIlInstructions {
         if (valueInstructionBuilder_ != null) {
           return valueInstructionBuilder_.getMessageOrBuilder();
         } else {
-          return valueInstruction_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : valueInstruction_;
+          return valueInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : valueInstruction_;
         }
       }
+
       /**
        * <pre>
        * LEAVE STOBJ STLOC
@@ -8882,34 +9337,33 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg value_instruction = 6;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getValueInstructionFieldBuilder() {
         if (valueInstructionBuilder_ == null) {
-          valueInstructionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getValueInstruction(),
-                  getParentForChildren(),
-                  isClean());
+          valueInstructionBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getValueInstruction(), getParentForChildren(), isClean());
           valueInstruction_ = null;
         }
         return valueInstructionBuilder_;
       }
 
       private java.lang.Object valueConstantString_ = "";
+
       /**
        * <pre>
        * LDSTR LDC_I4
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
+       * 
        * @return The valueConstantString.
        */
       public java.lang.String getValueConstantString() {
         java.lang.Object ref = valueConstantString_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           valueConstantString_ = s;
           return s;
@@ -8917,225 +9371,261 @@ public final class ProtoIlInstructions {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <pre>
        * LDSTR LDC_I4
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
+       * 
        * @return The bytes for valueConstantString.
        */
-      public com.google.protobuf.ByteString
-          getValueConstantStringBytes() {
+      public com.google.protobuf.ByteString getValueConstantStringBytes() {
         java.lang.Object ref = valueConstantString_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           valueConstantString_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <pre>
        * LDSTR LDC_I4
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
-       * @param value The valueConstantString to set.
+       * 
+       * @param value
+       *          The valueConstantString to set.
        * @return This builder for chaining.
        */
-      public Builder setValueConstantString(
-          java.lang.String value) {
+      public Builder setValueConstantString(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        valueConstantString_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * LDSTR LDC_I4
-       * </pre>
-       *
-       * <code>string value_constant_string = 7;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearValueConstantString() {
-        
-        valueConstantString_ = getDefaultInstance().getValueConstantString();
-        onChanged();
-        return this;
-      }
-      /**
-       * <pre>
-       * LDSTR LDC_I4
-       * </pre>
-       *
-       * <code>string value_constant_string = 7;</code>
-       * @param value The bytes for valueConstantString to set.
-       * @return This builder for chaining.
-       */
-      public Builder setValueConstantStringBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+
         valueConstantString_ = value;
         onChanged();
         return this;
       }
 
-      private int valueConstantInt32_ ;
+      /**
+       * <pre>
+       * LDSTR LDC_I4
+       * </pre>
+       *
+       * <code>string value_constant_string = 7;</code>
+       * 
+       * @return This builder for chaining.
+       */
+      public Builder clearValueConstantString() {
+
+        valueConstantString_ = getDefaultInstance().getValueConstantString();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <pre>
+       * LDSTR LDC_I4
+       * </pre>
+       *
+       * <code>string value_constant_string = 7;</code>
+       * 
+       * @param value
+       *          The bytes for valueConstantString to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantStringBytes(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        valueConstantString_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int valueConstantInt32_;
+
       /**
        * <code>int32 value_constant_int32 = 16;</code>
+       * 
        * @return The valueConstantInt32.
        */
       @java.lang.Override
       public int getValueConstantInt32() {
         return valueConstantInt32_;
       }
+
       /**
        * <code>int32 value_constant_int32 = 16;</code>
-       * @param value The valueConstantInt32 to set.
+       * 
+       * @param value
+       *          The valueConstantInt32 to set.
        * @return This builder for chaining.
        */
       public Builder setValueConstantInt32(int value) {
-        
+
         valueConstantInt32_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>int32 value_constant_int32 = 16;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueConstantInt32() {
-        
+
         valueConstantInt32_ = 0;
         onChanged();
         return this;
       }
 
-      private long valueConstantInt64_ ;
+      private long valueConstantInt64_;
+
       /**
        * <code>int64 value_constant_int64 = 38;</code>
+       * 
        * @return The valueConstantInt64.
        */
       @java.lang.Override
       public long getValueConstantInt64() {
         return valueConstantInt64_;
       }
+
       /**
        * <code>int64 value_constant_int64 = 38;</code>
-       * @param value The valueConstantInt64 to set.
+       * 
+       * @param value
+       *          The valueConstantInt64 to set.
        * @return This builder for chaining.
        */
       public Builder setValueConstantInt64(long value) {
-        
+
         valueConstantInt64_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>int64 value_constant_int64 = 38;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueConstantInt64() {
-        
+
         valueConstantInt64_ = 0L;
         onChanged();
         return this;
       }
 
-      private float valueConstantFloat_ ;
+      private float valueConstantFloat_;
+
       /**
        * <code>float value_constant_float = 39;</code>
+       * 
        * @return The valueConstantFloat.
        */
       @java.lang.Override
       public float getValueConstantFloat() {
         return valueConstantFloat_;
       }
+
       /**
        * <code>float value_constant_float = 39;</code>
-       * @param value The valueConstantFloat to set.
+       * 
+       * @param value
+       *          The valueConstantFloat to set.
        * @return This builder for chaining.
        */
       public Builder setValueConstantFloat(float value) {
-        
+
         valueConstantFloat_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>float value_constant_float = 39;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueConstantFloat() {
-        
+
         valueConstantFloat_ = 0F;
         onChanged();
         return this;
       }
 
-      private double valueConstantDouble_ ;
+      private double valueConstantDouble_;
+
       /**
        * <code>double value_constant_double = 40;</code>
+       * 
        * @return The valueConstantDouble.
        */
       @java.lang.Override
       public double getValueConstantDouble() {
         return valueConstantDouble_;
       }
+
       /**
        * <code>double value_constant_double = 40;</code>
-       * @param value The valueConstantDouble to set.
+       * 
+       * @param value
+       *          The valueConstantDouble to set.
        * @return This builder for chaining.
        */
       public Builder setValueConstantDouble(double value) {
-        
+
         valueConstantDouble_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>double value_constant_double = 40;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueConstantDouble() {
-        
+
         valueConstantDouble_ = 0D;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg target_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> targetBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> targetBuilder_;
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
        * </pre>
        *
        * <code>.IlInstructionMsg target = 8;</code>
+       * 
        * @return Whether the target field is set.
        */
       public boolean hasTarget() {
         return targetBuilder_ != null || target_ != null;
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
        * </pre>
        *
        * <code>.IlInstructionMsg target = 8;</code>
+       * 
        * @return The target.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTarget() {
@@ -9145,6 +9635,7 @@ public final class ProtoIlInstructions {
           return targetBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
@@ -9165,6 +9656,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
@@ -9172,8 +9664,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg target = 8;</code>
        */
-      public Builder setTarget(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setTarget(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (targetBuilder_ == null) {
           target_ = builderForValue.build();
           onChanged();
@@ -9183,6 +9674,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
@@ -9193,8 +9685,8 @@ public final class ProtoIlInstructions {
       public Builder mergeTarget(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (targetBuilder_ == null) {
           if (target_ != null) {
-            target_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(target_).mergeFrom(value).buildPartial();
+            target_
+                = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(target_).mergeFrom(value).buildPartial();
           } else {
             target_ = value;
           }
@@ -9205,6 +9697,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
@@ -9223,6 +9716,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
@@ -9231,10 +9725,11 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg target = 8;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getTargetBuilder() {
-        
+
         onChanged();
         return getTargetFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
@@ -9246,10 +9741,10 @@ public final class ProtoIlInstructions {
         if (targetBuilder_ != null) {
           return targetBuilder_.getMessageOrBuilder();
         } else {
-          return target_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : target_;
+          return target_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : target_;
         }
       }
+
       /**
        * <pre>
        * STOBJ LDFLDA LDOBJ
@@ -9257,40 +9752,41 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg target = 8;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getTargetFieldBuilder() {
         if (targetBuilder_ == null) {
-          targetBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getTarget(),
-                  getParentForChildren(),
-                  isClean());
+          targetBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getTarget(), getParentForChildren(), isClean());
           target_ = null;
         }
         return targetBuilder_;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
        * </pre>
        *
        * <code>.TypeDefinition type = 9;</code>
+       * 
        * @return Whether the type field is set.
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
        * </pre>
        *
        * <code>.TypeDefinition type = 9;</code>
+       * 
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -9300,6 +9796,7 @@ public final class ProtoIlInstructions {
           return typeBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -9320,6 +9817,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -9327,8 +9825,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.TypeDefinition type = 9;</code>
        */
-      public Builder setType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -9338,6 +9835,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -9348,8 +9846,7 @@ public final class ProtoIlInstructions {
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -9360,6 +9857,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -9378,6 +9876,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -9386,10 +9885,11 @@ public final class ProtoIlInstructions {
        * <code>.TypeDefinition type = 9;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getTypeBuilder() {
-        
+
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -9401,10 +9901,10 @@ public final class ProtoIlInstructions {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
-          return type_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
+          return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
         }
       }
+
       /**
        * <pre>
        * STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
@@ -9412,40 +9912,41 @@ public final class ProtoIlInstructions {
        *
        * <code>.TypeDefinition type = 9;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
-          typeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getType(),
-                  getParentForChildren(),
-                  isClean());
+          typeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getType(), getParentForChildren(), isClean());
           type_ = null;
         }
         return typeBuilder_;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition field_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> fieldBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> fieldBuilder_;
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
        * </pre>
        *
        * <code>.FieldDefinition field = 10;</code>
+       * 
        * @return Whether the field field is set.
        */
       public boolean hasField() {
         return fieldBuilder_ != null || field_ != null;
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
        * </pre>
        *
        * <code>.FieldDefinition field = 10;</code>
+       * 
        * @return The field.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition getField() {
@@ -9455,6 +9956,7 @@ public final class ProtoIlInstructions {
           return fieldBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
@@ -9475,6 +9977,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
@@ -9482,8 +9985,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.FieldDefinition field = 10;</code>
        */
-      public Builder setField(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
+      public Builder setField(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
         if (fieldBuilder_ == null) {
           field_ = builderForValue.build();
           onChanged();
@@ -9493,6 +9995,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
@@ -9503,8 +10006,8 @@ public final class ProtoIlInstructions {
       public Builder mergeField(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition value) {
         if (fieldBuilder_ == null) {
           if (field_ != null) {
-            field_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.newBuilder(field_).mergeFrom(value).buildPartial();
+            field_
+                = soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.newBuilder(field_).mergeFrom(value).buildPartial();
           } else {
             field_ = value;
           }
@@ -9515,6 +10018,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
@@ -9533,6 +10037,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
@@ -9541,10 +10046,11 @@ public final class ProtoIlInstructions {
        * <code>.FieldDefinition field = 10;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder getFieldBuilder() {
-        
+
         onChanged();
         return getFieldFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
@@ -9556,10 +10062,10 @@ public final class ProtoIlInstructions {
         if (fieldBuilder_ != null) {
           return fieldBuilder_.getMessageOrBuilder();
         } else {
-          return field_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance() : field_;
+          return field_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance() : field_;
         }
       }
+
       /**
        * <pre>
        * LDFLDA LDMEMBERTOKEN
@@ -9567,40 +10073,41 @@ public final class ProtoIlInstructions {
        *
        * <code>.FieldDefinition field = 10;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>
           getFieldFieldBuilder() {
         if (fieldBuilder_ == null) {
-          fieldBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>(
-                  getField(),
-                  getParentForChildren(),
-                  isClean());
+          fieldBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>(
+                  getField(), getParentForChildren(), isClean());
           field_ = null;
         }
         return fieldBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg variable_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> variableBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> variableBuilder_;
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
        * </pre>
        *
        * <code>.IlVariableMsg variable = 11;</code>
+       * 
        * @return Whether the variable field is set.
        */
       public boolean hasVariable() {
         return variableBuilder_ != null || variable_ != null;
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
        * </pre>
        *
        * <code>.IlVariableMsg variable = 11;</code>
+       * 
        * @return The variable.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable() {
@@ -9610,6 +10117,7 @@ public final class ProtoIlInstructions {
           return variableBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
@@ -9630,6 +10138,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
@@ -9637,8 +10146,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlVariableMsg variable = 11;</code>
        */
-      public Builder setVariable(
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
+      public Builder setVariable(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
         if (variableBuilder_ == null) {
           variable_ = builderForValue.build();
           onChanged();
@@ -9648,6 +10156,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
@@ -9658,8 +10167,8 @@ public final class ProtoIlInstructions {
       public Builder mergeVariable(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg value) {
         if (variableBuilder_ == null) {
           if (variable_ != null) {
-            variable_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.newBuilder(variable_).mergeFrom(value).buildPartial();
+            variable_
+                = soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.newBuilder(variable_).mergeFrom(value).buildPartial();
           } else {
             variable_ = value;
           }
@@ -9670,6 +10179,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
@@ -9688,6 +10198,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
@@ -9696,10 +10207,11 @@ public final class ProtoIlInstructions {
        * <code>.IlVariableMsg variable = 11;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder getVariableBuilder() {
-        
+
         onChanged();
         return getVariableFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
@@ -9711,10 +10223,10 @@ public final class ProtoIlInstructions {
         if (variableBuilder_ != null) {
           return variableBuilder_.getMessageOrBuilder();
         } else {
-          return variable_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance() : variable_;
+          return variable_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance() : variable_;
         }
       }
+
       /**
        * <pre>
        * LDLOC STLOC TryCatchHandler
@@ -9722,160 +10234,190 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlVariableMsg variable = 11;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>
           getVariableFieldBuilder() {
         if (variableBuilder_ == null) {
-          variableBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>(
-                  getVariable(),
-                  getParentForChildren(),
-                  isClean());
+          variableBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>(
+                  getVariable(), getParentForChildren(), isClean());
           variable_ = null;
         }
         return variableBuilder_;
       }
 
       private int operator_ = 0;
+
       /**
        * <pre>
        * TODO may insert Result type + Underlying type
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
+       * 
        * @return The enum numeric value on the wire for operator.
        */
-      @java.lang.Override public int getOperatorValue() {
+      @java.lang.Override
+      public int getOperatorValue() {
         return operator_;
       }
+
       /**
        * <pre>
        * TODO may insert Result type + Underlying type
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-       * @param value The enum numeric value on the wire for operator to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for operator to set.
        * @return This builder for chaining.
        */
       public Builder setOperatorValue(int value) {
-        
+
         operator_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        * TODO may insert Result type + Underlying type
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
+       * 
        * @return The operator.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator getOperator() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.valueOf(operator_);
-        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.UNRECOGNIZED : result;
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.valueOf(operator_);
+        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator.UNRECOGNIZED
+            : result;
       }
+
       /**
        * <pre>
        * TODO may insert Result type + Underlying type
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-       * @param value The operator to set.
+       * 
+       * @param value
+       *          The operator to set.
        * @return This builder for chaining.
        */
       public Builder setOperator(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         operator_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        * TODO may insert Result type + Underlying type
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearOperator() {
-        
+
         operator_ = 0;
         onChanged();
         return this;
       }
 
       private int sign_ = 0;
+
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
+       * 
        * @return The enum numeric value on the wire for sign.
        */
-      @java.lang.Override public int getSignValue() {
+      @java.lang.Override
+      public int getSignValue() {
         return sign_;
       }
+
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-       * @param value The enum numeric value on the wire for sign to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for sign to set.
        * @return This builder for chaining.
        */
       public Builder setSignValue(int value) {
-        
+
         sign_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
+       * 
        * @return The sign.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign getSign() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.valueOf(sign_);
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.valueOf(sign_);
         return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-       * @param value The sign to set.
+       * 
+       * @param value
+       *          The sign to set.
        * @return This builder for chaining.
        */
       public Builder setSign(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         sign_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearSign() {
-        
+
         sign_ = 0;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg left_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> leftBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> leftBuilder_;
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
+       * 
        * @return Whether the left field is set.
        */
       public boolean hasLeft() {
         return leftBuilder_ != null || left_ != null;
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
+       * 
        * @return The left.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getLeft() {
@@ -9885,6 +10427,7 @@ public final class ProtoIlInstructions {
           return leftBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
        */
@@ -9901,11 +10444,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
        */
-      public Builder setLeft(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setLeft(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (leftBuilder_ == null) {
           left_ = builderForValue.build();
           onChanged();
@@ -9915,14 +10458,14 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
        */
       public Builder mergeLeft(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (leftBuilder_ == null) {
           if (left_ != null) {
-            left_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(left_).mergeFrom(value).buildPartial();
+            left_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(left_).mergeFrom(value).buildPartial();
           } else {
             left_ = value;
           }
@@ -9933,6 +10476,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
        */
@@ -9947,14 +10491,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getLeftBuilder() {
-        
+
         onChanged();
         return getLeftFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
        */
@@ -9962,39 +10508,40 @@ public final class ProtoIlInstructions {
         if (leftBuilder_ != null) {
           return leftBuilder_.getMessageOrBuilder();
         } else {
-          return left_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : left_;
+          return left_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : left_;
         }
       }
+
       /**
        * <code>.IlInstructionMsg left = 14;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getLeftFieldBuilder() {
         if (leftBuilder_ == null) {
-          leftBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getLeft(),
-                  getParentForChildren(),
-                  isClean());
+          leftBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getLeft(), getParentForChildren(), isClean());
           left_ = null;
         }
         return leftBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg right_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> rightBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> rightBuilder_;
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
+       * 
        * @return Whether the right field is set.
        */
       public boolean hasRight() {
         return rightBuilder_ != null || right_ != null;
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
+       * 
        * @return The right.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getRight() {
@@ -10004,6 +10551,7 @@ public final class ProtoIlInstructions {
           return rightBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
        */
@@ -10020,11 +10568,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
        */
-      public Builder setRight(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setRight(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (rightBuilder_ == null) {
           right_ = builderForValue.build();
           onChanged();
@@ -10034,14 +10582,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
        */
       public Builder mergeRight(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (rightBuilder_ == null) {
           if (right_ != null) {
-            right_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(right_).mergeFrom(value).buildPartial();
+            right_
+                = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(right_).mergeFrom(value).buildPartial();
           } else {
             right_ = value;
           }
@@ -10052,6 +10601,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
        */
@@ -10066,14 +10616,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getRightBuilder() {
-        
+
         onChanged();
         return getRightFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
        */
@@ -10081,41 +10633,40 @@ public final class ProtoIlInstructions {
         if (rightBuilder_ != null) {
           return rightBuilder_.getMessageOrBuilder();
         } else {
-          return right_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : right_;
+          return right_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : right_;
         }
       }
+
       /**
        * <code>.IlInstructionMsg right = 15;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getRightFieldBuilder() {
         if (rightBuilder_ == null) {
-          rightBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getRight(),
-                  getParentForChildren(),
-                  isClean());
+          rightBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getRight(), getParentForChildren(), isClean());
           right_ = null;
         }
         return rightBuilder_;
       }
 
       private java.lang.Object targetLabel_ = "";
+
       /**
        * <pre>
        * BRANCH
        * </pre>
        *
        * <code>string target_label = 18;</code>
+       * 
        * @return The targetLabel.
        */
       public java.lang.String getTargetLabel() {
         java.lang.Object ref = targetLabel_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           targetLabel_ = s;
           return s;
@@ -10123,164 +10674,189 @@ public final class ProtoIlInstructions {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <pre>
        * BRANCH
        * </pre>
        *
        * <code>string target_label = 18;</code>
+       * 
        * @return The bytes for targetLabel.
        */
-      public com.google.protobuf.ByteString
-          getTargetLabelBytes() {
+      public com.google.protobuf.ByteString getTargetLabelBytes() {
         java.lang.Object ref = targetLabel_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           targetLabel_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <pre>
        * BRANCH
        * </pre>
        *
        * <code>string target_label = 18;</code>
-       * @param value The targetLabel to set.
+       * 
+       * @param value
+       *          The targetLabel to set.
        * @return This builder for chaining.
        */
-      public Builder setTargetLabel(
-          java.lang.String value) {
+      public Builder setTargetLabel(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         targetLabel_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        * BRANCH
        * </pre>
        *
        * <code>string target_label = 18;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearTargetLabel() {
-        
+
         targetLabel_ = getDefaultInstance().getTargetLabel();
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        * BRANCH
        * </pre>
        *
        * <code>string target_label = 18;</code>
-       * @param value The bytes for targetLabel to set.
+       * 
+       * @param value
+       *          The bytes for targetLabel to set.
        * @return This builder for chaining.
        */
-      public Builder setTargetLabelBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setTargetLabelBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         targetLabel_ = value;
         onChanged();
         return this;
       }
 
       private int comparisonKind_ = 0;
+
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
+       * 
        * @return The enum numeric value on the wire for comparisonKind.
        */
-      @java.lang.Override public int getComparisonKindValue() {
+      @java.lang.Override
+      public int getComparisonKindValue() {
         return comparisonKind_;
       }
+
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-       * @param value The enum numeric value on the wire for comparisonKind to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for comparisonKind to set.
        * @return This builder for chaining.
        */
       public Builder setComparisonKindValue(int value) {
-        
+
         comparisonKind_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
+       * 
        * @return The comparisonKind.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind getComparisonKind() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.valueOf(comparisonKind_);
-        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.UNRECOGNIZED : result;
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.valueOf(comparisonKind_);
+        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind.UNRECOGNIZED
+            : result;
       }
+
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-       * @param value The comparisonKind to set.
+       * 
+       * @param value
+       *          The comparisonKind to set.
        * @return This builder for chaining.
        */
       public Builder setComparisonKind(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         comparisonKind_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearComparisonKind() {
-        
+
         comparisonKind_ = 0;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg condition_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> conditionBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> conditionBuilder_;
+
       /**
        * <pre>
        * IF_INSTRUCTION
        * </pre>
        *
        * <code>.IlInstructionMsg condition = 22;</code>
+       * 
        * @return Whether the condition field is set.
        */
       public boolean hasCondition() {
         return conditionBuilder_ != null || condition_ != null;
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
        * </pre>
        *
        * <code>.IlInstructionMsg condition = 22;</code>
+       * 
        * @return The condition.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getCondition() {
         if (conditionBuilder_ == null) {
-          return condition_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : condition_;
+          return condition_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : condition_;
         } else {
           return conditionBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
@@ -10301,6 +10877,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
@@ -10308,8 +10885,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg condition = 22;</code>
        */
-      public Builder setCondition(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setCondition(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (conditionBuilder_ == null) {
           condition_ = builderForValue.build();
           onChanged();
@@ -10319,6 +10895,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
@@ -10329,8 +10906,8 @@ public final class ProtoIlInstructions {
       public Builder mergeCondition(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (conditionBuilder_ == null) {
           if (condition_ != null) {
-            condition_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(condition_).mergeFrom(value).buildPartial();
+            condition_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(condition_).mergeFrom(value)
+                .buildPartial();
           } else {
             condition_ = value;
           }
@@ -10341,6 +10918,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
@@ -10359,6 +10937,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
@@ -10367,10 +10946,11 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg condition = 22;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getConditionBuilder() {
-        
+
         onChanged();
         return getConditionFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
@@ -10382,10 +10962,11 @@ public final class ProtoIlInstructions {
         if (conditionBuilder_ != null) {
           return conditionBuilder_.getMessageOrBuilder();
         } else {
-          return condition_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : condition_;
+          return condition_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : condition_;
         }
       }
+
       /**
        * <pre>
        * IF_INSTRUCTION
@@ -10393,32 +10974,33 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg condition = 22;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getConditionFieldBuilder() {
         if (conditionBuilder_ == null) {
-          conditionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getCondition(),
-                  getParentForChildren(),
-                  isClean());
+          conditionBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getCondition(), getParentForChildren(), isClean());
           condition_ = null;
         }
         return conditionBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg trueInst_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> trueInstBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> trueInstBuilder_;
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
+       * 
        * @return Whether the trueInst field is set.
        */
       public boolean hasTrueInst() {
         return trueInstBuilder_ != null || trueInst_ != null;
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
+       * 
        * @return The trueInst.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTrueInst() {
@@ -10428,6 +11010,7 @@ public final class ProtoIlInstructions {
           return trueInstBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
        */
@@ -10444,11 +11027,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
        */
-      public Builder setTrueInst(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setTrueInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (trueInstBuilder_ == null) {
           trueInst_ = builderForValue.build();
           onChanged();
@@ -10458,14 +11041,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
        */
       public Builder mergeTrueInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (trueInstBuilder_ == null) {
           if (trueInst_ != null) {
-            trueInst_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(trueInst_).mergeFrom(value).buildPartial();
+            trueInst_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(trueInst_).mergeFrom(value)
+                .buildPartial();
           } else {
             trueInst_ = value;
           }
@@ -10476,6 +11060,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
        */
@@ -10490,14 +11075,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getTrueInstBuilder() {
-        
+
         onChanged();
         return getTrueInstFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
        */
@@ -10505,48 +11092,51 @@ public final class ProtoIlInstructions {
         if (trueInstBuilder_ != null) {
           return trueInstBuilder_.getMessageOrBuilder();
         } else {
-          return trueInst_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : trueInst_;
+          return trueInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : trueInst_;
         }
       }
+
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getTrueInstFieldBuilder() {
         if (trueInstBuilder_ == null) {
-          trueInstBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getTrueInst(),
-                  getParentForChildren(),
-                  isClean());
+          trueInstBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getTrueInst(), getParentForChildren(), isClean());
           trueInst_ = null;
         }
         return trueInstBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg falseInst_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> falseInstBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> falseInstBuilder_;
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
+       * 
        * @return Whether the falseInst field is set.
        */
       public boolean hasFalseInst() {
         return falseInstBuilder_ != null || falseInst_ != null;
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
+       * 
        * @return The falseInst.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFalseInst() {
         if (falseInstBuilder_ == null) {
-          return falseInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : falseInst_;
+          return falseInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : falseInst_;
         } else {
           return falseInstBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
        */
@@ -10563,11 +11153,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
        */
-      public Builder setFalseInst(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setFalseInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (falseInstBuilder_ == null) {
           falseInst_ = builderForValue.build();
           onChanged();
@@ -10577,14 +11167,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
        */
       public Builder mergeFalseInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (falseInstBuilder_ == null) {
           if (falseInst_ != null) {
-            falseInst_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(falseInst_).mergeFrom(value).buildPartial();
+            falseInst_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(falseInst_).mergeFrom(value)
+                .buildPartial();
           } else {
             falseInst_ = value;
           }
@@ -10595,6 +11186,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
        */
@@ -10609,14 +11201,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getFalseInstBuilder() {
-        
+
         onChanged();
         return getFalseInstFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
        */
@@ -10624,47 +11218,49 @@ public final class ProtoIlInstructions {
         if (falseInstBuilder_ != null) {
           return falseInstBuilder_.getMessageOrBuilder();
         } else {
-          return falseInst_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : falseInst_;
+          return falseInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : falseInst_;
         }
       }
+
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getFalseInstFieldBuilder() {
         if (falseInstBuilder_ == null) {
-          falseInstBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getFalseInst(),
-                  getParentForChildren(),
-                  isClean());
+          falseInstBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getFalseInst(), getParentForChildren(), isClean());
           falseInst_ = null;
         }
         return falseInstBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg array_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> arrayBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> arrayBuilder_;
+
       /**
        * <pre>
        *LDLEN LDELEMA
        * </pre>
        *
        * <code>.IlInstructionMsg array = 30;</code>
+       * 
        * @return Whether the array field is set.
        */
       public boolean hasArray() {
         return arrayBuilder_ != null || array_ != null;
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
        * </pre>
        *
        * <code>.IlInstructionMsg array = 30;</code>
+       * 
        * @return The array.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArray() {
@@ -10674,6 +11270,7 @@ public final class ProtoIlInstructions {
           return arrayBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
@@ -10694,6 +11291,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
@@ -10701,8 +11299,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg array = 30;</code>
        */
-      public Builder setArray(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setArray(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (arrayBuilder_ == null) {
           array_ = builderForValue.build();
           onChanged();
@@ -10712,6 +11309,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
@@ -10722,8 +11320,8 @@ public final class ProtoIlInstructions {
       public Builder mergeArray(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (arrayBuilder_ == null) {
           if (array_ != null) {
-            array_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(array_).mergeFrom(value).buildPartial();
+            array_
+                = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(array_).mergeFrom(value).buildPartial();
           } else {
             array_ = value;
           }
@@ -10734,6 +11332,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
@@ -10752,6 +11351,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
@@ -10760,10 +11360,11 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg array = 30;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getArrayBuilder() {
-        
+
         onChanged();
         return getArrayFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
@@ -10775,10 +11376,10 @@ public final class ProtoIlInstructions {
         if (arrayBuilder_ != null) {
           return arrayBuilder_.getMessageOrBuilder();
         } else {
-          return array_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : array_;
+          return array_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : array_;
         }
       }
+
       /**
        * <pre>
        *LDLEN LDELEMA
@@ -10786,202 +11387,246 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg array = 30;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getArrayFieldBuilder() {
         if (arrayBuilder_ == null) {
-          arrayBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getArray(),
-                  getParentForChildren(),
-                  isClean());
+          arrayBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getArray(), getParentForChildren(), isClean());
           array_ = null;
         }
         return arrayBuilder_;
       }
 
       private int conversionKind_ = 0;
+
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
+       * 
        * @return The enum numeric value on the wire for conversionKind.
        */
-      @java.lang.Override public int getConversionKindValue() {
+      @java.lang.Override
+      public int getConversionKindValue() {
         return conversionKind_;
       }
+
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-       * @param value The enum numeric value on the wire for conversionKind to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for conversionKind to set.
        * @return This builder for chaining.
        */
       public Builder setConversionKindValue(int value) {
-        
+
         conversionKind_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
+       * 
        * @return The conversionKind.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind getConversionKind() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.valueOf(conversionKind_);
-        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.UNRECOGNIZED : result;
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.valueOf(conversionKind_);
+        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind.UNRECOGNIZED
+            : result;
       }
+
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-       * @param value The conversionKind to set.
+       * 
+       * @param value
+       *          The conversionKind to set.
        * @return This builder for chaining.
        */
       public Builder setConversionKind(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         conversionKind_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearConversionKind() {
-        
+
         conversionKind_ = 0;
         onChanged();
         return this;
       }
 
       private int inputType_ = 0;
+
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
+       * 
        * @return The enum numeric value on the wire for inputType.
        */
-      @java.lang.Override public int getInputTypeValue() {
+      @java.lang.Override
+      public int getInputTypeValue() {
         return inputType_;
       }
+
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-       * @param value The enum numeric value on the wire for inputType to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for inputType to set.
        * @return This builder for chaining.
        */
       public Builder setInputTypeValue(int value) {
-        
+
         inputType_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
+       * 
        * @return The inputType.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getInputType() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(inputType_);
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(inputType_);
         return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-       * @param value The inputType to set.
+       * 
+       * @param value
+       *          The inputType to set.
        * @return This builder for chaining.
        */
       public Builder setInputType(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         inputType_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearInputType() {
-        
+
         inputType_ = 0;
         onChanged();
         return this;
       }
 
       private int targetType_ = 0;
+
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
+       * 
        * @return The enum numeric value on the wire for targetType.
        */
-      @java.lang.Override public int getTargetTypeValue() {
+      @java.lang.Override
+      public int getTargetTypeValue() {
         return targetType_;
       }
+
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-       * @param value The enum numeric value on the wire for targetType to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for targetType to set.
        * @return This builder for chaining.
        */
       public Builder setTargetTypeValue(int value) {
-        
+
         targetType_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
+       * 
        * @return The targetType.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType getTargetType() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.valueOf(targetType_);
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.valueOf(targetType_);
         return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-       * @param value The targetType to set.
+       * 
+       * @param value
+       *          The targetType to set.
        * @return This builder for chaining.
        */
       public Builder setTargetType(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         targetType_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearTargetType() {
-        
+
         targetType_ = 0;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg argument_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> argumentBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> argumentBuilder_;
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
        * </pre>
        *
        * <code>.IlInstructionMsg argument = 29;</code>
+       * 
        * @return Whether the argument field is set.
        */
       public boolean hasArgument() {
         return argumentBuilder_ != null || argument_ != null;
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
        * </pre>
        *
        * <code>.IlInstructionMsg argument = 29;</code>
+       * 
        * @return The argument.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArgument() {
@@ -10991,6 +11636,7 @@ public final class ProtoIlInstructions {
           return argumentBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -11011,6 +11657,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -11018,8 +11665,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg argument = 29;</code>
        */
-      public Builder setArgument(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setArgument(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (argumentBuilder_ == null) {
           argument_ = builderForValue.build();
           onChanged();
@@ -11029,6 +11675,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -11039,8 +11686,8 @@ public final class ProtoIlInstructions {
       public Builder mergeArgument(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (argumentBuilder_ == null) {
           if (argument_ != null) {
-            argument_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(argument_).mergeFrom(value).buildPartial();
+            argument_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(argument_).mergeFrom(value)
+                .buildPartial();
           } else {
             argument_ = value;
           }
@@ -11051,6 +11698,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -11069,6 +11717,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -11077,10 +11726,11 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg argument = 29;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getArgumentBuilder() {
-        
+
         onChanged();
         return getArgumentFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -11092,10 +11742,10 @@ public final class ProtoIlInstructions {
         if (argumentBuilder_ != null) {
           return argumentBuilder_.getMessageOrBuilder();
         } else {
-          return argument_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : argument_;
+          return argument_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : argument_;
         }
       }
+
       /**
        * <pre>
        * CONV CASTCLASS ISINST BOX UNBOXANY
@@ -11103,105 +11753,117 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg argument = 29;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getArgumentFieldBuilder() {
         if (argumentBuilder_ == null) {
-          argumentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getArgument(),
-                  getParentForChildren(),
-                  isClean());
+          argumentBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getArgument(), getParentForChildren(), isClean());
           argument_ = null;
         }
         return argumentBuilder_;
       }
 
       private int resultType_ = 0;
+
       /**
        * <pre>
        * CONV LDLEN UNBOXANY
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
+       * 
        * @return The enum numeric value on the wire for resultType.
        */
-      @java.lang.Override public int getResultTypeValue() {
+      @java.lang.Override
+      public int getResultTypeValue() {
         return resultType_;
       }
+
       /**
        * <pre>
        * CONV LDLEN UNBOXANY
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-       * @param value The enum numeric value on the wire for resultType to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for resultType to set.
        * @return This builder for chaining.
        */
       public Builder setResultTypeValue(int value) {
-        
+
         resultType_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        * CONV LDLEN UNBOXANY
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
+       * 
        * @return The resultType.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getResultType() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(resultType_);
+        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType result
+            = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.valueOf(resultType_);
         return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType.UNRECOGNIZED : result;
       }
+
       /**
        * <pre>
        * CONV LDLEN UNBOXANY
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-       * @param value The resultType to set.
+       * 
+       * @param value
+       *          The resultType to set.
        * @return This builder for chaining.
        */
       public Builder setResultType(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         resultType_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        * CONV LDLEN UNBOXANY
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearResultType() {
-        
+
         resultType_ = 0;
         onChanged();
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> indices_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> indices_
+          = java.util.Collections.emptyList();
+
       private void ensureIndicesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           indices_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg>(indices_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> indicesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> indicesBuilder_;
 
       /**
        * <pre>
@@ -11217,6 +11879,7 @@ public final class ProtoIlInstructions {
           return indicesBuilder_.getMessageList();
         }
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11231,6 +11894,7 @@ public final class ProtoIlInstructions {
           return indicesBuilder_.getCount();
         }
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11245,6 +11909,7 @@ public final class ProtoIlInstructions {
           return indicesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11252,8 +11917,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public Builder setIndices(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+      public Builder setIndices(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (indicesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11266,6 +11930,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11273,8 +11938,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public Builder setIndices(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setIndices(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (indicesBuilder_ == null) {
           ensureIndicesIsMutable();
           indices_.set(index, builderForValue.build());
@@ -11284,6 +11948,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11304,6 +11969,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11311,8 +11977,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public Builder addIndices(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+      public Builder addIndices(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (indicesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11325,6 +11990,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11332,8 +11998,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public Builder addIndices(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder addIndices(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (indicesBuilder_ == null) {
           ensureIndicesIsMutable();
           indices_.add(builderForValue.build());
@@ -11343,6 +12008,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11350,8 +12016,7 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public Builder addIndices(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder addIndices(int index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (indicesBuilder_ == null) {
           ensureIndicesIsMutable();
           indices_.add(index, builderForValue.build());
@@ -11361,6 +12026,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11368,18 +12034,18 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public Builder addAllIndices(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> values) {
+      public Builder
+          addAllIndices(java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> values) {
         if (indicesBuilder_ == null) {
           ensureIndicesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, indices_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, indices_);
           onChanged();
         } else {
           indicesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11397,6 +12063,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11414,6 +12081,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11421,10 +12089,10 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getIndicesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getIndicesBuilder(int index) {
         return getIndicesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11432,13 +12100,14 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getIndicesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getIndicesOrBuilder(int index) {
         if (indicesBuilder_ == null) {
-          return indices_.get(index);  } else {
+          return indices_.get(index);
+        } else {
           return indicesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11446,14 +12115,15 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
-           getIndicesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
+          getIndicesOrBuilderList() {
         if (indicesBuilder_ != null) {
           return indicesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(indices_);
         }
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11462,9 +12132,22 @@ public final class ProtoIlInstructions {
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addIndicesBuilder() {
-        return getIndicesFieldBuilder().addBuilder(
+        return getIndicesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
+      }
+
+      /**
+       * <pre>
+       * NEWARR LDELEMA
+       * </pre>
+       *
+       * <code>repeated .IlInstructionMsg indices = 31;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addIndicesBuilder(int index) {
+        return getIndicesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
       }
+
       /**
        * <pre>
        * NEWARR LDELEMA
@@ -11472,66 +12155,56 @@ public final class ProtoIlInstructions {
        *
        * <code>repeated .IlInstructionMsg indices = 31;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder addIndicesBuilder(
-          int index) {
-        return getIndicesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * NEWARR LDELEMA
-       * </pre>
-       *
-       * <code>repeated .IlInstructionMsg indices = 31;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder> 
-           getIndicesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder> getIndicesBuilderList() {
         return getIndicesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getIndicesFieldBuilder() {
         if (indicesBuilder_ == null) {
-          indicesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  indices_,
-                  ((bitField0_ & 0x00000002) != 0),
-                  getParentForChildren(),
-                  isClean());
+          indicesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  indices_, ((bitField0_ & 0x00000002) != 0), getParentForChildren(), isClean());
           indices_ = null;
         }
         return indicesBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg tryBlock_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> tryBlockBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> tryBlockBuilder_;
+
       /**
        * <pre>
        * TRY
        * </pre>
        *
        * <code>.IlBlockContainerMsg try_block = 32;</code>
+       * 
        * @return Whether the tryBlock field is set.
        */
       public boolean hasTryBlock() {
         return tryBlockBuilder_ != null || tryBlock_ != null;
       }
+
       /**
        * <pre>
        * TRY
        * </pre>
        *
        * <code>.IlBlockContainerMsg try_block = 32;</code>
+       * 
        * @return The tryBlock.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getTryBlock() {
         if (tryBlockBuilder_ == null) {
-          return tryBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : tryBlock_;
+          return tryBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+              : tryBlock_;
         } else {
           return tryBlockBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * TRY
@@ -11552,6 +12225,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRY
@@ -11559,8 +12233,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlBlockContainerMsg try_block = 32;</code>
        */
-      public Builder setTryBlock(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
+      public Builder setTryBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
         if (tryBlockBuilder_ == null) {
           tryBlock_ = builderForValue.build();
           onChanged();
@@ -11570,6 +12243,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRY
@@ -11580,8 +12254,8 @@ public final class ProtoIlInstructions {
       public Builder mergeTryBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (tryBlockBuilder_ == null) {
           if (tryBlock_ != null) {
-            tryBlock_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(tryBlock_).mergeFrom(value).buildPartial();
+            tryBlock_ = soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(tryBlock_).mergeFrom(value)
+                .buildPartial();
           } else {
             tryBlock_ = value;
           }
@@ -11592,6 +12266,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRY
@@ -11610,6 +12285,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRY
@@ -11618,10 +12294,11 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg try_block = 32;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getTryBlockBuilder() {
-        
+
         onChanged();
         return getTryBlockFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * TRY
@@ -11633,10 +12310,11 @@ public final class ProtoIlInstructions {
         if (tryBlockBuilder_ != null) {
           return tryBlockBuilder_.getMessageOrBuilder();
         } else {
-          return tryBlock_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : tryBlock_;
+          return tryBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+              : tryBlock_;
         }
       }
+
       /**
        * <pre>
        * TRY
@@ -11644,31 +12322,29 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlBlockContainerMsg try_block = 32;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>
           getTryBlockFieldBuilder() {
         if (tryBlockBuilder_ == null) {
-          tryBlockBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
-                  getTryBlock(),
-                  getParentForChildren(),
-                  isClean());
+          tryBlockBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
+                  getTryBlock(), getParentForChildren(), isClean());
           tryBlock_ = null;
         }
         return tryBlockBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> handlers_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> handlers_
+          = java.util.Collections.emptyList();
+
       private void ensureHandlersIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
           handlers_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg>(handlers_);
           bitField0_ |= 0x00000004;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> handlersBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> handlersBuilder_;
 
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
@@ -11680,6 +12356,7 @@ public final class ProtoIlInstructions {
           return handlersBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
@@ -11690,6 +12367,7 @@ public final class ProtoIlInstructions {
           return handlersBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
@@ -11700,11 +12378,11 @@ public final class ProtoIlInstructions {
           return handlersBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public Builder setHandlers(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg value) {
+      public Builder setHandlers(int index, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg value) {
         if (handlersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11717,11 +12395,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public Builder setHandlers(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder builderForValue) {
+      public Builder setHandlers(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder builderForValue) {
         if (handlersBuilder_ == null) {
           ensureHandlersIsMutable();
           handlers_.set(index, builderForValue.build());
@@ -11731,6 +12410,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
@@ -11747,11 +12427,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public Builder addHandlers(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg value) {
+      public Builder addHandlers(int index, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg value) {
         if (handlersBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11764,11 +12444,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public Builder addHandlers(
-          soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder builderForValue) {
+      public Builder addHandlers(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder builderForValue) {
         if (handlersBuilder_ == null) {
           ensureHandlersIsMutable();
           handlers_.add(builderForValue.build());
@@ -11778,11 +12458,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public Builder addHandlers(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder builderForValue) {
+      public Builder addHandlers(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder builderForValue) {
         if (handlersBuilder_ == null) {
           ensureHandlersIsMutable();
           handlers_.add(index, builderForValue.build());
@@ -11792,21 +12473,22 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public Builder addAllHandlers(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> values) {
+      public Builder
+          addAllHandlers(java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> values) {
         if (handlersBuilder_ == null) {
           ensureHandlersIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, handlers_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, handlers_);
           onChanged();
         } else {
           handlersBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
@@ -11820,6 +12502,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
@@ -11833,92 +12516,98 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder getHandlersBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder getHandlersBuilder(int index) {
         return getHandlersFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder getHandlersOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder getHandlersOrBuilder(int index) {
         if (handlersBuilder_ == null) {
-          return handlers_.get(index);  } else {
+          return handlers_.get(index);
+        } else {
           return handlersBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> 
-           getHandlersOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder>
+          getHandlersOrBuilderList() {
         if (handlersBuilder_ != null) {
           return handlersBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(handlers_);
         }
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder addHandlersBuilder() {
-        return getHandlersFieldBuilder().addBuilder(
+        return getHandlersFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder addHandlersBuilder(int index) {
+        return getHandlersFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.getDefaultInstance());
       }
+
       /**
        * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder addHandlersBuilder(
-          int index) {
-        return getHandlersFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .IlTryCatchHandlerMsg handlers = 33;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder> 
-           getHandlersBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder> getHandlersBuilderList() {
         return getHandlersFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder>
           getHandlersFieldBuilder() {
         if (handlersBuilder_ == null) {
-          handlersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder>(
-                  handlers_,
-                  ((bitField0_ & 0x00000004) != 0),
-                  getParentForChildren(),
-                  isClean());
+          handlersBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder>(
+                  handlers_, ((bitField0_ & 0x00000004) != 0), getParentForChildren(), isClean());
           handlers_ = null;
         }
         return handlersBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg finallyBlock_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> finallyBlockBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> finallyBlockBuilder_;
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
+       * 
        * @return Whether the finallyBlock field is set.
        */
       public boolean hasFinallyBlock() {
         return finallyBlockBuilder_ != null || finallyBlock_ != null;
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
+       * 
        * @return The finallyBlock.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFinallyBlock() {
         if (finallyBlockBuilder_ == null) {
-          return finallyBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : finallyBlock_;
+          return finallyBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+              : finallyBlock_;
         } else {
           return finallyBlockBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
@@ -11935,11 +12624,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
-      public Builder setFinallyBlock(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
+      public Builder setFinallyBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
         if (finallyBlockBuilder_ == null) {
           finallyBlock_ = builderForValue.build();
           onChanged();
@@ -11949,14 +12638,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
       public Builder mergeFinallyBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (finallyBlockBuilder_ == null) {
           if (finallyBlock_ != null) {
-            finallyBlock_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(finallyBlock_).mergeFrom(value).buildPartial();
+            finallyBlock_ = soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(finallyBlock_)
+                .mergeFrom(value).buildPartial();
           } else {
             finallyBlock_ = value;
           }
@@ -11967,6 +12657,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
@@ -11981,14 +12672,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getFinallyBlockBuilder() {
-        
+
         onChanged();
         return getFinallyBlockFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
@@ -11996,48 +12689,52 @@ public final class ProtoIlInstructions {
         if (finallyBlockBuilder_ != null) {
           return finallyBlockBuilder_.getMessageOrBuilder();
         } else {
-          return finallyBlock_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : finallyBlock_;
+          return finallyBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+              : finallyBlock_;
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>
           getFinallyBlockFieldBuilder() {
         if (finallyBlockBuilder_ == null) {
-          finallyBlockBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
-                  getFinallyBlock(),
-                  getParentForChildren(),
-                  isClean());
+          finallyBlockBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
+                  getFinallyBlock(), getParentForChildren(), isClean());
           finallyBlock_ = null;
         }
         return finallyBlockBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg faultBlock_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> faultBlockBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> faultBlockBuilder_;
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
+       * 
        * @return Whether the faultBlock field is set.
        */
       public boolean hasFaultBlock() {
         return faultBlockBuilder_ != null || faultBlock_ != null;
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
+       * 
        * @return The faultBlock.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFaultBlock() {
         if (faultBlockBuilder_ == null) {
-          return faultBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : faultBlock_;
+          return faultBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+              : faultBlock_;
         } else {
           return faultBlockBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
@@ -12054,11 +12751,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
-      public Builder setFaultBlock(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
+      public Builder setFaultBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
         if (faultBlockBuilder_ == null) {
           faultBlock_ = builderForValue.build();
           onChanged();
@@ -12068,14 +12765,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
       public Builder mergeFaultBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (faultBlockBuilder_ == null) {
           if (faultBlock_ != null) {
-            faultBlock_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(faultBlock_).mergeFrom(value).buildPartial();
+            faultBlock_ = soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(faultBlock_).mergeFrom(value)
+                .buildPartial();
           } else {
             faultBlock_ = value;
           }
@@ -12086,6 +12784,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
@@ -12100,14 +12799,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getFaultBlockBuilder() {
-        
+
         onChanged();
         return getFaultBlockFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
@@ -12115,47 +12816,49 @@ public final class ProtoIlInstructions {
         if (faultBlockBuilder_ != null) {
           return faultBlockBuilder_.getMessageOrBuilder();
         } else {
-          return faultBlock_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : faultBlock_;
+          return faultBlock_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()
+              : faultBlock_;
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>
           getFaultBlockFieldBuilder() {
         if (faultBlockBuilder_ == null) {
-          faultBlockBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
-                  getFaultBlock(),
-                  getParentForChildren(),
-                  isClean());
+          faultBlockBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
+                  getFaultBlock(), getParentForChildren(), isClean());
           faultBlock_ = null;
         }
         return faultBlockBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg body_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> bodyBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> bodyBuilder_;
+
       /**
        * <pre>
        * TRYCATCHHANDLER
        * </pre>
        *
        * <code>.IlBlockContainerMsg body = 37;</code>
+       * 
        * @return Whether the body field is set.
        */
       public boolean hasBody() {
         return bodyBuilder_ != null || body_ != null;
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
        * </pre>
        *
        * <code>.IlBlockContainerMsg body = 37;</code>
+       * 
        * @return The body.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
@@ -12165,6 +12868,7 @@ public final class ProtoIlInstructions {
           return bodyBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
@@ -12185,6 +12889,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
@@ -12192,8 +12897,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlBlockContainerMsg body = 37;</code>
        */
-      public Builder setBody(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
+      public Builder setBody(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
         if (bodyBuilder_ == null) {
           body_ = builderForValue.build();
           onChanged();
@@ -12203,6 +12907,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
@@ -12213,8 +12918,8 @@ public final class ProtoIlInstructions {
       public Builder mergeBody(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (bodyBuilder_ == null) {
           if (body_ != null) {
-            body_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(body_).mergeFrom(value).buildPartial();
+            body_ = soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(body_).mergeFrom(value)
+                .buildPartial();
           } else {
             body_ = value;
           }
@@ -12225,6 +12930,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
@@ -12243,6 +12949,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
@@ -12251,10 +12958,11 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg body = 37;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getBodyBuilder() {
-        
+
         onChanged();
         return getBodyFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
@@ -12266,10 +12974,10 @@ public final class ProtoIlInstructions {
         if (bodyBuilder_ != null) {
           return bodyBuilder_.getMessageOrBuilder();
         } else {
-          return body_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
+          return body_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
         }
       }
+
       /**
        * <pre>
        * TRYCATCHHANDLER
@@ -12277,40 +12985,41 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlBlockContainerMsg body = 37;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>
           getBodyFieldBuilder() {
         if (bodyBuilder_ == null) {
-          bodyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
-                  getBody(),
-                  getParentForChildren(),
-                  isClean());
+          bodyBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
+                  getBody(), getParentForChildren(), isClean());
           body_ = null;
         }
         return bodyBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg keyInstr_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> keyInstrBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> keyInstrBuilder_;
+
       /**
        * <pre>
        * SWITCH_INSTR
        * </pre>
        *
        * <code>.IlInstructionMsg key_instr = 41;</code>
+       * 
        * @return Whether the keyInstr field is set.
        */
       public boolean hasKeyInstr() {
         return keyInstrBuilder_ != null || keyInstr_ != null;
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
        * </pre>
        *
        * <code>.IlInstructionMsg key_instr = 41;</code>
+       * 
        * @return The keyInstr.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getKeyInstr() {
@@ -12320,6 +13029,7 @@ public final class ProtoIlInstructions {
           return keyInstrBuilder_.getMessage();
         }
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
@@ -12340,6 +13050,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
@@ -12347,8 +13058,7 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg key_instr = 41;</code>
        */
-      public Builder setKeyInstr(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setKeyInstr(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (keyInstrBuilder_ == null) {
           keyInstr_ = builderForValue.build();
           onChanged();
@@ -12358,6 +13068,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
@@ -12368,8 +13079,8 @@ public final class ProtoIlInstructions {
       public Builder mergeKeyInstr(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (keyInstrBuilder_ == null) {
           if (keyInstr_ != null) {
-            keyInstr_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(keyInstr_).mergeFrom(value).buildPartial();
+            keyInstr_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(keyInstr_).mergeFrom(value)
+                .buildPartial();
           } else {
             keyInstr_ = value;
           }
@@ -12380,6 +13091,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
@@ -12398,6 +13110,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
@@ -12406,10 +13119,11 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg key_instr = 41;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getKeyInstrBuilder() {
-        
+
         onChanged();
         return getKeyInstrFieldBuilder().getBuilder();
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
@@ -12421,10 +13135,10 @@ public final class ProtoIlInstructions {
         if (keyInstrBuilder_ != null) {
           return keyInstrBuilder_.getMessageOrBuilder();
         } else {
-          return keyInstr_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : keyInstr_;
+          return keyInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : keyInstr_;
         }
       }
+
       /**
        * <pre>
        * SWITCH_INSTR
@@ -12432,41 +13146,44 @@ public final class ProtoIlInstructions {
        *
        * <code>.IlInstructionMsg key_instr = 41;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getKeyInstrFieldBuilder() {
         if (keyInstrBuilder_ == null) {
-          keyInstrBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getKeyInstr(),
-                  getParentForChildren(),
-                  isClean());
+          keyInstrBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getKeyInstr(), getParentForChildren(), isClean());
           keyInstr_ = null;
         }
         return keyInstrBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg defaultInst_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> defaultInstBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> defaultInstBuilder_;
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
+       * 
        * @return Whether the defaultInst field is set.
        */
       public boolean hasDefaultInst() {
         return defaultInstBuilder_ != null || defaultInst_ != null;
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
+       * 
        * @return The defaultInst.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getDefaultInst() {
         if (defaultInstBuilder_ == null) {
-          return defaultInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : defaultInst_;
+          return defaultInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : defaultInst_;
         } else {
           return defaultInstBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
@@ -12483,11 +13200,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
-      public Builder setDefaultInst(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setDefaultInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (defaultInstBuilder_ == null) {
           defaultInst_ = builderForValue.build();
           onChanged();
@@ -12497,14 +13214,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
       public Builder mergeDefaultInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (defaultInstBuilder_ == null) {
           if (defaultInst_ != null) {
-            defaultInst_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(defaultInst_).mergeFrom(value).buildPartial();
+            defaultInst_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(defaultInst_).mergeFrom(value)
+                .buildPartial();
           } else {
             defaultInst_ = value;
           }
@@ -12515,6 +13233,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
@@ -12529,14 +13248,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getDefaultInstBuilder() {
-        
+
         onChanged();
         return getDefaultInstFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
@@ -12544,38 +13265,38 @@ public final class ProtoIlInstructions {
         if (defaultInstBuilder_ != null) {
           return defaultInstBuilder_.getMessageOrBuilder();
         } else {
-          return defaultInst_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : defaultInst_;
+          return defaultInst_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : defaultInst_;
         }
       }
+
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getDefaultInstFieldBuilder() {
         if (defaultInstBuilder_ == null) {
-          defaultInstBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getDefaultInst(),
-                  getParentForChildren(),
-                  isClean());
+          defaultInstBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getDefaultInst(), getParentForChildren(), isClean());
           defaultInst_ = null;
         }
         return defaultInstBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> switchSections_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> switchSections_
+          = java.util.Collections.emptyList();
+
       private void ensureSwitchSectionsIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
-          switchSections_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg>(switchSections_);
+          switchSections_
+              = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg>(switchSections_);
           bitField0_ |= 0x00000008;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder> switchSectionsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder> switchSectionsBuilder_;
 
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
@@ -12587,6 +13308,7 @@ public final class ProtoIlInstructions {
           return switchSectionsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
@@ -12597,6 +13319,7 @@ public final class ProtoIlInstructions {
           return switchSectionsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
@@ -12607,11 +13330,11 @@ public final class ProtoIlInstructions {
           return switchSectionsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public Builder setSwitchSections(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg value) {
+      public Builder setSwitchSections(int index, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg value) {
         if (switchSectionsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12624,11 +13347,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public Builder setSwitchSections(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder builderForValue) {
+      public Builder setSwitchSections(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder builderForValue) {
         if (switchSectionsBuilder_ == null) {
           ensureSwitchSectionsIsMutable();
           switchSections_.set(index, builderForValue.build());
@@ -12638,6 +13362,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
@@ -12654,11 +13379,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public Builder addSwitchSections(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg value) {
+      public Builder addSwitchSections(int index, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg value) {
         if (switchSectionsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12671,11 +13396,11 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public Builder addSwitchSections(
-          soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder builderForValue) {
+      public Builder addSwitchSections(soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder builderForValue) {
         if (switchSectionsBuilder_ == null) {
           ensureSwitchSectionsIsMutable();
           switchSections_.add(builderForValue.build());
@@ -12685,11 +13410,12 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public Builder addSwitchSections(
-          int index, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder builderForValue) {
+      public Builder addSwitchSections(int index,
+          soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder builderForValue) {
         if (switchSectionsBuilder_ == null) {
           ensureSwitchSectionsIsMutable();
           switchSections_.add(index, builderForValue.build());
@@ -12699,6 +13425,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
@@ -12706,14 +13433,14 @@ public final class ProtoIlInstructions {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> values) {
         if (switchSectionsBuilder_ == null) {
           ensureSwitchSectionsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, switchSections_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, switchSections_);
           onChanged();
         } else {
           switchSectionsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
@@ -12727,6 +13454,7 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
@@ -12740,82 +13468,82 @@ public final class ProtoIlInstructions {
         }
         return this;
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder getSwitchSectionsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder getSwitchSectionsBuilder(int index) {
         return getSwitchSectionsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder getSwitchSectionsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder getSwitchSectionsOrBuilder(int index) {
         if (switchSectionsBuilder_ == null) {
-          return switchSections_.get(index);  } else {
+          return switchSections_.get(index);
+        } else {
           return switchSectionsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder> 
-           getSwitchSectionsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder>
+          getSwitchSectionsOrBuilderList() {
         if (switchSectionsBuilder_ != null) {
           return switchSectionsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(switchSections_);
         }
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder addSwitchSectionsBuilder() {
-        return getSwitchSectionsFieldBuilder().addBuilder(
+        return getSwitchSectionsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder addSwitchSectionsBuilder(int index) {
+        return getSwitchSectionsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.getDefaultInstance());
       }
+
       /**
        * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
        */
-      public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder addSwitchSectionsBuilder(
-          int index) {
-        return getSwitchSectionsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .IlSwitchSectionMsg switch_sections = 43;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder> 
-           getSwitchSectionsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder>
+          getSwitchSectionsBuilderList() {
         return getSwitchSectionsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder>
           getSwitchSectionsFieldBuilder() {
         if (switchSectionsBuilder_ == null) {
-          switchSectionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder>(
-                  switchSections_,
-                  ((bitField0_ & 0x00000008) != 0),
-                  getParentForChildren(),
-                  isClean());
+          switchSectionsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder>(
+                  switchSections_, ((bitField0_ & 0x00000008) != 0), getParentForChildren(), isClean());
           switchSections_ = null;
         }
         return switchSectionsBuilder_;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:IlInstructionMsg)
     }
@@ -12830,16 +13558,15 @@ public final class ProtoIlInstructions {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IlInstructionMsg>
-        PARSER = new com.google.protobuf.AbstractParser<IlInstructionMsg>() {
-      @java.lang.Override
-      public IlInstructionMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new IlInstructionMsg(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<IlInstructionMsg> PARSER
+        = new com.google.protobuf.AbstractParser<IlInstructionMsg>() {
+          @java.lang.Override
+          public IlInstructionMsg parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new IlInstructionMsg(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<IlInstructionMsg> parser() {
       return PARSER;
@@ -12863,14 +13590,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return Whether the type field is set.
      */
     boolean hasType();
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
+
     /**
      * <code>.TypeDefinition type = 1;</code>
      */
@@ -12878,72 +13609,77 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The name.
      */
     java.lang.String getName();
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The bytes for name.
      */
-    com.google.protobuf.ByteString
-        getNameBytes();
+    com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>bool has_initial_value = 3;</code>
+     * 
      * @return The hasInitialValue.
      */
     boolean getHasInitialValue();
 
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
+     * 
      * @return The enum numeric value on the wire for variableKind.
      */
     int getVariableKindValue();
+
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
+     * 
      * @return The variableKind.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind getVariableKind();
   }
+
   /**
    * Protobuf type {@code IlVariableMsg}
    */
-  public static final class IlVariableMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class IlVariableMsg extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IlVariableMsg)
       IlVariableMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use IlVariableMsg.newBuilder() to construct.
     private IlVariableMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private IlVariableMsg() {
       name_ = "";
       variableKind_ = 0;
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new IlVariableMsg();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private IlVariableMsg(
-        com.google.protobuf.CodedInputStream input,
+
+    private IlVariableMsg(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -12983,8 +13719,7 @@ public final class ProtoIlInstructions {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -12994,31 +13729,28 @@ public final class ProtoIlInstructions {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlVariableMsg_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlVariableMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.class,
+              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder.class);
     }
 
     /**
      * Protobuf enum {@code IlVariableMsg.IlVariableKind}
      */
-    public enum IlVariableKind
-        implements com.google.protobuf.ProtocolMessageEnum {
+    public enum IlVariableKind implements com.google.protobuf.ProtocolMessageEnum {
       /**
        * <code>NONE = 0;</code>
        */
@@ -13078,9 +13810,7 @@ public final class ProtoIlInstructions {
       /**
        * <code>DECONSTRUCTION_INIT_TEMPORARY = 14;</code>
        */
-      DECONSTRUCTION_INIT_TEMPORARY(14),
-      UNRECOGNIZED(-1),
-      ;
+      DECONSTRUCTION_INIT_TEMPORARY(14), UNRECOGNIZED(-1),;
 
       /**
        * <code>NONE = 0;</code>
@@ -13143,17 +13873,16 @@ public final class ProtoIlInstructions {
        */
       public static final int DECONSTRUCTION_INIT_TEMPORARY_VALUE = 14;
 
-
       public final int getNumber() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
+          throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
         }
         return value;
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        * @deprecated Use {@link #forNumber(int)} instead.
        */
@@ -13163,66 +13892,78 @@ public final class ProtoIlInstructions {
       }
 
       /**
-       * @param value The numeric wire value of the corresponding enum entry.
+       * @param value
+       *          The numeric wire value of the corresponding enum entry.
        * @return The enum associated with the given numeric wire value.
        */
       public static IlVariableKind forNumber(int value) {
         switch (value) {
-          case 0: return NONE;
-          case 1: return LOCAL;
-          case 2: return PINNED_LOCAL;
-          case 3: return PINNED_REGION_LOCAL;
-          case 4: return USING_LOCAL;
-          case 5: return FOREACH_LOCAL;
-          case 6: return INITIALIZER_TARGET;
-          case 7: return PARAMETER;
-          case 8: return EXCEPTION_STACK_SLOT;
-          case 9: return EXCEPTION_LOCAL;
-          case 10: return STACKSLOT;
-          case 11: return NAMED_ARGUMENT;
-          case 12: return DISPLAY_CLASS_LOCAL;
-          case 13: return PATTERN_LOCAL;
-          case 14: return DECONSTRUCTION_INIT_TEMPORARY;
-          default: return null;
+          case 0:
+            return NONE;
+          case 1:
+            return LOCAL;
+          case 2:
+            return PINNED_LOCAL;
+          case 3:
+            return PINNED_REGION_LOCAL;
+          case 4:
+            return USING_LOCAL;
+          case 5:
+            return FOREACH_LOCAL;
+          case 6:
+            return INITIALIZER_TARGET;
+          case 7:
+            return PARAMETER;
+          case 8:
+            return EXCEPTION_STACK_SLOT;
+          case 9:
+            return EXCEPTION_LOCAL;
+          case 10:
+            return STACKSLOT;
+          case 11:
+            return NAMED_ARGUMENT;
+          case 12:
+            return DISPLAY_CLASS_LOCAL;
+          case 13:
+            return PATTERN_LOCAL;
+          case 14:
+            return DECONSTRUCTION_INIT_TEMPORARY;
+          default:
+            return null;
         }
       }
 
-      public static com.google.protobuf.Internal.EnumLiteMap<IlVariableKind>
-          internalGetValueMap() {
+      public static com.google.protobuf.Internal.EnumLiteMap<IlVariableKind> internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlVariableKind> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlVariableKind>() {
-              public IlVariableKind findValueByNumber(int number) {
-                return IlVariableKind.forNumber(number);
-              }
-            };
 
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
+      private static final com.google.protobuf.Internal.EnumLiteMap<IlVariableKind> internalValueMap
+          = new com.google.protobuf.Internal.EnumLiteMap<IlVariableKind>() {
+            public IlVariableKind findValueByNumber(int number) {
+              return IlVariableKind.forNumber(number);
+            }
+          };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
         if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
+          throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
         }
         return getDescriptor().getValues().get(ordinal());
       }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
+
+      public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
         return getDescriptor();
       }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
+
+      public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final IlVariableKind[] VALUES = values();
 
-      public static IlVariableKind valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      public static IlVariableKind valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
         if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
+          throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
         }
         if (desc.getIndex() == -1) {
           return UNRECOGNIZED;
@@ -13241,22 +13982,27 @@ public final class ProtoIlInstructions {
 
     public static final int TYPE_FIELD_NUMBER = 1;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return Whether the type field is set.
      */
     @java.lang.Override
     public boolean hasType() {
       return type_ != null;
     }
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return The type.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
       return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
     }
+
     /**
      * <code>.TypeDefinition type = 1;</code>
      */
@@ -13267,8 +14013,10 @@ public final class ProtoIlInstructions {
 
     public static final int NAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object name_;
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The name.
      */
     @java.lang.Override
@@ -13277,25 +14025,23 @@ public final class ProtoIlInstructions {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         name_ = s;
         return s;
       }
     }
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The bytes for name.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNameBytes() {
+    public com.google.protobuf.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -13305,8 +14051,10 @@ public final class ProtoIlInstructions {
 
     public static final int HAS_INITIAL_VALUE_FIELD_NUMBER = 3;
     private boolean hasInitialValue_;
+
     /**
      * <code>bool has_initial_value = 3;</code>
+     * 
      * @return The hasInitialValue.
      */
     @java.lang.Override
@@ -13316,37 +14064,46 @@ public final class ProtoIlInstructions {
 
     public static final int VARIABLE_KIND_FIELD_NUMBER = 4;
     private int variableKind_;
+
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
+     * 
      * @return The enum numeric value on the wire for variableKind.
      */
-    @java.lang.Override public int getVariableKindValue() {
+    @java.lang.Override
+    public int getVariableKindValue() {
       return variableKind_;
     }
+
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
+     * 
      * @return The variableKind.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind getVariableKind() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind getVariableKind() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind result = soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.valueOf(variableKind_);
+      soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind result
+          = soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.valueOf(variableKind_);
       return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (type_ != null) {
         output.writeMessage(1, getType());
       }
@@ -13365,23 +14122,21 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (type_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, getType());
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
       if (hasInitialValue_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, hasInitialValue_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, hasInitialValue_);
       }
       if (variableKind_ != soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.NONE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(4, variableKind_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(4, variableKind_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -13391,24 +14146,27 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg)) {
         return super.equals(obj);
       }
       soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg) obj;
 
-      if (hasType() != other.hasType()) return false;
+      if (hasType() != other.hasType())
+        return false;
       if (hasType()) {
-        if (!getType()
-            .equals(other.getType())) return false;
+        if (!getType().equals(other.getType()))
+          return false;
       }
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (getHasInitialValue()
-          != other.getHasInitialValue()) return false;
-      if (variableKind_ != other.variableKind_) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getName().equals(other.getName()))
+        return false;
+      if (getHasInitialValue() != other.getHasInitialValue())
+        return false;
+      if (variableKind_ != other.variableKind_)
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -13426,8 +14184,7 @@ public final class ProtoIlInstructions {
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + HAS_INITIAL_VALUE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getHasInitialValue());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getHasInitialValue());
       hash = (37 * hash) + VARIABLE_KIND_FIELD_NUMBER;
       hash = (53 * hash) + variableKind_;
       hash = (29 * hash) + unknownFields.hashCode();
@@ -13435,114 +14192,108 @@ public final class ProtoIlInstructions {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parseFrom(com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code IlVariableMsg}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:IlVariableMsg)
         soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlVariableMsg_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlVariableMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.class,
+                soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.newBuilder()
@@ -13550,16 +14301,16 @@ public final class ProtoIlInstructions {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -13579,8 +14330,7 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlVariableMsg_descriptor;
       }
 
@@ -13600,7 +14350,8 @@ public final class ProtoIlInstructions {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg buildPartial() {
-        soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg result = new soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg(this);
+        soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg result
+            = new soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg(this);
         if (typeBuilder_ == null) {
           result.type_ = type_;
         } else {
@@ -13617,38 +14368,37 @@ public final class ProtoIlInstructions {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg)other);
+          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -13656,7 +14406,8 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance())
+          return this;
         if (other.hasType()) {
           mergeType(other.getType());
         }
@@ -13681,10 +14432,8 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -13700,17 +14449,20 @@ public final class ProtoIlInstructions {
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+
       /**
        * <code>.TypeDefinition type = 1;</code>
+       * 
        * @return Whether the type field is set.
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
+       * 
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -13720,6 +14472,7 @@ public final class ProtoIlInstructions {
           return typeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -13736,11 +14489,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
-      public Builder setType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -13750,14 +14503,14 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -13768,6 +14521,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -13782,14 +14536,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getTypeBuilder() {
-        
+
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -13797,37 +14553,36 @@ public final class ProtoIlInstructions {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
-          return type_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
+          return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
         }
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
-          typeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getType(),
-                  getParentForChildren(),
-                  isClean());
+          typeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getType(), getParentForChildren(), isClean());
           type_ = null;
         }
         return typeBuilder_;
       }
 
       private java.lang.Object name_ = "";
+
       /**
        * <code>string name = 2;</code>
+       * 
        * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           name_ = s;
           return s;
@@ -13835,161 +14590,185 @@ public final class ProtoIlInstructions {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string name = 2;</code>
+       * 
        * @return The bytes for name.
        */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
+      public com.google.protobuf.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string name = 2;</code>
-       * @param value The name to set.
+       * 
+       * @param value
+       *          The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string name = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearName() {
-        
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string name = 2;</code>
-       * @param value The bytes for name to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+
         name_ = value;
         onChanged();
         return this;
       }
 
-      private boolean hasInitialValue_ ;
+      /**
+       * <code>string name = 2;</code>
+       * 
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>string name = 2;</code>
+       * 
+       * @param value
+       *          The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean hasInitialValue_;
+
       /**
        * <code>bool has_initial_value = 3;</code>
+       * 
        * @return The hasInitialValue.
        */
       @java.lang.Override
       public boolean getHasInitialValue() {
         return hasInitialValue_;
       }
+
       /**
        * <code>bool has_initial_value = 3;</code>
-       * @param value The hasInitialValue to set.
+       * 
+       * @param value
+       *          The hasInitialValue to set.
        * @return This builder for chaining.
        */
       public Builder setHasInitialValue(boolean value) {
-        
+
         hasInitialValue_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool has_initial_value = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearHasInitialValue() {
-        
+
         hasInitialValue_ = false;
         onChanged();
         return this;
       }
 
       private int variableKind_ = 0;
+
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
+       * 
        * @return The enum numeric value on the wire for variableKind.
        */
-      @java.lang.Override public int getVariableKindValue() {
+      @java.lang.Override
+      public int getVariableKindValue() {
         return variableKind_;
       }
+
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-       * @param value The enum numeric value on the wire for variableKind to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for variableKind to set.
        * @return This builder for chaining.
        */
       public Builder setVariableKindValue(int value) {
-        
+
         variableKind_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
+       * 
        * @return The variableKind.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind getVariableKind() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind result = soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.valueOf(variableKind_);
+        soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind result
+            = soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.valueOf(variableKind_);
         return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-       * @param value The variableKind to set.
+       * 
+       * @param value
+       *          The variableKind to set.
        * @return This builder for chaining.
        */
       public Builder setVariableKind(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         variableKind_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearVariableKind() {
-        
+
         variableKind_ = 0;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:IlVariableMsg)
     }
@@ -14004,16 +14783,15 @@ public final class ProtoIlInstructions {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IlVariableMsg>
-        PARSER = new com.google.protobuf.AbstractParser<IlVariableMsg>() {
-      @java.lang.Override
-      public IlVariableMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new IlVariableMsg(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<IlVariableMsg> PARSER
+        = new com.google.protobuf.AbstractParser<IlVariableMsg>() {
+          @java.lang.Override
+          public IlVariableMsg parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new IlVariableMsg(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<IlVariableMsg> parser() {
       return PARSER;
@@ -14037,14 +14815,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return Whether the body field is set.
      */
     boolean hasBody();
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return The body.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody();
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
      */
@@ -14052,14 +14834,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlVariableMsg variable = 2;</code>
+     * 
      * @return Whether the variable field is set.
      */
     boolean hasVariable();
+
     /**
      * <code>.IlVariableMsg variable = 2;</code>
+     * 
      * @return The variable.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable();
+
     /**
      * <code>.IlVariableMsg variable = 2;</code>
      */
@@ -14067,14 +14853,18 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
+     * 
      * @return Whether the filter field is set.
      */
     boolean hasFilter();
+
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
+     * 
      * @return The filter.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFilter();
+
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
      */
@@ -14082,47 +14872,47 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>bool has_filter = 4;</code>
+     * 
      * @return The hasFilter.
      */
     boolean getHasFilter();
   }
+
   /**
    * Protobuf type {@code IlTryCatchHandlerMsg}
    */
-  public static final class IlTryCatchHandlerMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class IlTryCatchHandlerMsg extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IlTryCatchHandlerMsg)
       IlTryCatchHandlerMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use IlTryCatchHandlerMsg.newBuilder() to construct.
     private IlTryCatchHandlerMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private IlTryCatchHandlerMsg() {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new IlTryCatchHandlerMsg();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private IlTryCatchHandlerMsg(
-        com.google.protobuf.CodedInputStream input,
+
+    private IlTryCatchHandlerMsg(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -14136,7 +14926,8 @@ public final class ProtoIlInstructions {
               if (body_ != null) {
                 subBuilder = body_.toBuilder();
               }
-              body_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              body_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(body_);
                 body_ = subBuilder.buildPartial();
@@ -14162,7 +14953,8 @@ public final class ProtoIlInstructions {
               if (filter_ != null) {
                 subBuilder = filter_.toBuilder();
               }
-              filter_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
+              filter_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(filter_);
                 filter_ = subBuilder.buildPartial();
@@ -14176,8 +14968,7 @@ public final class ProtoIlInstructions {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -14187,44 +14978,47 @@ public final class ProtoIlInstructions {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlTryCatchHandlerMsg_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlTryCatchHandlerMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.class,
+              soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder.class);
     }
 
     public static final int BODY_FIELD_NUMBER = 1;
     private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg body_;
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return Whether the body field is set.
      */
     @java.lang.Override
     public boolean hasBody() {
       return body_ != null;
     }
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
+     * 
      * @return The body.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
       return body_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
     }
+
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
      */
@@ -14235,22 +15029,27 @@ public final class ProtoIlInstructions {
 
     public static final int VARIABLE_FIELD_NUMBER = 2;
     private soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg variable_;
+
     /**
      * <code>.IlVariableMsg variable = 2;</code>
+     * 
      * @return Whether the variable field is set.
      */
     @java.lang.Override
     public boolean hasVariable() {
       return variable_ != null;
     }
+
     /**
      * <code>.IlVariableMsg variable = 2;</code>
+     * 
      * @return The variable.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable() {
       return variable_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance() : variable_;
     }
+
     /**
      * <code>.IlVariableMsg variable = 2;</code>
      */
@@ -14261,22 +15060,27 @@ public final class ProtoIlInstructions {
 
     public static final int FILTER_FIELD_NUMBER = 3;
     private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg filter_;
+
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
+     * 
      * @return Whether the filter field is set.
      */
     @java.lang.Override
     public boolean hasFilter() {
       return filter_ != null;
     }
+
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
+     * 
      * @return The filter.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFilter() {
       return filter_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : filter_;
     }
+
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
      */
@@ -14287,8 +15091,10 @@ public final class ProtoIlInstructions {
 
     public static final int HAS_FILTER_FIELD_NUMBER = 4;
     private boolean hasFilter_;
+
     /**
      * <code>bool has_filter = 4;</code>
+     * 
      * @return The hasFilter.
      */
     @java.lang.Override
@@ -14297,19 +15103,21 @@ public final class ProtoIlInstructions {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (body_ != null) {
         output.writeMessage(1, getBody());
       }
@@ -14328,24 +15136,21 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (body_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getBody());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, getBody());
       }
       if (variable_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getVariable());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(2, getVariable());
       }
       if (filter_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getFilter());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(3, getFilter());
       }
       if (hasFilter_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, hasFilter_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, hasFilter_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -14355,31 +15160,36 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg) obj;
+      soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg other
+          = (soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg) obj;
 
-      if (hasBody() != other.hasBody()) return false;
+      if (hasBody() != other.hasBody())
+        return false;
       if (hasBody()) {
-        if (!getBody()
-            .equals(other.getBody())) return false;
+        if (!getBody().equals(other.getBody()))
+          return false;
       }
-      if (hasVariable() != other.hasVariable()) return false;
+      if (hasVariable() != other.hasVariable())
+        return false;
       if (hasVariable()) {
-        if (!getVariable()
-            .equals(other.getVariable())) return false;
+        if (!getVariable().equals(other.getVariable()))
+          return false;
       }
-      if (hasFilter() != other.hasFilter()) return false;
+      if (hasFilter() != other.hasFilter())
+        return false;
       if (hasFilter()) {
-        if (!getFilter()
-            .equals(other.getFilter())) return false;
+        if (!getFilter().equals(other.getFilter()))
+          return false;
       }
-      if (getHasFilter()
-          != other.getHasFilter()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (getHasFilter() != other.getHasFilter())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -14403,121 +15213,115 @@ public final class ProtoIlInstructions {
         hash = (53 * hash) + getFilter().hashCode();
       }
       hash = (37 * hash) + HAS_FILTER_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getHasFilter());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getHasFilter());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code IlTryCatchHandlerMsg}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:IlTryCatchHandlerMsg)
         soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlTryCatchHandlerMsg_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlTryCatchHandlerMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.class,
+                soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.newBuilder()
@@ -14525,16 +15329,16 @@ public final class ProtoIlInstructions {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -14562,8 +15366,7 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlTryCatchHandlerMsg_descriptor;
       }
 
@@ -14583,7 +15386,8 @@ public final class ProtoIlInstructions {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg buildPartial() {
-        soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg result = new soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg(this);
+        soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg result
+            = new soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg(this);
         if (bodyBuilder_ == null) {
           result.body_ = body_;
         } else {
@@ -14608,38 +15412,37 @@ public final class ProtoIlInstructions {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg)other);
+          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -14647,7 +15450,8 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.getDefaultInstance())
+          return this;
         if (other.hasBody()) {
           mergeBody(other.getBody());
         }
@@ -14671,10 +15475,8 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -14690,17 +15492,20 @@ public final class ProtoIlInstructions {
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg body_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> bodyBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> bodyBuilder_;
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
+       * 
        * @return Whether the body field is set.
        */
       public boolean hasBody() {
         return bodyBuilder_ != null || body_ != null;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
+       * 
        * @return The body.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
@@ -14710,6 +15515,7 @@ public final class ProtoIlInstructions {
           return bodyBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
@@ -14726,11 +15532,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
-      public Builder setBody(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
+      public Builder setBody(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
         if (bodyBuilder_ == null) {
           body_ = builderForValue.build();
           onChanged();
@@ -14740,14 +15546,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
       public Builder mergeBody(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (bodyBuilder_ == null) {
           if (body_ != null) {
-            body_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(body_).mergeFrom(value).buildPartial();
+            body_ = soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(body_).mergeFrom(value)
+                .buildPartial();
           } else {
             body_ = value;
           }
@@ -14758,6 +15565,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
@@ -14772,14 +15580,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getBodyBuilder() {
-        
+
         onChanged();
         return getBodyFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
@@ -14787,39 +15597,40 @@ public final class ProtoIlInstructions {
         if (bodyBuilder_ != null) {
           return bodyBuilder_.getMessageOrBuilder();
         } else {
-          return body_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
+          return body_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : body_;
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>
           getBodyFieldBuilder() {
         if (bodyBuilder_ == null) {
-          bodyBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
-                  getBody(),
-                  getParentForChildren(),
-                  isClean());
+          bodyBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
+                  getBody(), getParentForChildren(), isClean());
           body_ = null;
         }
         return bodyBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg variable_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> variableBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> variableBuilder_;
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
+       * 
        * @return Whether the variable field is set.
        */
       public boolean hasVariable() {
         return variableBuilder_ != null || variable_ != null;
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
+       * 
        * @return The variable.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable() {
@@ -14829,6 +15640,7 @@ public final class ProtoIlInstructions {
           return variableBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
        */
@@ -14845,11 +15657,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
        */
-      public Builder setVariable(
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
+      public Builder setVariable(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder builderForValue) {
         if (variableBuilder_ == null) {
           variable_ = builderForValue.build();
           onChanged();
@@ -14859,14 +15671,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
        */
       public Builder mergeVariable(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg value) {
         if (variableBuilder_ == null) {
           if (variable_ != null) {
-            variable_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.newBuilder(variable_).mergeFrom(value).buildPartial();
+            variable_
+                = soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.newBuilder(variable_).mergeFrom(value).buildPartial();
           } else {
             variable_ = value;
           }
@@ -14877,6 +15690,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
        */
@@ -14891,14 +15705,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder getVariableBuilder() {
-        
+
         onChanged();
         return getVariableFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
        */
@@ -14906,39 +15722,40 @@ public final class ProtoIlInstructions {
         if (variableBuilder_ != null) {
           return variableBuilder_.getMessageOrBuilder();
         } else {
-          return variable_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance() : variable_;
+          return variable_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance() : variable_;
         }
       }
+
       /**
        * <code>.IlVariableMsg variable = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>
           getVariableFieldBuilder() {
         if (variableBuilder_ == null) {
-          variableBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>(
-                  getVariable(),
-                  getParentForChildren(),
-                  isClean());
+          variableBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlVariableMsgOrBuilder>(
+                  getVariable(), getParentForChildren(), isClean());
           variable_ = null;
         }
         return variableBuilder_;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg filter_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> filterBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> filterBuilder_;
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
+       * 
        * @return Whether the filter field is set.
        */
       public boolean hasFilter() {
         return filterBuilder_ != null || filter_ != null;
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
+       * 
        * @return The filter.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFilter() {
@@ -14948,6 +15765,7 @@ public final class ProtoIlInstructions {
           return filterBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
        */
@@ -14964,11 +15782,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
        */
-      public Builder setFilter(
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
+      public Builder setFilter(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder builderForValue) {
         if (filterBuilder_ == null) {
           filter_ = builderForValue.build();
           onChanged();
@@ -14978,14 +15796,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
        */
       public Builder mergeFilter(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (filterBuilder_ == null) {
           if (filter_ != null) {
-            filter_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(filter_).mergeFrom(value).buildPartial();
+            filter_ = soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.newBuilder(filter_).mergeFrom(value)
+                .buildPartial();
           } else {
             filter_ = value;
           }
@@ -14996,6 +15815,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
        */
@@ -15010,14 +15830,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getFilterBuilder() {
-        
+
         onChanged();
         return getFilterFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
        */
@@ -15025,69 +15847,72 @@ public final class ProtoIlInstructions {
         if (filterBuilder_ != null) {
           return filterBuilder_.getMessageOrBuilder();
         } else {
-          return filter_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : filter_;
+          return filter_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance() : filter_;
         }
       }
+
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>
           getFilterFieldBuilder() {
         if (filterBuilder_ == null) {
-          filterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
-                  getFilter(),
-                  getParentForChildren(),
-                  isClean());
+          filterBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsgOrBuilder>(
+                  getFilter(), getParentForChildren(), isClean());
           filter_ = null;
         }
         return filterBuilder_;
       }
 
-      private boolean hasFilter_ ;
+      private boolean hasFilter_;
+
       /**
        * <code>bool has_filter = 4;</code>
+       * 
        * @return The hasFilter.
        */
       @java.lang.Override
       public boolean getHasFilter() {
         return hasFilter_;
       }
+
       /**
        * <code>bool has_filter = 4;</code>
-       * @param value The hasFilter to set.
+       * 
+       * @param value
+       *          The hasFilter to set.
        * @return This builder for chaining.
        */
       public Builder setHasFilter(boolean value) {
-        
+
         hasFilter_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool has_filter = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearHasFilter() {
-        
+
         hasFilter_ = false;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:IlTryCatchHandlerMsg)
     }
@@ -15102,16 +15927,15 @@ public final class ProtoIlInstructions {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IlTryCatchHandlerMsg>
-        PARSER = new com.google.protobuf.AbstractParser<IlTryCatchHandlerMsg>() {
-      @java.lang.Override
-      public IlTryCatchHandlerMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new IlTryCatchHandlerMsg(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<IlTryCatchHandlerMsg> PARSER
+        = new com.google.protobuf.AbstractParser<IlTryCatchHandlerMsg>() {
+          @java.lang.Override
+          public IlTryCatchHandlerMsg parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new IlTryCatchHandlerMsg(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<IlTryCatchHandlerMsg> parser() {
       return PARSER;
@@ -15135,62 +15959,66 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>int64 label = 1;</code>
+     * 
      * @return The label.
      */
     long getLabel();
 
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
+     * 
      * @return Whether the targetInstr field is set.
      */
     boolean hasTargetInstr();
+
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
+     * 
      * @return The targetInstr.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTargetInstr();
+
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getTargetInstrOrBuilder();
   }
+
   /**
    * Protobuf type {@code IlSwitchSectionMsg}
    */
-  public static final class IlSwitchSectionMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class IlSwitchSectionMsg extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:IlSwitchSectionMsg)
       IlSwitchSectionMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use IlSwitchSectionMsg.newBuilder() to construct.
     private IlSwitchSectionMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private IlSwitchSectionMsg() {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new IlSwitchSectionMsg();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private IlSwitchSectionMsg(
-        com.google.protobuf.CodedInputStream input,
+
+    private IlSwitchSectionMsg(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -15209,7 +16037,8 @@ public final class ProtoIlInstructions {
               if (targetInstr_ != null) {
                 subBuilder = targetInstr_.toBuilder();
               }
-              targetInstr_ = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
+              targetInstr_
+                  = input.readMessage(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(targetInstr_);
                 targetInstr_ = subBuilder.buildPartial();
@@ -15218,8 +16047,7 @@ public final class ProtoIlInstructions {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -15229,30 +16057,30 @@ public final class ProtoIlInstructions {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlSwitchSectionMsg_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlSwitchSectionMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.class,
+              soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder.class);
     }
 
     public static final int LABEL_FIELD_NUMBER = 1;
     private long label_;
+
     /**
      * <code>int64 label = 1;</code>
+     * 
      * @return The label.
      */
     @java.lang.Override
@@ -15262,22 +16090,28 @@ public final class ProtoIlInstructions {
 
     public static final int TARGET_INSTR_FIELD_NUMBER = 2;
     private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg targetInstr_;
+
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
+     * 
      * @return Whether the targetInstr field is set.
      */
     @java.lang.Override
     public boolean hasTargetInstr() {
       return targetInstr_ != null;
     }
+
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
+     * 
      * @return The targetInstr.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTargetInstr() {
-      return targetInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : targetInstr_;
+      return targetInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+          : targetInstr_;
     }
+
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
      */
@@ -15287,19 +16121,21 @@ public final class ProtoIlInstructions {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (label_ != 0L) {
         output.writeInt64(1, label_);
       }
@@ -15312,16 +16148,15 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (label_ != 0L) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, label_);
+        size += com.google.protobuf.CodedOutputStream.computeInt64Size(1, label_);
       }
       if (targetInstr_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getTargetInstr());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(2, getTargetInstr());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -15331,21 +16166,24 @@ public final class ProtoIlInstructions {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg other = (soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg) obj;
+      soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg other
+          = (soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg) obj;
 
-      if (getLabel()
-          != other.getLabel()) return false;
-      if (hasTargetInstr() != other.hasTargetInstr()) return false;
+      if (getLabel() != other.getLabel())
+        return false;
+      if (hasTargetInstr() != other.hasTargetInstr())
+        return false;
       if (hasTargetInstr()) {
-        if (!getTargetInstr()
-            .equals(other.getTargetInstr())) return false;
+        if (!getTargetInstr().equals(other.getTargetInstr()))
+          return false;
       }
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -15357,8 +16195,7 @@ public final class ProtoIlInstructions {
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + LABEL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-          getLabel());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(getLabel());
       if (hasTargetInstr()) {
         hash = (37 * hash) + TARGET_INSTR_FIELD_NUMBER;
         hash = (53 * hash) + getTargetInstr().hashCode();
@@ -15368,114 +16205,109 @@ public final class ProtoIlInstructions {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code IlSwitchSectionMsg}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:IlSwitchSectionMsg)
         soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlSwitchSectionMsg_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlSwitchSectionMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.class, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.class,
+                soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.newBuilder()
@@ -15483,16 +16315,16 @@ public final class ProtoIlInstructions {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -15508,8 +16340,7 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoIlInstructions.internal_static_IlSwitchSectionMsg_descriptor;
       }
 
@@ -15529,7 +16360,8 @@ public final class ProtoIlInstructions {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg buildPartial() {
-        soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg result = new soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg(this);
+        soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg result
+            = new soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg(this);
         result.label_ = label_;
         if (targetInstrBuilder_ == null) {
           result.targetInstr_ = targetInstr_;
@@ -15544,38 +16376,37 @@ public final class ProtoIlInstructions {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg)other);
+          return mergeFrom((soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -15583,7 +16414,8 @@ public final class ProtoIlInstructions {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg other) {
-        if (other == soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.getDefaultInstance())
+          return this;
         if (other.getLabel() != 0L) {
           setLabel(other.getLabel());
         }
@@ -15601,10 +16433,8 @@ public final class ProtoIlInstructions {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -15619,58 +16449,70 @@ public final class ProtoIlInstructions {
         return this;
       }
 
-      private long label_ ;
+      private long label_;
+
       /**
        * <code>int64 label = 1;</code>
+       * 
        * @return The label.
        */
       @java.lang.Override
       public long getLabel() {
         return label_;
       }
+
       /**
        * <code>int64 label = 1;</code>
-       * @param value The label to set.
+       * 
+       * @param value
+       *          The label to set.
        * @return This builder for chaining.
        */
       public Builder setLabel(long value) {
-        
+
         label_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>int64 label = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearLabel() {
-        
+
         label_ = 0L;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg targetInstr_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> targetInstrBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> targetInstrBuilder_;
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
+       * 
        * @return Whether the targetInstr field is set.
        */
       public boolean hasTargetInstr() {
         return targetInstrBuilder_ != null || targetInstr_ != null;
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
+       * 
        * @return The targetInstr.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTargetInstr() {
         if (targetInstrBuilder_ == null) {
-          return targetInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : targetInstr_;
+          return targetInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : targetInstr_;
         } else {
           return targetInstrBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
        */
@@ -15687,11 +16529,11 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
        */
-      public Builder setTargetInstr(
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+      public Builder setTargetInstr(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
         if (targetInstrBuilder_ == null) {
           targetInstr_ = builderForValue.build();
           onChanged();
@@ -15701,14 +16543,15 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
        */
       public Builder mergeTargetInstr(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (targetInstrBuilder_ == null) {
           if (targetInstr_ != null) {
-            targetInstr_ =
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(targetInstr_).mergeFrom(value).buildPartial();
+            targetInstr_ = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.newBuilder(targetInstr_).mergeFrom(value)
+                .buildPartial();
           } else {
             targetInstr_ = value;
           }
@@ -15719,6 +16562,7 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
        */
@@ -15733,14 +16577,16 @@ public final class ProtoIlInstructions {
 
         return this;
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getTargetInstrBuilder() {
-        
+
         onChanged();
         return getTargetInstrFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
        */
@@ -15748,38 +16594,35 @@ public final class ProtoIlInstructions {
         if (targetInstrBuilder_ != null) {
           return targetInstrBuilder_.getMessageOrBuilder();
         } else {
-          return targetInstr_ == null ?
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : targetInstr_;
+          return targetInstr_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()
+              : targetInstr_;
         }
       }
+
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>
           getTargetInstrFieldBuilder() {
         if (targetInstrBuilder_ == null) {
-          targetInstrBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
-                  getTargetInstr(),
-                  getParentForChildren(),
-                  isClean());
+          targetInstrBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getTargetInstr(), getParentForChildren(), isClean());
           targetInstr_ = null;
         }
         return targetInstrBuilder_;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:IlSwitchSectionMsg)
     }
@@ -15794,16 +16637,15 @@ public final class ProtoIlInstructions {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<IlSwitchSectionMsg>
-        PARSER = new com.google.protobuf.AbstractParser<IlSwitchSectionMsg>() {
-      @java.lang.Override
-      public IlSwitchSectionMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new IlSwitchSectionMsg(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<IlSwitchSectionMsg> PARSER
+        = new com.google.protobuf.AbstractParser<IlSwitchSectionMsg>() {
+          @java.lang.Override
+          public IlSwitchSectionMsg parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new IlSwitchSectionMsg(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<IlSwitchSectionMsg> parser() {
       return PARSER;
@@ -15821,209 +16663,166 @@ public final class ProtoIlInstructions {
 
   }
 
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IlFunctionMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_IlFunctionMsg_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IlBlockContainerMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_IlBlockContainerMsg_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IlBlock_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_IlBlock_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IlInstructionMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_IlInstructionMsg_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IlVariableMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_IlVariableMsg_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IlTryCatchHandlerMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_IlTryCatchHandlerMsg_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_IlSwitchSectionMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_IlSwitchSectionMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_IlFunctionMsg_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_IlFunctionMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_IlBlockContainerMsg_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_IlBlockContainerMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_IlBlock_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_IlBlock_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_IlInstructionMsg_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_IlInstructionMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_IlVariableMsg_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_IlVariableMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_IlTryCatchHandlerMsg_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_IlTryCatchHandlerMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_IlSwitchSectionMsg_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_IlSwitchSectionMsg_fieldAccessorTable;
 
-  public static com.google.protobuf.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static com.google.protobuf.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
-      descriptor;
+
+  private static com.google.protobuf.Descriptors.FileDescriptor descriptor;
   static {
-    java.lang.String[] descriptorData = {
-      "\n\024IlInstructions.proto\032\026AssemblyAllTypes" +
-      ".proto\"V\n\rIlFunctionMsg\022\"\n\004body\030\001 \001(\0132\024." +
-      "IlBlockContainerMsg\022!\n\tvariables\030\002 \003(\0132\016" +
-      ".IlVariableMsg\"/\n\023IlBlockContainerMsg\022\030\n" +
-      "\006blocks\030\001 \003(\0132\010.IlBlock\"Q\n\007IlBlock\0222\n\027li" +
-      "st_of_il_instructions\030\001 \003(\0132\021.IlInstruct" +
-      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\246\032\n\020IlInstruc" +
-      "tionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstruction" +
-      "Msg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.MethodDef" +
-      "inition\022$\n\targuments\030\005 \003(\0132\021.IlInstructi" +
-      "onMsg\022,\n\021value_instruction\030\006 \001(\0132\021.IlIns" +
-      "tructionMsg\022\035\n\025value_constant_string\030\007 \001" +
-      "(\t\022\034\n\024value_constant_int32\030\020 \001(\005\022\034\n\024valu" +
-      "e_constant_int64\030& \001(\003\022\034\n\024value_constant" +
-      "_float\030\' \001(\002\022\035\n\025value_constant_double\030( " +
-      "\001(\001\022!\n\006target\030\010 \001(\0132\021.IlInstructionMsg\022\035" +
-      "\n\004type\030\t \001(\0132\017.TypeDefinition\022\037\n\005field\030\n" +
-      " \001(\0132\020.FieldDefinition\022 \n\010variable\030\013 \001(\013" +
-      "2\016.IlVariableMsg\022;\n\010operator\030\014 \001(\0162).IlI" +
-      "nstructionMsg.IlBinaryNumericOperator\022&\n" +
-      "\004sign\030\024 \001(\0162\030.IlInstructionMsg.IlSign\022\037\n" +
-      "\004left\030\016 \001(\0132\021.IlInstructionMsg\022 \n\005right\030" +
-      "\017 \001(\0132\021.IlInstructionMsg\022\024\n\014target_label" +
-      "\030\022 \001(\t\022;\n\017comparison_kind\030\025 \001(\0162\".IlInst" +
-      "ructionMsg.IlComparisonKind\022$\n\tcondition" +
-      "\030\026 \001(\0132\021.IlInstructionMsg\022$\n\ttrue_inst\030\027" +
-      " \001(\0132\021.IlInstructionMsg\022%\n\nfalse_inst\030\030 " +
-      "\001(\0132\021.IlInstructionMsg\022 \n\005array\030\036 \001(\0132\021." +
-      "IlInstructionMsg\022;\n\017conversion_kind\030\031 \001(" +
-      "\0162\".IlInstructionMsg.IlConversionKind\0221\n" +
-      "\ninput_type\030\032 \001(\0162\035.IlInstructionMsg.IlS" +
-      "tackType\0226\n\013target_type\030\034 \001(\0162!.IlInstru" +
-      "ctionMsg.IlPrimitiveType\022#\n\010argument\030\035 \001" +
-      "(\0132\021.IlInstructionMsg\0222\n\013result_type\030\033 \001" +
-      "(\0162\035.IlInstructionMsg.IlStackType\022\"\n\007ind" +
-      "ices\030\037 \003(\0132\021.IlInstructionMsg\022\'\n\ttry_blo" +
-      "ck\030  \001(\0132\024.IlBlockContainerMsg\022\'\n\010handle" +
-      "rs\030! \003(\0132\025.IlTryCatchHandlerMsg\022+\n\rfinal" +
-      "ly_block\030\" \001(\0132\024.IlBlockContainerMsg\022)\n\013" +
-      "fault_block\030# \001(\0132\024.IlBlockContainerMsg\022" +
-      "\"\n\004body\030% \001(\0132\024.IlBlockContainerMsg\022$\n\tk" +
-      "ey_instr\030) \001(\0132\021.IlInstructionMsg\022\'\n\014def" +
-      "ault_inst\030* \001(\0132\021.IlInstructionMsg\022,\n\017sw" +
-      "itch_sections\030+ \003(\0132\023.IlSwitchSectionMsg" +
-      "\"\313\007\n\010IlOpCode\022\013\n\007NONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004C" +
-      "ALL\020\004\022\t\n\005LEAVE\020\005\022\t\n\005LDSTR\020\006\022\t\n\005STOBJ\020\007\022\n" +
-      "\n\006LDFLDA\020\010\022\n\n\006LDC_I4\020\t\022\t\n\005LDLOC\020\n\022\t\n\005LDO" +
-      "BJ\020\013\022\t\n\005STLOC\020\014\022\n\n\006NEWOBJ\020\r\022\014\n\010CALLVIRT\020" +
-      "\016\022\036\n\032BINARY_NUMERIC_INSTRUCTION\020\017\022\n\n\006BRA" +
-      "NCH\020\020\022\010\n\004COMP\020\021\022\022\n\016IF_INSTRUCTION\020\022\022\013\n\007L" +
-      "DSFLDA\020\023\022\n\n\006LDNULL\020\024\022\t\n\005LDLEN\020\025\022\010\n\004CONV\020" +
-      "\026\022\n\n\006NEWARR\020\027\022\013\n\007LDELEMA\020\030\022\r\n\tCASTCLASS\020" +
-      "\031\022\n\n\006ISINST\020\032\022\007\n\003BOX\020\033\022\014\n\010UNBOXANY\020\034\022\t\n\005" +
-      "UNBOX\020\035\022\r\n\tTRY_CATCH\020\036\022\n\n\006LDLOCA\020\037\022\021\n\rDE" +
-      "FAULT_VALUE\020 \022\007\n\003NOT\020!\022\017\n\013TRY_FINALLY\020\"\022" +
-      "\r\n\tTRY_FAULT\020#\022\023\n\017BLOCK_CONTAINER\020$\022\t\n\005B" +
-      "LOCK\020%\022\025\n\021TRY_CATCH_HANDLER\020&\022\013\n\007RETHROW" +
-      "\020\'\022\t\n\005THROW\020(\022\017\n\013DEBUG_BREAK\020)\022\r\n\tCK_FIN" +
-      "ITE\020*\022\n\n\006CP_BLK\020,\022\n\n\006CP_OBJ\020-\022\007\n\003DUP\020.\022\014" +
-      "\n\010INIT_BLK\020/\022\014\n\010INIT_OBJ\0200\022\n\n\006LDC_I8\0201\022\n" +
-      "\n\006LDC_R4\0202\022\n\n\006LDC_R8\0203\022\n\n\006LD_FLD\0204\022\n\n\006LD" +
-      "_FTN\0205\022\013\n\007LD_SFLD\0206\022\014\n\010LD_TOKEN\0207\022\017\n\013LD_" +
-      "VIRT_FTN\0208\022\r\n\tLOC_ALLOC\0209\022\016\n\nMK_REF_ANY\020" +
-      ":\022\006\n\002NO\020;\022\014\n\010READONLY\020<\022\020\n\014REF_ANY_TYPE\020" +
-      "=\022\017\n\013REF_ANY_VAL\020>\022\013\n\007SIZE_OF\020?\022\013\n\007ST_SF" +
-      "LD\020@\022\n\n\006SWITCH\020A\022\010\n\004TAIL\020B\022\r\n\tUNALIGNED\020" +
-      "C\022\014\n\010VOLATILE\020D\022\023\n\017LD_MEMBER_TOKEN\020E\022\021\n\r" +
-      "LD_TYPE_TOKEN\020F\022\022\n\016INVALID_BRANCH\020G\022\021\n\rC" +
-      "ALL_INDIRECT\020H\"\231\001\n\027IlBinaryNumericOperat" +
-      "or\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022\007\n\003Sub\020\002\022\007\n" +
-      "\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006BitAnd\020\006\022\t\n\005" +
-      "BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftLeft\020\t\022\016\n\nSh" +
-      "iftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_SIGN\020\000\022\n\n\006S" +
-      "igned\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlComparisonKi" +
-      "nd\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality\020\001\022\016\n\nInequ" +
-      "ality\020\002\022\014\n\010LessThan\020\003\022\023\n\017LessThanOrEqual" +
-      "\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022GreaterThanOrEqua" +
-      "l\020\006\"\342\001\n\020IlConversionKind\022\023\n\017NONE_CONVERS" +
-      "ION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016\n\nIntToFloa" +
-      "t\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatPrecisionCha" +
-      "nge\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZeroExtend\020\007\022\014\n" +
-      "\010Truncate\020\010\022\022\n\016StopGCTracking\020\t\022\023\n\017Start" +
-      "GCTracking\020\n\022\022\n\016ObjectInterior\020\013\"\216\001\n\013IlS" +
-      "tackType\022\023\n\017NONE_STACK_TYPE\020\000\022\021\n\rUnknown" +
-      "_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_STACK\020\003\022\014\n\010I" +
-      "8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001O\020\007\022\r\n\tRef_" +
-      "STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimitiveType\022\027\n" +
-      "\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004None\020\001\022\006\n\002I1\020\002" +
-      "\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R4\020\006\022\006\n\002R8\020\007" +
-      "\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U8\020\013\022\005\n\001I\020\014\022" +
-      "\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unknown\020\020\"\314\003\n\r" +
-      "IlVariableMsg\022\035\n\004type\030\001 \001(\0132\017.TypeDefini" +
-      "tion\022\014\n\004name\030\002 \001(\t\022\031\n\021has_initial_value\030" +
-      "\003 \001(\010\0224\n\rvariable_kind\030\004 \001(\0162\035.IlVariabl" +
-      "eMsg.IlVariableKind\"\274\002\n\016IlVariableKind\022\010" +
-      "\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED_LOCAL\020\002\022\027\n" +
-      "\023PINNED_REGION_LOCAL\020\003\022\017\n\013USING_LOCAL\020\004\022" +
-      "\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIALIZER_TARGET" +
-      "\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTION_STACK_SLO" +
-      "T\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tSTACKSLOT\020\n\022" +
-      "\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLAY_CLASS_LOC" +
-      "AL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DECONSTRUCTIO" +
-      "N_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryCatchHandler" +
-      "Msg\022\"\n\004body\030\001 \001(\0132\024.IlBlockContainerMsg\022" +
-      " \n\010variable\030\002 \001(\0132\016.IlVariableMsg\022$\n\006fil" +
-      "ter\030\003 \001(\0132\024.IlBlockContainerMsg\022\022\n\nhas_f" +
-      "ilter\030\004 \001(\010\"L\n\022IlSwitchSectionMsg\022\r\n\005lab" +
-      "el\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(\0132\021.IlInstr" +
-      "uctionMsgBQ\n\021soot.dotnet.protoB\023ProtoIlI" +
-      "nstructions\252\002&Soot.Dotnet.Decompiler.Mod" +
-      "els.Protobufb\006proto3"
-    };
-    descriptor = com.google.protobuf.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new com.google.protobuf.Descriptors.FileDescriptor[] {
-          soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor(),
-        });
-    internal_static_IlFunctionMsg_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_IlFunctionMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IlFunctionMsg_descriptor,
-        new java.lang.String[] { "Body", "Variables", });
-    internal_static_IlBlockContainerMsg_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_IlBlockContainerMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IlBlockContainerMsg_descriptor,
-        new java.lang.String[] { "Blocks", });
-    internal_static_IlBlock_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_IlBlock_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IlBlock_descriptor,
-        new java.lang.String[] { "ListOfIlInstructions", "BlockName", });
-    internal_static_IlInstructionMsg_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_IlInstructionMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IlInstructionMsg_descriptor,
-        new java.lang.String[] { "OpCode", "Method", "Arguments", "ValueInstruction", "ValueConstantString", "ValueConstantInt32", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "Target", "Type", "Field", "Variable", "Operator", "Sign", "Left", "Right", "TargetLabel", "ComparisonKind", "Condition", "TrueInst", "FalseInst", "Array", "ConversionKind", "InputType", "TargetType", "Argument", "ResultType", "Indices", "TryBlock", "Handlers", "FinallyBlock", "FaultBlock", "Body", "KeyInstr", "DefaultInst", "SwitchSections", });
-    internal_static_IlVariableMsg_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_IlVariableMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IlVariableMsg_descriptor,
-        new java.lang.String[] { "Type", "Name", "HasInitialValue", "VariableKind", });
-    internal_static_IlTryCatchHandlerMsg_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_IlTryCatchHandlerMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IlTryCatchHandlerMsg_descriptor,
-        new java.lang.String[] { "Body", "Variable", "Filter", "HasFilter", });
-    internal_static_IlSwitchSectionMsg_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_IlSwitchSectionMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IlSwitchSectionMsg_descriptor,
-        new java.lang.String[] { "Label", "TargetInstr", });
+    java.lang.String[] descriptorData = { "\n\024IlInstructions.proto\032\026AssemblyAllTypes"
+        + ".proto\"V\n\rIlFunctionMsg\022\"\n\004body\030\001 \001(\0132\024."
+        + "IlBlockContainerMsg\022!\n\tvariables\030\002 \003(\0132\016"
+        + ".IlVariableMsg\"/\n\023IlBlockContainerMsg\022\030\n"
+        + "\006blocks\030\001 \003(\0132\010.IlBlock\"Q\n\007IlBlock\0222\n\027li"
+        + "st_of_il_instructions\030\001 \003(\0132\021.IlInstruct"
+        + "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\246\032\n\020IlInstruc"
+        + "tionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstruction"
+        + "Msg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.MethodDef"
+        + "inition\022$\n\targuments\030\005 \003(\0132\021.IlInstructi"
+        + "onMsg\022,\n\021value_instruction\030\006 \001(\0132\021.IlIns"
+        + "tructionMsg\022\035\n\025value_constant_string\030\007 \001"
+        + "(\t\022\034\n\024value_constant_int32\030\020 \001(\005\022\034\n\024valu"
+        + "e_constant_int64\030& \001(\003\022\034\n\024value_constant"
+        + "_float\030\' \001(\002\022\035\n\025value_constant_double\030( "
+        + "\001(\001\022!\n\006target\030\010 \001(\0132\021.IlInstructionMsg\022\035"
+        + "\n\004type\030\t \001(\0132\017.TypeDefinition\022\037\n\005field\030\n"
+        + " \001(\0132\020.FieldDefinition\022 \n\010variable\030\013 \001(\013"
+        + "2\016.IlVariableMsg\022;\n\010operator\030\014 \001(\0162).IlI" + "nstructionMsg.IlBinaryNumericOperator\022&\n"
+        + "\004sign\030\024 \001(\0162\030.IlInstructionMsg.IlSign\022\037\n"
+        + "\004left\030\016 \001(\0132\021.IlInstructionMsg\022 \n\005right\030"
+        + "\017 \001(\0132\021.IlInstructionMsg\022\024\n\014target_label"
+        + "\030\022 \001(\t\022;\n\017comparison_kind\030\025 \001(\0162\".IlInst"
+        + "ructionMsg.IlComparisonKind\022$\n\tcondition"
+        + "\030\026 \001(\0132\021.IlInstructionMsg\022$\n\ttrue_inst\030\027"
+        + " \001(\0132\021.IlInstructionMsg\022%\n\nfalse_inst\030\030 "
+        + "\001(\0132\021.IlInstructionMsg\022 \n\005array\030\036 \001(\0132\021."
+        + "IlInstructionMsg\022;\n\017conversion_kind\030\031 \001(" + "\0162\".IlInstructionMsg.IlConversionKind\0221\n"
+        + "\ninput_type\030\032 \001(\0162\035.IlInstructionMsg.IlS"
+        + "tackType\0226\n\013target_type\030\034 \001(\0162!.IlInstru"
+        + "ctionMsg.IlPrimitiveType\022#\n\010argument\030\035 \001"
+        + "(\0132\021.IlInstructionMsg\0222\n\013result_type\030\033 \001"
+        + "(\0162\035.IlInstructionMsg.IlStackType\022\"\n\007ind"
+        + "ices\030\037 \003(\0132\021.IlInstructionMsg\022\'\n\ttry_blo"
+        + "ck\030  \001(\0132\024.IlBlockContainerMsg\022\'\n\010handle"
+        + "rs\030! \003(\0132\025.IlTryCatchHandlerMsg\022+\n\rfinal"
+        + "ly_block\030\" \001(\0132\024.IlBlockContainerMsg\022)\n\013"
+        + "fault_block\030# \001(\0132\024.IlBlockContainerMsg\022"
+        + "\"\n\004body\030% \001(\0132\024.IlBlockContainerMsg\022$\n\tk"
+        + "ey_instr\030) \001(\0132\021.IlInstructionMsg\022\'\n\014def"
+        + "ault_inst\030* \001(\0132\021.IlInstructionMsg\022,\n\017sw"
+        + "itch_sections\030+ \003(\0132\023.IlSwitchSectionMsg"
+        + "\"\313\007\n\010IlOpCode\022\013\n\007NONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004C"
+        + "ALL\020\004\022\t\n\005LEAVE\020\005\022\t\n\005LDSTR\020\006\022\t\n\005STOBJ\020\007\022\n"
+        + "\n\006LDFLDA\020\010\022\n\n\006LDC_I4\020\t\022\t\n\005LDLOC\020\n\022\t\n\005LDO"
+        + "BJ\020\013\022\t\n\005STLOC\020\014\022\n\n\006NEWOBJ\020\r\022\014\n\010CALLVIRT\020"
+        + "\016\022\036\n\032BINARY_NUMERIC_INSTRUCTION\020\017\022\n\n\006BRA"
+        + "NCH\020\020\022\010\n\004COMP\020\021\022\022\n\016IF_INSTRUCTION\020\022\022\013\n\007L"
+        + "DSFLDA\020\023\022\n\n\006LDNULL\020\024\022\t\n\005LDLEN\020\025\022\010\n\004CONV\020"
+        + "\026\022\n\n\006NEWARR\020\027\022\013\n\007LDELEMA\020\030\022\r\n\tCASTCLASS\020"
+        + "\031\022\n\n\006ISINST\020\032\022\007\n\003BOX\020\033\022\014\n\010UNBOXANY\020\034\022\t\n\005"
+        + "UNBOX\020\035\022\r\n\tTRY_CATCH\020\036\022\n\n\006LDLOCA\020\037\022\021\n\rDE"
+        + "FAULT_VALUE\020 \022\007\n\003NOT\020!\022\017\n\013TRY_FINALLY\020\"\022"
+        + "\r\n\tTRY_FAULT\020#\022\023\n\017BLOCK_CONTAINER\020$\022\t\n\005B"
+        + "LOCK\020%\022\025\n\021TRY_CATCH_HANDLER\020&\022\013\n\007RETHROW"
+        + "\020\'\022\t\n\005THROW\020(\022\017\n\013DEBUG_BREAK\020)\022\r\n\tCK_FIN"
+        + "ITE\020*\022\n\n\006CP_BLK\020,\022\n\n\006CP_OBJ\020-\022\007\n\003DUP\020.\022\014"
+        + "\n\010INIT_BLK\020/\022\014\n\010INIT_OBJ\0200\022\n\n\006LDC_I8\0201\022\n"
+        + "\n\006LDC_R4\0202\022\n\n\006LDC_R8\0203\022\n\n\006LD_FLD\0204\022\n\n\006LD"
+        + "_FTN\0205\022\013\n\007LD_SFLD\0206\022\014\n\010LD_TOKEN\0207\022\017\n\013LD_"
+        + "VIRT_FTN\0208\022\r\n\tLOC_ALLOC\0209\022\016\n\nMK_REF_ANY\020"
+        + ":\022\006\n\002NO\020;\022\014\n\010READONLY\020<\022\020\n\014REF_ANY_TYPE\020"
+        + "=\022\017\n\013REF_ANY_VAL\020>\022\013\n\007SIZE_OF\020?\022\013\n\007ST_SF"
+        + "LD\020@\022\n\n\006SWITCH\020A\022\010\n\004TAIL\020B\022\r\n\tUNALIGNED\020"
+        + "C\022\014\n\010VOLATILE\020D\022\023\n\017LD_MEMBER_TOKEN\020E\022\021\n\r"
+        + "LD_TYPE_TOKEN\020F\022\022\n\016INVALID_BRANCH\020G\022\021\n\rC"
+        + "ALL_INDIRECT\020H\"\231\001\n\027IlBinaryNumericOperat"
+        + "or\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022\007\n\003Sub\020\002\022\007\n"
+        + "\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006BitAnd\020\006\022\t\n\005"
+        + "BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftLeft\020\t\022\016\n\nSh"
+        + "iftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_SIGN\020\000\022\n\n\006S"
+        + "igned\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlComparisonKi"
+        + "nd\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality\020\001\022\016\n\nInequ"
+        + "ality\020\002\022\014\n\010LessThan\020\003\022\023\n\017LessThanOrEqual"
+        + "\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022GreaterThanOrEqua"
+        + "l\020\006\"\342\001\n\020IlConversionKind\022\023\n\017NONE_CONVERS"
+        + "ION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016\n\nIntToFloa"
+        + "t\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatPrecisionCha"
+        + "nge\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZeroExtend\020\007\022\014\n"
+        + "\010Truncate\020\010\022\022\n\016StopGCTracking\020\t\022\023\n\017Start"
+        + "GCTracking\020\n\022\022\n\016ObjectInterior\020\013\"\216\001\n\013IlS"
+        + "tackType\022\023\n\017NONE_STACK_TYPE\020\000\022\021\n\rUnknown"
+        + "_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_STACK\020\003\022\014\n\010I"
+        + "8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001O\020\007\022\r\n\tRef_"
+        + "STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimitiveType\022\027\n"
+        + "\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004None\020\001\022\006\n\002I1\020\002"
+        + "\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R4\020\006\022\006\n\002R8\020\007"
+        + "\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U8\020\013\022\005\n\001I\020\014\022"
+        + "\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unknown\020\020\"\314\003\n\r"
+        + "IlVariableMsg\022\035\n\004type\030\001 \001(\0132\017.TypeDefini"
+        + "tion\022\014\n\004name\030\002 \001(\t\022\031\n\021has_initial_value\030"
+        + "\003 \001(\010\0224\n\rvariable_kind\030\004 \001(\0162\035.IlVariabl"
+        + "eMsg.IlVariableKind\"\274\002\n\016IlVariableKind\022\010"
+        + "\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED_LOCAL\020\002\022\027\n"
+        + "\023PINNED_REGION_LOCAL\020\003\022\017\n\013USING_LOCAL\020\004\022"
+        + "\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIALIZER_TARGET"
+        + "\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTION_STACK_SLO"
+        + "T\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tSTACKSLOT\020\n\022"
+        + "\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLAY_CLASS_LOC"
+        + "AL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DECONSTRUCTIO"
+        + "N_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryCatchHandler"
+        + "Msg\022\"\n\004body\030\001 \001(\0132\024.IlBlockContainerMsg\022"
+        + " \n\010variable\030\002 \001(\0132\016.IlVariableMsg\022$\n\006fil"
+        + "ter\030\003 \001(\0132\024.IlBlockContainerMsg\022\022\n\nhas_f"
+        + "ilter\030\004 \001(\010\"L\n\022IlSwitchSectionMsg\022\r\n\005lab"
+        + "el\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(\0132\021.IlInstr"
+        + "uctionMsgBQ\n\021soot.dotnet.protoB\023ProtoIlI" + "nstructions\252\002&Soot.Dotnet.Decompiler.Mod"
+        + "els.Protobufb\006proto3" };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor.internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] { soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor(), });
+    internal_static_IlFunctionMsg_descriptor = getDescriptor().getMessageTypes().get(0);
+    internal_static_IlFunctionMsg_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_IlFunctionMsg_descriptor, new java.lang.String[] { "Body", "Variables", });
+    internal_static_IlBlockContainerMsg_descriptor = getDescriptor().getMessageTypes().get(1);
+    internal_static_IlBlockContainerMsg_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_IlBlockContainerMsg_descriptor, new java.lang.String[] { "Blocks", });
+    internal_static_IlBlock_descriptor = getDescriptor().getMessageTypes().get(2);
+    internal_static_IlBlock_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_IlBlock_descriptor, new java.lang.String[] { "ListOfIlInstructions", "BlockName", });
+    internal_static_IlInstructionMsg_descriptor = getDescriptor().getMessageTypes().get(3);
+    internal_static_IlInstructionMsg_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_IlInstructionMsg_descriptor,
+            new java.lang.String[] { "OpCode", "Method", "Arguments", "ValueInstruction", "ValueConstantString",
+                "ValueConstantInt32", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "Target", "Type",
+                "Field", "Variable", "Operator", "Sign", "Left", "Right", "TargetLabel", "ComparisonKind", "Condition",
+                "TrueInst", "FalseInst", "Array", "ConversionKind", "InputType", "TargetType", "Argument", "ResultType",
+                "Indices", "TryBlock", "Handlers", "FinallyBlock", "FaultBlock", "Body", "KeyInstr", "DefaultInst",
+                "SwitchSections", });
+    internal_static_IlVariableMsg_descriptor = getDescriptor().getMessageTypes().get(4);
+    internal_static_IlVariableMsg_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_IlVariableMsg_descriptor,
+            new java.lang.String[] { "Type", "Name", "HasInitialValue", "VariableKind", });
+    internal_static_IlTryCatchHandlerMsg_descriptor = getDescriptor().getMessageTypes().get(5);
+    internal_static_IlTryCatchHandlerMsg_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_IlTryCatchHandlerMsg_descriptor,
+            new java.lang.String[] { "Body", "Variable", "Filter", "HasFilter", });
+    internal_static_IlSwitchSectionMsg_descriptor = getDescriptor().getMessageTypes().get(6);
+    internal_static_IlSwitchSectionMsg_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_IlSwitchSectionMsg_descriptor, new java.lang.String[] { "Label", "TargetInstr", });
     soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor();
   }
 

@@ -3,22 +3,43 @@
 
 package soot.dotnet.proto;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2022 Fraunhofer SIT
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 public final class ProtoAssemblyAllTypes {
-  private ProtoAssemblyAllTypes() {}
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
+  private ProtoAssemblyAllTypes() {
   }
 
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
+  public static void registerAllExtensions(com.google.protobuf.ExtensionRegistryLite registry) {
   }
+
+  public static void registerAllExtensions(com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions((com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+
   /**
    * Protobuf enum {@code Accessibility}
    */
-  public enum Accessibility
-      implements com.google.protobuf.ProtocolMessageEnum {
+  public enum Accessibility implements com.google.protobuf.ProtocolMessageEnum {
     /**
      * <code>NONE = 0;</code>
      */
@@ -46,9 +67,7 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>PROTECTED_OR_INTERNAL = 6;</code>
      */
-    PROTECTED_OR_INTERNAL(6),
-    UNRECOGNIZED(-1),
-    ;
+    PROTECTED_OR_INTERNAL(6), UNRECOGNIZED(-1),;
 
     /**
      * <code>NONE = 0;</code>
@@ -79,17 +98,16 @@ public final class ProtoAssemblyAllTypes {
      */
     public static final int PROTECTED_OR_INTERNAL_VALUE = 6;
 
-
     public final int getNumber() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
+        throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
       }
       return value;
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      * @deprecated Use {@link #forNumber(int)} instead.
      */
@@ -99,58 +117,62 @@ public final class ProtoAssemblyAllTypes {
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      */
     public static Accessibility forNumber(int value) {
       switch (value) {
-        case 0: return NONE;
-        case 1: return PRIVATE;
-        case 2: return PUBLIC;
-        case 3: return INTERNAL;
-        case 4: return PROTECTED;
-        case 5: return PROTECTED_AND_INTERNAL;
-        case 6: return PROTECTED_OR_INTERNAL;
-        default: return null;
+        case 0:
+          return NONE;
+        case 1:
+          return PRIVATE;
+        case 2:
+          return PUBLIC;
+        case 3:
+          return INTERNAL;
+        case 4:
+          return PROTECTED;
+        case 5:
+          return PROTECTED_AND_INTERNAL;
+        case 6:
+          return PROTECTED_OR_INTERNAL;
+        default:
+          return null;
       }
     }
 
-    public static com.google.protobuf.Internal.EnumLiteMap<Accessibility>
-        internalGetValueMap() {
+    public static com.google.protobuf.Internal.EnumLiteMap<Accessibility> internalGetValueMap() {
       return internalValueMap;
     }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        Accessibility> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<Accessibility>() {
-            public Accessibility findValueByNumber(int number) {
-              return Accessibility.forNumber(number);
-            }
-          };
 
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
+    private static final com.google.protobuf.Internal.EnumLiteMap<Accessibility> internalValueMap
+        = new com.google.protobuf.Internal.EnumLiteMap<Accessibility>() {
+          public Accessibility findValueByNumber(int number) {
+            return Accessibility.forNumber(number);
+          }
+        };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
+        throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
       }
       return getDescriptor().getValues().get(ordinal());
     }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
+
+    public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
       return getDescriptor();
     }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final Accessibility[] VALUES = values();
 
-    public static Accessibility valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+    public static Accessibility valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
+        throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
       }
       if (desc.getIndex() == -1) {
         return UNRECOGNIZED;
@@ -170,8 +192,7 @@ public final class ProtoAssemblyAllTypes {
   /**
    * Protobuf enum {@code TypeKindDef}
    */
-  public enum TypeKindDef
-      implements com.google.protobuf.ProtocolMessageEnum {
+  public enum TypeKindDef implements com.google.protobuf.ProtocolMessageEnum {
     /**
      * <code>NO_TYPE = 0;</code>
      */
@@ -275,9 +296,7 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>BY_REF_AND_ARRAY = 25;</code>
      */
-    BY_REF_AND_ARRAY(25),
-    UNRECOGNIZED(-1),
-    ;
+    BY_REF_AND_ARRAY(25), UNRECOGNIZED(-1),;
 
     /**
      * <code>NO_TYPE = 0;</code>
@@ -384,17 +403,16 @@ public final class ProtoAssemblyAllTypes {
      */
     public static final int BY_REF_AND_ARRAY_VALUE = 25;
 
-
     public final int getNumber() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
+        throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
       }
       return value;
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      * @deprecated Use {@link #forNumber(int)} instead.
      */
@@ -404,77 +422,100 @@ public final class ProtoAssemblyAllTypes {
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      */
     public static TypeKindDef forNumber(int value) {
       switch (value) {
-        case 0: return NO_TYPE;
-        case 1: return OTHER;
-        case 2: return CLASS;
-        case 3: return INTERFACE;
-        case 4: return STRUCT;
-        case 5: return DELEGATE;
-        case 6: return ENUM;
-        case 7: return VOID;
-        case 8: return UNKNOWN;
-        case 9: return NULL;
-        case 10: return NONE_TYPE;
-        case 11: return DYNAMIC;
-        case 12: return UNBOUND_TYPE_ARG;
-        case 13: return TYPE_PARAMETER;
-        case 14: return ARRAY;
-        case 15: return POINTER;
-        case 16: return BY_REF;
-        case 17: return INTERSECTION;
-        case 18: return ARG_LIST;
-        case 19: return TUPLE;
-        case 20: return MOD_OPT;
-        case 21: return MOD_REQ;
-        case 22: return N_INT;
-        case 23: return N_UINT;
-        case 24: return FUNCTION_POINTER;
-        case 25: return BY_REF_AND_ARRAY;
-        default: return null;
+        case 0:
+          return NO_TYPE;
+        case 1:
+          return OTHER;
+        case 2:
+          return CLASS;
+        case 3:
+          return INTERFACE;
+        case 4:
+          return STRUCT;
+        case 5:
+          return DELEGATE;
+        case 6:
+          return ENUM;
+        case 7:
+          return VOID;
+        case 8:
+          return UNKNOWN;
+        case 9:
+          return NULL;
+        case 10:
+          return NONE_TYPE;
+        case 11:
+          return DYNAMIC;
+        case 12:
+          return UNBOUND_TYPE_ARG;
+        case 13:
+          return TYPE_PARAMETER;
+        case 14:
+          return ARRAY;
+        case 15:
+          return POINTER;
+        case 16:
+          return BY_REF;
+        case 17:
+          return INTERSECTION;
+        case 18:
+          return ARG_LIST;
+        case 19:
+          return TUPLE;
+        case 20:
+          return MOD_OPT;
+        case 21:
+          return MOD_REQ;
+        case 22:
+          return N_INT;
+        case 23:
+          return N_UINT;
+        case 24:
+          return FUNCTION_POINTER;
+        case 25:
+          return BY_REF_AND_ARRAY;
+        default:
+          return null;
       }
     }
 
-    public static com.google.protobuf.Internal.EnumLiteMap<TypeKindDef>
-        internalGetValueMap() {
+    public static com.google.protobuf.Internal.EnumLiteMap<TypeKindDef> internalGetValueMap() {
       return internalValueMap;
     }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        TypeKindDef> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<TypeKindDef>() {
-            public TypeKindDef findValueByNumber(int number) {
-              return TypeKindDef.forNumber(number);
-            }
-          };
 
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
+    private static final com.google.protobuf.Internal.EnumLiteMap<TypeKindDef> internalValueMap
+        = new com.google.protobuf.Internal.EnumLiteMap<TypeKindDef>() {
+          public TypeKindDef findValueByNumber(int number) {
+            return TypeKindDef.forNumber(number);
+          }
+        };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
+        throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
       }
       return getDescriptor().getValues().get(ordinal());
     }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
+
+    public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
       return getDescriptor();
     }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final TypeKindDef[] VALUES = values();
 
-    public static TypeKindDef valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+    public static TypeKindDef valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
+        throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
       }
       if (desc.getIndex() == -1) {
         return UNRECOGNIZED;
@@ -498,52 +539,61 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> 
-        getListOfTypesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getListOfTypesList();
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getListOfTypes(int index);
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
     int getListOfTypesCount();
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
-        getListOfTypesOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> getListOfTypesOrBuilderList();
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getListOfTypesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getListOfTypesOrBuilder(int index);
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
+     * 
      * @return A list containing the allReferencedModuleTypes.
      */
-    java.util.List<java.lang.String>
-        getAllReferencedModuleTypesList();
+    java.util.List<java.lang.String> getAllReferencedModuleTypesList();
+
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
+     * 
      * @return The count of allReferencedModuleTypes.
      */
     int getAllReferencedModuleTypesCount();
+
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The allReferencedModuleTypes at the given index.
      */
     java.lang.String getAllReferencedModuleTypes(int index);
+
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * @param index The index of the value to return.
+     * 
+     * @param index
+     *          The index of the value to return.
      * @return The bytes of the allReferencedModuleTypes at the given index.
      */
-    com.google.protobuf.ByteString
-        getAllReferencedModuleTypesBytes(int index);
+    com.google.protobuf.ByteString getAllReferencedModuleTypesBytes(int index);
   }
+
   /**
    * <pre>
    * All types and references of one assembly
@@ -551,34 +601,33 @@ public final class ProtoAssemblyAllTypes {
    *
    * Protobuf type {@code AssemblyAllTypes}
    */
-  public static final class AssemblyAllTypes extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class AssemblyAllTypes extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:AssemblyAllTypes)
       AssemblyAllTypesOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use AssemblyAllTypes.newBuilder() to construct.
     private AssemblyAllTypes(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private AssemblyAllTypes() {
       listOfTypes_ = java.util.Collections.emptyList();
       allReferencedModuleTypes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new AssemblyAllTypes();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private AssemblyAllTypes(
-        com.google.protobuf.CodedInputStream input,
+
+    private AssemblyAllTypes(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -586,8 +635,7 @@ public final class ProtoAssemblyAllTypes {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -615,8 +663,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -626,8 +673,7 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           listOfTypes_ = java.util.Collections.unmodifiableList(listOfTypes_);
@@ -639,21 +685,21 @@ public final class ProtoAssemblyAllTypes {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AssemblyAllTypes_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AssemblyAllTypes_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.class, soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.Builder.class);
     }
 
     public static final int LIST_OF_TYPES_FIELD_NUMBER = 1;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> listOfTypes_;
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
@@ -661,14 +707,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getListOfTypesList() {
       return listOfTypes_;
     }
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
         getListOfTypesOrBuilderList() {
       return listOfTypes_;
     }
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
@@ -676,6 +724,7 @@ public final class ProtoAssemblyAllTypes {
     public int getListOfTypesCount() {
       return listOfTypes_.size();
     }
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
@@ -683,64 +732,74 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getListOfTypes(int index) {
       return listOfTypes_.get(index);
     }
+
     /**
      * <code>repeated .TypeDefinition list_of_types = 1;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getListOfTypesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getListOfTypesOrBuilder(int index) {
       return listOfTypes_.get(index);
     }
 
     public static final int ALL_REFERENCED_MODULE_TYPES_FIELD_NUMBER = 2;
     private com.google.protobuf.LazyStringList allReferencedModuleTypes_;
+
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
+     * 
      * @return A list containing the allReferencedModuleTypes.
      */
-    public com.google.protobuf.ProtocolStringList
-        getAllReferencedModuleTypesList() {
+    public com.google.protobuf.ProtocolStringList getAllReferencedModuleTypesList() {
       return allReferencedModuleTypes_;
     }
+
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
+     * 
      * @return The count of allReferencedModuleTypes.
      */
     public int getAllReferencedModuleTypesCount() {
       return allReferencedModuleTypes_.size();
     }
+
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The allReferencedModuleTypes at the given index.
      */
     public java.lang.String getAllReferencedModuleTypes(int index) {
       return allReferencedModuleTypes_.get(index);
     }
+
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * @param index The index of the value to return.
+     * 
+     * @param index
+     *          The index of the value to return.
      * @return The bytes of the allReferencedModuleTypes at the given index.
      */
-    public com.google.protobuf.ByteString
-        getAllReferencedModuleTypesBytes(int index) {
+    public com.google.protobuf.ByteString getAllReferencedModuleTypesBytes(int index) {
       return allReferencedModuleTypes_.getByteString(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       for (int i = 0; i < listOfTypes_.size(); i++) {
         output.writeMessage(1, listOfTypes_.get(i));
       }
@@ -753,12 +812,12 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       for (int i = 0; i < listOfTypes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, listOfTypes_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, listOfTypes_.get(i));
       }
       {
         int dataSize = 0;
@@ -776,18 +835,20 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes other = (soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes) obj;
 
-      if (!getListOfTypesList()
-          .equals(other.getListOfTypesList())) return false;
-      if (!getAllReferencedModuleTypesList()
-          .equals(other.getAllReferencedModuleTypesList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getListOfTypesList().equals(other.getListOfTypesList()))
+        return false;
+      if (!getAllReferencedModuleTypesList().equals(other.getAllReferencedModuleTypesList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -811,96 +872,94 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * <pre>
      * All types and references of one assembly
@@ -908,21 +967,18 @@ public final class ProtoAssemblyAllTypes {
      *
      * Protobuf type {@code AssemblyAllTypes}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:AssemblyAllTypes)
         soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypesOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AssemblyAllTypes_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AssemblyAllTypes_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.class, soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.newBuilder()
@@ -930,17 +986,17 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getListOfTypesFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -956,8 +1012,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AssemblyAllTypes_descriptor;
       }
 
@@ -977,7 +1032,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes result = new soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes(this);
         int from_bitField0_ = bitField0_;
         if (listOfTypesBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
@@ -1001,38 +1057,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -1040,7 +1095,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes.getDefaultInstance())
+          return this;
         if (listOfTypesBuilder_ == null) {
           if (!other.listOfTypes_.isEmpty()) {
             if (listOfTypes_.isEmpty()) {
@@ -1059,9 +1115,8 @@ public final class ProtoAssemblyAllTypes {
               listOfTypesBuilder_ = null;
               listOfTypes_ = other.listOfTypes_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              listOfTypesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getListOfTypesFieldBuilder() : null;
+              listOfTypesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getListOfTypesFieldBuilder() : null;
             } else {
               listOfTypesBuilder_.addAllMessages(other.listOfTypes_);
             }
@@ -1088,10 +1143,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.AssemblyAllTypes parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -1105,19 +1158,20 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> listOfTypes_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> listOfTypes_
+          = java.util.Collections.emptyList();
+
       private void ensureListOfTypesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           listOfTypes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition>(listOfTypes_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> listOfTypesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> listOfTypesBuilder_;
 
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
@@ -1129,6 +1183,7 @@ public final class ProtoAssemblyAllTypes {
           return listOfTypesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
@@ -1139,6 +1194,7 @@ public final class ProtoAssemblyAllTypes {
           return listOfTypesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
@@ -1149,11 +1205,11 @@ public final class ProtoAssemblyAllTypes {
           return listOfTypesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public Builder setListOfTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder setListOfTypes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (listOfTypesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1166,11 +1222,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public Builder setListOfTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setListOfTypes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (listOfTypesBuilder_ == null) {
           ensureListOfTypesIsMutable();
           listOfTypes_.set(index, builderForValue.build());
@@ -1180,6 +1237,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
@@ -1196,11 +1254,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public Builder addListOfTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder addListOfTypes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (listOfTypesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1213,11 +1271,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public Builder addListOfTypes(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder addListOfTypes(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (listOfTypesBuilder_ == null) {
           ensureListOfTypesIsMutable();
           listOfTypes_.add(builderForValue.build());
@@ -1227,11 +1285,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public Builder addListOfTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder addListOfTypes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (listOfTypesBuilder_ == null) {
           ensureListOfTypesIsMutable();
           listOfTypes_.add(index, builderForValue.build());
@@ -1241,21 +1300,22 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public Builder addAllListOfTypes(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> values) {
+      public Builder
+          addAllListOfTypes(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> values) {
         if (listOfTypesBuilder_ == null) {
           ensureListOfTypesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, listOfTypes_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, listOfTypes_);
           onChanged();
         } else {
           listOfTypesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
@@ -1269,6 +1329,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
@@ -1282,156 +1343,174 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getListOfTypesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getListOfTypesBuilder(int index) {
         return getListOfTypesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getListOfTypesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getListOfTypesOrBuilder(int index) {
         if (listOfTypesBuilder_ == null) {
-          return listOfTypes_.get(index);  } else {
+          return listOfTypes_.get(index);
+        } else {
           return listOfTypesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
-           getListOfTypesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
+          getListOfTypesOrBuilderList() {
         if (listOfTypesBuilder_ != null) {
           return listOfTypesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(listOfTypes_);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addListOfTypesBuilder() {
-        return getListOfTypesFieldBuilder().addBuilder(
+        return getListOfTypesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .TypeDefinition list_of_types = 1;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addListOfTypesBuilder(int index) {
+        return getListOfTypesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .TypeDefinition list_of_types = 1;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addListOfTypesBuilder(
-          int index) {
-        return getListOfTypesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .TypeDefinition list_of_types = 1;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> 
-           getListOfTypesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> getListOfTypesBuilderList() {
         return getListOfTypesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getListOfTypesFieldBuilder() {
         if (listOfTypesBuilder_ == null) {
-          listOfTypesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  listOfTypes_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          listOfTypesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  listOfTypes_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           listOfTypes_ = null;
         }
         return listOfTypesBuilder_;
       }
 
       private com.google.protobuf.LazyStringList allReferencedModuleTypes_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+
       private void ensureAllReferencedModuleTypesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           allReferencedModuleTypes_ = new com.google.protobuf.LazyStringArrayList(allReferencedModuleTypes_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
+       * 
        * @return A list containing the allReferencedModuleTypes.
        */
-      public com.google.protobuf.ProtocolStringList
-          getAllReferencedModuleTypesList() {
+      public com.google.protobuf.ProtocolStringList getAllReferencedModuleTypesList() {
         return allReferencedModuleTypes_.getUnmodifiableView();
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
+       * 
        * @return The count of allReferencedModuleTypes.
        */
       public int getAllReferencedModuleTypesCount() {
         return allReferencedModuleTypes_.size();
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * @param index The index of the element to return.
+       * 
+       * @param index
+       *          The index of the element to return.
        * @return The allReferencedModuleTypes at the given index.
        */
       public java.lang.String getAllReferencedModuleTypes(int index) {
         return allReferencedModuleTypes_.get(index);
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * @param index The index of the value to return.
+       * 
+       * @param index
+       *          The index of the value to return.
        * @return The bytes of the allReferencedModuleTypes at the given index.
        */
-      public com.google.protobuf.ByteString
-          getAllReferencedModuleTypesBytes(int index) {
+      public com.google.protobuf.ByteString getAllReferencedModuleTypesBytes(int index) {
         return allReferencedModuleTypes_.getByteString(index);
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * @param index The index to set the value at.
-       * @param value The allReferencedModuleTypes to set.
+       * 
+       * @param index
+       *          The index to set the value at.
+       * @param value
+       *          The allReferencedModuleTypes to set.
        * @return This builder for chaining.
        */
-      public Builder setAllReferencedModuleTypes(
-          int index, java.lang.String value) {
+      public Builder setAllReferencedModuleTypes(int index, java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureAllReferencedModuleTypesIsMutable();
+          throw new NullPointerException();
+        }
+        ensureAllReferencedModuleTypesIsMutable();
         allReferencedModuleTypes_.set(index, value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * @param value The allReferencedModuleTypes to add.
+       * 
+       * @param value
+       *          The allReferencedModuleTypes to add.
        * @return This builder for chaining.
        */
-      public Builder addAllReferencedModuleTypes(
-          java.lang.String value) {
+      public Builder addAllReferencedModuleTypes(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureAllReferencedModuleTypesIsMutable();
+          throw new NullPointerException();
+        }
+        ensureAllReferencedModuleTypesIsMutable();
         allReferencedModuleTypes_.add(value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * @param values The allReferencedModuleTypes to add.
+       * 
+       * @param values
+       *          The allReferencedModuleTypes to add.
        * @return This builder for chaining.
        */
-      public Builder addAllAllReferencedModuleTypes(
-          java.lang.Iterable<java.lang.String> values) {
+      public Builder addAllAllReferencedModuleTypes(java.lang.Iterable<java.lang.String> values) {
         ensureAllReferencedModuleTypesIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, allReferencedModuleTypes_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(values, allReferencedModuleTypes_);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAllReferencedModuleTypes() {
@@ -1440,34 +1519,34 @@ public final class ProtoAssemblyAllTypes {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * @param value The bytes of the allReferencedModuleTypes to add.
+       * 
+       * @param value
+       *          The bytes of the allReferencedModuleTypes to add.
        * @return This builder for chaining.
        */
-      public Builder addAllReferencedModuleTypesBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder addAllReferencedModuleTypesBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
         ensureAllReferencedModuleTypesIsMutable();
         allReferencedModuleTypes_.add(value);
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:AssemblyAllTypes)
     }
@@ -1482,16 +1561,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<AssemblyAllTypes>
-        PARSER = new com.google.protobuf.AbstractParser<AssemblyAllTypes>() {
-      @java.lang.Override
-      public AssemblyAllTypes parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new AssemblyAllTypes(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<AssemblyAllTypes> PARSER
+        = new com.google.protobuf.AbstractParser<AssemblyAllTypes>() {
+          @java.lang.Override
+          public AssemblyAllTypes parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new AssemblyAllTypes(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<AssemblyAllTypes> parser() {
       return PARSER;
@@ -1515,106 +1593,124 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>string fullname = 2;</code>
+     * 
      * @return The fullname.
      */
     java.lang.String getFullname();
+
     /**
      * <code>string fullname = 2;</code>
+     * 
      * @return The bytes for fullname.
      */
-    com.google.protobuf.ByteString
-        getFullnameBytes();
+    com.google.protobuf.ByteString getFullnameBytes();
 
     /**
      * <code>string namespace = 3;</code>
+     * 
      * @return The namespace.
      */
     java.lang.String getNamespace();
+
     /**
      * <code>string namespace = 3;</code>
+     * 
      * @return The bytes for namespace.
      */
-    com.google.protobuf.ByteString
-        getNamespaceBytes();
+    com.google.protobuf.ByteString getNamespaceBytes();
 
     /**
      * <code>bool is_abstract = 4;</code>
+     * 
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_read_only = 5;</code>
+     * 
      * @return The isReadOnly.
      */
     boolean getIsReadOnly();
 
     /**
      * <code>bool is_sealed = 6;</code>
+     * 
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>bool is_static = 7;</code>
+     * 
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>string declaring_outer_class = 8;</code>
+     * 
      * @return The declaringOuterClass.
      */
     java.lang.String getDeclaringOuterClass();
+
     /**
      * <code>string declaring_outer_class = 8;</code>
+     * 
      * @return The bytes for declaringOuterClass.
      */
-    com.google.protobuf.ByteString
-        getDeclaringOuterClassBytes();
+    com.google.protobuf.ByteString getDeclaringOuterClassBytes();
 
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> 
-        getDirectBaseTypesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getDirectBaseTypesList();
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDirectBaseTypes(int index);
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
     int getDirectBaseTypesCount();
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
         getDirectBaseTypesOrBuilderList();
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getDirectBaseTypesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getDirectBaseTypesOrBuilder(int index);
 
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
+     * 
      * @return The enum numeric value on the wire for typeKind.
      */
     int getTypeKindValue();
+
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
+     * 
      * @return The typeKind.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind();
@@ -1622,149 +1718,159 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> 
-        getMethodsList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> getMethodsList();
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getMethods(int index);
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
     int getMethodsCount();
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
-        getMethodsOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> getMethodsOrBuilderList();
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder getMethodsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder getMethodsOrBuilder(int index);
 
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> 
-        getFieldsList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> getFieldsList();
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition getFields(int index);
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
     int getFieldsCount();
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> 
-        getFieldsOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> getFieldsOrBuilderList();
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder getFieldsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder getFieldsOrBuilder(int index);
 
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> 
-        getPropertiesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> getPropertiesList();
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition getProperties(int index);
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
     int getPropertiesCount();
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder>
         getPropertiesOrBuilderList();
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder getPropertiesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder getPropertiesOrBuilder(int index);
 
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> 
-        getNestedTypesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getNestedTypesList();
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getNestedTypes(int index);
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
     int getNestedTypesCount();
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
-        getNestedTypesOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> getNestedTypesOrBuilderList();
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getNestedTypesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getNestedTypesOrBuilder(int index);
 
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> 
-        getAttributesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index);
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     int getAttributesCount();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index);
 
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> 
-        getGenericTypeArgumentsList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getGenericTypeArgumentsList();
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getGenericTypeArguments(int index);
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
     int getGenericTypeArgumentsCount();
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
         getGenericTypeArgumentsOrBuilderList();
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getGenericTypeArgumentsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getGenericTypeArgumentsOrBuilder(int index);
 
     /**
      * <code>int32 array_dimensions = 17;</code>
+     * 
      * @return The arrayDimensions.
      */
     int getArrayDimensions();
@@ -1772,26 +1878,27 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> 
-        getEventsList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> getEventsList();
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition getEvents(int index);
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
     int getEventsCount();
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder> 
-        getEventsOrBuilderList();
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder> getEventsOrBuilderList();
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder getEventsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder getEventsOrBuilder(int index);
 
     /**
      * <pre>
@@ -1799,22 +1906,25 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 19;</code>
+     * 
      * @return The peToken.
      */
     int getPeToken();
   }
+
   /**
    * Protobuf type {@code TypeDefinition}
    */
-  public static final class TypeDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class TypeDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:TypeDefinition)
       TypeDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use TypeDefinition.newBuilder() to construct.
     private TypeDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private TypeDefinition() {
       accessibility_ = 0;
       fullname_ = "";
@@ -1832,19 +1942,17 @@ public final class ProtoAssemblyAllTypes {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new TypeDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private TypeDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private TypeDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -1852,8 +1960,7 @@ public final class ProtoAssemblyAllTypes {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -1962,8 +2069,8 @@ public final class ProtoAssemblyAllTypes {
                 attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>();
                 mutable_bitField0_ |= 0x00000020;
               }
-              attributes_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(), extensionRegistry));
+              attributes_.add(input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(),
+                  extensionRegistry));
               break;
             }
             case 130: {
@@ -1995,8 +2102,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -2006,8 +2112,7 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           directBaseTypes_ = java.util.Collections.unmodifiableList(directBaseTypes_);
@@ -2037,42 +2142,50 @@ public final class ProtoAssemblyAllTypes {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_TypeDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_TypeDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder.class);
     }
 
     public static final int ACCESSIBILITY_FIELD_NUMBER = 1;
     private int accessibility_;
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
-    @java.lang.Override public int getAccessibilityValue() {
+    @java.lang.Override
+    public int getAccessibilityValue() {
       return accessibility_;
     }
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
     }
 
     public static final int FULLNAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object fullname_;
+
     /**
      * <code>string fullname = 2;</code>
+     * 
      * @return The fullname.
      */
     @java.lang.Override
@@ -2081,25 +2194,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         fullname_ = s;
         return s;
       }
     }
+
     /**
      * <code>string fullname = 2;</code>
+     * 
      * @return The bytes for fullname.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFullnameBytes() {
+    public com.google.protobuf.ByteString getFullnameBytes() {
       java.lang.Object ref = fullname_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         fullname_ = b;
         return b;
       } else {
@@ -2109,8 +2220,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int NAMESPACE_FIELD_NUMBER = 3;
     private volatile java.lang.Object namespace_;
+
     /**
      * <code>string namespace = 3;</code>
+     * 
      * @return The namespace.
      */
     @java.lang.Override
@@ -2119,25 +2232,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         namespace_ = s;
         return s;
       }
     }
+
     /**
      * <code>string namespace = 3;</code>
+     * 
      * @return The bytes for namespace.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNamespaceBytes() {
+    public com.google.protobuf.ByteString getNamespaceBytes() {
       java.lang.Object ref = namespace_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         namespace_ = b;
         return b;
       } else {
@@ -2147,8 +2258,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_ABSTRACT_FIELD_NUMBER = 4;
     private boolean isAbstract_;
+
     /**
      * <code>bool is_abstract = 4;</code>
+     * 
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -2158,8 +2271,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_READ_ONLY_FIELD_NUMBER = 5;
     private boolean isReadOnly_;
+
     /**
      * <code>bool is_read_only = 5;</code>
+     * 
      * @return The isReadOnly.
      */
     @java.lang.Override
@@ -2169,8 +2284,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_SEALED_FIELD_NUMBER = 6;
     private boolean isSealed_;
+
     /**
      * <code>bool is_sealed = 6;</code>
+     * 
      * @return The isSealed.
      */
     @java.lang.Override
@@ -2180,8 +2297,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_STATIC_FIELD_NUMBER = 7;
     private boolean isStatic_;
+
     /**
      * <code>bool is_static = 7;</code>
+     * 
      * @return The isStatic.
      */
     @java.lang.Override
@@ -2191,8 +2310,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int DECLARING_OUTER_CLASS_FIELD_NUMBER = 8;
     private volatile java.lang.Object declaringOuterClass_;
+
     /**
      * <code>string declaring_outer_class = 8;</code>
+     * 
      * @return The declaringOuterClass.
      */
     @java.lang.Override
@@ -2201,25 +2322,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         declaringOuterClass_ = s;
         return s;
       }
     }
+
     /**
      * <code>string declaring_outer_class = 8;</code>
+     * 
      * @return The bytes for declaringOuterClass.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getDeclaringOuterClassBytes() {
+    public com.google.protobuf.ByteString getDeclaringOuterClassBytes() {
       java.lang.Object ref = declaringOuterClass_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         declaringOuterClass_ = b;
         return b;
       } else {
@@ -2229,6 +2348,7 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int DIRECT_BASE_TYPES_FIELD_NUMBER = 9;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> directBaseTypes_;
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
@@ -2236,14 +2356,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getDirectBaseTypesList() {
       return directBaseTypes_;
     }
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
         getDirectBaseTypesOrBuilderList() {
       return directBaseTypes_;
     }
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
@@ -2251,6 +2373,7 @@ public final class ProtoAssemblyAllTypes {
     public int getDirectBaseTypesCount() {
       return directBaseTypes_.size();
     }
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
@@ -2258,36 +2381,44 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDirectBaseTypes(int index) {
       return directBaseTypes_.get(index);
     }
+
     /**
      * <code>repeated .TypeDefinition direct_base_types = 9;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getDirectBaseTypesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getDirectBaseTypesOrBuilder(int index) {
       return directBaseTypes_.get(index);
     }
 
     public static final int TYPE_KIND_FIELD_NUMBER = 10;
     private int typeKind_;
+
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
+     * 
      * @return The enum numeric value on the wire for typeKind.
      */
-    @java.lang.Override public int getTypeKindValue() {
+    @java.lang.Override
+    public int getTypeKindValue() {
       return typeKind_;
     }
+
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
+     * 
      * @return The typeKind.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.UNRECOGNIZED : result;
     }
 
     public static final int METHODS_FIELD_NUMBER = 11;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> methods_;
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
@@ -2295,14 +2426,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> getMethodsList() {
       return methods_;
     }
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
         getMethodsOrBuilderList() {
       return methods_;
     }
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
@@ -2310,6 +2443,7 @@ public final class ProtoAssemblyAllTypes {
     public int getMethodsCount() {
       return methods_.size();
     }
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
@@ -2317,17 +2451,18 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getMethods(int index) {
       return methods_.get(index);
     }
+
     /**
      * <code>repeated .MethodDefinition methods = 11;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder getMethodsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder getMethodsOrBuilder(int index) {
       return methods_.get(index);
     }
 
     public static final int FIELDS_FIELD_NUMBER = 12;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> fields_;
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
@@ -2335,14 +2470,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> getFieldsList() {
       return fields_;
     }
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>
         getFieldsOrBuilderList() {
       return fields_;
     }
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
@@ -2350,6 +2487,7 @@ public final class ProtoAssemblyAllTypes {
     public int getFieldsCount() {
       return fields_.size();
     }
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
@@ -2357,17 +2495,18 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition getFields(int index) {
       return fields_.get(index);
     }
+
     /**
      * <code>repeated .FieldDefinition fields = 12;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder getFieldsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder getFieldsOrBuilder(int index) {
       return fields_.get(index);
     }
 
     public static final int PROPERTIES_FIELD_NUMBER = 13;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> properties_;
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
@@ -2375,14 +2514,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> getPropertiesList() {
       return properties_;
     }
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder>
         getPropertiesOrBuilderList() {
       return properties_;
     }
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
@@ -2390,6 +2531,7 @@ public final class ProtoAssemblyAllTypes {
     public int getPropertiesCount() {
       return properties_.size();
     }
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
@@ -2397,17 +2539,18 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition getProperties(int index) {
       return properties_.get(index);
     }
+
     /**
      * <code>repeated .PropertyDefinition properties = 13;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder getPropertiesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder getPropertiesOrBuilder(int index) {
       return properties_.get(index);
     }
 
     public static final int NESTED_TYPES_FIELD_NUMBER = 14;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> nestedTypes_;
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
@@ -2415,14 +2558,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getNestedTypesList() {
       return nestedTypes_;
     }
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
         getNestedTypesOrBuilderList() {
       return nestedTypes_;
     }
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
@@ -2430,6 +2575,7 @@ public final class ProtoAssemblyAllTypes {
     public int getNestedTypesCount() {
       return nestedTypes_.size();
     }
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
@@ -2437,17 +2583,18 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getNestedTypes(int index) {
       return nestedTypes_.get(index);
     }
+
     /**
      * <code>repeated .TypeDefinition nested_types = 14;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getNestedTypesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getNestedTypesOrBuilder(int index) {
       return nestedTypes_.get(index);
     }
 
     public static final int ATTRIBUTES_FIELD_NUMBER = 15;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_;
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
@@ -2455,14 +2602,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
@@ -2470,6 +2619,7 @@ public final class ProtoAssemblyAllTypes {
     public int getAttributesCount() {
       return attributes_.size();
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
@@ -2477,17 +2627,18 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index) {
       return attributes_.get(index);
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
       return attributes_.get(index);
     }
 
     public static final int GENERIC_TYPE_ARGUMENTS_FIELD_NUMBER = 16;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> genericTypeArguments_;
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
@@ -2495,14 +2646,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> getGenericTypeArgumentsList() {
       return genericTypeArguments_;
     }
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
         getGenericTypeArgumentsOrBuilderList() {
       return genericTypeArguments_;
     }
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
@@ -2510,6 +2663,7 @@ public final class ProtoAssemblyAllTypes {
     public int getGenericTypeArgumentsCount() {
       return genericTypeArguments_.size();
     }
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
@@ -2517,19 +2671,21 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getGenericTypeArguments(int index) {
       return genericTypeArguments_.get(index);
     }
+
     /**
      * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getGenericTypeArgumentsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getGenericTypeArgumentsOrBuilder(int index) {
       return genericTypeArguments_.get(index);
     }
 
     public static final int ARRAY_DIMENSIONS_FIELD_NUMBER = 17;
     private int arrayDimensions_;
+
     /**
      * <code>int32 array_dimensions = 17;</code>
+     * 
      * @return The arrayDimensions.
      */
     @java.lang.Override
@@ -2539,6 +2695,7 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int EVENTS_FIELD_NUMBER = 18;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> events_;
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
@@ -2546,14 +2703,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> getEventsList() {
       return events_;
     }
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder>
         getEventsOrBuilderList() {
       return events_;
     }
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
@@ -2561,6 +2720,7 @@ public final class ProtoAssemblyAllTypes {
     public int getEventsCount() {
       return events_.size();
     }
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
@@ -2568,23 +2728,25 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition getEvents(int index) {
       return events_.get(index);
     }
+
     /**
      * <code>repeated .EventDefinition events = 18;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder getEventsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder getEventsOrBuilder(int index) {
       return events_.get(index);
     }
 
     public static final int PE_TOKEN_FIELD_NUMBER = 19;
     private int peToken_;
+
     /**
      * <pre>
      *hexadecimal x8 pe token
      * </pre>
      *
      * <code>int32 pe_token = 19;</code>
+     * 
      * @return The peToken.
      */
     @java.lang.Override
@@ -2593,19 +2755,21 @@ public final class ProtoAssemblyAllTypes {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         output.writeEnum(1, accessibility_);
       }
@@ -2669,12 +2833,12 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, accessibility_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, accessibility_);
       }
       if (!getFullnameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, fullname_);
@@ -2683,67 +2847,52 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, namespace_);
       }
       if (isAbstract_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, isAbstract_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isAbstract_);
       }
       if (isReadOnly_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, isReadOnly_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isReadOnly_);
       }
       if (isSealed_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, isSealed_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isSealed_);
       }
       if (isStatic_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, isStatic_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isStatic_);
       }
       if (!getDeclaringOuterClassBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, declaringOuterClass_);
       }
       for (int i = 0; i < directBaseTypes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, directBaseTypes_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(9, directBaseTypes_.get(i));
       }
       if (typeKind_ != soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.NO_TYPE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(10, typeKind_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(10, typeKind_);
       }
       for (int i = 0; i < methods_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(11, methods_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(11, methods_.get(i));
       }
       for (int i = 0; i < fields_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, fields_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(12, fields_.get(i));
       }
       for (int i = 0; i < properties_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, properties_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(13, properties_.get(i));
       }
       for (int i = 0; i < nestedTypes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(14, nestedTypes_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(14, nestedTypes_.get(i));
       }
       for (int i = 0; i < attributes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, attributes_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(15, attributes_.get(i));
       }
       for (int i = 0; i < genericTypeArguments_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(16, genericTypeArguments_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(16, genericTypeArguments_.get(i));
       }
       if (arrayDimensions_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(17, arrayDimensions_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(17, arrayDimensions_);
       }
       for (int i = 0; i < events_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(18, events_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(18, events_.get(i));
       }
       if (peToken_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(19, peToken_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(19, peToken_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2753,50 +2902,54 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition) obj;
 
-      if (accessibility_ != other.accessibility_) return false;
-      if (!getFullname()
-          .equals(other.getFullname())) return false;
-      if (!getNamespace()
-          .equals(other.getNamespace())) return false;
-      if (getIsAbstract()
-          != other.getIsAbstract()) return false;
-      if (getIsReadOnly()
-          != other.getIsReadOnly()) return false;
-      if (getIsSealed()
-          != other.getIsSealed()) return false;
-      if (getIsStatic()
-          != other.getIsStatic()) return false;
-      if (!getDeclaringOuterClass()
-          .equals(other.getDeclaringOuterClass())) return false;
-      if (!getDirectBaseTypesList()
-          .equals(other.getDirectBaseTypesList())) return false;
-      if (typeKind_ != other.typeKind_) return false;
-      if (!getMethodsList()
-          .equals(other.getMethodsList())) return false;
-      if (!getFieldsList()
-          .equals(other.getFieldsList())) return false;
-      if (!getPropertiesList()
-          .equals(other.getPropertiesList())) return false;
-      if (!getNestedTypesList()
-          .equals(other.getNestedTypesList())) return false;
-      if (!getAttributesList()
-          .equals(other.getAttributesList())) return false;
-      if (!getGenericTypeArgumentsList()
-          .equals(other.getGenericTypeArgumentsList())) return false;
-      if (getArrayDimensions()
-          != other.getArrayDimensions()) return false;
-      if (!getEventsList()
-          .equals(other.getEventsList())) return false;
-      if (getPeToken()
-          != other.getPeToken()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (accessibility_ != other.accessibility_)
+        return false;
+      if (!getFullname().equals(other.getFullname()))
+        return false;
+      if (!getNamespace().equals(other.getNamespace()))
+        return false;
+      if (getIsAbstract() != other.getIsAbstract())
+        return false;
+      if (getIsReadOnly() != other.getIsReadOnly())
+        return false;
+      if (getIsSealed() != other.getIsSealed())
+        return false;
+      if (getIsStatic() != other.getIsStatic())
+        return false;
+      if (!getDeclaringOuterClass().equals(other.getDeclaringOuterClass()))
+        return false;
+      if (!getDirectBaseTypesList().equals(other.getDirectBaseTypesList()))
+        return false;
+      if (typeKind_ != other.typeKind_)
+        return false;
+      if (!getMethodsList().equals(other.getMethodsList()))
+        return false;
+      if (!getFieldsList().equals(other.getFieldsList()))
+        return false;
+      if (!getPropertiesList().equals(other.getPropertiesList()))
+        return false;
+      if (!getNestedTypesList().equals(other.getNestedTypesList()))
+        return false;
+      if (!getAttributesList().equals(other.getAttributesList()))
+        return false;
+      if (!getGenericTypeArgumentsList().equals(other.getGenericTypeArgumentsList()))
+        return false;
+      if (getArrayDimensions() != other.getArrayDimensions())
+        return false;
+      if (!getEventsList().equals(other.getEventsList()))
+        return false;
+      if (getPeToken() != other.getPeToken())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -2814,17 +2967,13 @@ public final class ProtoAssemblyAllTypes {
       hash = (37 * hash) + NAMESPACE_FIELD_NUMBER;
       hash = (53 * hash) + getNamespace().hashCode();
       hash = (37 * hash) + IS_ABSTRACT_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsAbstract());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsAbstract());
       hash = (37 * hash) + IS_READ_ONLY_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsReadOnly());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsReadOnly());
       hash = (37 * hash) + IS_SEALED_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsSealed());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsSealed());
       hash = (37 * hash) + IS_STATIC_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsStatic());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsStatic());
       hash = (37 * hash) + DECLARING_OUTER_CLASS_FIELD_NUMBER;
       hash = (53 * hash) + getDeclaringOuterClass().hashCode();
       if (getDirectBaseTypesCount() > 0) {
@@ -2870,114 +3019,109 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code TypeDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:TypeDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_TypeDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_TypeDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder()
@@ -2985,14 +3129,13 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getDirectBaseTypesFieldBuilder();
           getMethodsFieldBuilder();
           getFieldsFieldBuilder();
@@ -3003,6 +3146,7 @@ public final class ProtoAssemblyAllTypes {
           getEventsFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -3080,8 +3224,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_TypeDefinition_descriptor;
       }
 
@@ -3101,7 +3244,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition(this);
         int from_bitField0_ = bitField0_;
         result.accessibility_ = accessibility_;
         result.fullname_ = fullname_;
@@ -3194,38 +3338,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -3233,7 +3376,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance())
+          return this;
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
@@ -3279,9 +3423,8 @@ public final class ProtoAssemblyAllTypes {
               directBaseTypesBuilder_ = null;
               directBaseTypes_ = other.directBaseTypes_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              directBaseTypesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getDirectBaseTypesFieldBuilder() : null;
+              directBaseTypesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getDirectBaseTypesFieldBuilder() : null;
             } else {
               directBaseTypesBuilder_.addAllMessages(other.directBaseTypes_);
             }
@@ -3308,9 +3451,8 @@ public final class ProtoAssemblyAllTypes {
               methodsBuilder_ = null;
               methods_ = other.methods_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              methodsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getMethodsFieldBuilder() : null;
+              methodsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getMethodsFieldBuilder() : null;
             } else {
               methodsBuilder_.addAllMessages(other.methods_);
             }
@@ -3334,9 +3476,8 @@ public final class ProtoAssemblyAllTypes {
               fieldsBuilder_ = null;
               fields_ = other.fields_;
               bitField0_ = (bitField0_ & ~0x00000004);
-              fieldsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getFieldsFieldBuilder() : null;
+              fieldsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getFieldsFieldBuilder() : null;
             } else {
               fieldsBuilder_.addAllMessages(other.fields_);
             }
@@ -3360,9 +3501,8 @@ public final class ProtoAssemblyAllTypes {
               propertiesBuilder_ = null;
               properties_ = other.properties_;
               bitField0_ = (bitField0_ & ~0x00000008);
-              propertiesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getPropertiesFieldBuilder() : null;
+              propertiesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getPropertiesFieldBuilder() : null;
             } else {
               propertiesBuilder_.addAllMessages(other.properties_);
             }
@@ -3386,9 +3526,8 @@ public final class ProtoAssemblyAllTypes {
               nestedTypesBuilder_ = null;
               nestedTypes_ = other.nestedTypes_;
               bitField0_ = (bitField0_ & ~0x00000010);
-              nestedTypesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getNestedTypesFieldBuilder() : null;
+              nestedTypesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getNestedTypesFieldBuilder() : null;
             } else {
               nestedTypesBuilder_.addAllMessages(other.nestedTypes_);
             }
@@ -3412,9 +3551,8 @@ public final class ProtoAssemblyAllTypes {
               attributesBuilder_ = null;
               attributes_ = other.attributes_;
               bitField0_ = (bitField0_ & ~0x00000020);
-              attributesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getAttributesFieldBuilder() : null;
+              attributesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getAttributesFieldBuilder() : null;
             } else {
               attributesBuilder_.addAllMessages(other.attributes_);
             }
@@ -3438,9 +3576,9 @@ public final class ProtoAssemblyAllTypes {
               genericTypeArgumentsBuilder_ = null;
               genericTypeArguments_ = other.genericTypeArguments_;
               bitField0_ = (bitField0_ & ~0x00000040);
-              genericTypeArgumentsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getGenericTypeArgumentsFieldBuilder() : null;
+              genericTypeArgumentsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getGenericTypeArgumentsFieldBuilder()
+                      : null;
             } else {
               genericTypeArgumentsBuilder_.addAllMessages(other.genericTypeArguments_);
             }
@@ -3467,9 +3605,8 @@ public final class ProtoAssemblyAllTypes {
               eventsBuilder_ = null;
               events_ = other.events_;
               bitField0_ = (bitField0_ & ~0x00000080);
-              eventsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getEventsFieldBuilder() : null;
+              eventsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getEventsFieldBuilder() : null;
             } else {
               eventsBuilder_.addAllMessages(other.events_);
             }
@@ -3489,10 +3626,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -3506,72 +3641,88 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       private int bitField0_;
 
       private int accessibility_ = 0;
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The enum numeric value on the wire for accessibility.
        */
-      @java.lang.Override public int getAccessibilityValue() {
+      @java.lang.Override
+      public int getAccessibilityValue() {
         return accessibility_;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The enum numeric value on the wire for accessibility to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibilityValue(int value) {
-        
+
         accessibility_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The accessibility.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The accessibility to set.
+       * 
+       * @param value
+       *          The accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibility(soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         accessibility_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
-        
+
         accessibility_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object fullname_ = "";
+
       /**
        * <code>string fullname = 2;</code>
+       * 
        * @return The fullname.
        */
       public java.lang.String getFullname() {
         java.lang.Object ref = fullname_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           fullname_ = s;
           return s;
@@ -3579,75 +3730,81 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string fullname = 2;</code>
+       * 
        * @return The bytes for fullname.
        */
-      public com.google.protobuf.ByteString
-          getFullnameBytes() {
+      public com.google.protobuf.ByteString getFullnameBytes() {
         java.lang.Object ref = fullname_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           fullname_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string fullname = 2;</code>
-       * @param value The fullname to set.
+       * 
+       * @param value
+       *          The fullname to set.
        * @return This builder for chaining.
        */
-      public Builder setFullname(
-          java.lang.String value) {
+      public Builder setFullname(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         fullname_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string fullname = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearFullname() {
-        
+
         fullname_ = getDefaultInstance().getFullname();
         onChanged();
         return this;
       }
+
       /**
        * <code>string fullname = 2;</code>
-       * @param value The bytes for fullname to set.
+       * 
+       * @param value
+       *          The bytes for fullname to set.
        * @return This builder for chaining.
        */
-      public Builder setFullnameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setFullnameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         fullname_ = value;
         onChanged();
         return this;
       }
 
       private java.lang.Object namespace_ = "";
+
       /**
        * <code>string namespace = 3;</code>
+       * 
        * @return The namespace.
        */
       public java.lang.String getNamespace() {
         java.lang.Object ref = namespace_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           namespace_ = s;
           return s;
@@ -3655,199 +3812,233 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string namespace = 3;</code>
+       * 
        * @return The bytes for namespace.
        */
-      public com.google.protobuf.ByteString
-          getNamespaceBytes() {
+      public com.google.protobuf.ByteString getNamespaceBytes() {
         java.lang.Object ref = namespace_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           namespace_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string namespace = 3;</code>
-       * @param value The namespace to set.
+       * 
+       * @param value
+       *          The namespace to set.
        * @return This builder for chaining.
        */
-      public Builder setNamespace(
-          java.lang.String value) {
+      public Builder setNamespace(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        namespace_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string namespace = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearNamespace() {
-        
-        namespace_ = getDefaultInstance().getNamespace();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string namespace = 3;</code>
-       * @param value The bytes for namespace to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNamespaceBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+
         namespace_ = value;
         onChanged();
         return this;
       }
 
-      private boolean isAbstract_ ;
+      /**
+       * <code>string namespace = 3;</code>
+       * 
+       * @return This builder for chaining.
+       */
+      public Builder clearNamespace() {
+
+        namespace_ = getDefaultInstance().getNamespace();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>string namespace = 3;</code>
+       * 
+       * @param value
+       *          The bytes for namespace to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNamespaceBytes(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        namespace_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean isAbstract_;
+
       /**
        * <code>bool is_abstract = 4;</code>
+       * 
        * @return The isAbstract.
        */
       @java.lang.Override
       public boolean getIsAbstract() {
         return isAbstract_;
       }
+
       /**
        * <code>bool is_abstract = 4;</code>
-       * @param value The isAbstract to set.
+       * 
+       * @param value
+       *          The isAbstract to set.
        * @return This builder for chaining.
        */
       public Builder setIsAbstract(boolean value) {
-        
+
         isAbstract_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_abstract = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
-        
+
         isAbstract_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isReadOnly_ ;
+      private boolean isReadOnly_;
+
       /**
        * <code>bool is_read_only = 5;</code>
+       * 
        * @return The isReadOnly.
        */
       @java.lang.Override
       public boolean getIsReadOnly() {
         return isReadOnly_;
       }
+
       /**
        * <code>bool is_read_only = 5;</code>
-       * @param value The isReadOnly to set.
+       * 
+       * @param value
+       *          The isReadOnly to set.
        * @return This builder for chaining.
        */
       public Builder setIsReadOnly(boolean value) {
-        
+
         isReadOnly_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_read_only = 5;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsReadOnly() {
-        
+
         isReadOnly_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isSealed_ ;
+      private boolean isSealed_;
+
       /**
        * <code>bool is_sealed = 6;</code>
+       * 
        * @return The isSealed.
        */
       @java.lang.Override
       public boolean getIsSealed() {
         return isSealed_;
       }
+
       /**
        * <code>bool is_sealed = 6;</code>
-       * @param value The isSealed to set.
+       * 
+       * @param value
+       *          The isSealed to set.
        * @return This builder for chaining.
        */
       public Builder setIsSealed(boolean value) {
-        
+
         isSealed_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_sealed = 6;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
-        
+
         isSealed_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isStatic_ ;
+      private boolean isStatic_;
+
       /**
        * <code>bool is_static = 7;</code>
+       * 
        * @return The isStatic.
        */
       @java.lang.Override
       public boolean getIsStatic() {
         return isStatic_;
       }
+
       /**
        * <code>bool is_static = 7;</code>
-       * @param value The isStatic to set.
+       * 
+       * @param value
+       *          The isStatic to set.
        * @return This builder for chaining.
        */
       public Builder setIsStatic(boolean value) {
-        
+
         isStatic_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_static = 7;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
-        
+
         isStatic_ = false;
         onChanged();
         return this;
       }
 
       private java.lang.Object declaringOuterClass_ = "";
+
       /**
        * <code>string declaring_outer_class = 8;</code>
+       * 
        * @return The declaringOuterClass.
        */
       public java.lang.String getDeclaringOuterClass() {
         java.lang.Object ref = declaringOuterClass_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           declaringOuterClass_ = s;
           return s;
@@ -3855,76 +4046,82 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string declaring_outer_class = 8;</code>
+       * 
        * @return The bytes for declaringOuterClass.
        */
-      public com.google.protobuf.ByteString
-          getDeclaringOuterClassBytes() {
+      public com.google.protobuf.ByteString getDeclaringOuterClassBytes() {
         java.lang.Object ref = declaringOuterClass_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           declaringOuterClass_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string declaring_outer_class = 8;</code>
-       * @param value The declaringOuterClass to set.
+       * 
+       * @param value
+       *          The declaringOuterClass to set.
        * @return This builder for chaining.
        */
-      public Builder setDeclaringOuterClass(
-          java.lang.String value) {
+      public Builder setDeclaringOuterClass(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         declaringOuterClass_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string declaring_outer_class = 8;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearDeclaringOuterClass() {
-        
+
         declaringOuterClass_ = getDefaultInstance().getDeclaringOuterClass();
         onChanged();
         return this;
       }
+
       /**
        * <code>string declaring_outer_class = 8;</code>
-       * @param value The bytes for declaringOuterClass to set.
+       * 
+       * @param value
+       *          The bytes for declaringOuterClass to set.
        * @return This builder for chaining.
        */
-      public Builder setDeclaringOuterClassBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setDeclaringOuterClassBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         declaringOuterClass_ = value;
         onChanged();
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> directBaseTypes_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> directBaseTypes_
+          = java.util.Collections.emptyList();
+
       private void ensureDirectBaseTypesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          directBaseTypes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition>(directBaseTypes_);
+          directBaseTypes_
+              = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition>(directBaseTypes_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> directBaseTypesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> directBaseTypesBuilder_;
 
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
@@ -3936,6 +4133,7 @@ public final class ProtoAssemblyAllTypes {
           return directBaseTypesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
@@ -3946,6 +4144,7 @@ public final class ProtoAssemblyAllTypes {
           return directBaseTypesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
@@ -3956,11 +4155,11 @@ public final class ProtoAssemblyAllTypes {
           return directBaseTypesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public Builder setDirectBaseTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder setDirectBaseTypes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (directBaseTypesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3973,11 +4172,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public Builder setDirectBaseTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setDirectBaseTypes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (directBaseTypesBuilder_ == null) {
           ensureDirectBaseTypesIsMutable();
           directBaseTypes_.set(index, builderForValue.build());
@@ -3987,6 +4187,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
@@ -4003,11 +4204,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public Builder addDirectBaseTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder addDirectBaseTypes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (directBaseTypesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4020,11 +4221,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public Builder addDirectBaseTypes(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder addDirectBaseTypes(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (directBaseTypesBuilder_ == null) {
           ensureDirectBaseTypesIsMutable();
           directBaseTypes_.add(builderForValue.build());
@@ -4034,11 +4235,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public Builder addDirectBaseTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder addDirectBaseTypes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (directBaseTypesBuilder_ == null) {
           ensureDirectBaseTypesIsMutable();
           directBaseTypes_.add(index, builderForValue.build());
@@ -4048,6 +4250,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
@@ -4055,14 +4258,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> values) {
         if (directBaseTypesBuilder_ == null) {
           ensureDirectBaseTypesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, directBaseTypes_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, directBaseTypes_);
           onChanged();
         } else {
           directBaseTypesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
@@ -4076,6 +4279,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
@@ -4089,136 +4293,151 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getDirectBaseTypesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getDirectBaseTypesBuilder(int index) {
         return getDirectBaseTypesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getDirectBaseTypesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getDirectBaseTypesOrBuilder(int index) {
         if (directBaseTypesBuilder_ == null) {
-          return directBaseTypes_.get(index);  } else {
+          return directBaseTypes_.get(index);
+        } else {
           return directBaseTypesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
-           getDirectBaseTypesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
+          getDirectBaseTypesOrBuilderList() {
         if (directBaseTypesBuilder_ != null) {
           return directBaseTypesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(directBaseTypes_);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addDirectBaseTypesBuilder() {
-        return getDirectBaseTypesFieldBuilder().addBuilder(
+        return getDirectBaseTypesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .TypeDefinition direct_base_types = 9;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addDirectBaseTypesBuilder(int index) {
+        return getDirectBaseTypesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .TypeDefinition direct_base_types = 9;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addDirectBaseTypesBuilder(
-          int index) {
-        return getDirectBaseTypesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .TypeDefinition direct_base_types = 9;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> 
-           getDirectBaseTypesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> getDirectBaseTypesBuilderList() {
         return getDirectBaseTypesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getDirectBaseTypesFieldBuilder() {
         if (directBaseTypesBuilder_ == null) {
-          directBaseTypesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  directBaseTypes_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          directBaseTypesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  directBaseTypes_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           directBaseTypes_ = null;
         }
         return directBaseTypesBuilder_;
       }
 
       private int typeKind_ = 0;
+
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
+       * 
        * @return The enum numeric value on the wire for typeKind.
        */
-      @java.lang.Override public int getTypeKindValue() {
+      @java.lang.Override
+      public int getTypeKindValue() {
         return typeKind_;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
-       * @param value The enum numeric value on the wire for typeKind to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for typeKind to set.
        * @return This builder for chaining.
        */
       public Builder setTypeKindValue(int value) {
-        
+
         typeKind_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
+       * 
        * @return The typeKind.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
-       * @param value The typeKind to set.
+       * 
+       * @param value
+       *          The typeKind to set.
        * @return This builder for chaining.
        */
       public Builder setTypeKind(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         typeKind_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearTypeKind() {
-        
+
         typeKind_ = 0;
         onChanged();
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> methods_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> methods_
+          = java.util.Collections.emptyList();
+
       private void ensureMethodsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           methods_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition>(methods_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> methodsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> methodsBuilder_;
 
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
@@ -4230,6 +4449,7 @@ public final class ProtoAssemblyAllTypes {
           return methodsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
@@ -4240,6 +4460,7 @@ public final class ProtoAssemblyAllTypes {
           return methodsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
@@ -4250,11 +4471,11 @@ public final class ProtoAssemblyAllTypes {
           return methodsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public Builder setMethods(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
+      public Builder setMethods(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (methodsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4267,11 +4488,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public Builder setMethods(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder setMethods(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (methodsBuilder_ == null) {
           ensureMethodsIsMutable();
           methods_.set(index, builderForValue.build());
@@ -4281,6 +4503,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
@@ -4297,11 +4520,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public Builder addMethods(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
+      public Builder addMethods(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (methodsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4314,11 +4537,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public Builder addMethods(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder addMethods(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (methodsBuilder_ == null) {
           ensureMethodsIsMutable();
           methods_.add(builderForValue.build());
@@ -4328,11 +4551,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public Builder addMethods(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder addMethods(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (methodsBuilder_ == null) {
           ensureMethodsIsMutable();
           methods_.add(index, builderForValue.build());
@@ -4342,21 +4566,22 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public Builder addAllMethods(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> values) {
+      public Builder
+          addAllMethods(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition> values) {
         if (methodsBuilder_ == null) {
           ensureMethodsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, methods_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, methods_);
           onChanged();
         } else {
           methodsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
@@ -4370,6 +4595,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
@@ -4383,82 +4609,83 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getMethodsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getMethodsBuilder(int index) {
         return getMethodsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder getMethodsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder getMethodsOrBuilder(int index) {
         if (methodsBuilder_ == null) {
-          return methods_.get(index);  } else {
+          return methods_.get(index);
+        } else {
           return methodsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
-           getMethodsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
+          getMethodsOrBuilderList() {
         if (methodsBuilder_ != null) {
           return methodsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(methods_);
         }
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder addMethodsBuilder() {
-        return getMethodsFieldBuilder().addBuilder(
+        return getMethodsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .MethodDefinition methods = 11;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder addMethodsBuilder(int index) {
+        return getMethodsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .MethodDefinition methods = 11;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder addMethodsBuilder(
-          int index) {
-        return getMethodsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .MethodDefinition methods = 11;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder> 
-           getMethodsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder> getMethodsBuilderList() {
         return getMethodsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
           getMethodsFieldBuilder() {
         if (methodsBuilder_ == null) {
-          methodsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
-                  methods_,
-                  ((bitField0_ & 0x00000002) != 0),
-                  getParentForChildren(),
-                  isClean());
+          methodsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
+                  methods_, ((bitField0_ & 0x00000002) != 0), getParentForChildren(), isClean());
           methods_ = null;
         }
         return methodsBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> fields_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> fields_
+          = java.util.Collections.emptyList();
+
       private void ensureFieldsIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
           fields_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition>(fields_);
           bitField0_ |= 0x00000004;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> fieldsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> fieldsBuilder_;
 
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
@@ -4470,6 +4697,7 @@ public final class ProtoAssemblyAllTypes {
           return fieldsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
@@ -4480,6 +4708,7 @@ public final class ProtoAssemblyAllTypes {
           return fieldsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
@@ -4490,11 +4719,11 @@ public final class ProtoAssemblyAllTypes {
           return fieldsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public Builder setFields(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition value) {
+      public Builder setFields(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition value) {
         if (fieldsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4507,11 +4736,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public Builder setFields(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
+      public Builder setFields(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
         if (fieldsBuilder_ == null) {
           ensureFieldsIsMutable();
           fields_.set(index, builderForValue.build());
@@ -4521,6 +4750,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
@@ -4537,11 +4767,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public Builder addFields(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition value) {
+      public Builder addFields(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition value) {
         if (fieldsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4554,11 +4784,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public Builder addFields(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
+      public Builder addFields(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
         if (fieldsBuilder_ == null) {
           ensureFieldsIsMutable();
           fields_.add(builderForValue.build());
@@ -4568,11 +4798,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public Builder addFields(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
+      public Builder addFields(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder builderForValue) {
         if (fieldsBuilder_ == null) {
           ensureFieldsIsMutable();
           fields_.add(index, builderForValue.build());
@@ -4582,21 +4812,22 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public Builder addAllFields(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> values) {
+      public Builder
+          addAllFields(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition> values) {
         if (fieldsBuilder_ == null) {
           ensureFieldsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, fields_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, fields_);
           onChanged();
         } else {
           fieldsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
@@ -4610,6 +4841,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
@@ -4623,82 +4855,83 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder getFieldsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder getFieldsBuilder(int index) {
         return getFieldsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder getFieldsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder getFieldsOrBuilder(int index) {
         if (fieldsBuilder_ == null) {
-          return fields_.get(index);  } else {
+          return fields_.get(index);
+        } else {
           return fieldsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> 
-           getFieldsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>
+          getFieldsOrBuilderList() {
         if (fieldsBuilder_ != null) {
           return fieldsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(fields_);
         }
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder addFieldsBuilder() {
-        return getFieldsFieldBuilder().addBuilder(
+        return getFieldsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .FieldDefinition fields = 12;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder addFieldsBuilder(int index) {
+        return getFieldsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .FieldDefinition fields = 12;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder addFieldsBuilder(
-          int index) {
-        return getFieldsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .FieldDefinition fields = 12;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder> 
-           getFieldsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder> getFieldsBuilderList() {
         return getFieldsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>
           getFieldsFieldBuilder() {
         if (fieldsBuilder_ == null) {
-          fieldsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>(
-                  fields_,
-                  ((bitField0_ & 0x00000004) != 0),
-                  getParentForChildren(),
-                  isClean());
+          fieldsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder>(
+                  fields_, ((bitField0_ & 0x00000004) != 0), getParentForChildren(), isClean());
           fields_ = null;
         }
         return fieldsBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> properties_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> properties_
+          = java.util.Collections.emptyList();
+
       private void ensurePropertiesIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
           properties_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition>(properties_);
           bitField0_ |= 0x00000008;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder> propertiesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder> propertiesBuilder_;
 
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
@@ -4710,6 +4943,7 @@ public final class ProtoAssemblyAllTypes {
           return propertiesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
@@ -4720,6 +4954,7 @@ public final class ProtoAssemblyAllTypes {
           return propertiesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
@@ -4730,11 +4965,11 @@ public final class ProtoAssemblyAllTypes {
           return propertiesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public Builder setProperties(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition value) {
+      public Builder setProperties(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition value) {
         if (propertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4747,11 +4982,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public Builder setProperties(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder builderForValue) {
+      public Builder setProperties(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder builderForValue) {
         if (propertiesBuilder_ == null) {
           ensurePropertiesIsMutable();
           properties_.set(index, builderForValue.build());
@@ -4761,6 +4997,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
@@ -4777,11 +5014,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public Builder addProperties(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition value) {
+      public Builder addProperties(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition value) {
         if (propertiesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4794,11 +5031,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public Builder addProperties(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder builderForValue) {
+      public Builder addProperties(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder builderForValue) {
         if (propertiesBuilder_ == null) {
           ensurePropertiesIsMutable();
           properties_.add(builderForValue.build());
@@ -4808,11 +5045,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public Builder addProperties(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder builderForValue) {
+      public Builder addProperties(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder builderForValue) {
         if (propertiesBuilder_ == null) {
           ensurePropertiesIsMutable();
           properties_.add(index, builderForValue.build());
@@ -4822,21 +5060,22 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public Builder addAllProperties(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> values) {
+      public Builder
+          addAllProperties(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition> values) {
         if (propertiesBuilder_ == null) {
           ensurePropertiesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, properties_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, properties_);
           onChanged();
         } else {
           propertiesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
@@ -4850,6 +5089,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
@@ -4863,82 +5103,83 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder getPropertiesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder getPropertiesBuilder(int index) {
         return getPropertiesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder getPropertiesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder getPropertiesOrBuilder(int index) {
         if (propertiesBuilder_ == null) {
-          return properties_.get(index);  } else {
+          return properties_.get(index);
+        } else {
           return propertiesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder> 
-           getPropertiesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder>
+          getPropertiesOrBuilderList() {
         if (propertiesBuilder_ != null) {
           return propertiesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(properties_);
         }
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder addPropertiesBuilder() {
-        return getPropertiesFieldBuilder().addBuilder(
+        return getPropertiesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .PropertyDefinition properties = 13;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder addPropertiesBuilder(int index) {
+        return getPropertiesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .PropertyDefinition properties = 13;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder addPropertiesBuilder(
-          int index) {
-        return getPropertiesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .PropertyDefinition properties = 13;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder> 
-           getPropertiesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder> getPropertiesBuilderList() {
         return getPropertiesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder>
           getPropertiesFieldBuilder() {
         if (propertiesBuilder_ == null) {
-          propertiesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder>(
-                  properties_,
-                  ((bitField0_ & 0x00000008) != 0),
-                  getParentForChildren(),
-                  isClean());
+          propertiesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder>(
+                  properties_, ((bitField0_ & 0x00000008) != 0), getParentForChildren(), isClean());
           properties_ = null;
         }
         return propertiesBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> nestedTypes_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> nestedTypes_
+          = java.util.Collections.emptyList();
+
       private void ensureNestedTypesIsMutable() {
         if (!((bitField0_ & 0x00000010) != 0)) {
           nestedTypes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition>(nestedTypes_);
           bitField0_ |= 0x00000010;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> nestedTypesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> nestedTypesBuilder_;
 
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
@@ -4950,6 +5191,7 @@ public final class ProtoAssemblyAllTypes {
           return nestedTypesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
@@ -4960,6 +5202,7 @@ public final class ProtoAssemblyAllTypes {
           return nestedTypesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
@@ -4970,11 +5213,11 @@ public final class ProtoAssemblyAllTypes {
           return nestedTypesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public Builder setNestedTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder setNestedTypes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (nestedTypesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4987,11 +5230,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public Builder setNestedTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setNestedTypes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (nestedTypesBuilder_ == null) {
           ensureNestedTypesIsMutable();
           nestedTypes_.set(index, builderForValue.build());
@@ -5001,6 +5245,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
@@ -5017,11 +5262,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public Builder addNestedTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder addNestedTypes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (nestedTypesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5034,11 +5279,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public Builder addNestedTypes(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder addNestedTypes(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (nestedTypesBuilder_ == null) {
           ensureNestedTypesIsMutable();
           nestedTypes_.add(builderForValue.build());
@@ -5048,11 +5293,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public Builder addNestedTypes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder addNestedTypes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (nestedTypesBuilder_ == null) {
           ensureNestedTypesIsMutable();
           nestedTypes_.add(index, builderForValue.build());
@@ -5062,21 +5308,22 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public Builder addAllNestedTypes(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> values) {
+      public Builder
+          addAllNestedTypes(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> values) {
         if (nestedTypesBuilder_ == null) {
           ensureNestedTypesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, nestedTypes_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, nestedTypes_);
           onChanged();
         } else {
           nestedTypesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
@@ -5090,6 +5337,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
@@ -5103,82 +5351,83 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getNestedTypesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getNestedTypesBuilder(int index) {
         return getNestedTypesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getNestedTypesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getNestedTypesOrBuilder(int index) {
         if (nestedTypesBuilder_ == null) {
-          return nestedTypes_.get(index);  } else {
+          return nestedTypes_.get(index);
+        } else {
           return nestedTypesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
-           getNestedTypesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
+          getNestedTypesOrBuilderList() {
         if (nestedTypesBuilder_ != null) {
           return nestedTypesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(nestedTypes_);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addNestedTypesBuilder() {
-        return getNestedTypesFieldBuilder().addBuilder(
+        return getNestedTypesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .TypeDefinition nested_types = 14;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addNestedTypesBuilder(int index) {
+        return getNestedTypesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .TypeDefinition nested_types = 14;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addNestedTypesBuilder(
-          int index) {
-        return getNestedTypesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .TypeDefinition nested_types = 14;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> 
-           getNestedTypesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> getNestedTypesBuilderList() {
         return getNestedTypesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getNestedTypesFieldBuilder() {
         if (nestedTypesBuilder_ == null) {
-          nestedTypesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  nestedTypes_,
-                  ((bitField0_ & 0x00000010) != 0),
-                  getParentForChildren(),
-                  isClean());
+          nestedTypesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  nestedTypes_, ((bitField0_ & 0x00000010) != 0), getParentForChildren(), isClean());
           nestedTypes_ = null;
         }
         return nestedTypesBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_
+          = java.util.Collections.emptyList();
+
       private void ensureAttributesIsMutable() {
         if (!((bitField0_ & 0x00000020) != 0)) {
           attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>(attributes_);
           bitField0_ |= 0x00000020;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
 
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
@@ -5190,6 +5439,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -5200,6 +5450,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -5210,11 +5461,11 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder setAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5227,11 +5478,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder setAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.set(index, builderForValue.build());
@@ -5241,6 +5493,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -5257,11 +5510,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder addAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5274,11 +5527,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder addAttributes(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(builderForValue.build());
@@ -5288,11 +5541,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(index, builderForValue.build());
@@ -5302,6 +5556,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -5309,14 +5564,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> values) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, attributes_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, attributes_);
           onChanged();
         } else {
           attributesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -5330,6 +5585,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -5343,82 +5599,84 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(int index) {
         return getAttributesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
         if (attributesBuilder_ == null) {
-          return attributes_.get(index);  } else {
+          return attributes_.get(index);
+        } else {
           return attributesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
-           getAttributesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
+          getAttributesOrBuilderList() {
         if (attributesBuilder_ != null) {
           return attributesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(attributes_);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder() {
-        return getAttributesFieldBuilder().addBuilder(
+        return getAttributesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .AttributeDefinition attributes = 15;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(int index) {
+        return getAttributesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .AttributeDefinition attributes = 15;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> 
-           getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
           getAttributesFieldBuilder() {
         if (attributesBuilder_ == null) {
-          attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
-                  attributes_,
-                  ((bitField0_ & 0x00000020) != 0),
-                  getParentForChildren(),
-                  isClean());
+          attributesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
+                  attributes_, ((bitField0_ & 0x00000020) != 0), getParentForChildren(), isClean());
           attributes_ = null;
         }
         return attributesBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> genericTypeArguments_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> genericTypeArguments_
+          = java.util.Collections.emptyList();
+
       private void ensureGenericTypeArgumentsIsMutable() {
         if (!((bitField0_ & 0x00000040) != 0)) {
-          genericTypeArguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition>(genericTypeArguments_);
+          genericTypeArguments_
+              = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition>(genericTypeArguments_);
           bitField0_ |= 0x00000040;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> genericTypeArgumentsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> genericTypeArgumentsBuilder_;
 
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
@@ -5430,6 +5688,7 @@ public final class ProtoAssemblyAllTypes {
           return genericTypeArgumentsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
@@ -5440,6 +5699,7 @@ public final class ProtoAssemblyAllTypes {
           return genericTypeArgumentsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
@@ -5450,11 +5710,11 @@ public final class ProtoAssemblyAllTypes {
           return genericTypeArgumentsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public Builder setGenericTypeArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder setGenericTypeArguments(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (genericTypeArgumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5467,11 +5727,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public Builder setGenericTypeArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setGenericTypeArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (genericTypeArgumentsBuilder_ == null) {
           ensureGenericTypeArgumentsIsMutable();
           genericTypeArguments_.set(index, builderForValue.build());
@@ -5481,6 +5742,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
@@ -5497,11 +5759,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public Builder addGenericTypeArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
+      public Builder addGenericTypeArguments(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (genericTypeArgumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5514,11 +5776,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public Builder addGenericTypeArguments(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder
+          addGenericTypeArguments(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (genericTypeArgumentsBuilder_ == null) {
           ensureGenericTypeArgumentsIsMutable();
           genericTypeArguments_.add(builderForValue.build());
@@ -5528,11 +5791,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public Builder addGenericTypeArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder addGenericTypeArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (genericTypeArgumentsBuilder_ == null) {
           ensureGenericTypeArgumentsIsMutable();
           genericTypeArguments_.add(index, builderForValue.build());
@@ -5542,6 +5806,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
@@ -5549,14 +5814,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition> values) {
         if (genericTypeArgumentsBuilder_ == null) {
           ensureGenericTypeArgumentsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, genericTypeArguments_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, genericTypeArguments_);
           onChanged();
         } else {
           genericTypeArgumentsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
@@ -5570,6 +5835,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
@@ -5583,113 +5849,122 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getGenericTypeArgumentsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getGenericTypeArgumentsBuilder(int index) {
         return getGenericTypeArgumentsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getGenericTypeArgumentsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder getGenericTypeArgumentsOrBuilder(int index) {
         if (genericTypeArgumentsBuilder_ == null) {
-          return genericTypeArguments_.get(index);  } else {
+          return genericTypeArguments_.get(index);
+        } else {
           return genericTypeArgumentsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
-           getGenericTypeArgumentsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
+          getGenericTypeArgumentsOrBuilderList() {
         if (genericTypeArgumentsBuilder_ != null) {
           return genericTypeArgumentsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(genericTypeArguments_);
         }
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addGenericTypeArgumentsBuilder() {
-        return getGenericTypeArgumentsFieldBuilder().addBuilder(
+        return getGenericTypeArgumentsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addGenericTypeArgumentsBuilder(int index) {
+        return getGenericTypeArgumentsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder addGenericTypeArgumentsBuilder(
-          int index) {
-        return getGenericTypeArgumentsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .TypeDefinition generic_type_arguments = 16;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder> 
-           getGenericTypeArgumentsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder>
+          getGenericTypeArgumentsBuilderList() {
         return getGenericTypeArgumentsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getGenericTypeArgumentsFieldBuilder() {
         if (genericTypeArgumentsBuilder_ == null) {
-          genericTypeArgumentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  genericTypeArguments_,
-                  ((bitField0_ & 0x00000040) != 0),
-                  getParentForChildren(),
-                  isClean());
+          genericTypeArgumentsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  genericTypeArguments_, ((bitField0_ & 0x00000040) != 0), getParentForChildren(), isClean());
           genericTypeArguments_ = null;
         }
         return genericTypeArgumentsBuilder_;
       }
 
-      private int arrayDimensions_ ;
+      private int arrayDimensions_;
+
       /**
        * <code>int32 array_dimensions = 17;</code>
+       * 
        * @return The arrayDimensions.
        */
       @java.lang.Override
       public int getArrayDimensions() {
         return arrayDimensions_;
       }
+
       /**
        * <code>int32 array_dimensions = 17;</code>
-       * @param value The arrayDimensions to set.
+       * 
+       * @param value
+       *          The arrayDimensions to set.
        * @return This builder for chaining.
        */
       public Builder setArrayDimensions(int value) {
-        
+
         arrayDimensions_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>int32 array_dimensions = 17;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearArrayDimensions() {
-        
+
         arrayDimensions_ = 0;
         onChanged();
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> events_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> events_
+          = java.util.Collections.emptyList();
+
       private void ensureEventsIsMutable() {
         if (!((bitField0_ & 0x00000080) != 0)) {
           events_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition>(events_);
           bitField0_ |= 0x00000080;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder> eventsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder> eventsBuilder_;
 
       /**
        * <code>repeated .EventDefinition events = 18;</code>
@@ -5701,6 +5976,7 @@ public final class ProtoAssemblyAllTypes {
           return eventsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
@@ -5711,6 +5987,7 @@ public final class ProtoAssemblyAllTypes {
           return eventsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
@@ -5721,11 +5998,11 @@ public final class ProtoAssemblyAllTypes {
           return eventsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public Builder setEvents(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition value) {
+      public Builder setEvents(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition value) {
         if (eventsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5738,11 +6015,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public Builder setEvents(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder builderForValue) {
+      public Builder setEvents(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder builderForValue) {
         if (eventsBuilder_ == null) {
           ensureEventsIsMutable();
           events_.set(index, builderForValue.build());
@@ -5752,6 +6029,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
@@ -5768,11 +6046,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public Builder addEvents(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition value) {
+      public Builder addEvents(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition value) {
         if (eventsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5785,11 +6063,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public Builder addEvents(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder builderForValue) {
+      public Builder addEvents(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder builderForValue) {
         if (eventsBuilder_ == null) {
           ensureEventsIsMutable();
           events_.add(builderForValue.build());
@@ -5799,11 +6077,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public Builder addEvents(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder builderForValue) {
+      public Builder addEvents(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder builderForValue) {
         if (eventsBuilder_ == null) {
           ensureEventsIsMutable();
           events_.add(index, builderForValue.build());
@@ -5813,21 +6091,22 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public Builder addAllEvents(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> values) {
+      public Builder
+          addAllEvents(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition> values) {
         if (eventsBuilder_ == null) {
           ensureEventsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, events_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, events_);
           onChanged();
         } else {
           eventsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
@@ -5841,6 +6120,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
@@ -5854,125 +6134,131 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder getEventsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder getEventsBuilder(int index) {
         return getEventsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder getEventsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder getEventsOrBuilder(int index) {
         if (eventsBuilder_ == null) {
-          return events_.get(index);  } else {
+          return events_.get(index);
+        } else {
           return eventsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder> 
-           getEventsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder>
+          getEventsOrBuilderList() {
         if (eventsBuilder_ != null) {
           return eventsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(events_);
         }
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder addEventsBuilder() {
-        return getEventsFieldBuilder().addBuilder(
+        return getEventsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .EventDefinition events = 18;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder addEventsBuilder(int index) {
+        return getEventsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .EventDefinition events = 18;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder addEventsBuilder(
-          int index) {
-        return getEventsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .EventDefinition events = 18;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder> 
-           getEventsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder> getEventsBuilderList() {
         return getEventsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder>
           getEventsFieldBuilder() {
         if (eventsBuilder_ == null) {
-          eventsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder>(
-                  events_,
-                  ((bitField0_ & 0x00000080) != 0),
-                  getParentForChildren(),
-                  isClean());
+          eventsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder>(
+                  events_, ((bitField0_ & 0x00000080) != 0), getParentForChildren(), isClean());
           events_ = null;
         }
         return eventsBuilder_;
       }
 
-      private int peToken_ ;
+      private int peToken_;
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 19;</code>
+       * 
        * @return The peToken.
        */
       @java.lang.Override
       public int getPeToken() {
         return peToken_;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 19;</code>
-       * @param value The peToken to set.
+       * 
+       * @param value
+       *          The peToken to set.
        * @return This builder for chaining.
        */
       public Builder setPeToken(int value) {
-        
+
         peToken_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 19;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
-        
+
         peToken_ = 0;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:TypeDefinition)
     }
@@ -5987,16 +6273,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<TypeDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<TypeDefinition>() {
-      @java.lang.Override
-      public TypeDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new TypeDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<TypeDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<TypeDefinition>() {
+          @java.lang.Override
+          public TypeDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new TypeDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<TypeDefinition> parser() {
       return PARSER;
@@ -6020,29 +6305,35 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The name.
      */
     java.lang.String getName();
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The bytes for name.
      */
-    com.google.protobuf.ByteString
-        getNameBytes();
+    com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>bool has_body = 3;</code>
+     * 
      * @return The hasBody.
      */
     boolean getHasBody();
@@ -6050,103 +6341,120 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> 
-        getParameterList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> getParameterList();
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition getParameter(int index);
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
     int getParameterCount();
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder>
         getParameterOrBuilderList();
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder getParameterOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder getParameterOrBuilder(int index);
 
     /**
      * <code>bool is_abstract = 5;</code>
+     * 
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_accessor = 6;</code>
+     * 
      * @return The isAccessor.
      */
     boolean getIsAccessor();
 
     /**
      * <code>bool is_constructor = 7;</code>
+     * 
      * @return The isConstructor.
      */
     boolean getIsConstructor();
 
     /**
      * <code>bool is_destructor = 8;</code>
+     * 
      * @return The isDestructor.
      */
     boolean getIsDestructor();
 
     /**
      * <code>bool is_explicit_interface_implementation = 9;</code>
+     * 
      * @return The isExplicitInterfaceImplementation.
      */
     boolean getIsExplicitInterfaceImplementation();
 
     /**
      * <code>bool is_static = 10;</code>
+     * 
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>bool is_virtual = 11;</code>
+     * 
      * @return The isVirtual.
      */
     boolean getIsVirtual();
 
     /**
      * <code>bool is_operator = 16;</code>
+     * 
      * @return The isOperator.
      */
     boolean getIsOperator();
 
     /**
      * <code>bool is_extern = 17;</code>
+     * 
      * @return The isExtern.
      */
     boolean getIsExtern();
 
     /**
      * <code>bool is_unsafe = 18;</code>
+     * 
      * @return The isUnsafe.
      */
     boolean getIsUnsafe();
 
     /**
      * <code>bool is_sealed = 19;</code>
+     * 
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>.TypeDefinition return_type = 12;</code>
+     * 
      * @return Whether the returnType field is set.
      */
     boolean hasReturnType();
+
     /**
      * <code>.TypeDefinition return_type = 12;</code>
+     * 
      * @return The returnType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getReturnType();
+
     /**
      * <code>.TypeDefinition return_type = 12;</code>
      */
@@ -6155,49 +6463,57 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> 
-        getAttributesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index);
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
     int getAttributesCount();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index);
 
     /**
      * <code>string full_name = 14;</code>
+     * 
      * @return The fullName.
      */
     java.lang.String getFullName();
+
     /**
      * <code>string full_name = 14;</code>
+     * 
      * @return The bytes for fullName.
      */
-    com.google.protobuf.ByteString
-        getFullNameBytes();
+    com.google.protobuf.ByteString getFullNameBytes();
 
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
+     * 
      * @return Whether the declaringType field is set.
      */
     boolean hasDeclaringType();
+
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
+     * 
      * @return The declaringType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType();
+
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
      */
@@ -6209,22 +6525,25 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 20;</code>
+     * 
      * @return The peToken.
      */
     int getPeToken();
   }
+
   /**
    * Protobuf type {@code MethodDefinition}
    */
-  public static final class MethodDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class MethodDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:MethodDefinition)
       MethodDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use MethodDefinition.newBuilder() to construct.
     private MethodDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private MethodDefinition() {
       accessibility_ = 0;
       name_ = "";
@@ -6234,19 +6553,17 @@ public final class ProtoAssemblyAllTypes {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new MethodDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private MethodDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private MethodDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -6254,8 +6571,7 @@ public final class ProtoAssemblyAllTypes {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -6286,8 +6602,8 @@ public final class ProtoAssemblyAllTypes {
                 parameter_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              parameter_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.parser(), extensionRegistry));
+              parameter_.add(input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.parser(),
+                  extensionRegistry));
               break;
             }
             case 40: {
@@ -6330,7 +6646,8 @@ public final class ProtoAssemblyAllTypes {
               if (returnType_ != null) {
                 subBuilder = returnType_.toBuilder();
               }
-              returnType_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
+              returnType_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(returnType_);
                 returnType_ = subBuilder.buildPartial();
@@ -6343,8 +6660,8 @@ public final class ProtoAssemblyAllTypes {
                 attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              attributes_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(), extensionRegistry));
+              attributes_.add(input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(),
+                  extensionRegistry));
               break;
             }
             case 114: {
@@ -6358,7 +6675,8 @@ public final class ProtoAssemblyAllTypes {
               if (declaringType_ != null) {
                 subBuilder = declaringType_.toBuilder();
               }
-              declaringType_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
+              declaringType_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(declaringType_);
                 declaringType_ = subBuilder.buildPartial();
@@ -6392,8 +6710,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -6403,8 +6720,7 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           parameter_ = java.util.Collections.unmodifiableList(parameter_);
@@ -6416,42 +6732,50 @@ public final class ProtoAssemblyAllTypes {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_MethodDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_MethodDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder.class);
     }
 
     public static final int ACCESSIBILITY_FIELD_NUMBER = 1;
     private int accessibility_;
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
-    @java.lang.Override public int getAccessibilityValue() {
+    @java.lang.Override
+    public int getAccessibilityValue() {
       return accessibility_;
     }
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
     }
 
     public static final int NAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object name_;
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The name.
      */
     @java.lang.Override
@@ -6460,25 +6784,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         name_ = s;
         return s;
       }
     }
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The bytes for name.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNameBytes() {
+    public com.google.protobuf.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -6488,8 +6810,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int HAS_BODY_FIELD_NUMBER = 3;
     private boolean hasBody_;
+
     /**
      * <code>bool has_body = 3;</code>
+     * 
      * @return The hasBody.
      */
     @java.lang.Override
@@ -6499,6 +6823,7 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int PARAMETER_FIELD_NUMBER = 4;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> parameter_;
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
@@ -6506,14 +6831,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> getParameterList() {
       return parameter_;
     }
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder>
         getParameterOrBuilderList() {
       return parameter_;
     }
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
@@ -6521,6 +6848,7 @@ public final class ProtoAssemblyAllTypes {
     public int getParameterCount() {
       return parameter_.size();
     }
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
@@ -6528,19 +6856,21 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition getParameter(int index) {
       return parameter_.get(index);
     }
+
     /**
      * <code>repeated .ParameterDefinition parameter = 4;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder getParameterOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder getParameterOrBuilder(int index) {
       return parameter_.get(index);
     }
 
     public static final int IS_ABSTRACT_FIELD_NUMBER = 5;
     private boolean isAbstract_;
+
     /**
      * <code>bool is_abstract = 5;</code>
+     * 
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -6550,8 +6880,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_ACCESSOR_FIELD_NUMBER = 6;
     private boolean isAccessor_;
+
     /**
      * <code>bool is_accessor = 6;</code>
+     * 
      * @return The isAccessor.
      */
     @java.lang.Override
@@ -6561,8 +6893,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_CONSTRUCTOR_FIELD_NUMBER = 7;
     private boolean isConstructor_;
+
     /**
      * <code>bool is_constructor = 7;</code>
+     * 
      * @return The isConstructor.
      */
     @java.lang.Override
@@ -6572,8 +6906,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_DESTRUCTOR_FIELD_NUMBER = 8;
     private boolean isDestructor_;
+
     /**
      * <code>bool is_destructor = 8;</code>
+     * 
      * @return The isDestructor.
      */
     @java.lang.Override
@@ -6583,8 +6919,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_EXPLICIT_INTERFACE_IMPLEMENTATION_FIELD_NUMBER = 9;
     private boolean isExplicitInterfaceImplementation_;
+
     /**
      * <code>bool is_explicit_interface_implementation = 9;</code>
+     * 
      * @return The isExplicitInterfaceImplementation.
      */
     @java.lang.Override
@@ -6594,8 +6932,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_STATIC_FIELD_NUMBER = 10;
     private boolean isStatic_;
+
     /**
      * <code>bool is_static = 10;</code>
+     * 
      * @return The isStatic.
      */
     @java.lang.Override
@@ -6605,8 +6945,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_VIRTUAL_FIELD_NUMBER = 11;
     private boolean isVirtual_;
+
     /**
      * <code>bool is_virtual = 11;</code>
+     * 
      * @return The isVirtual.
      */
     @java.lang.Override
@@ -6616,8 +6958,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_OPERATOR_FIELD_NUMBER = 16;
     private boolean isOperator_;
+
     /**
      * <code>bool is_operator = 16;</code>
+     * 
      * @return The isOperator.
      */
     @java.lang.Override
@@ -6627,8 +6971,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_EXTERN_FIELD_NUMBER = 17;
     private boolean isExtern_;
+
     /**
      * <code>bool is_extern = 17;</code>
+     * 
      * @return The isExtern.
      */
     @java.lang.Override
@@ -6638,8 +6984,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_UNSAFE_FIELD_NUMBER = 18;
     private boolean isUnsafe_;
+
     /**
      * <code>bool is_unsafe = 18;</code>
+     * 
      * @return The isUnsafe.
      */
     @java.lang.Override
@@ -6649,8 +6997,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_SEALED_FIELD_NUMBER = 19;
     private boolean isSealed_;
+
     /**
      * <code>bool is_sealed = 19;</code>
+     * 
      * @return The isSealed.
      */
     @java.lang.Override
@@ -6660,22 +7010,27 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int RETURN_TYPE_FIELD_NUMBER = 12;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition returnType_;
+
     /**
      * <code>.TypeDefinition return_type = 12;</code>
+     * 
      * @return Whether the returnType field is set.
      */
     @java.lang.Override
     public boolean hasReturnType() {
       return returnType_ != null;
     }
+
     /**
      * <code>.TypeDefinition return_type = 12;</code>
+     * 
      * @return The returnType.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getReturnType() {
       return returnType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : returnType_;
     }
+
     /**
      * <code>.TypeDefinition return_type = 12;</code>
      */
@@ -6686,6 +7041,7 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int ATTRIBUTES_FIELD_NUMBER = 13;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_;
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
@@ -6693,14 +7049,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
@@ -6708,6 +7066,7 @@ public final class ProtoAssemblyAllTypes {
     public int getAttributesCount() {
       return attributes_.size();
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
@@ -6715,19 +7074,21 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index) {
       return attributes_.get(index);
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 13;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
       return attributes_.get(index);
     }
 
     public static final int FULL_NAME_FIELD_NUMBER = 14;
     private volatile java.lang.Object fullName_;
+
     /**
      * <code>string full_name = 14;</code>
+     * 
      * @return The fullName.
      */
     @java.lang.Override
@@ -6736,25 +7097,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         fullName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string full_name = 14;</code>
+     * 
      * @return The bytes for fullName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFullNameBytes() {
+    public com.google.protobuf.ByteString getFullNameBytes() {
       java.lang.Object ref = fullName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         fullName_ = b;
         return b;
       } else {
@@ -6764,22 +7123,28 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int DECLARING_TYPE_FIELD_NUMBER = 15;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition declaringType_;
+
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
+     * 
      * @return Whether the declaringType field is set.
      */
     @java.lang.Override
     public boolean hasDeclaringType() {
       return declaringType_ != null;
     }
+
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
+     * 
      * @return The declaringType.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType() {
-      return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : declaringType_;
+      return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+          : declaringType_;
     }
+
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
      */
@@ -6790,12 +7155,14 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int PE_TOKEN_FIELD_NUMBER = 20;
     private int peToken_;
+
     /**
      * <pre>
      *hexadecimal x8 pe token
      * </pre>
      *
      * <code>int32 pe_token = 20;</code>
+     * 
      * @return The peToken.
      */
     @java.lang.Override
@@ -6804,19 +7171,21 @@ public final class ProtoAssemblyAllTypes {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         output.writeEnum(1, accessibility_);
       }
@@ -6883,86 +7252,69 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, accessibility_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, accessibility_);
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
       if (hasBody_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, hasBody_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, hasBody_);
       }
       for (int i = 0; i < parameter_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, parameter_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(4, parameter_.get(i));
       }
       if (isAbstract_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, isAbstract_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isAbstract_);
       }
       if (isAccessor_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, isAccessor_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isAccessor_);
       }
       if (isConstructor_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, isConstructor_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isConstructor_);
       }
       if (isDestructor_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(8, isDestructor_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(8, isDestructor_);
       }
       if (isExplicitInterfaceImplementation_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(9, isExplicitInterfaceImplementation_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(9, isExplicitInterfaceImplementation_);
       }
       if (isStatic_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(10, isStatic_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(10, isStatic_);
       }
       if (isVirtual_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(11, isVirtual_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(11, isVirtual_);
       }
       if (returnType_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, getReturnType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(12, getReturnType());
       }
       for (int i = 0; i < attributes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, attributes_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(13, attributes_.get(i));
       }
       if (!getFullNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, fullName_);
       }
       if (declaringType_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, getDeclaringType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(15, getDeclaringType());
       }
       if (isOperator_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(16, isOperator_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(16, isOperator_);
       }
       if (isExtern_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(17, isExtern_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(17, isExtern_);
       }
       if (isUnsafe_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(18, isUnsafe_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(18, isUnsafe_);
       }
       if (isSealed_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(19, isSealed_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(19, isSealed_);
       }
       if (peToken_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(20, peToken_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(20, peToken_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -6972,59 +7324,64 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition) obj;
 
-      if (accessibility_ != other.accessibility_) return false;
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (getHasBody()
-          != other.getHasBody()) return false;
-      if (!getParameterList()
-          .equals(other.getParameterList())) return false;
-      if (getIsAbstract()
-          != other.getIsAbstract()) return false;
-      if (getIsAccessor()
-          != other.getIsAccessor()) return false;
-      if (getIsConstructor()
-          != other.getIsConstructor()) return false;
-      if (getIsDestructor()
-          != other.getIsDestructor()) return false;
-      if (getIsExplicitInterfaceImplementation()
-          != other.getIsExplicitInterfaceImplementation()) return false;
-      if (getIsStatic()
-          != other.getIsStatic()) return false;
-      if (getIsVirtual()
-          != other.getIsVirtual()) return false;
-      if (getIsOperator()
-          != other.getIsOperator()) return false;
-      if (getIsExtern()
-          != other.getIsExtern()) return false;
-      if (getIsUnsafe()
-          != other.getIsUnsafe()) return false;
-      if (getIsSealed()
-          != other.getIsSealed()) return false;
-      if (hasReturnType() != other.hasReturnType()) return false;
+      if (accessibility_ != other.accessibility_)
+        return false;
+      if (!getName().equals(other.getName()))
+        return false;
+      if (getHasBody() != other.getHasBody())
+        return false;
+      if (!getParameterList().equals(other.getParameterList()))
+        return false;
+      if (getIsAbstract() != other.getIsAbstract())
+        return false;
+      if (getIsAccessor() != other.getIsAccessor())
+        return false;
+      if (getIsConstructor() != other.getIsConstructor())
+        return false;
+      if (getIsDestructor() != other.getIsDestructor())
+        return false;
+      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
+        return false;
+      if (getIsStatic() != other.getIsStatic())
+        return false;
+      if (getIsVirtual() != other.getIsVirtual())
+        return false;
+      if (getIsOperator() != other.getIsOperator())
+        return false;
+      if (getIsExtern() != other.getIsExtern())
+        return false;
+      if (getIsUnsafe() != other.getIsUnsafe())
+        return false;
+      if (getIsSealed() != other.getIsSealed())
+        return false;
+      if (hasReturnType() != other.hasReturnType())
+        return false;
       if (hasReturnType()) {
-        if (!getReturnType()
-            .equals(other.getReturnType())) return false;
+        if (!getReturnType().equals(other.getReturnType()))
+          return false;
       }
-      if (!getAttributesList()
-          .equals(other.getAttributesList())) return false;
-      if (!getFullName()
-          .equals(other.getFullName())) return false;
-      if (hasDeclaringType() != other.hasDeclaringType()) return false;
+      if (!getAttributesList().equals(other.getAttributesList()))
+        return false;
+      if (!getFullName().equals(other.getFullName()))
+        return false;
+      if (hasDeclaringType() != other.hasDeclaringType())
+        return false;
       if (hasDeclaringType()) {
-        if (!getDeclaringType()
-            .equals(other.getDeclaringType())) return false;
+        if (!getDeclaringType().equals(other.getDeclaringType()))
+          return false;
       }
-      if (getPeToken()
-          != other.getPeToken()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (getPeToken() != other.getPeToken())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -7040,45 +7397,33 @@ public final class ProtoAssemblyAllTypes {
       hash = (37 * hash) + NAME_FIELD_NUMBER;
       hash = (53 * hash) + getName().hashCode();
       hash = (37 * hash) + HAS_BODY_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getHasBody());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getHasBody());
       if (getParameterCount() > 0) {
         hash = (37 * hash) + PARAMETER_FIELD_NUMBER;
         hash = (53 * hash) + getParameterList().hashCode();
       }
       hash = (37 * hash) + IS_ABSTRACT_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsAbstract());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsAbstract());
       hash = (37 * hash) + IS_ACCESSOR_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsAccessor());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsAccessor());
       hash = (37 * hash) + IS_CONSTRUCTOR_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsConstructor());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsConstructor());
       hash = (37 * hash) + IS_DESTRUCTOR_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsDestructor());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsDestructor());
       hash = (37 * hash) + IS_EXPLICIT_INTERFACE_IMPLEMENTATION_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsExplicitInterfaceImplementation());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsExplicitInterfaceImplementation());
       hash = (37 * hash) + IS_STATIC_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsStatic());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsStatic());
       hash = (37 * hash) + IS_VIRTUAL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsVirtual());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsVirtual());
       hash = (37 * hash) + IS_OPERATOR_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsOperator());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsOperator());
       hash = (37 * hash) + IS_EXTERN_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsExtern());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsExtern());
       hash = (37 * hash) + IS_UNSAFE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsUnsafe());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsUnsafe());
       hash = (37 * hash) + IS_SEALED_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsSealed());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsSealed());
       if (hasReturnType()) {
         hash = (37 * hash) + RETURN_TYPE_FIELD_NUMBER;
         hash = (53 * hash) + getReturnType().hashCode();
@@ -7100,114 +7445,109 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code MethodDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:MethodDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_MethodDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_MethodDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder()
@@ -7215,18 +7555,18 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getParameterFieldBuilder();
           getAttributesFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -7290,8 +7630,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_MethodDefinition_descriptor;
       }
 
@@ -7311,7 +7650,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition(this);
         int from_bitField0_ = bitField0_;
         result.accessibility_ = accessibility_;
         result.name_ = name_;
@@ -7365,38 +7705,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -7404,7 +7743,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance())
+          return this;
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
@@ -7433,9 +7773,8 @@ public final class ProtoAssemblyAllTypes {
               parameterBuilder_ = null;
               parameter_ = other.parameter_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              parameterBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getParameterFieldBuilder() : null;
+              parameterBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getParameterFieldBuilder() : null;
             } else {
               parameterBuilder_.addAllMessages(other.parameter_);
             }
@@ -7495,9 +7834,8 @@ public final class ProtoAssemblyAllTypes {
               attributesBuilder_ = null;
               attributes_ = other.attributes_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              attributesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getAttributesFieldBuilder() : null;
+              attributesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getAttributesFieldBuilder() : null;
             } else {
               attributesBuilder_.addAllMessages(other.attributes_);
             }
@@ -7524,10 +7862,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -7541,72 +7877,88 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       private int bitField0_;
 
       private int accessibility_ = 0;
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The enum numeric value on the wire for accessibility.
        */
-      @java.lang.Override public int getAccessibilityValue() {
+      @java.lang.Override
+      public int getAccessibilityValue() {
         return accessibility_;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The enum numeric value on the wire for accessibility to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibilityValue(int value) {
-        
+
         accessibility_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The accessibility.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The accessibility to set.
+       * 
+       * @param value
+       *          The accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibility(soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         accessibility_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
-        
+
         accessibility_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object name_ = "";
+
       /**
        * <code>string name = 2;</code>
+       * 
        * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           name_ = s;
           return s;
@@ -7614,107 +7966,119 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string name = 2;</code>
+       * 
        * @return The bytes for name.
        */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
+      public com.google.protobuf.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string name = 2;</code>
-       * @param value The name to set.
+       * 
+       * @param value
+       *          The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        name_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string name = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearName() {
-        
-        name_ = getDefaultInstance().getName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string name = 2;</code>
-       * @param value The bytes for name to set.
-       * @return This builder for chaining.
-       */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+
         name_ = value;
         onChanged();
         return this;
       }
 
-      private boolean hasBody_ ;
+      /**
+       * <code>string name = 2;</code>
+       * 
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>string name = 2;</code>
+       * 
+       * @param value
+       *          The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean hasBody_;
+
       /**
        * <code>bool has_body = 3;</code>
+       * 
        * @return The hasBody.
        */
       @java.lang.Override
       public boolean getHasBody() {
         return hasBody_;
       }
+
       /**
        * <code>bool has_body = 3;</code>
-       * @param value The hasBody to set.
+       * 
+       * @param value
+       *          The hasBody to set.
        * @return This builder for chaining.
        */
       public Builder setHasBody(boolean value) {
-        
+
         hasBody_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool has_body = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearHasBody() {
-        
+
         hasBody_ = false;
         onChanged();
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> parameter_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> parameter_
+          = java.util.Collections.emptyList();
+
       private void ensureParameterIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           parameter_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition>(parameter_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder> parameterBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder> parameterBuilder_;
 
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
@@ -7726,6 +8090,7 @@ public final class ProtoAssemblyAllTypes {
           return parameterBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
@@ -7736,6 +8101,7 @@ public final class ProtoAssemblyAllTypes {
           return parameterBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
@@ -7746,11 +8112,11 @@ public final class ProtoAssemblyAllTypes {
           return parameterBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public Builder setParameter(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition value) {
+      public Builder setParameter(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition value) {
         if (parameterBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -7763,11 +8129,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public Builder setParameter(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder builderForValue) {
+      public Builder setParameter(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder builderForValue) {
         if (parameterBuilder_ == null) {
           ensureParameterIsMutable();
           parameter_.set(index, builderForValue.build());
@@ -7777,6 +8144,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
@@ -7793,11 +8161,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public Builder addParameter(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition value) {
+      public Builder addParameter(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition value) {
         if (parameterBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -7810,11 +8178,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public Builder addParameter(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder builderForValue) {
+      public Builder addParameter(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder builderForValue) {
         if (parameterBuilder_ == null) {
           ensureParameterIsMutable();
           parameter_.add(builderForValue.build());
@@ -7824,11 +8192,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public Builder addParameter(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder builderForValue) {
+      public Builder addParameter(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder builderForValue) {
         if (parameterBuilder_ == null) {
           ensureParameterIsMutable();
           parameter_.add(index, builderForValue.build());
@@ -7838,21 +8207,22 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public Builder addAllParameter(
-          java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> values) {
+      public Builder
+          addAllParameter(java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition> values) {
         if (parameterBuilder_ == null) {
           ensureParameterIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, parameter_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, parameter_);
           onChanged();
         } else {
           parameterBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
@@ -7866,6 +8236,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
@@ -7879,433 +8250,516 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder getParameterBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder getParameterBuilder(int index) {
         return getParameterFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder getParameterOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder getParameterOrBuilder(int index) {
         if (parameterBuilder_ == null) {
-          return parameter_.get(index);  } else {
+          return parameter_.get(index);
+        } else {
           return parameterBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder> 
-           getParameterOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder>
+          getParameterOrBuilderList() {
         if (parameterBuilder_ != null) {
           return parameterBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(parameter_);
         }
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder addParameterBuilder() {
-        return getParameterFieldBuilder().addBuilder(
+        return getParameterFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .ParameterDefinition parameter = 4;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder addParameterBuilder(int index) {
+        return getParameterFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .ParameterDefinition parameter = 4;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder addParameterBuilder(
-          int index) {
-        return getParameterFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .ParameterDefinition parameter = 4;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder> 
-           getParameterBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder> getParameterBuilderList() {
         return getParameterFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder>
           getParameterFieldBuilder() {
         if (parameterBuilder_ == null) {
-          parameterBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder>(
-                  parameter_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          parameterBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder>(
+                  parameter_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           parameter_ = null;
         }
         return parameterBuilder_;
       }
 
-      private boolean isAbstract_ ;
+      private boolean isAbstract_;
+
       /**
        * <code>bool is_abstract = 5;</code>
+       * 
        * @return The isAbstract.
        */
       @java.lang.Override
       public boolean getIsAbstract() {
         return isAbstract_;
       }
+
       /**
        * <code>bool is_abstract = 5;</code>
-       * @param value The isAbstract to set.
+       * 
+       * @param value
+       *          The isAbstract to set.
        * @return This builder for chaining.
        */
       public Builder setIsAbstract(boolean value) {
-        
+
         isAbstract_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_abstract = 5;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
-        
+
         isAbstract_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isAccessor_ ;
+      private boolean isAccessor_;
+
       /**
        * <code>bool is_accessor = 6;</code>
+       * 
        * @return The isAccessor.
        */
       @java.lang.Override
       public boolean getIsAccessor() {
         return isAccessor_;
       }
+
       /**
        * <code>bool is_accessor = 6;</code>
-       * @param value The isAccessor to set.
+       * 
+       * @param value
+       *          The isAccessor to set.
        * @return This builder for chaining.
        */
       public Builder setIsAccessor(boolean value) {
-        
+
         isAccessor_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_accessor = 6;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsAccessor() {
-        
+
         isAccessor_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isConstructor_ ;
+      private boolean isConstructor_;
+
       /**
        * <code>bool is_constructor = 7;</code>
+       * 
        * @return The isConstructor.
        */
       @java.lang.Override
       public boolean getIsConstructor() {
         return isConstructor_;
       }
+
       /**
        * <code>bool is_constructor = 7;</code>
-       * @param value The isConstructor to set.
+       * 
+       * @param value
+       *          The isConstructor to set.
        * @return This builder for chaining.
        */
       public Builder setIsConstructor(boolean value) {
-        
+
         isConstructor_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_constructor = 7;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsConstructor() {
-        
+
         isConstructor_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isDestructor_ ;
+      private boolean isDestructor_;
+
       /**
        * <code>bool is_destructor = 8;</code>
+       * 
        * @return The isDestructor.
        */
       @java.lang.Override
       public boolean getIsDestructor() {
         return isDestructor_;
       }
+
       /**
        * <code>bool is_destructor = 8;</code>
-       * @param value The isDestructor to set.
+       * 
+       * @param value
+       *          The isDestructor to set.
        * @return This builder for chaining.
        */
       public Builder setIsDestructor(boolean value) {
-        
+
         isDestructor_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_destructor = 8;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsDestructor() {
-        
+
         isDestructor_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isExplicitInterfaceImplementation_ ;
+      private boolean isExplicitInterfaceImplementation_;
+
       /**
        * <code>bool is_explicit_interface_implementation = 9;</code>
+       * 
        * @return The isExplicitInterfaceImplementation.
        */
       @java.lang.Override
       public boolean getIsExplicitInterfaceImplementation() {
         return isExplicitInterfaceImplementation_;
       }
+
       /**
        * <code>bool is_explicit_interface_implementation = 9;</code>
-       * @param value The isExplicitInterfaceImplementation to set.
+       * 
+       * @param value
+       *          The isExplicitInterfaceImplementation to set.
        * @return This builder for chaining.
        */
       public Builder setIsExplicitInterfaceImplementation(boolean value) {
-        
+
         isExplicitInterfaceImplementation_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_explicit_interface_implementation = 9;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsExplicitInterfaceImplementation() {
-        
+
         isExplicitInterfaceImplementation_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isStatic_ ;
+      private boolean isStatic_;
+
       /**
        * <code>bool is_static = 10;</code>
+       * 
        * @return The isStatic.
        */
       @java.lang.Override
       public boolean getIsStatic() {
         return isStatic_;
       }
+
       /**
        * <code>bool is_static = 10;</code>
-       * @param value The isStatic to set.
+       * 
+       * @param value
+       *          The isStatic to set.
        * @return This builder for chaining.
        */
       public Builder setIsStatic(boolean value) {
-        
+
         isStatic_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_static = 10;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
-        
+
         isStatic_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isVirtual_ ;
+      private boolean isVirtual_;
+
       /**
        * <code>bool is_virtual = 11;</code>
+       * 
        * @return The isVirtual.
        */
       @java.lang.Override
       public boolean getIsVirtual() {
         return isVirtual_;
       }
+
       /**
        * <code>bool is_virtual = 11;</code>
-       * @param value The isVirtual to set.
+       * 
+       * @param value
+       *          The isVirtual to set.
        * @return This builder for chaining.
        */
       public Builder setIsVirtual(boolean value) {
-        
+
         isVirtual_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_virtual = 11;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsVirtual() {
-        
+
         isVirtual_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isOperator_ ;
+      private boolean isOperator_;
+
       /**
        * <code>bool is_operator = 16;</code>
+       * 
        * @return The isOperator.
        */
       @java.lang.Override
       public boolean getIsOperator() {
         return isOperator_;
       }
+
       /**
        * <code>bool is_operator = 16;</code>
-       * @param value The isOperator to set.
+       * 
+       * @param value
+       *          The isOperator to set.
        * @return This builder for chaining.
        */
       public Builder setIsOperator(boolean value) {
-        
+
         isOperator_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_operator = 16;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsOperator() {
-        
+
         isOperator_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isExtern_ ;
+      private boolean isExtern_;
+
       /**
        * <code>bool is_extern = 17;</code>
+       * 
        * @return The isExtern.
        */
       @java.lang.Override
       public boolean getIsExtern() {
         return isExtern_;
       }
+
       /**
        * <code>bool is_extern = 17;</code>
-       * @param value The isExtern to set.
+       * 
+       * @param value
+       *          The isExtern to set.
        * @return This builder for chaining.
        */
       public Builder setIsExtern(boolean value) {
-        
+
         isExtern_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_extern = 17;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsExtern() {
-        
+
         isExtern_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isUnsafe_ ;
+      private boolean isUnsafe_;
+
       /**
        * <code>bool is_unsafe = 18;</code>
+       * 
        * @return The isUnsafe.
        */
       @java.lang.Override
       public boolean getIsUnsafe() {
         return isUnsafe_;
       }
+
       /**
        * <code>bool is_unsafe = 18;</code>
-       * @param value The isUnsafe to set.
+       * 
+       * @param value
+       *          The isUnsafe to set.
        * @return This builder for chaining.
        */
       public Builder setIsUnsafe(boolean value) {
-        
+
         isUnsafe_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_unsafe = 18;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsUnsafe() {
-        
+
         isUnsafe_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isSealed_ ;
+      private boolean isSealed_;
+
       /**
        * <code>bool is_sealed = 19;</code>
+       * 
        * @return The isSealed.
        */
       @java.lang.Override
       public boolean getIsSealed() {
         return isSealed_;
       }
+
       /**
        * <code>bool is_sealed = 19;</code>
-       * @param value The isSealed to set.
+       * 
+       * @param value
+       *          The isSealed to set.
        * @return This builder for chaining.
        */
       public Builder setIsSealed(boolean value) {
-        
+
         isSealed_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_sealed = 19;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
-        
+
         isSealed_ = false;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition returnType_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> returnTypeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> returnTypeBuilder_;
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
+       * 
        * @return Whether the returnType field is set.
        */
       public boolean hasReturnType() {
         return returnTypeBuilder_ != null || returnType_ != null;
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
+       * 
        * @return The returnType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getReturnType() {
         if (returnTypeBuilder_ == null) {
-          return returnType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : returnType_;
+          return returnType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : returnType_;
         } else {
           return returnTypeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
        */
@@ -8322,11 +8776,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
        */
-      public Builder setReturnType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setReturnType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (returnTypeBuilder_ == null) {
           returnType_ = builderForValue.build();
           onChanged();
@@ -8336,14 +8790,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
        */
       public Builder mergeReturnType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (returnTypeBuilder_ == null) {
           if (returnType_ != null) {
-            returnType_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(returnType_).mergeFrom(value).buildPartial();
+            returnType_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(returnType_).mergeFrom(value)
+                .buildPartial();
           } else {
             returnType_ = value;
           }
@@ -8354,6 +8809,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
        */
@@ -8368,14 +8824,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getReturnTypeBuilder() {
-        
+
         onChanged();
         return getReturnTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
        */
@@ -8383,38 +8841,37 @@ public final class ProtoAssemblyAllTypes {
         if (returnTypeBuilder_ != null) {
           return returnTypeBuilder_.getMessageOrBuilder();
         } else {
-          return returnType_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : returnType_;
+          return returnType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : returnType_;
         }
       }
+
       /**
        * <code>.TypeDefinition return_type = 12;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getReturnTypeFieldBuilder() {
         if (returnTypeBuilder_ == null) {
-          returnTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getReturnType(),
-                  getParentForChildren(),
-                  isClean());
+          returnTypeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getReturnType(), getParentForChildren(), isClean());
           returnType_ = null;
         }
         return returnTypeBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_
+          = java.util.Collections.emptyList();
+
       private void ensureAttributesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>(attributes_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
 
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
@@ -8426,6 +8883,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
@@ -8436,6 +8894,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
@@ -8446,11 +8905,11 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder setAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8463,11 +8922,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder setAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.set(index, builderForValue.build());
@@ -8477,6 +8937,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
@@ -8493,11 +8954,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder addAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -8510,11 +8971,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public Builder addAttributes(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(builderForValue.build());
@@ -8524,11 +8985,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(index, builderForValue.build());
@@ -8538,6 +9000,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
@@ -8545,14 +9008,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> values) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, attributes_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, attributes_);
           onChanged();
         } else {
           attributesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
@@ -8566,6 +9029,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
@@ -8579,81 +9043,83 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(int index) {
         return getAttributesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
         if (attributesBuilder_ == null) {
-          return attributes_.get(index);  } else {
+          return attributes_.get(index);
+        } else {
           return attributesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
-           getAttributesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
+          getAttributesOrBuilderList() {
         if (attributesBuilder_ != null) {
           return attributesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(attributes_);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder() {
-        return getAttributesFieldBuilder().addBuilder(
+        return getAttributesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .AttributeDefinition attributes = 13;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(int index) {
+        return getAttributesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 13;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .AttributeDefinition attributes = 13;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> 
-           getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
           getAttributesFieldBuilder() {
         if (attributesBuilder_ == null) {
-          attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
-                  attributes_,
-                  ((bitField0_ & 0x00000002) != 0),
-                  getParentForChildren(),
-                  isClean());
+          attributesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
+                  attributes_, ((bitField0_ & 0x00000002) != 0), getParentForChildren(), isClean());
           attributes_ = null;
         }
         return attributesBuilder_;
       }
 
       private java.lang.Object fullName_ = "";
+
       /**
        * <code>string full_name = 14;</code>
+       * 
        * @return The fullName.
        */
       public java.lang.String getFullName() {
         java.lang.Object ref = fullName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           fullName_ = s;
           return s;
@@ -8661,86 +9127,96 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string full_name = 14;</code>
+       * 
        * @return The bytes for fullName.
        */
-      public com.google.protobuf.ByteString
-          getFullNameBytes() {
+      public com.google.protobuf.ByteString getFullNameBytes() {
         java.lang.Object ref = fullName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           fullName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string full_name = 14;</code>
-       * @param value The fullName to set.
+       * 
+       * @param value
+       *          The fullName to set.
        * @return This builder for chaining.
        */
-      public Builder setFullName(
-          java.lang.String value) {
+      public Builder setFullName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         fullName_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string full_name = 14;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearFullName() {
-        
+
         fullName_ = getDefaultInstance().getFullName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string full_name = 14;</code>
-       * @param value The bytes for fullName to set.
+       * 
+       * @param value
+       *          The bytes for fullName to set.
        * @return This builder for chaining.
        */
-      public Builder setFullNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setFullNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         fullName_ = value;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition declaringType_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> declaringTypeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> declaringTypeBuilder_;
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
+       * 
        * @return Whether the declaringType field is set.
        */
       public boolean hasDeclaringType() {
         return declaringTypeBuilder_ != null || declaringType_ != null;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
+       * 
        * @return The declaringType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType() {
         if (declaringTypeBuilder_ == null) {
-          return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : declaringType_;
+          return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : declaringType_;
         } else {
           return declaringTypeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
        */
@@ -8757,11 +9233,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
        */
-      public Builder setDeclaringType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setDeclaringType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (declaringTypeBuilder_ == null) {
           declaringType_ = builderForValue.build();
           onChanged();
@@ -8771,14 +9247,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
        */
       public Builder mergeDeclaringType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (declaringTypeBuilder_ == null) {
           if (declaringType_ != null) {
-            declaringType_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(declaringType_).mergeFrom(value).buildPartial();
+            declaringType_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(declaringType_)
+                .mergeFrom(value).buildPartial();
           } else {
             declaringType_ = value;
           }
@@ -8789,6 +9266,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
        */
@@ -8803,14 +9281,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getDeclaringTypeBuilder() {
-        
+
         onChanged();
         return getDeclaringTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
        */
@@ -8818,81 +9298,85 @@ public final class ProtoAssemblyAllTypes {
         if (declaringTypeBuilder_ != null) {
           return declaringTypeBuilder_.getMessageOrBuilder();
         } else {
-          return declaringType_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : declaringType_;
+          return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : declaringType_;
         }
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getDeclaringTypeFieldBuilder() {
         if (declaringTypeBuilder_ == null) {
-          declaringTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getDeclaringType(),
-                  getParentForChildren(),
-                  isClean());
+          declaringTypeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getDeclaringType(), getParentForChildren(), isClean());
           declaringType_ = null;
         }
         return declaringTypeBuilder_;
       }
 
-      private int peToken_ ;
+      private int peToken_;
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 20;</code>
+       * 
        * @return The peToken.
        */
       @java.lang.Override
       public int getPeToken() {
         return peToken_;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 20;</code>
-       * @param value The peToken to set.
+       * 
+       * @param value
+       *          The peToken to set.
        * @return This builder for chaining.
        */
       public Builder setPeToken(int value) {
-        
+
         peToken_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 20;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
-        
+
         peToken_ = 0;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:MethodDefinition)
     }
@@ -8907,16 +9391,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<MethodDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<MethodDefinition>() {
-      @java.lang.Override
-      public MethodDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new MethodDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<MethodDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<MethodDefinition>() {
+          @java.lang.Override
+          public MethodDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new MethodDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<MethodDefinition> parser() {
       return PARSER;
@@ -8940,14 +9423,18 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return Whether the type field is set.
      */
     boolean hasType();
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
+
     /**
      * <code>.TypeDefinition type = 1;</code>
      */
@@ -8955,40 +9442,47 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string parameter_name = 2;</code>
+     * 
      * @return The parameterName.
      */
     java.lang.String getParameterName();
+
     /**
      * <code>string parameter_name = 2;</code>
+     * 
      * @return The bytes for parameterName.
      */
-    com.google.protobuf.ByteString
-        getParameterNameBytes();
+    com.google.protobuf.ByteString getParameterNameBytes();
 
     /**
      * <code>bool is_ref = 3;</code>
+     * 
      * @return The isRef.
      */
     boolean getIsRef();
 
     /**
      * <code>bool is_out = 4;</code>
+     * 
      * @return The isOut.
      */
     boolean getIsOut();
 
     /**
      * <code>bool is_in = 5;</code>
+     * 
      * @return The isIn.
      */
     boolean getIsIn();
 
     /**
      * <code>bool is_optional = 6;</code>
+     * 
      * @return The isOptional.
      */
     boolean getIsOptional();
   }
+
   /**
    * <pre>
    **
@@ -8997,41 +9491,39 @@ public final class ProtoAssemblyAllTypes {
    *
    * Protobuf type {@code ParameterDefinition}
    */
-  public static final class ParameterDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class ParameterDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:ParameterDefinition)
       ParameterDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use ParameterDefinition.newBuilder() to construct.
     private ParameterDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private ParameterDefinition() {
       parameterName_ = "";
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new ParameterDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private ParameterDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private ParameterDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -9080,8 +9572,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -9091,44 +9582,47 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_ParameterDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_ParameterDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder.class);
     }
 
     public static final int TYPE_FIELD_NUMBER = 1;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return Whether the type field is set.
      */
     @java.lang.Override
     public boolean hasType() {
       return type_ != null;
     }
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return The type.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
       return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
     }
+
     /**
      * <code>.TypeDefinition type = 1;</code>
      */
@@ -9139,8 +9633,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int PARAMETER_NAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object parameterName_;
+
     /**
      * <code>string parameter_name = 2;</code>
+     * 
      * @return The parameterName.
      */
     @java.lang.Override
@@ -9149,25 +9645,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         parameterName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string parameter_name = 2;</code>
+     * 
      * @return The bytes for parameterName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getParameterNameBytes() {
+    public com.google.protobuf.ByteString getParameterNameBytes() {
       java.lang.Object ref = parameterName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         parameterName_ = b;
         return b;
       } else {
@@ -9177,8 +9671,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_REF_FIELD_NUMBER = 3;
     private boolean isRef_;
+
     /**
      * <code>bool is_ref = 3;</code>
+     * 
      * @return The isRef.
      */
     @java.lang.Override
@@ -9188,8 +9684,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_OUT_FIELD_NUMBER = 4;
     private boolean isOut_;
+
     /**
      * <code>bool is_out = 4;</code>
+     * 
      * @return The isOut.
      */
     @java.lang.Override
@@ -9199,8 +9697,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_IN_FIELD_NUMBER = 5;
     private boolean isIn_;
+
     /**
      * <code>bool is_in = 5;</code>
+     * 
      * @return The isIn.
      */
     @java.lang.Override
@@ -9210,8 +9710,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_OPTIONAL_FIELD_NUMBER = 6;
     private boolean isOptional_;
+
     /**
      * <code>bool is_optional = 6;</code>
+     * 
      * @return The isOptional.
      */
     @java.lang.Override
@@ -9220,19 +9722,21 @@ public final class ProtoAssemblyAllTypes {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (type_ != null) {
         output.writeMessage(1, getType());
       }
@@ -9257,31 +9761,27 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (type_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, getType());
       }
       if (!getParameterNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, parameterName_);
       }
       if (isRef_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, isRef_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, isRef_);
       }
       if (isOut_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, isOut_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isOut_);
       }
       if (isIn_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, isIn_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isIn_);
       }
       if (isOptional_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, isOptional_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isOptional_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -9291,29 +9791,32 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition) obj;
 
-      if (hasType() != other.hasType()) return false;
+      if (hasType() != other.hasType())
+        return false;
       if (hasType()) {
-        if (!getType()
-            .equals(other.getType())) return false;
+        if (!getType().equals(other.getType()))
+          return false;
       }
-      if (!getParameterName()
-          .equals(other.getParameterName())) return false;
-      if (getIsRef()
-          != other.getIsRef()) return false;
-      if (getIsOut()
-          != other.getIsOut()) return false;
-      if (getIsIn()
-          != other.getIsIn()) return false;
-      if (getIsOptional()
-          != other.getIsOptional()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getParameterName().equals(other.getParameterName()))
+        return false;
+      if (getIsRef() != other.getIsRef())
+        return false;
+      if (getIsOut() != other.getIsOut())
+        return false;
+      if (getIsIn() != other.getIsIn())
+        return false;
+      if (getIsOptional() != other.getIsOptional())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -9331,112 +9834,106 @@ public final class ProtoAssemblyAllTypes {
       hash = (37 * hash) + PARAMETER_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getParameterName().hashCode();
       hash = (37 * hash) + IS_REF_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsRef());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsRef());
       hash = (37 * hash) + IS_OUT_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsOut());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsOut());
       hash = (37 * hash) + IS_IN_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsIn());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsIn());
       hash = (37 * hash) + IS_OPTIONAL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsOptional());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsOptional());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * <pre>
      **
@@ -9445,21 +9942,18 @@ public final class ProtoAssemblyAllTypes {
      *
      * Protobuf type {@code ParameterDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:ParameterDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_ParameterDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_ParameterDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.newBuilder()
@@ -9467,16 +9961,16 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -9500,8 +9994,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_ParameterDefinition_descriptor;
       }
 
@@ -9521,7 +10014,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition(this);
         if (typeBuilder_ == null) {
           result.type_ = type_;
         } else {
@@ -9540,38 +10034,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -9579,7 +10072,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition.getDefaultInstance())
+          return this;
         if (other.hasType()) {
           mergeType(other.getType());
         }
@@ -9610,10 +10104,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -9629,17 +10121,20 @@ public final class ProtoAssemblyAllTypes {
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+
       /**
        * <code>.TypeDefinition type = 1;</code>
+       * 
        * @return Whether the type field is set.
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
+       * 
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -9649,6 +10144,7 @@ public final class ProtoAssemblyAllTypes {
           return typeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -9665,11 +10161,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
-      public Builder setType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -9679,14 +10175,14 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -9697,6 +10193,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -9711,14 +10208,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getTypeBuilder() {
-        
+
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -9726,37 +10225,36 @@ public final class ProtoAssemblyAllTypes {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
-          return type_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
+          return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
         }
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
-          typeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getType(),
-                  getParentForChildren(),
-                  isClean());
+          typeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getType(), getParentForChildren(), isClean());
           type_ = null;
         }
         return typeBuilder_;
       }
 
       private java.lang.Object parameterName_ = "";
+
       /**
        * <code>string parameter_name = 2;</code>
+       * 
        * @return The parameterName.
        */
       public java.lang.String getParameterName() {
         java.lang.Object ref = parameterName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           parameterName_ = s;
           return s;
@@ -9764,200 +10262,231 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string parameter_name = 2;</code>
+       * 
        * @return The bytes for parameterName.
        */
-      public com.google.protobuf.ByteString
-          getParameterNameBytes() {
+      public com.google.protobuf.ByteString getParameterNameBytes() {
         java.lang.Object ref = parameterName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           parameterName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string parameter_name = 2;</code>
-       * @param value The parameterName to set.
+       * 
+       * @param value
+       *          The parameterName to set.
        * @return This builder for chaining.
        */
-      public Builder setParameterName(
-          java.lang.String value) {
+      public Builder setParameterName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        parameterName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string parameter_name = 2;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearParameterName() {
-        
-        parameterName_ = getDefaultInstance().getParameterName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string parameter_name = 2;</code>
-       * @param value The bytes for parameterName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setParameterNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+
         parameterName_ = value;
         onChanged();
         return this;
       }
 
-      private boolean isRef_ ;
+      /**
+       * <code>string parameter_name = 2;</code>
+       * 
+       * @return This builder for chaining.
+       */
+      public Builder clearParameterName() {
+
+        parameterName_ = getDefaultInstance().getParameterName();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>string parameter_name = 2;</code>
+       * 
+       * @param value
+       *          The bytes for parameterName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setParameterNameBytes(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        parameterName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean isRef_;
+
       /**
        * <code>bool is_ref = 3;</code>
+       * 
        * @return The isRef.
        */
       @java.lang.Override
       public boolean getIsRef() {
         return isRef_;
       }
+
       /**
        * <code>bool is_ref = 3;</code>
-       * @param value The isRef to set.
+       * 
+       * @param value
+       *          The isRef to set.
        * @return This builder for chaining.
        */
       public Builder setIsRef(boolean value) {
-        
+
         isRef_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_ref = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsRef() {
-        
+
         isRef_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isOut_ ;
+      private boolean isOut_;
+
       /**
        * <code>bool is_out = 4;</code>
+       * 
        * @return The isOut.
        */
       @java.lang.Override
       public boolean getIsOut() {
         return isOut_;
       }
+
       /**
        * <code>bool is_out = 4;</code>
-       * @param value The isOut to set.
+       * 
+       * @param value
+       *          The isOut to set.
        * @return This builder for chaining.
        */
       public Builder setIsOut(boolean value) {
-        
+
         isOut_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_out = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsOut() {
-        
+
         isOut_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isIn_ ;
+      private boolean isIn_;
+
       /**
        * <code>bool is_in = 5;</code>
+       * 
        * @return The isIn.
        */
       @java.lang.Override
       public boolean getIsIn() {
         return isIn_;
       }
+
       /**
        * <code>bool is_in = 5;</code>
-       * @param value The isIn to set.
+       * 
+       * @param value
+       *          The isIn to set.
        * @return This builder for chaining.
        */
       public Builder setIsIn(boolean value) {
-        
+
         isIn_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_in = 5;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsIn() {
-        
+
         isIn_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isOptional_ ;
+      private boolean isOptional_;
+
       /**
        * <code>bool is_optional = 6;</code>
+       * 
        * @return The isOptional.
        */
       @java.lang.Override
       public boolean getIsOptional() {
         return isOptional_;
       }
+
       /**
        * <code>bool is_optional = 6;</code>
-       * @param value The isOptional to set.
+       * 
+       * @param value
+       *          The isOptional to set.
        * @return This builder for chaining.
        */
       public Builder setIsOptional(boolean value) {
-        
+
         isOptional_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_optional = 6;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsOptional() {
-        
+
         isOptional_ = false;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:ParameterDefinition)
     }
@@ -9972,16 +10501,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<ParameterDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<ParameterDefinition>() {
-      @java.lang.Override
-      public ParameterDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ParameterDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<ParameterDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<ParameterDefinition>() {
+          @java.lang.Override
+          public ParameterDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new ParameterDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<ParameterDefinition> parser() {
       return PARSER;
@@ -10005,73 +10533,88 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>bool is_abstract = 2;</code>
+     * 
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_sealed = 3;</code>
+     * 
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>bool is_explicit_interface_implementation = 4;</code>
+     * 
      * @return The isExplicitInterfaceImplementation.
      */
     boolean getIsExplicitInterfaceImplementation();
 
     /**
      * <code>bool is_override = 5;</code>
+     * 
      * @return The isOverride.
      */
     boolean getIsOverride();
 
     /**
      * <code>bool is_virtual = 6;</code>
+     * 
      * @return The isVirtual.
      */
     boolean getIsVirtual();
 
     /**
      * <code>bool is_const = 7;</code>
+     * 
      * @return The isConst.
      */
     boolean getIsConst();
 
     /**
      * <code>bool is_read_only = 8;</code>
+     * 
      * @return The isReadOnly.
      */
     boolean getIsReadOnly();
 
     /**
      * <code>bool is_static = 9;</code>
+     * 
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>.TypeDefinition type = 10;</code>
+     * 
      * @return Whether the type field is set.
      */
     boolean hasType();
+
     /**
      * <code>.TypeDefinition type = 10;</code>
+     * 
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
+
     /**
      * <code>.TypeDefinition type = 10;</code>
      */
@@ -10079,49 +10622,60 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The enum numeric value on the wire for typeKind.
      */
     int getTypeKindValue();
+
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The typeKind.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind();
 
     /**
      * <code>string name = 11;</code>
+     * 
      * @return The name.
      */
     java.lang.String getName();
+
     /**
      * <code>string name = 11;</code>
+     * 
      * @return The bytes for name.
      */
-    com.google.protobuf.ByteString
-        getNameBytes();
+    com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>string full_name = 12;</code>
+     * 
      * @return The fullName.
      */
     java.lang.String getFullName();
+
     /**
      * <code>string full_name = 12;</code>
+     * 
      * @return The bytes for fullName.
      */
-    com.google.protobuf.ByteString
-        getFullNameBytes();
+    com.google.protobuf.ByteString getFullNameBytes();
 
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
+     * 
      * @return Whether the declaringType field is set.
      */
     boolean hasDeclaringType();
+
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
+     * 
      * @return The declaringType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType();
+
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
      */
@@ -10130,26 +10684,28 @@ public final class ProtoAssemblyAllTypes {
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> 
-        getAttributesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index);
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     int getAttributesCount();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index);
 
     /**
      * <pre>
@@ -10157,22 +10713,25 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 16;</code>
+     * 
      * @return The peToken.
      */
     int getPeToken();
   }
+
   /**
    * Protobuf type {@code FieldDefinition}
    */
-  public static final class FieldDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class FieldDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:FieldDefinition)
       FieldDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use FieldDefinition.newBuilder() to construct.
     private FieldDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private FieldDefinition() {
       accessibility_ = 0;
       typeKind_ = 0;
@@ -10182,19 +10741,17 @@ public final class ProtoAssemblyAllTypes {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new FieldDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private FieldDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private FieldDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -10202,8 +10759,7 @@ public final class ProtoAssemblyAllTypes {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -10288,7 +10844,8 @@ public final class ProtoAssemblyAllTypes {
               if (declaringType_ != null) {
                 subBuilder = declaringType_.toBuilder();
               }
-              declaringType_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
+              declaringType_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(declaringType_);
                 declaringType_ = subBuilder.buildPartial();
@@ -10307,8 +10864,8 @@ public final class ProtoAssemblyAllTypes {
                 attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              attributes_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(), extensionRegistry));
+              attributes_.add(input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(),
+                  extensionRegistry));
               break;
             }
             case 128: {
@@ -10317,8 +10874,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -10328,8 +10884,7 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           attributes_ = java.util.Collections.unmodifiableList(attributes_);
@@ -10338,42 +10893,50 @@ public final class ProtoAssemblyAllTypes {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_FieldDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_FieldDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder.class);
     }
 
     public static final int ACCESSIBILITY_FIELD_NUMBER = 1;
     private int accessibility_;
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
-    @java.lang.Override public int getAccessibilityValue() {
+    @java.lang.Override
+    public int getAccessibilityValue() {
       return accessibility_;
     }
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
     }
 
     public static final int IS_ABSTRACT_FIELD_NUMBER = 2;
     private boolean isAbstract_;
+
     /**
      * <code>bool is_abstract = 2;</code>
+     * 
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -10383,8 +10946,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_SEALED_FIELD_NUMBER = 3;
     private boolean isSealed_;
+
     /**
      * <code>bool is_sealed = 3;</code>
+     * 
      * @return The isSealed.
      */
     @java.lang.Override
@@ -10394,8 +10959,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_EXPLICIT_INTERFACE_IMPLEMENTATION_FIELD_NUMBER = 4;
     private boolean isExplicitInterfaceImplementation_;
+
     /**
      * <code>bool is_explicit_interface_implementation = 4;</code>
+     * 
      * @return The isExplicitInterfaceImplementation.
      */
     @java.lang.Override
@@ -10405,8 +10972,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_OVERRIDE_FIELD_NUMBER = 5;
     private boolean isOverride_;
+
     /**
      * <code>bool is_override = 5;</code>
+     * 
      * @return The isOverride.
      */
     @java.lang.Override
@@ -10416,8 +10985,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_VIRTUAL_FIELD_NUMBER = 6;
     private boolean isVirtual_;
+
     /**
      * <code>bool is_virtual = 6;</code>
+     * 
      * @return The isVirtual.
      */
     @java.lang.Override
@@ -10427,8 +10998,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_CONST_FIELD_NUMBER = 7;
     private boolean isConst_;
+
     /**
      * <code>bool is_const = 7;</code>
+     * 
      * @return The isConst.
      */
     @java.lang.Override
@@ -10438,8 +11011,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_READ_ONLY_FIELD_NUMBER = 8;
     private boolean isReadOnly_;
+
     /**
      * <code>bool is_read_only = 8;</code>
+     * 
      * @return The isReadOnly.
      */
     @java.lang.Override
@@ -10449,8 +11024,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_STATIC_FIELD_NUMBER = 9;
     private boolean isStatic_;
+
     /**
      * <code>bool is_static = 9;</code>
+     * 
      * @return The isStatic.
      */
     @java.lang.Override
@@ -10460,22 +11037,27 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int TYPE_FIELD_NUMBER = 10;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
+
     /**
      * <code>.TypeDefinition type = 10;</code>
+     * 
      * @return Whether the type field is set.
      */
     @java.lang.Override
     public boolean hasType() {
       return type_ != null;
     }
+
     /**
      * <code>.TypeDefinition type = 10;</code>
+     * 
      * @return The type.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
       return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
     }
+
     /**
      * <code>.TypeDefinition type = 10;</code>
      */
@@ -10486,27 +11068,36 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int TYPE_KIND_FIELD_NUMBER = 14;
     private int typeKind_;
+
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The enum numeric value on the wire for typeKind.
      */
-    @java.lang.Override public int getTypeKindValue() {
+    @java.lang.Override
+    public int getTypeKindValue() {
       return typeKind_;
     }
+
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The typeKind.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.UNRECOGNIZED : result;
     }
 
     public static final int NAME_FIELD_NUMBER = 11;
     private volatile java.lang.Object name_;
+
     /**
      * <code>string name = 11;</code>
+     * 
      * @return The name.
      */
     @java.lang.Override
@@ -10515,25 +11106,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         name_ = s;
         return s;
       }
     }
+
     /**
      * <code>string name = 11;</code>
+     * 
      * @return The bytes for name.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNameBytes() {
+    public com.google.protobuf.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -10543,8 +11132,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int FULL_NAME_FIELD_NUMBER = 12;
     private volatile java.lang.Object fullName_;
+
     /**
      * <code>string full_name = 12;</code>
+     * 
      * @return The fullName.
      */
     @java.lang.Override
@@ -10553,25 +11144,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         fullName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string full_name = 12;</code>
+     * 
      * @return The bytes for fullName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFullNameBytes() {
+    public com.google.protobuf.ByteString getFullNameBytes() {
       java.lang.Object ref = fullName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         fullName_ = b;
         return b;
       } else {
@@ -10581,22 +11170,28 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int DECLARING_TYPE_FIELD_NUMBER = 13;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition declaringType_;
+
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
+     * 
      * @return Whether the declaringType field is set.
      */
     @java.lang.Override
     public boolean hasDeclaringType() {
       return declaringType_ != null;
     }
+
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
+     * 
      * @return The declaringType.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType() {
-      return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : declaringType_;
+      return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+          : declaringType_;
     }
+
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
      */
@@ -10607,6 +11202,7 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int ATTRIBUTES_FIELD_NUMBER = 15;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_;
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
@@ -10614,14 +11210,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
@@ -10629,6 +11227,7 @@ public final class ProtoAssemblyAllTypes {
     public int getAttributesCount() {
       return attributes_.size();
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
@@ -10636,23 +11235,25 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index) {
       return attributes_.get(index);
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 15;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
       return attributes_.get(index);
     }
 
     public static final int PE_TOKEN_FIELD_NUMBER = 16;
     private int peToken_;
+
     /**
      * <pre>
      *hexadecimal x8 pe token
      * </pre>
      *
      * <code>int32 pe_token = 16;</code>
+     * 
      * @return The peToken.
      */
     @java.lang.Override
@@ -10661,19 +11262,21 @@ public final class ProtoAssemblyAllTypes {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         output.writeEnum(1, accessibility_);
       }
@@ -10728,48 +11331,39 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, accessibility_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, accessibility_);
       }
       if (isAbstract_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, isAbstract_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(2, isAbstract_);
       }
       if (isSealed_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, isSealed_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, isSealed_);
       }
       if (isExplicitInterfaceImplementation_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, isExplicitInterfaceImplementation_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isExplicitInterfaceImplementation_);
       }
       if (isOverride_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, isOverride_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isOverride_);
       }
       if (isVirtual_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, isVirtual_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isVirtual_);
       }
       if (isConst_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, isConst_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isConst_);
       }
       if (isReadOnly_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(8, isReadOnly_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(8, isReadOnly_);
       }
       if (isStatic_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(9, isStatic_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(9, isStatic_);
       }
       if (type_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, getType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(10, getType());
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, name_);
@@ -10778,20 +11372,16 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(12, fullName_);
       }
       if (declaringType_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(13, getDeclaringType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(13, getDeclaringType());
       }
       if (typeKind_ != soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.NO_TYPE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(14, typeKind_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(14, typeKind_);
       }
       for (int i = 0; i < attributes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(15, attributes_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(15, attributes_.get(i));
       }
       if (peToken_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(16, peToken_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(16, peToken_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -10801,50 +11391,56 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition) obj;
 
-      if (accessibility_ != other.accessibility_) return false;
-      if (getIsAbstract()
-          != other.getIsAbstract()) return false;
-      if (getIsSealed()
-          != other.getIsSealed()) return false;
-      if (getIsExplicitInterfaceImplementation()
-          != other.getIsExplicitInterfaceImplementation()) return false;
-      if (getIsOverride()
-          != other.getIsOverride()) return false;
-      if (getIsVirtual()
-          != other.getIsVirtual()) return false;
-      if (getIsConst()
-          != other.getIsConst()) return false;
-      if (getIsReadOnly()
-          != other.getIsReadOnly()) return false;
-      if (getIsStatic()
-          != other.getIsStatic()) return false;
-      if (hasType() != other.hasType()) return false;
+      if (accessibility_ != other.accessibility_)
+        return false;
+      if (getIsAbstract() != other.getIsAbstract())
+        return false;
+      if (getIsSealed() != other.getIsSealed())
+        return false;
+      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
+        return false;
+      if (getIsOverride() != other.getIsOverride())
+        return false;
+      if (getIsVirtual() != other.getIsVirtual())
+        return false;
+      if (getIsConst() != other.getIsConst())
+        return false;
+      if (getIsReadOnly() != other.getIsReadOnly())
+        return false;
+      if (getIsStatic() != other.getIsStatic())
+        return false;
+      if (hasType() != other.hasType())
+        return false;
       if (hasType()) {
-        if (!getType()
-            .equals(other.getType())) return false;
+        if (!getType().equals(other.getType()))
+          return false;
       }
-      if (typeKind_ != other.typeKind_) return false;
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (!getFullName()
-          .equals(other.getFullName())) return false;
-      if (hasDeclaringType() != other.hasDeclaringType()) return false;
+      if (typeKind_ != other.typeKind_)
+        return false;
+      if (!getName().equals(other.getName()))
+        return false;
+      if (!getFullName().equals(other.getFullName()))
+        return false;
+      if (hasDeclaringType() != other.hasDeclaringType())
+        return false;
       if (hasDeclaringType()) {
-        if (!getDeclaringType()
-            .equals(other.getDeclaringType())) return false;
+        if (!getDeclaringType().equals(other.getDeclaringType()))
+          return false;
       }
-      if (!getAttributesList()
-          .equals(other.getAttributesList())) return false;
-      if (getPeToken()
-          != other.getPeToken()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getAttributesList().equals(other.getAttributesList()))
+        return false;
+      if (getPeToken() != other.getPeToken())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -10858,29 +11454,21 @@ public final class ProtoAssemblyAllTypes {
       hash = (37 * hash) + ACCESSIBILITY_FIELD_NUMBER;
       hash = (53 * hash) + accessibility_;
       hash = (37 * hash) + IS_ABSTRACT_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsAbstract());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsAbstract());
       hash = (37 * hash) + IS_SEALED_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsSealed());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsSealed());
       hash = (37 * hash) + IS_EXPLICIT_INTERFACE_IMPLEMENTATION_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsExplicitInterfaceImplementation());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsExplicitInterfaceImplementation());
       hash = (37 * hash) + IS_OVERRIDE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsOverride());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsOverride());
       hash = (37 * hash) + IS_VIRTUAL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsVirtual());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsVirtual());
       hash = (37 * hash) + IS_CONST_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsConst());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsConst());
       hash = (37 * hash) + IS_READ_ONLY_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsReadOnly());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsReadOnly());
       hash = (37 * hash) + IS_STATIC_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsStatic());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsStatic());
       if (hasType()) {
         hash = (37 * hash) + TYPE_FIELD_NUMBER;
         hash = (53 * hash) + getType().hashCode();
@@ -10906,114 +11494,109 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code FieldDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:FieldDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_FieldDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_FieldDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.newBuilder()
@@ -11021,17 +11604,17 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getAttributesFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -11083,8 +11666,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_FieldDefinition_descriptor;
       }
 
@@ -11104,7 +11686,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition(this);
         int from_bitField0_ = bitField0_;
         result.accessibility_ = accessibility_;
         result.isAbstract_ = isAbstract_;
@@ -11146,38 +11729,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -11185,7 +11767,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance())
+          return this;
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
@@ -11248,9 +11831,8 @@ public final class ProtoAssemblyAllTypes {
               attributesBuilder_ = null;
               attributes_ = other.attributes_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              attributesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getAttributesFieldBuilder() : null;
+              attributesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getAttributesFieldBuilder() : null;
             } else {
               attributesBuilder_.addAllMessages(other.attributes_);
             }
@@ -11270,10 +11852,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -11287,322 +11867,396 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       private int bitField0_;
 
       private int accessibility_ = 0;
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The enum numeric value on the wire for accessibility.
        */
-      @java.lang.Override public int getAccessibilityValue() {
+      @java.lang.Override
+      public int getAccessibilityValue() {
         return accessibility_;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The enum numeric value on the wire for accessibility to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibilityValue(int value) {
-        
+
         accessibility_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The accessibility.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The accessibility to set.
+       * 
+       * @param value
+       *          The accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibility(soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         accessibility_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
-        
+
         accessibility_ = 0;
         onChanged();
         return this;
       }
 
-      private boolean isAbstract_ ;
+      private boolean isAbstract_;
+
       /**
        * <code>bool is_abstract = 2;</code>
+       * 
        * @return The isAbstract.
        */
       @java.lang.Override
       public boolean getIsAbstract() {
         return isAbstract_;
       }
+
       /**
        * <code>bool is_abstract = 2;</code>
-       * @param value The isAbstract to set.
+       * 
+       * @param value
+       *          The isAbstract to set.
        * @return This builder for chaining.
        */
       public Builder setIsAbstract(boolean value) {
-        
+
         isAbstract_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_abstract = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
-        
+
         isAbstract_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isSealed_ ;
+      private boolean isSealed_;
+
       /**
        * <code>bool is_sealed = 3;</code>
+       * 
        * @return The isSealed.
        */
       @java.lang.Override
       public boolean getIsSealed() {
         return isSealed_;
       }
+
       /**
        * <code>bool is_sealed = 3;</code>
-       * @param value The isSealed to set.
+       * 
+       * @param value
+       *          The isSealed to set.
        * @return This builder for chaining.
        */
       public Builder setIsSealed(boolean value) {
-        
+
         isSealed_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_sealed = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
-        
+
         isSealed_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isExplicitInterfaceImplementation_ ;
+      private boolean isExplicitInterfaceImplementation_;
+
       /**
        * <code>bool is_explicit_interface_implementation = 4;</code>
+       * 
        * @return The isExplicitInterfaceImplementation.
        */
       @java.lang.Override
       public boolean getIsExplicitInterfaceImplementation() {
         return isExplicitInterfaceImplementation_;
       }
+
       /**
        * <code>bool is_explicit_interface_implementation = 4;</code>
-       * @param value The isExplicitInterfaceImplementation to set.
+       * 
+       * @param value
+       *          The isExplicitInterfaceImplementation to set.
        * @return This builder for chaining.
        */
       public Builder setIsExplicitInterfaceImplementation(boolean value) {
-        
+
         isExplicitInterfaceImplementation_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_explicit_interface_implementation = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsExplicitInterfaceImplementation() {
-        
+
         isExplicitInterfaceImplementation_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isOverride_ ;
+      private boolean isOverride_;
+
       /**
        * <code>bool is_override = 5;</code>
+       * 
        * @return The isOverride.
        */
       @java.lang.Override
       public boolean getIsOverride() {
         return isOverride_;
       }
+
       /**
        * <code>bool is_override = 5;</code>
-       * @param value The isOverride to set.
+       * 
+       * @param value
+       *          The isOverride to set.
        * @return This builder for chaining.
        */
       public Builder setIsOverride(boolean value) {
-        
+
         isOverride_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_override = 5;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsOverride() {
-        
+
         isOverride_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isVirtual_ ;
+      private boolean isVirtual_;
+
       /**
        * <code>bool is_virtual = 6;</code>
+       * 
        * @return The isVirtual.
        */
       @java.lang.Override
       public boolean getIsVirtual() {
         return isVirtual_;
       }
+
       /**
        * <code>bool is_virtual = 6;</code>
-       * @param value The isVirtual to set.
+       * 
+       * @param value
+       *          The isVirtual to set.
        * @return This builder for chaining.
        */
       public Builder setIsVirtual(boolean value) {
-        
+
         isVirtual_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_virtual = 6;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsVirtual() {
-        
+
         isVirtual_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isConst_ ;
+      private boolean isConst_;
+
       /**
        * <code>bool is_const = 7;</code>
+       * 
        * @return The isConst.
        */
       @java.lang.Override
       public boolean getIsConst() {
         return isConst_;
       }
+
       /**
        * <code>bool is_const = 7;</code>
-       * @param value The isConst to set.
+       * 
+       * @param value
+       *          The isConst to set.
        * @return This builder for chaining.
        */
       public Builder setIsConst(boolean value) {
-        
+
         isConst_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_const = 7;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsConst() {
-        
+
         isConst_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isReadOnly_ ;
+      private boolean isReadOnly_;
+
       /**
        * <code>bool is_read_only = 8;</code>
+       * 
        * @return The isReadOnly.
        */
       @java.lang.Override
       public boolean getIsReadOnly() {
         return isReadOnly_;
       }
+
       /**
        * <code>bool is_read_only = 8;</code>
-       * @param value The isReadOnly to set.
+       * 
+       * @param value
+       *          The isReadOnly to set.
        * @return This builder for chaining.
        */
       public Builder setIsReadOnly(boolean value) {
-        
+
         isReadOnly_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_read_only = 8;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsReadOnly() {
-        
+
         isReadOnly_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isStatic_ ;
+      private boolean isStatic_;
+
       /**
        * <code>bool is_static = 9;</code>
+       * 
        * @return The isStatic.
        */
       @java.lang.Override
       public boolean getIsStatic() {
         return isStatic_;
       }
+
       /**
        * <code>bool is_static = 9;</code>
-       * @param value The isStatic to set.
+       * 
+       * @param value
+       *          The isStatic to set.
        * @return This builder for chaining.
        */
       public Builder setIsStatic(boolean value) {
-        
+
         isStatic_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_static = 9;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
-        
+
         isStatic_ = false;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+
       /**
        * <code>.TypeDefinition type = 10;</code>
+       * 
        * @return Whether the type field is set.
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
+       * 
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -11612,6 +12266,7 @@ public final class ProtoAssemblyAllTypes {
           return typeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
        */
@@ -11628,11 +12283,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
        */
-      public Builder setType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -11642,14 +12297,14 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
        */
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -11660,6 +12315,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
        */
@@ -11674,14 +12330,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getTypeBuilder() {
-        
+
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
        */
@@ -11689,91 +12347,104 @@ public final class ProtoAssemblyAllTypes {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
-          return type_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
+          return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
         }
       }
+
       /**
        * <code>.TypeDefinition type = 10;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
-          typeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getType(),
-                  getParentForChildren(),
-                  isClean());
+          typeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getType(), getParentForChildren(), isClean());
           type_ = null;
         }
         return typeBuilder_;
       }
 
       private int typeKind_ = 0;
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
+       * 
        * @return The enum numeric value on the wire for typeKind.
        */
-      @java.lang.Override public int getTypeKindValue() {
+      @java.lang.Override
+      public int getTypeKindValue() {
         return typeKind_;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * @param value The enum numeric value on the wire for typeKind to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for typeKind to set.
        * @return This builder for chaining.
        */
       public Builder setTypeKindValue(int value) {
-        
+
         typeKind_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
+       * 
        * @return The typeKind.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * @param value The typeKind to set.
+       * 
+       * @param value
+       *          The typeKind to set.
        * @return This builder for chaining.
        */
       public Builder setTypeKind(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         typeKind_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearTypeKind() {
-        
+
         typeKind_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object name_ = "";
+
       /**
        * <code>string name = 11;</code>
+       * 
        * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           name_ = s;
           return s;
@@ -11781,75 +12452,81 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string name = 11;</code>
+       * 
        * @return The bytes for name.
        */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
+      public com.google.protobuf.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string name = 11;</code>
-       * @param value The name to set.
+       * 
+       * @param value
+       *          The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         name_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 11;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearName() {
-        
+
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 11;</code>
-       * @param value The bytes for name to set.
+       * 
+       * @param value
+       *          The bytes for name to set.
        * @return This builder for chaining.
        */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         name_ = value;
         onChanged();
         return this;
       }
 
       private java.lang.Object fullName_ = "";
+
       /**
        * <code>string full_name = 12;</code>
+       * 
        * @return The fullName.
        */
       public java.lang.String getFullName() {
         java.lang.Object ref = fullName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           fullName_ = s;
           return s;
@@ -11857,86 +12534,96 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string full_name = 12;</code>
+       * 
        * @return The bytes for fullName.
        */
-      public com.google.protobuf.ByteString
-          getFullNameBytes() {
+      public com.google.protobuf.ByteString getFullNameBytes() {
         java.lang.Object ref = fullName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           fullName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string full_name = 12;</code>
-       * @param value The fullName to set.
+       * 
+       * @param value
+       *          The fullName to set.
        * @return This builder for chaining.
        */
-      public Builder setFullName(
-          java.lang.String value) {
+      public Builder setFullName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         fullName_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string full_name = 12;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearFullName() {
-        
+
         fullName_ = getDefaultInstance().getFullName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string full_name = 12;</code>
-       * @param value The bytes for fullName to set.
+       * 
+       * @param value
+       *          The bytes for fullName to set.
        * @return This builder for chaining.
        */
-      public Builder setFullNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setFullNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         fullName_ = value;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition declaringType_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> declaringTypeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> declaringTypeBuilder_;
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
+       * 
        * @return Whether the declaringType field is set.
        */
       public boolean hasDeclaringType() {
         return declaringTypeBuilder_ != null || declaringType_ != null;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
+       * 
        * @return The declaringType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType() {
         if (declaringTypeBuilder_ == null) {
-          return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : declaringType_;
+          return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : declaringType_;
         } else {
           return declaringTypeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
        */
@@ -11953,11 +12640,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
        */
-      public Builder setDeclaringType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setDeclaringType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (declaringTypeBuilder_ == null) {
           declaringType_ = builderForValue.build();
           onChanged();
@@ -11967,14 +12654,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
        */
       public Builder mergeDeclaringType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (declaringTypeBuilder_ == null) {
           if (declaringType_ != null) {
-            declaringType_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(declaringType_).mergeFrom(value).buildPartial();
+            declaringType_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(declaringType_)
+                .mergeFrom(value).buildPartial();
           } else {
             declaringType_ = value;
           }
@@ -11985,6 +12673,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
        */
@@ -11999,14 +12688,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getDeclaringTypeBuilder() {
-        
+
         onChanged();
         return getDeclaringTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
        */
@@ -12014,38 +12705,37 @@ public final class ProtoAssemblyAllTypes {
         if (declaringTypeBuilder_ != null) {
           return declaringTypeBuilder_.getMessageOrBuilder();
         } else {
-          return declaringType_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : declaringType_;
+          return declaringType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : declaringType_;
         }
       }
+
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getDeclaringTypeFieldBuilder() {
         if (declaringTypeBuilder_ == null) {
-          declaringTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getDeclaringType(),
-                  getParentForChildren(),
-                  isClean());
+          declaringTypeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getDeclaringType(), getParentForChildren(), isClean());
           declaringType_ = null;
         }
         return declaringTypeBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_
+          = java.util.Collections.emptyList();
+
       private void ensureAttributesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>(attributes_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
 
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
@@ -12057,6 +12747,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -12067,6 +12758,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -12077,11 +12769,11 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder setAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12094,11 +12786,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder setAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.set(index, builderForValue.build());
@@ -12108,6 +12801,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -12124,11 +12818,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder addAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12141,11 +12835,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder addAttributes(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(builderForValue.build());
@@ -12155,11 +12849,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(index, builderForValue.build());
@@ -12169,6 +12864,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -12176,14 +12872,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> values) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, attributes_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, attributes_);
           onChanged();
         } else {
           attributesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -12197,6 +12893,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
@@ -12210,125 +12907,131 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(int index) {
         return getAttributesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
         if (attributesBuilder_ == null) {
-          return attributes_.get(index);  } else {
+          return attributes_.get(index);
+        } else {
           return attributesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
-           getAttributesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
+          getAttributesOrBuilderList() {
         if (attributesBuilder_ != null) {
           return attributesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(attributes_);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder() {
-        return getAttributesFieldBuilder().addBuilder(
+        return getAttributesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .AttributeDefinition attributes = 15;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(int index) {
+        return getAttributesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 15;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .AttributeDefinition attributes = 15;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> 
-           getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
           getAttributesFieldBuilder() {
         if (attributesBuilder_ == null) {
-          attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
-                  attributes_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          attributesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
+                  attributes_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           attributes_ = null;
         }
         return attributesBuilder_;
       }
 
-      private int peToken_ ;
+      private int peToken_;
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 16;</code>
+       * 
        * @return The peToken.
        */
       @java.lang.Override
       public int getPeToken() {
         return peToken_;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 16;</code>
-       * @param value The peToken to set.
+       * 
+       * @param value
+       *          The peToken to set.
        * @return This builder for chaining.
        */
       public Builder setPeToken(int value) {
-        
+
         peToken_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 16;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
-        
+
         peToken_ = 0;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:FieldDefinition)
     }
@@ -12343,16 +13046,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<FieldDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<FieldDefinition>() {
-      @java.lang.Override
-      public FieldDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new FieldDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<FieldDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<FieldDefinition>() {
+          @java.lang.Override
+          public FieldDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new FieldDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<FieldDefinition> parser() {
       return PARSER;
@@ -12376,79 +13078,95 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>bool can_get = 2;</code>
+     * 
      * @return The canGet.
      */
     boolean getCanGet();
 
     /**
      * <code>bool can_set = 3;</code>
+     * 
      * @return The canSet.
      */
     boolean getCanSet();
 
     /**
      * <code>bool is_abstract = 4;</code>
+     * 
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_sealed = 5;</code>
+     * 
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>bool is_explicit_interface_implementation = 6;</code>
+     * 
      * @return The isExplicitInterfaceImplementation.
      */
     boolean getIsExplicitInterfaceImplementation();
 
     /**
      * <code>bool is_override = 7;</code>
+     * 
      * @return The isOverride.
      */
     boolean getIsOverride();
 
     /**
      * <code>bool is_virtual = 8;</code>
+     * 
      * @return The isVirtual.
      */
     boolean getIsVirtual();
 
     /**
      * <code>bool is_static = 9;</code>
+     * 
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>bool is_extern = 15;</code>
+     * 
      * @return The isExtern.
      */
     boolean getIsExtern();
 
     /**
      * <code>.MethodDefinition getter = 10;</code>
+     * 
      * @return Whether the getter field is set.
      */
     boolean hasGetter();
+
     /**
      * <code>.MethodDefinition getter = 10;</code>
+     * 
      * @return The getter.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getGetter();
+
     /**
      * <code>.MethodDefinition getter = 10;</code>
      */
@@ -12456,14 +13174,18 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition setter = 11;</code>
+     * 
      * @return Whether the setter field is set.
      */
     boolean hasSetter();
+
     /**
      * <code>.MethodDefinition setter = 11;</code>
+     * 
      * @return The setter.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getSetter();
+
     /**
      * <code>.MethodDefinition setter = 11;</code>
      */
@@ -12471,14 +13193,18 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 12;</code>
+     * 
      * @return Whether the type field is set.
      */
     boolean hasType();
+
     /**
      * <code>.TypeDefinition type = 12;</code>
+     * 
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
+
     /**
      * <code>.TypeDefinition type = 12;</code>
      */
@@ -12486,50 +13212,57 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The enum numeric value on the wire for typeKind.
      */
     int getTypeKindValue();
+
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The typeKind.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind();
 
     /**
      * <code>string name = 13;</code>
+     * 
      * @return The name.
      */
     java.lang.String getName();
+
     /**
      * <code>string name = 13;</code>
+     * 
      * @return The bytes for name.
      */
-    com.google.protobuf.ByteString
-        getNameBytes();
+    com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> 
-        getAttributesList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index);
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
     int getAttributesCount();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList();
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index);
 
     /**
      * <pre>
@@ -12537,22 +13270,25 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 17;</code>
+     * 
      * @return The peToken.
      */
     int getPeToken();
   }
+
   /**
    * Protobuf type {@code PropertyDefinition}
    */
-  public static final class PropertyDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class PropertyDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:PropertyDefinition)
       PropertyDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use PropertyDefinition.newBuilder() to construct.
     private PropertyDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private PropertyDefinition() {
       accessibility_ = 0;
       typeKind_ = 0;
@@ -12561,19 +13297,17 @@ public final class ProtoAssemblyAllTypes {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new PropertyDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private PropertyDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private PropertyDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -12581,8 +13315,7 @@ public final class ProtoAssemblyAllTypes {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -12642,7 +13375,8 @@ public final class ProtoAssemblyAllTypes {
               if (getter_ != null) {
                 subBuilder = getter_.toBuilder();
               }
-              getter_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
+              getter_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(getter_);
                 getter_ = subBuilder.buildPartial();
@@ -12655,7 +13389,8 @@ public final class ProtoAssemblyAllTypes {
               if (setter_ != null) {
                 subBuilder = setter_.toBuilder();
               }
-              setter_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
+              setter_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(setter_);
                 setter_ = subBuilder.buildPartial();
@@ -12698,8 +13433,8 @@ public final class ProtoAssemblyAllTypes {
                 attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              attributes_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(), extensionRegistry));
+              attributes_.add(input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.parser(),
+                  extensionRegistry));
               break;
             }
             case 136: {
@@ -12708,8 +13443,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -12719,8 +13453,7 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           attributes_ = java.util.Collections.unmodifiableList(attributes_);
@@ -12729,42 +13462,50 @@ public final class ProtoAssemblyAllTypes {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_PropertyDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_PropertyDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder.class);
     }
 
     public static final int ACCESSIBILITY_FIELD_NUMBER = 1;
     private int accessibility_;
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
-    @java.lang.Override public int getAccessibilityValue() {
+    @java.lang.Override
+    public int getAccessibilityValue() {
       return accessibility_;
     }
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
     }
 
     public static final int CAN_GET_FIELD_NUMBER = 2;
     private boolean canGet_;
+
     /**
      * <code>bool can_get = 2;</code>
+     * 
      * @return The canGet.
      */
     @java.lang.Override
@@ -12774,8 +13515,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int CAN_SET_FIELD_NUMBER = 3;
     private boolean canSet_;
+
     /**
      * <code>bool can_set = 3;</code>
+     * 
      * @return The canSet.
      */
     @java.lang.Override
@@ -12785,8 +13528,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_ABSTRACT_FIELD_NUMBER = 4;
     private boolean isAbstract_;
+
     /**
      * <code>bool is_abstract = 4;</code>
+     * 
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -12796,8 +13541,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_SEALED_FIELD_NUMBER = 5;
     private boolean isSealed_;
+
     /**
      * <code>bool is_sealed = 5;</code>
+     * 
      * @return The isSealed.
      */
     @java.lang.Override
@@ -12807,8 +13554,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_EXPLICIT_INTERFACE_IMPLEMENTATION_FIELD_NUMBER = 6;
     private boolean isExplicitInterfaceImplementation_;
+
     /**
      * <code>bool is_explicit_interface_implementation = 6;</code>
+     * 
      * @return The isExplicitInterfaceImplementation.
      */
     @java.lang.Override
@@ -12818,8 +13567,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_OVERRIDE_FIELD_NUMBER = 7;
     private boolean isOverride_;
+
     /**
      * <code>bool is_override = 7;</code>
+     * 
      * @return The isOverride.
      */
     @java.lang.Override
@@ -12829,8 +13580,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_VIRTUAL_FIELD_NUMBER = 8;
     private boolean isVirtual_;
+
     /**
      * <code>bool is_virtual = 8;</code>
+     * 
      * @return The isVirtual.
      */
     @java.lang.Override
@@ -12840,8 +13593,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_STATIC_FIELD_NUMBER = 9;
     private boolean isStatic_;
+
     /**
      * <code>bool is_static = 9;</code>
+     * 
      * @return The isStatic.
      */
     @java.lang.Override
@@ -12851,8 +13606,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int IS_EXTERN_FIELD_NUMBER = 15;
     private boolean isExtern_;
+
     /**
      * <code>bool is_extern = 15;</code>
+     * 
      * @return The isExtern.
      */
     @java.lang.Override
@@ -12862,22 +13619,27 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int GETTER_FIELD_NUMBER = 10;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getter_;
+
     /**
      * <code>.MethodDefinition getter = 10;</code>
+     * 
      * @return Whether the getter field is set.
      */
     @java.lang.Override
     public boolean hasGetter() {
       return getter_ != null;
     }
+
     /**
      * <code>.MethodDefinition getter = 10;</code>
+     * 
      * @return The getter.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getGetter() {
       return getter_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : getter_;
     }
+
     /**
      * <code>.MethodDefinition getter = 10;</code>
      */
@@ -12888,22 +13650,27 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int SETTER_FIELD_NUMBER = 11;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition setter_;
+
     /**
      * <code>.MethodDefinition setter = 11;</code>
+     * 
      * @return Whether the setter field is set.
      */
     @java.lang.Override
     public boolean hasSetter() {
       return setter_ != null;
     }
+
     /**
      * <code>.MethodDefinition setter = 11;</code>
+     * 
      * @return The setter.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getSetter() {
       return setter_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : setter_;
     }
+
     /**
      * <code>.MethodDefinition setter = 11;</code>
      */
@@ -12914,22 +13681,27 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int TYPE_FIELD_NUMBER = 12;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
+
     /**
      * <code>.TypeDefinition type = 12;</code>
+     * 
      * @return Whether the type field is set.
      */
     @java.lang.Override
     public boolean hasType() {
       return type_ != null;
     }
+
     /**
      * <code>.TypeDefinition type = 12;</code>
+     * 
      * @return The type.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
       return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
     }
+
     /**
      * <code>.TypeDefinition type = 12;</code>
      */
@@ -12940,27 +13712,36 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int TYPE_KIND_FIELD_NUMBER = 14;
     private int typeKind_;
+
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The enum numeric value on the wire for typeKind.
      */
-    @java.lang.Override public int getTypeKindValue() {
+    @java.lang.Override
+    public int getTypeKindValue() {
       return typeKind_;
     }
+
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
+     * 
      * @return The typeKind.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.UNRECOGNIZED : result;
     }
 
     public static final int NAME_FIELD_NUMBER = 13;
     private volatile java.lang.Object name_;
+
     /**
      * <code>string name = 13;</code>
+     * 
      * @return The name.
      */
     @java.lang.Override
@@ -12969,25 +13750,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         name_ = s;
         return s;
       }
     }
+
     /**
      * <code>string name = 13;</code>
+     * 
      * @return The bytes for name.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNameBytes() {
+    public com.google.protobuf.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -12997,6 +13776,7 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int ATTRIBUTES_FIELD_NUMBER = 16;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_;
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
@@ -13004,14 +13784,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> getAttributesList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
         getAttributesOrBuilderList() {
       return attributes_;
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
@@ -13019,6 +13801,7 @@ public final class ProtoAssemblyAllTypes {
     public int getAttributesCount() {
       return attributes_.size();
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
@@ -13026,23 +13809,25 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition getAttributes(int index) {
       return attributes_.get(index);
     }
+
     /**
      * <code>repeated .AttributeDefinition attributes = 16;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
       return attributes_.get(index);
     }
 
     public static final int PE_TOKEN_FIELD_NUMBER = 17;
     private int peToken_;
+
     /**
      * <pre>
      *hexadecimal x8 pe token
      * </pre>
      *
      * <code>int32 pe_token = 17;</code>
+     * 
      * @return The peToken.
      */
     @java.lang.Override
@@ -13051,19 +13836,21 @@ public final class ProtoAssemblyAllTypes {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         output.writeEnum(1, accessibility_);
       }
@@ -13121,75 +13908,60 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, accessibility_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, accessibility_);
       }
       if (canGet_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, canGet_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(2, canGet_);
       }
       if (canSet_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, canSet_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, canSet_);
       }
       if (isAbstract_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, isAbstract_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, isAbstract_);
       }
       if (isSealed_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, isSealed_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, isSealed_);
       }
       if (isExplicitInterfaceImplementation_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(6, isExplicitInterfaceImplementation_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(6, isExplicitInterfaceImplementation_);
       }
       if (isOverride_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, isOverride_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, isOverride_);
       }
       if (isVirtual_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(8, isVirtual_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(8, isVirtual_);
       }
       if (isStatic_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(9, isStatic_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(9, isStatic_);
       }
       if (getter_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(10, getGetter());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(10, getGetter());
       }
       if (setter_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(11, getSetter());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(11, getSetter());
       }
       if (type_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(12, getType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(12, getType());
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, name_);
       }
       if (typeKind_ != soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.NO_TYPE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(14, typeKind_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(14, typeKind_);
       }
       if (isExtern_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(15, isExtern_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(15, isExtern_);
       }
       for (int i = 0; i < attributes_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(16, attributes_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(16, attributes_.get(i));
       }
       if (peToken_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(17, peToken_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(17, peToken_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -13199,55 +13971,62 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition) obj;
 
-      if (accessibility_ != other.accessibility_) return false;
-      if (getCanGet()
-          != other.getCanGet()) return false;
-      if (getCanSet()
-          != other.getCanSet()) return false;
-      if (getIsAbstract()
-          != other.getIsAbstract()) return false;
-      if (getIsSealed()
-          != other.getIsSealed()) return false;
-      if (getIsExplicitInterfaceImplementation()
-          != other.getIsExplicitInterfaceImplementation()) return false;
-      if (getIsOverride()
-          != other.getIsOverride()) return false;
-      if (getIsVirtual()
-          != other.getIsVirtual()) return false;
-      if (getIsStatic()
-          != other.getIsStatic()) return false;
-      if (getIsExtern()
-          != other.getIsExtern()) return false;
-      if (hasGetter() != other.hasGetter()) return false;
+      if (accessibility_ != other.accessibility_)
+        return false;
+      if (getCanGet() != other.getCanGet())
+        return false;
+      if (getCanSet() != other.getCanSet())
+        return false;
+      if (getIsAbstract() != other.getIsAbstract())
+        return false;
+      if (getIsSealed() != other.getIsSealed())
+        return false;
+      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
+        return false;
+      if (getIsOverride() != other.getIsOverride())
+        return false;
+      if (getIsVirtual() != other.getIsVirtual())
+        return false;
+      if (getIsStatic() != other.getIsStatic())
+        return false;
+      if (getIsExtern() != other.getIsExtern())
+        return false;
+      if (hasGetter() != other.hasGetter())
+        return false;
       if (hasGetter()) {
-        if (!getGetter()
-            .equals(other.getGetter())) return false;
+        if (!getGetter().equals(other.getGetter()))
+          return false;
       }
-      if (hasSetter() != other.hasSetter()) return false;
+      if (hasSetter() != other.hasSetter())
+        return false;
       if (hasSetter()) {
-        if (!getSetter()
-            .equals(other.getSetter())) return false;
+        if (!getSetter().equals(other.getSetter()))
+          return false;
       }
-      if (hasType() != other.hasType()) return false;
+      if (hasType() != other.hasType())
+        return false;
       if (hasType()) {
-        if (!getType()
-            .equals(other.getType())) return false;
+        if (!getType().equals(other.getType()))
+          return false;
       }
-      if (typeKind_ != other.typeKind_) return false;
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (!getAttributesList()
-          .equals(other.getAttributesList())) return false;
-      if (getPeToken()
-          != other.getPeToken()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (typeKind_ != other.typeKind_)
+        return false;
+      if (!getName().equals(other.getName()))
+        return false;
+      if (!getAttributesList().equals(other.getAttributesList()))
+        return false;
+      if (getPeToken() != other.getPeToken())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -13261,32 +14040,23 @@ public final class ProtoAssemblyAllTypes {
       hash = (37 * hash) + ACCESSIBILITY_FIELD_NUMBER;
       hash = (53 * hash) + accessibility_;
       hash = (37 * hash) + CAN_GET_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getCanGet());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getCanGet());
       hash = (37 * hash) + CAN_SET_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getCanSet());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getCanSet());
       hash = (37 * hash) + IS_ABSTRACT_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsAbstract());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsAbstract());
       hash = (37 * hash) + IS_SEALED_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsSealed());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsSealed());
       hash = (37 * hash) + IS_EXPLICIT_INTERFACE_IMPLEMENTATION_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsExplicitInterfaceImplementation());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsExplicitInterfaceImplementation());
       hash = (37 * hash) + IS_OVERRIDE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsOverride());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsOverride());
       hash = (37 * hash) + IS_VIRTUAL_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsVirtual());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsVirtual());
       hash = (37 * hash) + IS_STATIC_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsStatic());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsStatic());
       hash = (37 * hash) + IS_EXTERN_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getIsExtern());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getIsExtern());
       if (hasGetter()) {
         hash = (37 * hash) + GETTER_FIELD_NUMBER;
         hash = (53 * hash) + getGetter().hashCode();
@@ -13314,114 +14084,109 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code PropertyDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:PropertyDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_PropertyDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_PropertyDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.newBuilder()
@@ -13429,17 +14194,17 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getAttributesFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -13497,8 +14262,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_PropertyDefinition_descriptor;
       }
 
@@ -13518,7 +14282,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition(this);
         int from_bitField0_ = bitField0_;
         result.accessibility_ = accessibility_;
         result.canGet_ = canGet_;
@@ -13565,38 +14330,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -13604,7 +14368,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition.getDefaultInstance())
+          return this;
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
@@ -13669,9 +14434,8 @@ public final class ProtoAssemblyAllTypes {
               attributesBuilder_ = null;
               attributes_ = other.attributes_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              attributesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getAttributesFieldBuilder() : null;
+              attributesBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getAttributesFieldBuilder() : null;
             } else {
               attributesBuilder_.addAllMessages(other.attributes_);
             }
@@ -13691,10 +14455,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.PropertyDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -13708,353 +14470,434 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       private int bitField0_;
 
       private int accessibility_ = 0;
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The enum numeric value on the wire for accessibility.
        */
-      @java.lang.Override public int getAccessibilityValue() {
+      @java.lang.Override
+      public int getAccessibilityValue() {
         return accessibility_;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The enum numeric value on the wire for accessibility to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibilityValue(int value) {
-        
+
         accessibility_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The accessibility.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The accessibility to set.
+       * 
+       * @param value
+       *          The accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibility(soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         accessibility_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
-        
+
         accessibility_ = 0;
         onChanged();
         return this;
       }
 
-      private boolean canGet_ ;
+      private boolean canGet_;
+
       /**
        * <code>bool can_get = 2;</code>
+       * 
        * @return The canGet.
        */
       @java.lang.Override
       public boolean getCanGet() {
         return canGet_;
       }
+
       /**
        * <code>bool can_get = 2;</code>
-       * @param value The canGet to set.
+       * 
+       * @param value
+       *          The canGet to set.
        * @return This builder for chaining.
        */
       public Builder setCanGet(boolean value) {
-        
+
         canGet_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool can_get = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearCanGet() {
-        
+
         canGet_ = false;
         onChanged();
         return this;
       }
 
-      private boolean canSet_ ;
+      private boolean canSet_;
+
       /**
        * <code>bool can_set = 3;</code>
+       * 
        * @return The canSet.
        */
       @java.lang.Override
       public boolean getCanSet() {
         return canSet_;
       }
+
       /**
        * <code>bool can_set = 3;</code>
-       * @param value The canSet to set.
+       * 
+       * @param value
+       *          The canSet to set.
        * @return This builder for chaining.
        */
       public Builder setCanSet(boolean value) {
-        
+
         canSet_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool can_set = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearCanSet() {
-        
+
         canSet_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isAbstract_ ;
+      private boolean isAbstract_;
+
       /**
        * <code>bool is_abstract = 4;</code>
+       * 
        * @return The isAbstract.
        */
       @java.lang.Override
       public boolean getIsAbstract() {
         return isAbstract_;
       }
+
       /**
        * <code>bool is_abstract = 4;</code>
-       * @param value The isAbstract to set.
+       * 
+       * @param value
+       *          The isAbstract to set.
        * @return This builder for chaining.
        */
       public Builder setIsAbstract(boolean value) {
-        
+
         isAbstract_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_abstract = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
-        
+
         isAbstract_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isSealed_ ;
+      private boolean isSealed_;
+
       /**
        * <code>bool is_sealed = 5;</code>
+       * 
        * @return The isSealed.
        */
       @java.lang.Override
       public boolean getIsSealed() {
         return isSealed_;
       }
+
       /**
        * <code>bool is_sealed = 5;</code>
-       * @param value The isSealed to set.
+       * 
+       * @param value
+       *          The isSealed to set.
        * @return This builder for chaining.
        */
       public Builder setIsSealed(boolean value) {
-        
+
         isSealed_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_sealed = 5;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
-        
+
         isSealed_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isExplicitInterfaceImplementation_ ;
+      private boolean isExplicitInterfaceImplementation_;
+
       /**
        * <code>bool is_explicit_interface_implementation = 6;</code>
+       * 
        * @return The isExplicitInterfaceImplementation.
        */
       @java.lang.Override
       public boolean getIsExplicitInterfaceImplementation() {
         return isExplicitInterfaceImplementation_;
       }
+
       /**
        * <code>bool is_explicit_interface_implementation = 6;</code>
-       * @param value The isExplicitInterfaceImplementation to set.
+       * 
+       * @param value
+       *          The isExplicitInterfaceImplementation to set.
        * @return This builder for chaining.
        */
       public Builder setIsExplicitInterfaceImplementation(boolean value) {
-        
+
         isExplicitInterfaceImplementation_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_explicit_interface_implementation = 6;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsExplicitInterfaceImplementation() {
-        
+
         isExplicitInterfaceImplementation_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isOverride_ ;
+      private boolean isOverride_;
+
       /**
        * <code>bool is_override = 7;</code>
+       * 
        * @return The isOverride.
        */
       @java.lang.Override
       public boolean getIsOverride() {
         return isOverride_;
       }
+
       /**
        * <code>bool is_override = 7;</code>
-       * @param value The isOverride to set.
+       * 
+       * @param value
+       *          The isOverride to set.
        * @return This builder for chaining.
        */
       public Builder setIsOverride(boolean value) {
-        
+
         isOverride_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_override = 7;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsOverride() {
-        
+
         isOverride_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isVirtual_ ;
+      private boolean isVirtual_;
+
       /**
        * <code>bool is_virtual = 8;</code>
+       * 
        * @return The isVirtual.
        */
       @java.lang.Override
       public boolean getIsVirtual() {
         return isVirtual_;
       }
+
       /**
        * <code>bool is_virtual = 8;</code>
-       * @param value The isVirtual to set.
+       * 
+       * @param value
+       *          The isVirtual to set.
        * @return This builder for chaining.
        */
       public Builder setIsVirtual(boolean value) {
-        
+
         isVirtual_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_virtual = 8;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsVirtual() {
-        
+
         isVirtual_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isStatic_ ;
+      private boolean isStatic_;
+
       /**
        * <code>bool is_static = 9;</code>
+       * 
        * @return The isStatic.
        */
       @java.lang.Override
       public boolean getIsStatic() {
         return isStatic_;
       }
+
       /**
        * <code>bool is_static = 9;</code>
-       * @param value The isStatic to set.
+       * 
+       * @param value
+       *          The isStatic to set.
        * @return This builder for chaining.
        */
       public Builder setIsStatic(boolean value) {
-        
+
         isStatic_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_static = 9;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
-        
+
         isStatic_ = false;
         onChanged();
         return this;
       }
 
-      private boolean isExtern_ ;
+      private boolean isExtern_;
+
       /**
        * <code>bool is_extern = 15;</code>
+       * 
        * @return The isExtern.
        */
       @java.lang.Override
       public boolean getIsExtern() {
         return isExtern_;
       }
+
       /**
        * <code>bool is_extern = 15;</code>
-       * @param value The isExtern to set.
+       * 
+       * @param value
+       *          The isExtern to set.
        * @return This builder for chaining.
        */
       public Builder setIsExtern(boolean value) {
-        
+
         isExtern_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool is_extern = 15;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearIsExtern() {
-        
+
         isExtern_ = false;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getter_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> getterBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> getterBuilder_;
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
+       * 
        * @return Whether the getter field is set.
        */
       public boolean hasGetter() {
         return getterBuilder_ != null || getter_ != null;
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
+       * 
        * @return The getter.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getGetter() {
@@ -14064,6 +14907,7 @@ public final class ProtoAssemblyAllTypes {
           return getterBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
        */
@@ -14080,11 +14924,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
        */
-      public Builder setGetter(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder setGetter(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (getterBuilder_ == null) {
           getter_ = builderForValue.build();
           onChanged();
@@ -14094,14 +14938,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
        */
       public Builder mergeGetter(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (getterBuilder_ == null) {
           if (getter_ != null) {
-            getter_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(getter_).mergeFrom(value).buildPartial();
+            getter_ = soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(getter_).mergeFrom(value)
+                .buildPartial();
           } else {
             getter_ = value;
           }
@@ -14112,6 +14957,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
        */
@@ -14126,14 +14972,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getGetterBuilder() {
-        
+
         onChanged();
         return getGetterFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
        */
@@ -14141,39 +14989,40 @@ public final class ProtoAssemblyAllTypes {
         if (getterBuilder_ != null) {
           return getterBuilder_.getMessageOrBuilder();
         } else {
-          return getter_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : getter_;
+          return getter_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : getter_;
         }
       }
+
       /**
        * <code>.MethodDefinition getter = 10;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
           getGetterFieldBuilder() {
         if (getterBuilder_ == null) {
-          getterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
-                  getGetter(),
-                  getParentForChildren(),
-                  isClean());
+          getterBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
+                  getGetter(), getParentForChildren(), isClean());
           getter_ = null;
         }
         return getterBuilder_;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition setter_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> setterBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> setterBuilder_;
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
+       * 
        * @return Whether the setter field is set.
        */
       public boolean hasSetter() {
         return setterBuilder_ != null || setter_ != null;
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
+       * 
        * @return The setter.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getSetter() {
@@ -14183,6 +15032,7 @@ public final class ProtoAssemblyAllTypes {
           return setterBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
        */
@@ -14199,11 +15049,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
        */
-      public Builder setSetter(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder setSetter(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (setterBuilder_ == null) {
           setter_ = builderForValue.build();
           onChanged();
@@ -14213,14 +15063,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
        */
       public Builder mergeSetter(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (setterBuilder_ == null) {
           if (setter_ != null) {
-            setter_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(setter_).mergeFrom(value).buildPartial();
+            setter_ = soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(setter_).mergeFrom(value)
+                .buildPartial();
           } else {
             setter_ = value;
           }
@@ -14231,6 +15082,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
        */
@@ -14245,14 +15097,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getSetterBuilder() {
-        
+
         onChanged();
         return getSetterFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
        */
@@ -14260,39 +15114,40 @@ public final class ProtoAssemblyAllTypes {
         if (setterBuilder_ != null) {
           return setterBuilder_.getMessageOrBuilder();
         } else {
-          return setter_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : setter_;
+          return setter_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : setter_;
         }
       }
+
       /**
        * <code>.MethodDefinition setter = 11;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
           getSetterFieldBuilder() {
         if (setterBuilder_ == null) {
-          setterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
-                  getSetter(),
-                  getParentForChildren(),
-                  isClean());
+          setterBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
+                  getSetter(), getParentForChildren(), isClean());
           setter_ = null;
         }
         return setterBuilder_;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+
       /**
        * <code>.TypeDefinition type = 12;</code>
+       * 
        * @return Whether the type field is set.
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
+       * 
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -14302,6 +15157,7 @@ public final class ProtoAssemblyAllTypes {
           return typeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
        */
@@ -14318,11 +15174,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
        */
-      public Builder setType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -14332,14 +15188,14 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
        */
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -14350,6 +15206,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
        */
@@ -14364,14 +15221,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getTypeBuilder() {
-        
+
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
        */
@@ -14379,91 +15238,104 @@ public final class ProtoAssemblyAllTypes {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
-          return type_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
+          return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
         }
       }
+
       /**
        * <code>.TypeDefinition type = 12;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
-          typeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getType(),
-                  getParentForChildren(),
-                  isClean());
+          typeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getType(), getParentForChildren(), isClean());
           type_ = null;
         }
         return typeBuilder_;
       }
 
       private int typeKind_ = 0;
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
+       * 
        * @return The enum numeric value on the wire for typeKind.
        */
-      @java.lang.Override public int getTypeKindValue() {
+      @java.lang.Override
+      public int getTypeKindValue() {
         return typeKind_;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * @param value The enum numeric value on the wire for typeKind to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for typeKind to set.
        * @return This builder for chaining.
        */
       public Builder setTypeKindValue(int value) {
-        
+
         typeKind_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
+       * 
        * @return The typeKind.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.valueOf(typeKind_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * @param value The typeKind to set.
+       * 
+       * @param value
+       *          The typeKind to set.
        * @return This builder for chaining.
        */
       public Builder setTypeKind(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         typeKind_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearTypeKind() {
-        
+
         typeKind_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object name_ = "";
+
       /**
        * <code>string name = 13;</code>
+       * 
        * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           name_ = s;
           return s;
@@ -14471,76 +15343,81 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string name = 13;</code>
+       * 
        * @return The bytes for name.
        */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
+      public com.google.protobuf.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string name = 13;</code>
-       * @param value The name to set.
+       * 
+       * @param value
+       *          The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         name_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 13;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearName() {
-        
+
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 13;</code>
-       * @param value The bytes for name to set.
+       * 
+       * @param value
+       *          The bytes for name to set.
        * @return This builder for chaining.
        */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         name_ = value;
         onChanged();
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> attributes_
+          = java.util.Collections.emptyList();
+
       private void ensureAttributesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           attributes_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition>(attributes_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> attributesBuilder_;
 
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
@@ -14552,6 +15429,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
@@ -14562,6 +15440,7 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
@@ -14572,11 +15451,11 @@ public final class ProtoAssemblyAllTypes {
           return attributesBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder setAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14589,11 +15468,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public Builder setAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder setAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.set(index, builderForValue.build());
@@ -14603,6 +15483,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
@@ -14619,11 +15500,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
+      public Builder addAttributes(int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition value) {
         if (attributesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14636,11 +15517,11 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public Builder addAttributes(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(builderForValue.build());
@@ -14650,11 +15531,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public Builder addAttributes(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
+      public Builder addAttributes(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder builderForValue) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
           attributes_.add(index, builderForValue.build());
@@ -14664,6 +15546,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
@@ -14671,14 +15554,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition> values) {
         if (attributesBuilder_ == null) {
           ensureAttributesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, attributes_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, attributes_);
           onChanged();
         } else {
           attributesBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
@@ -14692,6 +15575,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
@@ -14705,125 +15589,131 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder getAttributesBuilder(int index) {
         return getAttributesFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder getAttributesOrBuilder(int index) {
         if (attributesBuilder_ == null) {
-          return attributes_.get(index);  } else {
+          return attributes_.get(index);
+        } else {
           return attributesBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
-           getAttributesOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
+          getAttributesOrBuilderList() {
         if (attributesBuilder_ != null) {
           return attributesBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(attributes_);
         }
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder() {
-        return getAttributesFieldBuilder().addBuilder(
+        return getAttributesFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .AttributeDefinition attributes = 16;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(int index) {
+        return getAttributesFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .AttributeDefinition attributes = 16;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder addAttributesBuilder(
-          int index) {
-        return getAttributesFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .AttributeDefinition attributes = 16;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> 
-           getAttributesBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder> getAttributesBuilderList() {
         return getAttributesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>
           getAttributesFieldBuilder() {
         if (attributesBuilder_ == null) {
-          attributesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
-                  attributes_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          attributesBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder>(
+                  attributes_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           attributes_ = null;
         }
         return attributesBuilder_;
       }
 
-      private int peToken_ ;
+      private int peToken_;
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 17;</code>
+       * 
        * @return The peToken.
        */
       @java.lang.Override
       public int getPeToken() {
         return peToken_;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 17;</code>
-       * @param value The peToken to set.
+       * 
+       * @param value
+       *          The peToken to set.
        * @return This builder for chaining.
        */
       public Builder setPeToken(int value) {
-        
+
         peToken_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 17;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
-        
+
         peToken_ = 0;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:PropertyDefinition)
     }
@@ -14838,16 +15728,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<PropertyDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<PropertyDefinition>() {
-      @java.lang.Override
-      public PropertyDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new PropertyDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<PropertyDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<PropertyDefinition>() {
+          @java.lang.Override
+          public PropertyDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new PropertyDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<PropertyDefinition> parser() {
       return PARSER;
@@ -14871,14 +15760,18 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
+     * 
      * @return Whether the attributeType field is set.
      */
     boolean hasAttributeType();
+
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
+     * 
      * @return The attributeType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getAttributeType();
+
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
      */
@@ -14886,39 +15779,43 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string constructor = 2;</code>
+     * 
      * @return The constructor.
      */
     java.lang.String getConstructor();
+
     /**
      * <code>string constructor = 2;</code>
+     * 
      * @return The bytes for constructor.
      */
-    com.google.protobuf.ByteString
-        getConstructorBytes();
+    com.google.protobuf.ByteString getConstructorBytes();
 
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> 
-        getFixedArgumentsList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> getFixedArgumentsList();
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition getFixedArguments(int index);
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
     int getFixedArgumentsCount();
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
         getFixedArgumentsOrBuilderList();
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getFixedArgumentsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getFixedArgumentsOrBuilder(int index);
 
     /**
      * <pre>
@@ -14927,8 +15824,8 @@ public final class ProtoAssemblyAllTypes {
      *
      * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
      */
-    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> 
-        getNamedArgumentsList();
+    java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> getNamedArgumentsList();
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -14937,6 +15834,7 @@ public final class ProtoAssemblyAllTypes {
      * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition getNamedArguments(int index);
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -14945,6 +15843,7 @@ public final class ProtoAssemblyAllTypes {
      * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
      */
     int getNamedArgumentsCount();
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -14952,8 +15851,9 @@ public final class ProtoAssemblyAllTypes {
      *
      * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
      */
-    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
+    java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
         getNamedArgumentsOrBuilderList();
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -14961,9 +15861,9 @@ public final class ProtoAssemblyAllTypes {
      *
      * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
      */
-    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getNamedArgumentsOrBuilder(
-        int index);
+    soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getNamedArgumentsOrBuilder(int index);
   }
+
   /**
    * <pre>
    *C# Attributes of a method (square brackets above method head)
@@ -14971,15 +15871,16 @@ public final class ProtoAssemblyAllTypes {
    *
    * Protobuf type {@code AttributeDefinition}
    */
-  public static final class AttributeDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class AttributeDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:AttributeDefinition)
       AttributeDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use AttributeDefinition.newBuilder() to construct.
     private AttributeDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private AttributeDefinition() {
       constructor_ = "";
       fixedArguments_ = java.util.Collections.emptyList();
@@ -14987,19 +15888,17 @@ public final class ProtoAssemblyAllTypes {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new AttributeDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private AttributeDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private AttributeDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -15007,8 +15906,7 @@ public final class ProtoAssemblyAllTypes {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -15022,7 +15920,8 @@ public final class ProtoAssemblyAllTypes {
               if (attributeType_ != null) {
                 subBuilder = attributeType_.toBuilder();
               }
-              attributeType_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
+              attributeType_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(attributeType_);
                 attributeType_ = subBuilder.buildPartial();
@@ -15038,25 +15937,26 @@ public final class ProtoAssemblyAllTypes {
             }
             case 26: {
               if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                fixedArguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>();
+                fixedArguments_
+                    = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              fixedArguments_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.parser(), extensionRegistry));
+              fixedArguments_.add(input.readMessage(
+                  soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.parser(), extensionRegistry));
               break;
             }
             case 34: {
               if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                namedArguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>();
+                namedArguments_
+                    = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              namedArguments_.add(
-                  input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.parser(), extensionRegistry));
+              namedArguments_.add(input.readMessage(
+                  soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.parser(), extensionRegistry));
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -15066,8 +15966,7 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           fixedArguments_ = java.util.Collections.unmodifiableList(fixedArguments_);
@@ -15079,37 +15978,42 @@ public final class ProtoAssemblyAllTypes {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder.class);
     }
 
     public static final int ATTRIBUTE_TYPE_FIELD_NUMBER = 1;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition attributeType_;
+
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
+     * 
      * @return Whether the attributeType field is set.
      */
     @java.lang.Override
     public boolean hasAttributeType() {
       return attributeType_ != null;
     }
+
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
+     * 
      * @return The attributeType.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getAttributeType() {
-      return attributeType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : attributeType_;
+      return attributeType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+          : attributeType_;
     }
+
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
      */
@@ -15120,8 +16024,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int CONSTRUCTOR_FIELD_NUMBER = 2;
     private volatile java.lang.Object constructor_;
+
     /**
      * <code>string constructor = 2;</code>
+     * 
      * @return The constructor.
      */
     @java.lang.Override
@@ -15130,25 +16036,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         constructor_ = s;
         return s;
       }
     }
+
     /**
      * <code>string constructor = 2;</code>
+     * 
      * @return The bytes for constructor.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getConstructorBytes() {
+    public com.google.protobuf.ByteString getConstructorBytes() {
       java.lang.Object ref = constructor_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         constructor_ = b;
         return b;
       } else {
@@ -15158,6 +16062,7 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int FIXED_ARGUMENTS_FIELD_NUMBER = 3;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> fixedArguments_;
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
@@ -15165,14 +16070,16 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> getFixedArgumentsList() {
       return fixedArguments_;
     }
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
         getFixedArgumentsOrBuilderList() {
       return fixedArguments_;
     }
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
@@ -15180,6 +16087,7 @@ public final class ProtoAssemblyAllTypes {
     public int getFixedArgumentsCount() {
       return fixedArguments_.size();
     }
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
@@ -15187,17 +16095,19 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition getFixedArguments(int index) {
       return fixedArguments_.get(index);
     }
+
     /**
      * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getFixedArgumentsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder
+        getFixedArgumentsOrBuilder(int index) {
       return fixedArguments_.get(index);
     }
 
     public static final int NAMED_ARGUMENTS_FIELD_NUMBER = 4;
     private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> namedArguments_;
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -15209,6 +16119,7 @@ public final class ProtoAssemblyAllTypes {
     public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> getNamedArgumentsList() {
       return namedArguments_;
     }
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -15217,10 +16128,11 @@ public final class ProtoAssemblyAllTypes {
      * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
      */
     @java.lang.Override
-    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
+    public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
         getNamedArgumentsOrBuilderList() {
       return namedArguments_;
     }
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -15232,6 +16144,7 @@ public final class ProtoAssemblyAllTypes {
     public int getNamedArgumentsCount() {
       return namedArguments_.size();
     }
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -15243,6 +16156,7 @@ public final class ProtoAssemblyAllTypes {
     public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition getNamedArguments(int index) {
       return namedArguments_.get(index);
     }
+
     /**
      * <pre>
      * ILspy uses fixed arg
@@ -15251,25 +16165,27 @@ public final class ProtoAssemblyAllTypes {
      * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
      */
     @java.lang.Override
-    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getNamedArgumentsOrBuilder(
-        int index) {
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder
+        getNamedArgumentsOrBuilder(int index) {
       return namedArguments_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (attributeType_ != null) {
         output.writeMessage(1, getAttributeType());
       }
@@ -15288,23 +16204,21 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (attributeType_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getAttributeType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, getAttributeType());
       }
       if (!getConstructorBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, constructor_);
       }
       for (int i = 0; i < fixedArguments_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, fixedArguments_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(3, fixedArguments_.get(i));
       }
       for (int i = 0; i < namedArguments_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, namedArguments_.get(i));
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(4, namedArguments_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -15314,25 +16228,28 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition) obj;
 
-      if (hasAttributeType() != other.hasAttributeType()) return false;
+      if (hasAttributeType() != other.hasAttributeType())
+        return false;
       if (hasAttributeType()) {
-        if (!getAttributeType()
-            .equals(other.getAttributeType())) return false;
+        if (!getAttributeType().equals(other.getAttributeType()))
+          return false;
       }
-      if (!getConstructor()
-          .equals(other.getConstructor())) return false;
-      if (!getFixedArgumentsList()
-          .equals(other.getFixedArgumentsList())) return false;
-      if (!getNamedArgumentsList()
-          .equals(other.getNamedArgumentsList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getConstructor().equals(other.getConstructor()))
+        return false;
+      if (!getFixedArgumentsList().equals(other.getFixedArgumentsList()))
+        return false;
+      if (!getNamedArgumentsList().equals(other.getNamedArgumentsList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -15362,96 +16279,94 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * <pre>
      *C# Attributes of a method (square brackets above method head)
@@ -15459,21 +16374,18 @@ public final class ProtoAssemblyAllTypes {
      *
      * Protobuf type {@code AttributeDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:AttributeDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.newBuilder()
@@ -15481,18 +16393,18 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getFixedArgumentsFieldBuilder();
           getNamedArgumentsFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -15520,8 +16432,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeDefinition_descriptor;
       }
 
@@ -15541,7 +16452,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition(this);
         int from_bitField0_ = bitField0_;
         if (attributeTypeBuilder_ == null) {
           result.attributeType_ = attributeType_;
@@ -15575,38 +16487,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -15614,7 +16525,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition.getDefaultInstance())
+          return this;
         if (other.hasAttributeType()) {
           mergeAttributeType(other.getAttributeType());
         }
@@ -15640,9 +16552,8 @@ public final class ProtoAssemblyAllTypes {
               fixedArgumentsBuilder_ = null;
               fixedArguments_ = other.fixedArguments_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              fixedArgumentsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getFixedArgumentsFieldBuilder() : null;
+              fixedArgumentsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getFixedArgumentsFieldBuilder() : null;
             } else {
               fixedArgumentsBuilder_.addAllMessages(other.fixedArguments_);
             }
@@ -15666,9 +16577,8 @@ public final class ProtoAssemblyAllTypes {
               namedArgumentsBuilder_ = null;
               namedArguments_ = other.namedArguments_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              namedArgumentsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getNamedArgumentsFieldBuilder() : null;
+              namedArgumentsBuilder_
+                  = com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ? getNamedArgumentsFieldBuilder() : null;
             } else {
               namedArgumentsBuilder_.addAllMessages(other.namedArguments_);
             }
@@ -15685,10 +16595,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -15702,29 +16610,35 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       private int bitField0_;
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition attributeType_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> attributeTypeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> attributeTypeBuilder_;
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
+       * 
        * @return Whether the attributeType field is set.
        */
       public boolean hasAttributeType() {
         return attributeTypeBuilder_ != null || attributeType_ != null;
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
+       * 
        * @return The attributeType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getAttributeType() {
         if (attributeTypeBuilder_ == null) {
-          return attributeType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : attributeType_;
+          return attributeType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : attributeType_;
         } else {
           return attributeTypeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
        */
@@ -15741,11 +16655,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
        */
-      public Builder setAttributeType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setAttributeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (attributeTypeBuilder_ == null) {
           attributeType_ = builderForValue.build();
           onChanged();
@@ -15755,14 +16669,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
        */
       public Builder mergeAttributeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (attributeTypeBuilder_ == null) {
           if (attributeType_ != null) {
-            attributeType_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(attributeType_).mergeFrom(value).buildPartial();
+            attributeType_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(attributeType_)
+                .mergeFrom(value).buildPartial();
           } else {
             attributeType_ = value;
           }
@@ -15773,6 +16688,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
        */
@@ -15787,14 +16703,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getAttributeTypeBuilder() {
-        
+
         onChanged();
         return getAttributeTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
        */
@@ -15802,37 +16720,37 @@ public final class ProtoAssemblyAllTypes {
         if (attributeTypeBuilder_ != null) {
           return attributeTypeBuilder_.getMessageOrBuilder();
         } else {
-          return attributeType_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : attributeType_;
+          return attributeType_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()
+              : attributeType_;
         }
       }
+
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getAttributeTypeFieldBuilder() {
         if (attributeTypeBuilder_ == null) {
-          attributeTypeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getAttributeType(),
-                  getParentForChildren(),
-                  isClean());
+          attributeTypeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getAttributeType(), getParentForChildren(), isClean());
           attributeType_ = null;
         }
         return attributeTypeBuilder_;
       }
 
       private java.lang.Object constructor_ = "";
+
       /**
        * <code>string constructor = 2;</code>
+       * 
        * @return The constructor.
        */
       public java.lang.String getConstructor() {
         java.lang.Object ref = constructor_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           constructor_ = s;
           return s;
@@ -15840,76 +16758,82 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string constructor = 2;</code>
+       * 
        * @return The bytes for constructor.
        */
-      public com.google.protobuf.ByteString
-          getConstructorBytes() {
+      public com.google.protobuf.ByteString getConstructorBytes() {
         java.lang.Object ref = constructor_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           constructor_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string constructor = 2;</code>
-       * @param value The constructor to set.
+       * 
+       * @param value
+       *          The constructor to set.
        * @return This builder for chaining.
        */
-      public Builder setConstructor(
-          java.lang.String value) {
+      public Builder setConstructor(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         constructor_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string constructor = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearConstructor() {
-        
+
         constructor_ = getDefaultInstance().getConstructor();
         onChanged();
         return this;
       }
+
       /**
        * <code>string constructor = 2;</code>
-       * @param value The bytes for constructor to set.
+       * 
+       * @param value
+       *          The bytes for constructor to set.
        * @return This builder for chaining.
        */
-      public Builder setConstructorBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setConstructorBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         constructor_ = value;
         onChanged();
         return this;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> fixedArguments_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> fixedArguments_
+          = java.util.Collections.emptyList();
+
       private void ensureFixedArgumentsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          fixedArguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>(fixedArguments_);
+          fixedArguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>(
+              fixedArguments_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> fixedArgumentsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> fixedArgumentsBuilder_;
 
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
@@ -15921,6 +16845,7 @@ public final class ProtoAssemblyAllTypes {
           return fixedArgumentsBuilder_.getMessageList();
         }
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
@@ -15931,6 +16856,7 @@ public final class ProtoAssemblyAllTypes {
           return fixedArgumentsBuilder_.getCount();
         }
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
@@ -15941,11 +16867,12 @@ public final class ProtoAssemblyAllTypes {
           return fixedArgumentsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public Builder setFixedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
+      public Builder setFixedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
         if (fixedArgumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -15958,11 +16885,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public Builder setFixedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
+      public Builder setFixedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
         if (fixedArgumentsBuilder_ == null) {
           ensureFixedArgumentsIsMutable();
           fixedArguments_.set(index, builderForValue.build());
@@ -15972,6 +16900,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
@@ -15988,11 +16917,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public Builder addFixedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
+      public Builder addFixedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
         if (fixedArgumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -16005,11 +16935,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public Builder addFixedArguments(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
+      public Builder
+          addFixedArguments(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
         if (fixedArgumentsBuilder_ == null) {
           ensureFixedArgumentsIsMutable();
           fixedArguments_.add(builderForValue.build());
@@ -16019,11 +16950,12 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public Builder addFixedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
+      public Builder addFixedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
         if (fixedArgumentsBuilder_ == null) {
           ensureFixedArgumentsIsMutable();
           fixedArguments_.add(index, builderForValue.build());
@@ -16033,6 +16965,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
@@ -16040,14 +16973,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> values) {
         if (fixedArgumentsBuilder_ == null) {
           ensureFixedArgumentsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, fixedArguments_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, fixedArguments_);
           onChanged();
         } else {
           fixedArgumentsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
@@ -16061,6 +16994,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
@@ -16074,82 +17008,88 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder getFixedArgumentsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder
+          getFixedArgumentsBuilder(int index) {
         return getFixedArgumentsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getFixedArgumentsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder
+          getFixedArgumentsOrBuilder(int index) {
         if (fixedArgumentsBuilder_ == null) {
-          return fixedArguments_.get(index);  } else {
+          return fixedArguments_.get(index);
+        } else {
           return fixedArgumentsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
-           getFixedArgumentsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
+          getFixedArgumentsOrBuilderList() {
         if (fixedArgumentsBuilder_ != null) {
           return fixedArgumentsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(fixedArguments_);
         }
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder addFixedArgumentsBuilder() {
-        return getFixedArgumentsFieldBuilder().addBuilder(
+        return getFixedArgumentsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder
+          addFixedArgumentsBuilder(int index) {
+        return getFixedArgumentsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance());
       }
+
       /**
        * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder addFixedArgumentsBuilder(
-          int index) {
-        return getFixedArgumentsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .AttributeArgumentDefinition fixed_arguments = 3;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder> 
-           getFixedArgumentsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder>
+          getFixedArgumentsBuilderList() {
         return getFixedArgumentsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
           getFixedArgumentsFieldBuilder() {
         if (fixedArgumentsBuilder_ == null) {
-          fixedArgumentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>(
-                  fixedArguments_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          fixedArgumentsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>(
+                  fixedArguments_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           fixedArguments_ = null;
         }
         return fixedArgumentsBuilder_;
       }
 
-      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> namedArguments_ =
-        java.util.Collections.emptyList();
+      private java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> namedArguments_
+          = java.util.Collections.emptyList();
+
       private void ensureNamedArgumentsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          namedArguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>(namedArguments_);
+          namedArguments_ = new java.util.ArrayList<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition>(
+              namedArguments_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> namedArgumentsBuilder_;
+      private com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> namedArgumentsBuilder_;
 
       /**
        * <pre>
@@ -16165,6 +17105,7 @@ public final class ProtoAssemblyAllTypes {
           return namedArgumentsBuilder_.getMessageList();
         }
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16179,6 +17120,7 @@ public final class ProtoAssemblyAllTypes {
           return namedArgumentsBuilder_.getCount();
         }
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16193,6 +17135,7 @@ public final class ProtoAssemblyAllTypes {
           return namedArgumentsBuilder_.getMessage(index);
         }
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16200,8 +17143,8 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public Builder setNamedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
+      public Builder setNamedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
         if (namedArgumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -16214,6 +17157,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16221,8 +17165,8 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public Builder setNamedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
+      public Builder setNamedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
         if (namedArgumentsBuilder_ == null) {
           ensureNamedArgumentsIsMutable();
           namedArguments_.set(index, builderForValue.build());
@@ -16232,6 +17176,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16252,6 +17197,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16259,8 +17205,8 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public Builder addNamedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
+      public Builder addNamedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition value) {
         if (namedArgumentsBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -16273,6 +17219,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16280,8 +17227,8 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public Builder addNamedArguments(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
+      public Builder
+          addNamedArguments(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
         if (namedArgumentsBuilder_ == null) {
           ensureNamedArgumentsIsMutable();
           namedArguments_.add(builderForValue.build());
@@ -16291,6 +17238,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16298,8 +17246,8 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public Builder addNamedArguments(
-          int index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
+      public Builder addNamedArguments(int index,
+          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder builderForValue) {
         if (namedArgumentsBuilder_ == null) {
           ensureNamedArgumentsIsMutable();
           namedArguments_.add(index, builderForValue.build());
@@ -16309,6 +17257,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16320,14 +17269,14 @@ public final class ProtoAssemblyAllTypes {
           java.lang.Iterable<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition> values) {
         if (namedArgumentsBuilder_ == null) {
           ensureNamedArgumentsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, namedArguments_);
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(values, namedArguments_);
           onChanged();
         } else {
           namedArgumentsBuilder_.addAllMessages(values);
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16345,6 +17294,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16362,6 +17312,7 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16369,10 +17320,11 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder getNamedArgumentsBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder
+          getNamedArgumentsBuilder(int index) {
         return getNamedArgumentsFieldBuilder().getBuilder(index);
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16380,13 +17332,15 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder getNamedArgumentsOrBuilder(
-          int index) {
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder
+          getNamedArgumentsOrBuilder(int index) {
         if (namedArgumentsBuilder_ == null) {
-          return namedArguments_.get(index);  } else {
+          return namedArguments_.get(index);
+        } else {
           return namedArgumentsBuilder_.getMessageOrBuilder(index);
         }
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16394,14 +17348,15 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
-           getNamedArgumentsOrBuilderList() {
+      public java.util.List<? extends soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
+          getNamedArgumentsOrBuilderList() {
         if (namedArgumentsBuilder_ != null) {
           return namedArgumentsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(namedArguments_);
         }
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16410,9 +17365,23 @@ public final class ProtoAssemblyAllTypes {
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder addNamedArgumentsBuilder() {
-        return getNamedArgumentsFieldBuilder().addBuilder(
+        return getNamedArgumentsFieldBuilder()
+            .addBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance());
+      }
+
+      /**
+       * <pre>
+       * ILspy uses fixed arg
+       * </pre>
+       *
+       * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
+       */
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder
+          addNamedArgumentsBuilder(int index) {
+        return getNamedArgumentsFieldBuilder().addBuilder(index,
             soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance());
       }
+
       /**
        * <pre>
        * ILspy uses fixed arg
@@ -16420,48 +17389,32 @@ public final class ProtoAssemblyAllTypes {
        *
        * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
        */
-      public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder addNamedArgumentsBuilder(
-          int index) {
-        return getNamedArgumentsFieldBuilder().addBuilder(
-            index, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance());
-      }
-      /**
-       * <pre>
-       * ILspy uses fixed arg
-       * </pre>
-       *
-       * <code>repeated .AttributeArgumentDefinition named_arguments = 4;</code>
-       */
-      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder> 
-           getNamedArgumentsBuilderList() {
+      public java.util.List<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder>
+          getNamedArgumentsBuilderList() {
         return getNamedArgumentsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder> 
+
+      private
+          com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>
           getNamedArgumentsFieldBuilder() {
         if (namedArgumentsBuilder_ == null) {
-          namedArgumentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>(
-                  namedArguments_,
-                  ((bitField0_ & 0x00000002) != 0),
-                  getParentForChildren(),
-                  isClean());
+          namedArgumentsBuilder_
+              = new com.google.protobuf.RepeatedFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder>(
+                  namedArguments_, ((bitField0_ & 0x00000002) != 0), getParentForChildren(), isClean());
           namedArguments_ = null;
         }
         return namedArgumentsBuilder_;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:AttributeDefinition)
     }
@@ -16476,16 +17429,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<AttributeDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<AttributeDefinition>() {
-      @java.lang.Override
-      public AttributeDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new AttributeDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<AttributeDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<AttributeDefinition>() {
+          @java.lang.Override
+          public AttributeDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new AttributeDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<AttributeDefinition> parser() {
       return PARSER;
@@ -16509,14 +17461,18 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return Whether the type field is set.
      */
     boolean hasType();
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
+
     /**
      * <code>.TypeDefinition type = 1;</code>
      */
@@ -16524,121 +17480,156 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The name.
      */
     java.lang.String getName();
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The bytes for name.
      */
-    com.google.protobuf.ByteString
-        getNameBytes();
+    com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>repeated string value_string = 3;</code>
+     * 
      * @return A list containing the valueString.
      */
-    java.util.List<java.lang.String>
-        getValueStringList();
+    java.util.List<java.lang.String> getValueStringList();
+
     /**
      * <code>repeated string value_string = 3;</code>
+     * 
      * @return The count of valueString.
      */
     int getValueStringCount();
+
     /**
      * <code>repeated string value_string = 3;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueString at the given index.
      */
     java.lang.String getValueString(int index);
+
     /**
      * <code>repeated string value_string = 3;</code>
-     * @param index The index of the value to return.
+     * 
+     * @param index
+     *          The index of the value to return.
      * @return The bytes of the valueString at the given index.
      */
-    com.google.protobuf.ByteString
-        getValueStringBytes(int index);
+    com.google.protobuf.ByteString getValueStringBytes(int index);
 
     /**
      * <code>repeated int32 value_int32 = 4;</code>
+     * 
      * @return A list containing the valueInt32.
      */
     java.util.List<java.lang.Integer> getValueInt32List();
+
     /**
      * <code>repeated int32 value_int32 = 4;</code>
+     * 
      * @return The count of valueInt32.
      */
     int getValueInt32Count();
+
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueInt32 at the given index.
      */
     int getValueInt32(int index);
 
     /**
      * <code>repeated int64 value_int64 = 5;</code>
+     * 
      * @return A list containing the valueInt64.
      */
     java.util.List<java.lang.Long> getValueInt64List();
+
     /**
      * <code>repeated int64 value_int64 = 5;</code>
+     * 
      * @return The count of valueInt64.
      */
     int getValueInt64Count();
+
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueInt64 at the given index.
      */
     long getValueInt64(int index);
 
     /**
      * <code>repeated double value_double = 6;</code>
+     * 
      * @return A list containing the valueDouble.
      */
     java.util.List<java.lang.Double> getValueDoubleList();
+
     /**
      * <code>repeated double value_double = 6;</code>
+     * 
      * @return The count of valueDouble.
      */
     int getValueDoubleCount();
+
     /**
      * <code>repeated double value_double = 6;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueDouble at the given index.
      */
     double getValueDouble(int index);
 
     /**
      * <code>repeated float value_float = 7;</code>
+     * 
      * @return A list containing the valueFloat.
      */
     java.util.List<java.lang.Float> getValueFloatList();
+
     /**
      * <code>repeated float value_float = 7;</code>
+     * 
      * @return The count of valueFloat.
      */
     int getValueFloatCount();
+
     /**
      * <code>repeated float value_float = 7;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueFloat at the given index.
      */
     float getValueFloat(int index);
   }
+
   /**
    * Protobuf type {@code AttributeArgumentDefinition}
    */
-  public static final class AttributeArgumentDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class AttributeArgumentDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:AttributeArgumentDefinition)
       AttributeArgumentDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use AttributeArgumentDefinition.newBuilder() to construct.
     private AttributeArgumentDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private AttributeArgumentDefinition() {
       name_ = "";
       valueString_ = com.google.protobuf.LazyStringArrayList.EMPTY;
@@ -16649,19 +17640,17 @@ public final class ProtoAssemblyAllTypes {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new AttributeArgumentDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private AttributeArgumentDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private AttributeArgumentDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
@@ -16669,8 +17658,7 @@ public final class ProtoAssemblyAllTypes {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -16792,8 +17780,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -16803,8 +17790,7 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           valueString_ = valueString_.getUnmodifiableView();
@@ -16825,37 +17811,41 @@ public final class ProtoAssemblyAllTypes {
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeArgumentDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeArgumentDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder.class);
     }
 
     public static final int TYPE_FIELD_NUMBER = 1;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return Whether the type field is set.
      */
     @java.lang.Override
     public boolean hasType() {
       return type_ != null;
     }
+
     /**
      * <code>.TypeDefinition type = 1;</code>
+     * 
      * @return The type.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
       return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
     }
+
     /**
      * <code>.TypeDefinition type = 1;</code>
      */
@@ -16866,8 +17856,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int NAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object name_;
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The name.
      */
     @java.lang.Override
@@ -16876,25 +17868,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         name_ = s;
         return s;
       }
     }
+
     /**
      * <code>string name = 2;</code>
+     * 
      * @return The bytes for name.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNameBytes() {
+    public com.google.protobuf.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -16904,165 +17894,203 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int VALUE_STRING_FIELD_NUMBER = 3;
     private com.google.protobuf.LazyStringList valueString_;
+
     /**
      * <code>repeated string value_string = 3;</code>
+     * 
      * @return A list containing the valueString.
      */
-    public com.google.protobuf.ProtocolStringList
-        getValueStringList() {
+    public com.google.protobuf.ProtocolStringList getValueStringList() {
       return valueString_;
     }
+
     /**
      * <code>repeated string value_string = 3;</code>
+     * 
      * @return The count of valueString.
      */
     public int getValueStringCount() {
       return valueString_.size();
     }
+
     /**
      * <code>repeated string value_string = 3;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueString at the given index.
      */
     public java.lang.String getValueString(int index) {
       return valueString_.get(index);
     }
+
     /**
      * <code>repeated string value_string = 3;</code>
-     * @param index The index of the value to return.
+     * 
+     * @param index
+     *          The index of the value to return.
      * @return The bytes of the valueString at the given index.
      */
-    public com.google.protobuf.ByteString
-        getValueStringBytes(int index) {
+    public com.google.protobuf.ByteString getValueStringBytes(int index) {
       return valueString_.getByteString(index);
     }
 
     public static final int VALUE_INT32_FIELD_NUMBER = 4;
     private com.google.protobuf.Internal.IntList valueInt32_;
+
     /**
      * <code>repeated int32 value_int32 = 4;</code>
+     * 
      * @return A list containing the valueInt32.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Integer>
-        getValueInt32List() {
+    public java.util.List<java.lang.Integer> getValueInt32List() {
       return valueInt32_;
     }
+
     /**
      * <code>repeated int32 value_int32 = 4;</code>
+     * 
      * @return The count of valueInt32.
      */
     public int getValueInt32Count() {
       return valueInt32_.size();
     }
+
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueInt32 at the given index.
      */
     public int getValueInt32(int index) {
       return valueInt32_.getInt(index);
     }
+
     private int valueInt32MemoizedSerializedSize = -1;
 
     public static final int VALUE_INT64_FIELD_NUMBER = 5;
     private com.google.protobuf.Internal.LongList valueInt64_;
+
     /**
      * <code>repeated int64 value_int64 = 5;</code>
+     * 
      * @return A list containing the valueInt64.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Long>
-        getValueInt64List() {
+    public java.util.List<java.lang.Long> getValueInt64List() {
       return valueInt64_;
     }
+
     /**
      * <code>repeated int64 value_int64 = 5;</code>
+     * 
      * @return The count of valueInt64.
      */
     public int getValueInt64Count() {
       return valueInt64_.size();
     }
+
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueInt64 at the given index.
      */
     public long getValueInt64(int index) {
       return valueInt64_.getLong(index);
     }
+
     private int valueInt64MemoizedSerializedSize = -1;
 
     public static final int VALUE_DOUBLE_FIELD_NUMBER = 6;
     private com.google.protobuf.Internal.DoubleList valueDouble_;
+
     /**
      * <code>repeated double value_double = 6;</code>
+     * 
      * @return A list containing the valueDouble.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Double>
-        getValueDoubleList() {
+    public java.util.List<java.lang.Double> getValueDoubleList() {
       return valueDouble_;
     }
+
     /**
      * <code>repeated double value_double = 6;</code>
+     * 
      * @return The count of valueDouble.
      */
     public int getValueDoubleCount() {
       return valueDouble_.size();
     }
+
     /**
      * <code>repeated double value_double = 6;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueDouble at the given index.
      */
     public double getValueDouble(int index) {
       return valueDouble_.getDouble(index);
     }
+
     private int valueDoubleMemoizedSerializedSize = -1;
 
     public static final int VALUE_FLOAT_FIELD_NUMBER = 7;
     private com.google.protobuf.Internal.FloatList valueFloat_;
+
     /**
      * <code>repeated float value_float = 7;</code>
+     * 
      * @return A list containing the valueFloat.
      */
     @java.lang.Override
-    public java.util.List<java.lang.Float>
-        getValueFloatList() {
+    public java.util.List<java.lang.Float> getValueFloatList() {
       return valueFloat_;
     }
+
     /**
      * <code>repeated float value_float = 7;</code>
+     * 
      * @return The count of valueFloat.
      */
     public int getValueFloatCount() {
       return valueFloat_.size();
     }
+
     /**
      * <code>repeated float value_float = 7;</code>
-     * @param index The index of the element to return.
+     * 
+     * @param index
+     *          The index of the element to return.
      * @return The valueFloat at the given index.
      */
     public float getValueFloat(int index) {
       return valueFloat_.getFloat(index);
     }
+
     private int valueFloatMemoizedSerializedSize = -1;
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       getSerializedSize();
       if (type_ != null) {
         output.writeMessage(1, getType());
@@ -17107,12 +18135,12 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (type_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getType());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(1, getType());
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
@@ -17128,28 +18156,24 @@ public final class ProtoAssemblyAllTypes {
       {
         int dataSize = 0;
         for (int i = 0; i < valueInt32_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(valueInt32_.getInt(i));
+          dataSize += com.google.protobuf.CodedOutputStream.computeInt32SizeNoTag(valueInt32_.getInt(i));
         }
         size += dataSize;
         if (!getValueInt32List().isEmpty()) {
           size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
+          size += com.google.protobuf.CodedOutputStream.computeInt32SizeNoTag(dataSize);
         }
         valueInt32MemoizedSerializedSize = dataSize;
       }
       {
         int dataSize = 0;
         for (int i = 0; i < valueInt64_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt64SizeNoTag(valueInt64_.getLong(i));
+          dataSize += com.google.protobuf.CodedOutputStream.computeInt64SizeNoTag(valueInt64_.getLong(i));
         }
         size += dataSize;
         if (!getValueInt64List().isEmpty()) {
           size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
+          size += com.google.protobuf.CodedOutputStream.computeInt32SizeNoTag(dataSize);
         }
         valueInt64MemoizedSerializedSize = dataSize;
       }
@@ -17159,8 +18183,7 @@ public final class ProtoAssemblyAllTypes {
         size += dataSize;
         if (!getValueDoubleList().isEmpty()) {
           size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
+          size += com.google.protobuf.CodedOutputStream.computeInt32SizeNoTag(dataSize);
         }
         valueDoubleMemoizedSerializedSize = dataSize;
       }
@@ -17170,8 +18193,7 @@ public final class ProtoAssemblyAllTypes {
         size += dataSize;
         if (!getValueFloatList().isEmpty()) {
           size += 1;
-          size += com.google.protobuf.CodedOutputStream
-              .computeInt32SizeNoTag(dataSize);
+          size += com.google.protobuf.CodedOutputStream.computeInt32SizeNoTag(dataSize);
         }
         valueFloatMemoizedSerializedSize = dataSize;
       }
@@ -17183,31 +18205,34 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition) obj;
 
-      if (hasType() != other.hasType()) return false;
+      if (hasType() != other.hasType())
+        return false;
       if (hasType()) {
-        if (!getType()
-            .equals(other.getType())) return false;
+        if (!getType().equals(other.getType()))
+          return false;
       }
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (!getValueStringList()
-          .equals(other.getValueStringList())) return false;
-      if (!getValueInt32List()
-          .equals(other.getValueInt32List())) return false;
-      if (!getValueInt64List()
-          .equals(other.getValueInt64List())) return false;
-      if (!getValueDoubleList()
-          .equals(other.getValueDoubleList())) return false;
-      if (!getValueFloatList()
-          .equals(other.getValueFloatList())) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (!getName().equals(other.getName()))
+        return false;
+      if (!getValueStringList().equals(other.getValueStringList()))
+        return false;
+      if (!getValueInt32List().equals(other.getValueInt32List()))
+        return false;
+      if (!getValueInt64List().equals(other.getValueInt64List()))
+        return false;
+      if (!getValueDoubleList().equals(other.getValueDoubleList()))
+        return false;
+      if (!getValueFloatList().equals(other.getValueFloatList()))
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -17249,114 +18274,109 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition
+        parseFrom(com.google.protobuf.ByteString data) throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition
+        parseFrom(com.google.protobuf.ByteString data, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+        java.io.InputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code AttributeArgumentDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:AttributeArgumentDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeArgumentDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeArgumentDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.newBuilder()
@@ -17364,16 +18384,16 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -17399,8 +18419,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_AttributeArgumentDefinition_descriptor;
       }
 
@@ -17420,7 +18439,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition(this);
         int from_bitField0_ = bitField0_;
         if (typeBuilder_ == null) {
           result.type_ = type_;
@@ -17461,38 +18481,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -17500,7 +18519,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition.getDefaultInstance())
+          return this;
         if (other.hasType()) {
           mergeType(other.getType());
         }
@@ -17569,10 +18589,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.AttributeArgumentDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -17586,20 +18604,24 @@ public final class ProtoAssemblyAllTypes {
         }
         return this;
       }
+
       private int bitField0_;
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition type_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> typeBuilder_;
+
       /**
        * <code>.TypeDefinition type = 1;</code>
+       * 
        * @return Whether the type field is set.
        */
       public boolean hasType() {
         return typeBuilder_ != null || type_ != null;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
+       * 
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -17609,6 +18631,7 @@ public final class ProtoAssemblyAllTypes {
           return typeBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -17625,11 +18648,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
-      public Builder setType(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
+      public Builder setType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder builderForValue) {
         if (typeBuilder_ == null) {
           type_ = builderForValue.build();
           onChanged();
@@ -17639,14 +18662,14 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
           if (type_ != null) {
-            type_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
+            type_ = soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.newBuilder(type_).mergeFrom(value).buildPartial();
           } else {
             type_ = value;
           }
@@ -17657,6 +18680,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -17671,14 +18695,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getTypeBuilder() {
-        
+
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
@@ -17686,37 +18712,36 @@ public final class ProtoAssemblyAllTypes {
         if (typeBuilder_ != null) {
           return typeBuilder_.getMessageOrBuilder();
         } else {
-          return type_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
+          return type_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance() : type_;
         }
       }
+
       /**
        * <code>.TypeDefinition type = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>
           getTypeFieldBuilder() {
         if (typeBuilder_ == null) {
-          typeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
-                  getType(),
-                  getParentForChildren(),
-                  isClean());
+          typeBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinitionOrBuilder>(
+                  getType(), getParentForChildren(), isClean());
           type_ = null;
         }
         return typeBuilder_;
       }
 
       private java.lang.Object name_ = "";
+
       /**
        * <code>string name = 2;</code>
+       * 
        * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           name_ = s;
           return s;
@@ -17724,150 +18749,172 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string name = 2;</code>
+       * 
        * @return The bytes for name.
        */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
+      public com.google.protobuf.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string name = 2;</code>
-       * @param value The name to set.
+       * 
+       * @param value
+       *          The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         name_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearName() {
-        
+
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 2;</code>
-       * @param value The bytes for name to set.
+       * 
+       * @param value
+       *          The bytes for name to set.
        * @return This builder for chaining.
        */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         name_ = value;
         onChanged();
         return this;
       }
 
       private com.google.protobuf.LazyStringList valueString_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+
       private void ensureValueStringIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           valueString_ = new com.google.protobuf.LazyStringArrayList(valueString_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
+       * 
        * @return A list containing the valueString.
        */
-      public com.google.protobuf.ProtocolStringList
-          getValueStringList() {
+      public com.google.protobuf.ProtocolStringList getValueStringList() {
         return valueString_.getUnmodifiableView();
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
+       * 
        * @return The count of valueString.
        */
       public int getValueStringCount() {
         return valueString_.size();
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
-       * @param index The index of the element to return.
+       * 
+       * @param index
+       *          The index of the element to return.
        * @return The valueString at the given index.
        */
       public java.lang.String getValueString(int index) {
         return valueString_.get(index);
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
-       * @param index The index of the value to return.
+       * 
+       * @param index
+       *          The index of the value to return.
        * @return The bytes of the valueString at the given index.
        */
-      public com.google.protobuf.ByteString
-          getValueStringBytes(int index) {
+      public com.google.protobuf.ByteString getValueStringBytes(int index) {
         return valueString_.getByteString(index);
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
-       * @param index The index to set the value at.
-       * @param value The valueString to set.
+       * 
+       * @param index
+       *          The index to set the value at.
+       * @param value
+       *          The valueString to set.
        * @return This builder for chaining.
        */
-      public Builder setValueString(
-          int index, java.lang.String value) {
+      public Builder setValueString(int index, java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureValueStringIsMutable();
+          throw new NullPointerException();
+        }
+        ensureValueStringIsMutable();
         valueString_.set(index, value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
-       * @param value The valueString to add.
+       * 
+       * @param value
+       *          The valueString to add.
        * @return This builder for chaining.
        */
-      public Builder addValueString(
-          java.lang.String value) {
+      public Builder addValueString(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureValueStringIsMutable();
+          throw new NullPointerException();
+        }
+        ensureValueStringIsMutable();
         valueString_.add(value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
-       * @param values The valueString to add.
+       * 
+       * @param values
+       *          The valueString to add.
        * @return This builder for chaining.
        */
-      public Builder addAllValueString(
-          java.lang.Iterable<java.lang.String> values) {
+      public Builder addAllValueString(java.lang.Iterable<java.lang.String> values) {
         ensureValueStringIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, valueString_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(values, valueString_);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueString() {
@@ -17876,17 +18923,19 @@ public final class ProtoAssemblyAllTypes {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated string value_string = 3;</code>
-       * @param value The bytes of the valueString to add.
+       * 
+       * @param value
+       *          The bytes of the valueString to add.
        * @return This builder for chaining.
        */
-      public Builder addValueStringBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder addValueStringBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
         ensureValueStringIsMutable();
         valueString_.add(value);
         onChanged();
@@ -17894,52 +18943,64 @@ public final class ProtoAssemblyAllTypes {
       }
 
       private com.google.protobuf.Internal.IntList valueInt32_ = emptyIntList();
+
       private void ensureValueInt32IsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           valueInt32_ = mutableCopy(valueInt32_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
+
       /**
        * <code>repeated int32 value_int32 = 4;</code>
+       * 
        * @return A list containing the valueInt32.
        */
-      public java.util.List<java.lang.Integer>
-          getValueInt32List() {
-        return ((bitField0_ & 0x00000002) != 0) ?
-                 java.util.Collections.unmodifiableList(valueInt32_) : valueInt32_;
+      public java.util.List<java.lang.Integer> getValueInt32List() {
+        return ((bitField0_ & 0x00000002) != 0) ? java.util.Collections.unmodifiableList(valueInt32_) : valueInt32_;
       }
+
       /**
        * <code>repeated int32 value_int32 = 4;</code>
+       * 
        * @return The count of valueInt32.
        */
       public int getValueInt32Count() {
         return valueInt32_.size();
       }
+
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * @param index The index of the element to return.
+       * 
+       * @param index
+       *          The index of the element to return.
        * @return The valueInt32 at the given index.
        */
       public int getValueInt32(int index) {
         return valueInt32_.getInt(index);
       }
+
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * @param index The index to set the value at.
-       * @param value The valueInt32 to set.
+       * 
+       * @param index
+       *          The index to set the value at.
+       * @param value
+       *          The valueInt32 to set.
        * @return This builder for chaining.
        */
-      public Builder setValueInt32(
-          int index, int value) {
+      public Builder setValueInt32(int index, int value) {
         ensureValueInt32IsMutable();
         valueInt32_.setInt(index, value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * @param value The valueInt32 to add.
+       * 
+       * @param value
+       *          The valueInt32 to add.
        * @return This builder for chaining.
        */
       public Builder addValueInt32(int value) {
@@ -17948,21 +19009,24 @@ public final class ProtoAssemblyAllTypes {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * @param values The valueInt32 to add.
+       * 
+       * @param values
+       *          The valueInt32 to add.
        * @return This builder for chaining.
        */
-      public Builder addAllValueInt32(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
+      public Builder addAllValueInt32(java.lang.Iterable<? extends java.lang.Integer> values) {
         ensureValueInt32IsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, valueInt32_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(values, valueInt32_);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated int32 value_int32 = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueInt32() {
@@ -17973,52 +19037,64 @@ public final class ProtoAssemblyAllTypes {
       }
 
       private com.google.protobuf.Internal.LongList valueInt64_ = emptyLongList();
+
       private void ensureValueInt64IsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
           valueInt64_ = mutableCopy(valueInt64_);
           bitField0_ |= 0x00000004;
-         }
+        }
       }
+
       /**
        * <code>repeated int64 value_int64 = 5;</code>
+       * 
        * @return A list containing the valueInt64.
        */
-      public java.util.List<java.lang.Long>
-          getValueInt64List() {
-        return ((bitField0_ & 0x00000004) != 0) ?
-                 java.util.Collections.unmodifiableList(valueInt64_) : valueInt64_;
+      public java.util.List<java.lang.Long> getValueInt64List() {
+        return ((bitField0_ & 0x00000004) != 0) ? java.util.Collections.unmodifiableList(valueInt64_) : valueInt64_;
       }
+
       /**
        * <code>repeated int64 value_int64 = 5;</code>
+       * 
        * @return The count of valueInt64.
        */
       public int getValueInt64Count() {
         return valueInt64_.size();
       }
+
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * @param index The index of the element to return.
+       * 
+       * @param index
+       *          The index of the element to return.
        * @return The valueInt64 at the given index.
        */
       public long getValueInt64(int index) {
         return valueInt64_.getLong(index);
       }
+
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * @param index The index to set the value at.
-       * @param value The valueInt64 to set.
+       * 
+       * @param index
+       *          The index to set the value at.
+       * @param value
+       *          The valueInt64 to set.
        * @return This builder for chaining.
        */
-      public Builder setValueInt64(
-          int index, long value) {
+      public Builder setValueInt64(int index, long value) {
         ensureValueInt64IsMutable();
         valueInt64_.setLong(index, value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * @param value The valueInt64 to add.
+       * 
+       * @param value
+       *          The valueInt64 to add.
        * @return This builder for chaining.
        */
       public Builder addValueInt64(long value) {
@@ -18027,21 +19103,24 @@ public final class ProtoAssemblyAllTypes {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * @param values The valueInt64 to add.
+       * 
+       * @param values
+       *          The valueInt64 to add.
        * @return This builder for chaining.
        */
-      public Builder addAllValueInt64(
-          java.lang.Iterable<? extends java.lang.Long> values) {
+      public Builder addAllValueInt64(java.lang.Iterable<? extends java.lang.Long> values) {
         ensureValueInt64IsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, valueInt64_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(values, valueInt64_);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated int64 value_int64 = 5;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueInt64() {
@@ -18052,52 +19131,64 @@ public final class ProtoAssemblyAllTypes {
       }
 
       private com.google.protobuf.Internal.DoubleList valueDouble_ = emptyDoubleList();
+
       private void ensureValueDoubleIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
           valueDouble_ = mutableCopy(valueDouble_);
           bitField0_ |= 0x00000008;
-         }
+        }
       }
+
       /**
        * <code>repeated double value_double = 6;</code>
+       * 
        * @return A list containing the valueDouble.
        */
-      public java.util.List<java.lang.Double>
-          getValueDoubleList() {
-        return ((bitField0_ & 0x00000008) != 0) ?
-                 java.util.Collections.unmodifiableList(valueDouble_) : valueDouble_;
+      public java.util.List<java.lang.Double> getValueDoubleList() {
+        return ((bitField0_ & 0x00000008) != 0) ? java.util.Collections.unmodifiableList(valueDouble_) : valueDouble_;
       }
+
       /**
        * <code>repeated double value_double = 6;</code>
+       * 
        * @return The count of valueDouble.
        */
       public int getValueDoubleCount() {
         return valueDouble_.size();
       }
+
       /**
        * <code>repeated double value_double = 6;</code>
-       * @param index The index of the element to return.
+       * 
+       * @param index
+       *          The index of the element to return.
        * @return The valueDouble at the given index.
        */
       public double getValueDouble(int index) {
         return valueDouble_.getDouble(index);
       }
+
       /**
        * <code>repeated double value_double = 6;</code>
-       * @param index The index to set the value at.
-       * @param value The valueDouble to set.
+       * 
+       * @param index
+       *          The index to set the value at.
+       * @param value
+       *          The valueDouble to set.
        * @return This builder for chaining.
        */
-      public Builder setValueDouble(
-          int index, double value) {
+      public Builder setValueDouble(int index, double value) {
         ensureValueDoubleIsMutable();
         valueDouble_.setDouble(index, value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated double value_double = 6;</code>
-       * @param value The valueDouble to add.
+       * 
+       * @param value
+       *          The valueDouble to add.
        * @return This builder for chaining.
        */
       public Builder addValueDouble(double value) {
@@ -18106,21 +19197,24 @@ public final class ProtoAssemblyAllTypes {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated double value_double = 6;</code>
-       * @param values The valueDouble to add.
+       * 
+       * @param values
+       *          The valueDouble to add.
        * @return This builder for chaining.
        */
-      public Builder addAllValueDouble(
-          java.lang.Iterable<? extends java.lang.Double> values) {
+      public Builder addAllValueDouble(java.lang.Iterable<? extends java.lang.Double> values) {
         ensureValueDoubleIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, valueDouble_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(values, valueDouble_);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated double value_double = 6;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueDouble() {
@@ -18131,52 +19225,64 @@ public final class ProtoAssemblyAllTypes {
       }
 
       private com.google.protobuf.Internal.FloatList valueFloat_ = emptyFloatList();
+
       private void ensureValueFloatIsMutable() {
         if (!((bitField0_ & 0x00000010) != 0)) {
           valueFloat_ = mutableCopy(valueFloat_);
           bitField0_ |= 0x00000010;
-         }
+        }
       }
+
       /**
        * <code>repeated float value_float = 7;</code>
+       * 
        * @return A list containing the valueFloat.
        */
-      public java.util.List<java.lang.Float>
-          getValueFloatList() {
-        return ((bitField0_ & 0x00000010) != 0) ?
-                 java.util.Collections.unmodifiableList(valueFloat_) : valueFloat_;
+      public java.util.List<java.lang.Float> getValueFloatList() {
+        return ((bitField0_ & 0x00000010) != 0) ? java.util.Collections.unmodifiableList(valueFloat_) : valueFloat_;
       }
+
       /**
        * <code>repeated float value_float = 7;</code>
+       * 
        * @return The count of valueFloat.
        */
       public int getValueFloatCount() {
         return valueFloat_.size();
       }
+
       /**
        * <code>repeated float value_float = 7;</code>
-       * @param index The index of the element to return.
+       * 
+       * @param index
+       *          The index of the element to return.
        * @return The valueFloat at the given index.
        */
       public float getValueFloat(int index) {
         return valueFloat_.getFloat(index);
       }
+
       /**
        * <code>repeated float value_float = 7;</code>
-       * @param index The index to set the value at.
-       * @param value The valueFloat to set.
+       * 
+       * @param index
+       *          The index to set the value at.
+       * @param value
+       *          The valueFloat to set.
        * @return This builder for chaining.
        */
-      public Builder setValueFloat(
-          int index, float value) {
+      public Builder setValueFloat(int index, float value) {
         ensureValueFloatIsMutable();
         valueFloat_.setFloat(index, value);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated float value_float = 7;</code>
-       * @param value The valueFloat to add.
+       * 
+       * @param value
+       *          The valueFloat to add.
        * @return This builder for chaining.
        */
       public Builder addValueFloat(float value) {
@@ -18185,21 +19291,24 @@ public final class ProtoAssemblyAllTypes {
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated float value_float = 7;</code>
-       * @param values The valueFloat to add.
+       * 
+       * @param values
+       *          The valueFloat to add.
        * @return This builder for chaining.
        */
-      public Builder addAllValueFloat(
-          java.lang.Iterable<? extends java.lang.Float> values) {
+      public Builder addAllValueFloat(java.lang.Iterable<? extends java.lang.Float> values) {
         ensureValueFloatIsMutable();
-        com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, valueFloat_);
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(values, valueFloat_);
         onChanged();
         return this;
       }
+
       /**
        * <code>repeated float value_float = 7;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearValueFloat() {
@@ -18208,18 +19317,16 @@ public final class ProtoAssemblyAllTypes {
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:AttributeArgumentDefinition)
     }
@@ -18234,16 +19341,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<AttributeArgumentDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<AttributeArgumentDefinition>() {
-      @java.lang.Override
-      public AttributeArgumentDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new AttributeArgumentDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<AttributeArgumentDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<AttributeArgumentDefinition>() {
+          @java.lang.Override
+          public AttributeArgumentDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new AttributeArgumentDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<AttributeArgumentDefinition> parser() {
       return PARSER;
@@ -18267,25 +19373,32 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
+     * 
      * @return Whether the addAccessorMethod field is set.
      */
     boolean hasAddAccessorMethod();
+
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
+     * 
      * @return The addAccessorMethod.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getAddAccessorMethod();
+
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
      */
@@ -18293,44 +19406,53 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool can_add = 3;</code>
+     * 
      * @return The canAdd.
      */
     boolean getCanAdd();
 
     /**
      * <code>bool can_invoke = 4;</code>
+     * 
      * @return The canInvoke.
      */
     boolean getCanInvoke();
 
     /**
      * <code>bool can_remove = 5;</code>
+     * 
      * @return The canRemove.
      */
     boolean getCanRemove();
 
     /**
      * <code>string full_name = 6;</code>
+     * 
      * @return The fullName.
      */
     java.lang.String getFullName();
+
     /**
      * <code>string full_name = 6;</code>
+     * 
      * @return The bytes for fullName.
      */
-    com.google.protobuf.ByteString
-        getFullNameBytes();
+    com.google.protobuf.ByteString getFullNameBytes();
 
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
+     * 
      * @return Whether the invokeAccessorMethod field is set.
      */
     boolean hasInvokeAccessorMethod();
+
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
+     * 
      * @return The invokeAccessorMethod.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getInvokeAccessorMethod();
+
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
      */
@@ -18338,26 +19460,32 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 8;</code>
+     * 
      * @return The name.
      */
     java.lang.String getName();
+
     /**
      * <code>string name = 8;</code>
+     * 
      * @return The bytes for name.
      */
-    com.google.protobuf.ByteString
-        getNameBytes();
+    com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
+     * 
      * @return Whether the removeAccessorMethod field is set.
      */
     boolean hasRemoveAccessorMethod();
+
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
+     * 
      * @return The removeAccessorMethod.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getRemoveAccessorMethod();
+
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
      */
@@ -18369,22 +19497,25 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 10;</code>
+     * 
      * @return The peToken.
      */
     int getPeToken();
   }
+
   /**
    * Protobuf type {@code EventDefinition}
    */
-  public static final class EventDefinition extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class EventDefinition extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:EventDefinition)
       EventDefinitionOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use EventDefinition.newBuilder() to construct.
     private EventDefinition(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private EventDefinition() {
       accessibility_ = 0;
       fullName_ = "";
@@ -18392,27 +19523,24 @@ public final class ProtoAssemblyAllTypes {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new EventDefinition();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private EventDefinition(
-        com.google.protobuf.CodedInputStream input,
+
+    private EventDefinition(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -18432,7 +19560,8 @@ public final class ProtoAssemblyAllTypes {
               if (addAccessorMethod_ != null) {
                 subBuilder = addAccessorMethod_.toBuilder();
               }
-              addAccessorMethod_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
+              addAccessorMethod_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(addAccessorMethod_);
                 addAccessorMethod_ = subBuilder.buildPartial();
@@ -18466,7 +19595,8 @@ public final class ProtoAssemblyAllTypes {
               if (invokeAccessorMethod_ != null) {
                 subBuilder = invokeAccessorMethod_.toBuilder();
               }
-              invokeAccessorMethod_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
+              invokeAccessorMethod_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(invokeAccessorMethod_);
                 invokeAccessorMethod_ = subBuilder.buildPartial();
@@ -18485,7 +19615,8 @@ public final class ProtoAssemblyAllTypes {
               if (removeAccessorMethod_ != null) {
                 subBuilder = removeAccessorMethod_.toBuilder();
               }
-              removeAccessorMethod_ = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
+              removeAccessorMethod_
+                  = input.readMessage(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.parser(), extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(removeAccessorMethod_);
                 removeAccessorMethod_ = subBuilder.buildPartial();
@@ -18499,8 +19630,7 @@ public final class ProtoAssemblyAllTypes {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -18510,63 +19640,74 @@ public final class ProtoAssemblyAllTypes {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_EventDefinition_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_EventDefinition_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.class,
+              soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder.class);
     }
 
     public static final int ACCESSIBILITY_FIELD_NUMBER = 1;
     private int accessibility_;
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The enum numeric value on the wire for accessibility.
      */
-    @java.lang.Override public int getAccessibilityValue() {
+    @java.lang.Override
+    public int getAccessibilityValue() {
       return accessibility_;
     }
+
     /**
      * <code>.Accessibility accessibility = 1;</code>
+     * 
      * @return The accessibility.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+      soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+          = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
     }
 
     public static final int ADD_ACCESSOR_METHOD_FIELD_NUMBER = 2;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition addAccessorMethod_;
+
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
+     * 
      * @return Whether the addAccessorMethod field is set.
      */
     @java.lang.Override
     public boolean hasAddAccessorMethod() {
       return addAccessorMethod_ != null;
     }
+
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
+     * 
      * @return The addAccessorMethod.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getAddAccessorMethod() {
-      return addAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : addAccessorMethod_;
+      return addAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+          : addAccessorMethod_;
     }
+
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
      */
@@ -18577,8 +19718,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int CAN_ADD_FIELD_NUMBER = 3;
     private boolean canAdd_;
+
     /**
      * <code>bool can_add = 3;</code>
+     * 
      * @return The canAdd.
      */
     @java.lang.Override
@@ -18588,8 +19731,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int CAN_INVOKE_FIELD_NUMBER = 4;
     private boolean canInvoke_;
+
     /**
      * <code>bool can_invoke = 4;</code>
+     * 
      * @return The canInvoke.
      */
     @java.lang.Override
@@ -18599,8 +19744,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int CAN_REMOVE_FIELD_NUMBER = 5;
     private boolean canRemove_;
+
     /**
      * <code>bool can_remove = 5;</code>
+     * 
      * @return The canRemove.
      */
     @java.lang.Override
@@ -18610,8 +19757,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int FULL_NAME_FIELD_NUMBER = 6;
     private volatile java.lang.Object fullName_;
+
     /**
      * <code>string full_name = 6;</code>
+     * 
      * @return The fullName.
      */
     @java.lang.Override
@@ -18620,25 +19769,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         fullName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string full_name = 6;</code>
+     * 
      * @return The bytes for fullName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getFullNameBytes() {
+    public com.google.protobuf.ByteString getFullNameBytes() {
       java.lang.Object ref = fullName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         fullName_ = b;
         return b;
       } else {
@@ -18648,22 +19795,28 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int INVOKE_ACCESSOR_METHOD_FIELD_NUMBER = 7;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition invokeAccessorMethod_;
+
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
+     * 
      * @return Whether the invokeAccessorMethod field is set.
      */
     @java.lang.Override
     public boolean hasInvokeAccessorMethod() {
       return invokeAccessorMethod_ != null;
     }
+
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
+     * 
      * @return The invokeAccessorMethod.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getInvokeAccessorMethod() {
-      return invokeAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : invokeAccessorMethod_;
+      return invokeAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+          : invokeAccessorMethod_;
     }
+
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
      */
@@ -18674,8 +19827,10 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int NAME_FIELD_NUMBER = 8;
     private volatile java.lang.Object name_;
+
     /**
      * <code>string name = 8;</code>
+     * 
      * @return The name.
      */
     @java.lang.Override
@@ -18684,25 +19839,23 @@ public final class ProtoAssemblyAllTypes {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         name_ = s;
         return s;
       }
     }
+
     /**
      * <code>string name = 8;</code>
+     * 
      * @return The bytes for name.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getNameBytes() {
+    public com.google.protobuf.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -18712,22 +19865,28 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int REMOVE_ACCESSOR_METHOD_FIELD_NUMBER = 9;
     private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition removeAccessorMethod_;
+
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
+     * 
      * @return Whether the removeAccessorMethod field is set.
      */
     @java.lang.Override
     public boolean hasRemoveAccessorMethod() {
       return removeAccessorMethod_ != null;
     }
+
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
+     * 
      * @return The removeAccessorMethod.
      */
     @java.lang.Override
     public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getRemoveAccessorMethod() {
-      return removeAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : removeAccessorMethod_;
+      return removeAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+          : removeAccessorMethod_;
     }
+
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
      */
@@ -18738,12 +19897,14 @@ public final class ProtoAssemblyAllTypes {
 
     public static final int PE_TOKEN_FIELD_NUMBER = 10;
     private int peToken_;
+
     /**
      * <pre>
      *hexadecimal x8 pe token
      * </pre>
      *
      * <code>int32 pe_token = 10;</code>
+     * 
      * @return The peToken.
      */
     @java.lang.Override
@@ -18752,19 +19913,21 @@ public final class ProtoAssemblyAllTypes {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
         output.writeEnum(1, accessibility_);
       }
@@ -18801,46 +19964,39 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (accessibility_ != soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.NONE.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, accessibility_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, accessibility_);
       }
       if (addAccessorMethod_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getAddAccessorMethod());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(2, getAddAccessorMethod());
       }
       if (canAdd_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, canAdd_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(3, canAdd_);
       }
       if (canInvoke_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, canInvoke_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(4, canInvoke_);
       }
       if (canRemove_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(5, canRemove_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(5, canRemove_);
       }
       if (!getFullNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, fullName_);
       }
       if (invokeAccessorMethod_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getInvokeAccessorMethod());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(7, getInvokeAccessorMethod());
       }
       if (!getNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, name_);
       }
       if (removeAccessorMethod_ != null) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, getRemoveAccessorMethod());
+        size += com.google.protobuf.CodedOutputStream.computeMessageSize(9, getRemoveAccessorMethod());
       }
       if (peToken_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(10, peToken_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(10, peToken_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -18850,42 +20006,48 @@ public final class ProtoAssemblyAllTypes {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition other = (soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition) obj;
+      soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition other
+          = (soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition) obj;
 
-      if (accessibility_ != other.accessibility_) return false;
-      if (hasAddAccessorMethod() != other.hasAddAccessorMethod()) return false;
+      if (accessibility_ != other.accessibility_)
+        return false;
+      if (hasAddAccessorMethod() != other.hasAddAccessorMethod())
+        return false;
       if (hasAddAccessorMethod()) {
-        if (!getAddAccessorMethod()
-            .equals(other.getAddAccessorMethod())) return false;
+        if (!getAddAccessorMethod().equals(other.getAddAccessorMethod()))
+          return false;
       }
-      if (getCanAdd()
-          != other.getCanAdd()) return false;
-      if (getCanInvoke()
-          != other.getCanInvoke()) return false;
-      if (getCanRemove()
-          != other.getCanRemove()) return false;
-      if (!getFullName()
-          .equals(other.getFullName())) return false;
-      if (hasInvokeAccessorMethod() != other.hasInvokeAccessorMethod()) return false;
+      if (getCanAdd() != other.getCanAdd())
+        return false;
+      if (getCanInvoke() != other.getCanInvoke())
+        return false;
+      if (getCanRemove() != other.getCanRemove())
+        return false;
+      if (!getFullName().equals(other.getFullName()))
+        return false;
+      if (hasInvokeAccessorMethod() != other.hasInvokeAccessorMethod())
+        return false;
       if (hasInvokeAccessorMethod()) {
-        if (!getInvokeAccessorMethod()
-            .equals(other.getInvokeAccessorMethod())) return false;
+        if (!getInvokeAccessorMethod().equals(other.getInvokeAccessorMethod()))
+          return false;
       }
-      if (!getName()
-          .equals(other.getName())) return false;
-      if (hasRemoveAccessorMethod() != other.hasRemoveAccessorMethod()) return false;
+      if (!getName().equals(other.getName()))
+        return false;
+      if (hasRemoveAccessorMethod() != other.hasRemoveAccessorMethod())
+        return false;
       if (hasRemoveAccessorMethod()) {
-        if (!getRemoveAccessorMethod()
-            .equals(other.getRemoveAccessorMethod())) return false;
+        if (!getRemoveAccessorMethod().equals(other.getRemoveAccessorMethod()))
+          return false;
       }
-      if (getPeToken()
-          != other.getPeToken()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (getPeToken() != other.getPeToken())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -18903,14 +20065,11 @@ public final class ProtoAssemblyAllTypes {
         hash = (53 * hash) + getAddAccessorMethod().hashCode();
       }
       hash = (37 * hash) + CAN_ADD_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getCanAdd());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getCanAdd());
       hash = (37 * hash) + CAN_INVOKE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getCanInvoke());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getCanInvoke());
       hash = (37 * hash) + CAN_REMOVE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getCanRemove());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getCanRemove());
       hash = (37 * hash) + FULL_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getFullName().hashCode();
       if (hasInvokeAccessorMethod()) {
@@ -18930,114 +20089,109 @@ public final class ProtoAssemblyAllTypes {
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code EventDefinition}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:EventDefinition)
         soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinitionOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_EventDefinition_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_EventDefinition_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.class,
+                soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.newBuilder()
@@ -19045,16 +20199,16 @@ public final class ProtoAssemblyAllTypes {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -19094,8 +20248,7 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoAssemblyAllTypes.internal_static_EventDefinition_descriptor;
       }
 
@@ -19115,7 +20268,8 @@ public final class ProtoAssemblyAllTypes {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition buildPartial() {
-        soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition result = new soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition(this);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition result
+            = new soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition(this);
         result.accessibility_ = accessibility_;
         if (addAccessorMethodBuilder_ == null) {
           result.addAccessorMethod_ = addAccessorMethod_;
@@ -19146,38 +20300,37 @@ public final class ProtoAssemblyAllTypes {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition) {
-          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition)other);
+          return mergeFrom((soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -19185,7 +20338,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition other) {
-        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition.getDefaultInstance())
+          return this;
         if (other.accessibility_ != 0) {
           setAccessibilityValue(other.getAccessibilityValue());
         }
@@ -19229,10 +20383,8 @@ public final class ProtoAssemblyAllTypes {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoAssemblyAllTypes.EventDefinition parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -19248,80 +20400,99 @@ public final class ProtoAssemblyAllTypes {
       }
 
       private int accessibility_ = 0;
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The enum numeric value on the wire for accessibility.
        */
-      @java.lang.Override public int getAccessibilityValue() {
+      @java.lang.Override
+      public int getAccessibilityValue() {
         return accessibility_;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The enum numeric value on the wire for accessibility to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibilityValue(int value) {
-        
+
         accessibility_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return The accessibility.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
+        soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility result
+            = soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.valueOf(accessibility_);
         return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * @param value The accessibility to set.
+       * 
+       * @param value
+       *          The accessibility to set.
        * @return This builder for chaining.
        */
       public Builder setAccessibility(soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         accessibility_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.Accessibility accessibility = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
-        
+
         accessibility_ = 0;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition addAccessorMethod_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> addAccessorMethodBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> addAccessorMethodBuilder_;
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
+       * 
        * @return Whether the addAccessorMethod field is set.
        */
       public boolean hasAddAccessorMethod() {
         return addAccessorMethodBuilder_ != null || addAccessorMethod_ != null;
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
+       * 
        * @return The addAccessorMethod.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getAddAccessorMethod() {
         if (addAccessorMethodBuilder_ == null) {
-          return addAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : addAccessorMethod_;
+          return addAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+              : addAccessorMethod_;
         } else {
           return addAccessorMethodBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
@@ -19338,11 +20509,11 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
-      public Builder setAddAccessorMethod(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder setAddAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (addAccessorMethodBuilder_ == null) {
           addAccessorMethod_ = builderForValue.build();
           onChanged();
@@ -19352,14 +20523,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
       public Builder mergeAddAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (addAccessorMethodBuilder_ == null) {
           if (addAccessorMethod_ != null) {
-            addAccessorMethod_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(addAccessorMethod_).mergeFrom(value).buildPartial();
+            addAccessorMethod_ = soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(addAccessorMethod_)
+                .mergeFrom(value).buildPartial();
           } else {
             addAccessorMethod_ = value;
           }
@@ -19370,6 +20542,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
@@ -19384,14 +20557,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getAddAccessorMethodBuilder() {
-        
+
         onChanged();
         return getAddAccessorMethodFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
@@ -19399,130 +20574,151 @@ public final class ProtoAssemblyAllTypes {
         if (addAccessorMethodBuilder_ != null) {
           return addAccessorMethodBuilder_.getMessageOrBuilder();
         } else {
-          return addAccessorMethod_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : addAccessorMethod_;
+          return addAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+              : addAccessorMethod_;
         }
       }
+
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
           getAddAccessorMethodFieldBuilder() {
         if (addAccessorMethodBuilder_ == null) {
-          addAccessorMethodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
-                  getAddAccessorMethod(),
-                  getParentForChildren(),
-                  isClean());
+          addAccessorMethodBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
+                  getAddAccessorMethod(), getParentForChildren(), isClean());
           addAccessorMethod_ = null;
         }
         return addAccessorMethodBuilder_;
       }
 
-      private boolean canAdd_ ;
+      private boolean canAdd_;
+
       /**
        * <code>bool can_add = 3;</code>
+       * 
        * @return The canAdd.
        */
       @java.lang.Override
       public boolean getCanAdd() {
         return canAdd_;
       }
+
       /**
        * <code>bool can_add = 3;</code>
-       * @param value The canAdd to set.
+       * 
+       * @param value
+       *          The canAdd to set.
        * @return This builder for chaining.
        */
       public Builder setCanAdd(boolean value) {
-        
+
         canAdd_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool can_add = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearCanAdd() {
-        
+
         canAdd_ = false;
         onChanged();
         return this;
       }
 
-      private boolean canInvoke_ ;
+      private boolean canInvoke_;
+
       /**
        * <code>bool can_invoke = 4;</code>
+       * 
        * @return The canInvoke.
        */
       @java.lang.Override
       public boolean getCanInvoke() {
         return canInvoke_;
       }
+
       /**
        * <code>bool can_invoke = 4;</code>
-       * @param value The canInvoke to set.
+       * 
+       * @param value
+       *          The canInvoke to set.
        * @return This builder for chaining.
        */
       public Builder setCanInvoke(boolean value) {
-        
+
         canInvoke_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool can_invoke = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearCanInvoke() {
-        
+
         canInvoke_ = false;
         onChanged();
         return this;
       }
 
-      private boolean canRemove_ ;
+      private boolean canRemove_;
+
       /**
        * <code>bool can_remove = 5;</code>
+       * 
        * @return The canRemove.
        */
       @java.lang.Override
       public boolean getCanRemove() {
         return canRemove_;
       }
+
       /**
        * <code>bool can_remove = 5;</code>
-       * @param value The canRemove to set.
+       * 
+       * @param value
+       *          The canRemove to set.
        * @return This builder for chaining.
        */
       public Builder setCanRemove(boolean value) {
-        
+
         canRemove_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool can_remove = 5;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearCanRemove() {
-        
+
         canRemove_ = false;
         onChanged();
         return this;
       }
 
       private java.lang.Object fullName_ = "";
+
       /**
        * <code>string full_name = 6;</code>
+       * 
        * @return The fullName.
        */
       public java.lang.String getFullName() {
         java.lang.Object ref = fullName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           fullName_ = s;
           return s;
@@ -19530,86 +20726,97 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string full_name = 6;</code>
+       * 
        * @return The bytes for fullName.
        */
-      public com.google.protobuf.ByteString
-          getFullNameBytes() {
+      public com.google.protobuf.ByteString getFullNameBytes() {
         java.lang.Object ref = fullName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           fullName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string full_name = 6;</code>
-       * @param value The fullName to set.
+       * 
+       * @param value
+       *          The fullName to set.
        * @return This builder for chaining.
        */
-      public Builder setFullName(
-          java.lang.String value) {
+      public Builder setFullName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         fullName_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string full_name = 6;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearFullName() {
-        
+
         fullName_ = getDefaultInstance().getFullName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string full_name = 6;</code>
-       * @param value The bytes for fullName to set.
+       * 
+       * @param value
+       *          The bytes for fullName to set.
        * @return This builder for chaining.
        */
-      public Builder setFullNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setFullNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         fullName_ = value;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition invokeAccessorMethod_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> invokeAccessorMethodBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> invokeAccessorMethodBuilder_;
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
+       * 
        * @return Whether the invokeAccessorMethod field is set.
        */
       public boolean hasInvokeAccessorMethod() {
         return invokeAccessorMethodBuilder_ != null || invokeAccessorMethod_ != null;
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
+       * 
        * @return The invokeAccessorMethod.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getInvokeAccessorMethod() {
         if (invokeAccessorMethodBuilder_ == null) {
-          return invokeAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : invokeAccessorMethod_;
+          return invokeAccessorMethod_ == null
+              ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+              : invokeAccessorMethod_;
         } else {
           return invokeAccessorMethodBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
        */
@@ -19626,11 +20833,12 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
        */
-      public Builder setInvokeAccessorMethod(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder
+          setInvokeAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (invokeAccessorMethodBuilder_ == null) {
           invokeAccessorMethod_ = builderForValue.build();
           onChanged();
@@ -19640,14 +20848,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
        */
       public Builder mergeInvokeAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (invokeAccessorMethodBuilder_ == null) {
           if (invokeAccessorMethod_ != null) {
-            invokeAccessorMethod_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(invokeAccessorMethod_).mergeFrom(value).buildPartial();
+            invokeAccessorMethod_ = soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition
+                .newBuilder(invokeAccessorMethod_).mergeFrom(value).buildPartial();
           } else {
             invokeAccessorMethod_ = value;
           }
@@ -19658,6 +20867,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
        */
@@ -19672,14 +20882,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getInvokeAccessorMethodBuilder() {
-        
+
         onChanged();
         return getInvokeAccessorMethodFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
        */
@@ -19687,37 +20899,38 @@ public final class ProtoAssemblyAllTypes {
         if (invokeAccessorMethodBuilder_ != null) {
           return invokeAccessorMethodBuilder_.getMessageOrBuilder();
         } else {
-          return invokeAccessorMethod_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : invokeAccessorMethod_;
+          return invokeAccessorMethod_ == null
+              ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+              : invokeAccessorMethod_;
         }
       }
+
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
           getInvokeAccessorMethodFieldBuilder() {
         if (invokeAccessorMethodBuilder_ == null) {
-          invokeAccessorMethodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
-                  getInvokeAccessorMethod(),
-                  getParentForChildren(),
-                  isClean());
+          invokeAccessorMethodBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
+                  getInvokeAccessorMethod(), getParentForChildren(), isClean());
           invokeAccessorMethod_ = null;
         }
         return invokeAccessorMethodBuilder_;
       }
 
       private java.lang.Object name_ = "";
+
       /**
        * <code>string name = 8;</code>
+       * 
        * @return The name.
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           name_ = s;
           return s;
@@ -19725,86 +20938,97 @@ public final class ProtoAssemblyAllTypes {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string name = 8;</code>
+       * 
        * @return The bytes for name.
        */
-      public com.google.protobuf.ByteString
-          getNameBytes() {
+      public com.google.protobuf.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string name = 8;</code>
-       * @param value The name to set.
+       * 
+       * @param value
+       *          The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         name_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 8;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearName() {
-        
+
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string name = 8;</code>
-       * @param value The bytes for name to set.
+       * 
+       * @param value
+       *          The bytes for name to set.
        * @return This builder for chaining.
        */
-      public Builder setNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         name_ = value;
         onChanged();
         return this;
       }
 
       private soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition removeAccessorMethod_;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> removeAccessorMethodBuilder_;
+      private com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> removeAccessorMethodBuilder_;
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
+       * 
        * @return Whether the removeAccessorMethod field is set.
        */
       public boolean hasRemoveAccessorMethod() {
         return removeAccessorMethodBuilder_ != null || removeAccessorMethod_ != null;
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
+       * 
        * @return The removeAccessorMethod.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getRemoveAccessorMethod() {
         if (removeAccessorMethodBuilder_ == null) {
-          return removeAccessorMethod_ == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : removeAccessorMethod_;
+          return removeAccessorMethod_ == null
+              ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+              : removeAccessorMethod_;
         } else {
           return removeAccessorMethodBuilder_.getMessage();
         }
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
        */
@@ -19821,11 +21045,12 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
        */
-      public Builder setRemoveAccessorMethod(
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
+      public Builder
+          setRemoveAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder builderForValue) {
         if (removeAccessorMethodBuilder_ == null) {
           removeAccessorMethod_ = builderForValue.build();
           onChanged();
@@ -19835,14 +21060,15 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
        */
       public Builder mergeRemoveAccessorMethod(soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition value) {
         if (removeAccessorMethodBuilder_ == null) {
           if (removeAccessorMethod_ != null) {
-            removeAccessorMethod_ =
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.newBuilder(removeAccessorMethod_).mergeFrom(value).buildPartial();
+            removeAccessorMethod_ = soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition
+                .newBuilder(removeAccessorMethod_).mergeFrom(value).buildPartial();
           } else {
             removeAccessorMethod_ = value;
           }
@@ -19853,6 +21079,7 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
        */
@@ -19867,14 +21094,16 @@ public final class ProtoAssemblyAllTypes {
 
         return this;
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder getRemoveAccessorMethodBuilder() {
-        
+
         onChanged();
         return getRemoveAccessorMethodFieldBuilder().getBuilder();
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
        */
@@ -19882,81 +21111,86 @@ public final class ProtoAssemblyAllTypes {
         if (removeAccessorMethodBuilder_ != null) {
           return removeAccessorMethodBuilder_.getMessageOrBuilder();
         } else {
-          return removeAccessorMethod_ == null ?
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance() : removeAccessorMethod_;
+          return removeAccessorMethod_ == null
+              ? soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.getDefaultInstance()
+              : removeAccessorMethod_;
         }
       }
+
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder> 
+      private
+          com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>
           getRemoveAccessorMethodFieldBuilder() {
         if (removeAccessorMethodBuilder_ == null) {
-          removeAccessorMethodBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
-                  getRemoveAccessorMethod(),
-                  getParentForChildren(),
-                  isClean());
+          removeAccessorMethodBuilder_
+              = new com.google.protobuf.SingleFieldBuilderV3<soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition.Builder, soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinitionOrBuilder>(
+                  getRemoveAccessorMethod(), getParentForChildren(), isClean());
           removeAccessorMethod_ = null;
         }
         return removeAccessorMethodBuilder_;
       }
 
-      private int peToken_ ;
+      private int peToken_;
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 10;</code>
+       * 
        * @return The peToken.
        */
       @java.lang.Override
       public int getPeToken() {
         return peToken_;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 10;</code>
-       * @param value The peToken to set.
+       * 
+       * @param value
+       *          The peToken to set.
        * @return This builder for chaining.
        */
       public Builder setPeToken(int value) {
-        
+
         peToken_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <pre>
        *hexadecimal x8 pe token
        * </pre>
        *
        * <code>int32 pe_token = 10;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
-        
+
         peToken_ = 0;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:EventDefinition)
     }
@@ -19971,16 +21205,15 @@ public final class ProtoAssemblyAllTypes {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<EventDefinition>
-        PARSER = new com.google.protobuf.AbstractParser<EventDefinition>() {
-      @java.lang.Override
-      public EventDefinition parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new EventDefinition(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<EventDefinition> PARSER
+        = new com.google.protobuf.AbstractParser<EventDefinition>() {
+          @java.lang.Override
+          public EventDefinition parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new EventDefinition(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<EventDefinition> parser() {
       return PARSER;
@@ -19998,210 +21231,166 @@ public final class ProtoAssemblyAllTypes {
 
   }
 
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_AssemblyAllTypes_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_AssemblyAllTypes_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_TypeDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_TypeDefinition_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_MethodDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_MethodDefinition_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_ParameterDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_ParameterDefinition_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_FieldDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_FieldDefinition_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_PropertyDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_PropertyDefinition_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_AttributeDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_AttributeDefinition_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_AttributeArgumentDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_AttributeArgumentDefinition_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_EventDefinition_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_EventDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_AssemblyAllTypes_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_AssemblyAllTypes_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_TypeDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_TypeDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_MethodDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_MethodDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_ParameterDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_ParameterDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_FieldDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_FieldDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_PropertyDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_PropertyDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_AttributeDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_AttributeDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_AttributeArgumentDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_AttributeArgumentDefinition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_EventDefinition_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_EventDefinition_fieldAccessorTable;
 
-  public static com.google.protobuf.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static com.google.protobuf.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
-      descriptor;
+
+  private static com.google.protobuf.Descriptors.FileDescriptor descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026AssemblyAllTypes.proto\"_\n\020AssemblyAllT" +
-      "ypes\022&\n\rlist_of_types\030\001 \003(\0132\017.TypeDefini" +
-      "tion\022#\n\033all_referenced_module_types\030\002 \003(" +
-      "\t\"\330\004\n\016TypeDefinition\022%\n\raccessibility\030\001 " +
-      "\001(\0162\016.Accessibility\022\020\n\010fullname\030\002 \001(\t\022\021\n" +
-      "\tnamespace\030\003 \001(\t\022\023\n\013is_abstract\030\004 \001(\010\022\024\n" +
-      "\014is_read_only\030\005 \001(\010\022\021\n\tis_sealed\030\006 \001(\010\022\021" +
-      "\n\tis_static\030\007 \001(\010\022\035\n\025declaring_outer_cla" +
-      "ss\030\010 \001(\t\022*\n\021direct_base_types\030\t \003(\0132\017.Ty" +
-      "peDefinition\022\037\n\ttype_kind\030\n \001(\0162\014.TypeKi" +
-      "ndDef\022\"\n\007methods\030\013 \003(\0132\021.MethodDefinitio" +
-      "n\022 \n\006fields\030\014 \003(\0132\020.FieldDefinition\022\'\n\np" +
-      "roperties\030\r \003(\0132\023.PropertyDefinition\022%\n\014" +
-      "nested_types\030\016 \003(\0132\017.TypeDefinition\022(\n\na" +
-      "ttributes\030\017 \003(\0132\024.AttributeDefinition\022/\n" +
-      "\026generic_type_arguments\030\020 \003(\0132\017.TypeDefi" +
-      "nition\022\030\n\020array_dimensions\030\021 \001(\005\022 \n\006even" +
-      "ts\030\022 \003(\0132\020.EventDefinition\022\020\n\010pe_token\030\023" +
-      " \001(\005\"\234\004\n\020MethodDefinition\022%\n\raccessibili" +
-      "ty\030\001 \001(\0162\016.Accessibility\022\014\n\004name\030\002 \001(\t\022\020" +
-      "\n\010has_body\030\003 \001(\010\022\'\n\tparameter\030\004 \003(\0132\024.Pa" +
-      "rameterDefinition\022\023\n\013is_abstract\030\005 \001(\010\022\023" +
-      "\n\013is_accessor\030\006 \001(\010\022\026\n\016is_constructor\030\007 " +
-      "\001(\010\022\025\n\ris_destructor\030\010 \001(\010\022,\n$is_explici" +
-      "t_interface_implementation\030\t \001(\010\022\021\n\tis_s" +
-      "tatic\030\n \001(\010\022\022\n\nis_virtual\030\013 \001(\010\022\023\n\013is_op" +
-      "erator\030\020 \001(\010\022\021\n\tis_extern\030\021 \001(\010\022\021\n\tis_un" +
-      "safe\030\022 \001(\010\022\021\n\tis_sealed\030\023 \001(\010\022$\n\013return_" +
-      "type\030\014 \001(\0132\017.TypeDefinition\022(\n\nattribute" +
-      "s\030\r \003(\0132\024.AttributeDefinition\022\021\n\tfull_na" +
-      "me\030\016 \001(\t\022\'\n\016declaring_type\030\017 \001(\0132\017.TypeD" +
-      "efinition\022\020\n\010pe_token\030\024 \001(\005\"\220\001\n\023Paramete" +
-      "rDefinition\022\035\n\004type\030\001 \001(\0132\017.TypeDefiniti" +
-      "on\022\026\n\016parameter_name\030\002 \001(\t\022\016\n\006is_ref\030\003 \001" +
-      "(\010\022\016\n\006is_out\030\004 \001(\010\022\r\n\005is_in\030\005 \001(\010\022\023\n\013is_" +
-      "optional\030\006 \001(\010\"\270\003\n\017FieldDefinition\022%\n\rac" +
-      "cessibility\030\001 \001(\0162\016.Accessibility\022\023\n\013is_" +
-      "abstract\030\002 \001(\010\022\021\n\tis_sealed\030\003 \001(\010\022,\n$is_" +
-      "explicit_interface_implementation\030\004 \001(\010\022" +
-      "\023\n\013is_override\030\005 \001(\010\022\022\n\nis_virtual\030\006 \001(\010" +
-      "\022\020\n\010is_const\030\007 \001(\010\022\024\n\014is_read_only\030\010 \001(\010" +
-      "\022\021\n\tis_static\030\t \001(\010\022\035\n\004type\030\n \001(\0132\017.Type" +
-      "Definition\022\037\n\ttype_kind\030\016 \001(\0162\014.TypeKind" +
-      "Def\022\014\n\004name\030\013 \001(\t\022\021\n\tfull_name\030\014 \001(\t\022\'\n\016" +
-      "declaring_type\030\r \001(\0132\017.TypeDefinition\022(\n" +
-      "\nattributes\030\017 \003(\0132\024.AttributeDefinition\022" +
-      "\020\n\010pe_token\030\020 \001(\005\"\322\003\n\022PropertyDefinition" +
-      "\022%\n\raccessibility\030\001 \001(\0162\016.Accessibility\022" +
-      "\017\n\007can_get\030\002 \001(\010\022\017\n\007can_set\030\003 \001(\010\022\023\n\013is_" +
-      "abstract\030\004 \001(\010\022\021\n\tis_sealed\030\005 \001(\010\022,\n$is_" +
-      "explicit_interface_implementation\030\006 \001(\010\022" +
-      "\023\n\013is_override\030\007 \001(\010\022\022\n\nis_virtual\030\010 \001(\010" +
-      "\022\021\n\tis_static\030\t \001(\010\022\021\n\tis_extern\030\017 \001(\010\022!" +
-      "\n\006getter\030\n \001(\0132\021.MethodDefinition\022!\n\006set" +
-      "ter\030\013 \001(\0132\021.MethodDefinition\022\035\n\004type\030\014 \001" +
-      "(\0132\017.TypeDefinition\022\037\n\ttype_kind\030\016 \001(\0162\014" +
-      ".TypeKindDef\022\014\n\004name\030\r \001(\t\022(\n\nattributes" +
-      "\030\020 \003(\0132\024.AttributeDefinition\022\020\n\010pe_token" +
-      "\030\021 \001(\005\"\301\001\n\023AttributeDefinition\022\'\n\016attrib" +
-      "ute_type\030\001 \001(\0132\017.TypeDefinition\022\023\n\013const" +
-      "ructor\030\002 \001(\t\0225\n\017fixed_arguments\030\003 \003(\0132\034." +
-      "AttributeArgumentDefinition\0225\n\017named_arg" +
-      "uments\030\004 \003(\0132\034.AttributeArgumentDefiniti" +
-      "on\"\265\001\n\033AttributeArgumentDefinition\022\035\n\004ty" +
-      "pe\030\001 \001(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(\t\022" +
-      "\024\n\014value_string\030\003 \003(\t\022\023\n\013value_int32\030\004 \003" +
-      "(\005\022\023\n\013value_int64\030\005 \003(\003\022\024\n\014value_double\030" +
-      "\006 \003(\001\022\023\n\013value_float\030\007 \003(\002\"\272\002\n\017EventDefi" +
-      "nition\022%\n\raccessibility\030\001 \001(\0162\016.Accessib" +
-      "ility\022.\n\023add_accessor_method\030\002 \001(\0132\021.Met" +
-      "hodDefinition\022\017\n\007can_add\030\003 \001(\010\022\022\n\ncan_in" +
-      "voke\030\004 \001(\010\022\022\n\ncan_remove\030\005 \001(\010\022\021\n\tfull_n" +
-      "ame\030\006 \001(\t\0221\n\026invoke_accessor_method\030\007 \001(" +
-      "\0132\021.MethodDefinition\022\014\n\004name\030\010 \001(\t\0221\n\026re" +
-      "move_accessor_method\030\t \001(\0132\021.MethodDefin" +
-      "ition\022\020\n\010pe_token\030\n \001(\005*\206\001\n\rAccessibilit" +
-      "y\022\010\n\004NONE\020\000\022\013\n\007PRIVATE\020\001\022\n\n\006PUBLIC\020\002\022\014\n\010" +
-      "INTERNAL\020\003\022\r\n\tPROTECTED\020\004\022\032\n\026PROTECTED_A" +
-      "ND_INTERNAL\020\005\022\031\n\025PROTECTED_OR_INTERNAL\020\006" +
-      "*\366\002\n\013TypeKindDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001" +
-      "\022\t\n\005CLASS\020\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014" +
-      "\n\010DELEGATE\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKN" +
-      "OWN\020\010\022\010\n\004NULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMI" +
-      "C\020\013\022\024\n\020UNBOUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAME" +
-      "TER\020\r\022\t\n\005ARRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020" +
-      "\020\022\020\n\014INTERSECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUP" +
-      "LE\020\023\022\013\n\007MOD_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020" +
-      "\026\022\n\n\006N_UINT\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020B" +
-      "Y_REF_AND_ARRAY\020\031BS\n\021soot.dotnet.protoB\025" +
-      "ProtoAssemblyAllTypes\252\002&Soot.Dotnet.Deco" +
-      "mpiler.Models.Protobufb\006proto3"
-    };
-    descriptor = com.google.protobuf.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new com.google.protobuf.Descriptors.FileDescriptor[] {
-        });
-    internal_static_AssemblyAllTypes_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_AssemblyAllTypes_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AssemblyAllTypes_descriptor,
-        new java.lang.String[] { "ListOfTypes", "AllReferencedModuleTypes", });
-    internal_static_TypeDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_TypeDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_TypeDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "Fullname", "Namespace", "IsAbstract", "IsReadOnly", "IsSealed", "IsStatic", "DeclaringOuterClass", "DirectBaseTypes", "TypeKind", "Methods", "Fields", "Properties", "NestedTypes", "Attributes", "GenericTypeArguments", "ArrayDimensions", "Events", "PeToken", });
-    internal_static_MethodDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_MethodDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_MethodDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "Name", "HasBody", "Parameter", "IsAbstract", "IsAccessor", "IsConstructor", "IsDestructor", "IsExplicitInterfaceImplementation", "IsStatic", "IsVirtual", "IsOperator", "IsExtern", "IsUnsafe", "IsSealed", "ReturnType", "Attributes", "FullName", "DeclaringType", "PeToken", });
-    internal_static_ParameterDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_ParameterDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ParameterDefinition_descriptor,
-        new java.lang.String[] { "Type", "ParameterName", "IsRef", "IsOut", "IsIn", "IsOptional", });
-    internal_static_FieldDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_FieldDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_FieldDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName", "DeclaringType", "Attributes", "PeToken", });
-    internal_static_PropertyDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_PropertyDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PropertyDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "CanGet", "CanSet", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsStatic", "IsExtern", "Getter", "Setter", "Type", "TypeKind", "Name", "Attributes", "PeToken", });
-    internal_static_AttributeDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_AttributeDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AttributeDefinition_descriptor,
-        new java.lang.String[] { "AttributeType", "Constructor", "FixedArguments", "NamedArguments", });
-    internal_static_AttributeArgumentDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_AttributeArgumentDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AttributeArgumentDefinition_descriptor,
-        new java.lang.String[] { "Type", "Name", "ValueString", "ValueInt32", "ValueInt64", "ValueDouble", "ValueFloat", });
-    internal_static_EventDefinition_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_EventDefinition_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_EventDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "AddAccessorMethod", "CanAdd", "CanInvoke", "CanRemove", "FullName", "InvokeAccessorMethod", "Name", "RemoveAccessorMethod", "PeToken", });
+        "\n\026AssemblyAllTypes.proto\"_\n\020AssemblyAllT" + "ypes\022&\n\rlist_of_types\030\001 \003(\0132\017.TypeDefini"
+            + "tion\022#\n\033all_referenced_module_types\030\002 \003("
+            + "\t\"\330\004\n\016TypeDefinition\022%\n\raccessibility\030\001 "
+            + "\001(\0162\016.Accessibility\022\020\n\010fullname\030\002 \001(\t\022\021\n"
+            + "\tnamespace\030\003 \001(\t\022\023\n\013is_abstract\030\004 \001(\010\022\024\n"
+            + "\014is_read_only\030\005 \001(\010\022\021\n\tis_sealed\030\006 \001(\010\022\021"
+            + "\n\tis_static\030\007 \001(\010\022\035\n\025declaring_outer_cla"
+            + "ss\030\010 \001(\t\022*\n\021direct_base_types\030\t \003(\0132\017.Ty"
+            + "peDefinition\022\037\n\ttype_kind\030\n \001(\0162\014.TypeKi"
+            + "ndDef\022\"\n\007methods\030\013 \003(\0132\021.MethodDefinitio"
+            + "n\022 \n\006fields\030\014 \003(\0132\020.FieldDefinition\022\'\n\np"
+            + "roperties\030\r \003(\0132\023.PropertyDefinition\022%\n\014"
+            + "nested_types\030\016 \003(\0132\017.TypeDefinition\022(\n\na"
+            + "ttributes\030\017 \003(\0132\024.AttributeDefinition\022/\n"
+            + "\026generic_type_arguments\030\020 \003(\0132\017.TypeDefi"
+            + "nition\022\030\n\020array_dimensions\030\021 \001(\005\022 \n\006even"
+            + "ts\030\022 \003(\0132\020.EventDefinition\022\020\n\010pe_token\030\023"
+            + " \001(\005\"\234\004\n\020MethodDefinition\022%\n\raccessibili"
+            + "ty\030\001 \001(\0162\016.Accessibility\022\014\n\004name\030\002 \001(\t\022\020"
+            + "\n\010has_body\030\003 \001(\010\022\'\n\tparameter\030\004 \003(\0132\024.Pa"
+            + "rameterDefinition\022\023\n\013is_abstract\030\005 \001(\010\022\023"
+            + "\n\013is_accessor\030\006 \001(\010\022\026\n\016is_constructor\030\007 "
+            + "\001(\010\022\025\n\ris_destructor\030\010 \001(\010\022,\n$is_explici"
+            + "t_interface_implementation\030\t \001(\010\022\021\n\tis_s"
+            + "tatic\030\n \001(\010\022\022\n\nis_virtual\030\013 \001(\010\022\023\n\013is_op"
+            + "erator\030\020 \001(\010\022\021\n\tis_extern\030\021 \001(\010\022\021\n\tis_un"
+            + "safe\030\022 \001(\010\022\021\n\tis_sealed\030\023 \001(\010\022$\n\013return_"
+            + "type\030\014 \001(\0132\017.TypeDefinition\022(\n\nattribute"
+            + "s\030\r \003(\0132\024.AttributeDefinition\022\021\n\tfull_na"
+            + "me\030\016 \001(\t\022\'\n\016declaring_type\030\017 \001(\0132\017.TypeD"
+            + "efinition\022\020\n\010pe_token\030\024 \001(\005\"\220\001\n\023Paramete"
+            + "rDefinition\022\035\n\004type\030\001 \001(\0132\017.TypeDefiniti"
+            + "on\022\026\n\016parameter_name\030\002 \001(\t\022\016\n\006is_ref\030\003 \001"
+            + "(\010\022\016\n\006is_out\030\004 \001(\010\022\r\n\005is_in\030\005 \001(\010\022\023\n\013is_"
+            + "optional\030\006 \001(\010\"\270\003\n\017FieldDefinition\022%\n\rac"
+            + "cessibility\030\001 \001(\0162\016.Accessibility\022\023\n\013is_"
+            + "abstract\030\002 \001(\010\022\021\n\tis_sealed\030\003 \001(\010\022,\n$is_"
+            + "explicit_interface_implementation\030\004 \001(\010\022"
+            + "\023\n\013is_override\030\005 \001(\010\022\022\n\nis_virtual\030\006 \001(\010"
+            + "\022\020\n\010is_const\030\007 \001(\010\022\024\n\014is_read_only\030\010 \001(\010"
+            + "\022\021\n\tis_static\030\t \001(\010\022\035\n\004type\030\n \001(\0132\017.Type"
+            + "Definition\022\037\n\ttype_kind\030\016 \001(\0162\014.TypeKind"
+            + "Def\022\014\n\004name\030\013 \001(\t\022\021\n\tfull_name\030\014 \001(\t\022\'\n\016"
+            + "declaring_type\030\r \001(\0132\017.TypeDefinition\022(\n"
+            + "\nattributes\030\017 \003(\0132\024.AttributeDefinition\022"
+            + "\020\n\010pe_token\030\020 \001(\005\"\322\003\n\022PropertyDefinition"
+            + "\022%\n\raccessibility\030\001 \001(\0162\016.Accessibility\022"
+            + "\017\n\007can_get\030\002 \001(\010\022\017\n\007can_set\030\003 \001(\010\022\023\n\013is_"
+            + "abstract\030\004 \001(\010\022\021\n\tis_sealed\030\005 \001(\010\022,\n$is_"
+            + "explicit_interface_implementation\030\006 \001(\010\022"
+            + "\023\n\013is_override\030\007 \001(\010\022\022\n\nis_virtual\030\010 \001(\010"
+            + "\022\021\n\tis_static\030\t \001(\010\022\021\n\tis_extern\030\017 \001(\010\022!"
+            + "\n\006getter\030\n \001(\0132\021.MethodDefinition\022!\n\006set"
+            + "ter\030\013 \001(\0132\021.MethodDefinition\022\035\n\004type\030\014 \001"
+            + "(\0132\017.TypeDefinition\022\037\n\ttype_kind\030\016 \001(\0162\014"
+            + ".TypeKindDef\022\014\n\004name\030\r \001(\t\022(\n\nattributes"
+            + "\030\020 \003(\0132\024.AttributeDefinition\022\020\n\010pe_token"
+            + "\030\021 \001(\005\"\301\001\n\023AttributeDefinition\022\'\n\016attrib"
+            + "ute_type\030\001 \001(\0132\017.TypeDefinition\022\023\n\013const"
+            + "ructor\030\002 \001(\t\0225\n\017fixed_arguments\030\003 \003(\0132\034."
+            + "AttributeArgumentDefinition\0225\n\017named_arg" + "uments\030\004 \003(\0132\034.AttributeArgumentDefiniti"
+            + "on\"\265\001\n\033AttributeArgumentDefinition\022\035\n\004ty"
+            + "pe\030\001 \001(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(\t\022"
+            + "\024\n\014value_string\030\003 \003(\t\022\023\n\013value_int32\030\004 \003"
+            + "(\005\022\023\n\013value_int64\030\005 \003(\003\022\024\n\014value_double\030"
+            + "\006 \003(\001\022\023\n\013value_float\030\007 \003(\002\"\272\002\n\017EventDefi"
+            + "nition\022%\n\raccessibility\030\001 \001(\0162\016.Accessib"
+            + "ility\022.\n\023add_accessor_method\030\002 \001(\0132\021.Met"
+            + "hodDefinition\022\017\n\007can_add\030\003 \001(\010\022\022\n\ncan_in"
+            + "voke\030\004 \001(\010\022\022\n\ncan_remove\030\005 \001(\010\022\021\n\tfull_n"
+            + "ame\030\006 \001(\t\0221\n\026invoke_accessor_method\030\007 \001("
+            + "\0132\021.MethodDefinition\022\014\n\004name\030\010 \001(\t\0221\n\026re"
+            + "move_accessor_method\030\t \001(\0132\021.MethodDefin"
+            + "ition\022\020\n\010pe_token\030\n \001(\005*\206\001\n\rAccessibilit"
+            + "y\022\010\n\004NONE\020\000\022\013\n\007PRIVATE\020\001\022\n\n\006PUBLIC\020\002\022\014\n\010"
+            + "INTERNAL\020\003\022\r\n\tPROTECTED\020\004\022\032\n\026PROTECTED_A"
+            + "ND_INTERNAL\020\005\022\031\n\025PROTECTED_OR_INTERNAL\020\006"
+            + "*\366\002\n\013TypeKindDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001"
+            + "\022\t\n\005CLASS\020\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014"
+            + "\n\010DELEGATE\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKN"
+            + "OWN\020\010\022\010\n\004NULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMI"
+            + "C\020\013\022\024\n\020UNBOUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAME"
+            + "TER\020\r\022\t\n\005ARRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020"
+            + "\020\022\020\n\014INTERSECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUP"
+            + "LE\020\023\022\013\n\007MOD_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020"
+            + "\026\022\n\n\006N_UINT\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020B"
+            + "Y_REF_AND_ARRAY\020\031BS\n\021soot.dotnet.protoB\025" + "ProtoAssemblyAllTypes\252\002&Soot.Dotnet.Deco"
+            + "mpiler.Models.Protobufb\006proto3" };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor.internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {});
+    internal_static_AssemblyAllTypes_descriptor = getDescriptor().getMessageTypes().get(0);
+    internal_static_AssemblyAllTypes_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_AssemblyAllTypes_descriptor, new java.lang.String[] { "ListOfTypes", "AllReferencedModuleTypes", });
+    internal_static_TypeDefinition_descriptor = getDescriptor().getMessageTypes().get(1);
+    internal_static_TypeDefinition_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_TypeDefinition_descriptor,
+            new java.lang.String[] { "Accessibility", "Fullname", "Namespace", "IsAbstract", "IsReadOnly", "IsSealed",
+                "IsStatic", "DeclaringOuterClass", "DirectBaseTypes", "TypeKind", "Methods", "Fields", "Properties",
+                "NestedTypes", "Attributes", "GenericTypeArguments", "ArrayDimensions", "Events", "PeToken", });
+    internal_static_MethodDefinition_descriptor = getDescriptor().getMessageTypes().get(2);
+    internal_static_MethodDefinition_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_MethodDefinition_descriptor,
+            new java.lang.String[] { "Accessibility", "Name", "HasBody", "Parameter", "IsAbstract", "IsAccessor",
+                "IsConstructor", "IsDestructor", "IsExplicitInterfaceImplementation", "IsStatic", "IsVirtual", "IsOperator",
+                "IsExtern", "IsUnsafe", "IsSealed", "ReturnType", "Attributes", "FullName", "DeclaringType", "PeToken", });
+    internal_static_ParameterDefinition_descriptor = getDescriptor().getMessageTypes().get(3);
+    internal_static_ParameterDefinition_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_ParameterDefinition_descriptor,
+            new java.lang.String[] { "Type", "ParameterName", "IsRef", "IsOut", "IsIn", "IsOptional", });
+    internal_static_FieldDefinition_descriptor = getDescriptor().getMessageTypes().get(4);
+    internal_static_FieldDefinition_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_FieldDefinition_descriptor,
+            new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation",
+                "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName",
+                "DeclaringType", "Attributes", "PeToken", });
+    internal_static_PropertyDefinition_descriptor = getDescriptor().getMessageTypes().get(5);
+    internal_static_PropertyDefinition_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_PropertyDefinition_descriptor,
+            new java.lang.String[] { "Accessibility", "CanGet", "CanSet", "IsAbstract", "IsSealed",
+                "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsStatic", "IsExtern", "Getter", "Setter",
+                "Type", "TypeKind", "Name", "Attributes", "PeToken", });
+    internal_static_AttributeDefinition_descriptor = getDescriptor().getMessageTypes().get(6);
+    internal_static_AttributeDefinition_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_AttributeDefinition_descriptor,
+            new java.lang.String[] { "AttributeType", "Constructor", "FixedArguments", "NamedArguments", });
+    internal_static_AttributeArgumentDefinition_descriptor = getDescriptor().getMessageTypes().get(7);
+    internal_static_AttributeArgumentDefinition_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_AttributeArgumentDefinition_descriptor, new java.lang.String[] { "Type", "Name", "ValueString",
+                "ValueInt32", "ValueInt64", "ValueDouble", "ValueFloat", });
+    internal_static_EventDefinition_descriptor = getDescriptor().getMessageTypes().get(8);
+    internal_static_EventDefinition_fieldAccessorTable = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_EventDefinition_descriptor, new java.lang.String[] { "Accessibility", "AddAccessorMethod", "CanAdd",
+            "CanInvoke", "CanRemove", "FullName", "InvokeAccessorMethod", "Name", "RemoveAccessorMethod", "PeToken", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -3,22 +3,43 @@
 
 package soot.dotnet.proto;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2022 Fraunhofer SIT
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 public final class ProtoDotnetNativeHost {
-  private ProtoDotnetNativeHost() {}
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
+  private ProtoDotnetNativeHost() {
   }
 
-  public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
+  public static void registerAllExtensions(com.google.protobuf.ExtensionRegistryLite registry) {
   }
+
+  public static void registerAllExtensions(com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions((com.google.protobuf.ExtensionRegistryLite) registry);
+  }
+
   /**
    * Protobuf enum {@code AnalyzerMethodCall}
    */
-  public enum AnalyzerMethodCall
-      implements com.google.protobuf.ProtocolMessageEnum {
+  public enum AnalyzerMethodCall implements com.google.protobuf.ProtocolMessageEnum {
     /**
      * <code>NO_CALL = 0;</code>
      */
@@ -42,9 +63,7 @@ public final class ProtoDotnetNativeHost {
     /**
      * <code>GET_TYPE_DEF = 5;</code>
      */
-    GET_TYPE_DEF(5),
-    UNRECOGNIZED(-1),
-    ;
+    GET_TYPE_DEF(5), UNRECOGNIZED(-1),;
 
     /**
      * <code>NO_CALL = 0;</code>
@@ -71,17 +90,16 @@ public final class ProtoDotnetNativeHost {
      */
     public static final int GET_TYPE_DEF_VALUE = 5;
 
-
     public final int getNumber() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
+        throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
       }
       return value;
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      * @deprecated Use {@link #forNumber(int)} instead.
      */
@@ -91,57 +109,60 @@ public final class ProtoDotnetNativeHost {
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      */
     public static AnalyzerMethodCall forNumber(int value) {
       switch (value) {
-        case 0: return NO_CALL;
-        case 1: return GET_ALL_TYPES;
-        case 2: return GET_METHOD_BODY;
-        case 3: return GET_METHOD_BODY_OF_PROPERTY;
-        case 4: return GET_METHOD_BODY_OF_EVENT;
-        case 5: return GET_TYPE_DEF;
-        default: return null;
+        case 0:
+          return NO_CALL;
+        case 1:
+          return GET_ALL_TYPES;
+        case 2:
+          return GET_METHOD_BODY;
+        case 3:
+          return GET_METHOD_BODY_OF_PROPERTY;
+        case 4:
+          return GET_METHOD_BODY_OF_EVENT;
+        case 5:
+          return GET_TYPE_DEF;
+        default:
+          return null;
       }
     }
 
-    public static com.google.protobuf.Internal.EnumLiteMap<AnalyzerMethodCall>
-        internalGetValueMap() {
+    public static com.google.protobuf.Internal.EnumLiteMap<AnalyzerMethodCall> internalGetValueMap() {
       return internalValueMap;
     }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        AnalyzerMethodCall> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<AnalyzerMethodCall>() {
-            public AnalyzerMethodCall findValueByNumber(int number) {
-              return AnalyzerMethodCall.forNumber(number);
-            }
-          };
 
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
+    private static final com.google.protobuf.Internal.EnumLiteMap<AnalyzerMethodCall> internalValueMap
+        = new com.google.protobuf.Internal.EnumLiteMap<AnalyzerMethodCall>() {
+          public AnalyzerMethodCall findValueByNumber(int number) {
+            return AnalyzerMethodCall.forNumber(number);
+          }
+        };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
+        throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
       }
       return getDescriptor().getValues().get(ordinal());
     }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
+
+    public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
       return getDescriptor();
     }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
       return soot.dotnet.proto.ProtoDotnetNativeHost.getDescriptor().getEnumTypes().get(0);
     }
 
     private static final AnalyzerMethodCall[] VALUES = values();
 
-    public static AnalyzerMethodCall valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+    public static AnalyzerMethodCall valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
+        throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
       }
       if (desc.getIndex() == -1) {
         return UNRECOGNIZED;
@@ -161,8 +182,7 @@ public final class ProtoDotnetNativeHost {
   /**
    * Protobuf enum {@code EventAccessorType}
    */
-  public enum EventAccessorType
-      implements com.google.protobuf.ProtocolMessageEnum {
+  public enum EventAccessorType implements com.google.protobuf.ProtocolMessageEnum {
     /**
      * <code>NO_EVENT_METHOD = 0;</code>
      */
@@ -178,9 +198,7 @@ public final class ProtoDotnetNativeHost {
     /**
      * <code>REMOVE_ACCESSOR = 3;</code>
      */
-    REMOVE_ACCESSOR(3),
-    UNRECOGNIZED(-1),
-    ;
+    REMOVE_ACCESSOR(3), UNRECOGNIZED(-1),;
 
     /**
      * <code>NO_EVENT_METHOD = 0;</code>
@@ -199,17 +217,16 @@ public final class ProtoDotnetNativeHost {
      */
     public static final int REMOVE_ACCESSOR_VALUE = 3;
 
-
     public final int getNumber() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalArgumentException(
-            "Can't get the number of an unknown enum value.");
+        throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
       }
       return value;
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      * @deprecated Use {@link #forNumber(int)} instead.
      */
@@ -219,55 +236,56 @@ public final class ProtoDotnetNativeHost {
     }
 
     /**
-     * @param value The numeric wire value of the corresponding enum entry.
+     * @param value
+     *          The numeric wire value of the corresponding enum entry.
      * @return The enum associated with the given numeric wire value.
      */
     public static EventAccessorType forNumber(int value) {
       switch (value) {
-        case 0: return NO_EVENT_METHOD;
-        case 1: return ADD_ACCESSOR;
-        case 2: return INVOKE_ACCESSOR;
-        case 3: return REMOVE_ACCESSOR;
-        default: return null;
+        case 0:
+          return NO_EVENT_METHOD;
+        case 1:
+          return ADD_ACCESSOR;
+        case 2:
+          return INVOKE_ACCESSOR;
+        case 3:
+          return REMOVE_ACCESSOR;
+        default:
+          return null;
       }
     }
 
-    public static com.google.protobuf.Internal.EnumLiteMap<EventAccessorType>
-        internalGetValueMap() {
+    public static com.google.protobuf.Internal.EnumLiteMap<EventAccessorType> internalGetValueMap() {
       return internalValueMap;
     }
-    private static final com.google.protobuf.Internal.EnumLiteMap<
-        EventAccessorType> internalValueMap =
-          new com.google.protobuf.Internal.EnumLiteMap<EventAccessorType>() {
-            public EventAccessorType findValueByNumber(int number) {
-              return EventAccessorType.forNumber(number);
-            }
-          };
 
-    public final com.google.protobuf.Descriptors.EnumValueDescriptor
-        getValueDescriptor() {
+    private static final com.google.protobuf.Internal.EnumLiteMap<EventAccessorType> internalValueMap
+        = new com.google.protobuf.Internal.EnumLiteMap<EventAccessorType>() {
+          public EventAccessorType findValueByNumber(int number) {
+            return EventAccessorType.forNumber(number);
+          }
+        };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
       if (this == UNRECOGNIZED) {
-        throw new java.lang.IllegalStateException(
-            "Can't get the descriptor of an unrecognized enum value.");
+        throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
       }
       return getDescriptor().getValues().get(ordinal());
     }
-    public final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptorForType() {
+
+    public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
       return getDescriptor();
     }
-    public static final com.google.protobuf.Descriptors.EnumDescriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.EnumDescriptor getDescriptor() {
       return soot.dotnet.proto.ProtoDotnetNativeHost.getDescriptor().getEnumTypes().get(1);
     }
 
     private static final EventAccessorType[] VALUES = values();
 
-    public static EventAccessorType valueOf(
-        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+    public static EventAccessorType valueOf(com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
       if (desc.getType() != getDescriptor()) {
-        throw new java.lang.IllegalArgumentException(
-          "EnumValueDescriptor is not for this type.");
+        throw new java.lang.IllegalArgumentException("EnumValueDescriptor is not for this type.");
       }
       if (desc.getIndex() == -1) {
         return UNRECOGNIZED;
@@ -290,128 +308,151 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
+     * 
      * @return The enum numeric value on the wire for analyzerMethodCall.
      */
     int getAnalyzerMethodCallValue();
+
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
+     * 
      * @return The analyzerMethodCall.
      */
     soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall getAnalyzerMethodCall();
 
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
+     * 
      * @return The assemblyFileAbsolutePath.
      */
     java.lang.String getAssemblyFileAbsolutePath();
+
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
+     * 
      * @return The bytes for assemblyFileAbsolutePath.
      */
-    com.google.protobuf.ByteString
-        getAssemblyFileAbsolutePathBytes();
+    com.google.protobuf.ByteString getAssemblyFileAbsolutePathBytes();
 
     /**
      * <code>string type_reflection_name = 3;</code>
+     * 
      * @return The typeReflectionName.
      */
     java.lang.String getTypeReflectionName();
+
     /**
      * <code>string type_reflection_name = 3;</code>
+     * 
      * @return The bytes for typeReflectionName.
      */
-    com.google.protobuf.ByteString
-        getTypeReflectionNameBytes();
+    com.google.protobuf.ByteString getTypeReflectionNameBytes();
 
     /**
      * <code>string method_name = 4;</code>
+     * 
      * @return The methodName.
      */
     java.lang.String getMethodName();
+
     /**
      * <code>string method_name = 4;</code>
+     * 
      * @return The bytes for methodName.
      */
-    com.google.protobuf.ByteString
-        getMethodNameBytes();
+    com.google.protobuf.ByteString getMethodNameBytes();
 
     /**
      * <code>string method_name_suffix = 11;</code>
+     * 
      * @return The methodNameSuffix.
      */
     java.lang.String getMethodNameSuffix();
+
     /**
      * <code>string method_name_suffix = 11;</code>
+     * 
      * @return The bytes for methodNameSuffix.
      */
-    com.google.protobuf.ByteString
-        getMethodNameSuffixBytes();
+    com.google.protobuf.ByteString getMethodNameSuffixBytes();
 
     /**
      * <code>int32 method_pe_token = 12;</code>
+     * 
      * @return The methodPeToken.
      */
     int getMethodPeToken();
 
     /**
      * <code>string property_name = 6;</code>
+     * 
      * @return The propertyName.
      */
     java.lang.String getPropertyName();
+
     /**
      * <code>string property_name = 6;</code>
+     * 
      * @return The bytes for propertyName.
      */
-    com.google.protobuf.ByteString
-        getPropertyNameBytes();
+    com.google.protobuf.ByteString getPropertyNameBytes();
 
     /**
      * <code>bool property_is_setter = 7;</code>
+     * 
      * @return The propertyIsSetter.
      */
     boolean getPropertyIsSetter();
 
     /**
      * <code>string event_name = 8;</code>
+     * 
      * @return The eventName.
      */
     java.lang.String getEventName();
+
     /**
      * <code>string event_name = 8;</code>
+     * 
      * @return The bytes for eventName.
      */
-    com.google.protobuf.ByteString
-        getEventNameBytes();
+    com.google.protobuf.ByteString getEventNameBytes();
 
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
+     * 
      * @return The enum numeric value on the wire for eventAccessorType.
      */
     int getEventAccessorTypeValue();
+
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
+     * 
      * @return The eventAccessorType.
      */
     soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType getEventAccessorType();
 
     /**
      * <code>bool debug_mode = 10;</code>
+     * 
      * @return The debugMode.
      */
     boolean getDebugMode();
   }
+
   /**
    * Protobuf type {@code AnalyzerParamsMsg}
    */
-  public static final class AnalyzerParamsMsg extends
-      com.google.protobuf.GeneratedMessageV3 implements
+  public static final class AnalyzerParamsMsg extends com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:AnalyzerParamsMsg)
       AnalyzerParamsMsgOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
+
     // Use AnalyzerParamsMsg.newBuilder() to construct.
     private AnalyzerParamsMsg(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private AnalyzerParamsMsg() {
       analyzerMethodCall_ = 0;
       assemblyFileAbsolutePath_ = "";
@@ -424,27 +465,24 @@ public final class ProtoDotnetNativeHost {
     }
 
     @java.lang.Override
-    @SuppressWarnings({"unused"})
-    protected java.lang.Object newInstance(
-        UnusedPrivateParameter unused) {
+    @SuppressWarnings({ "unused" })
+    protected java.lang.Object newInstance(UnusedPrivateParameter unused) {
       return new AnalyzerParamsMsg();
     }
 
     @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+    public final com.google.protobuf.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
-    private AnalyzerParamsMsg(
-        com.google.protobuf.CodedInputStream input,
+
+    private AnalyzerParamsMsg(com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields = com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -517,8 +555,7 @@ public final class ProtoDotnetNativeHost {
               break;
             }
             default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
+              if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
               break;
@@ -528,49 +565,56 @@ public final class ProtoDotnetNativeHost {
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new com.google.protobuf.InvalidProtocolBufferException(e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
+
+    public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
       return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_AnalyzerParamsMsg_descriptor;
     }
 
     @java.lang.Override
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
       return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_AnalyzerParamsMsg_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.class, soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder.class);
+          .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.class,
+              soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder.class);
     }
 
     public static final int ANALYZER_METHOD_CALL_FIELD_NUMBER = 1;
     private int analyzerMethodCall_;
+
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
+     * 
      * @return The enum numeric value on the wire for analyzerMethodCall.
      */
-    @java.lang.Override public int getAnalyzerMethodCallValue() {
+    @java.lang.Override
+    public int getAnalyzerMethodCallValue() {
       return analyzerMethodCall_;
     }
+
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
+     * 
      * @return The analyzerMethodCall.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall getAnalyzerMethodCall() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall getAnalyzerMethodCall() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall result = soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.valueOf(analyzerMethodCall_);
+      soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall result
+          = soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.valueOf(analyzerMethodCall_);
       return result == null ? soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.UNRECOGNIZED : result;
     }
 
     public static final int ASSEMBLY_FILE_ABSOLUTE_PATH_FIELD_NUMBER = 2;
     private volatile java.lang.Object assemblyFileAbsolutePath_;
+
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
+     * 
      * @return The assemblyFileAbsolutePath.
      */
     @java.lang.Override
@@ -579,25 +623,23 @@ public final class ProtoDotnetNativeHost {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         assemblyFileAbsolutePath_ = s;
         return s;
       }
     }
+
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
+     * 
      * @return The bytes for assemblyFileAbsolutePath.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getAssemblyFileAbsolutePathBytes() {
+    public com.google.protobuf.ByteString getAssemblyFileAbsolutePathBytes() {
       java.lang.Object ref = assemblyFileAbsolutePath_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         assemblyFileAbsolutePath_ = b;
         return b;
       } else {
@@ -607,8 +649,10 @@ public final class ProtoDotnetNativeHost {
 
     public static final int TYPE_REFLECTION_NAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object typeReflectionName_;
+
     /**
      * <code>string type_reflection_name = 3;</code>
+     * 
      * @return The typeReflectionName.
      */
     @java.lang.Override
@@ -617,25 +661,23 @@ public final class ProtoDotnetNativeHost {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         typeReflectionName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string type_reflection_name = 3;</code>
+     * 
      * @return The bytes for typeReflectionName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getTypeReflectionNameBytes() {
+    public com.google.protobuf.ByteString getTypeReflectionNameBytes() {
       java.lang.Object ref = typeReflectionName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         typeReflectionName_ = b;
         return b;
       } else {
@@ -645,8 +687,10 @@ public final class ProtoDotnetNativeHost {
 
     public static final int METHOD_NAME_FIELD_NUMBER = 4;
     private volatile java.lang.Object methodName_;
+
     /**
      * <code>string method_name = 4;</code>
+     * 
      * @return The methodName.
      */
     @java.lang.Override
@@ -655,25 +699,23 @@ public final class ProtoDotnetNativeHost {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         methodName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string method_name = 4;</code>
+     * 
      * @return The bytes for methodName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getMethodNameBytes() {
+    public com.google.protobuf.ByteString getMethodNameBytes() {
       java.lang.Object ref = methodName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         methodName_ = b;
         return b;
       } else {
@@ -683,8 +725,10 @@ public final class ProtoDotnetNativeHost {
 
     public static final int METHOD_NAME_SUFFIX_FIELD_NUMBER = 11;
     private volatile java.lang.Object methodNameSuffix_;
+
     /**
      * <code>string method_name_suffix = 11;</code>
+     * 
      * @return The methodNameSuffix.
      */
     @java.lang.Override
@@ -693,25 +737,23 @@ public final class ProtoDotnetNativeHost {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         methodNameSuffix_ = s;
         return s;
       }
     }
+
     /**
      * <code>string method_name_suffix = 11;</code>
+     * 
      * @return The bytes for methodNameSuffix.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getMethodNameSuffixBytes() {
+    public com.google.protobuf.ByteString getMethodNameSuffixBytes() {
       java.lang.Object ref = methodNameSuffix_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         methodNameSuffix_ = b;
         return b;
       } else {
@@ -721,8 +763,10 @@ public final class ProtoDotnetNativeHost {
 
     public static final int METHOD_PE_TOKEN_FIELD_NUMBER = 12;
     private int methodPeToken_;
+
     /**
      * <code>int32 method_pe_token = 12;</code>
+     * 
      * @return The methodPeToken.
      */
     @java.lang.Override
@@ -732,8 +776,10 @@ public final class ProtoDotnetNativeHost {
 
     public static final int PROPERTY_NAME_FIELD_NUMBER = 6;
     private volatile java.lang.Object propertyName_;
+
     /**
      * <code>string property_name = 6;</code>
+     * 
      * @return The propertyName.
      */
     @java.lang.Override
@@ -742,25 +788,23 @@ public final class ProtoDotnetNativeHost {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         propertyName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string property_name = 6;</code>
+     * 
      * @return The bytes for propertyName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getPropertyNameBytes() {
+    public com.google.protobuf.ByteString getPropertyNameBytes() {
       java.lang.Object ref = propertyName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         propertyName_ = b;
         return b;
       } else {
@@ -770,8 +814,10 @@ public final class ProtoDotnetNativeHost {
 
     public static final int PROPERTY_IS_SETTER_FIELD_NUMBER = 7;
     private boolean propertyIsSetter_;
+
     /**
      * <code>bool property_is_setter = 7;</code>
+     * 
      * @return The propertyIsSetter.
      */
     @java.lang.Override
@@ -781,8 +827,10 @@ public final class ProtoDotnetNativeHost {
 
     public static final int EVENT_NAME_FIELD_NUMBER = 8;
     private volatile java.lang.Object eventName_;
+
     /**
      * <code>string event_name = 8;</code>
+     * 
      * @return The eventName.
      */
     @java.lang.Override
@@ -791,25 +839,23 @@ public final class ProtoDotnetNativeHost {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
+        com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         eventName_ = s;
         return s;
       }
     }
+
     /**
      * <code>string event_name = 8;</code>
+     * 
      * @return The bytes for eventName.
      */
     @java.lang.Override
-    public com.google.protobuf.ByteString
-        getEventNameBytes() {
+    public com.google.protobuf.ByteString getEventNameBytes() {
       java.lang.Object ref = eventName_;
       if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
         eventName_ = b;
         return b;
       } else {
@@ -819,27 +865,36 @@ public final class ProtoDotnetNativeHost {
 
     public static final int EVENT_ACCESSOR_TYPE_FIELD_NUMBER = 9;
     private int eventAccessorType_;
+
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
+     * 
      * @return The enum numeric value on the wire for eventAccessorType.
      */
-    @java.lang.Override public int getEventAccessorTypeValue() {
+    @java.lang.Override
+    public int getEventAccessorTypeValue() {
       return eventAccessorType_;
     }
+
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
+     * 
      * @return The eventAccessorType.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType getEventAccessorType() {
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType getEventAccessorType() {
       @SuppressWarnings("deprecation")
-      soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType result = soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.valueOf(eventAccessorType_);
+      soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType result
+          = soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.valueOf(eventAccessorType_);
       return result == null ? soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.UNRECOGNIZED : result;
     }
 
     public static final int DEBUG_MODE_FIELD_NUMBER = 10;
     private boolean debugMode_;
+
     /**
      * <code>bool debug_mode = 10;</code>
+     * 
      * @return The debugMode.
      */
     @java.lang.Override
@@ -848,19 +903,21 @@ public final class ProtoDotnetNativeHost {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized == 1)
+        return true;
+      if (isInitialized == 0)
+        return false;
 
       memoizedIsInitialized = 1;
       return true;
     }
 
     @java.lang.Override
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
+    public void writeTo(com.google.protobuf.CodedOutputStream output) throws java.io.IOException {
       if (analyzerMethodCall_ != soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.NO_CALL.getNumber()) {
         output.writeEnum(1, analyzerMethodCall_);
       }
@@ -900,12 +957,12 @@ public final class ProtoDotnetNativeHost {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1) return size;
+      if (size != -1)
+        return size;
 
       size = 0;
       if (analyzerMethodCall_ != soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.NO_CALL.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, analyzerMethodCall_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(1, analyzerMethodCall_);
       }
       if (!getAssemblyFileAbsolutePathBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, assemblyFileAbsolutePath_);
@@ -920,26 +977,22 @@ public final class ProtoDotnetNativeHost {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, propertyName_);
       }
       if (propertyIsSetter_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, propertyIsSetter_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, propertyIsSetter_);
       }
       if (!getEventNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, eventName_);
       }
       if (eventAccessorType_ != soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.NO_EVENT_METHOD.getNumber()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(9, eventAccessorType_);
+        size += com.google.protobuf.CodedOutputStream.computeEnumSize(9, eventAccessorType_);
       }
       if (debugMode_ != false) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(10, debugMode_);
+        size += com.google.protobuf.CodedOutputStream.computeBoolSize(10, debugMode_);
       }
       if (!getMethodNameSuffixBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, methodNameSuffix_);
       }
       if (methodPeToken_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(12, methodPeToken_);
+        size += com.google.protobuf.CodedOutputStream.computeInt32Size(12, methodPeToken_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -949,34 +1002,38 @@ public final class ProtoDotnetNativeHost {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg)) {
         return super.equals(obj);
       }
-      soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other = (soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg) obj;
+      soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other
+          = (soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg) obj;
 
-      if (analyzerMethodCall_ != other.analyzerMethodCall_) return false;
-      if (!getAssemblyFileAbsolutePath()
-          .equals(other.getAssemblyFileAbsolutePath())) return false;
-      if (!getTypeReflectionName()
-          .equals(other.getTypeReflectionName())) return false;
-      if (!getMethodName()
-          .equals(other.getMethodName())) return false;
-      if (!getMethodNameSuffix()
-          .equals(other.getMethodNameSuffix())) return false;
-      if (getMethodPeToken()
-          != other.getMethodPeToken()) return false;
-      if (!getPropertyName()
-          .equals(other.getPropertyName())) return false;
-      if (getPropertyIsSetter()
-          != other.getPropertyIsSetter()) return false;
-      if (!getEventName()
-          .equals(other.getEventName())) return false;
-      if (eventAccessorType_ != other.eventAccessorType_) return false;
-      if (getDebugMode()
-          != other.getDebugMode()) return false;
-      if (!unknownFields.equals(other.unknownFields)) return false;
+      if (analyzerMethodCall_ != other.analyzerMethodCall_)
+        return false;
+      if (!getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath()))
+        return false;
+      if (!getTypeReflectionName().equals(other.getTypeReflectionName()))
+        return false;
+      if (!getMethodName().equals(other.getMethodName()))
+        return false;
+      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix()))
+        return false;
+      if (getMethodPeToken() != other.getMethodPeToken())
+        return false;
+      if (!getPropertyName().equals(other.getPropertyName()))
+        return false;
+      if (getPropertyIsSetter() != other.getPropertyIsSetter())
+        return false;
+      if (!getEventName().equals(other.getEventName()))
+        return false;
+      if (eventAccessorType_ != other.eventAccessorType_)
+        return false;
+      if (getDebugMode() != other.getDebugMode())
+        return false;
+      if (!unknownFields.equals(other.unknownFields))
+        return false;
       return true;
     }
 
@@ -1002,128 +1059,121 @@ public final class ProtoDotnetNativeHost {
       hash = (37 * hash) + PROPERTY_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getPropertyName().hashCode();
       hash = (37 * hash) + PROPERTY_IS_SETTER_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getPropertyIsSetter());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getPropertyIsSetter());
       hash = (37 * hash) + EVENT_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getEventName().hashCode();
       hash = (37 * hash) + EVENT_ACCESSOR_TYPE_FIELD_NUMBER;
       hash = (53 * hash) + eventAccessorType_;
       hash = (37 * hash) + DEBUG_MODE_FIELD_NUMBER;
-      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-          getDebugMode());
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(getDebugMode());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        java.nio.ByteBuffer data)
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        java.nio.ByteBuffer data,
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        com.google.protobuf.ByteString data)
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        com.google.protobuf.ByteString data,
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        byte[] data,
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
+
     public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseDelimitedFrom(java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg
+        parseFrom(com.google.protobuf.CodedInputStream input) throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input);
     }
-    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg
+        parseFrom(com.google.protobuf.CodedInputStream input, com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3.parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
+
     public static Builder newBuilder(soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+    protected Builder newBuilderForType(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
+
     /**
      * Protobuf type {@code AnalyzerParamsMsg}
      */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+    public static final class Builder extends com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:AnalyzerParamsMsg)
         soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsgOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
+      public static final com.google.protobuf.Descriptors.Descriptor getDescriptor() {
         return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_AnalyzerParamsMsg_descriptor;
       }
 
       @java.lang.Override
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internalGetFieldAccessorTable() {
         return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_AnalyzerParamsMsg_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.class, soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder.class);
+            .ensureFieldAccessorsInitialized(soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.class,
+                soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder.class);
       }
 
       // Construct using soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.newBuilder()
@@ -1131,16 +1181,16 @@ public final class ProtoDotnetNativeHost {
         maybeForceBuilderInitialization();
       }
 
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      private Builder(com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders) {
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -1170,8 +1220,7 @@ public final class ProtoDotnetNativeHost {
       }
 
       @java.lang.Override
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
+      public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
         return soot.dotnet.proto.ProtoDotnetNativeHost.internal_static_AnalyzerParamsMsg_descriptor;
       }
 
@@ -1191,7 +1240,8 @@ public final class ProtoDotnetNativeHost {
 
       @java.lang.Override
       public soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg buildPartial() {
-        soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg result = new soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg(this);
+        soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg result
+            = new soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg(this);
         result.analyzerMethodCall_ = analyzerMethodCall_;
         result.assemblyFileAbsolutePath_ = assemblyFileAbsolutePath_;
         result.typeReflectionName_ = typeReflectionName_;
@@ -1211,38 +1261,37 @@ public final class ProtoDotnetNativeHost {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder setField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
+      public Builder clearField(com.google.protobuf.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+      public Builder clearOneof(com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+      public Builder setRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          java.lang.Object value) {
+      public Builder addRepeatedField(com.google.protobuf.Descriptors.FieldDescriptor field, java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg) {
-          return mergeFrom((soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg)other);
+          return mergeFrom((soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -1250,7 +1299,8 @@ public final class ProtoDotnetNativeHost {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other) {
-        if (other == soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.getDefaultInstance()) return this;
+        if (other == soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.getDefaultInstance())
+          return this;
         if (other.analyzerMethodCall_ != 0) {
           setAnalyzerMethodCallValue(other.getAnalyzerMethodCallValue());
         }
@@ -1301,10 +1351,8 @@ public final class ProtoDotnetNativeHost {
       }
 
       @java.lang.Override
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+      public Builder mergeFrom(com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry) throws java.io.IOException {
         soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
@@ -1320,69 +1368,84 @@ public final class ProtoDotnetNativeHost {
       }
 
       private int analyzerMethodCall_ = 0;
+
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
+       * 
        * @return The enum numeric value on the wire for analyzerMethodCall.
        */
-      @java.lang.Override public int getAnalyzerMethodCallValue() {
+      @java.lang.Override
+      public int getAnalyzerMethodCallValue() {
         return analyzerMethodCall_;
       }
+
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-       * @param value The enum numeric value on the wire for analyzerMethodCall to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for analyzerMethodCall to set.
        * @return This builder for chaining.
        */
       public Builder setAnalyzerMethodCallValue(int value) {
-        
+
         analyzerMethodCall_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
+       * 
        * @return The analyzerMethodCall.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall getAnalyzerMethodCall() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall result = soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.valueOf(analyzerMethodCall_);
+        soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall result
+            = soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.valueOf(analyzerMethodCall_);
         return result == null ? soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-       * @param value The analyzerMethodCall to set.
+       * 
+       * @param value
+       *          The analyzerMethodCall to set.
        * @return This builder for chaining.
        */
       public Builder setAnalyzerMethodCall(soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         analyzerMethodCall_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAnalyzerMethodCall() {
-        
+
         analyzerMethodCall_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object assemblyFileAbsolutePath_ = "";
+
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
+       * 
        * @return The assemblyFileAbsolutePath.
        */
       public java.lang.String getAssemblyFileAbsolutePath() {
         java.lang.Object ref = assemblyFileAbsolutePath_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           assemblyFileAbsolutePath_ = s;
           return s;
@@ -1390,75 +1453,81 @@ public final class ProtoDotnetNativeHost {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
+       * 
        * @return The bytes for assemblyFileAbsolutePath.
        */
-      public com.google.protobuf.ByteString
-          getAssemblyFileAbsolutePathBytes() {
+      public com.google.protobuf.ByteString getAssemblyFileAbsolutePathBytes() {
         java.lang.Object ref = assemblyFileAbsolutePath_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           assemblyFileAbsolutePath_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
-       * @param value The assemblyFileAbsolutePath to set.
+       * 
+       * @param value
+       *          The assemblyFileAbsolutePath to set.
        * @return This builder for chaining.
        */
-      public Builder setAssemblyFileAbsolutePath(
-          java.lang.String value) {
+      public Builder setAssemblyFileAbsolutePath(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         assemblyFileAbsolutePath_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearAssemblyFileAbsolutePath() {
-        
+
         assemblyFileAbsolutePath_ = getDefaultInstance().getAssemblyFileAbsolutePath();
         onChanged();
         return this;
       }
+
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
-       * @param value The bytes for assemblyFileAbsolutePath to set.
+       * 
+       * @param value
+       *          The bytes for assemblyFileAbsolutePath to set.
        * @return This builder for chaining.
        */
-      public Builder setAssemblyFileAbsolutePathBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setAssemblyFileAbsolutePathBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         assemblyFileAbsolutePath_ = value;
         onChanged();
         return this;
       }
 
       private java.lang.Object typeReflectionName_ = "";
+
       /**
        * <code>string type_reflection_name = 3;</code>
+       * 
        * @return The typeReflectionName.
        */
       public java.lang.String getTypeReflectionName() {
         java.lang.Object ref = typeReflectionName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           typeReflectionName_ = s;
           return s;
@@ -1466,75 +1535,81 @@ public final class ProtoDotnetNativeHost {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string type_reflection_name = 3;</code>
+       * 
        * @return The bytes for typeReflectionName.
        */
-      public com.google.protobuf.ByteString
-          getTypeReflectionNameBytes() {
+      public com.google.protobuf.ByteString getTypeReflectionNameBytes() {
         java.lang.Object ref = typeReflectionName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           typeReflectionName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string type_reflection_name = 3;</code>
-       * @param value The typeReflectionName to set.
+       * 
+       * @param value
+       *          The typeReflectionName to set.
        * @return This builder for chaining.
        */
-      public Builder setTypeReflectionName(
-          java.lang.String value) {
+      public Builder setTypeReflectionName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         typeReflectionName_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string type_reflection_name = 3;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearTypeReflectionName() {
-        
+
         typeReflectionName_ = getDefaultInstance().getTypeReflectionName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string type_reflection_name = 3;</code>
-       * @param value The bytes for typeReflectionName to set.
+       * 
+       * @param value
+       *          The bytes for typeReflectionName to set.
        * @return This builder for chaining.
        */
-      public Builder setTypeReflectionNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setTypeReflectionNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         typeReflectionName_ = value;
         onChanged();
         return this;
       }
 
       private java.lang.Object methodName_ = "";
+
       /**
        * <code>string method_name = 4;</code>
+       * 
        * @return The methodName.
        */
       public java.lang.String getMethodName() {
         java.lang.Object ref = methodName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           methodName_ = s;
           return s;
@@ -1542,75 +1617,81 @@ public final class ProtoDotnetNativeHost {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string method_name = 4;</code>
+       * 
        * @return The bytes for methodName.
        */
-      public com.google.protobuf.ByteString
-          getMethodNameBytes() {
+      public com.google.protobuf.ByteString getMethodNameBytes() {
         java.lang.Object ref = methodName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           methodName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string method_name = 4;</code>
-       * @param value The methodName to set.
+       * 
+       * @param value
+       *          The methodName to set.
        * @return This builder for chaining.
        */
-      public Builder setMethodName(
-          java.lang.String value) {
+      public Builder setMethodName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         methodName_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string method_name = 4;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearMethodName() {
-        
+
         methodName_ = getDefaultInstance().getMethodName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string method_name = 4;</code>
-       * @param value The bytes for methodName to set.
+       * 
+       * @param value
+       *          The bytes for methodName to set.
        * @return This builder for chaining.
        */
-      public Builder setMethodNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setMethodNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         methodName_ = value;
         onChanged();
         return this;
       }
 
       private java.lang.Object methodNameSuffix_ = "";
+
       /**
        * <code>string method_name_suffix = 11;</code>
+       * 
        * @return The methodNameSuffix.
        */
       public java.lang.String getMethodNameSuffix() {
         java.lang.Object ref = methodNameSuffix_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           methodNameSuffix_ = s;
           return s;
@@ -1618,106 +1699,119 @@ public final class ProtoDotnetNativeHost {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string method_name_suffix = 11;</code>
+       * 
        * @return The bytes for methodNameSuffix.
        */
-      public com.google.protobuf.ByteString
-          getMethodNameSuffixBytes() {
+      public com.google.protobuf.ByteString getMethodNameSuffixBytes() {
         java.lang.Object ref = methodNameSuffix_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           methodNameSuffix_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string method_name_suffix = 11;</code>
-       * @param value The methodNameSuffix to set.
+       * 
+       * @param value
+       *          The methodNameSuffix to set.
        * @return This builder for chaining.
        */
-      public Builder setMethodNameSuffix(
-          java.lang.String value) {
+      public Builder setMethodNameSuffix(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        methodNameSuffix_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string method_name_suffix = 11;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearMethodNameSuffix() {
-        
-        methodNameSuffix_ = getDefaultInstance().getMethodNameSuffix();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string method_name_suffix = 11;</code>
-       * @param value The bytes for methodNameSuffix to set.
-       * @return This builder for chaining.
-       */
-      public Builder setMethodNameSuffixBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+
         methodNameSuffix_ = value;
         onChanged();
         return this;
       }
 
-      private int methodPeToken_ ;
+      /**
+       * <code>string method_name_suffix = 11;</code>
+       * 
+       * @return This builder for chaining.
+       */
+      public Builder clearMethodNameSuffix() {
+
+        methodNameSuffix_ = getDefaultInstance().getMethodNameSuffix();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>string method_name_suffix = 11;</code>
+       * 
+       * @param value
+       *          The bytes for methodNameSuffix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMethodNameSuffixBytes(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        methodNameSuffix_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int methodPeToken_;
+
       /**
        * <code>int32 method_pe_token = 12;</code>
+       * 
        * @return The methodPeToken.
        */
       @java.lang.Override
       public int getMethodPeToken() {
         return methodPeToken_;
       }
+
       /**
        * <code>int32 method_pe_token = 12;</code>
-       * @param value The methodPeToken to set.
+       * 
+       * @param value
+       *          The methodPeToken to set.
        * @return This builder for chaining.
        */
       public Builder setMethodPeToken(int value) {
-        
+
         methodPeToken_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>int32 method_pe_token = 12;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearMethodPeToken() {
-        
+
         methodPeToken_ = 0;
         onChanged();
         return this;
       }
 
       private java.lang.Object propertyName_ = "";
+
       /**
        * <code>string property_name = 6;</code>
+       * 
        * @return The propertyName.
        */
       public java.lang.String getPropertyName() {
         java.lang.Object ref = propertyName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           propertyName_ = s;
           return s;
@@ -1725,106 +1819,119 @@ public final class ProtoDotnetNativeHost {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string property_name = 6;</code>
+       * 
        * @return The bytes for propertyName.
        */
-      public com.google.protobuf.ByteString
-          getPropertyNameBytes() {
+      public com.google.protobuf.ByteString getPropertyNameBytes() {
         java.lang.Object ref = propertyName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           propertyName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string property_name = 6;</code>
-       * @param value The propertyName to set.
+       * 
+       * @param value
+       *          The propertyName to set.
        * @return This builder for chaining.
        */
-      public Builder setPropertyName(
-          java.lang.String value) {
+      public Builder setPropertyName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
-        propertyName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string property_name = 6;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearPropertyName() {
-        
-        propertyName_ = getDefaultInstance().getPropertyName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>string property_name = 6;</code>
-       * @param value The bytes for propertyName to set.
-       * @return This builder for chaining.
-       */
-      public Builder setPropertyNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+
         propertyName_ = value;
         onChanged();
         return this;
       }
 
-      private boolean propertyIsSetter_ ;
+      /**
+       * <code>string property_name = 6;</code>
+       * 
+       * @return This builder for chaining.
+       */
+      public Builder clearPropertyName() {
+
+        propertyName_ = getDefaultInstance().getPropertyName();
+        onChanged();
+        return this;
+      }
+
+      /**
+       * <code>string property_name = 6;</code>
+       * 
+       * @param value
+       *          The bytes for propertyName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPropertyNameBytes(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        propertyName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private boolean propertyIsSetter_;
+
       /**
        * <code>bool property_is_setter = 7;</code>
+       * 
        * @return The propertyIsSetter.
        */
       @java.lang.Override
       public boolean getPropertyIsSetter() {
         return propertyIsSetter_;
       }
+
       /**
        * <code>bool property_is_setter = 7;</code>
-       * @param value The propertyIsSetter to set.
+       * 
+       * @param value
+       *          The propertyIsSetter to set.
        * @return This builder for chaining.
        */
       public Builder setPropertyIsSetter(boolean value) {
-        
+
         propertyIsSetter_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool property_is_setter = 7;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearPropertyIsSetter() {
-        
+
         propertyIsSetter_ = false;
         onChanged();
         return this;
       }
 
       private java.lang.Object eventName_ = "";
+
       /**
        * <code>string event_name = 8;</code>
+       * 
        * @return The eventName.
        */
       public java.lang.String getEventName() {
         java.lang.Object ref = eventName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
+          com.google.protobuf.ByteString bs = (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           eventName_ = s;
           return s;
@@ -1832,161 +1939,185 @@ public final class ProtoDotnetNativeHost {
           return (java.lang.String) ref;
         }
       }
+
       /**
        * <code>string event_name = 8;</code>
+       * 
        * @return The bytes for eventName.
        */
-      public com.google.protobuf.ByteString
-          getEventNameBytes() {
+      public com.google.protobuf.ByteString getEventNameBytes() {
         java.lang.Object ref = eventName_;
         if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          com.google.protobuf.ByteString b = com.google.protobuf.ByteString.copyFromUtf8((java.lang.String) ref);
           eventName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
+
       /**
        * <code>string event_name = 8;</code>
-       * @param value The eventName to set.
+       * 
+       * @param value
+       *          The eventName to set.
        * @return This builder for chaining.
        */
-      public Builder setEventName(
-          java.lang.String value) {
+      public Builder setEventName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  
+          throw new NullPointerException();
+        }
+
         eventName_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>string event_name = 8;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearEventName() {
-        
+
         eventName_ = getDefaultInstance().getEventName();
         onChanged();
         return this;
       }
+
       /**
        * <code>string event_name = 8;</code>
-       * @param value The bytes for eventName to set.
+       * 
+       * @param value
+       *          The bytes for eventName to set.
        * @return This builder for chaining.
        */
-      public Builder setEventNameBytes(
-          com.google.protobuf.ByteString value) {
+      public Builder setEventNameBytes(com.google.protobuf.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-        
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
         eventName_ = value;
         onChanged();
         return this;
       }
 
       private int eventAccessorType_ = 0;
+
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
+       * 
        * @return The enum numeric value on the wire for eventAccessorType.
        */
-      @java.lang.Override public int getEventAccessorTypeValue() {
+      @java.lang.Override
+      public int getEventAccessorTypeValue() {
         return eventAccessorType_;
       }
+
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
-       * @param value The enum numeric value on the wire for eventAccessorType to set.
+       * 
+       * @param value
+       *          The enum numeric value on the wire for eventAccessorType to set.
        * @return This builder for chaining.
        */
       public Builder setEventAccessorTypeValue(int value) {
-        
+
         eventAccessorType_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
+       * 
        * @return The eventAccessorType.
        */
       @java.lang.Override
       public soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType getEventAccessorType() {
         @SuppressWarnings("deprecation")
-        soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType result = soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.valueOf(eventAccessorType_);
+        soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType result
+            = soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.valueOf(eventAccessorType_);
         return result == null ? soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.UNRECOGNIZED : result;
       }
+
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
-       * @param value The eventAccessorType to set.
+       * 
+       * @param value
+       *          The eventAccessorType to set.
        * @return This builder for chaining.
        */
       public Builder setEventAccessorType(soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        
+
         eventAccessorType_ = value.getNumber();
         onChanged();
         return this;
       }
+
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearEventAccessorType() {
-        
+
         eventAccessorType_ = 0;
         onChanged();
         return this;
       }
 
-      private boolean debugMode_ ;
+      private boolean debugMode_;
+
       /**
        * <code>bool debug_mode = 10;</code>
+       * 
        * @return The debugMode.
        */
       @java.lang.Override
       public boolean getDebugMode() {
         return debugMode_;
       }
+
       /**
        * <code>bool debug_mode = 10;</code>
-       * @param value The debugMode to set.
+       * 
+       * @param value
+       *          The debugMode to set.
        * @return This builder for chaining.
        */
       public Builder setDebugMode(boolean value) {
-        
+
         debugMode_ = value;
         onChanged();
         return this;
       }
+
       /**
        * <code>bool debug_mode = 10;</code>
+       * 
        * @return This builder for chaining.
        */
       public Builder clearDebugMode() {
-        
+
         debugMode_ = false;
         onChanged();
         return this;
       }
+
       @java.lang.Override
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder setUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
+      public final Builder mergeUnknownFields(final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
-
 
       // @@protoc_insertion_point(builder_scope:AnalyzerParamsMsg)
     }
@@ -2001,16 +2132,15 @@ public final class ProtoDotnetNativeHost {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<AnalyzerParamsMsg>
-        PARSER = new com.google.protobuf.AbstractParser<AnalyzerParamsMsg>() {
-      @java.lang.Override
-      public AnalyzerParamsMsg parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new AnalyzerParamsMsg(input, extensionRegistry);
-      }
-    };
+    private static final com.google.protobuf.Parser<AnalyzerParamsMsg> PARSER
+        = new com.google.protobuf.AbstractParser<AnalyzerParamsMsg>() {
+          @java.lang.Override
+          public AnalyzerParamsMsg parsePartialFrom(com.google.protobuf.CodedInputStream input,
+              com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+              throws com.google.protobuf.InvalidProtocolBufferException {
+            return new AnalyzerParamsMsg(input, extensionRegistry);
+          }
+        };
 
     public static com.google.protobuf.Parser<AnalyzerParamsMsg> parser() {
       return PARSER;
@@ -2028,50 +2158,41 @@ public final class ProtoDotnetNativeHost {
 
   }
 
-  private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_AnalyzerParamsMsg_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_AnalyzerParamsMsg_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor internal_static_AnalyzerParamsMsg_descriptor;
+  private static final com.google.protobuf.GeneratedMessageV3.FieldAccessorTable internal_static_AnalyzerParamsMsg_fieldAccessorTable;
 
-  public static com.google.protobuf.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static com.google.protobuf.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
-      descriptor;
+
+  private static com.google.protobuf.Descriptors.FileDescriptor descriptor;
   static {
-    java.lang.String[] descriptorData = {
-      "\n\026DotnetNativeHost.proto\"\337\002\n\021AnalyzerPar" +
-      "amsMsg\0221\n\024analyzer_method_call\030\001 \001(\0162\023.A" +
-      "nalyzerMethodCall\022#\n\033assembly_file_absol" +
-      "ute_path\030\002 \001(\t\022\034\n\024type_reflection_name\030\003" +
-      " \001(\t\022\023\n\013method_name\030\004 \001(\t\022\032\n\022method_name" +
-      "_suffix\030\013 \001(\t\022\027\n\017method_pe_token\030\014 \001(\005\022\025" +
-      "\n\rproperty_name\030\006 \001(\t\022\032\n\022property_is_set" +
-      "ter\030\007 \001(\010\022\022\n\nevent_name\030\010 \001(\t\022/\n\023event_a" +
-      "ccessor_type\030\t \001(\0162\022.EventAccessorType\022\022" +
-      "\n\ndebug_mode\030\n \001(\010*\232\001\n\022AnalyzerMethodCal" +
-      "l\022\013\n\007NO_CALL\020\000\022\021\n\rGET_ALL_TYPES\020\001\022\023\n\017GET" +
-      "_METHOD_BODY\020\002\022\037\n\033GET_METHOD_BODY_OF_PRO" +
-      "PERTY\020\003\022\034\n\030GET_METHOD_BODY_OF_EVENT\020\004\022\020\n" +
-      "\014GET_TYPE_DEF\020\005*d\n\021EventAccessorType\022\023\n\017" +
-      "NO_EVENT_METHOD\020\000\022\020\n\014ADD_ACCESSOR\020\001\022\023\n\017I" +
-      "NVOKE_ACCESSOR\020\002\022\023\n\017REMOVE_ACCESSOR\020\003BS\n" +
-      "\021soot.dotnet.protoB\025ProtoDotnetNativeHos" +
-      "t\252\002&Soot.Dotnet.Decompiler.Models.Protob" +
-      "ufb\006proto3"
-    };
-    descriptor = com.google.protobuf.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new com.google.protobuf.Descriptors.FileDescriptor[] {
-        });
-    internal_static_AnalyzerParamsMsg_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_AnalyzerParamsMsg_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AnalyzerParamsMsg_descriptor,
-        new java.lang.String[] { "AnalyzerMethodCall", "AssemblyFileAbsolutePath", "TypeReflectionName", "MethodName", "MethodNameSuffix", "MethodPeToken", "PropertyName", "PropertyIsSetter", "EventName", "EventAccessorType", "DebugMode", });
+    java.lang.String[] descriptorData = { "\n\026DotnetNativeHost.proto\"\337\002\n\021AnalyzerPar"
+        + "amsMsg\0221\n\024analyzer_method_call\030\001 \001(\0162\023.A"
+        + "nalyzerMethodCall\022#\n\033assembly_file_absol"
+        + "ute_path\030\002 \001(\t\022\034\n\024type_reflection_name\030\003"
+        + " \001(\t\022\023\n\013method_name\030\004 \001(\t\022\032\n\022method_name"
+        + "_suffix\030\013 \001(\t\022\027\n\017method_pe_token\030\014 \001(\005\022\025"
+        + "\n\rproperty_name\030\006 \001(\t\022\032\n\022property_is_set"
+        + "ter\030\007 \001(\010\022\022\n\nevent_name\030\010 \001(\t\022/\n\023event_a"
+        + "ccessor_type\030\t \001(\0162\022.EventAccessorType\022\022"
+        + "\n\ndebug_mode\030\n \001(\010*\232\001\n\022AnalyzerMethodCal"
+        + "l\022\013\n\007NO_CALL\020\000\022\021\n\rGET_ALL_TYPES\020\001\022\023\n\017GET"
+        + "_METHOD_BODY\020\002\022\037\n\033GET_METHOD_BODY_OF_PRO"
+        + "PERTY\020\003\022\034\n\030GET_METHOD_BODY_OF_EVENT\020\004\022\020\n"
+        + "\014GET_TYPE_DEF\020\005*d\n\021EventAccessorType\022\023\n\017"
+        + "NO_EVENT_METHOD\020\000\022\020\n\014ADD_ACCESSOR\020\001\022\023\n\017I"
+        + "NVOKE_ACCESSOR\020\002\022\023\n\017REMOVE_ACCESSOR\020\003BS\n"
+        + "\021soot.dotnet.protoB\025ProtoDotnetNativeHos" + "t\252\002&Soot.Dotnet.Decompiler.Models.Protob"
+        + "ufb\006proto3" };
+    descriptor = com.google.protobuf.Descriptors.FileDescriptor.internalBuildGeneratedFileFrom(descriptorData,
+        new com.google.protobuf.Descriptors.FileDescriptor[] {});
+    internal_static_AnalyzerParamsMsg_descriptor = getDescriptor().getMessageTypes().get(0);
+    internal_static_AnalyzerParamsMsg_fieldAccessorTable
+        = new com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(internal_static_AnalyzerParamsMsg_descriptor,
+            new java.lang.String[] { "AnalyzerMethodCall", "AssemblyFileAbsolutePath", "TypeReflectionName", "MethodName",
+                "MethodNameSuffix", "MethodPeToken", "PropertyName", "PropertyIsSetter", "EventName", "EventAccessorType",
+                "DebugMode", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
