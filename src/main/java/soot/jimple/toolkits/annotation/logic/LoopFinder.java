@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.logic;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,7 +47,6 @@ public class LoopFinder extends BodyTransformer {
     loops = null;
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     getLoops(b);
   }
@@ -64,13 +63,13 @@ public class LoopFinder extends BodyTransformer {
       return loops;
     }
 
-    MHGDominatorsFinder<Unit> a = new MHGDominatorsFinder<>(g);
-    Map<Stmt, List<Stmt>> loops = new HashMap<>();
+    MHGDominatorsFinder<Unit> a = new MHGDominatorsFinder<Unit>(g);
+    Map<Stmt, List<Stmt>> loops = new HashMap<Stmt, List<Stmt>>();
 
     for (Unit u : g.getBody().getUnits()) {
       List<Unit> succs = g.getSuccsOf(u);
       List<Unit> dominaters = a.getDominators(u);
-      List<Stmt> headers = new ArrayList<>();
+      List<Stmt> headers = new ArrayList<Stmt>();
 
       for (Unit succ : succs) {
         if (dominaters.contains(succ)) {
@@ -91,7 +90,7 @@ public class LoopFinder extends BodyTransformer {
       }
     }
 
-    Set<Loop> ret = new HashSet<>();
+    Set<Loop> ret = new HashSet<Loop>();
     for (Map.Entry<Stmt, List<Stmt>> entry : loops.entrySet()) {
       ret.add(new Loop(entry.getKey(), entry.getValue(), g));
     }
@@ -101,8 +100,8 @@ public class LoopFinder extends BodyTransformer {
   }
 
   private List<Stmt> getLoopBodyFor(Unit header, Unit node, UnitGraph g) {
-    List<Stmt> loopBody = new ArrayList<>();
-    Deque<Unit> stack = new ArrayDeque<>();
+    List<Stmt> loopBody = new ArrayList<Stmt>();
+    Deque<Unit> stack = new ArrayDeque<Unit>();
 
     loopBody.add((Stmt) header);
     stack.push(node);

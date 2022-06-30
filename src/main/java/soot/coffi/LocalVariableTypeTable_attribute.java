@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A debugging attribute, this gives the types of local variables within blocks of bytecode. - for java 1.5
- *
+ * 
  * @see attribute_info
  * @author Jennifer Lhotak modified from LocalVariableTable_attribute
  */
@@ -40,7 +40,7 @@ class LocalVariableTypeTable_attribute extends attribute_info {
 
   /**
    * Locates the first type found for a given local variable.
-   *
+   * 
    * @param constant_pool
    *          constant pool for the associated class.
    * @param idx
@@ -54,7 +54,7 @@ class LocalVariableTypeTable_attribute extends attribute_info {
 
   /**
    * Locates the type of the given local variable for the specified code offset.
-   *
+   * 
    * @param constant_pool
    *          constant pool for the associated class.
    * @param idx
@@ -93,7 +93,6 @@ class LocalVariableTypeTable_attribute extends attribute_info {
     return null;
   }
 
-  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
 

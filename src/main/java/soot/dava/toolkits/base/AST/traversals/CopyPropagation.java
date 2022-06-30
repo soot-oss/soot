@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.traversals;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -129,7 +129,6 @@ public class CopyPropagation extends DepthFirstAdapter {
   /*
    * If any copy stmt was removed or any substitution made we might be able to get better results by redoing the analysis
    */
-  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     if (ASTMODIFIED) {
       // need to rerun copy prop
@@ -144,7 +143,6 @@ public class CopyPropagation extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -274,7 +272,7 @@ public class CopyPropagation extends DepthFirstAdapter {
     }
     ASTStatementSequenceNode parentNode = (ASTStatementSequenceNode) parent;
 
-    ArrayList<AugmentedStmt> newSequence = new ArrayList<>();
+    ArrayList<AugmentedStmt> newSequence = new ArrayList<AugmentedStmt>();
 
     for (AugmentedStmt as : parentNode.getStatements()) {
       Stmt s = as.get_Stmt();

@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.ide.exampleproblems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -17,12 +10,12 @@ import java.util.Set;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,6 +28,14 @@ import heros.FlowFunctions;
 import heros.InterproceduralCFG;
 import heros.flowfunc.Identity;
 import heros.flowfunc.KillAll;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Local;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
@@ -66,11 +67,9 @@ public class IFDSPossibleTypes
     super(icfg);
   }
 
-  @Override
   public FlowFunctions<Unit, Pair<Value, Type>, SootMethod> createFlowFunctionsFactory() {
     return new FlowFunctions<Unit, Pair<Value, Type>, SootMethod>() {
 
-      @Override
       public FlowFunction<Pair<Value, Type>> getNormalFlowFunction(Unit src, Unit dest) {
         if (src instanceof DefinitionStmt) {
           DefinitionStmt defnStmt = (DefinitionStmt) src;
@@ -86,11 +85,10 @@ public class IFDSPossibleTypes
 
           if (right instanceof Constant || right instanceof NewExpr) {
             return new FlowFunction<Pair<Value, Type>>() {
-              @Override
               public Set<Pair<Value, Type>> computeTargets(Pair<Value, Type> source) {
                 if (source == zeroValue()) {
-                  Set<Pair<Value, Type>> res = new LinkedHashSet<>();
-                  res.add(new Pair<>(left, right.getType()));
+                  Set<Pair<Value, Type>> res = new LinkedHashSet<Pair<Value, Type>>();
+                  res.add(new Pair<Value, Type>(left, right.getType()));
                   res.add(zeroValue());
                   return res;
                 } else if (source.getO1() instanceof Local && source.getO1().equivTo(left)) {
@@ -103,7 +101,6 @@ public class IFDSPossibleTypes
             };
           } else if (right instanceof Ref || right instanceof Local) {
             return new FlowFunction<Pair<Value, Type>>() {
-              @Override
               public Set<Pair<Value, Type>> computeTargets(final Pair<Value, Type> source) {
                 Value value = source.getO1();
                 if (source.getO1() instanceof Local && source.getO1().equivTo(left)) {
@@ -112,7 +109,7 @@ public class IFDSPossibleTypes
                 } else if (maybeSameLocation(value, right)) {
                   return new LinkedHashSet<Pair<Value, Type>>() {
                     {
-                      add(new Pair<>(left, source.getO2()));
+                      add(new Pair<Value, Type>(left, source.getO2()));
                       add(source);
                     }
                   };
@@ -157,17 +154,15 @@ public class IFDSPossibleTypes
         return Identity.v();
       }
 
-      @Override
       public FlowFunction<Pair<Value, Type>> getCallFlowFunction(final Unit src, final SootMethod dest) {
         Stmt stmt = (Stmt) src;
         InvokeExpr ie = stmt.getInvokeExpr();
         final List<Value> callArgs = ie.getArgs();
-        final List<Local> paramLocals = new ArrayList<>();
+        final List<Local> paramLocals = new ArrayList<Local>();
         for (int i = 0; i < dest.getParameterCount(); i++) {
           paramLocals.add(dest.getActiveBody().getParameterLocal(i));
         }
         return new FlowFunction<Pair<Value, Type>>() {
-          @Override
           public Set<Pair<Value, Type>> computeTargets(Pair<Value, Type> source) {
             if (!dest.getName().equals("<clinit>") && !dest.getSubSignature().equals("void run()")) {
               Value value = source.getO1();
@@ -181,7 +176,6 @@ public class IFDSPossibleTypes
         };
       }
 
-      @Override
       public FlowFunction<Pair<Value, Type>> getReturnFlowFunction(Unit callSite, SootMethod callee, Unit exitStmt,
           Unit retSite) {
         if (exitStmt instanceof ReturnStmt) {
@@ -196,7 +190,6 @@ public class IFDSPossibleTypes
                 final Local retLocal = (Local) op;
                 return new FlowFunction<Pair<Value, Type>>() {
 
-                  @Override
                   public Set<Pair<Value, Type>> computeTargets(Pair<Value, Type> source) {
                     if (source.getO1() == retLocal) {
                       return Collections.singleton(new Pair<Value, Type>(tgtLocal, source.getO2()));
@@ -212,21 +205,18 @@ public class IFDSPossibleTypes
         return KillAll.v();
       }
 
-      @Override
       public FlowFunction<Pair<Value, Type>> getCallToReturnFlowFunction(Unit call, Unit returnSite) {
         return Identity.v();
       }
     };
   }
 
-  @Override
   public Map<Unit, Set<Pair<Value, Type>>> initialSeeds() {
     return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
         zeroValue());
   }
 
-  @Override
   public Pair<Value, Type> createZeroValue() {
-    return new Pair<>(Jimple.v().newLocal("<dummy>", UnknownType.v()), UnknownType.v());
+    return new Pair<Value, Type>(Jimple.v().newLocal("<dummy>", UnknownType.v()), UnknownType.v());
   }
 }

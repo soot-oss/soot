@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.dataRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,7 +24,7 @@ package soot.jimple.spark.geom.dataRep;
 
 /**
  * The basic representation for an interval on the integer domain. A simple interval is a half-open structure [L, R).
- *
+ * 
  * @author xiao
  *
  */
@@ -76,7 +76,7 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   }
 
   public boolean contains(SimpleInterval o) {
-    SimpleInterval osi = o;
+    SimpleInterval osi = (SimpleInterval) o;
     if (L <= osi.L && R >= osi.R) {
       return true;
     }
@@ -84,7 +84,7 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   }
 
   public boolean merge(SimpleInterval o) {
-    SimpleInterval osi = o;
+    SimpleInterval osi = (SimpleInterval) o;
 
     if (osi.L < L) {
       if (L <= osi.R) {
@@ -107,9 +107,12 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   }
 
   public boolean intersect(SimpleInterval o) {
-    SimpleInterval osi = o;
+    SimpleInterval osi = (SimpleInterval) o;
 
-    if ((L <= osi.L && osi.L < R) || (osi.L <= L && L < osi.R)) {
+    if (L <= osi.L && osi.L < R) {
+      return true;
+    }
+    if (osi.L <= L && L < osi.R) {
       return true;
     }
     return false;

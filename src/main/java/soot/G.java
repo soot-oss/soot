@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -95,28 +95,28 @@ public class G extends Singletons {
   public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e1 = new Utf8_Enumeration();
   public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e2 = new Utf8_Enumeration();
   public int SETNodeLabel_uniqueId = 0;
-  public HashMap<SETNode, SETBasicBlock> SETBasicBlock_binding = new HashMap<>();
+  public HashMap<SETNode, SETBasicBlock> SETBasicBlock_binding = new HashMap<SETNode, SETBasicBlock>();
   public boolean ASTAnalysis_modified;
   public NativeHelper NativeHelper_helper = null;
   public P2SetFactory newSetFactory;
   public P2SetFactory oldSetFactory;
-  public Map<Pair<SootMethod, Integer>, Parm> Parm_pairToElement = new HashMap<>();
+  public Map<Pair<SootMethod, Integer>, Parm> Parm_pairToElement = new HashMap<Pair<SootMethod, Integer>, Parm>();
   public int SparkNativeHelper_tempVar = 0;
   public int PaddleNativeHelper_tempVar = 0;
   public boolean PointsToSetInternal_warnedAlready = false;
-  public HashMap<SootMethod, MethodPAG> MethodPAG_methodToPag = new HashMap<>();
+  public HashMap<SootMethod, MethodPAG> MethodPAG_methodToPag = new HashMap<SootMethod, MethodPAG>();
   public Set MethodRWSet_allGlobals = new HashSet();
   public Set MethodRWSet_allFields = new HashSet();
   public int GeneralConstObject_counter = 0;
   public UnionFactory Union_factory = null;
   public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool
-      = new HashMap<>();
-  public List<Timer> Timer_outstandingTimers = new ArrayList<>();
+      = new HashMap<Object, Array2ndDimensionSymbol>();
+  public List<Timer> Timer_outstandingTimers = new ArrayList<Timer>();
   public boolean Timer_isGarbageCollecting;
   public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
   public int Timer_count;
-  public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<>();
-  public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<>();
+  public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<Scene, ClassHierarchy>();
+  public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<MethodContext, MethodContext>();
 
   public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis = null;
 
@@ -149,11 +149,11 @@ public class G extends Singletons {
    * class's name exists in the list prints out an implementation of DavSuperHandler
    */
   public boolean SootMethodAddedByDava;
-  public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<>();
-  public ArrayList<SootMethod> SootMethodsAdded = new ArrayList<>();
+  public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<SootClass>();
+  public ArrayList<SootMethod> SootMethodsAdded = new ArrayList<SootMethod>();
 
   // ASTMetrics Data
-  public ArrayList<ClassData> ASTMetricsData = new ArrayList<>();
+  public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();
 
   public void resetSpark() {
     // We reset SPARK the hard way.

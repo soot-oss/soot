@@ -10,12 +10,12 @@ package soot.jimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -68,7 +68,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
 
   @Override
   public Object clone() {
-    List<IntConstant> clonedLookupValues = new ArrayList<>(lookupValues.size());
+    List<IntConstant> clonedLookupValues = new ArrayList<IntConstant>(lookupValues.size());
     for (IntConstant c : lookupValues) {
       clonedLookupValues.add(IntConstant.v(c.value));
     }
@@ -126,7 +126,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
 
   @Override
   public void setLookupValues(List<IntConstant> lookupValues) {
-    this.lookupValues = new ArrayList<>(lookupValues);
+    this.lookupValues = new ArrayList<IntConstant>(lookupValues);
   }
 
   @Override
@@ -155,7 +155,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
 
     final Baf baf = Baf.v();
     final List<Unit> targets = getTargets();
-    List<PlaceholderInst> targetPlaceholders = new ArrayList<>(targets.size());
+    List<PlaceholderInst> targetPlaceholders = new ArrayList<PlaceholderInst>(targets.size());
     for (Unit target : targets) {
       targetPlaceholders.add(baf.newPlaceholderInst(target));
     }

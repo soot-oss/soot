@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -111,7 +111,7 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
     if (body != mBody) {
       throw new RuntimeException("BlockGraph.computeLeaders() called with a UnitGraph that doesn't match its mBody.");
     }
-    Set<Unit> leaders = new HashSet<>();
+    Set<Unit> leaders = new HashSet<Unit>();
 
     // Trap handlers start new basic blocks, no matter how many predecessors they have.
     for (Trap trap : body.getTraps()) {
@@ -157,12 +157,12 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
    * @return a {@link Map} from {@link Unit}s which begin or end a block to the block which contains them.
    */
   protected Map<Unit, Block> buildBlocks(Set<Unit> leaders, UnitGraph unitGraph) {
-    final ArrayList<Block> blockList = new ArrayList<>(leaders.size());
-    final ArrayList<Block> headList = new ArrayList<>();
-    final ArrayList<Block> tailList = new ArrayList<>();
+    final ArrayList<Block> blockList = new ArrayList<Block>(leaders.size());
+    final ArrayList<Block> headList = new ArrayList<Block>();
+    final ArrayList<Block> tailList = new ArrayList<Block>();
 
     // Maps head and tail units to their blocks, for building predecessor and successor lists.
-    final Map<Unit, Block> unitToBlock = new HashMap<>();
+    final Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>();
 
     {
       Unit blockHead = null;
@@ -229,7 +229,7 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
          * thrown by the first Unit in the method. }
          */
       } else {
-        List<Block> predBlocks = new ArrayList<>(predUnits.size());
+        List<Block> predBlocks = new ArrayList<Block>(predUnits.size());
         for (Unit predUnit : predUnits) {
           assert (predUnit != null);
           Block predBlock = unitToBlock.get(predUnit);
@@ -258,7 +258,7 @@ public abstract class BlockGraph implements DirectedBodyGraph<Block> {
           }
         }
       } else {
-        List<Block> succBlocks = new ArrayList<>(succUnits.size());
+        List<Block> succBlocks = new ArrayList<Block>(succUnits.size());
         for (Unit succUnit : succUnits) {
           assert (succUnit != null);
           Block succBlock = unitToBlock.get(succUnit);

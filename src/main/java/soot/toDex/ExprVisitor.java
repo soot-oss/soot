@@ -10,12 +10,12 @@ package soot.toDex;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -206,10 +206,14 @@ public class ExprVisitor implements ExprSwitch {
     while (currentClass != null) {
       currentClass = currentClass.getSuperclassUnsafe();
       if (currentClass != null) {
+        if (currentClass == classWithInvokation) {
+          return true;
+        }
+
         // If we're dealing with phantom classes, we might not actually
         // arrive at java.lang.Object. In this case, we should not fail
         // the check
-        if ((currentClass == classWithInvokation) || (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object"))) {
+        if (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object")) {
           return true;
         }
       }
@@ -233,7 +237,7 @@ public class ExprVisitor implements ExprSwitch {
 
   private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
     constantV.setOrigStmt(origStmt);
-    List<Register> argumentRegs = new ArrayList<>();
+    List<Register> argumentRegs = new ArrayList<Register>();
     for (Value arg : ie.getArgs()) {
       Register currentReg = regAlloc.asImmediate(arg, constantV);
       argumentRegs.add(currentReg);
@@ -726,7 +730,12 @@ public class ExprVisitor implements ExprSwitch {
   }
 
   private boolean isMoveCompatible(PrimitiveType sourceType, PrimitiveType castType) {
-    if ((sourceType == castType) || (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT))) {
+    if (sourceType == castType) {
+      // at this point, the types are "bigger" or equal to int, so no
+      // "should cast from int" is needed
+      return true;
+    }
+    if (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT)) {
       // there is no "upgrade" cast from "smaller than int" to int, so
       // move it
       return true;
@@ -735,7 +744,11 @@ public class ExprVisitor implements ExprSwitch {
   }
 
   private boolean shouldCastFromInt(PrimitiveType sourceType, PrimitiveType castType) {
-    if (isEqualOrBigger(sourceType, PrimitiveType.INT) || (castType == PrimitiveType.INT)) {
+    if (isEqualOrBigger(sourceType, PrimitiveType.INT)) {
+      // source is already "big" enough
+      return false;
+    }
+    if (castType == PrimitiveType.INT) {
       // would lead to an int-to-int cast, so leave it as it is
       return false;
     }
@@ -795,7 +808,7 @@ public class ExprVisitor implements ExprSwitch {
     ArrayType arrayType = ArrayType.v(nmae.getBaseType().baseType, dimensions);
     TypeReference arrayTypeItem = DexPrinter.toTypeReference(arrayType);
     // get the dimension size registers
-    List<Register> dimensionSizeRegs = new ArrayList<>();
+    List<Register> dimensionSizeRegs = new ArrayList<Register>();
     for (int i = 0; i < dimensions; i++) {
       Value currentDimensionSize = nmae.getSize(i);
       Register currentReg = regAlloc.asImmediate(currentDimensionSize, constantV);

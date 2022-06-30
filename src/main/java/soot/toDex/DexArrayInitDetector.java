@@ -10,12 +10,12 @@ package soot.toDex;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -53,8 +53,8 @@ import soot.jimple.NewArrayExpr;
  */
 public class DexArrayInitDetector {
 
-  private Map<Unit, List<Value>> arrayInitToFillValues = new HashMap<>();
-  private Set<Unit> ignoreUnits = new HashSet<>();
+  private Map<Unit, List<Value>> arrayInitToFillValues = new HashMap<Unit, List<Value>>();
+  private Set<Unit> ignoreUnits = new HashSet<Unit>();
 
   private int minimumArrayLength = -1;
 
@@ -84,9 +84,9 @@ public class DexArrayInitDetector {
         if (newArrayExp.getSize() instanceof IntConstant) {
           IntConstant intConst = (IntConstant) newArrayExp.getSize();
           if (minimumArrayLength == -1 || intConst.value >= minimumArrayLength) {
-            arrayValues = new ArrayList<>();
+            arrayValues = new ArrayList<Value>();
             arraySize = intConst.value;
-            curIgnoreUnits = new HashSet<>();
+            curIgnoreUnits = new HashSet<Unit>();
             concernedArray = assignStmt.getLeftOp();
           }
         } else {
@@ -129,11 +129,11 @@ public class DexArrayInitDetector {
 
   /**
    * Sets the minimum array length to consider
-   *
+   * 
    * Only arrays with more than this number of elements will be identified, because we only need to handle those explicitly.
    * For small arrays, we can have individual assignments for each element in the code, but for larger methods, this would
    * exceed the allowed method size according to the JVM / Dalvik Spec.
-   *
+   * 
    * @param l
    *          the minimum length of arrays
    */

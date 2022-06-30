@@ -10,12 +10,12 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,7 +46,6 @@ public class ParameterRef implements IdentityRef {
     this.paramType = paramType;
   }
 
-  @Override
   public boolean equivTo(Object o) {
     if (o instanceof ParameterRef) {
       return n == ((ParameterRef) o).n && paramType.equals(((ParameterRef) o).paramType);
@@ -54,24 +53,20 @@ public class ParameterRef implements IdentityRef {
     return false;
   }
 
-  @Override
   public int equivHashCode() {
     return n * 101 + paramType.hashCode() * 17;
   }
 
   /** Create a new ParameterRef object with the same paramType and number. */
-  @Override
   public Object clone() {
     return new ParameterRef(paramType, n);
   }
 
   /** Converts the given ParameterRef into a String i.e. <code>@parameter0: .int</code>. */
-  @Override
   public String toString() {
     return "@parameter" + n + ": " + paramType;
   }
 
-  @Override
   public void toString(UnitPrinter up) {
     up.identityRef(this);
   }
@@ -92,13 +87,11 @@ public class ParameterRef implements IdentityRef {
   }
 
   /** Returns the type of this ParameterRef. */
-  @Override
   public Type getType() {
     return paramType;
   }
 
   /** Used with RefSwitch. */
-  @Override
   public void apply(Switch sw) {
     ((RefSwitch) sw).caseParameterRef(this);
   }

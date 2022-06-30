@@ -10,12 +10,12 @@ package soot.jimple.spark.solver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,7 +40,7 @@ import soot.util.LargeNumberedMap;
 
 /**
  * Propagates points-to sets using an on-line cycle detection algorithm based on Heintze and Tardieu, PLDI 2000.
- *
+ * 
  * @author Ondrej Lhotak
  */
 
@@ -49,19 +49,18 @@ public class PropCycle extends Propagator {
 
   public PropCycle(PAG pag) {
     this.pag = pag;
-    varNodeToIteration = new LargeNumberedMap<>(pag.getVarNodeNumberer());
+    varNodeToIteration = new LargeNumberedMap<VarNode, Integer>(pag.getVarNodeNumberer());
   }
 
   /** Actually does the propagation. */
-  @Override
   public void propagate() {
     ofcg = pag.getOnFlyCallGraph();
     boolean verbose = pag.getOpts().verbose();
-    Collection<VarNode> bases = new HashSet<>();
+    Collection<VarNode> bases = new HashSet<VarNode>();
     for (FieldRefNode frn : pag.getFieldRefNodeNumberer()) {
       bases.add(frn.getBase());
     }
-    bases = new ArrayList<>(bases);
+    bases = new ArrayList<VarNode>(bases);
     int iteration = 0;
     boolean changed;
     boolean finalIter = false;
@@ -87,7 +86,6 @@ public class PropCycle extends Propagator {
         for (Node element0 : targets) {
           final FieldRefNode target = (FieldRefNode) element0;
           changed = target.getBase().makeP2Set().forall(new P2SetVisitor() {
-            @Override
             public final void visit(Node n) {
               AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, target.getField());
               nDotF.makeP2Set().addAll(src.getP2Set(), null);
@@ -100,7 +98,7 @@ public class PropCycle extends Propagator {
         if (verbose) {
           logger.debug("Doing full graph");
         }
-        bases = new ArrayList<>(pag.getVarNodeNumberer().size());
+        bases = new ArrayList<VarNode>(pag.getVarNodeNumberer().size());
         for (VarNode v : pag.getVarNodeNumberer()) {
           bases.add(v);
         }
@@ -150,7 +148,6 @@ public class PropCycle extends Propagator {
       for (Node element : srcs) {
         final FieldRefNode src = (FieldRefNode) element;
         ret = src.getBase().getP2Set().forall(new P2SetVisitor() {
-          @Override
           public final void visit(Node n) {
             AllocNode an = (AllocNode) n;
             AllocDotField adf = pag.makeAllocDotField(an, src.getField());

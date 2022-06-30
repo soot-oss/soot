@@ -10,12 +10,12 @@ package soot.toDex;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -58,7 +58,7 @@ public class RegisterAllocator {
   private int paramRegCount;
 
   public RegisterAllocator() {
-    localToLastRegNum = new HashMap<>();
+    localToLastRegNum = new HashMap<Local, Integer>();
   }
 
   //
@@ -97,13 +97,13 @@ public class RegisterAllocator {
   // - array reference in assignment (ex: a[1] = 2)
   // - multi-dimension array initialization (ex: a = new int[1][2][3])
   //
-  private List<Register> classConstantReg = new ArrayList<>();
-  private List<Register> nullConstantReg = new ArrayList<>();
-  private List<Register> floatConstantReg = new ArrayList<>();
-  private List<Register> intConstantReg = new ArrayList<>();
-  private List<Register> longConstantReg = new ArrayList<>();
-  private List<Register> doubleConstantReg = new ArrayList<>();
-  private List<Register> stringConstantReg = new ArrayList<>();
+  private List<Register> classConstantReg = new ArrayList<Register>();
+  private List<Register> nullConstantReg = new ArrayList<Register>();
+  private List<Register> floatConstantReg = new ArrayList<Register>();
+  private List<Register> intConstantReg = new ArrayList<Register>();
+  private List<Register> longConstantReg = new ArrayList<Register>();
+  private List<Register> doubleConstantReg = new ArrayList<Register>();
+  private List<Register> stringConstantReg = new ArrayList<Register>();
   private AtomicInteger classI = new AtomicInteger(0);
   private AtomicInteger nullI = new AtomicInteger(0);
   private AtomicInteger floatI = new AtomicInteger(0);
@@ -112,7 +112,7 @@ public class RegisterAllocator {
   private AtomicInteger doubleI = new AtomicInteger(0);
   private AtomicInteger stringI = new AtomicInteger(0);
 
-  private Set<Register> lockedRegisters = new HashSet<>();
+  private Set<Register> lockedRegisters = new HashSet<Register>();
 
   private int lastReg;
 

@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,33 +39,29 @@ import soot.jbco.util.Rand;
 
 /**
  * @author Michael Batchelder
- *
+ * 
  *         Created on 31-May-2006
  */
 public class UpdateConstantsToFields extends BodyTransformer implements IJbcoTransform {
 
   public static String dependancies[] = new String[] { "wjtp.jbco_cc", "bb.jbco_ecvf", "bb.jbco_ful", "bb.lp" };
 
-  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_ecvf";
 
-  @Override
   public String getName() {
     return name;
   }
 
   static int updated = 0;
 
-  @Override
   public void outputSummary() {
     out.println("Updated constant references: " + updated);
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if (b.getMethod().getName().indexOf("<clinit>") >= 0) {
       return;
@@ -79,7 +75,7 @@ public class UpdateConstantsToFields extends BodyTransformer implements IJbcoTra
     PatchingChain<Unit> units = b.getUnits();
     Iterator<Unit> iter = units.snapshotIterator();
     while (iter.hasNext()) {
-      Unit u = iter.next();
+      Unit u = (Unit) iter.next();
       if (u instanceof PushInst) {
         SootField f = CollectConstants.constantsToFields.get(((PushInst) u).getConstant());
         if (f != null && Rand.getInt(10) <= weight) {

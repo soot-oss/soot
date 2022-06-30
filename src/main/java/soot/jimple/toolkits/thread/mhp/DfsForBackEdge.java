@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,9 +47,9 @@ import soot.util.Chain;
 
 public class DfsForBackEdge {
 
-  private final Map<Object, Object> backEdges = new HashMap<>();
-  private final Set<Object> gray = new HashSet<>();
-  private final Set<Object> black = new HashSet<>();
+  private final Map<Object, Object> backEdges = new HashMap<Object, Object>();
+  private final Set<Object> gray = new HashSet<Object>();
+  private final Set<Object> black = new HashSet<Object>();
   private final DominatorsFinder domFinder;
 
   DfsForBackEdge(Chain chain, DirectedGraph peg) {
@@ -119,10 +119,10 @@ public class DfsForBackEdge {
     for (Iterator iter = maps.iterator(); iter.hasNext();) {
       Map.Entry entry = (Map.Entry) iter.next();
       JPegStmt key = (JPegStmt) entry.getKey();
-      Tag tag = key.getTags().get(0);
+      Tag tag = (Tag) key.getTags().get(0);
       System.out.println("---key=  " + tag + " " + key);
       JPegStmt value = (JPegStmt) entry.getValue();
-      Tag tag1 = value.getTags().get(0);
+      Tag tag1 = (Tag) value.getTags().get(0);
       System.out.println("---value=  " + tag1 + " " + value);
     }
     System.out.println("===test backEdges==end==");

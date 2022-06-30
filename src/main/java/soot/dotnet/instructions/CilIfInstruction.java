@@ -10,12 +10,12 @@ package soot.dotnet.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -49,9 +49,9 @@ public class CilIfInstruction extends AbstractCilnstruction {
 
     // if condition only accepts ConditionExpr and not JimpleLocals
     Value eqExpr;
-    if (condition instanceof ConditionExpr) {
+    if (condition instanceof ConditionExpr)
       eqExpr = condition;
-    } else {
+    else {
       // Store expression to local variable and check if true in second instruction
       Local tmpLocalCond = dotnetBody.variableManager.localGenerator.generateLocal(condition.getType());
       jb.getUnits().add(Jimple.v().newAssignStmt(tmpLocalCond, condition));

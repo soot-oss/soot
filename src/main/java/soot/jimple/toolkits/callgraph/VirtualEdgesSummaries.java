@@ -1,5 +1,29 @@
 package soot.jimple.toolkits.callgraph;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import com.google.common.collect.Iterables;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,30 +52,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 2003 Ondrej Lhotak
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import com.google.common.collect.Iterables;
-
 import soot.Kind;
 import soot.MethodSubSignature;
 import soot.ModuleUtil;
@@ -62,7 +62,7 @@ import soot.util.StringNumberer;
 /**
  * Utility class used by {@link OnFlyCallGraphBuilder} for finding functions at which to place virtual callgraph edges.
  * Function signatures are configurable in {@link #SUMMARIESFILE}.
- *
+ * 
  * @author Julius Naeumann
  */
 public class VirtualEdgesSummaries {
@@ -95,7 +95,7 @@ public class VirtualEdgesSummaries {
 
   /**
    * Creates a new instance of the {@link VirtualEdgesSummaries} class and loads the summaries from the given input file
-   *
+   * 
    * @param summariesFile
    *          The file from which to load the virtual edge summaries
    */
@@ -109,7 +109,7 @@ public class VirtualEdgesSummaries {
 
   /**
    * Loads the edge summaries from the given stream
-   *
+   * 
    * @param in
    *          The {@link InputStream} from which to load the summaries
    * @throws SAXException
@@ -147,7 +147,7 @@ public class VirtualEdgesSummaries {
             break;
         }
         edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
-        edg.targets = new HashSet<>();
+        edg.targets = new HashSet<VirtualEdgeTarget>();
         Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
         edg.targets.addAll(parseEdgeTargets(targetsElement));
         if (edg.source instanceof InstanceinvokeSource) {
@@ -386,7 +386,10 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if ((obj == null) || (getClass() != obj.getClass())) {
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
         return false;
       }
       StaticinvokeSource other = (StaticinvokeSource) obj;
@@ -410,7 +413,7 @@ public class VirtualEdgesSummaries {
     /**
      * Creates a new instance of the {@link InstanceinvokeSource} class based on a method that is being invoked on the
      * current object instance
-     *
+     * 
      * @param subSignature
      *          The subsignature of the method that is invoked
      */
@@ -420,7 +423,7 @@ public class VirtualEdgesSummaries {
 
     /**
      * Convenience constructor that extracts the subsignature of the callee from a call site statement
-     *
+     * 
      * @param invokeStmt
      *          The statement at the call site
      */
@@ -450,7 +453,10 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if ((obj == null) || (getClass() != obj.getClass())) {
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
         return false;
       }
       InstanceinvokeSource other = (InstanceinvokeSource) obj;
@@ -515,7 +521,10 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if ((obj == null) || (getClass() != obj.getClass())) {
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
         return false;
       }
       VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
@@ -542,7 +551,7 @@ public class VirtualEdgesSummaries {
     /**
      * Creates a new direct method invocation on an object passed to the original source as an argument. For example,
      * <code>foo.do(x)></code> could invoke <code>x.bar()</code> as a callback.
-     *
+     * 
      * @param targetMethod
      *          The target method that is invoked on the argument object
      * @param argIndex
@@ -555,7 +564,7 @@ public class VirtualEdgesSummaries {
     /**
      * Creates a new direct method invocation on the base object of the original source. For example, <code>foo.do()></code>
      * could invoke <code>foo.bar()</code> as a callback.
-     *
+     * 
      * @param targetMethod
      *          The target method that is invoked on the base object
      */
@@ -578,7 +587,10 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (!super.equals(obj) || (getClass() != obj.getClass())) {
+      if (!super.equals(obj)) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
         return false;
       }
       return true;
@@ -596,7 +608,7 @@ public class VirtualEdgesSummaries {
      * Creates a new direct method invocation. The signature of this indirect target references a method that was called
      * earlier, and which received the object on which the callback is invoked. This constructor assumes that the earlier
      * method has created an object which is passed the current method as an argument.
-     *
+     * 
      * @param targetMethod
      *          The method with which the original callback was registered
      * @param argIndex
@@ -609,7 +621,7 @@ public class VirtualEdgesSummaries {
 
     /**
      * Creates a new indirect target as an indirection from a method that was previously considered a source
-     *
+     * 
      * @param source
      *          The source from which to create the indirect target
      */
@@ -620,7 +632,7 @@ public class VirtualEdgesSummaries {
     /**
      * Creates a new direct method invocation. The signature of this indirect target references a method that was called
      * earlier, and which received the object on which the callback is invoked.
-     *
+     * 
      * @param targetMethod
      *          The method with which the original callback was registered
      */
@@ -668,7 +680,10 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (!super.equals(obj) || (getClass() != obj.getClass())) {
+      if (!super.equals(obj)) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
         return false;
       }
       IndirectTarget other = (IndirectTarget) obj;
@@ -719,7 +734,7 @@ public class VirtualEdgesSummaries {
 
     /**
      * Adds the given targets to this edge summary
-     *
+     * 
      * @param newTargets
      *          The targets to add
      */
@@ -751,7 +766,10 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if ((obj == null) || (getClass() != obj.getClass())) {
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
         return false;
       }
       VirtualEdge other = (VirtualEdge) obj;

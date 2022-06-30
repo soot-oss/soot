@@ -10,12 +10,12 @@ package soot.jbco;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -102,7 +102,7 @@ public class Main {
 
   public static void main(String[] argv) {
     int rcount = 0;
-    Vector<String> transformsToAdd = new Vector<>();
+    Vector<String> transformsToAdd = new Vector<String>();
     boolean remove[] = new boolean[argv.length];
     for (int i = 0; i < argv.length; i++) {
       String arg = argv[i];
@@ -218,7 +218,7 @@ public class Main {
         transformsToAdd.add(trans);
         Map<Object, Integer> htmp = transformsToMethodsToWeights.get(trans);
         if (htmp == null) {
-          htmp = new HashMap<>();
+          htmp = new HashMap<Object, Integer>();
           transformsToMethodsToWeights.put(trans, htmp);
         }
         htmp.put(o, new Integer(tweight));
@@ -231,7 +231,7 @@ public class Main {
 
     if (rcount > 0) {
       int index = 0;
-      String tmp[] = argv.clone();
+      String tmp[] = (String[]) argv.clone();
       argv = new String[argv.length - rcount];
       for (int i = 0; i < tmp.length; i++) {
         if (!remove[i]) {
@@ -267,8 +267,8 @@ public class Main {
       }
 
       String jl = null;
-      for (String element : transformsToAdd) {
-        if (element.startsWith("bb")) {
+      for (int i = 0; i < transformsToAdd.size(); i++) {
+        if (transformsToAdd.get(i).startsWith("bb")) {
           jl = "jtp.jbco_jl";
           jtp.add(new Transform(jl, newTransform((Transformer) getTransform(jl))));
           bb.insertBefore(new Transform("bb.jbco_j2bl", newTransform((Transformer) getTransform("bb.jbco_j2bl"))), "bb.lso");
@@ -279,7 +279,8 @@ public class Main {
         }
       }
 
-      for (String tname : transformsToAdd) {
+      for (int i = 0; i < transformsToAdd.size(); i++) {
+        String tname = transformsToAdd.get(i);
         IJbcoTransform t = getTransform(tname);
 
         Pack p = tname.startsWith("wjtp") ? wjtp : tname.startsWith("jtp") ? jtp : bb;
@@ -292,7 +293,7 @@ public class Main {
       }
 
       for (Iterator<Transform> phases = wjtp.iterator(); phases.hasNext();) {
-        if (phases.next().getPhaseName().indexOf("jbco") > 0) {
+        if (((Transform) phases.next()).getPhaseName().indexOf("jbco") > 0) {
           argv = checkWhole(argv, true);
           break;
         }
@@ -304,7 +305,7 @@ public class Main {
           logger.debug(i == 0 ? "Whole Program Jimple Transformations:"
               : i == 1 ? "Jimple Method Body Transformations:" : "Baf Method Body Transformations:");
           while (phases.hasNext()) {
-            Transform o = phases.next();
+            Transform o = (Transform) phases.next();
             Transformer t = o.getTransformer();
             if (t instanceof IJbcoTransform) {
               logger.debug("\t" + ((IJbcoTransform) t).getName() + "  JBCO");
@@ -475,12 +476,12 @@ public class Main {
         Object o = keys.next();
         if (o instanceof java.util.regex.Pattern) {
           if (((java.util.regex.Pattern) o).matcher(method).matches()) {
-            intg = htmp.get(o);
+            intg = (Integer) htmp.get(o);
           } else {
             intg = 0;
           }
         } else if (o instanceof String && method.equals(o)) {
-          intg = htmp.get(o);
+          intg = (Integer) htmp.get(o);
         }
 
         if (intg != null && intg.intValue() < result) {

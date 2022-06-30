@@ -10,12 +10,12 @@ package soot.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,10 +26,10 @@ import java.util.ArrayList;
 
 /**
  * A fast, but simple stack implementation. Sadly, java's own stack implementation synchronizes and as such is a bit slower.
- *
+ * 
  * Note that this implementation does not perform error checking, however, the original implementation would also have thrown
  * an exception in case this implementation throws an exception. It's just that the exception text differs.
- *
+ * 
  * @param <T>
  *          The elements of the stack
  * @author Marc Miltenberger
@@ -46,7 +46,7 @@ public class FastStack<T> extends ArrayList<T> {
 
   /**
    * Creates a new stack with the given initial size
-   *
+   * 
    * @param initialSize
    *          the initial size
    */
@@ -56,7 +56,7 @@ public class FastStack<T> extends ArrayList<T> {
 
   /**
    * Returns the last item on the stack or throws an exception of there is none.
-   *
+   * 
    * @return the last item on the stack
    */
   public T peek() {
@@ -65,7 +65,7 @@ public class FastStack<T> extends ArrayList<T> {
 
   /**
    * Pushes an item onto the stack
-   *
+   * 
    * @param t
    *          the item
    */
@@ -75,7 +75,7 @@ public class FastStack<T> extends ArrayList<T> {
 
   /**
    * Returns and removes the last item from the stack. Throws an exception of there is none.
-   *
+   * 
    * @return the last item on the stack, which got pop-ed.
    */
   public T pop() {
@@ -84,7 +84,7 @@ public class FastStack<T> extends ArrayList<T> {
 
   /**
    * Returns true if and only if the stack is empty
-   *
+   * 
    * @return true if and only if the stack is empty
    */
   public boolean empty() {

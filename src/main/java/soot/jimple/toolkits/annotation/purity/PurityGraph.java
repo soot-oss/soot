@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.purity;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,7 +47,7 @@ import soot.util.dot.DotGraphNode;
 /**
  * Purity graphs are mutable structures that are updated in-place. You can safely hash graphs. Equality comparison means
  * isomorphism (equal nodes, equal edges).
- *
+ * 
  * Modifications with respect to the article:
  *
  * - "unanalizable call" are treated by first constructing a conservative callee graph where all parameters escape globally
@@ -80,8 +80,8 @@ public class PurityGraph {
   public static final boolean doCheck = false;
 
   // Caching: this seems to actually improve both speed and memory consumption!
-  private static final Map<PurityNode, PurityNode> nodeCache = new HashMap<>();
-  private static final Map<PurityEdge, PurityEdge> edgeCache = new HashMap<>();
+  private static final Map<PurityNode, PurityNode> nodeCache = new HashMap<PurityNode, PurityNode>();
+  private static final Map<PurityEdge, PurityEdge> edgeCache = new HashMap<PurityEdge, PurityEdge>();
 
   // A parameter (or this) can be: - read and write - read only - safe (read only & no externally visible alias is created)
   static final int PARAM_RW = 0;
@@ -110,15 +110,15 @@ public class PurityGraph {
    */
   PurityGraph() {
     // nodes & paramNodes are added lazily
-    this.nodes = new HashSet<>();
-    this.paramNodes = new HashSet<>();
-    this.edges = new HashMultiMap<>();
-    this.locals = new HashMultiMap<>();
-    this.ret = new HashSet<>();
-    this.globEscape = new HashSet<>();
-    this.backEdges = new HashMultiMap<>();
-    this.backLocals = new HashMultiMap<>();
-    this.mutated = new HashMultiMap<>();
+    this.nodes = new HashSet<PurityNode>();
+    this.paramNodes = new HashSet<PurityNode>();
+    this.edges = new HashMultiMap<PurityNode, PurityEdge>();
+    this.locals = new HashMultiMap<Local, PurityNode>();
+    this.ret = new HashSet<PurityNode>();
+    this.globEscape = new HashSet<PurityNode>();
+    this.backEdges = new HashMultiMap<PurityNode, PurityEdge>();
+    this.backLocals = new HashMultiMap<PurityNode, Local>();
+    this.mutated = new HashMultiMap<PurityNode, String>();
     if (doCheck) {
       sanityCheck();
     }
@@ -128,15 +128,15 @@ public class PurityGraph {
    * Copy constructor.
    */
   PurityGraph(PurityGraph x) {
-    this.nodes = new HashSet<>(x.nodes);
-    this.paramNodes = new HashSet<>(x.paramNodes);
-    this.edges = new HashMultiMap<>(x.edges);
-    this.locals = new HashMultiMap<>(x.locals);
-    this.ret = new HashSet<>(x.ret);
-    this.globEscape = new HashSet<>(x.globEscape);
-    this.backEdges = new HashMultiMap<>(x.backEdges);
-    this.backLocals = new HashMultiMap<>(x.backLocals);
-    this.mutated = new HashMultiMap<>(x.mutated);
+    this.nodes = new HashSet<PurityNode>(x.nodes);
+    this.paramNodes = new HashSet<PurityNode>(x.paramNodes);
+    this.edges = new HashMultiMap<PurityNode, PurityEdge>(x.edges);
+    this.locals = new HashMultiMap<Local, PurityNode>(x.locals);
+    this.ret = new HashSet<PurityNode>(x.ret);
+    this.globEscape = new HashSet<PurityNode>(x.globEscape);
+    this.backEdges = new HashMultiMap<PurityNode, PurityEdge>(x.backEdges);
+    this.backLocals = new HashMultiMap<PurityNode, Local>(x.backLocals);
+    this.mutated = new HashMultiMap<PurityNode, String>(x.mutated);
     if (doCheck) {
       sanityCheck();
     }
@@ -395,7 +395,7 @@ public class PurityGraph {
   }
 
   protected Set<PurityNode> getEscaping() {
-    Set<PurityNode> escaping = new HashSet<>();
+    Set<PurityNode> escaping = new HashSet<PurityNode>();
     internalPassNodes(ret, escaping, true);
     internalPassNodes(globEscape, escaping, true);
     internalPassNode(PurityGlobalNode.node, escaping, true);
@@ -410,8 +410,8 @@ public class PurityGraph {
     if (!mutated.get(PurityGlobalNode.node).isEmpty()) {
       return false;
     }
-    Set<PurityNode> A = new HashSet<>();
-    Set<PurityNode> B = new HashSet<>();
+    Set<PurityNode> A = new HashSet<PurityNode>();
+    Set<PurityNode> B = new HashSet<PurityNode>();
     internalPassNodes(paramNodes, A, false);
     internalPassNodes(globEscape, B, true);
     internalPassNode(PurityGlobalNode.node, B, true);
@@ -432,8 +432,8 @@ public class PurityGraph {
     if (!mutated.get(PurityGlobalNode.node).isEmpty()) {
       return false;
     }
-    Set<PurityNode> A = new HashSet<>();
-    Set<PurityNode> B = new HashSet<>();
+    Set<PurityNode> A = new HashSet<PurityNode>();
+    Set<PurityNode> B = new HashSet<PurityNode>();
     internalPassNodes(paramNodes, A, false);
     internalPassNodes(globEscape, B, true);
     internalPassNode(PurityGlobalNode.node, B, true);
@@ -451,7 +451,7 @@ public class PurityGraph {
       return PARAM_RW;
     }
 
-    Set<PurityNode> S1 = new HashSet<>();
+    Set<PurityNode> S1 = new HashSet<PurityNode>();
     internalPassNode(p, S1, false);
     for (PurityNode n : S1) {
       if (n.isLoad() || n.equals(p)) {
@@ -461,7 +461,7 @@ public class PurityGraph {
       }
     }
 
-    Set<PurityNode> S2 = new HashSet<>();
+    Set<PurityNode> S2 = new HashSet<PurityNode>();
     internalPassNodes(ret, S2, true);
     internalPassNodes(paramNodes, S2, true);
     for (PurityNode n : S2) {
@@ -542,7 +542,7 @@ public class PurityGraph {
 
   /** Utility function to merge node src into dst; src is removed */
   protected final void mergeNodes(PurityNode src, PurityNode dst) {
-    for (PurityEdge e : new ArrayList<>(edges.get(src))) {
+    for (PurityEdge e : new ArrayList<PurityEdge>(edges.get(src))) {
       PurityNode n = e.getTarget();
       if (n.equals(src)) {
         n = dst;
@@ -553,7 +553,7 @@ public class PurityGraph {
       backEdges.remove(n, e);
       backEdges.put(n, ee);
     }
-    for (PurityEdge e : new ArrayList<>(backEdges.get(src))) {
+    for (PurityEdge e : new ArrayList<PurityEdge>(backEdges.get(src))) {
       PurityNode n = e.getSource();
       if (n.equals(src)) {
         n = dst;
@@ -564,7 +564,7 @@ public class PurityGraph {
       backEdges.remove(src, e);
       backEdges.put(dst, ee);
     }
-    for (Local l : new ArrayList<>(backLocals.get(src))) {
+    for (Local l : new ArrayList<Local>(backLocals.get(src))) {
       locals.remove(l, src);
       backLocals.remove(src, l);
       locals.put(l, dst);
@@ -593,9 +593,9 @@ public class PurityGraph {
 
   /** Experimental simplification: merge redundant load nodes. */
   void simplifyLoad() {
-    for (PurityNode p : new ArrayList<>(nodes)) {
-      Map<String, PurityNode> fmap = new HashMap<>();
-      for (PurityEdge e : new ArrayList<>(edges.get(p))) {
+    for (PurityNode p : new ArrayList<PurityNode>(nodes)) {
+      Map<String, PurityNode> fmap = new HashMap<String, PurityNode>();
+      for (PurityEdge e : new ArrayList<PurityEdge>(edges.get(p))) {
         PurityNode tgt = e.getTarget();
         if (!e.isInside() && !tgt.equals(p)) {
           String f = e.getField();
@@ -617,7 +617,7 @@ public class PurityGraph {
    * nodes.
    */
   void simplifyInside() {
-    Set<PurityNode> r = new HashSet<>();
+    Set<PurityNode> r = new HashSet<PurityNode>();
     internalPassNodes(paramNodes, r, true);
     internalPassNodes(ret, r, true);
     internalPassNodes(globEscape, r, true);
@@ -627,7 +627,7 @@ public class PurityGraph {
         internalPassNode(n, r, true);
       }
     }
-    for (PurityNode n : new ArrayList<>(nodes)) {
+    for (PurityNode n : new ArrayList<PurityNode>(nodes)) {
       if (n.isInside() && !r.contains(n)) {
         removeNode(n);
       }
@@ -644,8 +644,8 @@ public class PurityGraph {
    * DO NOT USE DURING INTRA-PROCEDURAL ANALYSIS!
    */
   void removeLocals() {
-    this.locals = new HashMultiMap<>();
-    this.backLocals = new HashMultiMap<>();
+    this.locals = new HashMultiMap<Local, PurityNode>();
+    this.backLocals = new HashMultiMap<PurityNode, Local>();
   }
 
   /** Copy assignment left = right. */
@@ -698,7 +698,7 @@ public class PurityGraph {
    * Load non-static: left = right.field, or left = right[?] if field is [].
    */
   void assignFieldToLocal(Stmt stmt, Local right, String field, Local left) {
-    Set<PurityNode> esc = new HashSet<>();
+    Set<PurityNode> esc = new HashSet<PurityNode>();
     Set<PurityNode> escaping = getEscaping();
 
     // strong update on local
@@ -841,7 +841,7 @@ public class PurityGraph {
    *          is a list of Value
    */
   void methodCall(PurityGraph g, Local right, List<Value> args, Local left) {
-    MultiMap<PurityNode, PurityNode> mu = new HashMultiMap<>();
+    MultiMap<PurityNode, PurityNode> mu = new HashMultiMap<PurityNode, PurityNode>();
 
     // compute mapping relation g -> this
     /////////////////////////////////////
@@ -867,8 +867,8 @@ public class PurityGraph {
       hasChanged = false;
 
       // (2)
-      for (PurityNode n1 : new ArrayList<>(mu.keySet())) {
-        for (PurityNode n3 : new ArrayList<>(mu.get(n1))) {
+      for (PurityNode n1 : new ArrayList<PurityNode>(mu.keySet())) {
+        for (PurityNode n3 : new ArrayList<PurityNode>(mu.get(n1))) {
           for (PurityEdge e12 : g.edges.get(n1)) {
             if (!e12.isInside()) {
               for (PurityEdge e34 : edges.get(n3)) {
@@ -981,14 +981,14 @@ public class PurityGraph {
     /////////////////
 
     Set<PurityNode> escaping = getEscaping();
-    for (PurityNode n : new ArrayList<>(nodes)) {
+    for (PurityNode n : new ArrayList<PurityNode>(nodes)) {
       if (!escaping.contains(n)) {
         if (n.isLoad()) {
           // remove captured load nodes
           removeNode(n);
         } else {
           // ... and outside edges from captured nodes
-          for (PurityEdge e : new ArrayList<>(edges.get(n))) {
+          for (PurityEdge e : new ArrayList<PurityEdge>(edges.get(n))) {
             if (!e.isInside()) {
               edges.remove(n, e);
               backEdges.remove(e.getTarget(), e);
@@ -1034,7 +1034,7 @@ public class PurityGraph {
    *          Globally escaping nodes have a red label.
    */
   void fillDotGraph(String prefix, DotGraph out) {
-    Map<PurityNode, String> nodeId = new HashMap<>();
+    Map<PurityNode, String> nodeId = new HashMap<PurityNode, String>();
     int id = 0;
     // add nodes
 

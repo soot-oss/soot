@@ -24,7 +24,6 @@ package soot.jimple.spark.ondemand.pautil;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.RefType;
@@ -68,7 +67,6 @@ public interface AllocationSiteHandler {
      *
      * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode, java.lang.Integer)
      */
-    @Override
     public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack) {
       p2set.add(allocNode);
       return false;
@@ -82,13 +80,11 @@ public interface AllocationSiteHandler {
       this.p2set = p2set;
     }
 
-    @Override
     public void resetState() {
       // TODO support this
       throw new RuntimeException();
     }
 
-    @Override
     public boolean shouldHandle(VarNode dst) {
       // TODO Auto-generated method stub
       return false;
@@ -108,7 +104,6 @@ public interface AllocationSiteHandler {
      *
      * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode, java.lang.Integer)
      */
-    @Override
     public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack) {
       castFailed = !manager.castNeverFails(allocNode.getType(), type);
       return castFailed;
@@ -122,12 +117,10 @@ public interface AllocationSiteHandler {
       this.type = type;
     }
 
-    @Override
     public void resetState() {
       throw new RuntimeException();
     }
 
-    @Override
     public boolean shouldHandle(VarNode dst) {
       // TODO Auto-generated method stub
       P2SetVisitor v =
@@ -153,7 +146,7 @@ public interface AllocationSiteHandler {
 
     public SootMethod callee;
 
-    public Set<SootMethod> possibleMethods = new HashSet<>();
+    public Set<SootMethod> possibleMethods = new HashSet<SootMethod>();
 
     /**
      * @param pag
@@ -171,7 +164,6 @@ public interface AllocationSiteHandler {
      *
      * @see AAA.algs.AllocationSiteHandler#handleAllocationSite(soot.jimple.spark.pag.AllocNode, AAA.algs.MethodContext)
      */
-    @Override
     public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack) {
       Type type = allocNode.getType();
       if (!pag.getTypeManager().castNeverFails(type, receiverType)) {
@@ -204,12 +196,10 @@ public interface AllocationSiteHandler {
       return false;
     }
 
-    @Override
     public void resetState() {
       possibleMethods.clear();
     }
 
-    @Override
     public boolean shouldHandle(VarNode dst) {
       // TODO Auto-generated method stub
       return false;

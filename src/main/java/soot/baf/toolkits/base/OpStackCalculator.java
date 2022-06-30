@@ -10,12 +10,12 @@ package soot.baf.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -131,7 +131,7 @@ import soot.util.Chain;
 /**
  * Emulates the operation of the JVM stack to compute the expected types of the objects on the stack at each {@link Unit} in
  * a {@link BafBody}.
- *
+ * 
  * @author Michael Batchelder
  * @author Timothy Hoffman
  */
@@ -730,7 +730,10 @@ public class OpStackCalculator {
   }
 
   private static boolean typesAreCompatible(Type t1, Type t2) {
-    if ((t1 == t2) || (t1 instanceof RefLikeType && t2 instanceof RefLikeType)) {
+    if (t1 == t2) {
+      return true;
+    }
+    if (t1 instanceof RefLikeType && t2 instanceof RefLikeType) {
       return true;
     }
     if (t1 instanceof IntegerType && t2 instanceof IntegerType) {
@@ -799,8 +802,8 @@ public class OpStackCalculator {
             printUnits(units, " StackTypeHeightCalc failed");
             return;
           }
-          for (Type element : stack) {
-            s.append(printType(element));
+          for (int i = 0, e = stack.size(); i < e; i++) {
+            s.append(printType(stack.get(i)));
           }
         } else {
           s.append("***missing***");

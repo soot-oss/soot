@@ -44,7 +44,7 @@ public class AsmClassSource extends ClassSource {
 
   /**
    * Constructs a new ASM class source.
-   *
+   * 
    * @param cls
    *          fully qualified name of the class.
    * @param foundFile

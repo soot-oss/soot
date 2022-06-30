@@ -15,12 +15,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -348,7 +348,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
       if (usedAsObject) {
         for (Unit u : defs) {
           replaceWithNull(u);
-          Set<Value> defLocals = new HashSet<>();
+          Set<Value> defLocals = new HashSet<Value>();
           for (ValueBox vb : u.getDefBoxes()) {
             defLocals.add(vb.getValue());
           }
@@ -399,7 +399,10 @@ public class DexNullTransformer extends AbstractNullTransformer {
       }
 
       private boolean isConstZero(Value rightOp) {
-        if ((rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) || (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0)) {
+        if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) {
+          return true;
+        }
+        if (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0) {
           return true;
         }
         return false;
@@ -452,7 +455,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
   }
 
   private static Set<Value> getObjectArray(Body body) {
-    Set<Value> objArrays = new HashSet<>();
+    Set<Value> objArrays = new HashSet<Value>();
     for (Unit u : body.getUnits()) {
       if (u instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u;
@@ -494,7 +497,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
         if ((r instanceof IntConstant && ((IntConstant) r).value == 0)
             || (r instanceof LongConstant && ((LongConstant) r).value == 0)) {
           if (candidates == null) {
-            candidates = new HashSet<>();
+            candidates = new HashSet<Local>();
           }
           candidates.add(l);
         }
@@ -502,7 +505,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
         ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
         if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
           if (candidates == null) {
-            candidates = new HashSet<>();
+            candidates = new HashSet<Local>();
           }
           candidates.add((Local) expr.getOp1());
         }

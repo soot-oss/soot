@@ -10,12 +10,12 @@ package soot.baf;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -132,11 +132,11 @@ public class JasminClass extends AbstractJasminClass {
 
     int stackLimitIndex = -1;
 
-    subroutineToReturnAddressSlot = new HashMap<>(10, 0.7f);
+    subroutineToReturnAddressSlot = new HashMap<Unit, Integer>(10, 0.7f);
 
     // Determine the unitToLabel map
     {
-      unitToLabel = new HashMap<>(instList.size() * 2 + 1, 0.7f);
+      unitToLabel = new HashMap<Unit, String>(instList.size() * 2 + 1, 0.7f);
       labelCount = 0;
 
       for (UnitBox uBox : body.getUnitBoxes(true)) {
@@ -154,7 +154,7 @@ public class JasminClass extends AbstractJasminClass {
     // Emit the exceptions, recording the Units at the beginning
     // of handlers so that later on we can recognize blocks that
     // begin with an exception on the stack.
-    Set<Unit> handlerUnits = new ArraySet<>(body.getTraps().size());
+    Set<Unit> handlerUnits = new ArraySet<Unit>(body.getTraps().size());
     for (Trap trap : body.getTraps()) {
       handlerUnits.add(trap.getHandlerUnit());
       if (trap.getBeginUnit() != trap.getEndUnit()) {
@@ -168,9 +168,9 @@ public class JasminClass extends AbstractJasminClass {
       int localCount = 0;
       int[] paramSlots = new int[method.getParameterCount()];
       int thisSlot = 0;
-      Set<Local> assignedLocals = new HashSet<>();
+      Set<Local> assignedLocals = new HashSet<Local>();
 
-      localToSlot = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+      localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
       // assignColorsToLocals(body);
 
@@ -270,11 +270,11 @@ public class JasminClass extends AbstractJasminClass {
                 initialHeight = 0;
               }
               if (blockToStackHeight == null) {
-                blockToStackHeight = new HashMap<>();
+                blockToStackHeight = new HashMap<Block, Integer>();
               }
               blockToStackHeight.put(entryBlock, initialHeight);
               if (blockToLogicalStackHeight == null) {
-                blockToLogicalStackHeight = new HashMap<>();
+                blockToLogicalStackHeight = new HashMap<Block, Integer>();
               }
               blockToLogicalStackHeight.put(entryBlock, initialHeight);
             }
@@ -479,7 +479,7 @@ public class JasminClass extends AbstractJasminClass {
         if (i.getRightOp() instanceof CaughtExceptionRef) {
           Value leftOp = i.getLeftOp();
           if (leftOp instanceof Local) {
-            int slot = localToSlot.get(leftOp);
+            int slot = localToSlot.get((Local) leftOp);
             if (slot >= 0 && slot <= 3) {
               emit("astore_" + slot);
             } else {

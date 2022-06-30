@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,9 +50,8 @@ public class JavaToJimple {
    */
   public polyglot.frontend.ExtensionInfo initExtInfo(String fileName, List<String> sourceLocations) {
 
-    Set<String> source = new HashSet<>();
+    Set<String> source = new HashSet<String>();
     ExtensionInfo extInfo = new soot.javaToJimple.jj.ExtensionInfo() {
-      @Override
       public List passes(Job job) {
         List passes = super.passes(job);
         // beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(polyglot.frontend.Pass.FOLD, job, new

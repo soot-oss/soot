@@ -10,12 +10,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -165,11 +165,11 @@ public class SimpleMethodInfoFlowAnalysis
     this.dfa = dfa;
     this.refOnly = ignoreNonRefTypeFlow;
 
-    this.infoFlowGraph = new MemoryEfficientGraph<>();
+    this.infoFlowGraph = new MemoryEfficientGraph<EquivalentValue>();
     this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
 
-    this.entrySet = new ArraySparseSet<>();
-    this.emptySet = new ArraySparseSet<>();
+    this.entrySet = new ArraySparseSet<Pair<EquivalentValue, EquivalentValue>>();
+    this.emptySet = new ArraySparseSet<Pair<EquivalentValue, EquivalentValue>>();
 
     printMessages = false;
   }
@@ -196,7 +196,6 @@ public class SimpleMethodInfoFlowAnalysis
     return infoFlowGraph;
   }
 
-  @Override
   protected void merge(FlowSet<Pair<EquivalentValue, EquivalentValue>> in1,
       FlowSet<Pair<EquivalentValue, EquivalentValue>> in2, FlowSet<Pair<EquivalentValue, EquivalentValue>> out) {
     in1.union(in2, out);
@@ -231,7 +230,7 @@ public class SimpleMethodInfoFlowAnalysis
   }
 
   private ArrayList<Value> getDirectSources(Value v, FlowSet<Pair<EquivalentValue, EquivalentValue>> fs) {
-    ArrayList<Value> ret = new ArrayList<>(); // of "interesting sources"
+    ArrayList<Value> ret = new ArrayList<Value>(); // of "interesting sources"
     EquivalentValue vEqVal = new CachedEquivalentValue(v);
     Iterator<Pair<EquivalentValue, EquivalentValue>> fsIt = fs.iterator();
     while (fsIt.hasNext()) {
@@ -261,7 +260,7 @@ public class SimpleMethodInfoFlowAnalysis
       if (sinkEqVal.equals(sourceEqVal)) {
         continue;
       }
-      Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+      Pair<EquivalentValue, EquivalentValue> pair = new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
       if (!fs.contains(pair)) {
         fs.add(pair);
         if (isInterestingSource(source) && isInterestingSink(sink)) {
@@ -305,7 +304,7 @@ public class SimpleMethodInfoFlowAnalysis
         if (sinkEqVal.equals(sourceEqVal)) {
           continue;
         }
-        Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+        Pair<EquivalentValue, EquivalentValue> pair = new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
         if (!fs.contains(pair)) {
           fs.add(pair);
           if (isInterestingSource(source) && isInterestingSink(sink)) {
@@ -357,7 +356,7 @@ public class SimpleMethodInfoFlowAnalysis
     // ClassInfoFlowAnalysis.printDataFlowGraph(infoFlowGraph);
     // }
 
-    List<Value> returnValueSources = new ArrayList<>();
+    List<Value> returnValueSources = new ArrayList<Value>();
 
     Iterator<EquivalentValue> nodeIt = dataFlowGraph.getNodes().iterator();
     while (nodeIt.hasNext()) {
@@ -409,7 +408,6 @@ public class SimpleMethodInfoFlowAnalysis
     return returnValueSources;
   }
 
-  @Override
   protected void flowThrough(FlowSet<Pair<EquivalentValue, EquivalentValue>> in, Unit unit,
       FlowSet<Pair<EquivalentValue, EquivalentValue>> out) {
     Stmt stmt = (Stmt) unit;
@@ -500,7 +498,7 @@ public class SimpleMethodInfoFlowAnalysis
         }
       }
 
-      List<Value> sources = new ArrayList<>();
+      List<Value> sources = new ArrayList<Value>();
       boolean interestingFlow = true;
 
       if (rv instanceof Local) {
@@ -573,19 +571,16 @@ public class SimpleMethodInfoFlowAnalysis
     // changedFlow.union(out, out); - OBSELETE optimization
   }
 
-  @Override
   protected void copy(FlowSet<Pair<EquivalentValue, EquivalentValue>> source,
       FlowSet<Pair<EquivalentValue, EquivalentValue>> dest) {
     source.copy(dest);
 
   }
 
-  @Override
   protected FlowSet<Pair<EquivalentValue, EquivalentValue>> entryInitialFlow() {
     return entrySet.clone();
   }
 
-  @Override
   protected FlowSet<Pair<EquivalentValue, EquivalentValue>> newInitialFlow() {
     return emptySet.clone();
   }
@@ -596,7 +591,7 @@ public class SimpleMethodInfoFlowAnalysis
     if (sinkEqVal.equals(sourceEqVal)) {
       return;
     }
-    Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+    Pair<EquivalentValue, EquivalentValue> pair = new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
     if (!entrySet.contains(pair)) {
       entrySet.add(pair);
     }
@@ -608,7 +603,7 @@ public class SimpleMethodInfoFlowAnalysis
     if (sinkEqVal.equals(sourceEqVal)) {
       return;
     }
-    Pair<EquivalentValue, EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+    Pair<EquivalentValue, EquivalentValue> pair = new Pair<EquivalentValue, EquivalentValue>(sinkEqVal, sourceEqVal);
     if (!emptySet.contains(pair)) {
       emptySet.add(pair);
     }

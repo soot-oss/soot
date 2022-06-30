@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -69,24 +69,20 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
 
   public static String dependancies[] = new String[] { "bb.jbco_iii", "bb.jbco_ful", "bb.lp" };
 
-  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_iii";
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public void outputSummary() {
     out.println("Indirected Ifs through Traps: " + count);
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
@@ -100,7 +96,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
       Unit last = null;
       nonTrap = Baf.v().newNopInst();
       for (Iterator<Unit> it = units.iterator(); it.hasNext();) {
-        Unit u = it.next();
+        Unit u = (Unit) it.next();
         if (u instanceof IdentityInst && ((IdentityInst) u).getLeftOp() instanceof Local) {
           last = u;
           continue;
@@ -117,10 +113,10 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
 
     Stack<Type> stack = StackTypeHeightCalculator.getAfterStack(b, nonTrap);
 
-    ArrayList<Unit> addedUnits = new ArrayList<>();
+    ArrayList<Unit> addedUnits = new ArrayList<Unit>();
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
-      Unit u = it.next();
+      Unit u = (Unit) it.next();
       if (isIf(u) && Rand.getInt(10) <= weight) {
         TargetArgInst ifu = (TargetArgInst) u;
         Unit newTarg = Baf.v().newGotoInst(ifu.getTarget());
@@ -137,7 +133,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     Unit nop = Baf.v().newNopInst();
     units.add(nop);
 
-    ArrayList<Unit> toinsert = new ArrayList<>();
+    ArrayList<Unit> toinsert = new ArrayList<Unit>();
     SootField field = null;
     try {
       field = soot.jbco.jimpleTransformations.FieldRenamer.v().getRandomOpaques()[Rand.getInt(2)];
@@ -148,11 +144,11 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     if (field != null && Rand.getInt(3) > 0) {
       toinsert.add(Baf.v().newStaticGetInst(field.makeRef()));
       if (field.getType() instanceof IntegerType) {
-        toinsert.add(Baf.v().newIfGeInst(units.getSuccOf(nonTrap)));
+        toinsert.add(Baf.v().newIfGeInst((Unit) units.getSuccOf(nonTrap)));
       } else {
         SootMethod boolInit = ((RefType) field.getType()).getSootClass().getMethod("boolean booleanValue()");
         toinsert.add(Baf.v().newVirtualInvokeInst(boolInit.makeRef()));
-        toinsert.add(Baf.v().newIfGeInst(units.getSuccOf(nonTrap)));
+        toinsert.add(Baf.v().newIfGeInst((Unit) units.getSuccOf(nonTrap)));
       }
     } else {
       toinsert.add(Baf.v().newPushInst(soot.jimple.IntConstant.v(BodyBuilder.getIntegerNine())));
@@ -167,10 +163,10 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
        * toinsert.add(Baf.v().newSwapInst(IntType.v(),RefType.v())); ArrayList parms = new ArrayList();
        * parms.add(IntType.v()); toinsert.add(Baf.v().newVirtualInvokeInst(out.getMethod("println",parms).makeRef()));
        */
-      toinsert.add(Baf.v().newIfEqInst(units.getSuccOf(nonTrap)));
+      toinsert.add(Baf.v().newIfEqInst((Unit) units.getSuccOf(nonTrap)));
     }
 
-    ArrayList<Unit> toinserttry = new ArrayList<>();
+    ArrayList<Unit> toinserttry = new ArrayList<Unit>();
     while (stack.size() > 0) {
       toinserttry.add(Baf.v().newPopInst(stack.pop()));
     }
@@ -202,7 +198,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
 
   private Unit findNonTrappedUnit(PatchingChain<Unit> units, Chain<Trap> traps) {
     int intrap = 0;
-    ArrayList<Unit> untrapped = new ArrayList<>();
+    ArrayList<Unit> untrapped = new ArrayList<Unit>();
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit u = it.next();

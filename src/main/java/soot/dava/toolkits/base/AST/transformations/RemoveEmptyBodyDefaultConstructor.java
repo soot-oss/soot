@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -37,10 +37,10 @@ import soot.util.Chain;
 /*
  * It has been seen that Dava's output contains the default constructor with just the invocation
  * to super()
- *
+ * 
  * According to the java specs the default constructor is not needed unless the constructor has been
  * overloaded.
- *
+ * 
  * The analysis checks whether there is only one constructor in the class being decompiled.
  * If this is true and the constructor IS THE DEFAULT CONSTRUCTOR i.e. no arguments
  * and has an empty body (there will always be a call to super
@@ -54,7 +54,7 @@ public class RemoveEmptyBodyDefaultConstructor {
     debug("\n\nRemoveEmptyBodyDefaultConstructor----" + s.getName());
     List methods = s.getMethods();
     Iterator it = methods.iterator();
-    List<SootMethod> constructors = new ArrayList<>();
+    List<SootMethod> constructors = new ArrayList<SootMethod>();
 
     while (it.hasNext()) {
       SootMethod method = (SootMethod) it.next();
@@ -85,7 +85,7 @@ public class RemoveEmptyBodyDefaultConstructor {
       debug("No active body found for the default constructor");
       return;
     }
-
+    
     if (!constructor.isPublic()) {
       debug("Default constructor is not public.");
       return;

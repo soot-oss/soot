@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -58,7 +58,6 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     this.tns = tns;
     if (G.v().Union_factory == null) {
       G.v().Union_factory = new UnionFactory() {
-        @Override
         public Union newUnion() {
           return FullObjectSet.v();
         }
@@ -72,7 +71,6 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   /**
    * All INs are initialized to the empty set.
    **/
-  @Override
   protected Object newInitialFlow() {
     return emptySet.clone();
   }
@@ -80,7 +78,6 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   /**
    * IN(Start) is the empty set
    **/
-  @Override
   protected Object entryInitialFlow() {
     return emptySet.clone();
   }
@@ -88,14 +85,13 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   /**
    * OUT is the same as (IN minus killSet) plus the genSet.
    **/
-  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
     RWSet stmtRead = sea.readSet(body.getMethod(), (Stmt) unit);
     RWSet stmtWrite = sea.writeSet(body.getMethod(), (Stmt) unit);
 
-    boolean addSelf = Boolean.FALSE;
+    Boolean addSelf = Boolean.FALSE;
 
     Iterator tnIt = tns.iterator();
     while (tnIt.hasNext()) {
@@ -107,7 +103,7 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     }
 
     in.copy(out);
-    if (addSelf) {
+    if (addSelf.booleanValue()) {
       CriticalSection tn = new CriticalSection(false, body.getMethod(), 0);
       tn.entermonitor = (Stmt) unit;
       tn.units.add((Unit) unit);
@@ -120,7 +116,6 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
   /**
    * union, except for transactions in progress. They get joined
    **/
-  @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = ((FlowSet) in1).clone(), inSet2 = ((FlowSet) in2).clone(), outSet = (FlowSet) out;
     /*
@@ -136,7 +131,6 @@ public class StrayRWFinder extends BackwardFlowAnalysis {
     inSet1.union(inSet2, outSet);
   }
 
-  @Override
   protected void copy(Object source, Object dest) {
     FlowSet sourceSet = (FlowSet) source, destSet = (FlowSet) dest;
 

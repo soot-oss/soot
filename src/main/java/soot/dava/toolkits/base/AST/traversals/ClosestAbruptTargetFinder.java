@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.traversals;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -59,9 +59,9 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
     return G.v().soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder();
   }
 
-  HashMap<DAbruptStmt, ASTNode> closestNode = new HashMap<>();// a mapping of each abrupt statement to
+  HashMap<DAbruptStmt, ASTNode> closestNode = new HashMap<DAbruptStmt, ASTNode>();// a mapping of each abrupt statement to
                                                                                   // the node they are targeting
-  ArrayList<ASTLabeledNode> nodeStack = new ArrayList<>(); // the last element will always be the "currentNode"
+  ArrayList<ASTLabeledNode> nodeStack = new ArrayList<ASTLabeledNode>(); // the last element will always be the "currentNode"
                                                                          // meaning the closest
                                                                          // target to a abrupt stmt
 
@@ -82,27 +82,22 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
    * implicit break or continue
    */
 
-  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     nodeStack.add(node);
   }
 
-  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     nodeStack.add(node);
   }
 
-  @Override
   public void inASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     nodeStack.add(node);
   }
 
-  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
     nodeStack.add(node);
   }
 
-  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     nodeStack.add(node);
   }
@@ -112,7 +107,6 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
    * closest target to an implicit break or continue
    */
 
-  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     if (nodeStack.isEmpty()) {
       throw new RuntimeException("trying to remove node from empty stack: ClosestBreakTargetFinder");
@@ -120,7 +114,6 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
     nodeStack.remove(nodeStack.size() - 1);
   }
 
-  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     if (nodeStack.isEmpty()) {
       throw new RuntimeException("trying to remove node from empty stack: ClosestBreakTargetFinder");
@@ -128,7 +121,6 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
     nodeStack.remove(nodeStack.size() - 1);
   }
 
-  @Override
   public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     if (nodeStack.isEmpty()) {
       throw new RuntimeException("trying to remove node from empty stack: ClosestBreakTargetFinder");
@@ -136,7 +128,6 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
     nodeStack.remove(nodeStack.size() - 1);
   }
 
-  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
     if (nodeStack.isEmpty()) {
       throw new RuntimeException("trying to remove node from empty stack: ClosestBreakTargetFinder");
@@ -144,7 +135,6 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
     nodeStack.remove(nodeStack.size() - 1);
   }
 
-  @Override
   public void outASTSwitchNode(ASTSwitchNode node) {
     if (nodeStack.isEmpty()) {
       throw new RuntimeException("trying to remove node from empty stack: ClosestBreakTargetFinder");
@@ -152,7 +142,6 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter {
     nodeStack.remove(nodeStack.size() - 1);
   }
 
-  @Override
   public void inStmt(Stmt s) {
     if (s instanceof DAbruptStmt) {
       // breaks and continues are abrupt statements

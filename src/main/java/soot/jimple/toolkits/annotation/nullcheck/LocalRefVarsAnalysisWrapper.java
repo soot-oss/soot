@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.nullcheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,11 +56,11 @@ public class LocalRefVarsAnalysisWrapper {
   public LocalRefVarsAnalysisWrapper(ExceptionalUnitGraph graph) {
     this.analysis = new BranchedRefVarsAnalysis(graph);
     final int size = graph.size() * 2 + 1;
-    this.unitToVarsBefore = new HashMap<>(size, 0.7f);
-    this.unitToVarsAfterFall = new HashMap<>(size, 0.7f);
-    this.unitToListsOfVarsAfterBranches = new HashMap<>(size, 0.7f);
-    this.unitToVarsNeedCheck = new HashMap<>(size, 0.7f);
-    this.unitToVarsDontNeedCheck = new HashMap<>(size, 0.7f);
+    this.unitToVarsBefore = new HashMap<Unit, List<RefIntPair>>(size, 0.7f);
+    this.unitToVarsAfterFall = new HashMap<Unit, List<RefIntPair>>(size, 0.7f);
+    this.unitToListsOfVarsAfterBranches = new HashMap<Unit, List<List<RefIntPair>>>(size, 0.7f);
+    this.unitToVarsNeedCheck = new HashMap<Unit, List<Object>>(size, 0.7f);
+    this.unitToVarsDontNeedCheck = new HashMap<Unit, List<RefIntPair>>(size, 0.7f);
     // end while
 
     for (Unit s : graph) {
@@ -69,7 +69,7 @@ public class LocalRefVarsAnalysisWrapper {
       // we get a list of flow sets for branches, iterate over them
       {
         List<FlowSet<RefIntPair>> branchesFlowsets = analysis.getBranchFlowAfter(s);
-        List<List<RefIntPair>> lst = new ArrayList<>(branchesFlowsets.size());
+        List<List<RefIntPair>> lst = new ArrayList<List<RefIntPair>>(branchesFlowsets.size());
         for (FlowSet<RefIntPair> set : branchesFlowsets) {
           lst.add(Collections.unmodifiableList(buildList(set)));
         }
@@ -81,10 +81,10 @@ public class LocalRefVarsAnalysisWrapper {
       // NOTE: that set is used in the compute check bellow too
 
       if (computeChecks) {
-        ArrayList<RefIntPair> dontNeedCheckVars = new ArrayList<>();
-        ArrayList<Object> needCheckVars = new ArrayList<>();
+        ArrayList<RefIntPair> dontNeedCheckVars = new ArrayList<RefIntPair>();
+        ArrayList<Object> needCheckVars = new ArrayList<Object>();
 
-        HashSet<Value> allChecksSet = new HashSet<>(5, 0.7f);
+        HashSet<Value> allChecksSet = new HashSet<Value>(5, 0.7f);
         allChecksSet.addAll(analysis.unitToArrayRefChecksSet.get(s));
         allChecksSet.addAll(analysis.unitToInstanceFieldRefChecksSet.get(s));
         allChecksSet.addAll(analysis.unitToInstanceInvokeExprChecksSet.get(s));
@@ -119,7 +119,7 @@ public class LocalRefVarsAnalysisWrapper {
   // utility method to build lists of (ref, value) pairs for a given flow set
   // optionally discard (ref, kTop) pairs.
   private List<RefIntPair> buildList(FlowSet<RefIntPair> set) {
-    List<RefIntPair> lst = new ArrayList<>();
+    List<RefIntPair> lst = new ArrayList<RefIntPair>();
     for (EquivalentValue r : analysis.refTypeValues) {
       int refInfo = analysis.refInfo(r, set);
       if (!discardKTop || (refInfo != BranchedRefVarsAnalysis.kTop)) {
@@ -154,7 +154,7 @@ public class LocalRefVarsAnalysisWrapper {
     if (computeChecks) {
       return unitToVarsNeedCheck.get(s);
     } else {
-      return new ArrayList<>();
+      return new ArrayList<Object>();
     }
   } // end getVarsNeedCheck
 
@@ -162,7 +162,7 @@ public class LocalRefVarsAnalysisWrapper {
     if (computeChecks) {
       return unitToVarsDontNeedCheck.get(s);
     } else {
-      return new ArrayList<>();
+      return new ArrayList<RefIntPair>();
     }
   } // end getVarsNeedCheck
 

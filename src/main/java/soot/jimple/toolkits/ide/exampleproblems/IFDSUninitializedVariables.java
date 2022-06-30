@@ -1,13 +1,5 @@
 package soot.jimple.toolkits.ide.exampleproblems;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -18,12 +10,12 @@ import java.util.Set;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -37,6 +29,15 @@ import heros.InterproceduralCFG;
 import heros.flowfunc.Identity;
 import heros.flowfunc.Kill;
 import heros.flowfunc.KillAll;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Local;
 import soot.NullType;
 import soot.Scene;
@@ -72,7 +73,7 @@ public class IFDSUninitializedVariables
             @Override
             public Set<Local> computeTargets(Local source) {
               if (source == zeroValue()) {
-                Set<Local> res = new LinkedHashSet<>();
+                Set<Local> res = new LinkedHashSet<Local>();
                 res.addAll(m.getActiveBody().getLocals());
                 for (int i = 0; i < m.getParameterCount(); i++) {
                   res.remove(m.getActiveBody().getParameterLocal(i));
@@ -96,7 +97,7 @@ public class IFDSUninitializedVariables
                 List<ValueBox> useBoxes = definition.getUseBoxes();
                 for (ValueBox valueBox : useBoxes) {
                   if (valueBox.getValue().equivTo(source)) {
-                    LinkedHashSet<Local> res = new LinkedHashSet<>();
+                    LinkedHashSet<Local> res = new LinkedHashSet<Local>();
                     res.add(source);
                     res.add(leftOpLocal);
                     return res;
@@ -123,7 +124,7 @@ public class IFDSUninitializedVariables
         InvokeExpr invokeExpr = stmt.getInvokeExpr();
         final List<Value> args = invokeExpr.getArgs();
 
-        final List<Local> localArguments = new ArrayList<>();
+        final List<Local> localArguments = new ArrayList<Local>();
         for (Value value : args) {
           if (value instanceof Local) {
             localArguments.add((Local) value);
@@ -149,7 +150,7 @@ public class IFDSUninitializedVariables
             if (source == zeroValue()) {
               // gen all locals that are not parameter locals
               Collection<Local> locals = destinationMethod.getActiveBody().getLocals();
-              LinkedHashSet<Local> uninitializedLocals = new LinkedHashSet<>(locals);
+              LinkedHashSet<Local> uninitializedLocals = new LinkedHashSet<Local>(locals);
               for (int i = 0; i < destinationMethod.getParameterCount(); i++) {
                 uninitializedLocals.remove(destinationMethod.getActiveBody().getParameterLocal(i));
               }
@@ -209,7 +210,7 @@ public class IFDSUninitializedVariables
           DefinitionStmt definition = (DefinitionStmt) callSite;
           if (definition.getLeftOp() instanceof Local) {
             final Local leftOpLocal = (Local) definition.getLeftOp();
-            return new Kill<>(leftOpLocal);
+            return new Kill<Local>(leftOpLocal);
           }
         }
         return Identity.v();
@@ -217,7 +218,6 @@ public class IFDSUninitializedVariables
     };
   }
 
-  @Override
   public Map<Unit, Set<Local>> initialSeeds() {
     return DefaultSeeds.make(Collections.singleton(Scene.v().getMainMethod().getActiveBody().getUnits().getFirst()),
         zeroValue());

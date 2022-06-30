@@ -10,27 +10,19 @@ package soot.jimple.toolkits.pointer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.Context;
-import soot.G;
-import soot.Local;
-import soot.PointsToAnalysis;
-import soot.PointsToSet;
-import soot.PrimType;
-import soot.RefType;
-import soot.Singletons;
-import soot.SootField;
-import soot.Type;
+
+import soot.*;
 
 /**
  * A very naive pointer analysis that just reports that any points can point to any object.
@@ -48,12 +40,10 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
   @Override
   public PointsToSet reachingObjects(Local l) {
     Type t = l.getType();
-    if (t instanceof RefType) {
+    if (t instanceof RefType)
       return FullObjectSet.v((RefType) t);
-    }
-    if (t instanceof PrimType) {
+    if (t instanceof PrimType)
       return FullObjectSet.v((PrimType) t);
-    }
     return FullObjectSet.v();
   }
 

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.invoke;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -140,12 +140,15 @@ public class AccessManager {
   public static void createAccessorMethods(final Body body, final Stmt before, final Stmt after) {
     final Chain<Unit> units = body.getUnits();
 
-    if ((before != null && !units.contains(before)) || (after != null && !units.contains(after))) {
+    if (before != null && !units.contains(before)) {
+      throw new RuntimeException();
+    }
+    if (after != null && !units.contains(after)) {
       throw new RuntimeException();
     }
 
     boolean bInside = (before == null);
-    for (Unit unit : new ArrayList<>(units)) {
+    for (Unit unit : new ArrayList<Unit>(units)) {
       Stmt s = (Stmt) unit;
 
       if (bInside) {
@@ -268,7 +271,7 @@ public class AccessManager {
       final Chain<Unit> accStmts = accessorBody.getUnits();
       final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
       Local thisLocal = lg.generateLocal(target.getType());
-      List<Type> parameterTypes = new ArrayList<>(2);
+      List<Type> parameterTypes = new ArrayList<Type>(2);
       int paramID = 0;
       if (ref instanceof InstanceFieldRef) {
         accStmts.add(jimp.newIdentityStmt(thisLocal, jimp.newParameterRef(target.getType(), paramID)));
@@ -293,7 +296,7 @@ public class AccessManager {
       target.addMethod(accessor);
     }
     {
-      ArrayList<Value> args = new ArrayList<>(2);
+      ArrayList<Value> args = new ArrayList<Value>(2);
       if (ref instanceof InstanceFieldRef) {
         args.add(((InstanceFieldRef) ref).getBase());
       }
@@ -317,13 +320,13 @@ public class AccessManager {
       final Chain<Unit> accStmts = accessorBody.getUnits();
       final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
 
-      List<Type> parameterTypes = new ArrayList<>();
+      List<Type> parameterTypes = new ArrayList<Type>();
       if (expr instanceof InstanceInvokeExpr) {
         parameterTypes.add(target.getType());
       }
       parameterTypes.addAll(method.getParameterTypes());
 
-      List<Local> arguments = new ArrayList<>();
+      List<Local> arguments = new ArrayList<Local>();
       int paramID = 0;
       for (Type type : parameterTypes) {
         Local l = lg.generateLocal(type);
@@ -336,11 +339,11 @@ public class AccessManager {
       if (expr instanceof StaticInvokeExpr) {
         accExpr = jimp.newStaticInvokeExpr(method.makeRef(), arguments);
       } else if (expr instanceof VirtualInvokeExpr) {
-        Local thisLocal = arguments.get(0);
+        Local thisLocal = (Local) arguments.get(0);
         arguments.remove(0);
         accExpr = jimp.newVirtualInvokeExpr(thisLocal, method.makeRef(), arguments);
       } else if (expr instanceof SpecialInvokeExpr) {
-        Local thisLocal = arguments.get(0);
+        Local thisLocal = (Local) arguments.get(0);
         arguments.remove(0);
         accExpr = jimp.newSpecialInvokeExpr(thisLocal, method.makeRef(), arguments);
       } else {
@@ -367,7 +370,7 @@ public class AccessManager {
       target.addMethod(accessor);
     }
 
-    List<Value> args = new ArrayList<>();
+    List<Value> args = new ArrayList<Value>();
     if (expr instanceof InstanceInvokeExpr) {
       args.add(((InstanceInvokeExpr) expr).getBase());
     }

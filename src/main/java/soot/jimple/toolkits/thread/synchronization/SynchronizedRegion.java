@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,7 +42,7 @@ public class SynchronizedRegion {
     this.prepStmt = null;
     this.entermonitor = null;
     this.beginning = null;
-    this.earlyEnds = new ArrayList<>();
+    this.earlyEnds = new ArrayList<Pair<Stmt, Stmt>>();
     this.exceptionalEnd = null;
     this.end = null;
     this.last = null;
@@ -53,7 +53,7 @@ public class SynchronizedRegion {
     this.prepStmt = sr.prepStmt;
     this.entermonitor = sr.entermonitor;
     this.beginning = sr.beginning;
-    this.earlyEnds = new ArrayList<>();
+    this.earlyEnds = new ArrayList<Pair<Stmt, Stmt>>();
     this.earlyEnds.addAll(sr.earlyEnds);
     this.exceptionalEnd = null;
     this.end = sr.end;
@@ -61,7 +61,6 @@ public class SynchronizedRegion {
     this.after = sr.after;
   }
 
-  @Override
   protected Object clone() {
     return new SynchronizedRegion(this);
   }

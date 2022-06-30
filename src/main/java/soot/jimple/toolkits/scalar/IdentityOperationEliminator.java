@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,13 +50,13 @@ import soot.util.Chain;
 
 /**
  * Transformer that eliminates unnecessary logic operations such as
- *
+ * 
  * $z0 = a | 0
- *
+ * 
  * which can more easily be represented as
- *
+ * 
  * $z0 = a
- *
+ * 
  * @author Steven Arzt
  */
 public class IdentityOperationEliminator extends BodyTransformer {
@@ -126,7 +126,7 @@ public class IdentityOperationEliminator extends BodyTransformer {
 
   /**
    * Gets the constant value 0 with the given type (integer, float, etc.)
-   *
+   * 
    * @param type
    *          The type for which to get the constant zero value
    * @return The constant zero value of the given type
@@ -146,7 +146,7 @@ public class IdentityOperationEliminator extends BodyTransformer {
 
   /**
    * Checks whether the given value is the constant integer 0
-   *
+   * 
    * @param op
    *          The value to check
    * @return True if the given value is the constant integer 0, otherwise false

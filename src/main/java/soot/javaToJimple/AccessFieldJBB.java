@@ -1,8 +1,5 @@
 package soot.javaToJimple;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -13,12 +10,12 @@ import java.util.List;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,6 +24,9 @@ import java.util.List;
 
 import soot.Scene;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
 
   public AccessFieldJBB() {
@@ -34,7 +34,6 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
     // base(this);
   }
 
-  @Override
   protected boolean needsAccessor(polyglot.ast.Expr expr) {
     if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c) {
       return true;
@@ -43,7 +42,6 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
     }
   }
 
-  @Override
   protected soot.Local handlePrivateFieldUnarySet(polyglot.ast.Unary unary) {
     if (unary.expr() instanceof soot.javaToJimple.jj.ast.JjAccessField_c) {
       // not sure about strings here but...
@@ -80,7 +78,6 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
 
   }
 
-  @Override
   protected soot.Local handlePrivateFieldAssignSet(polyglot.ast.Assign assign) {
     if (assign.left() instanceof soot.javaToJimple.jj.ast.JjAccessField_c) {
       // not sure about strings here but...
@@ -114,7 +111,7 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
     }
 
     soot.SootMethodRef methToCall = base().getSootMethodRef(call);
-    List<soot.Value> params = new ArrayList<>();
+    List<soot.Value> params = new ArrayList<soot.Value>();
     /*
      * if (!field.flags().isStatic()){ //params.add(base().getThis(Util.getSootType(field.target().type())));
      * params.add((soot.Local)ext().getBaseLocal(field.target())); }
@@ -142,7 +139,6 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
     return retLocal;
   }
 
-  @Override
   protected soot.Local handlePrivateFieldSet(polyglot.ast.Expr expr, soot.Value right, soot.Value baseLocal) {
     if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c) {
       soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c) expr;
@@ -166,7 +162,6 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
    * ext().createExpr(expr); } }
    */
 
-  @Override
   protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean redAgg, boolean revIfNec) {
     if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c) {
       soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c) expr;
@@ -179,7 +174,6 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
     }
   }
 
-  @Override
   protected soot.Value createLHS(polyglot.ast.Expr expr) {
     if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c) {
       soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c) expr;

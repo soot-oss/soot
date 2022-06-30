@@ -10,12 +10,12 @@ package soot.jimple.toolkits.typing;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -74,10 +74,10 @@ public class TypeResolver {
   private final ClassHierarchy hierarchy;
 
   /** All type variable instances **/
-  private final List<TypeVariable> typeVariableList = new ArrayList<>();
+  private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariable **/
-  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<>();
+  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
 
   private final JimpleBody stmtBody;
   private final LocalGenerator localGenerator;
@@ -430,7 +430,7 @@ public class TypeResolver {
   private void merge_connected_components() throws TypeException {
     refresh_solved();
     if (IMPERFORMANT_TYPE_CHECK) {
-      List<TypeVariable> list = new ArrayList<>(solved.size() + unsolved.size());
+      List<TypeVariable> list = new ArrayList<TypeVariable>(solved.size() + unsolved.size());
       list.addAll(solved);
       list.addAll(unsolved);
       // MMI: This method does not perform any changing effect
@@ -539,7 +539,7 @@ public class TypeResolver {
 
       multiple_children: for (TypeVariable var : multiple_children) {
         TypeNode lca = null;
-        List<TypeVariable> children_to_remove = new LinkedList<>();
+        List<TypeVariable> children_to_remove = new LinkedList<TypeVariable>();
 
         var.fixChildren();
 
@@ -580,7 +580,7 @@ public class TypeResolver {
 
       for (TypeVariable var : multiple_parents) {
 
-        List<TypeVariable> hp = new ArrayList<>(); // hard parents
+        List<TypeVariable> hp = new ArrayList<TypeVariable>(); // hard parents
 
         var.fixParents();
 
@@ -616,7 +616,8 @@ public class TypeResolver {
   }
 
   private void assign_types_1_2() throws TypeException {
-    for (Local local : stmtBody.getLocals()) {
+    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext();) {
+      final Local local = localIt.next();
       TypeVariable var = typeVariable(local);
 
       if (var == null) {
@@ -658,7 +659,8 @@ public class TypeResolver {
   }
 
   private void assign_types_3() throws TypeException {
-    for (Local local : stmtBody.getLocals()) {
+    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext();) {
+      final Local local = localIt.next();
       TypeVariable var = typeVariable(local);
 
       if (var == null || var.approx() == null || var.approx().type() == null) {
@@ -721,7 +723,7 @@ public class TypeResolver {
   }
 
   private void compute_approximate_types() throws TypeException {
-    TreeSet<TypeVariable> workList = new TreeSet<>();
+    TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
 
     for (TypeVariable var : typeVariableList) {
 
@@ -743,8 +745,8 @@ public class TypeResolver {
   }
 
   private void compute_solved() {
-    Set<TypeVariable> unsolved_set = new TreeSet<>();
-    Set<TypeVariable> solved_set = new TreeSet<>();
+    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
+    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>();
 
     for (TypeVariable var : typeVariableList) {
 
@@ -762,8 +764,8 @@ public class TypeResolver {
   }
 
   private void refresh_solved() throws TypeException {
-    Set<TypeVariable> unsolved_set = new TreeSet<>();
-    Set<TypeVariable> solved_set = new TreeSet<>(solved);
+    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
+    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>(solved);
 
     for (TypeVariable var : unsolved) {
 
@@ -785,12 +787,12 @@ public class TypeResolver {
   private void categorize() throws TypeException {
     refresh_solved();
 
-    single_soft_parent = new LinkedList<>();
-    single_hard_parent = new LinkedList<>();
-    multiple_parents = new LinkedList<>();
-    single_child_not_null = new LinkedList<>();
-    single_null_child = new LinkedList<>();
-    multiple_children = new LinkedList<>();
+    single_soft_parent = new LinkedList<TypeVariable>();
+    single_hard_parent = new LinkedList<TypeVariable>();
+    multiple_parents = new LinkedList<TypeVariable>();
+    single_child_not_null = new LinkedList<TypeVariable>();
+    single_null_child = new LinkedList<TypeVariable>();
+    multiple_children = new LinkedList<TypeVariable>();
 
     for (TypeVariable var : unsolved) {
       // parent category

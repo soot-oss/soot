@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -66,25 +66,21 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
 
   public static String dependancies[] = new String[] { "bb.jbco_j2bl", "bb.jbco_ctbcb", "bb.jbco_ful", "bb.lp" };
 
-  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_ctbcb";
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public void outputSummary() {
     out.println("Total try blocks found: " + totalcount);
     out.println("Combined TryCatches: " + changedcount);
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
@@ -94,8 +90,8 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
 
     int trapCount = 0;
     PatchingChain<Unit> units = b.getUnits();
-    ArrayList<Unit> headList = new ArrayList<>();
-    ArrayList<Trap> trapList = new ArrayList<>();
+    ArrayList<Unit> headList = new ArrayList<Unit>();
+    ArrayList<Trap> trapList = new ArrayList<Trap>();
     Iterator<Trap> traps = b.getTraps().iterator();
 
     // build list of heads and corresponding traps
@@ -135,7 +131,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     Unit first = null;
     Iterator<Unit> uit = units.iterator();
     while (uit.hasNext()) {
-      Unit unit = uit.next();
+      Unit unit = (Unit) uit.next();
       if (!(unit instanceof IdentityInst)) {
         break;
       }
@@ -145,7 +141,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       first = Baf.v().newNopInst();
       units.insertBefore(first, units.getFirst());
     } else {
-      first = units.getSuccOf(first);
+      first = (Unit) units.getSuccOf(first);
     }
 
     Collection<Local> locs = b.getLocals();
@@ -197,7 +193,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       units.add(pushZero);
       units.add(storZero);
 
-      Stack<Local> varsToLoad = new Stack<>();
+      Stack<Local> varsToLoad = new Stack<Local>();
       s = stackHeightsBefore.get(begUnit);
       if (s.size() > 0) {
         for (int i = 0; i < s.size(); i++) {
@@ -216,7 +212,8 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       units.add(Baf.v().newGotoInst(begUnit));
 
       // for each pred of the beginUnit of the try, we must insert goto initializer
-      for (Unit pred : l) {
+      for (int i = 0; i < l.size(); i++) {
+        Unit pred = l.get(i);
         if (isIf(pred)) {
           TargetArgInst ifPred = ((TargetArgInst) pred);
           if (ifPred.getTarget() == begUnit) {
@@ -241,7 +238,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       units.insertBefore(Baf.v().newPopInst(RefType.v()), begUnit);
 
       while (varsToLoad.size() > 0) {
-        Local varLocal = varsToLoad.pop();
+        Local varLocal = (Local) varsToLoad.pop();
         units.insertBefore(Baf.v().newLoadInst(varLocal.getType(), varLocal), begUnit);
       }
 

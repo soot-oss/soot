@@ -1,7 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -12,12 +10,12 @@ import java.util.List;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,6 +33,8 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
 import soot.toolkits.scalar.Pair;
+
+import java.util.List;
 
 /**
  * AssignStmt - Store a expression to a local
@@ -80,15 +80,13 @@ public class CilStLocInstruction extends AbstractCilnstruction {
         // create this cast, to validate successfully
         if (value instanceof Local
                 && !variable.getType().toString().equals(value.getType().toString())
-                && dotnetBody.variableManager.localsToCastContains(((Local)value).getName())) {
-          value = Jimple.v().newCastExpr(value, variable.getType());
-        }
+                && dotnetBody.variableManager.localsToCastContains(((Local)value).getName()))
+            value = Jimple.v().newCastExpr(value, variable.getType());
         // for validation, because array = obj, where array typeof byte[] and obj typeof System.Object
         if (value instanceof Local
                 && value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-                && !variable.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
-          value = Jimple.v().newCastExpr(value, variable.getType());
-        }
+                && !variable.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT))
+            value = Jimple.v().newCastExpr(value, variable.getType());
 
         AssignStmt astm = Jimple.v().newAssignStmt(variable, value);
         jb.getUnits().add(astm);

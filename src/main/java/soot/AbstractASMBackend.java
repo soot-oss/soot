@@ -47,7 +47,6 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
-
 import soot.asm.AsmUtil;
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
@@ -88,7 +87,7 @@ import soot.util.backend.SootASMClassWriter;
  */
 public abstract class AbstractASMBackend {
 
-  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<>();
+  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<SootMethod, BafBody>();
   // The SootClass that is to be converted into bytecode
   protected final SootClass sc;
   // The Java version to be used for generating this class
@@ -298,7 +297,7 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for all methods of the class
    */
   protected void generateMethods() {
-    List<SootMethod> sortedMethods = new ArrayList<>(sc.getMethods());
+    List<SootMethod> sortedMethods = new ArrayList<SootMethod>(sc.getMethods());
     Collections.sort(sortedMethods, new SootMethodComparator());
     for (SootMethod sm : sortedMethods) {
       if (sm.isPhantom()) {
@@ -416,7 +415,7 @@ public abstract class AbstractASMBackend {
     if (!Options.v().no_output_inner_classes_attribute()) {
       InnerClassAttribute ica = (InnerClassAttribute) sc.getTag(InnerClassAttribute.NAME);
       if (ica != null) {
-        List<InnerClassTag> sortedTags = new ArrayList<>(ica.getSpecs());
+        List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
         Collections.sort(sortedTags, new SootInnerClassComparator());
         writeInnerClassTags(sortedTags);
       } else {
@@ -432,7 +431,7 @@ public abstract class AbstractASMBackend {
 
   /**
    * Write out the given sorted list of inner class tags
-   *
+   * 
    * @param sortedTags
    *          The sorted list of inner class tags
    */

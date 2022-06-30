@@ -13,12 +13,12 @@ import java.util.Collections;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -49,7 +49,6 @@ public class QueueReader<E> implements java.util.Iterator<E> {
   /**
    * Returns (and removes) the next object in the queue, or null if there are none.
    */
-  @Override
   @SuppressWarnings("unchecked")
   public E next() {
     Object ret = null;
@@ -84,7 +83,6 @@ public class QueueReader<E> implements java.util.Iterator<E> {
   }
 
   /** Returns true iff there is currently another object in the queue. */
-  @Override
   @SuppressWarnings("unchecked")
   public boolean hasNext() {
     do {
@@ -162,15 +160,13 @@ public class QueueReader<E> implements java.util.Iterator<E> {
     }
   }
 
-  @Override
   @SuppressWarnings("unchecked")
   public void remove() {
     q[index - 1] = (E) ChunkedQueue.DELETED_CONST;
   }
 
-  @Override
   public QueueReader<E> clone() {
-    return new QueueReader<>(q, index);
+    return new QueueReader<E>(q, index);
   }
 
   @Override

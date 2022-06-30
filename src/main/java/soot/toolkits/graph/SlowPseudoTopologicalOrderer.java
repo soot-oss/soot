@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -48,10 +48,10 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
 
   private static abstract class AbstractOrderBuilder<N> {
 
-    protected static enum Color { WHITE, GRAY, BLACK }
+    protected static enum Color { WHITE, GRAY, BLACK };
 
-    protected final Map<N, Color> stmtToColor = new HashMap<>();
-    protected final LinkedList<N> order = new LinkedList<>();
+    protected final Map<N, Color> stmtToColor = new HashMap<N, Color>();
+    protected final LinkedList<N> order = new LinkedList<N>();
     protected final DirectedGraph<N> graph;
     protected final boolean reverse;
 
@@ -64,7 +64,7 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
 
     /**
      * Orders in pseudo-topological order.
-     *
+     * 
      * @return an ordered list of the graph's nodes.
      */
     public LinkedList<N> computeOrder() {
@@ -85,7 +85,7 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
 
   private static class ForwardOrderBuilder<N> extends AbstractOrderBuilder<N> {
 
-    private final HashMap<N, List<N>> succsMap = new HashMap<>();
+    private final HashMap<N, List<N>> succsMap = new HashMap<N, List<N>>();
     private List<N> reverseOrder;
 
     /**
@@ -98,12 +98,11 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
 
     /**
      * Orders in pseudo-topological order.
-     *
+     * 
      * @return an ordered list of the graph's nodes.
      */
-    @Override
     public LinkedList<N> computeOrder() {
-      reverseOrder = (new ReverseOrderBuilder<>(graph)).computeOrder();
+      reverseOrder = (new ReverseOrderBuilder<N>(graph)).computeOrder();
       return super.computeOrder();
     }
 
@@ -113,8 +112,8 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
     // Simulates recursion with a stack.
     @Override
     protected void visitNode(N startStmt) {
-      LinkedList<N> stmtStack = new LinkedList<>();
-      LinkedList<Integer> indexStack = new LinkedList<>();
+      LinkedList<N> stmtStack = new LinkedList<N>();
+      LinkedList<Integer> indexStack = new LinkedList<Integer>();
 
       stmtToColor.put(startStmt, Color.GRAY);
 
@@ -145,7 +144,7 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
         } else {
           List<N> orderedSuccs = succsMap.get(toVisitNode);
           if (orderedSuccs == null) {
-            orderedSuccs = new LinkedList<>();
+            orderedSuccs = new LinkedList<N>();
             succsMap.put(toVisitNode, orderedSuccs);
             /* make ordered succs */
 
@@ -190,8 +189,8 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
 
     @Override
     protected void visitNode(N startStmt) {
-      LinkedList<N> stmtStack = new LinkedList<>();
-      LinkedList<Integer> indexStack = new LinkedList<>();
+      LinkedList<N> stmtStack = new LinkedList<N>();
+      LinkedList<Integer> indexStack = new LinkedList<Integer>();
 
       stmtToColor.put(startStmt, Color.GRAY);
 
@@ -253,7 +252,6 @@ public class SlowPseudoTopologicalOrderer<N> implements Orderer<N> {
   /**
    * @deprecated use {@link #SlowPseudoTopologicalOrderer()} instead
    */
-  @Deprecated
   public SlowPseudoTopologicalOrderer(boolean isReversed) {
     this.mIsReversed = isReversed;
   }

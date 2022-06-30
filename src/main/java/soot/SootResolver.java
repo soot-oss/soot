@@ -11,12 +11,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -48,10 +48,10 @@ public class SootResolver {
   private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
 
   /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<>();
+  protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
   /** Maps each resolved class to a list of all references in it. */
-  protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<>();
+  protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<SootClass, Type>();
 
   /** SootClasses waiting to be resolved. */
   @SuppressWarnings("unchecked")
@@ -60,9 +60,9 @@ public class SootResolver {
   private Program program = null;
 
   public SootResolver(Singletons.Global g) {
-    worklist[SootClass.HIERARCHY] = new ArrayDeque<>();
-    worklist[SootClass.SIGNATURES] = new ArrayDeque<>();
-    worklist[SootClass.BODIES] = new ArrayDeque<>();
+    worklist[SootClass.HIERARCHY] = new ArrayDeque<SootClass>();
+    worklist[SootClass.SIGNATURES] = new ArrayDeque<SootClass>();
+    worklist[SootClass.BODIES] = new ArrayDeque<SootClass>();
   }
 
   protected void initializeProgram() {
@@ -124,9 +124,8 @@ public class SootResolver {
    * will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
-    if (className.length() == 0) {
+    if (className.length() == 0)
       throw new RuntimeException("Classname must not be empty!");
-    }
     final Scene scene = Scene.v();
     if (scene.containsClass(className)) {
       return scene.getSootClass(className);
@@ -205,7 +204,7 @@ public class SootResolver {
       }
       // The ArrayDeque can grow particularly large but the implementation will
       // never shrink the backing array, leaving a possibly large memory leak.
-      worklist[i] = new ArrayDeque<>(0);
+      worklist[i] = new ArrayDeque<SootClass>(0);
     }
   }
 

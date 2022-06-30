@@ -10,12 +10,12 @@ package soot.dotnet.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,12 +34,12 @@ import java.util.ArrayList;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -104,11 +104,9 @@ public class CatchFilterHandlerBody {
 
     // replace return stmts with if/goto to skip handler or execute
     ArrayList<Unit> tmpToInsert = new ArrayList<>();
-    for (Unit unit : handlerFilterContainerBlockBody.getUnits()) {
-      if (unit instanceof ReturnStmt) {
+    for (Unit unit : handlerFilterContainerBlockBody.getUnits())
+      if (unit instanceof ReturnStmt)
         tmpToInsert.add(unit);
-      }
-    }
     // will only run once or not at all
     for (Unit returnStmt : tmpToInsert) {
       // get return value and check if 0
@@ -145,7 +143,7 @@ public class CatchFilterHandlerBody {
 
   /**
    * Check if given unit "exists a method"
-   *
+   * 
    * @param unit
    * @return
    */

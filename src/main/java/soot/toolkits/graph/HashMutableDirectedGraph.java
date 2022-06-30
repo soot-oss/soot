@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * HashMap based implementation of a MutableBlockGraph.
- *
+ * 
  * @param <N>
  */
 public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
@@ -57,29 +57,29 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
   private static <A, B> Map<A, Set<B>> deepCopy(Map<A, Set<B>> in) {
     HashMap<A, Set<B>> retVal = new HashMap<>(in);
     for (Map.Entry<A, Set<B>> e : retVal.entrySet()) {
-      e.setValue(new LinkedHashSet<>(e.getValue()));
+      e.setValue(new LinkedHashSet<B>(e.getValue()));
     }
     return retVal;
   }
 
   public HashMutableDirectedGraph() {
-    this.nodeToPreds = new HashMap<>();
-    this.nodeToSuccs = new HashMap<>();
-    this.heads = new HashSet<>();
-    this.tails = new HashSet<>();
+    this.nodeToPreds = new HashMap<N, Set<N>>();
+    this.nodeToSuccs = new HashMap<N, Set<N>>();
+    this.heads = new HashSet<N>();
+    this.tails = new HashSet<N>();
   }
 
   // copy constructor
   public HashMutableDirectedGraph(HashMutableDirectedGraph<N> orig) {
     this.nodeToPreds = deepCopy(orig.nodeToPreds);
     this.nodeToSuccs = deepCopy(orig.nodeToSuccs);
-    this.heads = new HashSet<>(orig.heads);
-    this.tails = new HashSet<>(orig.tails);
+    this.heads = new HashSet<N>(orig.heads);
+    this.tails = new HashSet<N>(orig.tails);
   }
 
   @Override
   public Object clone() {
-    return new HashMutableDirectedGraph<>(this);
+    return new HashMutableDirectedGraph<N>(this);
   }
 
   /** Removes all nodes and edges. */
@@ -239,12 +239,12 @@ public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {
 
   @Override
   public void removeNode(N node) {
-    for (N n : new ArrayList<>(nodeToSuccs.get(node))) {
+    for (N n : new ArrayList<N>(nodeToSuccs.get(node))) {
       removeEdge(node, n);
     }
     nodeToSuccs.remove(node);
 
-    for (N n : new ArrayList<>(nodeToPreds.get(node))) {
+    for (N n : new ArrayList<N>(nodeToPreds.get(node))) {
       removeEdge(n, node);
     }
     nodeToPreds.remove(node);

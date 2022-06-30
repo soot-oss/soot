@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -61,17 +61,14 @@ class Instruction_Iinc extends Instruction_bytevar {
     name = "iinc";
   }
 
-  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool) + argsep + arg_c;
   }
 
-  @Override
   public int nextOffset(int curr) {
     return super.nextOffset(curr) + ((isWide) ? 2 : 1);
   }
 
-  @Override
   public int parse(byte bc[], int index) {
     index = super.parse(bc, index);
 
@@ -88,7 +85,6 @@ class Instruction_Iinc extends Instruction_bytevar {
     }
   }
 
-  @Override
   public int compile(byte bc[], int index) {
     index = super.compile(bc, index);
     bc[index] = (byte) (arg_c & 0xff);

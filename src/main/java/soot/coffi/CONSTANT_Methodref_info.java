@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,7 +56,6 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
-  @Override
   public int size() {
     return 5;
   }
@@ -69,7 +68,6 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return String representation of this entry.
    * @see cp_info#toString
    */
-  @Override
   public String toString(cp_info constant_pool[]) {
     CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[class_index]);
     CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[name_and_type_index]);
@@ -82,7 +80,6 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return the String "methodref".
    * @see cp_info#typeName
    */
-  @Override
   public String typeName() {
     return "methodref";
   }
@@ -99,7 +96,6 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo
    */
-  @Override
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
     int i;
     if (tag != cp.tag) {
@@ -114,7 +110,6 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
         cp_constant_pool);
   }
 
-  @Override
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
     CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[class_index]);
     CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[name_and_type_index]);
@@ -140,12 +135,10 @@ class CONSTANT_Methodref_info extends cp_info implements ICONSTANT_Methodref_inf
         Scene.v().makeMethodRef(Scene.v().getSootClass(className), name, parameterTypes, returnType, true));
   }
 
-  @Override
   public int getClassIndex() {
     return class_index;
   }
 
-  @Override
   public int getNameAndTypeIndex() {
     return name_and_type_index;
   }

@@ -10,12 +10,12 @@ package soot.tagkit;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -115,7 +115,7 @@ public class CodeAttribute extends JasminAttribute {
 
   /** Returns a list of unit boxes that have tags attached. */
   public List<UnitBox> getUnitBoxes() {
-    List<UnitBox> unitBoxes = new ArrayList<>(mUnits.size());
+    List<UnitBox> unitBoxes = new ArrayList<UnitBox>(mUnits.size());
     for (Unit next : mUnits) {
       unitBoxes.add(Baf.v().newInstBox(next));
     }
@@ -128,7 +128,7 @@ public class CodeAttribute extends JasminAttribute {
       logger.debug("[] JasminAttribute decode...");
     }
 
-    List<byte[]> attributeHunks = new LinkedList<>();
+    List<byte[]> attributeHunks = new LinkedList<byte[]>();
     int attributeSize = 0, tablesize = 0;
     boolean isLabel = attr.startsWith("%");
     StringTokenizer st = new StringTokenizer(attr, "%");

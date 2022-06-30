@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.finders;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,7 +46,6 @@ public class IfFinder implements FactFinder {
     return G.v().soot_dava_toolkits_base_finders_IfFinder();
   }
 
-  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException {
     Dava.v().log("IfFinder::find()");
 
@@ -65,10 +64,10 @@ public class IfFinder implements FactFinder {
 
         body.consume_Condition(as);
 
-        AugmentedStmt succIf = asg.get_AugStmt(ifs.getTarget()), succElse = as.bsuccs.get(0);
+        AugmentedStmt succIf = asg.get_AugStmt(ifs.getTarget()), succElse = (AugmentedStmt) as.bsuccs.get(0);
 
         if (succIf == succElse) {
-          succElse = as.bsuccs.get(1);
+          succElse = (AugmentedStmt) as.bsuccs.get(1);
         }
 
         asg.calculate_Reachability(succIf, succElse, as);
@@ -92,7 +91,7 @@ public class IfFinder implements FactFinder {
             while (fbit.hasNext()) {
               AugmentedStmt fbas = (AugmentedStmt) fbit.next();
 
-              if (!tryBody.contains(fbas)) {
+              if (tryBody.contains(fbas) == false) {
                 fullBody.remove(fbas);
 
                 if (ifBody.contains(fbas)) {
@@ -119,20 +118,20 @@ public class IfFinder implements FactFinder {
       return body;
     }
 
-    LinkedList<AugmentedStmt> worklist = new LinkedList<>();
+    LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
     worklist.addLast(targetBranch);
 
-    while (!worklist.isEmpty()) {
+    while (worklist.isEmpty() == false) {
       AugmentedStmt as = worklist.removeFirst();
 
-      if (!body.contains(as)) {
+      if (body.contains(as) == false) {
         body.add(as);
 
         Iterator sit = as.csuccs.iterator();
         while (sit.hasNext()) {
           AugmentedStmt sas = (AugmentedStmt) sit.next();
 
-          if (!sas.get_Reachers().contains(otherBranch) && sas.get_Dominators().contains(targetBranch)) {
+          if ((sas.get_Reachers().contains(otherBranch) == false) && (sas.get_Dominators().contains(targetBranch) == true)) {
             worklist.addLast(sas);
           }
         }

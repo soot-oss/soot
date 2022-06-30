@@ -16,12 +16,12 @@ import java.util.NoSuchElementException;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,7 +35,7 @@ import soot.util.StringNumberer;
 
 /**
  * Returns the various potential entry points of a Java program.
- *
+ * 
  * @author Ondrej Lhotak
  */
 public class EntryPoints {
@@ -92,7 +92,7 @@ public class EntryPoints {
    * Returns only the application entry points, not including entry points invoked implicitly by the VM.
    */
   public List<SootMethod> application() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
     final Scene sc = Scene.v();
     if (sc.hasMainClass()) {
       SootClass mainClass = sc.getMainClass();
@@ -106,7 +106,7 @@ public class EntryPoints {
 
   /** Returns only the entry points invoked implicitly by the VM. */
   public List<SootMethod> implicit() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
 
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
       return ret;
@@ -136,7 +136,7 @@ public class EntryPoints {
 
   /** Returns all the entry points. */
   public List<SootMethod> all() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
     ret.addAll(application());
     ret.addAll(implicit());
     return ret;
@@ -144,7 +144,7 @@ public class EntryPoints {
 
   /** Returns a list of all static initializers. */
   public List<SootMethod> clinits() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getClasses()) {
       addMethod(ret, cl, sigClinit);
     }
@@ -153,7 +153,7 @@ public class EntryPoints {
 
   /** Returns a list of all constructors taking no arguments. */
   public List<SootMethod> inits() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getClasses()) {
       addMethod(ret, cl, sigInit);
     }
@@ -162,7 +162,7 @@ public class EntryPoints {
 
   /** Returns a list of all constructors. */
   public List<SootMethod> allInits() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getClasses()) {
       for (SootMethod m : cl.getMethods()) {
         if ("<init>".equals(m.getName())) {
@@ -175,7 +175,7 @@ public class EntryPoints {
 
   /** Returns a list of all concrete methods of all application classes. */
   public List<SootMethod> methodsOfApplicationClasses() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getApplicationClasses()) {
       for (SootMethod m : cl.getMethods()) {
         if (m.isConcrete()) {
@@ -190,7 +190,7 @@ public class EntryPoints {
    * Returns a list of all concrete main(String[]) methods of all application classes.
    */
   public List<SootMethod> mainsOfApplicationClasses() {
-    List<SootMethod> ret = new ArrayList<>();
+    List<SootMethod> ret = new ArrayList<SootMethod>();
     for (SootClass cl : Scene.v().getApplicationClasses()) {
       SootMethod m
           = Options.v().src_prec() == Options.src_prec_dotnet ? cl.getMethodUnsafe(DotnetMethod.MAIN_METHOD_SIGNATURE)

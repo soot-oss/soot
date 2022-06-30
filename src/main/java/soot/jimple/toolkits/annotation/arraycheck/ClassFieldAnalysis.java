@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -77,7 +77,7 @@ public class ClassFieldAnalysis {
    */
 
   private final Map<SootClass, Hashtable<SootField, IntValueContainer>> classToFieldInfoMap
-      = new HashMap<>();
+      = new HashMap<SootClass, Hashtable<SootField, IntValueContainer>>();
 
   protected void internalTransform(SootClass c) {
     if (classToFieldInfoMap.containsKey(c)) {
@@ -90,13 +90,13 @@ public class ClassFieldAnalysis {
       logger.debug("[] ClassFieldAnalysis started on : " + start + " for " + c.getPackageName() + c.getName());
     }
 
-    Hashtable<SootField, IntValueContainer> fieldInfoTable = new Hashtable<>();
+    Hashtable<SootField, IntValueContainer> fieldInfoTable = new Hashtable<SootField, IntValueContainer>();
     classToFieldInfoMap.put(c, fieldInfoTable);
 
     /*
      * Who is the candidate for analysis? Int, Array, field. Also it should be PRIVATE now.
      */
-    HashSet<SootField> candidSet = new HashSet<>();
+    HashSet<SootField> candidSet = new HashSet<SootField>();
 
     int arrayTypeFieldNum = 0;
 
@@ -208,7 +208,7 @@ public class ClassFieldAnalysis {
      * field.
      */
 
-    HashMap<Stmt, SootField> stmtfield = new HashMap<>();
+    HashMap<Stmt, SootField> stmtfield = new HashMap<Stmt, SootField>();
 
     {
       Iterator<Unit> unitIt = body.getUnits().iterator();

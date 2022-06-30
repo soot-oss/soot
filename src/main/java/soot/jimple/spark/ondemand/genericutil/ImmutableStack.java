@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.genericutil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 public class ImmutableStack<T> {
 
-  private static final ImmutableStack<Object> EMPTY = new ImmutableStack<>(new Object[0]);
+  private static final ImmutableStack<Object> EMPTY = new ImmutableStack<Object>(new Object[0]);
 
   private static final int MAX_SIZE = Integer.MAX_VALUE;
 
@@ -45,7 +45,6 @@ public class ImmutableStack<T> {
     this.entries = entries;
   }
 
-  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -57,7 +56,6 @@ public class ImmutableStack<T> {
     return false;
   }
 
-  @Override
   public int hashCode() {
     return Util.hashArray(this.entries);
   }
@@ -80,7 +78,7 @@ public class ImmutableStack<T> {
       tmpEntries[MAX_SIZE - 1] = entry;
 
     }
-    return new ImmutableStack<>(tmpEntries);
+    return new ImmutableStack<T>(tmpEntries);
   }
 
   public T peek() {
@@ -94,7 +92,7 @@ public class ImmutableStack<T> {
     int size = entries.length - 1;
     T[] tmpEntries = (T[]) new Object[size];
     System.arraycopy(entries, 0, tmpEntries, 0, size);
-    return new ImmutableStack<>(tmpEntries);
+    return new ImmutableStack<T>(tmpEntries);
   }
 
   public boolean isEmpty() {
@@ -109,7 +107,6 @@ public class ImmutableStack<T> {
     return entries[i];
   }
 
-  @Override
   public String toString() {
     String objArrayToString = Util.objArrayToString(entries);
     assert entries.length <= MAX_SIZE : objArrayToString;
@@ -138,7 +135,7 @@ public class ImmutableStack<T> {
     for (int i = entries.length - 1, j = 0; i >= 0; i--, j++) {
       tmpEntries[j] = entries[i];
     }
-    return new ImmutableStack<>(tmpEntries);
+    return new ImmutableStack<T>(tmpEntries);
   }
 
   @SuppressWarnings("unchecked")
@@ -148,7 +145,7 @@ public class ImmutableStack<T> {
     int size = entries.length - other.entries.length;
     T[] tmpEntries = (T[]) new Object[size];
     System.arraycopy(entries, 0, tmpEntries, 0, size);
-    return new ImmutableStack<>(tmpEntries);
+    return new ImmutableStack<T>(tmpEntries);
   }
 
   @SuppressWarnings("unchecked")
@@ -169,6 +166,6 @@ public class ImmutableStack<T> {
       System.arraycopy(entries, entries.length - numFromThis, tmpEntries, 0, numFromThis);
       System.arraycopy(other.entries, 0, tmpEntries, numFromThis, other.entries.length);
     }
-    return new ImmutableStack<>(tmpEntries);
+    return new ImmutableStack<T>(tmpEntries);
   }
 }

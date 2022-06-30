@@ -1,9 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -14,26 +10,31 @@ import java.util.Map;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.Body;
-import soot.RefType;
-import soot.SootMethod;
-import soot.Trap;
-import soot.Unit;
-import soot.Value;
+
+import soot.*;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.jimple.GotoStmt;
+import soot.jimple.Jimple;
+import soot.jimple.NopStmt;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Try-Finally block: finally block has to be cloned to every exit statement in the paths (rewrite), because in .NET try-catch-finally-fault are blocks
@@ -58,15 +59,12 @@ public class CilTryFinallyInstruction extends AbstractCilnstruction {
         // Restore endunits to original one, due to insert call
         Map<Trap, Unit> tmpTrapEnds = new HashMap<>();
         // store all endUnits of traps, due to insertion of finally blocks. Afterwards change back to ori. endUnit
-        for (Trap trap : tryContainerBlock.getTraps()) {
-          tmpTrapEnds.put(trap, trap.getEndUnit());
-        }
+        for (Trap trap : tryContainerBlock.getTraps())
+            tmpTrapEnds.put(trap, trap.getEndUnit());
         ArrayList<Unit> tmpUnits = new ArrayList<>();
-        for (Unit unit : tryContainerBlock.getUnits()) {
-          if (CilBlockContainer.isExitStmt(unit)) {
-            tmpUnits.add(unit);
-          }
-        }
+        for (Unit unit : tryContainerBlock.getUnits())
+            if (CilBlockContainer.isExitStmt(unit))
+                tmpUnits.add(unit);
         for (Unit unit : tmpUnits) {
             // Set dummy method
             finallyBlockContainerBody.setMethod(new SootMethod("", new ArrayList<>(), RefType.v("")));
@@ -75,9 +73,8 @@ public class CilTryFinallyInstruction extends AbstractCilnstruction {
             // tryContainerBlock.getLocals().addAll(cloneFinallyBlock.getLocals());
             tryContainerBlock.getTraps().addAll(cloneFinallyBlock.getTraps());
         }
-        for (Map.Entry<Trap, Unit> trapMap : tmpTrapEnds.entrySet()) {
-          trapMap.getKey().setEndUnit(trapMap.getValue());
-        }
+        for (Map.Entry<Trap, Unit> trapMap : tmpTrapEnds.entrySet())
+            trapMap.getKey().setEndUnit(trapMap.getValue());
 
         jb.getLocals().addAll(tryContainerBlock.getLocals());
         jb.getUnits().addAll(tryContainerBlock.getUnits());

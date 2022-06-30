@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -64,9 +64,9 @@ public class SmartLocalDefs implements LocalDefs {
 
   public SmartLocalDefs(UnitGraph g, LiveLocals live) {
     this.graph = g;
-    this.localToDefs = new HashMap<>(2 * g.getBody().getLocalCount() + 1);
-    this.liveLocalsAfter = new HashMap<>(2 * g.getBody().getUnits().size() + 1);
-    this.answer = new HashMap<>();
+    this.localToDefs = new HashMap<Local, Set<Unit>>(2 * g.getBody().getLocalCount() + 1);
+    this.liveLocalsAfter = new HashMap<Unit, BitSet>(2 * g.getBody().getUnits().size() + 1);
+    this.answer = new HashMap<Cons<Unit, Local>, List<Unit>>();
 
     final Options op = Options.v();
     if (op.verbose()) {
@@ -117,7 +117,7 @@ public class SmartLocalDefs implements LocalDefs {
 
           List<Unit> lst = intersectionAsList(s1, s2);
           if (!lst.isEmpty()) {
-            this.answer.putIfAbsent(new Cons<>(u, l), lst);
+            this.answer.putIfAbsent(new Cons<Unit, Local>(u, l), lst);
           }
         }
       }
@@ -146,11 +146,11 @@ public class SmartLocalDefs implements LocalDefs {
     if (a == null || b == null || a.isEmpty() || b.isEmpty()) {
       return Collections.<T>emptyList();
     } else if (a.size() < b.size()) {
-      List<T> c = new ArrayList<>(a);
+      List<T> c = new ArrayList<T>(a);
       c.retainAll(b);
       return c;
     } else {
-      List<T> c = new ArrayList<>(b);
+      List<T> c = new ArrayList<T>(b);
       c.retainAll(a);
       return c;
     }
@@ -181,7 +181,7 @@ public class SmartLocalDefs implements LocalDefs {
   private void addDefOf(Local l, Unit u) {
     Set<Unit> s = localToDefs.get(l);
     if (s == null) {
-      localToDefs.put(l, s = new HashSet<>());
+      localToDefs.put(l, s = new HashSet<Unit>());
     }
     s.add(u);
   }
@@ -256,24 +256,24 @@ public class SmartLocalDefs implements LocalDefs {
 
     @Override
     protected Set<Unit> newInitialFlow() {
-      return new HashSet<>();
+      return new HashSet<Unit>();
     }
 
     @Override
     protected Set<Unit> entryInitialFlow() {
-      return new HashSet<>();
+      return new HashSet<Unit>();
     }
   }
 
   @Override
   public List<Unit> getDefsOfAt(Local l, Unit s) {
-    List<Unit> lst = answer.get(new Cons<>(s, l));
+    List<Unit> lst = answer.get(new Cons<Unit, Local>(s, l));
     return lst != null ? lst : Collections.emptyList();
   }
 
   @Override
   public List<Unit> getDefsOf(Local l) {
-    List<Unit> result = new ArrayList<>();
+    List<Unit> result = new ArrayList<Unit>();
     for (Cons<Unit, Local> cons : answer.keySet()) {
       if (cons.cdr() == l) {
         result.addAll(answer.get(cons));

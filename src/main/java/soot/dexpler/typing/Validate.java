@@ -10,12 +10,12 @@ package soot.dexpler.typing;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,8 +63,8 @@ public class Validate {
 
   public static void validateArrays(Body b) {
 
-    Set<DefinitionStmt> definitions = new HashSet<>();
-    Set<Unit> unitWithArrayRef = new HashSet<>();
+    Set<DefinitionStmt> definitions = new HashSet<DefinitionStmt>();
+    Set<Unit> unitWithArrayRef = new HashSet<Unit>();
 
     for (Unit u : b.getUnits()) {
       if (u instanceof DefinitionStmt) {
@@ -82,7 +82,7 @@ public class Validate {
 
     final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(b, true);
 
-    Set<Unit> toReplace = new HashSet<>();
+    Set<Unit> toReplace = new HashSet<Unit>();
 
     for (Unit u : unitWithArrayRef) {
       boolean ok = false;
@@ -95,7 +95,7 @@ public class Validate {
           List<Unit> defs = localDefs.getDefsOfAt(base, u);
 
           // add aliases
-          Set<Unit> alreadyHandled = new HashSet<>();
+          Set<Unit> alreadyHandled = new HashSet<Unit>();
           while (true) {
             boolean isMore = false;
             for (Unit d : defs) {
@@ -206,11 +206,11 @@ public class Validate {
       Unit initLocalUnit = Jimple.v().newAssignStmt(ttt, r);
 
       // call <init> method with a string parameter for message
-      List<String> pTypes = new ArrayList<>();
+      List<String> pTypes = new ArrayList<String>();
       pTypes.add("java.lang.String");
       boolean isStatic = false;
       SootMethodRef mRef = Validate.makeMethodRef("java.lang.Throwable", "<init>", "", pTypes, isStatic);
-      List<Value> parameters = new ArrayList<>();
+      List<Value> parameters = new ArrayList<Value>();
       parameters.add(StringConstant.v("Soot updated this instruction"));
       InvokeExpr ie = Jimple.v().newSpecialInvokeExpr(ttt, mRef, parameters);
       Unit initMethod = Jimple.v().newInvokeStmt(ie);
@@ -241,7 +241,7 @@ public class Validate {
     } else {
       returnType = RefType.v(rType);
     }
-    List<Type> parameterTypes = new ArrayList<>();
+    List<Type> parameterTypes = new ArrayList<Type>();
     for (String p : pTypes) {
       parameterTypes.add(RefType.v(p));
     }

@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,10 +32,10 @@ import polyglot.visit.NodeVisitor;
 
 /*
  * TODO compute avarge complexity weighted by depth similar to expression complexity
- *
- *
+ * 
+ * 
  * A unary boolean condition should have the complexity (BooleanLit) 1
- * A noted condition (!)  +0.5
+ * A noted condition (!)  +0.5 
  * A binary relational operation ( < > <= >= == !=) +0.5
  * A boolean logical operator ( AND and OR) +1.0
  */
@@ -47,19 +47,16 @@ public class ConditionComplexityMetric extends ASTMetric {
     super(node);
   }
 
-  @Override
   public void reset() {
     loopComplexity = ifComplexity = 0;
   }
 
-  @Override
   public void addMetrics(ClassData data) {
     data.addMetric(new MetricData("Loop-Cond-Complexity", new Integer(loopComplexity)));
     data.addMetric(new MetricData("If-Cond-Complexity", new Integer(ifComplexity)));
     data.addMetric(new MetricData("Total-Cond-Complexity", new Integer(loopComplexity + ifComplexity)));
   }
 
-  @Override
   public NodeVisitor enter(Node parent, Node n) {
     if (n instanceof Loop) {
       Expr expr = ((Loop) n).cond();

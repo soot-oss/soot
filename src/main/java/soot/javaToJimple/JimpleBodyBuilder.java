@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,6 +32,7 @@ import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Try;
 import polyglot.util.IdentityKey;
+
 import soot.Local;
 import soot.LocalGenerator;
 import soot.Scene;
@@ -56,14 +57,14 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   // from synch try blocks
 
   protected ArrayList<Trap> exceptionTable; // list of exceptions
-  protected Stack<Stmt> endControlNoop = new Stack<>(); // for break
-  protected Stack<Stmt> condControlNoop = new Stack<>(); // continue
+  protected Stack<Stmt> endControlNoop = new Stack<Stmt>(); // for break
+  protected Stack<Stmt> condControlNoop = new Stack<Stmt>(); // continue
   protected Stack<Value> monitorStack; // for synchronized blocks
   protected Stack<Try> tryStack; // for try stmts in case of returns
   protected Stack<Try> catchStack; // for catch stmts in case of returns
 
-  protected Stack<Stmt> trueNoop = new Stack<>();
-  protected Stack<Stmt> falseNoop = new Stack<>();
+  protected Stack<Stmt> trueNoop = new Stack<Stmt>();
+  protected Stack<Stmt> falseNoop = new Stack<Stmt>();
 
   protected HashMap<String, Stmt> labelBreakMap; // for break label --> nop to
   // jump to
@@ -71,7 +72,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   // nop to jump to
 
   protected HashMap<polyglot.ast.Stmt, Stmt> labelMap;
-  protected HashMap<IdentityKey, Local> localsMap = new HashMap<>(); // localInst
+  protected HashMap<IdentityKey, Local> localsMap = new HashMap<IdentityKey, Local>(); // localInst
   // -->
   // soot
   // local
@@ -1102,8 +1103,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     polyglot.ast.Case[] caseArray = new polyglot.ast.Case[switchStmt.elements().size()];
     soot.jimple.Stmt[] targetsArray = new soot.jimple.Stmt[switchStmt.elements().size()];
 
-    ArrayList<Stmt> targets = new ArrayList<>();
-    HashMap<Object, Stmt> targetsMap = new HashMap<>();
+    ArrayList<Stmt> targets = new ArrayList<Stmt>();
+    HashMap<Object, Stmt> targetsMap = new HashMap<Object, Stmt>();
     int counter = 0;
     Iterator it = switchStmt.elements().iterator();
     while (it.hasNext()) {
@@ -1303,7 +1304,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
         // handle monitor exits before break if necessary
         if (monitorStack != null) {
-          Stack<Local> putBack = new Stack<>();
+          Stack<Local> putBack = new Stack<Local>();
           while (!monitorStack.isEmpty()) {
             soot.Local exitVal = (soot.Local) monitorStack.pop();
             putBack.push(exitVal);
@@ -1330,7 +1331,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
         // handle monitor exits before continue if necessary
         if (monitorStack != null) {
-          Stack<Local> putBack = new Stack<>();
+          Stack<Local> putBack = new Stack<Local>();
           while (!monitorStack.isEmpty()) {
             soot.Local exitVal = (soot.Local) monitorStack.pop();
             putBack.push(exitVal);
@@ -1374,17 +1375,17 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
 
     if (labelMap == null) {
-      labelMap = new HashMap<>();
+      labelMap = new HashMap<polyglot.ast.Stmt, Stmt>();
     }
 
     labelMap.put(stmt, noop);
 
     if (labelBreakMap == null) {
-      labelBreakMap = new HashMap<>();
+      labelBreakMap = new HashMap<String, Stmt>();
     }
 
     if (labelContinueMap == null) {
-      labelContinueMap = new HashMap<>();
+      labelContinueMap = new HashMap<String, Stmt>();
     }
 
     labelContinueMap.put(label, noop);
@@ -1524,16 +1525,16 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     body.getUnits().add(enterMon);
 
     if (beforeReturn == null) {
-      beforeReturn = new ArrayList<>();
+      beforeReturn = new ArrayList<List<Stmt>>();
     }
     if (afterReturn == null) {
-      afterReturn = new ArrayList<>();
+      afterReturn = new ArrayList<List<Stmt>>();
     }
     beforeReturn.add(new ArrayList<Stmt>());
     afterReturn.add(new ArrayList<Stmt>());
 
     if (monitorStack == null) {
-      monitorStack = new Stack<>();
+      monitorStack = new Stack<Value>();
     }
     monitorStack.push(sootExpr);
 
@@ -1633,7 +1634,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     // handle monitor exits before return if necessary
     if (monitorStack != null) {
-      Stack<Local> putBack = new Stack<>();
+      Stack<Local> putBack = new Stack<Local>();
       while (!monitorStack.isEmpty()) {
         soot.Local exitVal = (soot.Local) monitorStack.pop();
         putBack.push(exitVal);
@@ -1761,7 +1762,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     body.getUnits().add(noop1);
 
     if (tryStack == null) {
-      tryStack = new Stack<>();
+      tryStack = new Stack<Try>();
     }
     tryStack.push(tryStmt);
     createBlock(tryBlock);
@@ -1790,7 +1791,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       createCatchFormal(catchBlock.formal());
 
       if (catchStack == null) {
-        catchStack = new Stack<>();
+        catchStack = new Stack<Try>();
       }
       catchStack.push(tryStmt);
       createBlock(catchBlock.body());
@@ -1813,7 +1814,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
    */
   private void createTryCatchFinally(polyglot.ast.Try tryStmt) {
 
-    HashMap<Stmt, Stmt> gotoMap = new HashMap<>();
+    HashMap<Stmt, Stmt> gotoMap = new HashMap<Stmt, Stmt>();
 
     // try
     polyglot.ast.Block tryBlock = tryStmt.tryBlock();
@@ -1823,7 +1824,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     body.getUnits().add(noop1);
 
     if (tryStack == null) {
-      tryStack = new Stack<>();
+      tryStack = new Stack<Try>();
     }
     tryStack.push(tryStmt);
     createBlock(tryBlock);
@@ -1874,7 +1875,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       body.getUnits().add(catchStmtsNoop);
 
       if (catchStack == null) {
-        catchStack = new Stack<>();
+        catchStack = new Stack<Try>();
       }
       catchStack.push(tryStmt);
       createBlock(catchBlock.body());
@@ -1963,7 +1964,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   private void addToExceptionList(soot.jimple.Stmt from, soot.jimple.Stmt to, soot.jimple.Stmt with,
       soot.SootClass exceptionClass) {
     if (exceptionTable == null) {
-      exceptionTable = new ArrayList<>();
+      exceptionTable = new ArrayList<Trap>();
     }
     soot.Trap trap = soot.jimple.Jimple.v().newTrap(exceptionClass, from, to, with);
     exceptionTable.add(trap);

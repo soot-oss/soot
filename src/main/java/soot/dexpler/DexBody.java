@@ -29,6 +29,8 @@ package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
+import com.google.common.collect.ArrayListMultimap;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,8 +62,6 @@ import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
 import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ArrayListMultimap;
 
 import soot.Body;
 import soot.DoubleType;
@@ -186,7 +186,7 @@ public class DexBody {
   private final ArrayListMultimap<Integer, RegDbgEntry> localDebugs;
 
   // detect array/instructions overlapping obfuscation
-  protected List<PseudoInstruction> pseudoInstructionData = new ArrayList<>();
+  protected List<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
 
   PseudoInstruction isAddressInData(int a) {
     for (PseudoInstruction pi : pseudoInstructionData) {
@@ -244,8 +244,8 @@ public class DexBody {
 
     List<? extends MethodParameter> parameters = method.getParameters();
     if (parameters != null) {
-      parameterNames = new ArrayList<>();
-      parameterTypes = new ArrayList<>();
+      parameterNames = new ArrayList<String>();
+      parameterTypes = new ArrayList<Type>();
       for (MethodParameter param : method.getParameters()) {
         parameterNames.add(param.getName());
         parameterTypes.add(DexType.toSoot(param.getType()));
@@ -262,10 +262,10 @@ public class DexBody {
       numParameterRegisters--;
     }
 
-    instructions = new ArrayList<>();
-    instructionAtAddress = new HashMap<>();
+    instructions = new ArrayList<DexlibAbstractInstruction>();
+    instructionAtAddress = new HashMap<Integer, DexlibAbstractInstruction>();
     localDebugs = ArrayListMultimap.create();
-    takenLocalNames = new HashSet<>();
+    takenLocalNames = new HashSet<String>();
 
     registerLocals = new Local[numRegisters];
 
@@ -344,7 +344,7 @@ public class DexBody {
 
   /** Return the types that are used in this body. */
   public Set<Type> usedTypes() {
-    Set<Type> types = new HashSet<>();
+    Set<Type> types = new HashSet<Type>();
     for (DexlibAbstractInstruction i : instructions) {
       types.addAll(i.introducedTypes());
     }
@@ -490,8 +490,8 @@ public class DexBody {
 
     JBOptions jbOptions = new JBOptions(PhaseOptions.v().getPhaseOptions("jb"));
     jBody = (JimpleBody) b;
-    deferredInstructions = new ArrayList<>();
-    instructionsToRetype = new HashSet<>();
+    deferredInstructions = new ArrayList<DeferableInstruction>();
+    instructionsToRetype = new HashSet<RetypeableInstruction>();
 
     if (jbOptions.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
@@ -506,7 +506,7 @@ public class DexBody {
 
     // process method parameters and generate Jimple locals from Dalvik
     // registers
-    List<Local> paramLocals = new LinkedList<>();
+    List<Local> paramLocals = new LinkedList<Local>();
     if (!isStatic) {
       int thisRegister = numRegisters - numParameterRegisters - 1;
 
@@ -608,7 +608,7 @@ public class DexBody {
     ClassPath cp = null;
     if (isOdex) {
       String[] sootClasspath = options.soot_classpath().split(File.pathSeparator);
-      List<String> classpathList = new ArrayList<>();
+      List<String> classpathList = new ArrayList<String>();
       for (String str : sootClasspath) {
         classpathList.add(str);
       }
@@ -786,7 +786,10 @@ public class DexBody {
             if (op1 instanceof Constant && op2 instanceof Local) {
               Local l = (Local) op2;
               Type ltype = l.getType();
-              if ((ltype instanceof PrimType) || !(op1 instanceof IntConstant)) {
+              if (ltype instanceof PrimType) {
+                continue;
+              }
+              if (!(op1 instanceof IntConstant)) {
                 // null is
                 // IntConstant(0)
                 // in Dalvik
@@ -801,7 +804,10 @@ public class DexBody {
             } else if (op1 instanceof Local && op2 instanceof Constant) {
               Local l = (Local) op1;
               Type ltype = l.getType();
-              if ((ltype instanceof PrimType) || !(op2 instanceof IntConstant)) {
+              if (ltype instanceof PrimType) {
+                continue;
+              }
+              if (!(op2 instanceof IntConstant)) {
                 // null is
                 // IntConstant(0)
                 // in Dalvik
@@ -840,8 +846,8 @@ public class DexBody {
       // For null_type locals: replace their use by NullConstant()
       List<ValueBox> uses = jBody.getUseBoxes();
       // List<ValueBox> defs = jBody.getDefBoxes();
-      List<ValueBox> toNullConstantify = new ArrayList<>();
-      List<Local> toRemove = new ArrayList<>();
+      List<ValueBox> toNullConstantify = new ArrayList<ValueBox>();
+      List<Local> toRemove = new ArrayList<Local>();
       for (Local l : jBody.getLocals()) {
 
         if (l.getType() instanceof NullType) {
@@ -1055,7 +1061,7 @@ public class DexBody {
       throw new IllegalArgumentException("Instruction " + instruction + " not part of this body.");
     }
 
-    List<DexlibAbstractInstruction> l = new ArrayList<>();
+    List<DexlibAbstractInstruction> l = new ArrayList<DexlibAbstractInstruction>();
     l.addAll(instructions.subList(0, i));
     Collections.reverse(l);
     return l;

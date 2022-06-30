@@ -10,12 +10,12 @@ package soot.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,10 +50,10 @@ public class IterableMap<K, V> implements Map<K, V> {
   }
 
   public IterableMap(int initialCapacity, float loadFactor) {
-    content_map = new HashMap<>(initialCapacity, loadFactor);
-    back_map = new HashMap<>(initialCapacity, loadFactor);
-    key_chain = new HashChain<>();
-    value_chain = new HashChain<>();
+    content_map = new HashMap<K, V>(initialCapacity, loadFactor);
+    back_map = new HashMap<V, HashChain<K>>(initialCapacity, loadFactor);
+    key_chain = new HashChain<K>();
+    value_chain = new HashChain<V>();
   }
 
   @Override
@@ -188,11 +188,11 @@ public class IterableMap<K, V> implements Map<K, V> {
 
         @Override
         public boolean remove(Object o) {
-          if (!value_chain.contains(o)) {
+          if (value_chain.contains(o) == false) {
             return false;
           }
 
-          HashChain c = IterableMap.this.back_map.get(o);
+          HashChain c = (HashChain) IterableMap.this.back_map.get(o);
 
           for (Iterator it = c.snapshotIterator(); it.hasNext();) {
             Object ko = it.next();
@@ -232,7 +232,7 @@ public class IterableMap<K, V> implements Map<K, V> {
 
       kc = back_map.get(value);
       if (kc == null) {
-        kc = new HashChain<>();
+        kc = new HashChain<K>();
         back_map.put(value, kc);
         value_chain.add(value);
       }
@@ -245,7 +245,7 @@ public class IterableMap<K, V> implements Map<K, V> {
 
       HashChain<K> kc = back_map.get(value);
       if (kc == null) {
-        kc = new HashChain<>();
+        kc = new HashChain<K>();
         back_map.put(value, kc);
         value_chain.add(value);
       }
@@ -297,7 +297,7 @@ public class IterableMap<K, V> implements Map<K, V> {
       values = new AbstractCollection<V>() {
         @Override
         public Iterator<V> iterator() {
-          return new Mapping_Iterator<>(IterableMap.this.key_chain, IterableMap.this.content_map);
+          return new Mapping_Iterator<K, V>(IterableMap.this.key_chain, IterableMap.this.content_map);
         }
 
         @Override

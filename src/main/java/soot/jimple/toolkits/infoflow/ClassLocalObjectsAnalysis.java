@@ -10,12 +10,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -110,7 +110,7 @@ public class ClassLocalObjectsAnalysis {
     this.uf = uf;
     this.sootClass = sootClass;
 
-    this.methodToMethodLocalObjectsAnalysis = new HashMap<>();
+    this.methodToMethodLocalObjectsAnalysis = new HashMap<SootMethod, SmartMethodLocalObjectsAnalysis>();
     this.methodToContext = null;
 
     this.allMethods = null;
@@ -171,7 +171,7 @@ public class ClassLocalObjectsAnalysis {
     }
 
     // Get list of internal methods
-    internalMethods = new ArrayList<>();
+    internalMethods = new ArrayList<SootMethod>();
     for (SootMethod method : allMethods) {
       if (!externalMethods.contains(method)) {
         internalMethods.add(method);
@@ -195,7 +195,7 @@ public class ClassLocalObjectsAnalysis {
     }
 
     // Get list of internal fields
-    internalFields = new ArrayList<>();
+    internalFields = new ArrayList<SootField>();
     for (SootField field : allFields) {
       if (!externalFields.contains(field)) {
         internalFields.add(field);
@@ -209,7 +209,7 @@ public class ClassLocalObjectsAnalysis {
     ReachableMethods rm = Scene.v().getReachableMethods();
 
     // Get list of reachable methods declared in this class
-    List<SootMethod> allMethods = new ArrayList<>();
+    List<SootMethod> allMethods = new ArrayList<SootMethod>();
     Iterator methodsIt = sc.methodIterator();
     while (methodsIt.hasNext()) {
       SootMethod method = (SootMethod) methodsIt.next();
@@ -241,7 +241,7 @@ public class ClassLocalObjectsAnalysis {
   public static List<SootField> getAllFields(SootClass sc) {
     // Get list of reachable methods declared in this class
     // Also get list of fields declared in this class
-    List<SootField> allFields = new ArrayList<>();
+    List<SootField> allFields = new ArrayList<SootField>();
     for (SootField field : sc.getFields()) {
       allFields.add(field);
     }
@@ -272,8 +272,8 @@ public class ClassLocalObjectsAnalysis {
     // This is repeated until no fields move for a complete iteration.
 
     // Populate localFields and sharedFields with fields of this class
-    localFields = new ArrayList<>();
-    sharedFields = new ArrayList<>();
+    localFields = new ArrayList<SootField>();
+    sharedFields = new ArrayList<SootField>();
     Iterator<SootField> fieldsIt = allFields.iterator();
     while (fieldsIt.hasNext()) {
       SootField field = fieldsIt.next();
@@ -285,8 +285,8 @@ public class ClassLocalObjectsAnalysis {
     }
 
     // Add inner fields to localFields and sharedFields, if present
-    localInnerFields = new ArrayList<>();
-    sharedInnerFields = new ArrayList<>();
+    localInnerFields = new ArrayList<SootField>();
+    sharedInnerFields = new ArrayList<SootField>();
     Iterator<SootMethod> methodsIt = allMethods.iterator();
     while (methodsIt.hasNext()) {
       SootMethod method = methodsIt.next();
@@ -511,11 +511,11 @@ public class ClassLocalObjectsAnalysis {
 
   private void propagate() {
     // Initialize worklist
-    ArrayList<SootMethod> worklist = new ArrayList<>();
+    ArrayList<SootMethod> worklist = new ArrayList<SootMethod>();
     worklist.addAll(entryMethods);
 
     // Initialize set of contexts
-    methodToContext = new HashMap<>(); // TODO: add the ability to share a map with another
+    methodToContext = new HashMap<SootMethod, CallLocalityContext>(); // TODO: add the ability to share a map with another
                                                                       // CLOA to save memory (be
                                                                       // careful of context-sensitive call graph)
     for (SootMethod method : worklist) {
@@ -528,7 +528,7 @@ public class ClassLocalObjectsAnalysis {
       logger.debug("CLOA: Starting Propagation at " + start);
     }
     while (worklist.size() > 0) {
-      ArrayList<SootMethod> newWorklist = new ArrayList<>();
+      ArrayList<SootMethod> newWorklist = new ArrayList<SootMethod>();
       for (SootMethod containingMethod : worklist) {
         CallLocalityContext containingContext = methodToContext.get(containingMethod);
 
@@ -537,7 +537,7 @@ public class ClassLocalObjectsAnalysis {
         }
 
         // Calculate the context for each invoke stmt in the containingMethod
-        Map<Stmt, CallLocalityContext> invokeToContext = new HashMap<>();
+        Map<Stmt, CallLocalityContext> invokeToContext = new HashMap<Stmt, CallLocalityContext>();
         for (Iterator edgesIt = Scene.v().getCallGraph().edgesOutOf(containingMethod); edgesIt.hasNext();) {
           Edge e = (Edge) edgesIt.next();
           if (!e.src().getDeclaringClass().isApplicationClass() || e.srcStmt() == null) {

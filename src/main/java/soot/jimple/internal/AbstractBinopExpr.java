@@ -10,12 +10,12 @@ package soot.jimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -88,7 +88,7 @@ public abstract class AbstractBinopExpr implements Expr {
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<>();
+    List<ValueBox> list = new ArrayList<ValueBox>();
 
     list.addAll(op1Box.getValue().getUseBoxes());
     list.add(op1Box);
@@ -177,9 +177,8 @@ public abstract class AbstractBinopExpr implements Expr {
 
     // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2)) {
+      if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2))
         return tyInt;
-      }
     }
     return UnknownType.v();
 
@@ -187,25 +186,23 @@ public abstract class AbstractBinopExpr implements Expr {
 
   /**
    * Returns true if the superclass of the given Type is a System.Enum (.Net)
-   *
+   * 
    * @param t
    * @return
    */
   public boolean isSuperclassSystemEnum(Type t) {
-    if ((Options.v().src_prec() != Options.src_prec_dotnet) || !(t instanceof RefType)) {
+    if (Options.v().src_prec() != Options.src_prec_dotnet)
       return false;
-    }
+    if (!(t instanceof RefType))
+      return false;
     SootClass sootClass = ((RefType) t).getSootClass();
-    if (sootClass == null) {
+    if (sootClass == null)
       return false;
-    }
     SootClass superclass = sootClass.getSuperclass();
-    if (superclass == null) {
+    if (superclass == null)
       return false;
-    }
-    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM)) {
+    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
       return true;
-    }
     return false;
   }
 

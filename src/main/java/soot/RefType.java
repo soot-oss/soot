@@ -12,12 +12,12 @@ import java.util.ArrayDeque;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -242,11 +242,9 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   @Override
   public Type getArrayElementType() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      if (DotnetBasicTypes.SYSTEM_OBJECT.equals(className) || DotnetBasicTypes.SYSTEM_ICLONEABLE.equals(className)) {
+    if (Options.v().src_prec() == Options.src_prec_dotnet)
+      if (DotnetBasicTypes.SYSTEM_OBJECT.equals(className) || DotnetBasicTypes.SYSTEM_ICLONEABLE.equals(className))
         return Scene.v().getObjectType();
-      }
-    }
 
     if (JavaBasicTypes.JAVA_LANG_OBJECT.equals(className) || JavaBasicTypes.JAVA_IO_SERIALIZABLE.equals(className)
         || JavaBasicTypes.JAVA_LANG_CLONABLE.equals(className)) {

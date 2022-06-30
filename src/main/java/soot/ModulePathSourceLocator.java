@@ -1,5 +1,29 @@
 package soot;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import com.google.common.base.Optional;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -27,30 +51,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import com.google.common.base.Optional;
-
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmModuleClassProvider;
 
@@ -64,7 +64,7 @@ public class ModulePathSourceLocator extends SourceLocator {
 
   public static final String DUMMY_CLASSPATH_JDK9_FS = "VIRTUAL_FS_FOR_JDK";
 
-  private final HashMap<String, Path> moduleNameToPath = new HashMap<>();
+  private final HashMap<String, Path> moduleNameToPath = new HashMap<String, Path>();
   private Set<String> classesToLoad;
   private List<String> modulePath;
   private int nextPathEntry = 0;
@@ -90,7 +90,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     {
       Set<String> classesToLoad = this.classesToLoad;
       if (classesToLoad == null) {
-        classesToLoad = new HashSet<>(ModuleScene.v().getBasicClasses());
+        classesToLoad = new HashSet<String>(ModuleScene.v().getBasicClasses());
         for (SootClass c : ModuleScene.v().getApplicationClasses()) {
           classesToLoad.add(c.getName());
         }
@@ -125,7 +125,7 @@ public class ModulePathSourceLocator extends SourceLocator {
   }
 
   public static List<String> explodeModulePath(String classPath) {
-    List<String> ret = new ArrayList<>();
+    List<String> ret = new ArrayList<String>();
 
     for (StringTokenizer tokenizer = new StringTokenizer(classPath, File.pathSeparator); tokenizer.hasMoreTokens();) {
       String originalDir = tokenizer.nextToken();
@@ -162,7 +162,7 @@ public class ModulePathSourceLocator extends SourceLocator {
   public List<String> sourcePath() {
     List<String> sourcePath = this.sourcePath;
     if (sourcePath == null) {
-      sourcePath = new ArrayList<>();
+      sourcePath = new ArrayList<String>();
       for (String dir : modulePath) {
         ClassSourceType cst = getClassSourceType(dir);
         if (cst != ClassSourceType.apk && cst != ClassSourceType.jar && cst != ClassSourceType.zip) {
@@ -183,7 +183,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    */
   @Override
   public List<String> getClassesUnder(String aPath) {
-    List<String> classes = new ArrayList<>();
+    List<String> classes = new ArrayList<String>();
     for (Map.Entry<String, List<String>> entry : getClassUnderModulePath(aPath).entrySet()) {
       for (String className : entry.getValue()) {
         classes.add(entry.getKey() + ':' + className);
@@ -226,7 +226,7 @@ public class ModulePathSourceLocator extends SourceLocator {
       logger.debug(e.getMessage(), e);
     }
     assert (attrs != null);
-    Map<String, List<String>> mapModuleClasses = new HashMap<>();
+    Map<String, List<String>> mapModuleClasses = new HashMap<String, List<String>>();
     if (attrs.isDirectory()) {
       if (!Files.exists(path.resolve(SootModuleInfo.MODULE_INFO_FILE))) {
         // assume a directory of modules
@@ -260,7 +260,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    * @return the found modules and their classes
    */
   private Map<String, List<String>> discoverModulesIn(Path path) {
-    Map<String, List<String>> mapModuleClasses = new HashMap<>();
+    Map<String, List<String>> mapModuleClasses = new HashMap<String, List<String>>();
 
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
       for (Path entry : stream) {
@@ -294,7 +294,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    * @return the module and its containing classes
    */
   private Map<String, List<String>> buildModuleForJar(Path jar) {
-    Map<String, List<String>> moduleClassMap = new HashMap<>();
+    Map<String, List<String>> moduleClassMap = new HashMap<String, List<String>>();
 
     try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, this.getClass().getClassLoader())) {
       Path mi = zipFileSystem.getPath(SootModuleInfo.MODULE_INFO_FILE);
@@ -406,7 +406,7 @@ public class ModulePathSourceLocator extends SourceLocator {
    * @return the module and its classes
    */
   private Map<String, List<String>> buildModuleForExplodedModule(Path dir) {
-    Map<String, List<String>> moduleClassesMap = new HashMap<>();
+    Map<String, List<String>> moduleClassesMap = new HashMap<String, List<String>>();
     Path mi = dir.resolve(SootModuleInfo.MODULE_INFO_FILE);
 
     for (ClassProvider cp : classProviders) {
@@ -433,7 +433,7 @@ public class ModulePathSourceLocator extends SourceLocator {
   /* This is called after sootClassPath has been defined. */
   @Override
   public Set<String> classesInDynamicPackage(String str) {
-    HashSet<String> set = new HashSet<>(0);
+    HashSet<String> set = new HashSet<String>(0);
     StringTokenizer strtok = new StringTokenizer(ModuleScene.v().getSootModulePath(), File.pathSeparator);
     while (strtok.hasMoreTokens()) {
       String path = strtok.nextToken();
@@ -543,7 +543,6 @@ public class ModulePathSourceLocator extends SourceLocator {
     return null;
   }
 
-  @Override
   protected IFoundFile lookupInDir(String dir, String fileName) {
     Path dirPath = Paths.get(dir);
     Path foundFile = dirPath.resolve(fileName);
@@ -600,7 +599,7 @@ public class ModulePathSourceLocator extends SourceLocator {
 
   @Override
   protected void setupClassProviders() {
-    LinkedList<ClassProvider> classProviders = new LinkedList<>();
+    LinkedList<ClassProvider> classProviders = new LinkedList<ClassProvider>();
     classProviders.add(new AsmModuleClassProvider());
     this.classProviders = classProviders;
   }
@@ -618,7 +617,7 @@ public class ModulePathSourceLocator extends SourceLocator {
       throw new RuntimeException("Invalid class source type");
     }
 
-    List<String> classes = new ArrayList<>();
+    List<String> classes = new ArrayList<String>();
     FileVisitor<Path> fileVisitor = new FileVisitor<Path>() {
 
       @Override

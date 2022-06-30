@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -78,25 +78,23 @@ public class MustMayInitialize extends StructuredAnalysis {
 
   public MustMayInitialize(Object analyze, int MUSTorMAY) {
     super();
-    mapping = new HashMap<>();
+    mapping = new HashMap<Object, List>();
     MUSTMAY = MUSTorMAY;
 
     // System.out.println("MustOrMay value is"+MUSTorMAY);
     setMergeType();
     // the input to the process method is an empty DavaFlow Set meaning
     // out(start) ={} (no var initialized)
-    finalResult = process(analyze, new DavaFlowSet());
+    finalResult = (DavaFlowSet) process(analyze, new DavaFlowSet());
 
     // finalResult contains the flowSet of having processed the whole of the
     // method
   }
 
-  @Override
   public DavaFlowSet emptyFlowSet() {
     return new DavaFlowSet();
   }
 
-  @Override
   public void setMergeType() {
     // System.out.println("here"+MUSTMAY);
     if (MUSTMAY == MUST) {
@@ -120,7 +118,7 @@ public class MustMayInitialize extends StructuredAnalysis {
 
   @Override
   public DavaFlowSet cloneFlowSet(DavaFlowSet flowSet) {
-    return flowSet.clone();
+    return ((DavaFlowSet) flowSet).clone();
   }
 
   /*
@@ -162,13 +160,13 @@ public class MustMayInitialize extends StructuredAnalysis {
     }
 
     if (s instanceof DefinitionStmt) {
-      DavaFlowSet toReturn = cloneFlowSet(inSet);
+      DavaFlowSet toReturn = (DavaFlowSet) cloneFlowSet(inSet);
       // x = expr;
 
       Value leftOp = ((DefinitionStmt) s).getLeftOp();
 
       SootField field = null;
-
+      ;
       if (leftOp instanceof Local) {
         toReturn.add(leftOp);
 
@@ -180,7 +178,7 @@ public class MustMayInitialize extends StructuredAnalysis {
 
         if (temp == null) {
           // first definition
-          defs = new ArrayList<>();
+          defs = new ArrayList<Stmt>();
         } else {
           defs = (ArrayList<Stmt>) temp;
         }
@@ -199,7 +197,7 @@ public class MustMayInitialize extends StructuredAnalysis {
 
         if (temp == null) {
           // first definition
-          defs = new ArrayList<>();
+          defs = new ArrayList<Stmt>();
         } else {
           defs = (ArrayList<Stmt>) temp;
         }

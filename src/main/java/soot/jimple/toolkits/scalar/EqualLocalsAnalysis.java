@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,8 +60,8 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Objec
 
     doAnalysis();
 
-    FlowSet<Object> fs = getFlowBefore(s);
-    ArrayList<Object> aliasList = new ArrayList<>(fs.size());
+    FlowSet<Object> fs = (FlowSet<Object>) getFlowBefore(s);
+    ArrayList<Object> aliasList = new ArrayList<Object>(fs.size());
     for (Object o : fs) {
       aliasList.add(o);
     }
@@ -78,7 +78,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Objec
     in.copy(out);
 
     // get list of definitions at this unit
-    List<EquivalentValue> newDefs = new ArrayList<>();
+    List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
     for (ValueBox next : unit.getDefBoxes()) {
       newDefs.add(new EquivalentValue(next.getValue()));
     }
@@ -86,7 +86,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Objec
     // If the local of interest was defined in this statement, then we must
     // generate a new list of aliases to it starting here
     if (newDefs.contains(new EquivalentValue(l))) {
-      List<Stmt> existingDefStmts = new ArrayList<>();
+      List<Stmt> existingDefStmts = new ArrayList<Stmt>();
       for (Object o : out) {
         if (o instanceof Stmt) {
           existingDefStmts.add((Stmt) o);
@@ -105,7 +105,7 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Objec
       }
 
       for (Stmt def : existingDefStmts) {
-        List<Value> sNewDefs = new ArrayList<>();
+        List<Value> sNewDefs = new ArrayList<Value>();
         for (ValueBox next : def.getDefBoxes()) {
           sNewDefs.add(next.getValue());
         }
@@ -155,11 +155,11 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Objec
 
   @Override
   protected FlowSet<Object> entryInitialFlow() {
-    return new ArraySparseSet<>();
+    return new ArraySparseSet<Object>();
   }
 
   @Override
   protected FlowSet<Object> newInitialFlow() {
-    return new ArraySparseSet<>();
+    return new ArraySparseSet<Object>();
   }
 }

@@ -186,9 +186,8 @@ public class AugEvalFunction implements IEvalFunction {
         return at;
       } else if (at instanceof RefType) {
         String name = ((RefType) at).getSootClass().getName();
-        if (name.equals(Scene.v().getObjectType().toString())) {
+        if (name.equals(Scene.v().getObjectType().toString()))
           return new WeakObjectType(name);
-        }
         switch (name) {
           case "java.lang.Cloneable":
           case "java.lang.Object":

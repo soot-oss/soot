@@ -10,12 +10,12 @@ package soot.jimple.spark.sets;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,7 +32,7 @@ import soot.util.BitVector;
 
 /**
  * Hybrid implementation of points-to set, which uses an explicit array for small sets, and a bit vector for large sets.
- *
+ * 
  * @author Ondrej Lhotak
  */
 public class HybridPointsToSet extends PointsToSetInternal {
@@ -53,7 +53,6 @@ public class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Returns true if this set contains no run-time objects. */
-  @Override
   public final boolean isEmpty() {
     return empty;
   }
@@ -100,16 +99,17 @@ public class HybridPointsToSet extends PointsToSetInternal {
   /**
    * Adds contents of other into this set, returns true if this set changed.
    */
-  @Override
   public boolean addAll(final PointsToSetInternal other, final PointsToSetInternal exclude) {
-    if ((other != null && !(other instanceof HybridPointsToSet)) || (exclude != null && !(exclude instanceof HybridPointsToSet))) {
+    if (other != null && !(other instanceof HybridPointsToSet)) {
+      return superAddAll(other, exclude);
+    }
+    if (exclude != null && !(exclude instanceof HybridPointsToSet)) {
       return superAddAll(other, exclude);
     }
     return nativeAddAll((HybridPointsToSet) other, (HybridPointsToSet) exclude);
   }
 
   /** Calls v's visit method on all nodes in this set. */
-  @Override
   public boolean forall(P2SetVisitor v) {
     if (bits == null) {
       for (Node node : nodes) {
@@ -127,7 +127,6 @@ public class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Adds n to this set, returns true if n was not already in this set. */
-  @Override
   public boolean add(Node n) {
     if (pag.getTypeManager().castNeverFails(n.getType(), type)) {
       return fastAdd(n);
@@ -136,7 +135,6 @@ public class HybridPointsToSet extends PointsToSetInternal {
   }
 
   /** Returns true iff the set contains n. */
-  @Override
   public boolean contains(Node n) {
     if (bits == null) {
       for (Node node : nodes) {

@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -89,19 +89,16 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
   public static String dependancies[] = new String[] { "bb.jbco_j2bl", "bb.jbco_rds", "bb.jbco_ful", "bb.lp" };
 
-  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_rds";
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public void outputSummary() {
     out.println("Duplicate Sequences:");
     for (int count = totalcounts.length - 1; count >= 0; count--) {
@@ -111,7 +108,6 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
     }
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
@@ -123,9 +119,9 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
       out.println("Checking " + b.getMethod().getName() + " for duplicate sequences..");
     }
 
-    List<Unit> illegalUnits = new ArrayList<>();
-    List<Unit> seenUnits = new ArrayList<>();
-    List<Unit> workList = new ArrayList<>();
+    List<Unit> illegalUnits = new ArrayList<Unit>();
+    List<Unit> seenUnits = new ArrayList<Unit>();
+    List<Unit> workList = new ArrayList<Unit>();
     PatchingChain<Unit> units = b.getUnits();
     BriefUnitGraph bug = new BriefUnitGraph(b);
     workList.addAll(bug.getHeads());
@@ -137,7 +133,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
       if (u instanceof NewInst) {
         RefType t = ((NewInst) u).getBaseType();
-        List<Unit> tmpWorkList = new ArrayList<>();
+        List<Unit> tmpWorkList = new ArrayList<Unit>();
         tmpWorkList.add(u);
         while (tmpWorkList.size() > 0) {
           Unit v = tmpWorkList.remove(0);
@@ -182,8 +178,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
       // int count = uArry.length > 100 ? 4 : uArry.length > 50 ? 3 : 2;
 
-      List<List<Unit>> candidates = new ArrayList<>();
-      List<Unit> unitIDs = new ArrayList<>();
+      List<List<Unit>> candidates = new ArrayList<List<Unit>>();
+      List<Unit> unitIDs = new ArrayList<Unit>();
 
       if (changed) {
         stackHeightsBefore = StackTypeHeightCalculator.calculateStackHeights(b, bafToJLocals);
@@ -198,7 +194,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
           continue;
         }
 
-        List<Unit> seq = new ArrayList<>();
+        List<Unit> seq = new ArrayList<Unit>();
         for (int j = 0; j < count; j++) {
           Unit u = uArry[i + j];
           if (u instanceof IdentityInst || u instanceof ReturnInst || illegalUnits.contains(u)) {
@@ -236,10 +232,10 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
         }
       }
 
-      Map<List<Unit>, List<List<Unit>>> selected = new HashMap<>();
+      Map<List<Unit>, List<List<Unit>>> selected = new HashMap<List<Unit>, List<List<Unit>>>();
       for (int i = 0; i < candidates.size(); i++) {
         List<Unit> seq = candidates.get(i);
-        List<List<Unit>> matches = new ArrayList<>();
+        List<List<Unit>> matches = new ArrayList<List<Unit>>();
         for (int j = 0; j < (uArry.length - count); j++) {
           if (overlap(uArry, seq, j, count)) {
             continue;
@@ -285,7 +281,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
           }
 
           if (found) {
-            List<Unit> foundSeq = new ArrayList<>();
+            List<Unit> foundSeq = new ArrayList<Unit>();
             for (int m = 0; m < count; m++) {
               foundSeq.add(uArry[j + m]);
             }
@@ -332,7 +328,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
 
         counts[key.size()] += avalues.size();
 
-        List<Unit> jumps = new ArrayList<>();
+        List<Unit> jumps = new ArrayList<Unit>();
 
         Unit first = key.get(0);
         // protectedUnits.addAll(key);
@@ -536,7 +532,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
   }
 
   private List<Trap> getTrapsForUnit(Object o, Body b) {
-    ArrayList<Trap> list = new ArrayList<>();
+    ArrayList<Trap> list = new ArrayList<Trap>();
     Chain<Trap> traps = b.getTraps();
     if (traps.size() != 0) {
       PatchingChain<Unit> units = b.getUnits();
@@ -644,7 +640,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
   }
 
   private static List<List<Unit>> cullOverlaps(Body b, List<Unit> ids, List<List<Unit>> matches) {
-    List<List<Unit>> newMatches = new ArrayList<>();
+    List<List<Unit>> newMatches = new ArrayList<List<Unit>>();
     for (int i = 0; i < matches.size(); i++) {
       List<Unit> match = matches.get(i);
       Iterator<Unit> it = match.iterator();

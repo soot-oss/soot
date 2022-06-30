@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,7 +46,7 @@ import soot.util.SharedCloseable;
 public class FoundFile implements IFoundFile {
   private static final Logger logger = LoggerFactory.getLogger(FoundFile.class);
 
-  protected final List<InputStream> openedInputStreams = new ArrayList<>();
+  protected final List<InputStream> openedInputStreams = new ArrayList<InputStream>();
 
   protected Path path;
 
@@ -162,7 +162,7 @@ public class FoundFile implements IFoundFile {
   @Override
   public void close() {
     // Try to close all opened input streams
-    List<Exception> errs = new ArrayList<>(0);
+    List<Exception> errs = new ArrayList<Exception>(0);
     for (InputStream is : openedInputStreams) {
       try {
         is.close();

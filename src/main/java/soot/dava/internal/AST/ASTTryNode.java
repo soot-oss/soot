@@ -11,12 +11,12 @@ package soot.dava.internal.AST;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,20 +63,20 @@ public class ASTTryNode extends ASTLabeledNode {
     this.tryBody = tryBody;
     tryBodyContainer = new container(tryBody);
 
-    this.catchList = new ArrayList<>();
+    this.catchList = new ArrayList<Object>();
     Iterator<Object> cit = catchList.iterator();
     while (cit.hasNext()) {
       this.catchList.add(new container(cit.next()));
     }
 
-    this.exceptionMap = new HashMap<>();
+    this.exceptionMap = new HashMap<Object, Object>();
     cit = this.catchList.iterator();
     while (cit.hasNext()) {
       container c = (container) cit.next();
       this.exceptionMap.put(c, exceptionMap.get(c.o));
     }
 
-    this.paramMap = new HashMap<>();
+    this.paramMap = new HashMap<Object, Object>();
     cit = this.catchList.iterator();
     while (cit.hasNext()) {
       container c = (container) cit.next();
@@ -98,7 +98,7 @@ public class ASTTryNode extends ASTLabeledNode {
     tryBodyContainer = new container(tryBody);
 
     List<Object> oldSubBodies = subBodies;
-    subBodies = new ArrayList<>();
+    subBodies = new ArrayList<Object>();
 
     subBodies.add(tryBodyContainer);
 
@@ -112,7 +112,6 @@ public class ASTTryNode extends ASTLabeledNode {
 
   }
 
-  @Override
   protected void perform_AnalysisOnSubBodies(ASTAnalysis a) {
     if (a instanceof TryContentsFinder) {
       Iterator<Object> sbit = subBodies.iterator();
@@ -162,7 +161,7 @@ public class ASTTryNode extends ASTLabeledNode {
   }
 
   public Set<Object> get_ExceptionSet() {
-    HashSet<Object> s = new HashSet<>();
+    HashSet<Object> s = new HashSet<Object>();
 
     Iterator<Object> it = catchList.iterator();
     while (it.hasNext()) {
@@ -172,9 +171,8 @@ public class ASTTryNode extends ASTLabeledNode {
     return s;
   }
 
-  @Override
   public Object clone() {
-    ArrayList<Object> newCatchList = new ArrayList<>();
+    ArrayList<Object> newCatchList = new ArrayList<Object>();
     Iterator<Object> it = catchList.iterator();
     while (it.hasNext()) {
       newCatchList.add(((container) it.next()).o);
@@ -183,7 +181,6 @@ public class ASTTryNode extends ASTLabeledNode {
     return new ASTTryNode(get_Label(), tryBody, newCatchList, exceptionMap, paramMap);
   }
 
-  @Override
   public void toString(UnitPrinter up) {
     label_toString(up);
 
@@ -225,7 +222,6 @@ public class ASTTryNode extends ASTLabeledNode {
     }
   }
 
-  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -269,7 +265,6 @@ public class ASTTryNode extends ASTLabeledNode {
    * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For
    * details
    */
-  @Override
   public void apply(Analysis a) {
     a.caseASTTryNode(this);
   }

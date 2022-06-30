@@ -10,12 +10,12 @@ package soot.jimple.toolkits.pointer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -88,7 +88,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
   protected void makeInitialSet() {
     final Body body = ((UnitGraph) graph).getBody();
     // Find all locals of reference type
-    List<Local> refLocals = new ArrayList<>();
+    List<Local> refLocals = new ArrayList<Local>();
     for (Local l : body.getLocals()) {
       if (l.getType() instanceof RefType) {
         refLocals.add(l);
@@ -96,7 +96,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     }
 
     // Find types of all casts
-    List<Type> types = new ArrayList<>();
+    List<Type> types = new ArrayList<Type>();
     for (Unit u : body.getUnits()) {
       if (u instanceof AssignStmt) {
         Value rhs = ((AssignStmt) u).getRightOp();
@@ -193,7 +193,10 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
           break;
         }
         final Value conditionOp2 = c.getOp2();
-        if (!(conditionOp2 instanceof IntConstant) || (((IntConstant) conditionOp2).value != 0)) {
+        if (!(conditionOp2 instanceof IntConstant)) {
+          break;
+        }
+        if (((IntConstant) conditionOp2).value != 0) {
           break;
         }
         if (c instanceof NeExpr) {

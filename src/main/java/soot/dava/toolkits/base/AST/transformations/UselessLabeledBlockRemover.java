@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -69,14 +69,12 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     super(verbose);
   }
 
-  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     if (changed) {
       G.v().ASTTransformations_modified = true;
     }
   }
 
-  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     changed = UselessLabelFinder.v().findAndKill(node);
   }
@@ -94,7 +92,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
    * changed=UselessLabelFinder.v().findAndKill(node); } public void caseASTTryNode(ASTTryNode node){
    * changed=UselessLabelFinder.v().findAndKill(node); }
    */
-  @Override
   public void outASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -102,7 +99,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTLabeledBlockNode(ASTLabeledBlockNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -110,7 +106,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -118,7 +113,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTSwitchNode(ASTSwitchNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -126,7 +120,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTIfNode(ASTIfNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -134,7 +127,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -142,7 +134,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -150,7 +141,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -158,7 +148,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -166,7 +155,6 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outASTTryNode(ASTTryNode node) {
     boolean modified = UselessLabelFinder.v().findAndKill(node);
     if (modified) {
@@ -270,7 +258,7 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter {
 
   public static List<Object> createNewSubBody(List<Object> oldSubBody, int nodeNumber, ASTLabeledBlockNode labelBlock) {
     // create a new SubBody
-    List<Object> newSubBody = new ArrayList<>();
+    List<Object> newSubBody = new ArrayList<Object>();
 
     // this is an iterator of ASTNodes
     Iterator<Object> it = oldSubBody.iterator();

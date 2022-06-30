@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -37,6 +37,7 @@ import polyglot.ast.FieldDecl;
 import polyglot.ast.Node;
 import polyglot.types.Type;
 import polyglot.util.IdentityKey;
+
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -194,7 +195,10 @@ public class ClassResolver {
 
     for (Type type : typeListBuilder.getList()) {
 
-      if (type.isPrimitive() || !type.isClass()) {
+      if (type.isPrimitive()) {
+        continue;
+      }
+      if (!type.isClass()) {
         continue;
       }
       polyglot.types.ClassType classType = (polyglot.types.ClassType) type;
@@ -215,7 +219,8 @@ public class ClassResolver {
     staticInitializerBlocks = null;
 
     // handle members
-    for (Object next : classBody.members()) {
+    for (Iterator it = classBody.members().iterator(); it.hasNext();) {
+      Object next = it.next();
       if (next instanceof polyglot.ast.MethodDecl) {
         createMethodDecl((polyglot.ast.MethodDecl) next);
       } else if (next instanceof polyglot.ast.FieldDecl) {
@@ -250,7 +255,7 @@ public class ClassResolver {
     soot.Type outerSootType = Util.getSootType(outerType);
     for (soot.SootMethod meth : sootClass.getMethods()) {
       if (meth.getName().equals("<init>")) {
-        List<soot.Type> newParams = new ArrayList<>();
+        List<soot.Type> newParams = new ArrayList<soot.Type>();
         newParams.add(outerSootType);
         newParams.addAll(meth.getParameterTypes());
         meth.setParameterTypes(newParams);
@@ -267,7 +272,7 @@ public class ClassResolver {
     // add as param for init
     for (SootMethod meth : sootClass.getMethods()) {
       if (meth.getName().equals("<init>")) {
-        List<soot.Type> newParams = new ArrayList<>();
+        List<soot.Type> newParams = new ArrayList<soot.Type>();
         newParams.addAll(meth.getParameterTypes());
         newParams.add(Util.getSootType(li.type()));
         meth.setParameterTypes(newParams);
@@ -284,12 +289,12 @@ public class ClassResolver {
 
   private ArrayList<SootField> addFinalLocals(polyglot.ast.ClassBody cBody, ArrayList<IdentityKey> finalLocalsAvail,
       polyglot.types.ClassType nodeKeyType, AnonLocalClassInfo info) {
-    ArrayList<SootField> finalFields = new ArrayList<>();
+    ArrayList<SootField> finalFields = new ArrayList<SootField>();
 
     LocalUsesChecker luc = new LocalUsesChecker();
     cBody.visit(luc);
     /* Iterator localsNeededIt = luc.getLocals().iterator(); */
-    ArrayList<IdentityKey> localsUsed = new ArrayList<>();
+    ArrayList<IdentityKey> localsUsed = new ArrayList<IdentityKey>();
     /*
      * while (localsNeededIt.hasNext()){ polyglot.types.LocalInstance li =
      * (polyglot.types.LocalInstance)((polyglot.util.IdentityKey) localsNeededIt.next()).object(); //if
@@ -731,7 +736,8 @@ public class ClassResolver {
     boolean found = false;
 
     // first look in top-level decls
-    for (Object next : source.decls()) {
+    for (Iterator declsIt = source.decls().iterator(); declsIt.hasNext();) {
+      Object next = declsIt.next();
       if (next instanceof polyglot.ast.ClassDecl) {
         polyglot.types.ClassType nextType = ((polyglot.ast.ClassDecl) next).type();
         if (Util.getSootType(nextType).equals(sootClass.getType())) {
@@ -825,7 +831,7 @@ public class ClassResolver {
     soot.Type sootType = Util.getSootType(type);
     for (soot.SootMethod meth : sootClass.getMethods()) {
       if (meth.getName().equals("<init>")) {
-        List<soot.Type> newParams = new ArrayList<>();
+        List<soot.Type> newParams = new ArrayList<soot.Type>();
         newParams.add(sootType);
         newParams.addAll(meth.getParameterTypes());
         meth.setParameterTypes(newParams);
@@ -892,7 +898,7 @@ public class ClassResolver {
           addConstValTag(field, sootField);
         } else {
           if (staticFieldInits == null) {
-            staticFieldInits = new ArrayList<>();
+            staticFieldInits = new ArrayList<FieldDecl>();
           }
           staticFieldInits.add(field);
         }
@@ -900,7 +906,7 @@ public class ClassResolver {
     } else {
       if (field.init() != null) {
         if (fieldInits == null) {
-          fieldInits = new ArrayList<>();
+          fieldInits = new ArrayList<FieldDecl>();
         }
         fieldInits.add(field);
       }
@@ -940,7 +946,7 @@ public class ClassResolver {
    * creates soot exceptions from polyglot throws
    */
   private ArrayList<SootClass> createExceptions(polyglot.ast.ProcedureDecl procedure) {
-    ArrayList<SootClass> exceptions = new ArrayList<>();
+    ArrayList<SootClass> exceptions = new ArrayList<SootClass>();
     for (Iterator throwsIt = procedure.throwTypes().iterator(); throwsIt.hasNext();) {
       polyglot.types.Type throwType = ((polyglot.ast.TypeNode) throwsIt.next()).type();
       exceptions.add(((soot.RefType) Util.getSootType(throwType)).getSootClass());
@@ -963,12 +969,12 @@ public class ClassResolver {
   private void createInitializer(polyglot.ast.Initializer initializer) {
     if (initializer.flags().isStatic()) {
       if (staticInitializerBlocks == null) {
-        staticInitializerBlocks = new ArrayList<>();
+        staticInitializerBlocks = new ArrayList<Block>();
       }
       staticInitializerBlocks.add(initializer.body());
     } else {
       if (initializerBlocks == null) {
-        initializerBlocks = new ArrayList<>();
+        initializerBlocks = new ArrayList<Block>();
       }
       initializerBlocks.add(initializer.body());
     }

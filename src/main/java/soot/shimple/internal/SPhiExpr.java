@@ -10,12 +10,12 @@ package soot.shimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -57,8 +57,8 @@ import soot.util.Switch;
 public class SPhiExpr implements PhiExpr {
   private static final Logger logger = LoggerFactory.getLogger(SPhiExpr.class);
 
-  protected List<ValueUnitPair> argPairs = new ArrayList<>();
-  protected Map<Unit, ValueUnitPair> predToPair = new HashMap<>(); // cache
+  protected List<ValueUnitPair> argPairs = new ArrayList<ValueUnitPair>();
+  protected Map<Unit, ValueUnitPair> predToPair = new HashMap<Unit, ValueUnitPair>(); // cache
   protected Type type;
   protected int blockId = -1;
 
@@ -106,7 +106,7 @@ public class SPhiExpr implements PhiExpr {
 
   @Override
   public List<Value> getValues() {
-    List<Value> args = new ArrayList<>();
+    List<Value> args = new ArrayList<Value>();
     for (ValueUnitPair vup : argPairs) {
       Value arg = vup.getValue();
       args.add(arg);
@@ -117,7 +117,7 @@ public class SPhiExpr implements PhiExpr {
 
   @Override
   public List<Unit> getPreds() {
-    List<Unit> preds = new ArrayList<>();
+    List<Unit> preds = new ArrayList<Unit>();
     for (ValueUnitPair up : argPairs) {
       Unit arg = up.getUnit();
       preds.add(arg);
@@ -327,8 +327,12 @@ public class SPhiExpr implements PhiExpr {
   @Override
   public boolean addArg(Value arg, Unit predTailUnit) {
     // Do not allow phi nodes for dummy blocks
+    if (predTailUnit == null) {
+      return false;
+    }
+
     // we disallow duplicate arguments
-    if ((predTailUnit == null) || predToPair.containsKey(predTailUnit)) {
+    if (predToPair.containsKey(predTailUnit)) {
       return false;
     }
 
@@ -361,7 +365,7 @@ public class SPhiExpr implements PhiExpr {
   protected void updateCache() {
     // Always attempt to allocate the next power of 2 sized map
     int needed = argPairs.size();
-    predToPair = new HashMap<>(needed << 1, 1.0F);
+    predToPair = new HashMap<Unit, ValueUnitPair>(needed << 1, 1.0F);
     for (ValueUnitPair vup : argPairs) {
       predToPair.put(vup.getUnit(), vup);
     }
@@ -395,7 +399,7 @@ public class SPhiExpr implements PhiExpr {
 
   @Override
   public List<UnitBox> getUnitBoxes() {
-    return Collections.unmodifiableList(new ArrayList<>(new HashSet<UnitBox>(argPairs)));
+    return Collections.unmodifiableList(new ArrayList<UnitBox>(new HashSet<UnitBox>(argPairs)));
   }
 
   @Override
@@ -407,12 +411,12 @@ public class SPhiExpr implements PhiExpr {
 
   @Override
   public List<ValueBox> getUseBoxes() {
-    Set<ValueBox> set = new HashSet<>();
+    Set<ValueBox> set = new HashSet<ValueBox>();
     for (ValueUnitPair argPair : argPairs) {
       set.addAll(argPair.getValue().getUseBoxes());
       set.add(argPair);
     }
-    return new ArrayList<>(set);
+    return new ArrayList<ValueBox>(set);
   }
 
   @Override

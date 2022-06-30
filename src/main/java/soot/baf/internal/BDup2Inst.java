@@ -10,12 +10,12 @@ package soot.baf.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,7 +24,6 @@ package soot.baf.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import soot.Type;
 import soot.baf.Baf;
 import soot.baf.Dup2Inst;
@@ -53,7 +52,7 @@ public class BDup2Inst extends BDupInst implements Dup2Inst {
 
   @Override
   public List<Type> getOpTypes() {
-    List<Type> res = new ArrayList<>();
+    List<Type> res = new ArrayList<Type>();
     res.add(mOp1Type);
     res.add(mOp2Type);
     return res;
@@ -61,7 +60,7 @@ public class BDup2Inst extends BDupInst implements Dup2Inst {
 
   @Override
   public List<Type> getUnderTypes() {
-    return new ArrayList<>();
+    return new ArrayList<Type>();
   }
 
   @Override

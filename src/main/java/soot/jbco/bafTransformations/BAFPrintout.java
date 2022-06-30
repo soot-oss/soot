@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,23 +34,20 @@ import soot.jbco.IJbcoTransform;
 
 /**
  * @author Michael Batchelder
- *
+ * 
  *         Created on 15-Jun-2006
  */
 public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
 
   public static String name = "bb.printout";
 
-  @Override
   public void outputSummary() {
   }
 
-  @Override
   public String[] getDependencies() {
     return new String[0];
   }
 
-  @Override
   public String getName() {
     return name;
   }
@@ -65,7 +62,6 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
     stack = print_stack;
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // if (b.getMethod().getSignature().indexOf("run")<0) return;
     System.out.println("\n" + b.getMethod().getSignature());

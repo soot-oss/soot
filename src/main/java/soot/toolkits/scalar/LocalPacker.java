@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -55,7 +55,7 @@ import soot.util.DeterministicHashMap;
  * {@code i} and {@code j}.
  *
  * Note: LocalSplitter corresponds to the inverse transformation.
- *
+ * 
  * @see BodyTransformer
  * @see Body
  * @see LocalSplitter
@@ -84,9 +84,9 @@ public class LocalPacker extends BodyTransformer {
 
     // A group represents a bunch of locals which may potentially interfere with each other.
     // Separate groups can not possibly interfere with each other (coloring say ints and doubles).
-    Map<Local, Type> localToGroup = new DeterministicHashMap<>(origLocalCount * 2 + 1, 0.7f);
-    Map<Type, Integer> groupToColorCount = new HashMap<>(origLocalCount * 2 + 1, 0.7f);
-    Map<Local, Integer> localToColor = new HashMap<>(origLocalCount * 2 + 1, 0.7f);
+    Map<Local, Type> localToGroup = new DeterministicHashMap<Local, Type>(origLocalCount * 2 + 1, 0.7f);
+    Map<Type, Integer> groupToColorCount = new HashMap<Type, Integer>(origLocalCount * 2 + 1, 0.7f);
+    Map<Local, Integer> localToColor = new HashMap<Local, Integer>(origLocalCount * 2 + 1, 0.7f);
 
     // Assign each local to a group, and set that group's color count to 0.
     for (Local l : bodyLocalsRef) {
@@ -118,10 +118,10 @@ public class LocalPacker extends BodyTransformer {
     }
 
     // Map each local to a new local.
-    Map<Local, Local> localToNewLocal = new HashMap<>(origLocalCount * 2 + 1, 0.7f);
+    Map<Local, Local> localToNewLocal = new HashMap<Local, Local>(origLocalCount * 2 + 1, 0.7f);
     {
-      Map<GroupIntPair, Local> groupIntToLocal = new HashMap<>(origLocalCount * 2 + 1, 0.7f);
-      List<Local> originalLocals = new ArrayList<>(bodyLocalsRef);
+      Map<GroupIntPair, Local> groupIntToLocal = new HashMap<GroupIntPair, Local>(origLocalCount * 2 + 1, 0.7f);
+      List<Local> originalLocals = new ArrayList<Local>(bodyLocalsRef);
       bodyLocalsRef.clear();
 
       final Set<String> usedLocalNames = new HashSet<>();
@@ -176,13 +176,13 @@ public class LocalPacker extends BodyTransformer {
       for (ValueBox box : s.getUseBoxes()) {
         Value val = box.getValue();
         if (val instanceof Local) {
-          box.setValue(localToNewLocal.get(val));
+          box.setValue(localToNewLocal.get((Local) val));
         }
       }
       for (ValueBox box : s.getDefBoxes()) {
         Value val = box.getValue();
         if (val instanceof Local) {
-          box.setValue(localToNewLocal.get(val));
+          box.setValue(localToNewLocal.get((Local) val));
         }
       }
     }

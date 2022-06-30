@@ -10,12 +10,12 @@ package soot.shimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -120,7 +120,7 @@ public class ShimpleBodyBuilder {
   }
 
   public void update() {
-    this.origLocals = Collections.unmodifiableList(new ArrayList<>(body.getLocals()));
+    this.origLocals = Collections.unmodifiableList(new ArrayList<Local>(body.getLocals()));
   }
 
   public void transform() {
@@ -190,14 +190,14 @@ public class ShimpleBodyBuilder {
   public void renameLocals() {
     update();
 
-    this.newLocals = new HashMap<>();
-    this.newLocalsToOldLocal = new HashMap<>();
+    this.newLocals = new HashMap<String, Local>();
+    this.newLocalsToOldLocal = new HashMap<Local, Local>();
     final int size = origLocals.size();
     this.assignmentCounters = new int[size];
     @SuppressWarnings("unchecked")
     Stack<Integer>[] temp = new Stack[size];
     for (int i = 0; i < size; i++) {
-      temp[i] = new Stack<>();
+      temp[i] = new Stack<Integer>();
     }
     this.namingStacks = temp;
 
@@ -218,7 +218,7 @@ public class ShimpleBodyBuilder {
    */
   public void renameLocalsSearch(Block block) {
     // accumulated in Step 1 to be re-processed in Step 4
-    List<Local> lhsLocals = new ArrayList<>();
+    List<Local> lhsLocals = new ArrayList<Local>();
 
     // Step 1 of 4 -- Rename block's uses (ordinary) and defs
     // accumulated and re-processed in a later loop
@@ -372,7 +372,7 @@ public class ShimpleBodyBuilder {
       return;
     }
 
-    Set<String> localNames = new HashSet<>();
+    Set<String> localNames = new HashSet<String>();
     for (Local local : body.getLocals()) {
       String localName = local.getName();
       if (localNames.contains(localName)) {

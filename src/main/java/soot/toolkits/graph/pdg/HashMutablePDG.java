@@ -10,12 +10,12 @@ package soot.toolkits.graph.pdg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -74,7 +74,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   protected SootClass m_class = null;
   protected UnitGraph m_cfg = null;
   protected BlockGraph m_blockCFG = null;
-  protected Hashtable<Object, PDGNode> m_obj2pdgNode = new Hashtable<>();
+  protected Hashtable<Object, PDGNode> m_obj2pdgNode = new Hashtable<Object, PDGNode>();
   protected List<Region> m_weakRegions = null;
   protected List<Region> m_strongRegions = null;
   protected PDGNode m_startNode = null;
@@ -130,7 +130,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     DominatorTree<Block> pdom = this.m_regionAnalysis.getPostDominatorTree();
     DominatorTree<Block> dom = this.m_regionAnalysis.getDominatorTree();
 
-    List<Region> regions2process = new LinkedList<>();
+    List<Region> regions2process = new LinkedList<Region>();
     Region topLevelRegion = this.m_regionAnalysis.getTopLevelRegion();
     m_strongRegionStartID = m_weakRegions.size();
 
@@ -141,7 +141,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
     this.m_startNode = pdgnode;
     topLevelRegion.setParent(null);
 
-    Set<Region> processedRegions = new HashSet<>();
+    Set<Region> processedRegions = new HashSet<Region>();
     regions2process.add(topLevelRegion);
 
     // while there's a (weak) region to process
@@ -155,7 +155,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
       // For all the CFG nodes in the region, create the corresponding PDG node and edges, and process
       // them if they are in the dependence set of other regions, i.e. other regions depend on them.
       List<Block> blocks = r.getBlocks();
-      Hashtable<Region, List<Block>> toBeRemoved = new Hashtable<>();
+      Hashtable<Region, List<Block>> toBeRemoved = new Hashtable<Region, List<Block>>();
       PDGNode prevPDGNodeInRegion = null;
       PDGNode curNodeInRegion;
       for (Block a : blocks) {
@@ -189,7 +189,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
           if (pdom.isDominatorOf(bDode, aDode)) {
             continue;
           }
-          List<Block> dependents = new ArrayList<>();
+          List<Block> dependents = new ArrayList<Block>();
 
           // FIXME: what if the parent is null?!!
           DominatorNode<Block> aParentDode = aDode.getParent();
@@ -220,7 +220,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
             curNodeInRegion = pdgNodeOfA;
           }
 
-          List<Block> copyOfDependents = new ArrayList<>(dependents);
+          List<Block> copyOfDependents = new ArrayList<Block>(dependents);
 
           // First, add the dependency for B and its corresponding region.
           Region regionOfB = block2region.get(b);
@@ -345,7 +345,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
                 if (toBeRemoved.contains(predPDGofdepB)) {
                   blocks2BRemoved = toBeRemoved.get(predPDGofdepB);
                 } else {
-                  blocks2BRemoved = new ArrayList<>();
+                  blocks2BRemoved = new ArrayList<Block>();
                   toBeRemoved.put(rdepB, blocks2BRemoved);
                 }
                 blocks2BRemoved.add(depB);
@@ -445,7 +445,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   }
 
   private List<Region> cloneRegions(List<Region> weak) {
-    List<Region> strong = new ArrayList<>();
+    List<Region> strong = new ArrayList<Region>();
     for (Region r : weak) {
       strong.add((Region) r.clone());
     }
@@ -493,22 +493,22 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   }
 
   public static List<IRegion> getPreorderRegionList(IRegion r) {
-    List<IRegion> list = new ArrayList<>();
+    List<IRegion> list = new ArrayList<IRegion>();
 
-    Queue<IRegion> toProcess = new LinkedList<>();
+    Queue<IRegion> toProcess = new LinkedList<IRegion>();
     toProcess.add(r);
     while (!toProcess.isEmpty()) {
       IRegion reg = toProcess.poll();
       list.add(reg);
       for (IRegion next : reg.getChildRegions()) {
-        toProcess.add(next);
+        toProcess.add((Region) next);
       }
     }
     return list;
   }
 
   public static List<IRegion> getPostorderRegionList(IRegion r) {
-    List<IRegion> list = new ArrayList<>();
+    List<IRegion> list = new ArrayList<IRegion>();
     postorder(r, list);
     return list;
   }
@@ -546,11 +546,11 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 
   }
 
-  private static Hashtable<PDGNode, PDGRegion> node2Region = new Hashtable<>();
+  private static Hashtable<PDGNode, PDGRegion> node2Region = new Hashtable<PDGNode, PDGRegion>();
 
   // compute the pdg region list with in post order
   private static List<PDGRegion> computePDGRegions(PDGNode root) {
-    List<PDGRegion> regions = new ArrayList<>();
+    List<PDGRegion> regions = new ArrayList<PDGRegion>();
 
     node2Region.clear();
     pdgpostorder(root, regions);
@@ -619,7 +619,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
    */
   @Override
   public List<PDGNode> getDependents(PDGNode node) {
-    List<PDGNode> toReturn = new ArrayList<>();
+    List<PDGNode> toReturn = new ArrayList<PDGNode>();
     for (PDGNode succ : this.getSuccsOf(node)) {
       if (this.dependentOn(succ, node)) {
         toReturn.add(succ);
@@ -668,7 +668,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
   @Override
   public void removeAllEdges(PDGNode from, PDGNode to) {
     if (containsAnyEdge(from, to)) {
-      for (String label : new ArrayList<>(this.getLabelsForEdges(from, to))) {
+      for (String label : new ArrayList<String>(this.getLabelsForEdges(from, to))) {
         this.removeEdge(from, to, label);
       }
     }
@@ -685,8 +685,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
         .append("\n*********CFG******** \n").append(RegionAnalysis.CFGtoString(this.m_blockCFG, true))
         .append("\n*********PDG******** \n");
 
-    List<PDGNode> processed = new ArrayList<>();
-    Queue<PDGNode> nodes = new LinkedList<>();
+    List<PDGNode> processed = new ArrayList<PDGNode>();
+    Queue<PDGNode> nodes = new LinkedList<PDGNode>();
     nodes.offer(this.m_startNode);
     while (nodes.peek() != null) {
       PDGNode node = nodes.remove();

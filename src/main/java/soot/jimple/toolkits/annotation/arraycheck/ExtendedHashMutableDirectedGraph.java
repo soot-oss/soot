@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,14 +23,13 @@ package soot.jimple.toolkits.annotation.arraycheck;
  */
 
 import java.util.ArrayList;
-
 import soot.toolkits.graph.HashMutableDirectedGraph;
 
 /**
  * add skipNode method to direct all predecessor edges to successors.
- *
+ * 
  * override 'addEdge' to add node if the node was not in the graph
- *
+ * 
  * @param <N>
  */
 public class ExtendedHashMutableDirectedGraph<N> extends HashMutableDirectedGraph<N> {
@@ -78,8 +77,8 @@ public class ExtendedHashMutableDirectedGraph<N> extends HashMutableDirectedGrap
       return;
     }
 
-    ArrayList<N> origPreds = new ArrayList<>(getPredsOf(node));
-    ArrayList<N> origSuccs = new ArrayList<>(getSuccsOf(node));
+    ArrayList<N> origPreds = new ArrayList<N>(getPredsOf(node));
+    ArrayList<N> origSuccs = new ArrayList<N>(getSuccsOf(node));
 
     for (N p : origPreds) {
       for (N s : origSuccs) {

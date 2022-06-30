@@ -10,12 +10,12 @@ package soot.jimple.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -81,8 +81,8 @@ public class LoopConditionUnroller extends BodyTransformer {
       logger.debug("[" + body.getMethod().getName() + "]     Unrolling Loop Conditions...");
     }
 
-    this.visitingSuccs = new HashSet<>();
-    this.visitedBlocks = new HashSet<>();
+    this.visitingSuccs = new HashSet<Block>();
+    this.visitedBlocks = new HashSet<Block>();
     this.maxSize = PhaseOptions.getInt(options, "maxSize");
     this.unitChain = body.getUnits();
     this.trapChain = body.getTraps();
@@ -154,13 +154,13 @@ public class LoopConditionUnroller extends BodyTransformer {
    * @return the map of units to changing traps.
    */
   private static Map<Unit, List<Trap>> mapBeginEndUnitToTrap(Chain<Trap> trapChain) {
-    Map<Unit, List<Trap>> unitsToTraps = new HashMap<>();
+    Map<Unit, List<Trap>> unitsToTraps = new HashMap<Unit, List<Trap>>();
     for (Trap trap : trapChain) {
       Unit beginUnit = trap.getBeginUnit();
       {
         List<Trap> unitTraps = unitsToTraps.get(beginUnit);
         if (unitTraps == null) {
-          unitTraps = new ArrayList<>();
+          unitTraps = new ArrayList<Trap>();
           unitsToTraps.put(beginUnit, unitTraps);
         }
         unitTraps.add(trap);
@@ -169,7 +169,7 @@ public class LoopConditionUnroller extends BodyTransformer {
       if (endUnit != beginUnit) {
         List<Trap> unitTraps = unitsToTraps.get(endUnit);
         if (unitTraps == null) {
-          unitTraps = new ArrayList<>();
+          unitTraps = new ArrayList<Trap>();
           unitsToTraps.put(endUnit, unitTraps);
         }
         unitTraps.add(trap);
@@ -190,8 +190,8 @@ public class LoopConditionUnroller extends BodyTransformer {
    * @return the head of the copied block.
    */
   private Unit copyBlock(Block block) {
-    final Set<Trap> openedTraps = new HashSet<>();
-    final Map<Trap, Trap> copiedTraps = new HashMap<>();
+    final Set<Trap> openedTraps = new HashSet<Trap>();
+    final Map<Trap, Trap> copiedTraps = new HashMap<Trap, Trap>();
     final Chain<Unit> chain = this.unitChain;
 
     final Unit tail = block.getTail();

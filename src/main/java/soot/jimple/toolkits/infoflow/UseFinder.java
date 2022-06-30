@@ -10,12 +10,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,10 +60,10 @@ public class UseFinder {
   Map<SootClass, ArrayList> classToIntCalls;
 
   public UseFinder() {
-    classToExtFieldAccesses = new HashMap<>();
-    classToIntFieldAccesses = new HashMap<>();
-    classToExtCalls = new HashMap<>();
-    classToIntCalls = new HashMap<>();
+    classToExtFieldAccesses = new HashMap<SootClass, List>();
+    classToIntFieldAccesses = new HashMap<SootClass, ArrayList>();
+    classToExtCalls = new HashMap<SootClass, List>();
+    classToIntCalls = new HashMap<SootClass, ArrayList>();
 
     rm = Scene.v().getReachableMethods();
 
@@ -71,10 +71,10 @@ public class UseFinder {
   }
 
   public UseFinder(ReachableMethods rm) {
-    classToExtFieldAccesses = new HashMap<>();
-    classToIntFieldAccesses = new HashMap<>();
-    classToExtCalls = new HashMap<>();
-    classToIntCalls = new HashMap<>();
+    classToExtFieldAccesses = new HashMap<SootClass, List>();
+    classToIntFieldAccesses = new HashMap<SootClass, ArrayList>();
+    classToExtCalls = new HashMap<SootClass, List>();
+    classToIntCalls = new HashMap<SootClass, ArrayList>();
 
     this.rm = rm;
 
@@ -113,7 +113,7 @@ public class UseFinder {
   public List<SootMethod> getExtMethods(SootClass sc) {
     if (classToExtCalls.containsKey(sc)) {
       List extCalls = classToExtCalls.get(sc);
-      List<SootMethod> extMethods = new ArrayList<>();
+      List<SootMethod> extMethods = new ArrayList<SootMethod>();
       for (Iterator callIt = extCalls.iterator(); callIt.hasNext();) {
         Pair call = (Pair) callIt.next();
         SootMethod calledMethod = ((Stmt) call.getO2()).getInvokeExpr().getMethod();
@@ -129,7 +129,7 @@ public class UseFinder {
   public List<SootField> getExtFields(SootClass sc) {
     if (classToExtFieldAccesses.containsKey(sc)) {
       List extAccesses = classToExtFieldAccesses.get(sc);
-      List<SootField> extFields = new ArrayList<>();
+      List<SootField> extFields = new ArrayList<SootField>();
       for (Iterator accessIt = extAccesses.iterator(); accessIt.hasNext();) {
         Pair access = (Pair) accessIt.next();
         SootField accessedField = ((Stmt) access.getO2()).getFieldRef().getField();
@@ -187,7 +187,7 @@ public class UseFinder {
                 // ref to some other class is considered external
                 List<Pair> otherClassList = classToExtFieldAccesses.get(fr.getFieldRef().resolve().getDeclaringClass());
                 if (otherClassList == null) {
-                  otherClassList = new ArrayList<>();
+                  otherClassList = new ArrayList<Pair>();
                   classToExtFieldAccesses.put(fr.getFieldRef().resolve().getDeclaringClass(), otherClassList);
                 }
                 otherClassList.add(new Pair(method, s));
@@ -214,7 +214,7 @@ public class UseFinder {
                 // ref to some other class is considered external
                 List<Pair> otherClassList = classToExtCalls.get(ie.getMethodRef().resolve().getDeclaringClass());
                 if (otherClassList == null) {
-                  otherClassList = new ArrayList<>();
+                  otherClassList = new ArrayList<Pair>();
                   classToExtCalls.put(ie.getMethodRef().resolve().getDeclaringClass(), otherClassList);
                 }
                 otherClassList.add(new Pair(method, s));

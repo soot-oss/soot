@@ -11,12 +11,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -139,7 +139,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     this.modifiers = modifiers;
 
     if (thrownExceptions != null && !thrownExceptions.isEmpty()) {
-      this.exceptions = new ArrayList<>(thrownExceptions);
+      this.exceptions = new ArrayList<SootClass>(thrownExceptions);
     }
     this.subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
   }
@@ -485,7 +485,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     logger.trace("Adding exception {}", e);
 
     if (exceptions == null) {
-      exceptions = new ArrayList<>();
+      exceptions = new ArrayList<SootClass>();
     } else if (exceptions.contains(e)) {
       throw new RuntimeException("already throws exception " + e.getName());
     }
@@ -514,7 +514,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   }
 
   public void setExceptions(List<SootClass> exceptions) {
-    this.exceptions = (exceptions == null || exceptions.isEmpty()) ? null : new ArrayList<>(exceptions);
+    this.exceptions = (exceptions == null || exceptions.isEmpty()) ? null : new ArrayList<SootClass>(exceptions);
   }
 
   /**
@@ -522,7 +522,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   public List<SootClass> getExceptions() {
     if (exceptions == null) {
-      exceptions = new ArrayList<>();
+      exceptions = new ArrayList<SootClass>();
     }
     return exceptions;
   }

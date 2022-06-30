@@ -10,12 +10,12 @@ package soot.jimple.toolkits.invoke;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -55,7 +55,7 @@ import soot.tagkit.Host;
 public class StaticInliner extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(StaticInliner.class);
 
-  private final HashMap<SootMethod, Integer> methodToOriginalSize = new HashMap<>();
+  private final HashMap<SootMethod, Integer> methodToOriginalSize = new HashMap<SootMethod, Integer>();
 
   public StaticInliner(Singletons.Global g) {
   }
@@ -74,7 +74,7 @@ public class StaticInliner extends SceneTransformer {
     computeAverageMethodSizeAndSaveOriginalSizes();
 
     final String modifierOptions = PhaseOptions.getString(options, "allowed-modifier-changes");
-    final ArrayList<Host[]> sitesToInline = new ArrayList<>();
+    final ArrayList<Host[]> sitesToInline = new ArrayList<Host[]>();
 
     // Visit each potential site in reverse pseudo topological order.
     {
@@ -89,7 +89,7 @@ public class StaticInliner extends SceneTransformer {
           continue;
         }
 
-        for (Unit u : new ArrayList<>(container.retrieveActiveBody().getUnits())) {
+        for (Unit u : new ArrayList<Unit>(container.retrieveActiveBody().getUnits())) {
           final Stmt s = (Stmt) u;
           if (!s.containsInvokeExpr()) {
             continue;
@@ -100,7 +100,11 @@ public class StaticInliner extends SceneTransformer {
             continue;
           }
           final SootMethod target = (SootMethod) targets.next();
-          if (targets.hasNext() || !target.isConcrete() || !target.getDeclaringClass().isApplicationClass()
+          if (targets.hasNext()) {
+            continue;
+          }
+
+          if (!target.isConcrete() || !target.getDeclaringClass().isApplicationClass()
               || !InlinerSafetyManager.ensureInlinability(target, s, container, modifierOptions)) {
             continue;
           }

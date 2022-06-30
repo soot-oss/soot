@@ -10,12 +10,12 @@ package soot.util.annotations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -79,7 +79,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch<Annot
 
     Object result = aic.create(v.getValue());
 
-    setResult(new AnnotationElemResult<>(v.getName(), result));
+    setResult(new AnnotationElemResult<Object>(v.getName(), result));
   }
 
   @Override
@@ -98,12 +98,12 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch<Annot
       i++;
     }
 
-    setResult(new AnnotationElemResult<>(v.getName(), result));
+    setResult(new AnnotationElemResult<Object[]>(v.getName(), result));
   }
 
   @Override
   public void caseAnnotationBooleanElem(AnnotationBooleanElem v) {
-    setResult(new AnnotationElemResult<>(v.getName(), v.getValue()));
+    setResult(new AnnotationElemResult<Boolean>(v.getName(), v.getValue()));
   }
 
   @Override
@@ -118,7 +118,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch<Annot
 
   @Override
   public void caseAnnotationDoubleElem(AnnotationDoubleElem v) {
-    setResult(new AnnotationElemResult<>(v.getName(), v.getValue()));
+    setResult(new AnnotationElemResult<Double>(v.getName(), v.getValue()));
   }
 
   @Override
@@ -153,22 +153,22 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch<Annot
 
   @Override
   public void caseAnnotationFloatElem(AnnotationFloatElem v) {
-    setResult(new AnnotationElemResult<>(v.getName(), v.getValue()));
+    setResult(new AnnotationElemResult<Float>(v.getName(), v.getValue()));
   }
 
   @Override
   public void caseAnnotationIntElem(AnnotationIntElem v) {
-    setResult(new AnnotationElemResult<>(v.getName(), v.getValue()));
+    setResult(new AnnotationElemResult<Integer>(v.getName(), v.getValue()));
   }
 
   @Override
   public void caseAnnotationLongElem(AnnotationLongElem v) {
-    setResult(new AnnotationElemResult<>(v.getName(), v.getValue()));
+    setResult(new AnnotationElemResult<Long>(v.getName(), v.getValue()));
   }
 
   @Override
   public void caseAnnotationStringElem(AnnotationStringElem v) {
-    setResult(new AnnotationElemResult<>(v.getName(), v.getValue()));
+    setResult(new AnnotationElemResult<String>(v.getName(), v.getValue()));
   }
 
   @Override

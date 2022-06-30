@@ -10,12 +10,12 @@ package soot.dava.internal.SET;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,21 +63,19 @@ public class SETStatementSequenceNode extends SETNode {
     return hasContinue;
   }
 
-  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
-    AugmentedStmt last = get_Body().getLast();
+    AugmentedStmt last = (AugmentedStmt) get_Body().getLast();
 
-    if ((last.csuccs != null) && !last.csuccs.isEmpty()) {
+    if ((last.csuccs != null) && (last.csuccs.isEmpty() == false)) {
       c.add(last);
     }
 
     return c;
   }
 
-  @Override
   public ASTNode emit_AST() {
-    List<AugmentedStmt> l = new LinkedList<>();
+    List<AugmentedStmt> l = new LinkedList<AugmentedStmt>();
 
     boolean isStaticInitializer = davaBody.getMethod().getName().equals(SootMethod.staticInitializerName);
 
@@ -88,7 +86,15 @@ public class SETStatementSequenceNode extends SETNode {
 
       if (davaBody != null) {
 
-        if (((s instanceof ReturnVoidStmt) && (isStaticInitializer)) || (s instanceof GotoStmt) || (s instanceof MonitorStmt)) {
+        if ((s instanceof ReturnVoidStmt) && (isStaticInitializer)) {
+          continue;
+        }
+
+        if (s instanceof GotoStmt) {
+          continue;
+        }
+
+        if (s instanceof MonitorStmt) {
           continue;
         }
 
@@ -129,9 +135,8 @@ public class SETStatementSequenceNode extends SETNode {
     }
   }
 
-  @Override
   public AugmentedStmt get_EntryStmt() {
-    return get_Body().getFirst();
+    return (AugmentedStmt) get_Body().getFirst();
   }
 
   public void insert_AbruptStmt(DAbruptStmt stmt) {
@@ -143,7 +148,6 @@ public class SETStatementSequenceNode extends SETNode {
     hasContinue = stmt.is_Continue();
   }
 
-  @Override
   protected boolean resolve(SETNode parent) {
     throw new RuntimeException("Attempting auto-nest a SETStatementSequenceNode.");
   }

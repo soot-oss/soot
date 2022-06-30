@@ -10,12 +10,12 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,7 +24,6 @@ package soot.jimple;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +69,7 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Construct an empty JimpleBody
-   *
+   * 
    * @param m
    */
   public JimpleBody(SootMethod m) {
@@ -88,7 +87,7 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Clones the current body, making deep copies of the contents.
-   *
+   * 
    * @return
    */
   @Override
@@ -110,7 +109,7 @@ public class JimpleBody extends StmtBody {
    */
   @Override
   public void validate() {
-    final List<ValidationException> exceptionList = new ArrayList<>();
+    final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
     validate(exceptionList);
     if (!exceptionList.isEmpty()) {
       throw exceptionList.get(0);
@@ -190,7 +189,7 @@ public class JimpleBody extends StmtBody {
 
   /**
    * Returns the first non-identity stmt in this body.
-   *
+   * 
    * @return
    */
   public Stmt getFirstNonIdentityStmt() {

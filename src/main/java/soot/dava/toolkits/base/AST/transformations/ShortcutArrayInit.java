@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -59,7 +59,6 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
     super(verbose);
   }
 
-  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     methodNode = node;
   }
@@ -70,11 +69,10 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     debug("inASTStatementSequenceNode");
     boolean success = false;
-    ArrayList<AugmentedStmt> toRemove = new ArrayList<>();
+    ArrayList<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
     for (AugmentedStmt as : node.getStatements()) {
       success = false;
       Stmt s = as.get_Stmt();
@@ -195,7 +193,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
     } // end going through stmt seq node
     if (success) {
       // means we did a transformation remove the stmts
-      List<AugmentedStmt> newStmtList = new ArrayList<>();
+      List<AugmentedStmt> newStmtList = new ArrayList<AugmentedStmt>();
       for (AugmentedStmt as : node.getStatements()) {
         if (toRemove.contains(as)) {
           toRemove.remove(as);
@@ -265,7 +263,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
    */
   public void secondPattern(ASTStatementSequenceNode node) {
     boolean success = false;
-    ArrayList<AugmentedStmt> toRemove = new ArrayList<>();
+    ArrayList<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
     for (AugmentedStmt as : node.getStatements()) {
       success = false;
       Stmt s = as.get_Stmt();
@@ -307,7 +305,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
       Iterator<AugmentedStmt> tempIt = node.getStatements().iterator();
       // get to the array creation stmt
       while (tempIt.hasNext()) {
-        AugmentedStmt tempAs = tempIt.next();
+        AugmentedStmt tempAs = (AugmentedStmt) tempIt.next();
         Stmt tempS = tempAs.get_Stmt();
         if (tempS.equals(s)) {
           break;
@@ -398,7 +396,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
     } // end going through stmt seq node
     if (success) {
       // means we did a transformation remove the stmts
-      List<AugmentedStmt> newStmtList = new ArrayList<>();
+      List<AugmentedStmt> newStmtList = new ArrayList<AugmentedStmt>();
       for (AugmentedStmt as : node.getStatements()) {
         if (toRemove.contains(as)) {
           toRemove.remove(as);

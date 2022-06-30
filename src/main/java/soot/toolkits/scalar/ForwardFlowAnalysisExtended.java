@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -58,8 +58,8 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
    */
   public ForwardFlowAnalysisExtended(DirectedGraph<N> graph) {
     this.graph = graph;
-    this.unitToBeforeFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
-    this.unitToAfterFlow = new IdentityHashMap<>(graph.size() * 2 + 1);
+    this.unitToBeforeFlow = new IdentityHashMap<N, Map<N, A>>(graph.size() * 2 + 1);
+    this.unitToAfterFlow = new IdentityHashMap<N, Map<N, A>>(graph.size() * 2 + 1);
   }
 
   /**
@@ -68,7 +68,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
    * @return an Orderer to order the nodes for the fixed-point iteration
    */
   protected Orderer<N> constructOrderer() {
-    return new PseudoTopologicalOrderer<>();
+    return new PseudoTopologicalOrderer<N>();
   }
 
   /**
@@ -116,7 +116,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
   public void putToMap(Map<N, Map<N, A>> map, N s, N t, A val) {
     Map<N, A> m = map.get(s);
     if (m == null) {
-      m = new IdentityHashMap<>();
+      m = new IdentityHashMap<N, A>();
       map.put(s, m);
     }
     m.put(t, val);
@@ -130,7 +130,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
     BitSet work = new BitSet(n);
     work.set(0, n);
 
-    final Map<N, Integer> index = new IdentityHashMap<>(n * 2 + 1);
+    final Map<N, Integer> index = new IdentityHashMap<N, Integer>(n * 2 + 1);
     {
       int i = 0;
       for (N s : orderedUnits) {

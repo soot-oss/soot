@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -77,7 +77,6 @@ public class ReachingCopies extends StructuredAnalysis {
       return rightLocal;
     }
 
-    @Override
     public boolean equals(Object other) {
       if (other instanceof LocalPair) {
         if (this.leftLocal.toString().equals(((LocalPair) other).getLeftLocal().toString())) {
@@ -100,7 +99,6 @@ public class ReachingCopies extends StructuredAnalysis {
       return false;
     }
 
-    @Override
     public String toString() {
       StringBuffer b = new StringBuffer();
       b.append("<" + leftLocal.toString() + "," + rightLocal.toString() + ">");
@@ -115,15 +113,13 @@ public class ReachingCopies extends StructuredAnalysis {
     super();
     // the input to the process method is an empty DavaFlow Set meaning
     // out(start) ={}
-    DavaFlowSet temp = process(analyze, new DavaFlowSet());
+    DavaFlowSet temp = (DavaFlowSet) process(analyze, new DavaFlowSet());
   }
 
-  @Override
   public DavaFlowSet emptyFlowSet() {
     return new DavaFlowSet();
   }
 
-  @Override
   public void setMergeType() {
     MERGETYPE = INTERSECTION;
   }
@@ -135,7 +131,7 @@ public class ReachingCopies extends StructuredAnalysis {
 
   @Override
   public DavaFlowSet cloneFlowSet(DavaFlowSet flowSet) {
-    return flowSet.clone();
+    return ((DavaFlowSet) flowSet).clone();
   }
 
   /*
@@ -169,7 +165,7 @@ public class ReachingCopies extends StructuredAnalysis {
    */
   @Override
   public DavaFlowSet processStatement(Stmt s, DavaFlowSet input) {
-    DavaFlowSet inSet = input;
+    DavaFlowSet inSet = (DavaFlowSet) input;
 
     /*
      * If this path will not be taken return no path straightaway
@@ -179,7 +175,7 @@ public class ReachingCopies extends StructuredAnalysis {
     }
 
     if (s instanceof DefinitionStmt) {
-      DavaFlowSet toReturn = cloneFlowSet(inSet);
+      DavaFlowSet toReturn = (DavaFlowSet) cloneFlowSet(inSet);
       // x = expr;
       // check if expr is a local in which case this is a copy
       Value leftOp = ((DefinitionStmt) s).getLeftOp();

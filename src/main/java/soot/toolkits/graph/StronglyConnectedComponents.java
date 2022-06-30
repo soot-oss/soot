@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -37,7 +37,7 @@ import soot.util.StationaryArrayList;
 
 /**
  * Identifies and provides an interface to query the strongly-connected components of DirectedGraph instances.
- *
+ * 
  * @see DirectedGraph
  * @deprecated implementation is inefficient; use {@link StronglyConnectedComponentsFast} instead
  */
@@ -49,8 +49,8 @@ public class StronglyConnectedComponents {
   private static final Object Visited = new Object();
   private static final Object Black = new Object();
   private final LinkedList<Object> finishingOrder;
-  private List<List> componentList = new ArrayList<>();
-  private final HashMap<Object, List<Object>> nodeToComponent = new HashMap<>();
+  private List<List> componentList = new ArrayList<List>();
+  private final HashMap<Object, List<Object>> nodeToComponent = new HashMap<Object, List<Object>>();
   MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
   private final int[] indexStack;
   private final Object[] nodeStack;
@@ -62,10 +62,10 @@ public class StronglyConnectedComponents {
    * @see DirectedGraph
    */
   public StronglyConnectedComponents(DirectedGraph g) {
-    nodeToColor = new HashMap<>((3 * g.size()) / 2, 0.7f);
+    nodeToColor = new HashMap<Object, Object>((3 * g.size()) / 2, 0.7f);
     indexStack = new int[g.size()];
     nodeStack = new Object[g.size()];
-    finishingOrder = new LinkedList<>();
+    finishingOrder = new LinkedList<Object>();
 
     // Visit each node
     {
@@ -81,7 +81,7 @@ public class StronglyConnectedComponents {
     }
 
     // Re-color all nodes white
-    nodeToColor = new HashMap<>((3 * g.size()), 0.7f);
+    nodeToColor = new HashMap<Object, Object>((3 * g.size()), 0.7f);
 
     // Visit each node via transpose edges
     {
@@ -183,7 +183,7 @@ public class StronglyConnectedComponents {
 
   /**
    * Checks if 2 nodes are in the same strongly-connnected component.
-   *
+   * 
    * @param a
    *          some graph node.
    * @param b

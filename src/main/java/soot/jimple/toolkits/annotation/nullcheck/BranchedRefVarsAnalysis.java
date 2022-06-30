@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.nullcheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -71,19 +71,19 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 /*
      README FIRST - IMPORTANT IMPLEMENTATION NOTE
 
-     As per the analysis presented in the report, there are four possible
+     As per the analysis presented in the report, there are four possible 
      pairs for given reference r:
      (r, kBottom)
      (r, kNonNull)
      (r, kNull)
      (r, kTop)
 
-     To save space an simplify operations, we implemented those 4 values
+     To save space an simplify operations, we implemented those 4 values 
      with two bits rather than four, namely:
 
-     (r, kTop) in a set is represented by having (r, kNull) and (r, kNonNull)
+     (r, kTop) in a set is represented by having (r, kNull) and (r, kNonNull) 
      in the set. Ditto, (r, kBottom) is represented by having neither in the set.
-
+    
      Keep this in mind as you read the code, it helps. Honnest :)
 
      -- Janus
@@ -95,13 +95,13 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
       Perform the analysis presented in the report.
 
-
+      
       KNOWN LIMITATION: there is a problem in the ForwardBranchedFlowAnalysis
       or maybe the CompleteUnitGraph that prevent the analysis
       (at the ForwardBranchedFlowAnalysis level) to handle properly traps.
       We make the analysis conservative in case of exceptions by setting
       exceptions handler statements In to TOP.
-
+      
 
  */
 
@@ -162,13 +162,13 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis<FlowSet
 
   // fast conversion from Value -> EquivalentValue
   // because used in methods
-  private final HashMap<Value, EquivalentValue> valueToEquivValue = new HashMap<>(2293, 0.7f);
+  private final HashMap<Value, EquivalentValue> valueToEquivValue = new HashMap<Value, EquivalentValue>(2293, 0.7f);
 
   // constant (r, v) pairs because used in methods
-  private final HashMap<EquivalentValue, RefIntPair> kRefBotttomPairs = new HashMap<>(2293, 0.7f);
-  private final HashMap<EquivalentValue, RefIntPair> kRefNonNullPairs = new HashMap<>(2293, 0.7f);
-  private final HashMap<EquivalentValue, RefIntPair> kRefNullPairs = new HashMap<>(2293, 0.7f);
-  private final HashMap<EquivalentValue, RefIntPair> kRefTopPairs = new HashMap<>(2293, 0.7f);
+  private final HashMap<EquivalentValue, RefIntPair> kRefBotttomPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
+  private final HashMap<EquivalentValue, RefIntPair> kRefNonNullPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
+  private final HashMap<EquivalentValue, RefIntPair> kRefNullPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
+  private final HashMap<EquivalentValue, RefIntPair> kRefTopPairs = new HashMap<EquivalentValue, RefIntPair>(2293, 0.7f);
 
   // used in flowThrough.
   protected FlowSet<RefIntPair> tempFlowSet = null;
@@ -181,11 +181,11 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis<FlowSet
     super(g);
 
     // initialize all the refType lists
-    this.refTypeLocals = new ArrayList<>();
-    this.refTypeInstFields = new ArrayList<>();
-    this.refTypeInstFieldBases = new ArrayList<>();
-    this.refTypeStaticFields = new ArrayList<>();
-    this.refTypeValues = new ArrayList<>();
+    this.refTypeLocals = new ArrayList<EquivalentValue>();
+    this.refTypeInstFields = new ArrayList<EquivalentValue>();
+    this.refTypeInstFieldBases = new ArrayList<EquivalentValue>();
+    this.refTypeStaticFields = new ArrayList<EquivalentValue>();
+    this.refTypeValues = new ArrayList<EquivalentValue>();
     initRefTypeLists();
 
     // initialize emptySet, fullSet and tempFlowSet
@@ -199,7 +199,7 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis<FlowSet
         universeArray[j] = getKRefIntPair(r, kNull);
         universeArray[j + 1] = getKRefIntPair(r, kNonNull);
       }
-      ArrayPackedSet<RefIntPair> temp = new ArrayPackedSet<>(new ArrayFlowUniverse<>(universeArray));
+      ArrayPackedSet<RefIntPair> temp = new ArrayPackedSet<RefIntPair>(new ArrayFlowUniverse<RefIntPair>(universeArray));
       this.emptySet = temp;
       this.fullSet = temp.clone();
       temp.complement(fullSet);
@@ -211,14 +211,14 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis<FlowSet
     // perform preservation and generation
     {
       final int cap = graph.size() * 2 + 1;
-      this.unitToGenerateSet = new HashMap<>(cap, 0.7f);
-      this.unitToPreserveSet = new HashMap<>(cap, 0.7f);
+      this.unitToGenerateSet = new HashMap<Unit, FlowSet<RefIntPair>>(cap, 0.7f);
+      this.unitToPreserveSet = new HashMap<Unit, FlowSet<RefIntPair>>(cap, 0.7f);
 
-      this.unitToAnalyzedChecksSet = new HashMap<>(cap, 0.7f);
-      this.unitToArrayRefChecksSet = new HashMap<>(cap, 0.7f);
-      this.unitToInstanceFieldRefChecksSet = new HashMap<>(cap, 0.7f);
-      this.unitToInstanceInvokeExprChecksSet = new HashMap<>(cap, 0.7f);
-      this.unitToLengthExprChecksSet = new HashMap<>(cap, 0.7f);
+      this.unitToAnalyzedChecksSet = new HashMap<Unit, HashSet<Value>>(cap, 0.7f);
+      this.unitToArrayRefChecksSet = new HashMap<Unit, HashSet<Value>>(cap, 0.7f);
+      this.unitToInstanceFieldRefChecksSet = new HashMap<Unit, HashSet<Value>>(cap, 0.7f);
+      this.unitToInstanceInvokeExprChecksSet = new HashMap<Unit, HashSet<Value>>(cap, 0.7f);
+      this.unitToLengthExprChecksSet = new HashMap<Unit, HashSet<Value>>(cap, 0.7f);
     }
     initUnitSets();
 
@@ -267,7 +267,7 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis<FlowSet
 
   /*
    * Utility methods.
-   *
+   * 
    * They are used all over the place. Most of them are declared "private static" so they can be inlined with javac -O.
    */
 
@@ -342,13 +342,13 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis<FlowSet
 
   /*
    * methods: uAddTopToFlowSet uAddInfoToFlowSet uListAddTopToFlowSet
-   *
+   * 
    * Adding a pair (r, v) to a set is always a two steps process: a) remove all pairs (r, *) b) add the pair (r, v)
-   *
+   * 
    * The methods above handle that.
-   *
+   * 
    * Most of them come in two flavors: to act on one set or two act on separate generate and preserve sets.
-   *
+   * 
    */
 
   // method to add (r, kTop) to the gen set (and remove it from the pre set)
@@ -555,11 +555,11 @@ public class BranchedRefVarsAnalysis extends ForwardBranchedFlowAnalysis<FlowSet
         }
       } // end DefinitionStmt gen case
 
-      HashSet<Value> analyzedChecksSet = new HashSet<>(5, 0.7f);
-      HashSet<Value> arrayRefChecksSet = new HashSet<>(5, 0.7f);
-      HashSet<Value> instanceFieldRefChecksSet = new HashSet<>(5, 0.7f);
-      HashSet<Value> instanceInvokeExprChecksSet = new HashSet<>(5, 0.7f);
-      HashSet<Value> lengthExprChecksSet = new HashSet<>(5, 0.7f);
+      HashSet<Value> analyzedChecksSet = new HashSet<Value>(5, 0.7f);
+      HashSet<Value> arrayRefChecksSet = new HashSet<Value>(5, 0.7f);
+      HashSet<Value> instanceFieldRefChecksSet = new HashSet<Value>(5, 0.7f);
+      HashSet<Value> instanceInvokeExprChecksSet = new HashSet<Value>(5, 0.7f);
+      HashSet<Value> lengthExprChecksSet = new HashSet<Value>(5, 0.7f);
 
       // check use and def boxes for dereferencing operations
       // since those operations cause a null pointer check

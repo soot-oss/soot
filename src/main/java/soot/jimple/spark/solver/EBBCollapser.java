@@ -10,12 +10,12 @@ package soot.jimple.spark.solver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,7 +39,7 @@ import soot.jimple.spark.pag.VarNode;
 
 /**
  * Collapses nodes that are members of simple trees (EBBs) in the pointer assignment graph.
- *
+ * 
  * @author Ondrej Lhotak
  */
 
@@ -78,7 +78,13 @@ public class EBBCollapser {
       VarNode firstSucc = null;
       for (Node element0 : succs) {
         VarNode succ = (VarNode) element0;
-        if ((pag.allocInvLookup(succ).length > 1) || (pag.loadInvLookup(succ).length > 0) || (pag.simpleInvLookup(succ).length > 0)) {
+        if (pag.allocInvLookup(succ).length > 1) {
+          continue;
+        }
+        if (pag.loadInvLookup(succ).length > 0) {
+          continue;
+        }
+        if (pag.simpleInvLookup(succ).length > 0) {
           continue;
         }
         if (ofcg && succ.isInterProcTarget()) {
@@ -109,7 +115,16 @@ public class EBBCollapser {
         for (Node element : succs) {
           VarNode succ = (VarNode) element;
           Type sType = succ.getType();
-          if (!typeManager.castNeverFails(nType, sType) || (pag.allocInvLookup(succ).length > 0) || (pag.loadInvLookup(succ).length > 0) || (pag.simpleInvLookup(succ).length > 1)) {
+          if (!typeManager.castNeverFails(nType, sType)) {
+            continue;
+          }
+          if (pag.allocInvLookup(succ).length > 0) {
+            continue;
+          }
+          if (pag.loadInvLookup(succ).length > 0) {
+            continue;
+          }
+          if (pag.simpleInvLookup(succ).length > 1) {
             continue;
           }
           if (ofcg && (succ.isInterProcTarget() || n.isInterProcSource())) {
@@ -131,11 +146,17 @@ public class EBBCollapser {
       Type nType = n.getType();
       Node[] succs = pag.loadLookup(n);
       Node firstSucc = null;
-      HashMap<Type, VarNode> typeToSucc = new HashMap<>();
+      HashMap<Type, VarNode> typeToSucc = new HashMap<Type, VarNode>();
       for (Node element : succs) {
         VarNode succ = (VarNode) element;
         Type sType = succ.getType();
-        if ((pag.allocInvLookup(succ).length > 0) || (pag.loadInvLookup(succ).length > 1) || (pag.simpleInvLookup(succ).length > 0)) {
+        if (pag.allocInvLookup(succ).length > 0) {
+          continue;
+        }
+        if (pag.loadInvLookup(succ).length > 1) {
+          continue;
+        }
+        if (pag.simpleInvLookup(succ).length > 0) {
           continue;
         }
         if (ofcg && succ.isInterProcTarget()) {

@@ -1,8 +1,5 @@
 package soot.dotnet.types;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -13,28 +10,24 @@ import java.util.List;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.Local;
-import soot.Modifier;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.SootMethodRef;
-import soot.SootResolver;
-import soot.Type;
-import soot.Value;
+
+import soot.*;
 import soot.javaToJimple.IInitialResolver;
 import soot.jimple.Jimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Helper to generate the Fake.LdFtn Sootclass and the given method

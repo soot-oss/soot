@@ -10,12 +10,12 @@ package soot.dotnet.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -72,41 +72,33 @@ public class CilCompInstruction extends AbstractCilnstruction {
     if (left instanceof BinopExpr && right instanceof IntConstant) {
       boolean expectedValueTrue;
       IntConstant c = (IntConstant) right;
-      if (c.value == 0) {
+      if (c.value == 0)
         expectedValueTrue = false;
-      } else if (c.value == 1) {
+      else if (c.value == 1)
         expectedValueTrue = true;
-      } else {
+      else
         throw new RuntimeException("Missing case for c.value");
-      }
 
-      if (comparisonKind == IlComparisonKind.Inequality) {
+      if (comparisonKind == IlComparisonKind.Inequality)
         expectedValueTrue = !expectedValueTrue;
-      }
-      if (expectedValueTrue) {
+      if (expectedValueTrue)
         return left;
-      } else {
+      else {
         BinopExpr binop = (BinopExpr) left;
-        if (left instanceof EqExpr) {
+        if (left instanceof EqExpr)
           return Jimple.v().newNeExpr(binop.getOp1(), binop.getOp2());
-        }
-        if (left instanceof NeExpr) {
+        if (left instanceof NeExpr)
           return Jimple.v().newEqExpr(binop.getOp1(), binop.getOp2());
-        }
-        if (left instanceof LtExpr) {
+        if (left instanceof LtExpr)
           return Jimple.v().newGeExpr(binop.getOp1(), binop.getOp2());
-        }
-        if (left instanceof LeExpr) {
+        if (left instanceof LeExpr)
           return Jimple.v().newGtExpr(binop.getOp1(), binop.getOp2());
-        }
-        if (left instanceof GeExpr) {
+        if (left instanceof GeExpr)
           return Jimple.v().newLtExpr(binop.getOp1(), binop.getOp2());
-        }
-        if (left instanceof GtExpr) {
+        if (left instanceof GtExpr)
           return Jimple.v().newLeExpr(binop.getOp1(), binop.getOp2());
-        } else {
+        else
           return null;
-        }
       }
     }
 

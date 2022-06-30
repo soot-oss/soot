@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -52,10 +52,10 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   int maxDepth;
   int numNodes;
 
-  Stack<ArrayList> labelNodesSoFar = new Stack<>();
-  ArrayList<Node> blocksWithAbruptFlow = new ArrayList<>();
-  HashMap<Node, Integer> stmtToMetric = new HashMap<>();
-  HashMap<Node, Integer> stmtToMetricDepth = new HashMap<>();
+  Stack<ArrayList> labelNodesSoFar = new Stack<ArrayList>();
+  ArrayList<Node> blocksWithAbruptFlow = new ArrayList<Node>();
+  HashMap<Node, Integer> stmtToMetric = new HashMap<Node, Integer>();
+  HashMap<Node, Integer> stmtToMetricDepth = new HashMap<Node, Integer>();
 
   public static boolean tmpAbruptChecker = false;
 
@@ -63,7 +63,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     super(node);
   }
 
-  @Override
   public void printAstMetric(Node n, CodeWriter w) {
     if (n instanceof Stmt) {
       if (stmtToMetric.containsKey(n)) {
@@ -72,7 +71,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     }
   }
 
-  @Override
   public void reset() {
     // if not one, then fields and method sigs don't get counted
     currentDepth = 1; // inside a class
@@ -81,7 +79,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     numNodes = 0;
   }
 
-  @Override
   public void addMetrics(ClassData data) {
     // data.addMetric(new MetricData("MaxDepth",new Integer(maxDepth)));
 
@@ -115,7 +112,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
    *
    * Block ... if it is a block within a block, add currentDepth plus increment depth ONLY if it has abrupt flow out of it.
    */
-  @Override
   public NodeVisitor enter(Node parent, Node n) {
     numNodes++;
     if (n instanceof CodeDecl) {
@@ -135,7 +131,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
       StmtSumWeightedByDepth.tmpAbruptChecker = false;
       n.visit(new NodeVisitor() {
         // extended NodeVisitor that checks for branching out of a block
-        @Override
         public NodeVisitor enter(Node parent, Node node) {
           if (node instanceof Branch) {
             Branch b = (Branch) node;
@@ -148,7 +143,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
         }
 
         // this method simply stops further node visiting if we found our info
-        @Override
         public Node override(Node parent, Node node) {
           if (StmtSumWeightedByDepth.tmpAbruptChecker) {
             return node;
@@ -180,7 +174,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     return enter(n);
   }
 
-  @Override
   public Node leave(Node old, Node n, NodeVisitor v) {
 
     // stack maintenance, if leaving a method

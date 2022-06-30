@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.renamer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -176,7 +176,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
    * The method sets the inDefinitionStmt flag to true and if this is a local assignment The ref to the local is stored in
    * definedLocal
    */
-  @Override
   public void inDefinitionStmt(DefinitionStmt s) {
     inDefinitionStmt = true;
     // System.out.println(s);
@@ -199,7 +198,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void outDefinitionStmt(DefinitionStmt s) {
     // checking casting here because we want to see if the expr
     // on the right of def stmt is a cast expr not whether it contains a cast expr
@@ -214,7 +212,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Deals with cases in which a local is assigned a value from a static field int local = field int local = class.field
    */
-  @Override
   public void inStaticFieldRef(StaticFieldRef sfr) {
     if (inDefinitionStmt && (definedLocal != null)) {
       SootField field = sfr.getField();
@@ -226,7 +223,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
    * Deals with cases in which a local is assigned a value from a field int local = field or int local = obj.field
    */
 
-  @Override
   public void inInstanceFieldRef(InstanceFieldRef ifr) {
     if (ifr instanceof AbstractInstanceFieldRef) {
       if (inDefinitionStmt && (definedLocal != null)) {
@@ -243,7 +239,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
    * @see soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter#outInvokeExpr(soot.jimple.InvokeExpr) If it is a newInvoke
    * expr we know that the name of the class can come in handy while renaming because this could be a subtype
    */
-  @Override
   public void outInvokeExpr(InvokeExpr ie) {
     // If this is within a definitionStmt of a local
     if (inDefinitionStmt && (definedLocal != null)) {
@@ -267,7 +262,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * This is the object for a flag use in a conditional If the value is a local set the appropriate heuristic
    */
-  @Override
   public void inASTUnaryCondition(ASTUnaryCondition uc) {
     Value val = uc.getValue();
     if (val instanceof Local) {
@@ -280,7 +274,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void inASTBinaryCondition(ASTBinaryCondition bc) {
     ConditionExpr condition = bc.getConditionExpr();
 
@@ -298,7 +291,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Setting if to true in inASTIfNode so that later we know whether this is a flag use in an if
    */
-  @Override
   public void inASTIfNode(ASTIfNode node) {
     inIf = true;
   }
@@ -306,7 +298,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Going out of if set flag to false
    */
-  @Override
   public void outASTIfNode(ASTIfNode node) {
     inIf = false;
   }
@@ -314,7 +305,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Setting if to true in inASTIfElseNode so that later we know whether this is a flag use in an ifElse
    */
-  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     inIf = true;
   }
@@ -322,7 +312,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Going out of ifElse set flag to false
    */
-  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     inIf = false;
   }
@@ -330,7 +319,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Setting if to true in inASTWhileNode so that later we know whether this is a flag use in a WhileNode
    */
-  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     inWhile = true;
   }
@@ -338,7 +326,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * setting flag to false
    */
-  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     inWhile = false;
   }
@@ -346,7 +333,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Setting if to true in inASTDoWhileNode so that later we know whether this is a flag use in a WhileNode
    */
-  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     inWhile = true;
   }
@@ -354,7 +340,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * setting flag to false
    */
-  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     inWhile = false;
   }
@@ -362,7 +347,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * Check the key of the switch statement to see if its a local
    */
-  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Value key = node.get_Key();
     if (key instanceof Local) {
@@ -370,7 +354,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void inArrayRef(ArrayRef ar) {
     Value index = ar.getIndex();
     if (index instanceof Local) {
@@ -378,7 +361,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void inASTTryNode(ASTTryNode node) {
 
   }
@@ -386,7 +368,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * setting flag to true
    */
-  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
     inFor = true;
     for (AugmentedStmt as : node.getUpdate()) {
@@ -403,7 +384,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
   /*
    * setting flag to false
    */
-  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
     inFor = false;
   }
@@ -412,7 +392,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
    * If there are any locals at this point who do not have any className set it might be a good idea to store that
    * information
    */
-  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     if (DEBUG) {
       System.out.println("SET START");

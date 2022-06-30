@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp.findobject;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,7 +56,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 // -Richard L. Halpert, 2006-11-30
 
 public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> {
-  Set<Unit> multiRunStatements = new HashSet<>();
+  Set<Unit> multiRunStatements = new HashSet<Unit>();
 
   protected Map<Object, Integer> nodeToIndex;
   protected int lastIndex = 0;
@@ -65,7 +65,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
   public MultiRunStatementsFinder(UnitGraph g, SootMethod sm, Set<SootMethod> multiCalledMethods, CallGraph cg) {
     super(g);
 
-    nodeToIndex = new HashMap<>();
+    nodeToIndex = new HashMap<Object, Integer>();
 
     // System.out.println("===entering MultiObjectAllocSites==");
     doAnalysis();
@@ -84,7 +84,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
 
         InvokeExpr invokeExpr = stmt.getInvokeExpr();
 
-        List<SootMethod> targetList = new ArrayList<>();
+        List<SootMethod> targetList = new ArrayList<SootMethod>();
         SootMethod method = invokeExpr.getMethod();
         if (invokeExpr instanceof StaticInvokeExpr) {
           targetList.add(method);
@@ -112,7 +112,6 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
 
   // STEP 4: Is the merge operator union or intersection?
   // UNION
-  @Override
   protected void merge(BitSet in1, BitSet in2, BitSet out) {
     out.clear();
     out.or(in1);
@@ -122,7 +121,6 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
   // STEP 5: Define flow equations.
   // in(s) = ( out(s) minus defs(s) ) union uses(s)
   //
-  @Override
   protected void flowThrough(BitSet in, Unit unit, BitSet out) {
     out.clear();
     out.or(in);
@@ -139,7 +137,6 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
 
   }
 
-  @Override
   protected void copy(BitSet source, BitSet dest) {
     dest.clear();
     dest.or(source);
@@ -150,12 +147,10 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit, BitSet> 
   //
   // start node: empty set
   // initial approximation: empty set
-  @Override
   protected BitSet entryInitialFlow() {
     return new BitSet();
   }
 
-  @Override
   protected BitSet newInitialFlow() {
     return new BitSet();
   }

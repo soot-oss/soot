@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,7 +28,6 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     super(job, ts, nf);
   }
 
-  @Override
   public polyglot.ast.Expr ascribe(polyglot.ast.Expr e, polyglot.types.Type toType) {
 
     // System.out.println("expr: "+e);
@@ -37,7 +36,10 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     polyglot.types.Type fromType = e.type();
     // System.out.println("from type: "+fromType);
 
-    if ((toType == null) || toType.isVoid()) {
+    if (toType == null) {
+      return e;
+    }
+    if (toType.isVoid()) {
       return e;
     }
 
@@ -75,7 +77,6 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
 
   }
 
-  @Override
   public polyglot.ast.Node leaveCall(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor v)
       throws polyglot.types.SemanticException {
 

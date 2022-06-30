@@ -11,12 +11,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -31,13 +31,13 @@ import soot.toolkits.graph.DirectedBodyGraph;
 
 /**
  * An analysis to check whether or not local variables have been initialised.
- *
+ * 
  * @author Ganesh Sittampalam
  * @author Eric Bodden
  */
 public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
 
-  protected final FlowSet<Local> allLocals = new ArraySparseSet<>();
+  protected final FlowSet<Local> allLocals = new ArraySparseSet<Local>();
 
   public InitAnalysis(DirectedBodyGraph<Unit> g) {
     super(g);
@@ -52,12 +52,12 @@ public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
 
   @Override
   protected FlowSet<Local> entryInitialFlow() {
-    return new ArraySparseSet<>();
+    return new ArraySparseSet<Local>();
   }
 
   @Override
   protected FlowSet<Local> newInitialFlow() {
-    FlowSet<Local> ret = new ArraySparseSet<>();
+    FlowSet<Local> ret = new ArraySparseSet<Local>();
     allLocals.copy(ret);
     return ret;
   }

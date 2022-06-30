@@ -10,12 +10,12 @@ package soot.jimple.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -141,13 +141,13 @@ public class CriticalEdgeRemover extends BodyTransformer {
    *
    * Note, that critical edges can only appear on edges between blocks!. Our algorithm will *not* take into account
    * exceptions. (this is nearly impossible anyways)
-   *
+   * 
    * @param b
    *          the Jimple-body that will be physicly modified so that there are no critical edges anymore.
    */
   private void removeCriticalEdges(Body b) {
     final Chain<Unit> unitChain = b.getUnits();
-    final Map<Unit, List<Unit>> predecessors = new HashMap<>(2 * unitChain.size() + 1, 0.7f);
+    final Map<Unit, List<Unit>> predecessors = new HashMap<Unit, List<Unit>>(2 * unitChain.size() + 1, 0.7f);
 
     // First get the predecessors of each node (although direct predecessors are
     // predecessors too, we'll not include them in the lists)
@@ -157,7 +157,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
         Unit target = ub.getUnit();
         List<Unit> predList = predecessors.get(target);
         if (predList == null) {
-          predecessors.put(target, predList = new ArrayList<>());
+          predecessors.put(target, predList = new ArrayList<Unit>());
         }
         predList.add(currentUnit);
       }

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,7 +47,6 @@ public class AbstractDataSource implements Value {
   }
 
   /** Clones the object. Not implemented here. */
-  @Override
   public Object clone() {
     return new AbstractDataSource(sourcename);
   }
@@ -56,7 +55,6 @@ public class AbstractDataSource implements Value {
    * Returns true if this object is structurally equivalent to c. AbstractDataSources are equal and equivalent if their
    * sourcename is the same
    */
-  @Override
   public boolean equivTo(Object c) {
     if (sourcename instanceof Value) {
       return (c instanceof AbstractDataSource && ((Value) sourcename).equivTo(((AbstractDataSource) c).sourcename));
@@ -64,13 +62,11 @@ public class AbstractDataSource implements Value {
     return (c instanceof AbstractDataSource && ((AbstractDataSource) c).sourcename.equals(sourcename));
   }
 
-  @Override
   public boolean equals(Object c) {
     return (c instanceof AbstractDataSource && ((AbstractDataSource) c).sourcename.equals(sourcename));
   }
 
   /** Returns a hash code consistent with structural equality for this object. */
-  @Override
   public int equivHashCode() {
     if (sourcename instanceof Value) {
       return ((Value) sourcename).equivHashCode();
@@ -78,21 +74,17 @@ public class AbstractDataSource implements Value {
     return sourcename.hashCode();
   }
 
-  @Override
   public void toString(UnitPrinter up) {
   }
 
-  @Override
   public Type getType() {
     return NullType.v();
   }
 
-  @Override
   public void apply(Switch sw) {
     throw new RuntimeException("Not Implemented");
   }
 
-  @Override
   public String toString() {
     return "sourceof<" + sourcename.toString() + ">";
   }

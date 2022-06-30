@@ -12,12 +12,12 @@ import java.util.Collection;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,7 +40,7 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   private static final long serialVersionUID = -3182515910302586044L;
 
-  private final Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<>(0);
+  private final Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<K, ConcurrentMap<V, V>>(0);
 
   public ConcurrentHashMultiMap() {
   }
@@ -70,7 +70,7 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   protected ConcurrentMap<V, V> newSet() {
-    return new ConcurrentHashMap<>();
+    return new ConcurrentHashMap<V, V>();
   }
 
   private ConcurrentMap<V, V> findSet(K key) {
@@ -189,7 +189,7 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
   @Override
   public Set<V> values() {
-    Set<V> ret = new HashSet<>(m.size());
+    Set<V> ret = new HashSet<V>(m.size());
     for (Map<V, V> s : m.values()) {
       ret.addAll(s.keySet());
     }

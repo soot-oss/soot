@@ -10,12 +10,12 @@ package soot.jimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -48,7 +48,7 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
     this.targetBoxes = targetBoxes;
 
     // Build up stmtBoxes
-    List<UnitBox> list = new ArrayList<>();
+    List<UnitBox> list = new ArrayList<UnitBox>();
     Collections.addAll(list, targetBoxes);
     list.add(defaultTargetBox);
     this.stmtBoxes = Collections.unmodifiableList(list);
@@ -96,7 +96,7 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
 
   @Override
   final public List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<>(keyBox.getValue().getUseBoxes());
+    List<ValueBox> list = new ArrayList<ValueBox>(keyBox.getValue().getUseBoxes());
     list.add(keyBox);
     return list;
   }
@@ -123,7 +123,7 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
   @Override
   final public List<Unit> getTargets() {
     final UnitBox[] boxes = this.targetBoxes;
-    List<Unit> targets = new ArrayList<>(boxes.length);
+    List<Unit> targets = new ArrayList<Unit>(boxes.length);
     for (UnitBox element : boxes) {
       targets.add(element.getUnit());
     }

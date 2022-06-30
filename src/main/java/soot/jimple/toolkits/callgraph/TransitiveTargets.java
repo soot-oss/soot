@@ -10,12 +10,12 @@ package soot.jimple.toolkits.callgraph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,7 +32,7 @@ import soot.Unit;
 
 /**
  * Extends a TargetsOfMethod or TargetsOfUnit to include edges transitively reachable from any target methods.
- *
+ * 
  * @author Ondrej Lhotak
  */
 public class TransitiveTargets {
@@ -50,7 +50,7 @@ public class TransitiveTargets {
   }
 
   public Iterator<MethodOrMethodContext> iterator(Unit u) {
-    ArrayList<MethodOrMethodContext> methods = new ArrayList<>();
+    ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
     Iterator<Edge> it = cg.edgesOutOf(u);
     if (filter != null) {
       it = filter.wrap(it);
@@ -63,7 +63,7 @@ public class TransitiveTargets {
   }
 
   public Iterator<MethodOrMethodContext> iterator(MethodOrMethodContext momc) {
-    ArrayList<MethodOrMethodContext> methods = new ArrayList<>();
+    ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
     Iterator<Edge> it = cg.edgesOutOf(momc);
     if (filter != null) {
       it = filter.wrap(it);
@@ -76,8 +76,8 @@ public class TransitiveTargets {
   }
 
   public Iterator<MethodOrMethodContext> iterator(Iterator<? extends MethodOrMethodContext> methods) {
-    Set<MethodOrMethodContext> s = new HashSet<>();
-    ArrayList<MethodOrMethodContext> worklist = new ArrayList<>();
+    Set<MethodOrMethodContext> s = new HashSet<MethodOrMethodContext>();
+    ArrayList<MethodOrMethodContext> worklist = new ArrayList<MethodOrMethodContext>();
     while (methods.hasNext()) {
       MethodOrMethodContext method = methods.next();
       if (s.add(method)) {

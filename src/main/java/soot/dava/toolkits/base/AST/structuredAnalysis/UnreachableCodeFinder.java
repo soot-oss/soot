@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -72,7 +72,6 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 
   public class UnreachableCodeFlowSet extends DavaFlowSet {
 
-    @Override
     public UnreachableCodeFlowSet clone() {
       if (this.size() != 1) {
         throw new DecompilationException("unreachableCodeFlow set size should always be 1");
@@ -139,14 +138,13 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
   public UnreachableCodeFinder(Object analyze) {
     super();
     // the input to the process method is newInitialFlow
-    DavaFlowSet temp = process(analyze, newInitialFlow());
+    DavaFlowSet temp = (DavaFlowSet) process(analyze, newInitialFlow());
   }
 
   /*
    * Merge is intersection but our SPECIALIZED intersection hence creating our own specialize flow set with overriding the
    * intersection method
    */
-  @Override
   public void setMergeType() {
     MERGETYPE = INTERSECTION;
   }
@@ -157,14 +155,12 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
    * If you are processing the catch body that means you can reach to the try Since you can always come to a catchbody the
    * inset to the catch body to should be that there is a path
    */
-  @Override
   public DavaFlowSet newInitialFlow() {
     DavaFlowSet newSet = emptyFlowSet();
     newSet.add(new Boolean(true));
     return newSet;
   }
 
-  @Override
   public DavaFlowSet emptyFlowSet() {
     return new UnreachableCodeFlowSet();
   }
@@ -262,7 +258,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
       throw new RuntimeException("handleBreak is only implemented for UnreachableCodeFlowSet type");
     }
 
-    DavaFlowSet out = output;
+    DavaFlowSet out = (DavaFlowSet) output;
 
     // get the explicit list with this label from the breakList
     List explicitSet = out.getBreakSet(label);
@@ -446,7 +442,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     DavaFlowSet initialIn = cloneFlowSet(input);
     DavaFlowSet out = null;
     DavaFlowSet defaultOut = null;
-    List<DavaFlowSet> toMergeBreaks = new ArrayList<>();
+    List<DavaFlowSet> toMergeBreaks = new ArrayList<DavaFlowSet>();
 
     Iterator<Object> it = indexList.iterator();
     while (it.hasNext()) {
@@ -484,7 +480,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     // handle break
     String label = getLabel(node);
     // have to handleBreaks for all the different cases
-    List<DavaFlowSet> outList = new ArrayList<>();
+    List<DavaFlowSet> outList = new ArrayList<DavaFlowSet>();
     // handling breakLists of each of the toMergeBreaks
     for (DavaFlowSet tmb : toMergeBreaks) {
       outList.add(handleBreak(label, tmb, node));
@@ -518,7 +514,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 
     List<Object> catchList = node.get_CatchList();
     Iterator<Object> it = catchList.iterator();
-    List<DavaFlowSet> catchOutput = new ArrayList<>();
+    List<DavaFlowSet> catchOutput = new ArrayList<DavaFlowSet>();
 
     while (it.hasNext()) {
       ASTTryNode.container catchBody = (ASTTryNode.container) it.next();
@@ -535,7 +531,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     // handle breaks
     String label = getLabel(node);
 
-    List<DavaFlowSet> outList = new ArrayList<>();
+    List<DavaFlowSet> outList = new ArrayList<DavaFlowSet>();
     // handle breaks out of tryBodyOutput
     outList.add(handleBreak(label, tryBodyOutput, node));
 

@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.dataMgr;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -51,10 +51,10 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
   protected GeomPointsTo ptsProvider = (GeomPointsTo) Scene.v().getPointsToAnalysis();
 
   // The list view
-  public List<VarType> outList = new ArrayList<>();
+  public List<VarType> outList = new ArrayList<VarType>();
 
   // The table view (cannot be accessed directly outside)
-  protected Map<Node, List<VarType>> tableView = new HashMap<>();
+  protected Map<Node, List<VarType>> tableView = new HashMap<Node, List<VarType>>();
 
   /**
    * Called before each round of collection.
@@ -68,7 +68,7 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
    * Called after each round of collection.
    */
   public void finish() {
-    if (!readyToUse) {
+    if (readyToUse == false) {
       // We flatten the list
       readyToUse = true;
       outList.clear();

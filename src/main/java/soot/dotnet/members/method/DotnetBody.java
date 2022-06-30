@@ -10,12 +10,12 @@ package soot.dotnet.members.method;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -57,7 +57,7 @@ public class DotnetBody {
 
   /**
    * Get method signature of this method body
-   *
+   * 
    * @return method signature
    */
   public DotnetMethod getDotnetMethodSig() {
@@ -90,9 +90,8 @@ public class DotnetBody {
   }
 
   private void addThisStmt() {
-    if (dotnetMethodSig.isStatic()) {
+    if (dotnetMethodSig.isStatic())
       return;
-    }
     RefType thisType = dotnetMethodSig.getDeclaringClass().getType();
     Local l = Jimple.v().newLocal("this", thisType);
     IdentityStmt identityStmt = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(thisType));
@@ -102,17 +101,15 @@ public class DotnetBody {
 
   /**
    * Due to three address code, inline cast expr
-   *
+   * 
    * @param v
    * @return
    */
   public static Value inlineCastExpr(Value v) {
-    if (v instanceof Immediate) {
+    if (v instanceof Immediate)
       return v;
-    }
-    if (v instanceof CastExpr) {
+    if (v instanceof CastExpr)
       return inlineCastExpr(((CastExpr) v).getOp());
-    }
     return v;
   }
 
@@ -140,13 +137,12 @@ public class DotnetBody {
     }
     LocalGenerator lg = Scene.v().createLocalGenerator(b);
     b.getUnits().add(Jimple.v().newThrowStmt(lg.generateLocal(soot.RefType.v("java.lang.Throwable"))));
-    if (m.getReturnType() instanceof VoidType) {
+    if (m.getReturnType() instanceof VoidType)
       b.getUnits().add(Jimple.v().newReturnVoidStmt());
-    } else if (m.getReturnType() instanceof PrimType) {
+    else if (m.getReturnType() instanceof PrimType)
       b.getUnits().add(Jimple.v().newReturnStmt(DotnetTypeFactory.initType(m.getReturnType())));
-    } else {
+    else
       b.getUnits().add(Jimple.v().newReturnStmt(NullConstant.v()));
-    }
   }
 
 }

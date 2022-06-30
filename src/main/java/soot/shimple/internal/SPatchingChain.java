@@ -10,12 +10,12 @@ package soot.shimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -66,18 +66,18 @@ public class SPatchingChain extends UnitPatchingChain {
   /**
    * Map from UnitBox to the Phi node owning it.
    */
-  protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<>();
+  protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<UnitBox, Unit>();
 
   /**
    * Set of the values of boxToPhiNode. Used to allow O(1) contains() on the values.
    */
-  protected Set<Unit> phiNodeSet = new HashSet<>();
+  protected Set<Unit> phiNodeSet = new HashSet<Unit>();
 
   /**
    * Flag that indicates whether control flow falls through from the unit referenced in the SUnitBox to the Phi node that
    * owns the SUnitBox.
    */
-  protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<>();
+  protected Map<SUnitBox, Boolean> boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
   public SPatchingChain(Body aBody, Chain<Unit> aChain) {
     super(aChain);
@@ -283,8 +283,12 @@ public class SPatchingChain extends UnitPatchingChain {
     PhiExpr phi = Shimple.getPhiExpr(phiNode);
 
     // not a Phi node
+    if (phi == null) {
+      return;
+    }
+
     // already processed previously, unit chain manipulations?
-    if ((phi == null) || phiNodeSet.contains(phiNode)) {
+    if (phiNodeSet.contains(phiNode)) {
       return;
     }
 
@@ -295,10 +299,10 @@ public class SPatchingChain extends UnitPatchingChain {
   }
 
   protected void reprocessPhiNodes() {
-    Set<Unit> phiNodes = new HashSet<>(boxToPhiNode.values());
-    this.boxToPhiNode = new HashMap<>();
-    this.phiNodeSet = new HashSet<>();
-    this.boxToNeedsPatching = new HashMap<>();
+    Set<Unit> phiNodes = new HashSet<Unit>(boxToPhiNode.values());
+    this.boxToPhiNode = new HashMap<UnitBox, Unit>();
+    this.phiNodeSet = new HashSet<Unit>();
+    this.boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
     for (Unit next : phiNodes) {
       processPhiNode(next);
@@ -320,7 +324,7 @@ public class SPatchingChain extends UnitPatchingChain {
     // we track the fallthrough control flow from boxes to the
     // corresponding Phi statements. trackedPhi provides a
     // mapping from the Phi being tracked to its relevant boxes.
-    final MultiMap<Unit, UnitBox> trackedPhiToBoxes = new HashMultiMap<>();
+    final MultiMap<Unit, UnitBox> trackedPhiToBoxes = new HashMultiMap<Unit, UnitBox>();
 
     // consider:
     //
@@ -330,7 +334,7 @@ public class SPatchingChain extends UnitPatchingChain {
     // Here control flow both fallsthrough and branches to label1.
     // If such an if statement is encountered, we do not want to
     // move any UnitBox pointers beyond the if statement.
-    final Set<Unit> trackedBranchTargets = new HashSet<>();
+    final Set<Unit> trackedBranchTargets = new HashSet<Unit>();
     for (Unit u : this) {
       // update trackedPhiToBoxes
       List<UnitBox> boxesToTrack = u.getBoxesPointingToThis();

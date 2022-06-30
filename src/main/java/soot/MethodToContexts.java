@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,17 +30,17 @@ import java.util.Map;
 
 /**
  * Keeps track of the various contexts associated with each method.
- *
+ * 
  * @author Ondrej Lhotak
  */
 public final class MethodToContexts {
-  private final Map<SootMethod, List<MethodOrMethodContext>> map = new HashMap<>();
+  private final Map<SootMethod, List<MethodOrMethodContext>> map = new HashMap<SootMethod, List<MethodOrMethodContext>>();
 
   public void add(MethodOrMethodContext momc) {
     SootMethod m = momc.method();
     List<MethodOrMethodContext> l = map.get(m);
     if (l == null) {
-      map.put(m, l = new ArrayList<>());
+      map.put(m, l = new ArrayList<MethodOrMethodContext>());
     }
     l.add(momc);
   }
@@ -62,7 +62,7 @@ public final class MethodToContexts {
   public List<MethodOrMethodContext> get(SootMethod m) {
     List<MethodOrMethodContext> ret = map.get(m);
     if (ret == null) {
-      ret = new ArrayList<>();
+      ret = new ArrayList<MethodOrMethodContext>();
     }
     return ret;
   }

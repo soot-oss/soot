@@ -10,12 +10,12 @@ package soot.tools;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -55,12 +55,12 @@ public class BadFields extends SceneTransformer {
   private SootClass lastClass;
   private SootClass currentClass;
 
-  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
     lastClass = null;
 
-    for (SootClass cl : Scene.v().getApplicationClasses()) {
+    for (Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext();) {
 
+      final SootClass cl = clIt.next();
       currentClass = cl;
       handleClass(cl);
       for (Iterator<SootMethod> it = cl.methodIterator(); it.hasNext();) {
@@ -71,7 +71,8 @@ public class BadFields extends SceneTransformer {
   }
 
   private void handleClass(SootClass cl) {
-    for (SootField f : cl.getFields()) {
+    for (Iterator<SootField> fIt = cl.getFields().iterator(); fIt.hasNext();) {
+      final SootField f = fIt.next();
       if (!f.isStatic()) {
         continue;
       }
@@ -80,7 +81,16 @@ public class BadFields extends SceneTransformer {
         continue;
       }
       if (f.isFinal()) {
-        if ((f.getType() instanceof PrimType) || typeName.equals("java.io.PrintStream") || typeName.equals("java.lang.String") || typeName.equals(Scene.v().getObjectType().toString())) {
+        if (f.getType() instanceof PrimType) {
+          continue;
+        }
+        if (typeName.equals("java.io.PrintStream")) {
+          continue;
+        }
+        if (typeName.equals("java.lang.String")) {
+          continue;
+        }
+        if (typeName.equals(Scene.v().getObjectType().toString())) {
           continue;
         }
         if (typeName.equals("java.lang.Integer")) {
@@ -106,7 +116,8 @@ public class BadFields extends SceneTransformer {
     if (!m.isConcrete()) {
       return;
     }
-    for (ValueBox b : m.retrieveActiveBody().getUseAndDefBoxes()) {
+    for (Iterator<ValueBox> bIt = m.retrieveActiveBody().getUseAndDefBoxes().iterator(); bIt.hasNext();) {
+      final ValueBox b = bIt.next();
       Value v = b.getValue();
       if (!(v instanceof StaticFieldRef)) {
         continue;
@@ -137,7 +148,8 @@ public class BadFields extends SceneTransformer {
     if (m.getName().equals("<clinit>")) {
       for (Iterator<Unit> sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext();) {
         final Stmt s = (Stmt) sIt.next();
-        for (ValueBox b : s.getUseBoxes()) {
+        for (Iterator<ValueBox> bIt = s.getUseBoxes().iterator(); bIt.hasNext();) {
+          final ValueBox b = bIt.next();
           Value v = b.getValue();
           if (v instanceof FieldRef) {
             warn(m.getName() + " reads field " + v);
@@ -155,7 +167,16 @@ public class BadFields extends SceneTransformer {
 
   private void calls(SootMethod target) {
     if (target.getName().equals("<init>")) {
-      if (target.getDeclaringClass().getName().equals("java.io.PrintStream") || target.getDeclaringClass().getName().equals("java.lang.Boolean") || target.getDeclaringClass().getName().equals("java.lang.Integer") || target.getDeclaringClass().getName().equals("java.lang.String")) {
+      if (target.getDeclaringClass().getName().equals("java.io.PrintStream")) {
+        return;
+      }
+      if (target.getDeclaringClass().getName().equals("java.lang.Boolean")) {
+        return;
+      }
+      if (target.getDeclaringClass().getName().equals("java.lang.Integer")) {
+        return;
+      }
+      if (target.getDeclaringClass().getName().equals("java.lang.String")) {
         return;
       }
       if (target.getDeclaringClass().getName().equals(Scene.v().getObjectType().toString())) {

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.callgraph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,11 +42,11 @@ import soot.util.queue.QueueReader;
  */
 public class SlowCallGraph extends CallGraph {
 
-  private final Set<Edge> edges = new HashSet<>();
-  private final MultiMap<Unit, Edge> unitMap = new HashMultiMap<>();
-  private final MultiMap<MethodOrMethodContext, Edge> srcMap = new HashMultiMap<>();
-  private final MultiMap<MethodOrMethodContext, Edge> tgtMap = new HashMultiMap<>();
-  private final ChunkedQueue<Edge> stream = new ChunkedQueue<>();
+  private final Set<Edge> edges = new HashSet<Edge>();
+  private final MultiMap<Unit, Edge> unitMap = new HashMultiMap<Unit, Edge>();
+  private final MultiMap<MethodOrMethodContext, Edge> srcMap = new HashMultiMap<MethodOrMethodContext, Edge>();
+  private final MultiMap<MethodOrMethodContext, Edge> tgtMap = new HashMultiMap<MethodOrMethodContext, Edge>();
+  private final ChunkedQueue<Edge> stream = new ChunkedQueue<Edge>();
   private final QueueReader<Edge> reader = stream.reader();
 
   /**
@@ -85,7 +85,7 @@ public class SlowCallGraph extends CallGraph {
    */
   @Override
   public Iterator<MethodOrMethodContext> sourceMethods() {
-    return new ArrayList<>(srcMap.keySet()).iterator();
+    return new ArrayList<MethodOrMethodContext>(srcMap.keySet()).iterator();
   }
 
   /**
@@ -93,7 +93,7 @@ public class SlowCallGraph extends CallGraph {
    */
   @Override
   public Iterator<Edge> edgesOutOf(Unit u) {
-    return new ArrayList<>(unitMap.get(u)).iterator();
+    return new ArrayList<Edge>(unitMap.get(u)).iterator();
   }
 
   /**
@@ -101,7 +101,7 @@ public class SlowCallGraph extends CallGraph {
    */
   @Override
   public Iterator<Edge> edgesOutOf(MethodOrMethodContext m) {
-    return new ArrayList<>(srcMap.get(m)).iterator();
+    return new ArrayList<Edge>(srcMap.get(m)).iterator();
   }
 
   /**
@@ -109,7 +109,7 @@ public class SlowCallGraph extends CallGraph {
    */
   @Override
   public Iterator<Edge> edgesInto(MethodOrMethodContext m) {
-    return new ArrayList<>(tgtMap.get(m)).iterator();
+    return new ArrayList<Edge>(tgtMap.get(m)).iterator();
   }
 
   /**
@@ -118,7 +118,7 @@ public class SlowCallGraph extends CallGraph {
    */
   @Override
   public QueueReader<Edge> listener() {
-    return reader.clone();
+    return (QueueReader<Edge>) reader.clone();
   }
 
   /**

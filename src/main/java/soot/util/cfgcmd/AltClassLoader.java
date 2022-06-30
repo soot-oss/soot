@@ -10,12 +10,12 @@ package soot.util.cfgcmd;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,17 +60,17 @@ public class AltClassLoader extends ClassLoader {
   /**
    * Maps from already loaded classnames to their Class objects.
    */
-  private final Map<String, Class<?>> alreadyFound = new HashMap<>();
+  private final Map<String, Class<?>> alreadyFound = new HashMap<String, Class<?>>();
 
   /**
    * Maps from the names of classes to be loaded from the alternate classpath to mangled names to use for them.
    */
-  private final Map<String, String> nameToMangledName = new HashMap<>();
+  private final Map<String, String> nameToMangledName = new HashMap<String, String>();
 
   /**
    * Maps from the mangled names of classes back to their original names.
    */
-  private final Map<String, String> mangledNameToName = new HashMap<>();
+  private final Map<String, String> mangledNameToName = new HashMap<String, String>();
 
   /**
    * Constructs an <code>AltClassLoader</code> for inclusion in Soot's global variable manager, {@link G}.
@@ -98,7 +98,7 @@ public class AltClassLoader extends ClassLoader {
    *          A list of directories and jar files to search for class files, delimited by {@link File#pathSeparator}.
    */
   public void setAltClassPath(String altClassPath) {
-    List<String> locationList = new LinkedList<>();
+    List<String> locationList = new LinkedList<String>();
     for (StringTokenizer tokens = new StringTokenizer(altClassPath, File.pathSeparator, false); tokens.hasMoreTokens();) {
       String location = tokens.nextToken();
       locationList.add(location);

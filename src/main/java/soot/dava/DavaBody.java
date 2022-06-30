@@ -1,13 +1,5 @@
 package soot.dava;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,138 +11,44 @@ import java.util.Set;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.Body;
-import soot.G;
-import soot.IntType;
-import soot.Local;
-import soot.PatchingChain;
-import soot.PhaseOptions;
-import soot.RefType;
-import soot.SootFieldRef;
-import soot.SootMethod;
-import soot.SootMethodRef;
-import soot.Trap;
-import soot.Type;
-import soot.Unit;
-import soot.UnitBox;
-import soot.Value;
-import soot.ValueBox;
+
+import soot.*;
 import soot.dava.internal.AST.ASTMethodNode;
 import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.SET.SETNode;
 import soot.dava.internal.SET.SETTopNode;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.asg.AugmentedStmtGraph;
-import soot.dava.internal.javaRep.DCmpExpr;
-import soot.dava.internal.javaRep.DCmpgExpr;
-import soot.dava.internal.javaRep.DCmplExpr;
-import soot.dava.internal.javaRep.DInstanceFieldRef;
-import soot.dava.internal.javaRep.DIntConstant;
-import soot.dava.internal.javaRep.DInterfaceInvokeExpr;
-import soot.dava.internal.javaRep.DLengthExpr;
-import soot.dava.internal.javaRep.DNegExpr;
-import soot.dava.internal.javaRep.DNewArrayExpr;
-import soot.dava.internal.javaRep.DNewInvokeExpr;
-import soot.dava.internal.javaRep.DNewMultiArrayExpr;
-import soot.dava.internal.javaRep.DSpecialInvokeExpr;
-import soot.dava.internal.javaRep.DStaticFieldRef;
-import soot.dava.internal.javaRep.DStaticInvokeExpr;
-import soot.dava.internal.javaRep.DThisRef;
-import soot.dava.internal.javaRep.DVirtualInvokeExpr;
+import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.UselessTryRemover;
-import soot.dava.toolkits.base.AST.transformations.ASTCleaner;
-import soot.dava.toolkits.base.AST.transformations.ASTCleanerTwo;
-import soot.dava.toolkits.base.AST.transformations.AndAggregator;
-import soot.dava.toolkits.base.AST.transformations.BooleanConditionSimplification;
-import soot.dava.toolkits.base.AST.transformations.DeInliningFinalFields;
-import soot.dava.toolkits.base.AST.transformations.DecrementIncrementStmtCreation;
-import soot.dava.toolkits.base.AST.transformations.FinalFieldDefinition;
-import soot.dava.toolkits.base.AST.transformations.ForLoopCreator;
-import soot.dava.toolkits.base.AST.transformations.IfElseSplitter;
-import soot.dava.toolkits.base.AST.transformations.LocalVariableCleaner;
-import soot.dava.toolkits.base.AST.transformations.LoopStrengthener;
-import soot.dava.toolkits.base.AST.transformations.NewStringBufferSimplification;
-import soot.dava.toolkits.base.AST.transformations.OrAggregatorFour;
-import soot.dava.toolkits.base.AST.transformations.OrAggregatorOne;
-import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
-import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
-import soot.dava.toolkits.base.AST.transformations.ShortcutArrayInit;
-import soot.dava.toolkits.base.AST.transformations.ShortcutIfGenerator;
-import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
-import soot.dava.toolkits.base.AST.transformations.TypeCastingError;
-import soot.dava.toolkits.base.AST.transformations.UselessAbruptStmtRemover;
-import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
+import soot.dava.toolkits.base.AST.transformations.*;
 import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
 import soot.dava.toolkits.base.AST.traversals.CopyPropagation;
-import soot.dava.toolkits.base.finders.AbruptEdgeFinder;
-import soot.dava.toolkits.base.finders.CycleFinder;
-import soot.dava.toolkits.base.finders.ExceptionFinder;
-import soot.dava.toolkits.base.finders.ExceptionNode;
-import soot.dava.toolkits.base.finders.IfFinder;
-import soot.dava.toolkits.base.finders.LabeledBlockFinder;
-import soot.dava.toolkits.base.finders.SequenceFinder;
-import soot.dava.toolkits.base.finders.SwitchFinder;
-import soot.dava.toolkits.base.finders.SynchronizedBlockFinder;
+import soot.dava.toolkits.base.finders.*;
 import soot.dava.toolkits.base.misc.MonitorConverter;
 import soot.dava.toolkits.base.misc.ThrowNullConverter;
 import soot.grimp.GrimpBody;
 import soot.grimp.NewInvokeExpr;
-import soot.jimple.ArrayRef;
-import soot.jimple.BinopExpr;
-import soot.jimple.CastExpr;
-import soot.jimple.CaughtExceptionRef;
-import soot.jimple.CmpExpr;
-import soot.jimple.CmpgExpr;
-import soot.jimple.CmplExpr;
-import soot.jimple.ConditionExpr;
-import soot.jimple.Constant;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.Expr;
-import soot.jimple.IdentityStmt;
-import soot.jimple.IfStmt;
-import soot.jimple.InstanceFieldRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InstanceOfExpr;
-import soot.jimple.IntConstant;
-import soot.jimple.InterfaceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
-import soot.jimple.LengthExpr;
-import soot.jimple.LookupSwitchStmt;
-import soot.jimple.MonitorStmt;
-import soot.jimple.NegExpr;
-import soot.jimple.NewArrayExpr;
-import soot.jimple.NewExpr;
-import soot.jimple.NewMultiArrayExpr;
-import soot.jimple.ParameterRef;
-import soot.jimple.Ref;
-import soot.jimple.ReturnStmt;
-import soot.jimple.SpecialInvokeExpr;
-import soot.jimple.StaticFieldRef;
-import soot.jimple.StaticInvokeExpr;
-import soot.jimple.Stmt;
-import soot.jimple.TableSwitchStmt;
-import soot.jimple.ThisRef;
-import soot.jimple.ThrowStmt;
-import soot.jimple.UnopExpr;
-import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.*;
 import soot.jimple.internal.JGotoStmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.util.IterableSet;
 import soot.util.Switchable;
+
+import java.util.*;
 
 /*
  * CHANGE LOG: Nomair - January 2006: Moved the AST Analyses to a separate method
@@ -210,14 +108,14 @@ public class DavaBody extends Body {
   DavaBody(SootMethod m) {
     super(m);
 
-    this.pMap = new HashMap<>();
-    this.consumedConditions = new HashSet<>();
-    this.thisLocals = new HashSet<>();
-    this.synchronizedBlockFacts = new IterableSet<>();
-    this.exceptionFacts = new IterableSet<>();
-    this.monitorFacts = new IterableSet<>();
-    this.importList = new IterableSet<>();
-    this.caughtrefs = new LinkedList<>();
+    this.pMap = new HashMap<Integer, Value>();
+    this.consumedConditions = new HashSet<Object>();
+    this.thisLocals = new HashSet<Object>();
+    this.synchronizedBlockFacts = new IterableSet<ExceptionNode>();
+    this.exceptionFacts = new IterableSet<ExceptionNode>();
+    this.monitorFacts = new IterableSet<AugmentedStmt>();
+    this.importList = new IterableSet<String>();
+    this.caughtrefs = new LinkedList<CaughtExceptionRef>();
     this.controlLocal = null;
     this.constructorExpr = null;
   }
@@ -271,7 +169,6 @@ public class DavaBody extends Body {
     consumedConditions.add(as);
   }
 
-  @Override
   public Object clone() {
     Body b = Dava.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
@@ -338,7 +235,7 @@ public class DavaBody extends Body {
         AbruptEdgeFinder.v().find(this, asg, SET);
       } catch (RetriggerAnalysisException rae) {
         SET = new SETTopNode(asg.get_ChainView());
-        consumedConditions = new HashSet<>();
+        consumedConditions = new HashSet<Object>();
         continue;
       }
       break;
@@ -641,8 +538,8 @@ public class DavaBody extends Body {
      */
 
     {
-      HashMap<Switchable, Switchable> bindings = new HashMap<>();
-      HashMap<Unit, Unit> reverse_binding = new HashMap<>();
+      HashMap<Switchable, Switchable> bindings = new HashMap<Switchable, Switchable>();
+      HashMap<Unit, Unit> reverse_binding = new HashMap<Unit, Unit>();
 
       // Clone units in body's statement list
       for (Unit original : grimpBody.getUnits()) {
@@ -668,7 +565,7 @@ public class DavaBody extends Body {
           TableSwitchStmt original_switch = (TableSwitchStmt) reverse_binding.get(u);
           ts.setDefaultTarget((Unit) bindings.get(original_switch.getDefaultTarget()));
 
-          LinkedList<Unit> new_target_list = new LinkedList<>();
+          LinkedList<Unit> new_target_list = new LinkedList<Unit>();
           int target_count = ts.getHighIndex() - ts.getLowIndex() + 1;
           for (int i = 0; i < target_count; i++) {
             new_target_list.add((Unit) bindings.get(original_switch.getTarget(i)));

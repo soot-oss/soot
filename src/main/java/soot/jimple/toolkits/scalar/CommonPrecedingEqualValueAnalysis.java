@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,8 +60,8 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis<Unit
 
     doAnalysis();
 
-    FlowSet<Object> fs = getFlowAfter(s);
-    List<Object> ancestorList = new ArrayList<>(fs.size());
+    FlowSet<Object> fs = (FlowSet<Object>) getFlowAfter(s);
+    List<Object> ancestorList = new ArrayList<Object>(fs.size());
     for (Object o : fs) {
       ancestorList.add(o);
     }
@@ -79,7 +79,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis<Unit
     in.copy(out);
 
     // get list of definitions at this unit
-    List<EquivalentValue> newDefs = new ArrayList<>();
+    List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
     for (ValueBox vb : unit.getDefBoxes()) {
       newDefs.add(new EquivalentValue(vb.getValue()));
     }
@@ -109,11 +109,11 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis<Unit
 
   @Override
   protected FlowSet<Object> entryInitialFlow() {
-    return new ArraySparseSet<>(); // should be a full set, not an empty one
+    return new ArraySparseSet<Object>(); // should be a full set, not an empty one
   }
 
   @Override
   protected FlowSet<Object> newInitialFlow() {
-    return new ArraySparseSet<>(); // should be a full set, not an empty one
+    return new ArraySparseSet<Object>(); // should be a full set, not an empty one
   }
 }

@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -51,24 +51,20 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
 
   public static String dependancies[] = new String[] { "bb.jbco_dcc", "bb.jbco_ful", "bb.lp" };
 
-  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_dcc";
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public void outputSummary() {
     out.println("Constructor methods have been jumbled: " + count);
   }
 
-  @Override
   @SuppressWarnings("fallthrough")
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if (!b.getMethod().getSubSignature().equals("void <init>()")) {
@@ -92,7 +88,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
     Unit prev = null;
     SpecialInvokeInst sii = null;
     while (it.hasNext()) {
-      Unit u = it.next();
+      Unit u = (Unit) it.next();
       if (u instanceof SpecialInvokeInst) {
         sii = (SpecialInvokeInst) u;
         SootMethodRef smr = sii.getMethodRef();
@@ -129,7 +125,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
           Local bl = ((LoadInst) prev).getLocal();
           Map<Local, Local> locals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
           if (locals != null && locals.containsKey(bl)) {
-            Type t = locals.get(bl).getType();
+            Type t = ((Local) locals.get(bl)).getType();
             if (t instanceof RefType && ((RefType) t).getSootClass().getName().equals(origClass.getName())) {
               units.insertBefore(Baf.v().newDup1Inst(RefType.v()), sii);
               Unit ifinst = Baf.v().newIfNullInst(sii);
@@ -158,7 +154,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
         if (!BodyBuilder.isExceptionCaughtAt(units, sii, b.getTraps().iterator())) {
           Unit handler = Baf.v().newThrowInst();
           units.add(handler);
-          b.getTraps().add(Baf.v().newTrap(ThrowSet.getRandomThrowable(), sii, units.getSuccOf(sii), handler));
+          b.getTraps().add(Baf.v().newTrap(ThrowSet.getRandomThrowable(), sii, (Unit) units.getSuccOf(sii), handler));
           done = true;
           break;
         }

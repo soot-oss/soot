@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,7 +34,6 @@ public class CommaJBB extends AbstractJimpleBodyBuilder {
    * getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c)expr); } else { return ext().createExpr(expr); } }
    */
 
-  @Override
   protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean redAggr, boolean revIfNec) {
     if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c) {
       return getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c) expr);

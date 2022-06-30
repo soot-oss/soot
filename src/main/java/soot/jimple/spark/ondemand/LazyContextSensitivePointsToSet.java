@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -61,7 +61,6 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
     this.isContextSensitive = false;
   }
 
-  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     PointsToSet otherInner;
     if (other instanceof LazyContextSensitivePointsToSet) {
@@ -90,27 +89,22 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
     }
   }
 
-  @Override
   public boolean isEmpty() {
     return delegate.isEmpty();
   }
 
-  @Override
   public Set<ClassConstant> possibleClassConstants() {
     return delegate.possibleClassConstants();
   }
 
-  @Override
   public Set<String> possibleStringConstants() {
     return delegate.possibleStringConstants();
   }
 
-  @Override
   public Set<Type> possibleTypes() {
     return delegate.possibleTypes();
   }
 
-  @Override
   public boolean pointsToSetEquals(Object other) {
     if (!(other instanceof LazyContextSensitivePointsToSet)) {
       return false;
@@ -118,7 +112,6 @@ public class LazyContextSensitivePointsToSet implements EqualsSupportingPointsTo
     return ((LazyContextSensitivePointsToSet) other).delegate.equals(delegate);
   }
 
-  @Override
   public int pointsToSetHashCode() {
     return delegate.pointsToSetHashCode();
   }

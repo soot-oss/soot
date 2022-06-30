@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -88,10 +88,12 @@ public class CPApplication extends DepthFirstAdapter {
     cp = new CP(AST, constantValueFields, classNameFieldNameToSootFieldMapping);
   }
 
-  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Object obj = cp.getBeforeSet(node);
-    if ((obj == null) || !(obj instanceof CPFlowSet)) {
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -136,7 +138,6 @@ public class CPApplication extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
     /*
      * For the init part we should actually use the before set for each init stmt
@@ -168,7 +169,10 @@ public class CPApplication extends DepthFirstAdapter {
     // get after set for the condition and update
     Object obj = cp.getAfterSet(node);
 
-    if ((obj == null) || !(obj instanceof CPFlowSet)) {
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -200,11 +204,13 @@ public class CPApplication extends DepthFirstAdapter {
 
   }
 
-  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     Object obj = cp.getAfterSet(node);
 
-    if ((obj == null) || !(obj instanceof CPFlowSet)) {
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -219,11 +225,13 @@ public class CPApplication extends DepthFirstAdapter {
     changedCondition(cond, afterSet);
   }
 
-  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     Object obj = cp.getAfterSet(node);
 
-    if ((obj == null) || !(obj instanceof CPFlowSet)) {
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -238,12 +246,14 @@ public class CPApplication extends DepthFirstAdapter {
     changedCondition(cond, afterSet);
   }
 
-  @Override
   public void inASTIfNode(ASTIfNode node) {
     // System.out.println(node);
     Object obj = cp.getBeforeSet(node);
 
-    if ((obj == null) || !(obj instanceof CPFlowSet)) {
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -260,11 +270,13 @@ public class CPApplication extends DepthFirstAdapter {
     changedCondition(cond, beforeSet);
   }
 
-  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     Object obj = cp.getBeforeSet(node);
 
-    if ((obj == null) || !(obj instanceof CPFlowSet)) {
+    if (obj == null) {
+      return;
+    }
+    if (!(obj instanceof CPFlowSet)) {
       return;
     }
 
@@ -340,7 +352,6 @@ public class CPApplication extends DepthFirstAdapter {
     }
   }
 
-  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -349,7 +360,10 @@ public class CPApplication extends DepthFirstAdapter {
 
       Object obj = cp.getBeforeSet(s);
 
-      if ((obj == null) || !(obj instanceof CPFlowSet)) {
+      if (obj == null) {
+        continue;
+      }
+      if (!(obj instanceof CPFlowSet)) {
         continue;
       }
 

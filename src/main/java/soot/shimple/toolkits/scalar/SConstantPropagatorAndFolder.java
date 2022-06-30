@@ -10,12 +10,12 @@ package soot.shimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -217,7 +217,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
  * constant or not.
  **/
 class SCPFAnalysis extends ForwardBranchedFlowAnalysis<FlowSet<Object>> {
-  protected final static ArraySparseSet<Object> EMPTY_SET = new ArraySparseSet<>();
+  protected final static ArraySparseSet<Object> EMPTY_SET = new ArraySparseSet<Object>();
 
   /**
    * A mapping of the locals to their current assumed constant value (which may be Top or Bottom).
@@ -236,9 +236,9 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis<FlowSet<Object>> {
 
   public SCPFAnalysis(UnitGraph graph) {
     super(graph);
-    this.stmtToReplacement = new HashMap<>();
-    this.deadStmts = new ArrayList<>();
-    this.localToConstant = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    this.stmtToReplacement = new HashMap<Stmt, GotoStmt>();
+    this.deadStmts = new ArrayList<IfStmt>();
+    this.localToConstant = new HashMap<Local, Constant>(graph.size() * 2 + 1, 0.7f);
 
     // initialise localToConstant map -- assume all scalars are constant (Top)
     {

@@ -10,12 +10,12 @@ package soot.jimple.parser;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -64,7 +64,6 @@ public class BodyExtractorWalker extends Walker {
   /*
    * file = modifier* file_type class_name extends_clause? implements_clause? file_body;
    */
-  @Override
   public void caseAFile(AFile node) {
     inAFile(node);
     {
@@ -97,7 +96,6 @@ public class BodyExtractorWalker extends Walker {
     outAFile(node);
   }
 
-  @Override
   public void outAFile(AFile node) {
     if (node.getImplementsClause() != null) {
       mProductions.removeLast(); // implements_clause
@@ -115,17 +113,15 @@ public class BodyExtractorWalker extends Walker {
    * member = {field} modifier* type name semicolon | {method} modifier* type name l_paren parameter_list? r_paren
    * throws_clause? method_body;
    */
-  @Override
   public void outAFieldMember(AFieldMember node) {
     mProductions.removeLast(); // name
     mProductions.removeLast(); // type
   }
 
-  @Override
   public void outAMethodMember(AMethodMember node) {
     Type type;
     String name;
-    List<Type> parameterList = new ArrayList<>();
+    List<Type> parameterList = new ArrayList<Type>();
     List throwsClause = null;
     JimpleBody methodBody = null;
 

@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Represents a single method_info object.
- *
+ * 
  * @see ClassFile
  * @author Clark Verbrugge
  */
@@ -39,14 +39,14 @@ public class method_info {
   public int access_flags;
   /**
    * Constant pool index of the name of this method.
-   *
+   * 
    * @see ClassFile#constant_pool
    * @see CONSTANT_Utf8_info
    */
   public int name_index;
   /**
    * Constant pool index of the type descriptor of this method.
-   *
+   * 
    * @see ClassFile#constant_pool
    * @see CONSTANT_Utf8_info
    */
@@ -55,27 +55,27 @@ public class method_info {
   public int attributes_count;
   /**
    * Array of attribute_info objects for this method.
-   *
+   * 
    * @see attribute_info
    */
   public attribute_info attributes[];
 
   /**
    * A shortcut into attributes array for Code_attribute
-   *
+   * 
    * @see Code_attribute
    */
   public Code_attribute code_attr;
 
   /**
    * List of Instructions constructed when the method is parsed.
-   *
+   * 
    * @see Instruction
    */
   public Instruction instructions;
   /**
    * Control Flow Graph constructed when the method is parsed.
-   *
+   * 
    * @see CFG
    */
   public CFG cfg;
@@ -86,7 +86,7 @@ public class method_info {
 
   /**
    * Returns the name of this method.
-   *
+   * 
    * @param constant_pool
    *          the constant_pool for this class.
    * @return the name of this method.
@@ -99,7 +99,7 @@ public class method_info {
 
   /**
    * Locates and returns the code attribute for this method.
-   *
+   * 
    * @return the single code attribute, or null if not found.
    * @see Code_attribute
    */
@@ -118,7 +118,7 @@ public class method_info {
 
   /**
    * Returns the prototype of this field.
-   *
+   * 
    * @param constant_pool
    *          the constant_pool for this class.
    * @return the prototype (access + return + name + parameters) of this method.
@@ -139,7 +139,7 @@ public class method_info {
 
   /**
    * Displays this method, printing a prototype followed by list of Instructions.
-   *
+   * 
    * @param constant_pool
    *          the constant_pool for this class.
    * @see prototype

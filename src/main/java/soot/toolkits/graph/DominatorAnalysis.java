@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,8 +34,8 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 // SETS OF Units that are dominators => Use ArraySparseSet.
 //
 // STEP 2: Precisely define what we are computing.
-// For each statement compute the set of stmts that dominate it
-//
+// For each statement compute the set of stmts that dominate it 
+// 
 // STEP 3: Decide whether it is a backwards or forwards analysis.
 // FORWARDS
 //
@@ -60,7 +60,7 @@ public class DominatorAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Unit>> 
   }
 
   private void initAllNodes() {
-    allNodes = new ArraySparseSet<>();
+    allNodes = new ArraySparseSet<Unit>();
     for (Unit u : g) {
       allNodes.add(u);
     }
@@ -132,7 +132,7 @@ public class DominatorAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Unit>> 
   @Override
   protected FlowSet<Unit> entryInitialFlow() {
 
-    FlowSet<Unit> fs = new ArraySparseSet<>();
+    FlowSet<Unit> fs = new ArraySparseSet<Unit>();
     List<Unit> heads = g.getHeads();
     if (heads.size() != 1) {
       throw new RuntimeException("Expect one start node only.");

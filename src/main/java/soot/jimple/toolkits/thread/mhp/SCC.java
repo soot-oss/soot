@@ -1,6 +1,8 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import heros.solver.Pair;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -11,12 +13,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,7 +32,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import heros.solver.Pair;
 import soot.toolkits.graph.DirectedGraph;
 import soot.util.FastStack;
 
@@ -53,9 +54,9 @@ public class SCC<T> {
 
   public SCC(Iterator<T> it, DirectedGraph<T> g) {
 
-    gray = new HashSet<>();
-    finishedOrder = new LinkedList<>();
-    sccList = new ArrayList<>();
+    gray = new HashSet<T>();
+    finishedOrder = new LinkedList<T>();
+    sccList = new ArrayList<List<T>>();
 
     // Visit each node
     {
@@ -71,7 +72,7 @@ public class SCC<T> {
     }
 
     // Re-color all nodes white
-    gray = new HashSet<>();
+    gray = new HashSet<T>();
 
     // visit nodes via tranpose edges according decreasing order of finish time of nodes
 
@@ -82,7 +83,7 @@ public class SCC<T> {
         T s = revNodeIt.next();
         if (!gray.contains(s)) {
 
-          List<T> scc = new ArrayList<>();
+          List<T> scc = new ArrayList<T>();
 
           visitRevNode(g, s, scc);
           sccList.add(scc);
@@ -104,7 +105,7 @@ public class SCC<T> {
         T succ = it.next();
         if (!gray.contains(succ)) {
           gray.add(succ);
-          stack.push(new Pair<>(succ, g.getSuccsOf(succ).iterator()));
+          stack.push(new Pair<T, Iterator<T>>(succ, g.getSuccsOf(succ).iterator()));
           continue next;
         }
       }

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -61,8 +61,8 @@ public class PegToDotFile {
   public static int graphtype = UNITGRAPH;
 
   public static boolean isBrief = false;
-  private static final Map<Object, String> listNodeName = new HashMap<>();
-  private static final Map<Object, String> startNodeToName = new HashMap<>();
+  private static final Map<Object, String> listNodeName = new HashMap<Object, String>();
+  private static final Map<Object, String> startNodeToName = new HashMap<Object, String>();
 
   /* in one page or several pages of 8.5x11 */
   public static boolean onepage = true;
@@ -76,7 +76,7 @@ public class PegToDotFile {
 
   /**
    * Generates a dot format file for a DirectedGraph
-   *
+   * 
    * @param methodname,
    *          the name of generated dot file
    * @param graph,
@@ -124,7 +124,7 @@ public class PegToDotFile {
         nodeName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(node)));
       } else {
 
-        Tag tag = ((JPegStmt) node).getTags().get(0);
+        Tag tag = (Tag) ((JPegStmt) node).getTags().get(0);
         nodeName = makeNodeName(getNodeOrder(nodeindex, tag + " " + node));
         if (((JPegStmt) node).getName().equals("start")) {
           startNodeToName.put(node, nodeName);
@@ -140,7 +140,7 @@ public class PegToDotFile {
           succName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(s)));
         } else {
           JPegStmt succ = (JPegStmt) s;
-          Tag succTag = succ.getTags().get(0);
+          Tag succTag = (Tag) succ.getTags().get(0);
           succName = makeNodeName(getNodeOrder(nodeindex, succTag + " " + succ));
         }
 
@@ -186,7 +186,7 @@ public class PegToDotFile {
             if (((JPegStmt) node).getName().equals("begin")) {
               firstNode = true;
             }
-            Tag tag = ((JPegStmt) node).getTags().get(0);
+            Tag tag = (Tag) ((JPegStmt) node).getTags().get(0);
             nodeName = makeNodeName(getNodeOrder(nodeindex, tag + " " + node));
             if (((JPegStmt) node).getName().equals("start")) {
               startNodeToName.put(node, nodeName);
@@ -217,7 +217,7 @@ public class PegToDotFile {
               threadNodeName = makeNodeName(getNodeOrder(nodeindex, listNodeName.get(succ)));
             } else {
               JPegStmt succStmt = (JPegStmt) succ;
-              Tag succTag = succStmt.getTags().get(0);
+              Tag succTag = (Tag) succStmt.getTags().get(0);
               threadNodeName = makeNodeName(getNodeOrder(nodeindex, succTag + " " + succStmt));
 
             }

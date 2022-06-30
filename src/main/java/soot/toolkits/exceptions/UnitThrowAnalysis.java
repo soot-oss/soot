@@ -1,13 +1,5 @@
 package soot.toolkits.exceptions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -18,12 +10,12 @@ import java.util.Set;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,6 +26,15 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import heros.solver.IDESolver;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -352,23 +353,22 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     // unsound, but would otherwise always bloat our result set.
     if (!sm.hasActiveBody()) {
       // if it is a dotnet project, leave all exceptions, because the method signature does not contain throwables
-      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      if (Options.v().src_prec() == Options.src_prec_dotnet)
         return ThrowableSet.Manager.v().ALL_THROWABLES;
-      }
       return ThrowableSet.Manager.v().EMPTY;
     }
 
     // We need a mapping between unit and exception
     final PatchingChain<Unit> units = sm.getActiveBody().getUnits();
     Map<Unit, Collection<Trap>> unitToTraps
-        = sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<>();
+        = sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<Unit, Collection<Trap>>();
     for (Trap t : sm.getActiveBody().getTraps()) {
       for (Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); unitIt.hasNext();) {
         Unit unit = unitIt.next();
 
         Collection<Trap> unitsForTrap = unitToTraps.get(unit);
         if (unitsForTrap == null) {
-          unitsForTrap = new ArrayList<>();
+          unitsForTrap = new ArrayList<Trap>();
           unitToTraps.put(unit, unitsForTrap);
         }
         unitsForTrap.add(t);

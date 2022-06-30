@@ -10,12 +10,12 @@ package soot.jimple.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,18 +40,18 @@ public class Zonation {
   public Zonation(StmtBody body) {
     final Chain<Unit> units = body.getUnits();
     this.zoneCount = 0;
-    this.unitToZone = new HashMap<>(units.size() * 2 + 1, 0.7f);
+    this.unitToZone = new HashMap<Unit, Zone>(units.size() * 2 + 1, 0.7f);
 
     // Build trap boundaries
-    Map<Unit, List<Trap>> unitToTrapBoundaries = new HashMap<>();
+    Map<Unit, List<Trap>> unitToTrapBoundaries = new HashMap<Unit, List<Trap>>();
     for (Trap t : body.getTraps()) {
       addTrapBoundary(t.getBeginUnit(), t, unitToTrapBoundaries);
       addTrapBoundary(t.getEndUnit(), t, unitToTrapBoundaries);
     }
 
     // Traverse units, assigning each to a zone
-    Map<List<Trap>, Zone> trapListToZone = new HashMap<>(10, 0.7f);
-    List<Trap> currentTraps = new ArrayList<>();
+    Map<List<Trap>, Zone> trapListToZone = new HashMap<List<Trap>, Zone>(10, 0.7f);
+    List<Trap> currentTraps = new ArrayList<Trap>();
 
     // Initialize first empty zone
     Zone currentZone = new Zone("0");
@@ -88,7 +88,7 @@ public class Zonation {
   private void addTrapBoundary(Unit unit, Trap t, Map<Unit, List<Trap>> unitToTrapBoundaries) {
     List<Trap> boundary = unitToTrapBoundaries.get(unit);
     if (boundary == null) {
-      boundary = new ArrayList<>();
+      boundary = new ArrayList<Trap>();
       unitToTrapBoundaries.put(unit, boundary);
     }
     boundary.add(t);

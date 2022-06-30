@@ -10,12 +10,12 @@ package soot.shimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -108,8 +108,8 @@ public class PiNodeManager {
   public boolean insertTrivialPiNodes() {
     update();
 
-    this.varToBlocks = new HashMultiMap<>();
-    final MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<>();
+    this.varToBlocks = new HashMultiMap<Local, Block>();
+    final MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<Local, Block>();
 
     // compute localsToUsePoints and varToBlocks
     for (Block block : cfg) {
@@ -136,7 +136,7 @@ public class PiNodeManager {
       int iterCount = 0;
       int[] workFlags = new int[cfg.size()];
       int[] hasAlreadyFlags = new int[cfg.size()];
-      Stack<Block> workList = new Stack<>();
+      Stack<Block> workList = new Stack<Block>();
 
       /* Main Cytron algorithm. */
       for (Local local : localsToUsePoints.keySet()) {
@@ -238,8 +238,8 @@ public class PiNodeManager {
   }
 
   public void piHandleSwitchStmt(Local local, Unit u) {
-    List<UnitBox> targetBoxes = new ArrayList<>();
-    List<Object> targetKeys = new ArrayList<>();
+    List<UnitBox> targetBoxes = new ArrayList<UnitBox>();
+    List<Object> targetKeys = new ArrayList<Object>();
 
     if (u instanceof LookupSwitchStmt) {
       LookupSwitchStmt lss = (LookupSwitchStmt) u;
@@ -299,8 +299,8 @@ public class PiNodeManager {
 
   public void eliminatePiNodes(boolean smart) {
     if (smart) {
-      Map<Value, Value> newToOld = new HashMap<>();
-      List<ValueBox> boxes = new ArrayList<>();
+      Map<Value, Value> newToOld = new HashMap<Value, Value>();
+      List<ValueBox> boxes = new ArrayList<ValueBox>();
 
       for (Iterator<Unit> unitsIt = body.getUnits().iterator(); unitsIt.hasNext();) {
         Unit u = unitsIt.next();
@@ -335,7 +335,7 @@ public class PiNodeManager {
   }
 
   public static List<ValueBox> getUseBoxesFromBlock(Block block) {
-    List<ValueBox> useBoxesList = new ArrayList<>();
+    List<ValueBox> useBoxesList = new ArrayList<ValueBox>();
     for (Unit next : block) {
       useBoxesList.addAll(next.getUseBoxes());
     }

@@ -1,11 +1,5 @@
 package soot;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -16,12 +10,12 @@ import java.util.Set;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,6 +23,12 @@ import java.util.Set;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import soot.util.Chain;
 
@@ -60,7 +60,7 @@ public class TrapManager {
   /** Returns the list of traps caught at Unit u in Body b. */
   public static List<Trap> getTrapsAt(Unit unit, Body b) {
     final Chain<Unit> units = b.getUnits();
-    List<Trap> trapsList = new ArrayList<>();
+    List<Trap> trapsList = new ArrayList<Trap>();
     for (Trap t : b.getTraps()) {
       for (Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); it.hasNext();) {
         if (unit.equals(it.next())) {
@@ -74,7 +74,7 @@ public class TrapManager {
   /** Returns a set of units which lie inside the range of any trap. */
   public static Set<Unit> getTrappedUnitsOf(Body b) {
     final Chain<Unit> units = b.getUnits();
-    Set<Unit> trapsSet = new HashSet<>();
+    Set<Unit> trapsSet = new HashSet<Unit>();
     for (Trap t : b.getTraps()) {
       for (Iterator<Unit> it = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); it.hasNext();) {
         trapsSet.add(it.next());
@@ -135,7 +135,7 @@ public class TrapManager {
   public static List<RefType> getExceptionTypesOf(Unit u, Body body) {
     final boolean module_mode = ModuleUtil.module_mode();
 
-    List<RefType> possibleTypes = new ArrayList<>();
+    List<RefType> possibleTypes = new ArrayList<RefType>();
     for (Trap trap : body.getTraps()) {
       if (trap.getHandlerUnit() == u) {
         RefType type;

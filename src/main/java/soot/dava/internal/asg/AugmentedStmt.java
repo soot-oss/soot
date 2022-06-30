@@ -11,12 +11,12 @@ package soot.dava.internal.asg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -45,8 +45,8 @@ public class AugmentedStmt {
   public AugmentedStmt(Stmt s) {
     this.s = s;
 
-    dominators = new IterableSet<>();
-    reachers = new IterableSet<>();
+    dominators = new IterableSet<AugmentedStmt>();
+    reachers = new IterableSet<AugmentedStmt>();
 
     reset_PredsSuccs();
   }
@@ -56,7 +56,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_BPred(AugmentedStmt bpred) {
-    if (!add_CPred(bpred)) {
+    if (add_CPred(bpred) == false) {
       return false;
     }
 
@@ -70,7 +70,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_BSucc(AugmentedStmt bsucc) {
-    if (!add_CSucc(bsucc)) {
+    if (add_CSucc(bsucc) == false) {
       return false;
     }
 
@@ -84,7 +84,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_CPred(AugmentedStmt cpred) {
-    if (!cpreds.contains(cpred)) {
+    if (cpreds.contains(cpred) == false) {
       cpreds.add(cpred);
       return true;
     }
@@ -93,7 +93,7 @@ public class AugmentedStmt {
   }
 
   public boolean add_CSucc(AugmentedStmt csucc) {
-    if (!csuccs.contains(csucc)) {
+    if (csuccs.contains(csucc) == false) {
       csuccs.add(csucc);
       return true;
     }
@@ -102,7 +102,7 @@ public class AugmentedStmt {
   }
 
   public boolean remove_BPred(AugmentedStmt bpred) {
-    if (!remove_CPred(bpred)) {
+    if (remove_CPred(bpred) == false) {
       return false;
     }
 
@@ -116,7 +116,7 @@ public class AugmentedStmt {
   }
 
   public boolean remove_BSucc(AugmentedStmt bsucc) {
-    if (!remove_CSucc(bsucc)) {
+    if (remove_CSucc(bsucc) == false) {
       return false;
     }
 
@@ -167,19 +167,17 @@ public class AugmentedStmt {
     logger.debug("" + toString());
   }
 
-  @Override
   public String toString() {
     return "(" + s.toString() + " @ " + hashCode() + ")";
   }
 
   public void reset_PredsSuccs() {
-    bpreds = new LinkedList<>();
-    bsuccs = new LinkedList<>();
-    cpreds = new LinkedList<>();
-    csuccs = new LinkedList<>();
+    bpreds = new LinkedList<AugmentedStmt>();
+    bsuccs = new LinkedList<AugmentedStmt>();
+    cpreds = new LinkedList<AugmentedStmt>();
+    csuccs = new LinkedList<AugmentedStmt>();
   }
 
-  @Override
   public Object clone() {
     return new AugmentedStmt((Stmt) s.clone());
   }

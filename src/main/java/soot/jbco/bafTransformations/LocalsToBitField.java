@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -62,25 +62,21 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
 
   public static String dependancies[] = new String[] { "jtp.jbco_jl", "bb.jbco_plvb", "bb.jbco_ful", "bb.lp" };
 
-  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_plvb";
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public void outputSummary() {
     out.println("Local fields inserted into bitfield: " + replaced);
     out.println("Original number of locals: " + locals);
   }
 
-  @Override
   @SuppressWarnings("fallthrough")
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
@@ -94,7 +90,7 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
     PatchingChain<Unit> u = b.getUnits();
 
     Unit first = null;
-    List<Value> params = new ArrayList<>();
+    List<Value> params = new ArrayList<Value>();
     Iterator<Unit> uit = u.iterator();
     while (uit.hasNext()) {
       Unit unit = uit.next();
@@ -111,7 +107,7 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
     }
 
     // build mapping of baf locals to jimple locals
-    Map<Local, Local> bafToJLocals = new HashMap<>();
+    Map<Local, Local> bafToJLocals = new HashMap<Local, Local>();
     Iterator<Local> jlocIt = soot.jbco.Main.methods2JLocals.get(b.getMethod()).iterator();
     while (jlocIt.hasNext()) {
       Local jl = jlocIt.next();
@@ -125,11 +121,11 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
       }
     }
 
-    List<Local> booleans = new ArrayList<>();
-    List<Local> bytes = new ArrayList<>();
-    List<Local> chars = new ArrayList<>();
-    List<Local> ints = new ArrayList<>();
-    Map<Local, Integer> sizes = new HashMap<>();
+    List<Local> booleans = new ArrayList<Local>();
+    List<Local> bytes = new ArrayList<Local>();
+    List<Local> chars = new ArrayList<Local>();
+    List<Local> ints = new ArrayList<Local>();
+    Map<Local, Integer> sizes = new HashMap<Local, Integer>();
     Iterator<Local> blocs = bLocals.iterator();
     while (blocs.hasNext()) {
       Local bl = blocs.next();
@@ -160,13 +156,13 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
     }
 
     int count = 0;
-    Map<Local, Local> bafToNewLocs = new HashMap<>();
+    Map<Local, Local> bafToNewLocs = new HashMap<Local, Local>();
     int total = booleans.size() + bytes.size() * 8 + chars.size() * 16 + ints.size() * 32;
-    Map<Local, Map<Local, Integer>> newLocs = new HashMap<>();
+    Map<Local, Map<Local, Integer>> newLocs = new HashMap<Local, Map<Local, Integer>>();
     while (total >= 32 && booleans.size() + bytes.size() + chars.size() + ints.size() > 2) {
       Local nloc = Baf.v().newLocal("newDumby" + count++, LongType.v()); // soot.jbco.util.Rand.getInt(2) > 0 ?
                                                                          // DoubleType.v() : LongType.v());
-      Map<Local, Integer> nlocMap = new HashMap<>();
+      Map<Local, Integer> nlocMap = new HashMap<Local, Integer>();
 
       boolean done = false;
       int index = 0;

@@ -10,12 +10,12 @@ package soot.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -92,7 +92,7 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
 
   @Override
   public Object clone() {
-    IterableSet<T> s = new IterableSet<>();
+    IterableSet<T> s = new IterableSet<T>();
     s.addAll(this);
     return s;
   }
@@ -177,7 +177,7 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
       throw new IllegalArgumentException("Cannot set intersect an IterableSet with \"null\".");
     }
 
-    IterableSet<T> c = new IterableSet<>();
+    IterableSet<T> c = new IterableSet<T>();
     if (other.size() < this.size()) {
       for (T t : other) {
         if (this.contains(t)) {
@@ -199,7 +199,7 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
       throw new IllegalArgumentException("Cannot set union an IterableSet with \"null\".");
     }
 
-    IterableSet<T> c = new IterableSet<>();
+    IterableSet<T> c = new IterableSet<T>();
     c.addAll(this);
     c.addAll(other);
     return c;
@@ -215,6 +215,6 @@ public class IterableSet<T> extends HashChain<T> implements Set<T> {
   }
 
   public UnmodifiableIterableSet<T> asUnmodifiable() {
-    return new UnmodifiableIterableSet<>(this);
+    return new UnmodifiableIterableSet<T>(this);
   }
 }

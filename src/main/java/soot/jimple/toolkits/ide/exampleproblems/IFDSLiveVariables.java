@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.ide.exampleproblems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -17,12 +10,12 @@ import java.util.Set;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,6 +27,14 @@ import heros.FlowFunction;
 import heros.FlowFunctions;
 import heros.InterproceduralCFG;
 import heros.flowfunc.Identity;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Local;
 import soot.NullType;
 import soot.Scene;
@@ -65,7 +66,6 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
         final Stmt s = (Stmt) curr;
 
         return new FlowFunction<Value>() {
-          @Override
           public Set<Value> computeTargets(Value source) {
             // kill defs
             List<ValueBox> defs = s.getDefBoxes();
@@ -77,7 +77,7 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
 
             // gen uses out of zero value
             if (source.equals(zeroValue())) {
-              Set<Value> liveVars = new HashSet<>();
+              Set<Value> liveVars = new HashSet<Value>();
 
               for (ValueBox useBox : s.getUseBoxes()) {
                 Value value = useBox.getValue();
@@ -97,12 +97,11 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
       public FlowFunction<Value> getCallFlowFunction(Unit callStmt, final SootMethod destinationMethod) {
         final Stmt s = (Stmt) callStmt;
         return new FlowFunction<Value>() {
-          @Override
           public Set<Value> computeTargets(Value source) {
             if (!s.getDefBoxes().isEmpty()) {
               Value callerSideReturnValue = s.getDefBoxes().get(0).getValue();
               if (callerSideReturnValue.equivTo(source)) {
-                Set<Value> calleeSideReturnValues = new HashSet<>();
+                Set<Value> calleeSideReturnValues = new HashSet<Value>();
                 for (Unit calleeUnit : interproceduralCFG().getStartPointsOf(destinationMethod)) {
                   if (calleeUnit instanceof ReturnStmt) {
                     ReturnStmt returnStmt = (ReturnStmt) calleeUnit;
@@ -125,14 +124,13 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
         Stmt s = (Stmt) callSite;
         InvokeExpr ie = s.getInvokeExpr();
         final List<Value> callArgs = ie.getArgs();
-        final List<Local> paramLocals = new ArrayList<>();
+        final List<Local> paramLocals = new ArrayList<Local>();
         for (int i = 0; i < calleeMethod.getParameterCount(); i++) {
           paramLocals.add(calleeMethod.getActiveBody().getParameterLocal(i));
         }
         return new FlowFunction<Value>() {
-          @Override
           public Set<Value> computeTargets(Value source) {
-            Set<Value> liveParamsAtCallee = new HashSet<>();
+            Set<Value> liveParamsAtCallee = new HashSet<Value>();
             for (int i = 0; i < paramLocals.size(); i++) {
               if (paramLocals.get(i).equivTo(source)) {
                 liveParamsAtCallee.add(callArgs.get(i));
@@ -152,7 +150,6 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
         final Stmt s = (Stmt) callSite;
 
         return new FlowFunction<Value>() {
-          @Override
           public Set<Value> computeTargets(Value source) {
             // kill defs
             List<ValueBox> defs = s.getDefBoxes();
@@ -164,7 +161,7 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
 
             // gen uses out of zero value
             if (source.equals(zeroValue())) {
-              Set<Value> liveVars = new HashSet<>();
+              Set<Value> liveVars = new HashSet<Value>();
 
               // only "gen" those values that are not parameter values;
               // the latter are taken care of by the return-flow function
@@ -187,12 +184,10 @@ public class IFDSLiveVariables extends DefaultJimpleIFDSTabulationProblem<Value,
     };
   }
 
-  @Override
   public Map<Unit, Set<Value>> initialSeeds() {
     return DefaultSeeds.make(interproceduralCFG().getStartPointsOf(Scene.v().getMainMethod()), zeroValue());
   }
 
-  @Override
   public Value createZeroValue() {
     return new JimpleLocal("<<zero>>", NullType.v());
   }

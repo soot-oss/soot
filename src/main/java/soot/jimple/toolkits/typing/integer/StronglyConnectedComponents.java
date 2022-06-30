@@ -10,12 +10,12 @@ package soot.jimple.toolkits.typing.integer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,9 +34,9 @@ class StronglyConnectedComponents {
   private static final Logger logger = LoggerFactory.getLogger(StronglyConnectedComponents.class);
   private static final boolean DEBUG = false;
 
-  private final Set<TypeVariable> black = new TreeSet<>();
-  private final List<TypeVariable> finished = new LinkedList<>();
-  private List<TypeVariable> current_tree = new LinkedList<>();
+  private final Set<TypeVariable> black = new TreeSet<TypeVariable>();
+  private final List<TypeVariable> finished = new LinkedList<TypeVariable>();
+  private List<TypeVariable> current_tree = new LinkedList<TypeVariable>();
 
   public static void merge(List<TypeVariable> typeVariableList) throws TypeException {
     new StronglyConnectedComponents(typeVariableList);
@@ -51,11 +51,11 @@ class StronglyConnectedComponents {
     }
 
     black.clear();
-    final List<List<TypeVariable>> forest = new LinkedList<>();
+    final List<List<TypeVariable>> forest = new LinkedList<List<TypeVariable>>();
 
     for (TypeVariable var : finished) {
       if (!black.contains(var)) {
-        current_tree = new LinkedList<>();
+        current_tree = new LinkedList<TypeVariable>();
         forest.add(current_tree);
         black.add(var);
         dfsgt_visit(var);

@@ -10,12 +10,12 @@ package soot.javaToJimple.jj.ast;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -54,7 +54,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
   // TODO: Override factory methods for overriden AST nodes.
   // TODO: Override factory methods for AST nodes with new extension nodes.
 
-  @Override
   public JjComma_c JjComma(Position pos, Expr first, Expr second) {
     JjComma_c n = new JjComma_c(pos, first, second);
     return n;
@@ -65,7 +64,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public Unary Unary(Position pos, Unary.Operator op, Expr expr) {
     Unary n = new JjUnary_c(pos, op, expr);
     n = (Unary) n.ext(extFactory().extUnary());
@@ -73,7 +71,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public Binary Binary(Position pos, Expr left, Binary.Operator op, Expr right) {
     Binary n = new JjBinary_c(pos, left, op, right);
     n = (Binary) n.ext(extFactory().extBinary());
@@ -81,7 +78,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public Assign Assign(Position pos, Expr left, Assign.Operator op, Expr right) {
     if (left instanceof Local) {
       return LocalAssign(pos, (Local) left, op, right);
@@ -93,7 +89,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return AmbAssign(pos, left, op, right);
   }
 
-  @Override
   public LocalAssign LocalAssign(Position pos, Local left, Assign.Operator op, Expr right) {
     LocalAssign n = new JjLocalAssign_c(pos, left, op, right);
     n = (LocalAssign) n.ext(extFactory().extLocalAssign());
@@ -101,7 +96,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public LocalDecl LocalDecl(Position pos, Flags flags, TypeNode type, String name, Expr init) {
     LocalDecl n = new JjLocalDecl_c(pos, flags, type, name, init);
     n = (LocalDecl) n.ext(extFactory().extLocalDecl());
@@ -109,7 +103,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public FieldAssign FieldAssign(Position pos, Field left, Assign.Operator op, Expr right) {
     FieldAssign n = new JjFieldAssign_c(pos, left, op, right);
     n = (FieldAssign) n.ext(extFactory().extFieldAssign());
@@ -117,7 +110,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public FieldDecl FieldDecl(Position pos, Flags flags, TypeNode type, String name, Expr init) {
     FieldDecl n = new JjFieldDecl_c(pos, flags, type, name, init);
     n = (FieldDecl) n.ext(extFactory().extFieldDecl());
@@ -125,7 +117,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public ArrayAccessAssign ArrayAccessAssign(Position pos, ArrayAccess left, Assign.Operator op, Expr right) {
     ArrayAccessAssign n = new JjArrayAccessAssign_c(pos, left, op, right);
     n = (ArrayAccessAssign) n.ext(extFactory().extArrayAccessAssign());
@@ -133,7 +124,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public Cast Cast(Position pos, TypeNode type, Expr expr) {
     Cast n = new JjCast_c(pos, type, expr);
     n = (Cast) n.ext(extFactory().extCast());
@@ -141,13 +131,11 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public NewArray NewArray(Position pos, TypeNode base, List dims, int addDims, ArrayInit init) {
     // System.out.println("new array pos: "+pos);
     return super.NewArray(pos, base, dims, addDims, init);
   }
 
-  @Override
   public ArrayInit ArrayInit(Position pos, List elements) {
     ArrayInit n = new JjArrayInit_c(pos, elements);
     n = (ArrayInit) n.ext(extFactory().extArrayInit());
@@ -155,7 +143,6 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     return n;
   }
 
-  @Override
   public Return Return(Position pos, Expr expr) {
     Return n = new JjReturn_c(pos, expr);
     n = (Return) n.ext(extFactory().extReturn());

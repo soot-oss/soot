@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -57,13 +57,11 @@ public class DotnetType {
   private final ProtoAssemblyAllTypes.TypeDefinition typeDefinition;
 
   public DotnetType(ProtoAssemblyAllTypes.TypeDefinition typeDefinition, File assemblyFile) {
-    if (typeDefinition == null) {
+    if (typeDefinition == null)
       throw new NullPointerException("Passed Type Definition is null!");
-    }
     this.typeDefinition = typeDefinition;
-    if (!(assemblyFile instanceof AssemblyFile)) {
+    if (!(assemblyFile instanceof AssemblyFile))
       throw new RuntimeException("Given File object is no assembly file!");
-    }
     this.assemblyFile = (AssemblyFile) assemblyFile;
   }
 
@@ -74,7 +72,7 @@ public class DotnetType {
 
   /**
    * Resolve this .NET Type to a SootClass
-   *
+   * 
    * @param sootClass
    *          SootClass to fill with information
    * @return dependencies which this type depend on (base class, implemented interfaces, method calls, etc.)
@@ -136,16 +134,15 @@ public class DotnetType {
     for (ProtoAssemblyAllTypes.FieldDefinition field : typeDefinition.getFieldsList()) {
       DotnetField dotnetField = new DotnetField(field);
       SootField sootField = dotnetField.makeSootField();
-      if (declaringClass.declaresField(sootField.getSubSignature())) {
+      if (declaringClass.declaresField(sootField.getSubSignature()))
         continue;
-      }
       declaringClass.addField(sootField);
     }
   }
 
   /**
    * Visit Method Header of a dotnet class and generate sootMethod
-   *
+   * 
    * @param declaringClass
    */
   private void resolveMethods(SootClass declaringClass) {
@@ -227,14 +224,13 @@ public class DotnetType {
   /**
    * .NET Types can have attributes, resolve them as Jimple annotations
    * https://docs.microsoft.com/de-de/dotnet/csharp/programming-guide/concepts/attributes/
-   *
+   * 
    * @param declaringClass
    */
   @SuppressWarnings("DuplicatedCode")
   private void resolveAttributes(SootClass declaringClass) {
-    if (typeDefinition.getAttributesCount() == 0) {
+    if (typeDefinition.getAttributesCount() == 0)
       return;
-    }
 
     for (ProtoAssemblyAllTypes.AttributeDefinition attrMsg : typeDefinition.getAttributesList()) {
       try {
@@ -242,18 +238,15 @@ public class DotnetType {
 
         // Elements
         List<AnnotationElem> elements = new ArrayList<>();
-        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition fixedArg : attrMsg.getFixedArgumentsList()) {
+        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition fixedArg : attrMsg.getFixedArgumentsList())
           elements.add(DotnetAttributeArgument.toAnnotationElem(fixedArg));
-        }
-        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition namedArg : attrMsg.getNamedArgumentsList()) {
+        for (ProtoAssemblyAllTypes.AttributeArgumentDefinition namedArg : attrMsg.getNamedArgumentsList())
           elements.add(DotnetAttributeArgument.toAnnotationElem(namedArg));
-        }
 
         declaringClass.addTag(new AnnotationTag(annotationType, elements));
 
-        if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE)) {
+        if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE))
           declaringClass.addTag(new DeprecatedTag());
-        }
       } catch (Exception ignore) {
       }
     }

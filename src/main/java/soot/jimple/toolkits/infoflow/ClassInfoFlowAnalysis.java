@@ -10,12 +10,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -76,8 +76,8 @@ public class ClassInfoFlowAnalysis {
   public ClassInfoFlowAnalysis(SootClass sootClass, InfoFlowAnalysis dfa) {
     this.sootClass = sootClass;
     this.dfa = dfa;
-    methodToInfoFlowAnalysis = new HashMap<>();
-    methodToInfoFlowSummary = new HashMap<>();
+    methodToInfoFlowAnalysis = new HashMap<SootMethod, SmartMethodInfoFlowAnalysis>();
+    methodToInfoFlowSummary = new HashMap<SootMethod, HashMutableDirectedGraph<EquivalentValue>>();
 
     // doSimpleConservativeDataFlowAnalysis();
   }
@@ -187,7 +187,7 @@ public class ClassInfoFlowAnalysis {
 
     Body b = sm.retrieveActiveBody();
     UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
-    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<>();
+    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
 
     // Get list of fields, globals, and parameters that are accessed
     for (Unit u : g) {
@@ -222,7 +222,7 @@ public class ClassInfoFlowAnalysis {
     }
 
     // Each accessed field, global, and parameter becomes a node in the graph
-    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<>();
+    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<EquivalentValue>();
     Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
     while (accessedIt1.hasNext()) {
       EquivalentValue o = accessedIt1.next();
@@ -294,11 +294,11 @@ public class ClassInfoFlowAnalysis {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
         if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {
-           // don't add this edge
+          ; // don't add this edge
         } else if (sRef instanceof ThisRef && rRef instanceof InstanceFieldRef) {
-           // don't add this edge
+          ; // don't add this edge
         } else if (sRef instanceof ParameterRef && dfa.includesInnerFields()) {
-           // don't add edges to parameters if we are including inner fields
+          ; // don't add edges to parameters if we are including inner fields
         } else if (sRef.getType() instanceof RefLikeType) {
           dataFlowGraph.addEdge(r, s);
         }
@@ -313,7 +313,7 @@ public class ClassInfoFlowAnalysis {
 
   /** Does not require the method to have a body */
   public HashMutableDirectedGraph<EquivalentValue> triviallyConservativeInfoFlowAnalysis(SootMethod sm) {
-    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<>();
+    HashSet<EquivalentValue> fieldsStaticsParamsAccessed = new HashSet<EquivalentValue>();
 
     // Add all of the nodes necessary to ensure that this is a complete data flow graph
     // Add every parameter of this method
@@ -323,7 +323,8 @@ public class ClassInfoFlowAnalysis {
     }
 
     // Add every relevant field of this class (static methods don't get non-static fields)
-    for (SootField sf : sm.getDeclaringClass().getFields()) {
+    for (Iterator<SootField> it = sm.getDeclaringClass().getFields().iterator(); it.hasNext();) {
+      SootField sf = it.next();
       if (sf.isStatic() || !sm.isStatic()) {
         EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
         fieldsStaticsParamsAccessed.add(fieldRefEqVal);
@@ -351,7 +352,7 @@ public class ClassInfoFlowAnalysis {
     // Don't add any static fields outside of the class... unsafe???
 
     // Each field, global, and parameter becomes a node in the graph
-    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<>();
+    HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<EquivalentValue>();
     Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
     while (accessedIt1.hasNext()) {
       EquivalentValue o = accessedIt1.next();
@@ -384,9 +385,9 @@ public class ClassInfoFlowAnalysis {
         EquivalentValue s = accessedIt2.next();
         Ref sRef = (Ref) s.getValue();
         if (rRef instanceof ThisRef && sRef instanceof InstanceFieldRef) {
-           // don't add this edge
+          ; // don't add this edge
         } else if (sRef instanceof ThisRef && rRef instanceof InstanceFieldRef) {
-           // don't add this edge
+          ; // don't add this edge
         } else if (sRef.getType() instanceof RefLikeType) {
           dataFlowGraph.addEdge(r, s);
         }

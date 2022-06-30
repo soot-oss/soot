@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.pautil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,9 +39,9 @@ import soot.toolkits.scalar.Pair;
 public class ValidMatches {
 
   // edges are in same direction as PAG, in the direction of value flow
-  private final MultiMap<VarNode, VarNode> vMatchEdges = new HashSetMultiMap<>();
+  private final MultiMap<VarNode, VarNode> vMatchEdges = new HashSetMultiMap<VarNode, VarNode>();
 
-  private final MultiMap<VarNode, VarNode> vMatchBarEdges = new HashSetMultiMap<>();
+  private final MultiMap<VarNode, VarNode> vMatchBarEdges = new HashSetMultiMap<VarNode, VarNode>();
 
   public ValidMatches(PAG pag, FieldToEdgesMap fieldToStores) {
     for (Iterator iter = pag.loadSources().iterator(); iter.hasNext();) {
@@ -54,8 +54,8 @@ public class ValidMatches {
         if (loadBase.getP2Set().hasNonEmptyIntersection(storeBase.getP2Set())) {
           VarNode matchSrc = store.getO1();
           Node[] loadTargets = pag.loadLookup(loadSource);
-          for (Node loadTarget : loadTargets) {
-            VarNode matchTgt = (VarNode) loadTarget;
+          for (int i = 0; i < loadTargets.length; i++) {
+            VarNode matchTgt = (VarNode) loadTargets[i];
             vMatchEdges.put(matchSrc, matchTgt);
             vMatchBarEdges.put(matchTgt, matchSrc);
           }

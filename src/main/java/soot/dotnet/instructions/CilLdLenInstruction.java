@@ -10,12 +10,12 @@ package soot.dotnet.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,9 +47,8 @@ public class CilLdLenInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
     Value arr = cilExpr.jimplifyExpr(jb);
-    if (!(arr instanceof Immediate)) {
+    if (!(arr instanceof Immediate))
       throw new RuntimeException("LdLen: Given value is no Immediate!");
-    }
     return Jimple.v().newLengthExpr(arr);
   }
 }

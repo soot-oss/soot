@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -73,7 +73,6 @@ class Instruction_Tableswitch extends Instruction {
   public Instruction default_inst;
   public Instruction jump_insts[];
 
-  @Override
   public String toString(cp_info constant_pool[]) {
     String args;
     int i;
@@ -87,7 +86,6 @@ class Instruction_Tableswitch extends Instruction {
     return args;
   }
 
-  @Override
   public int parse(byte bc[], int index) {
     // first figure out padding to next 4-byte quantity
     int i, j;
@@ -117,7 +115,6 @@ class Instruction_Tableswitch extends Instruction {
     return index;
   }
 
-  @Override
   public int nextOffset(int curr) {
     int i, siz = 0;
     i = (curr + 1) % 4;
@@ -127,7 +124,6 @@ class Instruction_Tableswitch extends Instruction {
     return (curr + siz + 13 + (high - low + 1) * 4);
   }
 
-  @Override
   public int compile(byte bc[], int index) {
     int i;
     bc[index++] = code;
@@ -152,7 +148,6 @@ class Instruction_Tableswitch extends Instruction {
     return index;
   }
 
-  @Override
   public void offsetToPointer(ByteCode bc) {
     int i;
     default_inst = bc.locateInst(default_offset + label);
@@ -176,7 +171,6 @@ class Instruction_Tableswitch extends Instruction {
     }
   }
 
-  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[high - low + 2];
     int j;

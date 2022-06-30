@@ -1,5 +1,28 @@
 package soot.jimple.toolkits.typing;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2000 Etienne Gagnon.  All rights reserved.
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.TreeSet;
@@ -22,7 +45,7 @@ class StronglyConnectedComponentsBV {
 
   TypeResolverBV resolver;
 
-  LinkedList<LinkedList<TypeVariableBV>> forest = new LinkedList<>();
+  LinkedList<LinkedList<TypeVariableBV>> forest = new LinkedList<LinkedList<TypeVariableBV>>();
   LinkedList<TypeVariableBV> current_tree;
 
   private static final boolean DEBUG = false;
@@ -31,8 +54,8 @@ class StronglyConnectedComponentsBV {
     this.resolver = resolver;
     variables = typeVariableList;
 
-    black = new TreeSet<>();
-    finished = new LinkedList<>();
+    black = new TreeSet<TypeVariableBV>();
+    finished = new LinkedList<TypeVariableBV>();
 
     for (BitSetIterator i = variables.iterator(); i.hasNext();) {
       TypeVariableBV var = resolver.typeVariableForId(i.next());
@@ -43,25 +66,28 @@ class StronglyConnectedComponentsBV {
       }
     }
 
-    black = new TreeSet<>();
+    black = new TreeSet<TypeVariableBV>();
 
     for (TypeVariableBV var : finished) {
       if (!black.contains(var)) {
-        current_tree = new LinkedList<>();
+        current_tree = new LinkedList<TypeVariableBV>();
         forest.add(current_tree);
         black.add(var);
         dfsgt_visit(var);
       }
     }
 
-    for (LinkedList<TypeVariableBV> list : forest) {
+    for (Iterator<LinkedList<TypeVariableBV>> i = forest.iterator(); i.hasNext();) {
+      LinkedList<TypeVariableBV> list = i.next();
       TypeVariableBV previous = null;
       StringBuffer s = null;
       if (DEBUG) {
         s = new StringBuffer("scc:\n");
       }
 
-      for (TypeVariableBV current : list) {
+      for (Iterator<TypeVariableBV> j = list.iterator(); j.hasNext();) {
+        TypeVariableBV current = j.next();
+
         if (DEBUG) {
           s.append(" " + current + "\n");
         }

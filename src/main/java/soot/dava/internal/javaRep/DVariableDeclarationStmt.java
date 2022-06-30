@@ -10,12 +10,12 @@ package soot.dava.internal.javaRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -93,7 +93,6 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
     }
   }
 
-  @Override
   public Object clone() {
     DVariableDeclarationStmt temp = new DVariableDeclarationStmt(declarationType, davaBody);
     Iterator it = declarations.iterator();
@@ -108,7 +107,6 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
     return temp;
   }
 
-  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -137,7 +135,6 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
     return b.toString();
   }
 
-  @Override
   public void toString(UnitPrinter up) {
     if (declarations.size() == 0) {
       return;
@@ -177,60 +174,49 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 
   /*
    * Methods needed to satisfy all obligations due to extension from AbstractUnit and implementing Stmt
-   *
+   * 
    */
 
-  @Override
   public boolean fallsThrough() {
     return true;
   }
 
-  @Override
   public boolean branches() {
     return false;
   }
 
-  @Override
   public boolean containsInvokeExpr() {
     return false;
   }
 
-  @Override
   public InvokeExpr getInvokeExpr() {
     throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
   }
 
-  @Override
   public ValueBox getInvokeExprBox() {
     throw new RuntimeException("getInvokeExprBox() called with no invokeExpr present!");
   }
 
-  @Override
   public boolean containsArrayRef() {
     return false;
   }
 
-  @Override
   public ArrayRef getArrayRef() {
     throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
   }
 
-  @Override
   public ValueBox getArrayRefBox() {
     throw new RuntimeException("getArrayRefBox() called with no ArrayRef present!");
   }
 
-  @Override
   public boolean containsFieldRef() {
     return false;
   }
 
-  @Override
   public FieldRef getFieldRef() {
     throw new RuntimeException("getFieldRef() called with no FieldRef present!");
   }
 
-  @Override
   public ValueBox getFieldRefBox() {
     throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
   }

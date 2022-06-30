@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -909,62 +909,62 @@ class ByteCode {
         i = new Instruction_Breakpoint();
         break;
       case TABLESWITCH:
-        i = new Instruction_Tableswitch();
+        i = (Instruction) new Instruction_Tableswitch();
         break;
       case LOOKUPSWITCH:
-        i = new Instruction_Lookupswitch();
+        i = (Instruction) new Instruction_Lookupswitch();
         break;
       case PUTFIELD:
-        i = new Instruction_Putfield();
+        i = (Instruction) new Instruction_Putfield();
         break;
       case GETFIELD:
-        i = new Instruction_Getfield();
+        i = (Instruction) new Instruction_Getfield();
         break;
       case PUTSTATIC:
-        i = new Instruction_Putstatic();
+        i = (Instruction) new Instruction_Putstatic();
         break;
       case GETSTATIC:
-        i = new Instruction_Getstatic();
+        i = (Instruction) new Instruction_Getstatic();
         break;
       case INVOKEVIRTUAL:
-        i = new Instruction_Invokevirtual();
+        i = (Instruction) new Instruction_Invokevirtual();
         break;
       case INVOKENONVIRTUAL:
-        i = new Instruction_Invokenonvirtual();
+        i = (Instruction) new Instruction_Invokenonvirtual();
         break;
       case INVOKESTATIC:
-        i = new Instruction_Invokestatic();
+        i = (Instruction) new Instruction_Invokestatic();
         break;
       case INVOKEINTERFACE:
-        i = new Instruction_Invokeinterface();
+        i = (Instruction) new Instruction_Invokeinterface();
         break;
       case INVOKEDYNAMIC:
-        i = new Instruction_Invokedynamic();
+        i = (Instruction) new Instruction_Invokedynamic();
         break;
       case ATHROW:
-        i = new Instruction_Athrow();
+        i = (Instruction) new Instruction_Athrow();
         break;
       case NEW:
-        i = new Instruction_New();
+        i = (Instruction) new Instruction_New();
         break;
       case CHECKCAST:
-        i = new Instruction_Checkcast();
+        i = (Instruction) new Instruction_Checkcast();
         break;
       case INSTANCEOF:
-        i = new Instruction_Instanceof();
+        i = (Instruction) new Instruction_Instanceof();
         break;
       case MONITORENTER:
-        i = new Instruction_Monitorenter();
+        i = (Instruction) new Instruction_Monitorenter();
         break;
       case MONITOREXIT:
-        i = new Instruction_Monitorexit();
+        i = (Instruction) new Instruction_Monitorexit();
         break;
       default:
         // int j;
         // j = ((int)b)&0xff;
         // logger.debug("Unknown instruction op=" + j +
         // " at offset " + index);
-        i = new Instruction_Unknown(b);
+        i = (Instruction) new Instruction_Unknown(b);
         break;
     }
 

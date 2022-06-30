@@ -10,12 +10,12 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,66 +46,7 @@ import soot.UnitBox;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.internal.ConditionExprBox;
-import soot.jimple.internal.IdentityRefBox;
-import soot.jimple.internal.ImmediateBox;
-import soot.jimple.internal.InvokeExprBox;
-import soot.jimple.internal.JAddExpr;
-import soot.jimple.internal.JAndExpr;
-import soot.jimple.internal.JArrayRef;
-import soot.jimple.internal.JAssignStmt;
-import soot.jimple.internal.JBreakpointStmt;
-import soot.jimple.internal.JCastExpr;
-import soot.jimple.internal.JCaughtExceptionRef;
-import soot.jimple.internal.JCmpExpr;
-import soot.jimple.internal.JCmpgExpr;
-import soot.jimple.internal.JCmplExpr;
-import soot.jimple.internal.JDivExpr;
-import soot.jimple.internal.JDynamicInvokeExpr;
-import soot.jimple.internal.JEnterMonitorStmt;
-import soot.jimple.internal.JEqExpr;
-import soot.jimple.internal.JExitMonitorStmt;
-import soot.jimple.internal.JGeExpr;
-import soot.jimple.internal.JGotoStmt;
-import soot.jimple.internal.JGtExpr;
-import soot.jimple.internal.JIdentityStmt;
-import soot.jimple.internal.JIfStmt;
-import soot.jimple.internal.JInstanceFieldRef;
-import soot.jimple.internal.JInstanceOfExpr;
-import soot.jimple.internal.JInterfaceInvokeExpr;
-import soot.jimple.internal.JInvokeStmt;
-import soot.jimple.internal.JLeExpr;
-import soot.jimple.internal.JLengthExpr;
-import soot.jimple.internal.JLookupSwitchStmt;
-import soot.jimple.internal.JLtExpr;
-import soot.jimple.internal.JMulExpr;
-import soot.jimple.internal.JNeExpr;
-import soot.jimple.internal.JNegExpr;
-import soot.jimple.internal.JNewArrayExpr;
-import soot.jimple.internal.JNewExpr;
-import soot.jimple.internal.JNewMultiArrayExpr;
-import soot.jimple.internal.JNopStmt;
-import soot.jimple.internal.JOrExpr;
-import soot.jimple.internal.JRemExpr;
-import soot.jimple.internal.JRetStmt;
-import soot.jimple.internal.JReturnStmt;
-import soot.jimple.internal.JReturnVoidStmt;
-import soot.jimple.internal.JShlExpr;
-import soot.jimple.internal.JShrExpr;
-import soot.jimple.internal.JSpecialInvokeExpr;
-import soot.jimple.internal.JStaticInvokeExpr;
-import soot.jimple.internal.JSubExpr;
-import soot.jimple.internal.JTableSwitchStmt;
-import soot.jimple.internal.JThrowStmt;
-import soot.jimple.internal.JTrap;
-import soot.jimple.internal.JUshrExpr;
-import soot.jimple.internal.JVirtualInvokeExpr;
-import soot.jimple.internal.JXorExpr;
-import soot.jimple.internal.JimpleLocal;
-import soot.jimple.internal.JimpleLocalBox;
-import soot.jimple.internal.RValueBox;
-import soot.jimple.internal.StmtBox;
-import soot.jimple.internal.VariableBox;
+import soot.jimple.internal.*;
 
 /**
  * The Jimple class contains all the constructors for the components of the Jimple grammar for the Jimple body. <br>
@@ -191,7 +132,7 @@ public class Jimple {
   public final static String FALSE = "false";
 
   public static List<String> jimpleKeywordList() {
-    List<String> l = new LinkedList<>();
+    List<String> l = new LinkedList<String>();
     Collections.addAll(l, NEWARRAY, NEWMULTIARRAY, NOP, RET, SPECIALINVOKE, STATICINVOKE, TABLESWITCH, VIRTUALINVOKE,
         NULL_TYPE, UNKNOWN, CMP, CMPG, CMPL, ENTERMONITOR, EXITMONITOR, INTERFACEINVOKE, LENGTHOF, LOOKUPSWITCH, NEG, IF,
         ABSTRACT, BOOLEAN, BREAK, BYTE, CASE, CATCH, CHAR, CLASS, FINAL, NATIVE, PUBLIC, PROTECTED, PRIVATE, STATIC,

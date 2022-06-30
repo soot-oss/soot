@@ -11,12 +11,12 @@ package soot.dava;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -86,7 +86,7 @@ public class DavaPrinter {
 
   public void printTo(SootClass cl, PrintWriter out) {
     // IterableSet<String> packagesUsed = new IterableSet<String>();
-    IterableSet<String> importList = new IterableSet<>();
+    IterableSet<String> importList = new IterableSet<String>();
     {
       final String curPackage = cl.getJavaPackageName();
       if (!curPackage.isEmpty()) {
@@ -164,7 +164,7 @@ public class DavaPrinter {
         }
       }
 
-      List<String> toImport = new ArrayList<>();
+      List<String> toImport = new ArrayList<String>();
       for (String temp : importList) {
         /*
          * dont import any file which has currentPackage.className dont import any file which starts with java.lang
@@ -180,7 +180,12 @@ public class DavaPrinter {
           }
         }
 
-        if ((!curPackage.isEmpty() && temp.contains(curPackage)) || cl.toString().equals(temp)) {
+        if (!curPackage.isEmpty() && temp.contains(curPackage)) {
+          // System.out.println("here "+temp);
+          continue;
+        }
+
+        if (cl.toString().equals(temp)) {
           continue;
         }
 

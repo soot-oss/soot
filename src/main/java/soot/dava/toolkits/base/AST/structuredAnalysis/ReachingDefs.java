@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -78,7 +78,7 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
 
   @Override
   public DavaFlowSet<Stmt> emptyFlowSet() {
-    return new DavaFlowSet<>();
+    return new DavaFlowSet<Stmt>();
   }
 
   /*
@@ -86,7 +86,7 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
    */
   @Override
   public DavaFlowSet<Stmt> newInitialFlow() {
-    DavaFlowSet<Stmt> initial = new DavaFlowSet<>();
+    DavaFlowSet<Stmt> initial = new DavaFlowSet<Stmt>();
     // find all definitions in the program
     AllDefinitionsFinder defFinder = new AllDefinitionsFinder();
     ((ASTNode) toAnalyze).apply(defFinder);
@@ -104,7 +104,6 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
   /*
    * Using union
    */
-  @Override
   public void setMergeType() {
     MERGETYPE = UNION;
   }
@@ -194,7 +193,7 @@ public class ReachingDefs extends StructuredAnalysis<Stmt> {
   }
 
   public List<DefinitionStmt> getReachingDefs(Local local, Object node) {
-    ArrayList<DefinitionStmt> toReturn = new ArrayList<>();
+    ArrayList<DefinitionStmt> toReturn = new ArrayList<DefinitionStmt>();
 
     // get the reaching defs of this node
     DavaFlowSet<Stmt> beforeSet = null;

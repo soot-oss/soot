@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -140,7 +140,7 @@ public class CP extends StructuredAnalysis {
    * constant fields added with KNOWN CONSTANT VALUE formals added with TOP locals added with 0 other fields IGNORED
    */
   public void createInitialInput() {
-    initialInput = new ArrayList<>();
+    initialInput = new ArrayList<CPTuple>();
 
     // adding constant fields
     initialInput.addAll(constantFieldTuples);
@@ -149,7 +149,7 @@ public class CP extends StructuredAnalysis {
     // analyze.getDavaBody().getMethod().getDeclaringClass().getName();
 
     // adding formals
-    formals = new ArrayList<>();
+    formals = new ArrayList<CPTuple>();
     // System.out.println("Adding following formals: with TOP");
     Collection col = methodNode.getDavaBody().get_ParamMap().values();
     Iterator it = col.iterator();
@@ -176,7 +176,7 @@ public class CP extends StructuredAnalysis {
     // adding locals
     List decLocals = methodNode.getDeclaredLocals();
     it = decLocals.iterator();
-    locals = new ArrayList<>();
+    locals = new ArrayList<CPTuple>();
     // System.out.println("Adding following locals with default values:");
     while (it.hasNext()) {
       Object temp = it.next();
@@ -235,7 +235,7 @@ public class CP extends StructuredAnalysis {
    */
   private void createConstantFieldsList(HashMap<String, Object> constantFields,
       HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
-    constantFieldTuples = new ArrayList<>();
+    constantFieldTuples = new ArrayList<CPTuple>();
 
     Iterator<String> it = constantFields.keySet().iterator();
     // System.out.println("Adding constant fields to initial set: ");
@@ -283,7 +283,6 @@ public class CP extends StructuredAnalysis {
    * method for this flow set will be invoked which defines the correct semantics of intersection for the case of constant
    * propagation
    */
-  @Override
   public void setMergeType() {
     MERGETYPE = INTERSECTION;
   }
@@ -301,13 +300,13 @@ public class CP extends StructuredAnalysis {
 
     // formals and locals should be both initialized to top since we dont
     // know what has happened so far in the body
-    ArrayList<CPTuple> localsAndFormals = new ArrayList<>();
+    ArrayList<CPTuple> localsAndFormals = new ArrayList<CPTuple>();
     localsAndFormals.addAll(formals);
     localsAndFormals.addAll(locals);
 
     Iterator<CPTuple> it = localsAndFormals.iterator();
     while (it.hasNext()) {
-      CPTuple tempTuple = it.next().clone();
+      CPTuple tempTuple = (CPTuple) it.next().clone();
 
       // just making sure all are set to Top
       if (!tempTuple.isTop()) {
@@ -357,7 +356,7 @@ public class CP extends StructuredAnalysis {
     if (!(input instanceof CPFlowSet)) {
       throw new RuntimeException("processSynchronized  is not implemented for other flowSet types" + input.toString());
     }
-    DavaFlowSet inSet = input;
+    DavaFlowSet inSet = (DavaFlowSet) input;
     return inSet;
 
   }
@@ -396,7 +395,11 @@ public class CP extends StructuredAnalysis {
     }
 
     CPFlowSet inSet = (CPFlowSet) input;
-    if ((inSet == NOPATH) || !(s instanceof DefinitionStmt)) {
+    if (inSet == NOPATH) {
+      return inSet;
+    }
+
+    if (!(s instanceof DefinitionStmt)) {
       return inSet;
     }
 
@@ -654,6 +657,7 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF) {
       System.out.println("Processing if node using over-ridden process if method" + input.toString());
     }
+    ;
 
     input = processCondition(node.get_Condition(), input);
 
@@ -690,6 +694,7 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF) {
       System.out.println("Exiting if node" + temp.toString());
     }
+    ;
 
     return temp;
   }
@@ -699,6 +704,7 @@ public class CP extends StructuredAnalysis {
     if (DEBUG_IF) {
       System.out.println("Processing IF-ELSE node using over-ridden process if method" + input.toString());
     }
+    ;
 
     if (!(input instanceof CPFlowSet)) {
       throw new DavaFlowAnalysisException("not a flow set");
@@ -752,7 +758,7 @@ public class CP extends StructuredAnalysis {
     output1 = handleBreak(label, temp, node);
     if (DEBUG_IF) {
       System.out.println("Exiting ifelse node" + output1.toString());
-
+      ;
     }
 
     return output1;

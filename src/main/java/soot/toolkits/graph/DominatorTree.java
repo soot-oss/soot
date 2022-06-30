@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -67,9 +67,9 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
     this.dominators = dominators;
     this.graph = dominators.getGraph();
 
-    this.heads = new ArrayList<>();
-    this.tails = new ArrayList<>();
-    this.godeToDode = new HashMap<>();
+    this.heads = new ArrayList<DominatorNode<N>>();
+    this.tails = new ArrayList<DominatorNode<N>>();
+    this.godeToDode = new HashMap<N, DominatorNode<N>>();
 
     buildTree();
   }
@@ -123,7 +123,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
    * @return list of the DominatorNodes corresponding to the predecessors of {@code node} in the original DirectedGraph
    */
   public List<DominatorNode<N>> getPredsOf(DominatorNode<N> node) {
-    List<DominatorNode<N>> predNodes = new ArrayList<>();
+    List<DominatorNode<N>> predNodes = new ArrayList<DominatorNode<N>>();
     for (N pred : graph.getPredsOf(node.getGode())) {
       predNodes.add(getDode(pred));
     }
@@ -134,7 +134,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
    * @return list of the DominatorNodes corresponding to the successors of {@code node} in the original DirectedGraph
    */
   public List<DominatorNode<N>> getSuccsOf(DominatorNode<N> node) {
-    List<DominatorNode<N>> succNodes = new ArrayList<>();
+    List<DominatorNode<N>> succNodes = new ArrayList<DominatorNode<N>>();
     for (N succ : graph.getSuccsOf(node.getGode())) {
       succNodes.add(getDode(succ));
     }
@@ -222,7 +222,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>> {
   protected DominatorNode<N> fetchDode(N gode) {
     DominatorNode<N> dode = godeToDode.get(gode);
     if (dode == null) {
-      dode = new DominatorNode<>(gode);
+      dode = new DominatorNode<N>(gode);
       godeToDode.put(gode, dode);
     }
     return dode;

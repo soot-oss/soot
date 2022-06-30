@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.purity;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -91,11 +91,11 @@ public abstract class AbstractInterproceduralAnalysis<S> {
     this.cg = cg;
 
     this.dg = new DirectedCallGraph(cg, filter, heads, verbose);
-    this.data = new HashMap<>();
-    this.unanalysed = new HashMap<>();
+    this.data = new HashMap<SootMethod, S>();
+    this.unanalysed = new HashMap<SootMethod, S>();
 
     // construct reverse pseudo topological order on filtered methods
-    this.order = new HashMap<>();
+    this.order = new HashMap<SootMethod, Integer>();
 
     int i = 0;
     for (SootMethod m : new PseudoTopologicalOrderer<SootMethod>().newList(dg, true)) {
@@ -240,7 +240,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
     dot.setGraphAttribute("compound", "true");
     // dot.setGraphAttribute("rankdir","LR");
     int id = 0;
-    Map<SootMethod, Integer> idmap = new HashMap<>();
+    Map<SootMethod, Integer> idmap = new HashMap<SootMethod, Integer>();
 
     // draw sub-graph cluster
     // draw sub-graph cluster
@@ -346,7 +346,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
       }
     }
 
-    SortedSet<SootMethod> queue = new TreeSet<>(new IntComparator());
+    SortedSet<SootMethod> queue = new TreeSet<SootMethod>(new IntComparator());
 
     // init
     for (SootMethod o : order.keySet()) {
@@ -354,7 +354,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
       queue.add(o);
     }
 
-    Map<SootMethod, Integer> nb = new HashMap<>(); // only for debug pretty-printing
+    Map<SootMethod, Integer> nb = new HashMap<SootMethod, Integer>(); // only for debug pretty-printing
 
     // fixpoint iterations
     while (!queue.isEmpty()) {

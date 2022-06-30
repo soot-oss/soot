@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,7 +56,7 @@ public class SimpleLocalDefs implements LocalDefs {
       final int N = locals.length;
       assert (N == unitList.length);
 
-      this.result = new HashMap<>((N * 3) / 2 + 7);
+      this.result = new HashMap<Local, List<Unit>>((N * 3) / 2 + 7);
       for (int i = 0; i < N; i++) {
         List<Unit> curr = unitList[i];
         if (!curr.isEmpty()) {
@@ -112,7 +112,7 @@ public class SimpleLocalDefs implements LocalDefs {
           return Collections.singletonList(universe[i]);
         }
 
-        List<Unit> elements = new ArrayList<>(toIndex - i);
+        List<Unit> elements = new ArrayList<Unit>(toIndex - i);
         for (;;) {
           int endOfRun = Math.min(toIndex, this.nextClearBit(i + 1));
           do {
@@ -141,9 +141,9 @@ public class SimpleLocalDefs implements LocalDefs {
       super(graph);
       this.unitList = unitList;
       this.universe = new Unit[units];
-      this.indexOfUnit = new HashMap<>(units);
+      this.indexOfUnit = new HashMap<Unit, Integer>(units);
       final int N = locals.length;
-      this.locals = new HashMap<>((N * 3) / 2 + 7);
+      this.locals = new HashMap<Local, Integer>((N * 3) / 2 + 7);
       this.localRange = new int[N + 1];
 
       for (int j = 0, i = 0; i < N; this.localRange[++i] = j) {
@@ -243,7 +243,6 @@ public class SimpleLocalDefs implements LocalDefs {
       }
     }
 
-    @Override
     protected FlowBitSet newInitialFlow() {
       return new FlowBitSet();
     }
@@ -280,7 +279,7 @@ public class SimpleLocalDefs implements LocalDefs {
 
     @Override
     public List<Unit> getDefsOf(Local l) {
-      List<Unit> defs = new ArrayList<>();
+      List<Unit> defs = new ArrayList<Unit>();
       for (Unit u : graph) {
         List<Unit> defsOf = getDefsOfAt(l, u);
         if (defsOf != null) {
@@ -312,7 +311,7 @@ public class SimpleLocalDefs implements LocalDefs {
   private final LocalDefs def;
 
   /**
-   *
+   * 
    * @param graph
    */
   public SimpleLocalDefs(UnitGraph graph) {
@@ -395,7 +394,7 @@ public class SimpleLocalDefs implements LocalDefs {
               if (!omitSSA) {
                 units++;
               }
-              unitList[lno] = new ArrayList<>(unitList[lno]);
+              unitList[lno] = new ArrayList<Unit>(unitList[lno]);
               doFlowAnalsis = true;
               // fallthrough
             default:

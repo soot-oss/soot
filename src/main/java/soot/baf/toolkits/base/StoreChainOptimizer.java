@@ -10,12 +10,12 @@ package soot.baf.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,13 +39,13 @@ import soot.toolkits.scalar.Pair;
 
 /**
  * Due to local packing, we may have chains of assignments to the same local.
- *
+ * 
  * push null; store.r $r2;
  *
  * push null; store.r $r2;
- *
+ * 
  * This transformer eliminates the redundant push/store instructions.
- *
+ * 
  * @author Steven Arzt
  */
 public class StoreChainOptimizer extends BodyTransformer {
@@ -60,8 +60,8 @@ public class StoreChainOptimizer extends BodyTransformer {
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // We keep track of all the stored values
-    Map<Local, Pair<Unit, Unit>> stores = new HashMap<>();
-    Set<Unit> toRemove = new HashSet<>();
+    Map<Local, Pair<Unit, Unit>> stores = new HashMap<Local, Pair<Unit, Unit>>();
+    Set<Unit> toRemove = new HashSet<Unit>();
 
     Unit lastPush = null;
     for (Unit u : b.getUnits()) {
@@ -81,7 +81,7 @@ public class StoreChainOptimizer extends BodyTransformer {
           toRemove.add(pushStorePair.getO2());
         }
 
-        stores.put(si.getLocal(), new Pair<>(lastPush, u));
+        stores.put(si.getLocal(), new Pair<Unit, Unit>(lastPush, u));
       } else {
         // We're outside of the trivial initialization chain
         stores.clear();

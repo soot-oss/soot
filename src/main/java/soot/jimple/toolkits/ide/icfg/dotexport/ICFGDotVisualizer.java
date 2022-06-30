@@ -1,11 +1,5 @@
 package soot.jimple.toolkits.ide.icfg.dotexport;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -16,12 +10,12 @@ import org.slf4j.LoggerFactory;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -29,6 +23,13 @@ import org.slf4j.LoggerFactory;
  */
 
 import heros.InterproceduralCFG;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.SootMethod;
 import soot.Unit;
 import soot.util.dot.DotGraph;
@@ -36,14 +37,14 @@ import soot.util.dot.DotGraph;
 public class ICFGDotVisualizer {
   private static final Logger logger = LoggerFactory.getLogger(ICFGDotVisualizer.class);
   private DotGraph dotIcfg = new DotGraph("");
-  private ArrayList<Unit> visited = new ArrayList<>();
+  private ArrayList<Unit> visited = new ArrayList<Unit>();
   String fileName;
   Unit startPoint;
   InterproceduralCFG<Unit, SootMethod> icfg;
 
   /**
    * This class will save your ICFG in DOT format by traversing the ICFG Depth-first!
-   *
+   * 
    * @param fileName:
    *          Name of the file to save ICFG in DOT extension
    * @param startPoint:

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -70,17 +70,17 @@ class CriticalSection extends SynchronizedRegion {
     this.nestLevel = nestLevel;
     this.read = new CodeBlockRWSet();
     this.write = new CodeBlockRWSet();
-    this.invokes = new HashSet<>();
-    this.units = new HashSet<>();
-    this.unitToRWSet = new HashMap<>();
-    this.unitToUses = new HashMap<>();
+    this.invokes = new HashSet<Unit>();
+    this.units = new HashSet<Unit>();
+    this.unitToRWSet = new HashMap<Unit, CodeBlockRWSet>();
+    this.unitToUses = new HashMap<Unit, List>();
     this.wholeMethod = wholeMethod;
     this.method = method;
     this.setNumber = 0; // 0 = no group, -1 = DELETE
     this.group = null;
-    this.edges = new HashSet<>();
-    this.waits = new HashSet<>();
-    this.notifys = new HashSet<>();
+    this.edges = new HashSet<CriticalSectionDataDependency>();
+    this.waits = new HashSet<Unit>();
+    this.notifys = new HashSet<Unit>();
     this.transitiveTargets = null;
     this.lockObject = null;
     this.lockObjectArrayIndex = null;
@@ -114,12 +114,10 @@ class CriticalSection extends SynchronizedRegion {
     this.lockset = tn.lockset;
   }
 
-  @Override
   protected Object clone() {
     return new CriticalSection(this);
   }
 
-  @Override
   public String toString() {
     return name;
   }

@@ -367,14 +367,14 @@ public class Printer {
    * Prints the Locals in the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>.
    */
   private void printLocalsInBody(Body body, UnitPrinter up) {
-    Map<Type, List<Local>> typeToLocals = new DeterministicHashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+    Map<Type, List<Local>> typeToLocals = new DeterministicHashMap<Type, List<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
     // Collect locals
     for (Local local : body.getLocals()) {
       Type t = local.getType();
       List<Local> localList = typeToLocals.get(t);
       if (localList == null) {
-        typeToLocals.put(t, localList = new ArrayList<>());
+        typeToLocals.put(t, localList = new ArrayList<Local>());
       }
       localList.add(local);
     }

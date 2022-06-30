@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -80,9 +80,9 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 
   @Override
   protected void doAnalysis() {
-    TreeSet<Unit> changedUnits = new TreeSet<>(new Comparator<Unit>() {
+    TreeSet<Unit> changedUnits = new TreeSet<Unit>(new Comparator<Unit>() {
       // map each unit to a distinct integer for a total ordering
-      final Map<Unit, Integer> numbers = new HashMap<>();
+      final Map<Unit, Integer> numbers = new HashMap<Unit, Integer>();
       {
         int i = 1;
         for (Unit u : new PseudoTopologicalOrderer<Unit>().newList(graph, false)) {
@@ -99,7 +99,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 
     // initialize unitToIncomingFlowSets
     final int numNodes = graph.size();
-    Map<Unit, ArrayList<A>> unitToIncomingFlowSets = new HashMap<>(numNodes * 2 + 1, 0.7f);
+    Map<Unit, ArrayList<A>> unitToIncomingFlowSets = new HashMap<Unit, ArrayList<A>>(numNodes * 2 + 1, 0.7f);
     for (Unit s : graph) {
       unitToIncomingFlowSets.put(s, new ArrayList<A>());
     }
@@ -117,7 +117,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
         unitToBeforeFlow.put(s, newInitialFlow());
 
         if (s.fallsThrough()) {
-          List<A> fl = new ArrayList<>();
+          List<A> fl = new ArrayList<A>();
           fl.add((newInitialFlow()));
           unitToAfterFallFlow.put(s, fl);
 
@@ -132,7 +132,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
         }
 
         final List<UnitBox> unitBoxes = s.getUnitBoxes();
-        List<A> l = new ArrayList<>();
+        List<A> l = new ArrayList<A>();
         if (s.branches()) {
           for (UnitBox ub : unitBoxes) {
             A f = newInitialFlow();
@@ -173,8 +173,8 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
         previousFlowRepositories[i] = newInitialFlow();
       }
 
-      List<A> previousAfterFlows = new ArrayList<>();
-      List<A> afterFlows = new ArrayList<>();
+      List<A> previousAfterFlows = new ArrayList<A>();
+      List<A> afterFlows = new ArrayList<A>();
       while (!changedUnits.isEmpty()) {
         Unit s = changedUnits.first();
         changedUnits.remove(s);
@@ -210,7 +210,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
             InteractionHandler ih = InteractionHandler.v();
             A savedFlow = newInitialFlow();
             copy(beforeFlow, savedFlow);
-            FlowInfo<A, Unit> fi = new FlowInfo<>(savedFlow, s, true);
+            FlowInfo<A, Unit> fi = new FlowInfo<A, Unit>(savedFlow, s, true);
             if (ih.getStopUnitList() != null && ih.getStopUnitList().contains(s)) {
               ih.handleStopAtNodeEvent(s);
             }
@@ -218,7 +218,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
           }
           flowThrough(beforeFlow, s, afterFallFlow, afterBranchFlow);
           if (Options.v().interactive_mode()) {
-            List<A> l = new ArrayList<>();
+            List<A> l = new ArrayList<A>();
             if (!afterFallFlow.isEmpty()) {
               l.addAll(afterFallFlow);
             }
@@ -230,7 +230,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
              * if (s instanceof soot.jimple.IfStmt){ l.addAll((List)afterFallFlow); l.addAll((List)afterBranchFlow); } else {
              * l.addAll((List)afterFallFlow); }
              */
-            FlowInfo<List<A>, Unit> fi = new FlowInfo<>(l, s, false);
+            FlowInfo<List<A>, Unit> fi = new FlowInfo<List<A>, Unit>(l, s, false);
             InteractionHandler.v().handleAfterAnalysisEvent(fi);
           }
           numComputations++;

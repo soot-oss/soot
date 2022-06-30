@@ -10,12 +10,12 @@ package soot.baf;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -90,10 +90,10 @@ import soot.util.Chain;
 public class BafASMBackend extends AbstractASMBackend {
 
   // Contains one Label for every Unit that is the target of a branch or jump
-  protected final Map<Unit, Label> branchTargetLabels = new HashMap<>();
+  protected final Map<Unit, Label> branchTargetLabels = new HashMap<Unit, Label>();
 
   // Contains a mapping of local variables to indices in the local variable stack
-  protected final Map<Local, Integer> localToSlot = new HashMap<>();
+  protected final Map<Local, Integer> localToSlot = new HashMap<Local, Integer>();
 
   /**
    * Returns the ASM Label for a given Unit that is the target of a branch or jump
@@ -211,7 +211,7 @@ public class BafASMBackend extends AbstractASMBackend {
       localCount += sizeOfType(method.getParameterType(i));
     }
 
-    Set<Local> assignedLocals = new HashSet<>();
+    Set<Local> assignedLocals = new HashSet<Local>();
     Chain<Unit> instructions = body.getUnits();
     for (Unit u : instructions) {
       if (u instanceof IdentityInst) {
@@ -273,7 +273,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
   /**
    * Writes out the information stored in tags associated with the given unit
-   *
+   * 
    * @param mv
    *          The method visitor for writing out the bytecode
    * @param u
@@ -493,7 +493,7 @@ public class BafASMBackend extends AbstractASMBackend {
         Value l = i.getLeftOp();
         Value r = i.getRightOp();
         if (r instanceof CaughtExceptionRef && l instanceof Local) {
-          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get(l));
+          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get((Local) l));
           // asm handles constant opcodes automatically here
         }
       }

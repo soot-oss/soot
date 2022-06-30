@@ -21,7 +21,144 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import static org.objectweb.asm.Opcodes.*;
+
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ANEWARRAY;
+import static org.objectweb.asm.Opcodes.ARETURN;
+import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
+import static org.objectweb.asm.Opcodes.ASTORE;
+import static org.objectweb.asm.Opcodes.ATHROW;
+import static org.objectweb.asm.Opcodes.BIPUSH;
+import static org.objectweb.asm.Opcodes.CHECKCAST;
+import static org.objectweb.asm.Opcodes.D2F;
+import static org.objectweb.asm.Opcodes.D2I;
+import static org.objectweb.asm.Opcodes.D2L;
+import static org.objectweb.asm.Opcodes.DADD;
+import static org.objectweb.asm.Opcodes.DALOAD;
+import static org.objectweb.asm.Opcodes.DASTORE;
+import static org.objectweb.asm.Opcodes.DCMPG;
+import static org.objectweb.asm.Opcodes.DCMPL;
+import static org.objectweb.asm.Opcodes.DCONST_0;
+import static org.objectweb.asm.Opcodes.DCONST_1;
+import static org.objectweb.asm.Opcodes.DDIV;
+import static org.objectweb.asm.Opcodes.DLOAD;
+import static org.objectweb.asm.Opcodes.DMUL;
+import static org.objectweb.asm.Opcodes.DNEG;
+import static org.objectweb.asm.Opcodes.DREM;
+import static org.objectweb.asm.Opcodes.DRETURN;
+import static org.objectweb.asm.Opcodes.DSTORE;
+import static org.objectweb.asm.Opcodes.DSUB;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.DUP2;
+import static org.objectweb.asm.Opcodes.DUP2_X1;
+import static org.objectweb.asm.Opcodes.DUP2_X2;
+import static org.objectweb.asm.Opcodes.DUP_X1;
+import static org.objectweb.asm.Opcodes.DUP_X2;
+import static org.objectweb.asm.Opcodes.F2D;
+import static org.objectweb.asm.Opcodes.F2I;
+import static org.objectweb.asm.Opcodes.F2L;
+import static org.objectweb.asm.Opcodes.FCMPG;
+import static org.objectweb.asm.Opcodes.FCMPL;
+import static org.objectweb.asm.Opcodes.FCONST_0;
+import static org.objectweb.asm.Opcodes.FCONST_2;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.GETSTATIC;
+import static org.objectweb.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.I2B;
+import static org.objectweb.asm.Opcodes.I2C;
+import static org.objectweb.asm.Opcodes.I2D;
+import static org.objectweb.asm.Opcodes.I2F;
+import static org.objectweb.asm.Opcodes.I2L;
+import static org.objectweb.asm.Opcodes.I2S;
+import static org.objectweb.asm.Opcodes.IADD;
+import static org.objectweb.asm.Opcodes.IALOAD;
+import static org.objectweb.asm.Opcodes.IAND;
+import static org.objectweb.asm.Opcodes.IASTORE;
+import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.ICONST_5;
+import static org.objectweb.asm.Opcodes.ICONST_M1;
+import static org.objectweb.asm.Opcodes.IDIV;
+import static org.objectweb.asm.Opcodes.IFEQ;
+import static org.objectweb.asm.Opcodes.IFGE;
+import static org.objectweb.asm.Opcodes.IFGT;
+import static org.objectweb.asm.Opcodes.IFLE;
+import static org.objectweb.asm.Opcodes.IFLT;
+import static org.objectweb.asm.Opcodes.IFNE;
+import static org.objectweb.asm.Opcodes.IFNONNULL;
+import static org.objectweb.asm.Opcodes.IFNULL;
+import static org.objectweb.asm.Opcodes.IF_ACMPEQ;
+import static org.objectweb.asm.Opcodes.IF_ACMPNE;
+import static org.objectweb.asm.Opcodes.IF_ICMPEQ;
+import static org.objectweb.asm.Opcodes.IF_ICMPGE;
+import static org.objectweb.asm.Opcodes.IF_ICMPGT;
+import static org.objectweb.asm.Opcodes.IF_ICMPLE;
+import static org.objectweb.asm.Opcodes.IF_ICMPLT;
+import static org.objectweb.asm.Opcodes.IF_ICMPNE;
+import static org.objectweb.asm.Opcodes.ILOAD;
+import static org.objectweb.asm.Opcodes.IMUL;
+import static org.objectweb.asm.Opcodes.INEG;
+import static org.objectweb.asm.Opcodes.INSTANCEOF;
+import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.IOR;
+import static org.objectweb.asm.Opcodes.IREM;
+import static org.objectweb.asm.Opcodes.IRETURN;
+import static org.objectweb.asm.Opcodes.ISHL;
+import static org.objectweb.asm.Opcodes.ISHR;
+import static org.objectweb.asm.Opcodes.ISTORE;
+import static org.objectweb.asm.Opcodes.ISUB;
+import static org.objectweb.asm.Opcodes.IUSHR;
+import static org.objectweb.asm.Opcodes.IXOR;
+import static org.objectweb.asm.Opcodes.JSR;
+import static org.objectweb.asm.Opcodes.L2D;
+import static org.objectweb.asm.Opcodes.L2F;
+import static org.objectweb.asm.Opcodes.L2I;
+import static org.objectweb.asm.Opcodes.LADD;
+import static org.objectweb.asm.Opcodes.LALOAD;
+import static org.objectweb.asm.Opcodes.LAND;
+import static org.objectweb.asm.Opcodes.LASTORE;
+import static org.objectweb.asm.Opcodes.LCMP;
+import static org.objectweb.asm.Opcodes.LCONST_0;
+import static org.objectweb.asm.Opcodes.LCONST_1;
+import static org.objectweb.asm.Opcodes.LDIV;
+import static org.objectweb.asm.Opcodes.LLOAD;
+import static org.objectweb.asm.Opcodes.LMUL;
+import static org.objectweb.asm.Opcodes.LNEG;
+import static org.objectweb.asm.Opcodes.LOR;
+import static org.objectweb.asm.Opcodes.LREM;
+import static org.objectweb.asm.Opcodes.LRETURN;
+import static org.objectweb.asm.Opcodes.LSHL;
+import static org.objectweb.asm.Opcodes.LSHR;
+import static org.objectweb.asm.Opcodes.LSTORE;
+import static org.objectweb.asm.Opcodes.LSUB;
+import static org.objectweb.asm.Opcodes.LUSHR;
+import static org.objectweb.asm.Opcodes.LXOR;
+import static org.objectweb.asm.Opcodes.MONITORENTER;
+import static org.objectweb.asm.Opcodes.MONITOREXIT;
+import static org.objectweb.asm.Opcodes.NEW;
+import static org.objectweb.asm.Opcodes.NEWARRAY;
+import static org.objectweb.asm.Opcodes.NOP;
+import static org.objectweb.asm.Opcodes.POP;
+import static org.objectweb.asm.Opcodes.POP2;
+import static org.objectweb.asm.Opcodes.PUTFIELD;
+import static org.objectweb.asm.Opcodes.RET;
+import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.SALOAD;
+import static org.objectweb.asm.Opcodes.SASTORE;
+import static org.objectweb.asm.Opcodes.SIPUSH;
+import static org.objectweb.asm.Opcodes.SWAP;
+import static org.objectweb.asm.Opcodes.T_BOOLEAN;
+import static org.objectweb.asm.Opcodes.T_BYTE;
+import static org.objectweb.asm.Opcodes.T_CHAR;
+import static org.objectweb.asm.Opcodes.T_DOUBLE;
+import static org.objectweb.asm.Opcodes.T_FLOAT;
+import static org.objectweb.asm.Opcodes.T_INT;
+import static org.objectweb.asm.Opcodes.T_LONG;
+import static org.objectweb.asm.Opcodes.T_SHORT;
+
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -38,6 +175,12 @@ import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -76,12 +219,6 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
 
 import soot.ArrayType;
 import soot.Body;
@@ -182,8 +319,8 @@ public class AsmMethodSource implements MethodSource {
   private final InsnList instructions;
   private final List<LocalVariableNode> localVars;
   private final List<TryCatchBlockNode> tryCatchBlocks;
-  private final Set<LabelNode> inlineExceptionLabels = new LinkedHashSet<>();
-  private final Map<LabelNode, Unit> inlineExceptionHandlers = new LinkedHashMap<>();
+  private final Set<LabelNode> inlineExceptionLabels = new LinkedHashSet<LabelNode>();
+  private final Map<LabelNode, Unit> inlineExceptionHandlers = new LinkedHashMap<LabelNode, Unit>();
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 
   /* -state fields- */
@@ -1221,7 +1358,7 @@ public class AsmMethodSource implements MethodSource {
     Operand key = popImmediate();
     UnitBox dflt = Jimple.v().newStmtBox(null);
 
-    List<UnitBox> targets = new ArrayList<>(insn.labels.size());
+    List<UnitBox> targets = new ArrayList<UnitBox>(insn.labels.size());
     labels.put(insn.dflt, dflt);
     for (LabelNode ln : insn.labels) {
       UnitBox box = Jimple.v().newStmtBox(null);
@@ -1229,7 +1366,7 @@ public class AsmMethodSource implements MethodSource {
       labels.put(ln, box);
     }
 
-    List<IntConstant> keys = new ArrayList<>(insn.keys.size());
+    List<IntConstant> keys = new ArrayList<IntConstant>(insn.keys.size());
     for (Integer i : insn.keys) {
       keys.add(IntConstant.v(i));
     }
@@ -1264,12 +1401,12 @@ public class AsmMethodSource implements MethodSource {
       if (!instance) {
         args = nrArgs == 0 ? null : new Operand[nrArgs];
         if (args != null) {
-          argList = new ArrayList<>(nrArgs);
+          argList = new ArrayList<Value>(nrArgs);
         }
       } else {
         args = new Operand[nrArgs + 1];
         if (nrArgs != 0) {
-          argList = new ArrayList<>(nrArgs);
+          argList = new ArrayList<Value>(nrArgs);
         }
       }
       while (nrArgs-- != 0) {
@@ -1360,7 +1497,7 @@ public class AsmMethodSource implements MethodSource {
     if (out == null) {
       // convert info on bootstrap method
       SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
-      List<Value> bsmMethodArgs = new ArrayList<>(insn.bsmArgs.length);
+      List<Value> bsmMethodArgs = new ArrayList<Value>(insn.bsmArgs.length);
       for (Object bsmArg : insn.bsmArgs) {
         bsmMethodArgs.add(toSootValue(bsmArg));
       }
@@ -1369,8 +1506,8 @@ public class AsmMethodSource implements MethodSource {
       // Generate parameters & returnType & parameterTypes
       Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
       int nrArgs = types.length - 1;
-      List<Type> parameterTypes = new ArrayList<>(nrArgs);
-      List<Value> methodArgs = new ArrayList<>(nrArgs);
+      List<Type> parameterTypes = new ArrayList<Type>(nrArgs);
+      List<Value> methodArgs = new ArrayList<Value>(nrArgs);
 
       Operand[] args = new Operand[nrArgs];
       ValueBox[] boxes = new ValueBox[nrArgs];
@@ -1523,7 +1660,7 @@ public class AsmMethodSource implements MethodSource {
     }
     Operand key = popImmediate();
     UnitBox dflt = Jimple.v().newStmtBox(null);
-    List<UnitBox> targets = new ArrayList<>(insn.labels.size());
+    List<UnitBox> targets = new ArrayList<UnitBox>(insn.labels.size());
     labels.put(insn.dflt, dflt);
     for (LabelNode ln : insn.labels) {
       UnitBox box = Jimple.v().newStmtBox(null);
@@ -1718,7 +1855,7 @@ public class AsmMethodSource implements MethodSource {
       if (!edge.prevStacks.add(stackssL)) {
         continue tgt_loop;
       }
-      edge.stack = new ArrayList<>(stack);
+      edge.stack = new ArrayList<Operand>(stack);
       conversionWorklist.add(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
   }
@@ -1726,7 +1863,7 @@ public class AsmMethodSource implements MethodSource {
   /**
    * Merges the given operands, i.e., the second operand will receive assignments to the stack locals of the first operand so
    * that both operands become compatible.
-   *
+   * 
    * @param firstOp
    */
   private void merge(Operand firstOp, Operand secondOp) {
@@ -1760,7 +1897,7 @@ public class AsmMethodSource implements MethodSource {
     if (instructions == null || instructions.size() == 0) {
       return;
     }
-    ArrayDeque<Edge> worklist = new ArrayDeque<>();
+    ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
     for (LabelNode ln : trapHandlers.keySet()) {
       if (checkInlineExceptionHandler(ln)) {
         handleInlineExceptionHandler(ln, worklist);
@@ -1876,7 +2013,7 @@ public class AsmMethodSource implements MethodSource {
     Operand opr = new Operand(ln, ref);
     opr.stack = local;
 
-    ArrayList<Operand> stack = new ArrayList<>();
+    ArrayList<Operand> stack = new ArrayList<Operand>();
     stack.add(opr);
     worklist.add(new Edge(ln, stack));
 
@@ -1938,7 +2075,7 @@ public class AsmMethodSource implements MethodSource {
   private void emitTraps() {
     Chain<Trap> traps = body.getTraps();
     SootClass throwable = Scene.v().getSootClass("java.lang.Throwable");
-    Map<LabelNode, Iterator<UnitBox>> handlers = new LinkedHashMap<>(tryCatchBlocks.size());
+    Map<LabelNode, Iterator<UnitBox>> handlers = new LinkedHashMap<LabelNode, Iterator<UnitBox>>(tryCatchBlocks.size());
     for (TryCatchBlockNode tc : tryCatchBlocks) {
       UnitBox start = Jimple.v().newStmtBox(null);
       UnitBox end = Jimple.v().newStmtBox(null);
@@ -1994,7 +2131,7 @@ public class AsmMethodSource implements MethodSource {
 
   private void emitUnits() {
     AbstractInsnNode insn = instructions.getFirst();
-    ArrayDeque<LabelNode> labls = new ArrayDeque<>();
+    ArrayDeque<LabelNode> labls = new ArrayDeque<LabelNode>();
 
     while (insn != null) {
       // Save the label to assign it to the next real unit
@@ -2096,10 +2233,10 @@ public class AsmMethodSource implements MethodSource {
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
-    locals = new LinkedHashMap<>(maxLocals + (maxLocals / 2));
+    locals = new LinkedHashMap<Integer, Local>(maxLocals + (maxLocals / 2));
     labels = LinkedListMultimap.create(4);
-    units = new LinkedHashMap<>(nrInsn);
-    frames = new LinkedHashMap<>(nrInsn);
+    units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
+    frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
     trapHandlers = LinkedListMultimap.create(tryCatchBlocks.size());
     body = jb;
     /* retrieve all trap handlers */
@@ -2316,12 +2453,12 @@ public class AsmMethodSource implements MethodSource {
 
     Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
       this.insn = insn;
-      this.prevStacks = new HashSet<>();
+      this.prevStacks = new HashSet<List<Operand>>();
       this.stack = stack;
     }
 
     Edge(AbstractInsnNode insn, int lastLineNumber) {
-      this(insn, new ArrayList<>(AsmMethodSource.this.stack));
+      this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
       this.lastLineNumber = lastLineNumber;
     }
   }

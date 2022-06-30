@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -69,7 +69,7 @@ public class SimpleLocalUses implements LocalUses {
    */
   public SimpleLocalUses(Body body, LocalDefs localDefs) {
     this.body = body;
-    this.unitToUses = new HashMap<>(body.getUnits().size() * 2 + 1, 0.7f);
+    this.unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>(body.getUnits().size() * 2 + 1, 0.7f);
 
     final Options options = Options.v();
     if (options.verbose()) {
@@ -93,7 +93,7 @@ public class SimpleLocalUses implements LocalUses {
             for (Unit def : defs) {
               List<UnitValueBoxPair> lst = unitToUses.get(def);
               if (lst == null) {
-                unitToUses.put(def, lst = new ArrayList<>());
+                unitToUses.put(def, lst = new ArrayList<UnitValueBoxPair>());
               }
               lst.add(newPair);
             }
@@ -130,7 +130,7 @@ public class SimpleLocalUses implements LocalUses {
    * @return The list of variables used in this body
    */
   public Set<Local> getUsedVariables() {
-    Set<Local> res = new HashSet<>();
+    Set<Local> res = new HashSet<Local>();
     for (List<UnitValueBoxPair> vals : unitToUses.values()) {
       for (UnitValueBoxPair val : vals) {
         res.add((Local) val.valueBox.getValue());
@@ -145,7 +145,7 @@ public class SimpleLocalUses implements LocalUses {
    * @return The list of variables declared, but not used in this body
    */
   public Set<Local> getUnusedVariables() {
-    Set<Local> res = new HashSet<>(body.getLocals());
+    Set<Local> res = new HashSet<Local>(body.getLocals());
     res.retainAll(getUsedVariables());
     return res;
   }

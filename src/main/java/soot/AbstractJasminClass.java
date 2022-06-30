@@ -11,12 +11,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -96,10 +96,10 @@ public abstract class AbstractJasminClass {
   protected Map<Local, Integer> localToColor;
 
   // maps a block to the stack height upon entering it
-  protected Map<Block, Integer> blockToStackHeight = new HashMap<>();
+  protected Map<Block, Integer> blockToStackHeight = new HashMap<Block, Integer>();
 
   // maps a block to the logical stack height upon entering it
-  protected Map<Block, Integer> blockToLogicalStackHeight = new HashMap<>();
+  protected Map<Block, Integer> blockToLogicalStackHeight = new HashMap<Block, Integer>();
 
   public static String slashify(String s) {
     return s.replace('.', '/');
@@ -273,7 +273,7 @@ public abstract class AbstractJasminClass {
 
   private static class SafeVisibilityAnnotationTags {
 
-    private static final Map<Integer, VisibilityAnnotationTag> safeVats = new HashMap<>();
+    private static final Map<Integer, VisibilityAnnotationTag> safeVats = new HashMap<Integer, VisibilityAnnotationTag>();
 
     static VisibilityAnnotationTag get(int kind) {
       VisibilityAnnotationTag safeVat = safeVats.get(kind);
@@ -414,7 +414,7 @@ public abstract class AbstractJasminClass {
       logger.debug("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
     }
 
-    code = new LinkedList<>();
+    code = new LinkedList<String>();
 
     // Emit the header
     {
@@ -624,9 +624,9 @@ public abstract class AbstractJasminClass {
       Timers.v().packTimer.start();
     }
 
-    localToGroup = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
-    groupToColorCount = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
-    localToColor = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+    localToGroup = new HashMap<Local, Object>(body.getLocalCount() * 2 + 1, 0.7f);
+    groupToColorCount = new HashMap<Object, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+    localToColor = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
     // Assign each local to a group, and set that group's color count to 0.
     for (Local l : body.getLocals()) {

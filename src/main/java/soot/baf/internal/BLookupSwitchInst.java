@@ -10,12 +10,12 @@ package soot.baf.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,6 +30,7 @@ import soot.Unit;
 import soot.UnitPrinter;
 import soot.baf.InstSwitch;
 import soot.baf.LookupSwitchInst;
+import soot.jimple.Constant;
 import soot.jimple.IntConstant;
 import soot.util.Switch;
 
@@ -49,7 +50,7 @@ public class BLookupSwitchInst extends AbstractSwitchInst implements LookupSwitc
 
   @Override
   public void setLookupValues(List<IntConstant> lookupValues) {
-    this.lookupValues = new ArrayList<>(lookupValues);
+    this.lookupValues = new ArrayList<IntConstant>(lookupValues);
   }
 
   @Override
@@ -101,7 +102,7 @@ public class BLookupSwitchInst extends AbstractSwitchInst implements LookupSwitc
 
     for (int i = 0; i < lookupValues.size(); i++) {
       up.literal("    case ");
-      up.constant(lookupValues.get(i));
+      up.constant((Constant) lookupValues.get(i));
       up.literal(": goto ");
       targetBoxes[i].toString(up);
       up.literal(";");

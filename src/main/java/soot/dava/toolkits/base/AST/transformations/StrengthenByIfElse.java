@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -45,23 +45,23 @@ import soot.jimple.Stmt;
  Nomair A. Naeem 18-FEB-2005
 
  PATTERN ONE:
- label_1:
+ label_1:                                                 
  while(cond1){                       label_1:
  if(cond2){                      while(cond1 && cond2){
  Body 1                              Body1
  }                               }
- else{
+ else{                           
  break label_1
  }
- }
+ }                 
 
  The important thing is that Body2 should contain an abrupt
  edge out of the while loop. If Body2 is just a break and nothing
- else the body2 in the transformed version is empty
+ else the body2 in the transformed version is empty 
 
 
  PATTERN TWO:
- label_1:
+ label_1:                                                 
  while(true){                       label_1:
  if(cond2){                      while(cond2){
  Body 1                              Body1
@@ -69,7 +69,7 @@ import soot.jimple.Stmt;
  else{                           Body2
  Body 2
  }
- }
+ }                 
 
 
 
@@ -136,7 +136,7 @@ public class StrengthenByIfElse {
               if (newWhileNode == null) {
                 return null;
               }
-              List<ASTNode> toReturn = new ArrayList<>();
+              List<ASTNode> toReturn = new ArrayList<ASTNode>();
               toReturn.add(newWhileNode);
 
               // Add the statementSequenceNode AFTER the whileNode
@@ -146,7 +146,7 @@ public class StrengthenByIfElse {
                 // stmt
 
                 Iterator<AugmentedStmt> tempIt = statements.iterator();
-                List<AugmentedStmt> newStmts = new ArrayList<>();
+                List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>();
                 while (tempIt.hasNext()) {
                   AugmentedStmt tempStmt = tempIt.next();
                   if (tempIt.hasNext()) {
@@ -162,7 +162,12 @@ public class StrengthenByIfElse {
         } // end of break stmt
       } // stmt is an abrupt stmt
       else if (stmt instanceof ReturnStmt || stmt instanceof ReturnVoidStmt) {
-        if (!(loopNode instanceof ASTUnconditionalLoopNode) || stmtIt.hasNext()) {
+        if (!(loopNode instanceof ASTUnconditionalLoopNode)) {
+          // this pattern is only possible for while(true)
+          return null;
+        }
+
+        if (stmtIt.hasNext()) {
           // returns should come in the end
           return null;
         }
@@ -172,11 +177,11 @@ public class StrengthenByIfElse {
         if (newWhileNode == null) {
           return null;
         }
-        List<ASTNode> toReturn = new ArrayList<>();
+        List<ASTNode> toReturn = new ArrayList<ASTNode>();
         toReturn.add(newWhileNode);
 
         // Add the statementSequenceNode AFTER the whileNode
-        List<AugmentedStmt> newStmts = new ArrayList<>(statements);
+        List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>(statements);
         toReturn.add(new ASTStatementSequenceNode(newStmts));
         return toReturn;
       } // if stmt was a return stmt

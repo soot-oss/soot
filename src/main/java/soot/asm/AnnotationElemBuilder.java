@@ -10,12 +10,12 @@ package soot.asm;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,11 +23,9 @@ package soot.asm;
  */
 
 import java.util.ArrayList;
-
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationClassElem;
@@ -42,7 +40,7 @@ import soot.tagkit.AnnotationTag;
 
 /**
  * Annotation element builder.
- *
+ * 
  * @author Aaloan Miftah
  */
 abstract class AnnotationElemBuilder extends AnnotationVisitor {
@@ -51,7 +49,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 
   AnnotationElemBuilder(int expected) {
     super(Opcodes.ASM5);
-    this.elems = new ArrayList<>(expected);
+    this.elems = new ArrayList<AnnotationElem>(expected);
   }
 
   AnnotationElemBuilder() {
@@ -82,7 +80,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
       Type t = (Type) value;
       elem = new AnnotationClassElem(t.getDescriptor(), 'c', name);
     } else if (value.getClass().isArray()) {
-      ArrayList<AnnotationElem> annotationArray = new ArrayList<>();
+      ArrayList<AnnotationElem> annotationArray = new ArrayList<AnnotationElem>();
       if (value instanceof byte[]) {
         for (Object element : (byte[]) value) {
           annotationArray.add(getAnnotationElement(name, element));

@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -58,10 +58,10 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
     // "] Finding Dominators...");
 
     this.graph = graph;
-    this.nodeToDominators = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    this.nodeToDominators = new HashMap<N, FlowSet<N>>(graph.size() * 2 + 1, 0.7f);
 
     // build node to dominators map
-    SimpleDominatorsAnalysis<N> analysis = new SimpleDominatorsAnalysis<>(graph);
+    SimpleDominatorsAnalysis<N> analysis = new SimpleDominatorsAnalysis<N>(graph);
     for (N node : graph) {
       this.nodeToDominators.put(node, analysis.getFlowAfter(node));
     }
@@ -137,11 +137,11 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
     super(graph);
 
     // define empty set, with proper universe for complementation
-    List<N> nodes = new ArrayList<>(graph.size());
+    List<N> nodes = new ArrayList<N>(graph.size());
     for (N n : graph) {
       nodes.add(n);
     }
-    this.emptySet = new ArrayPackedSet<>(new CollectionFlowUniverse<>(nodes));
+    this.emptySet = new ArrayPackedSet<N>(new CollectionFlowUniverse<N>(nodes));
 
     this.fullSet = (BoundedFlowSet<N>) emptySet.clone();
     this.fullSet.complement();

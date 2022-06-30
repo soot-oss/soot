@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,8 +35,8 @@ import soot.toolkits.scalar.FlowSet;
 // SETS OF Units that are post-dominators => Use ArraySparseSet.
 //
 // STEP 2: Precisely define what we are computing.
-// For each statement compute the set of stmts that post-dominate it
-//
+// For each statement compute the set of stmts that post-dominate it 
+// 
 // STEP 3: Decide whether it is a backwards or forwards analysis.
 // FORWARDS
 //
@@ -61,7 +61,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Un
   }
 
   private void initAllNodes() {
-    allNodes = new ArraySparseSet<>();
+    allNodes = new ArraySparseSet<Unit>();
     Iterator<Unit> it = g.iterator();
     while (it.hasNext()) {
       allNodes.add(it.next());
@@ -136,7 +136,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Un
   @Override
   protected FlowSet<Unit> entryInitialFlow() {
 
-    FlowSet<Unit> fs = new ArraySparseSet<>();
+    FlowSet<Unit> fs = new ArraySparseSet<Unit>();
     List<Unit> tails = g.getTails();
     // if (tails.size() != 1) {
     // throw new RuntimeException("Expect one end node only.");

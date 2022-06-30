@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -135,7 +135,7 @@ class ArrayBoundsCheckerAnalysis {
     if (arrayin) {
       if (rectarray) {
         this.multiarraylocals = ailanalysis.getMultiArrayLocals();
-        this.rectarrayset = new HashSet<>();
+        this.rectarrayset = new HashSet<Local>();
 
         RectangularArrayFinder pgbuilder = RectangularArrayFinder.v();
 
@@ -162,9 +162,9 @@ class ArrayBoundsCheckerAnalysis {
 
     this.graph = new ArrayRefBlockGraph(body);
 
-    blockToBeforeFlow = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    blockToBeforeFlow = new HashMap<Block, WeightedDirectedSparseGraph>(graph.size() * 2 + 1, 0.7f);
 
-    edgeMap = new HashMap<>(graph.size() * 2 + 1, 0.7f);
+    edgeMap = new HashMap<FlowGraphEdge, WeightedDirectedSparseGraph>(graph.size() * 2 + 1, 0.7f);
 
     edgeSet = buildEdgeSet(graph);
 
@@ -178,7 +178,7 @@ class ArrayBoundsCheckerAnalysis {
   }
 
   private void convertToUnitEntry() {
-    unitToBeforeFlow = new HashMap<>();
+    unitToBeforeFlow = new HashMap<Unit, WeightedDirectedSparseGraph>();
     Iterator<Block> blockIt = blockToBeforeFlow.keySet().iterator();
     while (blockIt.hasNext()) {
       Block block = blockIt.next();
@@ -191,7 +191,7 @@ class ArrayBoundsCheckerAnalysis {
    * buildEdgeSet creates a set of edges from directed graph.
    */
   public Set<FlowGraphEdge> buildEdgeSet(DirectedGraph<Block> dg) {
-    HashSet<FlowGraphEdge> edges = new HashSet<>();
+    HashSet<FlowGraphEdge> edges = new HashSet<FlowGraphEdge>();
 
     Iterator<Block> blockIt = dg.iterator();
     while (blockIt.hasNext()) {
@@ -297,7 +297,7 @@ class ArrayBoundsCheckerAnalysis {
     /*
      * If any output flow set has unknow value, it will be put in this set
      */
-    HashSet<Block> unvisitedNodes = new HashSet<>(graph.size() * 2 + 1, 0.7f);
+    HashSet<Block> unvisitedNodes = new HashSet<Block>(graph.size() * 2 + 1, 0.7f);
 
     /* adjust livelocals set */
     {
@@ -311,7 +311,7 @@ class ArrayBoundsCheckerAnalysis {
 
     /* Set initial values and nodes to visit. */
     {
-      stableRoundOfUnits = new HashMap<>();
+      stableRoundOfUnits = new HashMap<Block, Integer>();
 
       Iterator it = graph.iterator();
 
@@ -433,7 +433,8 @@ class ArrayBoundsCheckerAnalysis {
         }
 
         {
-          for (Object succ : changedSuccs) {
+          for (int i = 0; i < changedSuccs.size(); i++) {
+            Object succ = changedSuccs.get(i);
             if (!changedUnitsSet.contains(succ)) {
               changedUnits.add(succ);
               changedUnitsSet.add(succ);
@@ -461,7 +462,7 @@ class ArrayBoundsCheckerAnalysis {
    * Flow go through a node, the output will be put into edgeMap, and also the changed succ will be in a list to return back.
    */
   private List<Object> flowThrough(Object inValue, Object unit) {
-    ArrayList<Object> changedSuccs = new ArrayList<>();
+    ArrayList<Object> changedSuccs = new ArrayList<Object>();
 
     WeightedDirectedSparseGraph ingraph = (WeightedDirectedSparseGraph) inValue;
 
@@ -563,8 +564,8 @@ class ArrayBoundsCheckerAnalysis {
         if (strictness == 0) {
           Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
-          for (Object parameter : parameters) {
-            Value para = (Value) parameter;
+          for (int i = 0; i < parameters.size(); i++) {
+            Value para = (Value) parameters.get(i);
             Type type = para.getType();
             if (type instanceof RefType) {
               SootClass pclass = ((RefType) type).getSootClass();
@@ -616,8 +617,8 @@ class ArrayBoundsCheckerAnalysis {
           if (expr instanceof InstanceInvokeExpr) {
             killall = true;
           } else {
-            for (Object parameter : parameters) {
-              Value para = (Value) parameter;
+            for (int i = 0; i < parameters.size(); i++) {
+              Value para = (Value) parameters.get(i);
               if (para.getType() instanceof RefType) {
                 killall = true;
                 break;
@@ -773,8 +774,12 @@ class ArrayBoundsCheckerAnalysis {
       }
     }
 
+    if (!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) {
+      return;
+    }
+
     // i = i;
-    if ((!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) || rightOp.equals(leftOp)) {
+    if (rightOp.equals(leftOp)) {
       return;
     }
 
@@ -995,8 +1000,12 @@ class ArrayBoundsCheckerAnalysis {
     // take out the condition.
     Value cmpcond = ifstmt.getCondition();
 
+    if (!(cmpcond instanceof ConditionExpr)) {
+      return false;
+    }
+
     // how may succs?
-    if (!(cmpcond instanceof ConditionExpr) || (succs.size() != 2)) {
+    if (succs.size() != 2) {
       return false;
     }
 
@@ -1153,7 +1162,8 @@ class ArrayBoundsCheckerAnalysis {
 
     ingraph.makeShortestPathGraph();
 
-    for (Object next : succs) {
+    for (int i = 0; i < succs.size(); i++) {
+      Object next = succs.get(i);
       FlowGraphEdge nextEdge = new FlowGraphEdge(current, next);
 
       WeightedDirectedSparseGraph prevs = edgeMap.get(nextEdge);

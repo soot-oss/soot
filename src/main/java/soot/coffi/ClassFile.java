@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -193,7 +193,6 @@ public class ClassFile {
   }
 
   /** Returns the name of this Class. */
-  @Override
   public String toString() {
     return (constant_pool[this_class].toString(constant_pool));
   }
@@ -600,7 +599,7 @@ public class ClassFile {
           CONSTANT_Utf8_info cputf8 = new CONSTANT_Utf8_info(d);
           // If an equivalent CONSTANT_Utf8 already exists, we return
           // the pre-existing one and allow cputf8 to be GC'd.
-          cp = CONSTANT_Utf8_collector.v().add(cputf8);
+          cp = (cp_info) CONSTANT_Utf8_collector.v().add(cputf8);
           if (debug) {
             logger.debug("Constant pool[" + i + "]: Utf8 = \"" + cputf8.convert() + "\"");
           }
@@ -663,11 +662,11 @@ public class ClassFile {
       if (s.compareTo(attribute_info.SourceFile) == 0) {
         SourceFile_attribute sa = new SourceFile_attribute();
         sa.sourcefile_index = d.readUnsignedShort();
-        a = sa;
+        a = (attribute_info) sa;
       } else if (s.compareTo(attribute_info.ConstantValue) == 0) {
         ConstantValue_attribute ca = new ConstantValue_attribute();
         ca.constantvalue_index = d.readUnsignedShort();
-        a = ca;
+        a = (attribute_info) ca;
       } else if (s.compareTo(attribute_info.Code) == 0) {
         Code_attribute ca = new Code_attribute();
         ca.max_stack = d.readUnsignedShort();
@@ -690,7 +689,7 @@ public class ClassFile {
         ca.attributes_count = d.readUnsignedShort();
         ca.attributes = new attribute_info[ca.attributes_count];
         readAttributes(d, ca.attributes_count, ca.attributes);
-        a = ca;
+        a = (attribute_info) ca;
 
       } else if (s.compareTo(attribute_info.Exceptions) == 0) {
         Exception_attribute ea = new Exception_attribute();
@@ -702,7 +701,7 @@ public class ClassFile {
             ea.exception_index_table[k] = d.readUnsignedShort();
           }
         }
-        a = ea;
+        a = (attribute_info) ea;
       } else if (s.compareTo(attribute_info.LineNumberTable) == 0) {
         LineNumberTable_attribute la = new LineNumberTable_attribute();
         la.line_number_table_length = d.readUnsignedShort();
@@ -715,7 +714,7 @@ public class ClassFile {
           e.line_number = d.readUnsignedShort();
           la.line_number_table[k] = e;
         }
-        a = la;
+        a = (attribute_info) la;
       } else if (s.compareTo(attribute_info.LocalVariableTable) == 0) {
         LocalVariableTable_attribute la = new LocalVariableTable_attribute();
         la.local_variable_table_length = d.readUnsignedShort();
@@ -731,7 +730,7 @@ public class ClassFile {
           e.index = d.readUnsignedShort();
           la.local_variable_table[k] = e;
         }
-        a = la;
+        a = (attribute_info) la;
       } else if (s.compareTo(attribute_info.LocalVariableTypeTable) == 0) {
         LocalVariableTypeTable_attribute la = new LocalVariableTypeTable_attribute();
         la.local_variable_type_table_length = d.readUnsignedShort();
@@ -747,22 +746,22 @@ public class ClassFile {
           e.index = d.readUnsignedShort();
           la.local_variable_type_table[k] = e;
         }
-        a = la;
+        a = (attribute_info) la;
       } else if (s.compareTo(attribute_info.Synthetic) == 0) {
         Synthetic_attribute ia = new Synthetic_attribute();
-        a = ia;
+        a = (attribute_info) ia;
       } else if (s.compareTo(attribute_info.Signature) == 0) {
         Signature_attribute ia = new Signature_attribute();
         ia.signature_index = d.readUnsignedShort();
-        a = ia;
+        a = (attribute_info) ia;
       } else if (s.compareTo(attribute_info.Deprecated) == 0) {
         Deprecated_attribute da = new Deprecated_attribute();
-        a = da;
+        a = (attribute_info) da;
       } else if (s.compareTo(attribute_info.EnclosingMethod) == 0) {
         EnclosingMethod_attribute ea = new EnclosingMethod_attribute();
         ea.class_index = d.readUnsignedShort();
         ea.method_index = d.readUnsignedShort();
-        a = ea;
+        a = (attribute_info) ea;
       } else if (s.compareTo(attribute_info.InnerClasses) == 0) {
         InnerClasses_attribute ia = new InnerClasses_attribute();
         ia.inner_classes_length = d.readUnsignedShort();
@@ -775,7 +774,7 @@ public class ClassFile {
           e.access_flags = d.readUnsignedShort();
           ia.inner_classes[k] = e;
         }
-        a = ia;
+        a = (attribute_info) ia;
       } else if (s.compareTo(attribute_info.RuntimeVisibleAnnotations) == 0) {
         RuntimeVisibleAnnotations_attribute ra = new RuntimeVisibleAnnotations_attribute();
         ra.number_of_annotations = d.readUnsignedShort();
@@ -788,7 +787,7 @@ public class ClassFile {
           ra.annotations[k] = annot;
         }
 
-        a = ra;
+        a = (attribute_info) ra;
       } else if (s.compareTo(attribute_info.RuntimeInvisibleAnnotations) == 0) {
         RuntimeInvisibleAnnotations_attribute ra = new RuntimeInvisibleAnnotations_attribute();
         ra.number_of_annotations = d.readUnsignedShort();
@@ -800,7 +799,7 @@ public class ClassFile {
           annot.element_value_pairs = readElementValues(annot.num_element_value_pairs, d, true, 0);
           ra.annotations[k] = annot;
         }
-        a = ra;
+        a = (attribute_info) ra;
       } else if (s.compareTo(attribute_info.RuntimeVisibleParameterAnnotations) == 0) {
         RuntimeVisibleParameterAnnotations_attribute ra = new RuntimeVisibleParameterAnnotations_attribute();
         ra.num_parameters = d.readUnsignedByte();
@@ -818,7 +817,7 @@ public class ClassFile {
           }
           ra.parameter_annotations[x] = pAnnot;
         }
-        a = ra;
+        a = (attribute_info) ra;
       } else if (s.compareTo(attribute_info.RuntimeInvisibleParameterAnnotations) == 0) {
         RuntimeInvisibleParameterAnnotations_attribute ra = new RuntimeInvisibleParameterAnnotations_attribute();
         ra.num_parameters = d.readUnsignedByte();
@@ -836,12 +835,12 @@ public class ClassFile {
           }
           ra.parameter_annotations[x] = pAnnot;
         }
-        a = ra;
+        a = (attribute_info) ra;
       } else if (s.compareTo(attribute_info.AnnotationDefault) == 0) {
         AnnotationDefault_attribute da = new AnnotationDefault_attribute();
         element_value[] result = readElementValues(1, d, false, 0);
         da.default_value = result[0];
-        a = da;
+        a = (attribute_info) da;
       } else if (s.equals(attribute_info.BootstrapMethods)) {
         BootstrapMethods_attribute bsma = new BootstrapMethods_attribute();
         int count = d.readUnsignedShort();
@@ -867,7 +866,7 @@ public class ClassFile {
           ga.info = new byte[(int) len];
           readAllBytes(ga.info, d);
         }
-        a = ga;
+        a = (attribute_info) ga;
       }
       a.attribute_name = j;
       a.attribute_length = len;
@@ -1319,7 +1318,7 @@ public class ClassFile {
 
       if (inst instanceof Instruction_Unknown) {
         logger.debug("Unknown instruction in \"" + m.toName(constant_pool) + "\" at offset " + j);
-        logger.debug(" bytecode = " + (((inst.code)) & 0xff));
+        logger.debug(" bytecode = " + (((int) (inst.code)) & 0xff));
       }
       // logger.debug("before: " + j);
       j = inst.nextOffset(j);

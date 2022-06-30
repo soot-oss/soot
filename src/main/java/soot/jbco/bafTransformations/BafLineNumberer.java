@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,21 +40,17 @@ public class BafLineNumberer extends BodyTransformer implements IJbcoTransform {
 
   public static String name = "bb.jbco_bln";
 
-  @Override
   public void outputSummary() {
   }
 
-  @Override
   public String[] getDependencies() {
     return new String[] { name };
   }
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int idx = 0;
     PatchingChain<Unit> units = b.getUnits();
@@ -63,7 +59,7 @@ public class BafLineNumberer extends BodyTransformer implements IJbcoTransform {
       Inst i = (Inst) it.next();
       List<Tag> tags = i.getTags();
       for (int k = 0; k < tags.size(); k++) {
-        Tag t = tags.get(k);
+        Tag t = (Tag) tags.get(k);
         if (t instanceof LineNumberTag) {
           tags.remove(k);
           break;

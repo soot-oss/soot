@@ -10,12 +10,12 @@ package soot.jbco.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,7 +63,7 @@ public class BodyBuilder {
 
   public static boolean bodiesHaveBeenBuilt = false;
   public static boolean namesHaveBeenRetrieved = false;
-  public static List<String> nameList = new ArrayList<>();
+  public static List<String> nameList = new ArrayList<String>();
 
   public static void retrieveAllBodies() {
     if (bodiesHaveBeenBuilt) {
@@ -117,7 +117,7 @@ public class BodyBuilder {
 
   public static List<Local> buildParameterLocals(PatchingChain<Unit> units, Collection<Local> locals,
       List<Type> paramTypes) {
-    List<Local> args = new ArrayList<>();
+    List<Local> args = new ArrayList<Local>();
     for (int k = 0; k < paramTypes.size(); k++) {
       Type type = paramTypes.get(k);
       Local loc = Jimple.v().newLocal("l" + k, type);

@@ -10,12 +10,12 @@ package soot.baf.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,14 +60,14 @@ public class BDup1_x2Inst extends BDupInst implements Dup1_x2Inst {
 
   @Override
   public List<Type> getOpTypes() {
-    List<Type> res = new ArrayList<>();
+    List<Type> res = new ArrayList<Type>();
     res.add(mOpType);
     return res;
   }
 
   @Override
   public List<Type> getUnderTypes() {
-    List<Type> res = new ArrayList<>();
+    List<Type> res = new ArrayList<Type>();
     res.add(mUnder1Type);
     res.add(mUnder2Type);
     return res;

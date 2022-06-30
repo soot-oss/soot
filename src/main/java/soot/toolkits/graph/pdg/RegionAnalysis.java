@@ -10,12 +10,12 @@ package soot.toolkits.graph.pdg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -68,7 +68,7 @@ public class RegionAnalysis {
   protected UnitGraph m_reverseCFG;
   protected BlockGraph m_blockCFG;
   protected BlockGraph m_reverseBlockCFG;
-  protected Hashtable<Integer, Region> m_regions = new Hashtable<>();
+  protected Hashtable<Integer, Region> m_regions = new Hashtable<Integer, Region>();
   protected List<Region> m_regionsList = null;
   private int m_regCount = 0;
   private MHGDominatorTree<Block> m_dom;
@@ -110,11 +110,11 @@ public class RegionAnalysis {
       throw new RuntimeException("Unsupported CFG passed into the RegionAnalyis constructor!");
     }
 
-    this.m_dom = new MHGDominatorTree<>(new MHGDominatorsFinder<>(this.m_blockCFG));
+    this.m_dom = new MHGDominatorTree<Block>(new MHGDominatorsFinder<Block>(this.m_blockCFG));
 
     try {
 
-      this.m_pdom = new MHGDominatorTree<>(new MHGPostDominatorsFinder<>(m_blockCFG));
+      this.m_pdom = new MHGDominatorTree<Block>(new MHGPostDominatorsFinder<Block>(m_blockCFG));
 
       if (Options.v().verbose()) {
         logger.debug("[RegionAnalysis] PostDominator tree: ");
@@ -150,10 +150,10 @@ public class RegionAnalysis {
               "RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
         }
 
-        for (Block element : this.m_blockCFG.getTails()) {
+        for (int i = 0; i < this.m_blockCFG.getTails().size(); i++) {
           this.m_regCount++;
           this.m_regions.put(this.m_regCount, this.createRegion(this.m_regCount));
-          this.weakRegionDFS(element, this.m_regCount);
+          this.weakRegionDFS(this.m_blockCFG.getTails().get(i), this.m_regCount);
 
         }
         // throw new RuntimeException("RegionAnalysis: cannot properly deal with multi-headed and tailed CFG!");
@@ -184,7 +184,8 @@ public class RegionAnalysis {
       Block u2 = (parentOfV == null) ? null : parentOfV.getGode();
 
       List<DominatorNode<Block>> children = this.m_pdom.getChildrenOf(this.m_pdom.getDode(v));
-      for (DominatorNode<Block> w : children) {
+      for (int i = 0; i < children.size(); i++) {
+        DominatorNode<Block> w = children.get(i);
         Block u1 = w.getGode();
 
         if (u2 != null && u1.equals(u2)) {
@@ -218,7 +219,8 @@ public class RegionAnalysis {
     Block u2 = (parentOfV == null) ? null : parentOfV.getGode();
 
     List<DominatorNode<Block>> children = this.m_dom.getChildrenOf(this.m_dom.getDode(v));
-    for (DominatorNode<Block> w : children) {
+    for (int i = 0; i < children.size(); i++) {
+      DominatorNode<Block> w = children.get(i);
       Block u1 = w.getGode();
 
       if (u2 != null && u1.equals(u2)) {
@@ -234,7 +236,7 @@ public class RegionAnalysis {
 
   public List<Region> getRegions() {
     if (this.m_regionsList == null) {
-      this.m_regionsList = new ArrayList<>(this.m_regions.values());
+      this.m_regionsList = new ArrayList<Region>(this.m_regions.values());
     }
 
     return this.m_regionsList;
@@ -242,12 +244,14 @@ public class RegionAnalysis {
   }
 
   public Hashtable<Unit, Region> getUnit2RegionMap() {
-    Hashtable<Unit, Region> unit2region = new Hashtable<>();
+    Hashtable<Unit, Region> unit2region = new Hashtable<Unit, Region>();
     List<Region> regions = this.getRegions();
 
-    for (Region r : regions) {
+    for (Iterator<Region> itr = regions.iterator(); itr.hasNext();) {
+      Region r = itr.next();
       List<Unit> units = r.getUnits();
-      for (Unit u : units) {
+      for (Iterator<Unit> itr1 = units.iterator(); itr1.hasNext();) {
+        Unit u = itr1.next();
         unit2region.put(u, r);
 
       }
@@ -258,13 +262,15 @@ public class RegionAnalysis {
 
   public Hashtable<Block, Region> getBlock2RegionMap() {
     if (this.m_block2region == null) {
-      this.m_block2region = new Hashtable<>();
+      this.m_block2region = new Hashtable<Block, Region>();
 
       List<Region> regions = this.getRegions();
 
-      for (Region r : regions) {
+      for (Iterator<Region> itr = regions.iterator(); itr.hasNext();) {
+        Region r = itr.next();
         List<Block> blocks = r.getBlocks();
-        for (Block u : blocks) {
+        for (Iterator<Block> itr1 = blocks.iterator(); itr1.hasNext();) {
+          Block u = itr1.next();
           m_block2region.put(u, r);
 
         }
@@ -332,7 +338,8 @@ public class RegionAnalysis {
 
     if (blockDetail) {
       s += "Blocks Detail:";
-      for (Block node : cfg) {
+      for (Iterator<Block> it = cfg.iterator(); it.hasNext();) {
+        Block node = it.next();
         s += node + "\n";
       }
 

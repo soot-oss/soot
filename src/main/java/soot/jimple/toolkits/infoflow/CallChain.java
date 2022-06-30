@@ -11,12 +11,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -51,7 +51,7 @@ public class CallChain {
 
   // reconstructs the whole chain
   public List<Edge> getEdges() {
-    List<Edge> ret = new LinkedList<>();
+    List<Edge> ret = new LinkedList<Edge>();
     if (edge != null) {
       ret.add(edge);
     }
@@ -89,7 +89,6 @@ public class CallChain {
     return new CallChain(edge, next.cloneAndExtend(extension));
   }
 
-  @Override
   public Object clone() {
     if (next == null) {
       return new CallChain(edge, null);
@@ -98,7 +97,6 @@ public class CallChain {
     return new CallChain(edge, (CallChain) next.clone());
   }
 
-  @Override
   public boolean equals(Object o) {
     if (o instanceof CallChain) {
       CallChain other = (CallChain) o;

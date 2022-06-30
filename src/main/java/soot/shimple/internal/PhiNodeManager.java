@@ -10,12 +10,12 @@ package soot.shimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -96,8 +96,8 @@ public class PhiNodeManager {
   public boolean insertTrivialPhiNodes() {
     update();
 
-    this.varToBlocks = new HashMultiMap<>();
-    final Map<Local, List<Block>> localsToDefPoints = new LinkedHashMap<>();
+    this.varToBlocks = new HashMultiMap<Local, Block>();
+    final Map<Local, List<Block>> localsToDefPoints = new LinkedHashMap<Local, List<Block>>();
 
     // compute localsToDefPoints and varToBlocks
     for (Block block : cfg) {
@@ -108,7 +108,7 @@ public class PhiNodeManager {
             Local local = (Local) def;
             List<Block> def_points = localsToDefPoints.get(local);
             if (def_points == null) {
-              def_points = new ArrayList<>();
+              def_points = new ArrayList<Block>();
               localsToDefPoints.put(local, def_points);
             }
             def_points.add(block);
@@ -129,8 +129,8 @@ public class PhiNodeManager {
       /* Routine initialisations. */
       int iterCount = 0;
       int[] workFlags = new int[cfg.size()];
-      Stack<Block> workList = new Stack<>();
-      Map<Integer, Integer> has_already = new HashMap<>();
+      Stack<Block> workList = new Stack<Block>();
+      Map<Integer, Integer> has_already = new HashMap<Integer, Integer>();
       for (Block block : cfg) {
         has_already.put(block.getIndexInMethod(), 0);
       }
@@ -207,7 +207,7 @@ public class PhiNodeManager {
    * arguments and eliminate a huge number of copy statements when we get out of SSA form in the process.
    */
   public void trimExceptionalPhiNodes() {
-    Set<Unit> handlerUnits = new HashSet<>();
+    Set<Unit> handlerUnits = new HashSet<Unit>();
     for (Trap trap : body.getTraps()) {
       handlerUnits.add(trap.getHandlerUnit());
     }
@@ -234,7 +234,7 @@ public class PhiNodeManager {
      * A value may appear many times in an exceptional Phi. Hence, the same value may be associated with many UnitBoxes. We
      * build the MultiMap valueToPairs for convenience.
      */
-    MultiMap<Value, ValueUnitPair> valueToPairs = new HashMultiMap<>();
+    MultiMap<Value, ValueUnitPair> valueToPairs = new HashMultiMap<Value, ValueUnitPair>();
     for (ValueUnitPair argPair : phiExpr.getArgs()) {
       valueToPairs.put(argPair.getValue(), argPair);
     }
@@ -248,8 +248,8 @@ public class PhiNodeManager {
       // termination, the challengers list never does. This could
       // be optimised.
       Set<ValueUnitPair> pairsSet = valueToPairs.get(value);
-      List<ValueUnitPair> champs = new LinkedList<>(pairsSet);
-      List<ValueUnitPair> challengers = new LinkedList<>(pairsSet);
+      List<ValueUnitPair> champs = new LinkedList<ValueUnitPair>(pairsSet);
+      List<ValueUnitPair> challengers = new LinkedList<ValueUnitPair>(pairsSet);
 
       // champ is the currently assumed dominator
       ValueUnitPair champ = champs.remove(0);
@@ -365,7 +365,7 @@ public class PhiNodeManager {
     boolean addedNewLocals = false;
 
     // List of Phi nodes to be deleted.
-    List<Unit> phiNodes = new ArrayList<>();
+    List<Unit> phiNodes = new ArrayList<Unit>();
 
     // This stores the assignment statements equivalent to each
     // (and every) Phi. We use lists instead of a Map of
@@ -373,12 +373,12 @@ public class PhiNodeManager {
     // of the assignment statements, i.e. if a block has more than
     // one Phi expression, we prefer that the equivalent
     // assignments be placed in the same order as the Phi expressions.
-    List<AssignStmt> equivStmts = new ArrayList<>();
+    List<AssignStmt> equivStmts = new ArrayList<AssignStmt>();
 
     // Similarly, to preserve order, instead of directly storing
     // the pred, we store the pred box so that we follow the
     // pointers when SPatchingChain moves them.
-    List<ValueUnitPair> predBoxes = new ArrayList<>();
+    List<ValueUnitPair> predBoxes = new ArrayList<ValueUnitPair>();
 
     final Jimple jimp = Jimple.v();
     final Chain<Unit> units = body.getUnits();
@@ -446,7 +446,7 @@ public class PhiNodeManager {
    * Convenience function that maps units to blocks. Should probably be in BlockGraph.
    */
   public static Map<Unit, Block> getUnitToBlockMap(BlockGraph blocks) {
-    Map<Unit, Block> unitToBlock = new HashMap<>();
+    Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>();
     for (Block block : blocks) {
       for (Unit unit : block) {
         unitToBlock.put(unit, block);

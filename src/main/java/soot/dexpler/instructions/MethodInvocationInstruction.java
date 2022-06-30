@@ -15,12 +15,12 @@ package soot.dexpler.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -117,7 +117,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   @Override
   public Set<Type> introducedTypes() {
-    Set<Type> types = new HashSet<>();
+    Set<Type> types = new HashSet<Type>();
     MethodReference method = (MethodReference) (((ReferenceInstruction) instruction).getReference());
 
     types.add(DexType.toSoot(method.getDefiningClass()));
@@ -244,7 +244,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Return a SootMethodRef for the given MethodReference dependent on the InvocationType passed in.
-   *
+   * 
    * @param mItem
    *          The MethodReference included in the invoke instruction
    * @param kind
@@ -258,7 +258,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Return a SootMethodRef for the given data.
-   *
+   * 
    * @param sc
    *          The SootClass that the method is declared in
    * @param name
@@ -279,7 +279,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Return a SootFieldRef for the given data.
-   *
+   * 
    * @param mItem
    *          The FieldReference included in the invoke instruction
    * @param kind
@@ -292,7 +292,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Return a SootFieldRef for the given data.
-   *
+   * 
    * @param sc
    *          The SootClass that the field is declared in
    * @param name
@@ -310,13 +310,13 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Converts a list of dex string parameter types to soot types.
-   *
+   * 
    * @param paramTypes
    *          The dex parameter types
    * @return The soot parameter types
    */
   protected List<Type> convertParameterTypes(List<? extends CharSequence> paramTypes) {
-    List<Type> parameterTypes = new ArrayList<>();
+    List<Type> parameterTypes = new ArrayList<Type>();
     if (paramTypes != null) {
       for (CharSequence type : paramTypes) {
         parameterTypes.add(DexType.toSoot(type.toString()));
@@ -327,7 +327,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
   /**
    * Converts a given string class name into a SootClass.
-   *
+   * 
    * @param name
    *          The dex string representation of the class
    * @param kind
@@ -351,7 +351,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
   /**
    * Build the local parameters of the invocation. If a method is not static then its first register value is the invoking
    * object and will be skipped when constructing the local parameters.
-   *
+   * 
    * @param body
    *          the body to build for and into
    * @param paramTypes
@@ -361,7 +361,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    * @return the converted parameters
    */
   protected List<Local> buildParameters(DexBody body, List<? extends CharSequence> paramTypes, boolean isStatic) {
-    List<Local> parameters = new ArrayList<>();
+    List<Local> parameters = new ArrayList<Local>();
     List<Integer> regs = getUsedRegistersNums();
 
     // i: index for register

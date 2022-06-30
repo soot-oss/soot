@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,6 +32,7 @@ import polyglot.ast.New;
 import polyglot.ast.Node;
 import polyglot.types.ConstructorInstance;
 import polyglot.util.IdentityKey;
+
 import soot.FastHierarchy;
 import soot.SootClass;
 import soot.SootMethod;
@@ -64,7 +65,7 @@ public class InitialResolver implements IInitialResolver {
 
   public void addToAnonConstructorMap(polyglot.ast.New anonNew, polyglot.types.ConstructorInstance ci) {
     if (anonConstructorMap == null) {
-      anonConstructorMap = new HashMap<>();
+      anonConstructorMap = new HashMap<New, ConstructorInstance>();
     }
     anonConstructorMap.put(anonNew, ci);
   }
@@ -122,7 +123,6 @@ public class InitialResolver implements IInitialResolver {
   /**
    * Invokes polyglot and gets the AST for the source given in fullPath
    */
-  @Override
   public void formAst(String fullPath, List<String> locations, String className) {
 
     JavaToJimple jtj = new JavaToJimple();
@@ -161,7 +161,7 @@ public class InitialResolver implements IInitialResolver {
       polyglot.types.ClassType type = decl.type();
       if (type.flags().isInterface()) {
         if (interfacesList == null) {
-          interfacesList = new ArrayList<>();
+          interfacesList = new ArrayList<String>();
         }
         interfacesList.add(Util.getSootType(type).toString());
       }
@@ -174,7 +174,7 @@ public class InitialResolver implements IInitialResolver {
    */
   protected void addNameToAST(String name) {
     if (sootNameToAST == null) {
-      sootNameToAST = new HashMap<>();
+      sootNameToAST = new HashMap<String, Node>();
     }
     sootNameToAST.put(name, astNode);
   }
@@ -187,7 +187,6 @@ public class InitialResolver implements IInitialResolver {
   }
 
   // resolves all types and deals with .class literals and asserts
-  @Override
   public Dependencies resolveFromJavaFile(soot.SootClass sc) {
     Dependencies dependencies = new Dependencies();
     // conservatively load all to signatures
@@ -251,7 +250,7 @@ public class InitialResolver implements IInitialResolver {
       anonClassMap = new BiMap();
     }
     if (anonTypeMap == null) {
-      anonTypeMap = new HashMap<>();
+      anonTypeMap = new HashMap<IdentityKey, String>();
     }
     if (!anonClassMap.containsKey(nextNew)) {
       int nextAvailNum = 1;
@@ -291,7 +290,7 @@ public class InitialResolver implements IInitialResolver {
       localClassMap = new BiMap();
     }
     if (localTypeMap == null) {
-      localTypeMap = new HashMap<>();
+      localTypeMap = new HashMap<IdentityKey, String>();
     }
 
     if (!localClassMap.containsKey(lcd)) {
@@ -364,7 +363,7 @@ public class InitialResolver implements IInitialResolver {
   private void addToClassToSourceMap(String className, String sourceName) {
 
     if (classToSourceMap == null) {
-      classToSourceMap = new HashMap<>();
+      classToSourceMap = new HashMap<String, String>();
     }
     classToSourceMap.put(className, sourceName);
   }
@@ -405,7 +404,7 @@ public class InitialResolver implements IInitialResolver {
     // System.out.println("mcf locals used: "+mfc.typeToLocalsUsed());
     // System.out.println("mfc inners: "+mfc.inners());
     if (cCallList == null) {
-      cCallList = new ArrayList<>();
+      cCallList = new ArrayList<Node>();
     }
     cCallList.addAll(mfc.ccallList());
     // System.out.println("cCallList: "+cCallList);
@@ -431,7 +430,7 @@ public class InitialResolver implements IInitialResolver {
       }
     }
     if (finalLocalInfo == null) {
-      finalLocalInfo = new HashMap<>();
+      finalLocalInfo = new HashMap<IdentityKey, AnonLocalClassInfo>();
     }
     Iterator<IdentityKey> it = mfc.inners().iterator();
     while (it.hasNext()) {
@@ -439,7 +438,7 @@ public class InitialResolver implements IInitialResolver {
       polyglot.types.ClassType cType = (polyglot.types.ClassType) it.next().object();
       // do the comparison about locals avail and locals used here
       HashMap<IdentityKey, ArrayList<IdentityKey>> typeToLocalUsed = mfc.typeToLocalsUsed();
-      ArrayList<IdentityKey> localsUsed = new ArrayList<>();
+      ArrayList<IdentityKey> localsUsed = new ArrayList<IdentityKey>();
       if (typeToLocalUsed.containsKey(new polyglot.util.IdentityKey(cType))) {
         ArrayList localsNeeded = typeToLocalUsed.get(new polyglot.util.IdentityKey(cType));
         Iterator usesIt = localsNeeded.iterator();
@@ -547,7 +546,7 @@ public class InitialResolver implements IInitialResolver {
 
   public void addToPrivateFieldGetAccessMap(polyglot.ast.Field field, soot.SootMethod meth) {
     if (privateFieldGetAccessMap == null) {
-      privateFieldGetAccessMap = new HashMap<>();
+      privateFieldGetAccessMap = new HashMap<IdentityKey, SootMethod>();
     }
     privateFieldGetAccessMap.put(new polyglot.util.IdentityKey(field.fieldInstance()), meth);
   }
@@ -558,7 +557,7 @@ public class InitialResolver implements IInitialResolver {
 
   public void addToPrivateFieldSetAccessMap(polyglot.ast.Field field, soot.SootMethod meth) {
     if (privateFieldSetAccessMap == null) {
-      privateFieldSetAccessMap = new HashMap<>();
+      privateFieldSetAccessMap = new HashMap<IdentityKey, SootMethod>();
     }
     privateFieldSetAccessMap.put(new polyglot.util.IdentityKey(field.fieldInstance()), meth);
   }
@@ -569,7 +568,7 @@ public class InitialResolver implements IInitialResolver {
 
   public void addToPrivateMethodGetAccessMap(polyglot.ast.Call call, soot.SootMethod meth) {
     if (privateMethodGetAccessMap == null) {
-      privateMethodGetAccessMap = new HashMap<>();
+      privateMethodGetAccessMap = new HashMap<IdentityKey, SootMethod>();
     }
     privateMethodGetAccessMap.put(new polyglot.util.IdentityKey(call.methodInstance()), meth);
   }

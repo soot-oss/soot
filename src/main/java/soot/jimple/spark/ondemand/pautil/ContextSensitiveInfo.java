@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.pautil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -65,36 +65,36 @@ public class ContextSensitiveInfo {
    * assignment edges, but properly handling multiple calls to a method VarNode -> ArraySet[AssignEdge]
    */
   private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignEdges
-      = new ArraySetMultiMap<>();
+      = new ArraySetMultiMap<VarNode, AssignEdge>();
 
   private final ArraySetMultiMap<VarNode, AssignEdge> contextSensitiveAssignBarEdges
-      = new ArraySetMultiMap<>();
+      = new ArraySetMultiMap<VarNode, AssignEdge>();
 
   /**
    * nodes in each method
    */
-  private final ArraySetMultiMap<SootMethod, VarNode> methodToNodes = new ArraySetMultiMap<>();
+  private final ArraySetMultiMap<SootMethod, VarNode> methodToNodes = new ArraySetMultiMap<SootMethod, VarNode>();
 
-  private final ArraySetMultiMap<SootMethod, VarNode> methodToOutPorts = new ArraySetMultiMap<>();
+  private final ArraySetMultiMap<SootMethod, VarNode> methodToOutPorts = new ArraySetMultiMap<SootMethod, VarNode>();
 
-  private final ArraySetMultiMap<SootMethod, VarNode> methodToInPorts = new ArraySetMultiMap<>();
+  private final ArraySetMultiMap<SootMethod, VarNode> methodToInPorts = new ArraySetMultiMap<SootMethod, VarNode>();
 
-  private final ArraySetMultiMap<SootMethod, Integer> callSitesInMethod = new ArraySetMultiMap<>();
+  private final ArraySetMultiMap<SootMethod, Integer> callSitesInMethod = new ArraySetMultiMap<SootMethod, Integer>();
 
-  private final ArraySetMultiMap<SootMethod, Integer> callSitesInvokingMethod = new ArraySetMultiMap<>();
+  private final ArraySetMultiMap<SootMethod, Integer> callSitesInvokingMethod = new ArraySetMultiMap<SootMethod, Integer>();
 
-  private final ArraySetMultiMap<Integer, SootMethod> callSiteToTargets = new ArraySetMultiMap<>();
+  private final ArraySetMultiMap<Integer, SootMethod> callSiteToTargets = new ArraySetMultiMap<Integer, SootMethod>();
 
-  private final ArraySetMultiMap<Integer, AssignEdge> callSiteToEdges = new ArraySetMultiMap<>();
+  private final ArraySetMultiMap<Integer, AssignEdge> callSiteToEdges = new ArraySetMultiMap<Integer, AssignEdge>();
 
-  private final Map<Integer, LocalVarNode> virtCallSiteToReceiver = new HashMap<>();
+  private final Map<Integer, LocalVarNode> virtCallSiteToReceiver = new HashMap<Integer, LocalVarNode>();
 
-  private final Map<Integer, SootMethod> callSiteToInvokedMethod = new HashMap<>();
+  private final Map<Integer, SootMethod> callSiteToInvokedMethod = new HashMap<Integer, SootMethod>();
 
-  private final Map<Integer, SootMethod> callSiteToInvokingMethod = new HashMap<>();
+  private final Map<Integer, SootMethod> callSiteToInvokingMethod = new HashMap<Integer, SootMethod>();
 
   private final ArraySetMultiMap<LocalVarNode, Integer> receiverToVirtCallSites
-      = new ArraySetMultiMap<>();
+      = new ArraySetMultiMap<LocalVarNode, Integer>();
 
   /**
    *
@@ -126,8 +126,8 @@ public class ContextSensitiveInfo {
       }
       boolean sourceGlobal = assignSource instanceof GlobalVarNode;
       Node[] assignTargets = pag.simpleLookup(assignSource);
-      for (Node assignTarget2 : assignTargets) {
-        VarNode assignTarget = (VarNode) assignTarget2;
+      for (int i = 0; i < assignTargets.length; i++) {
+        VarNode assignTarget = (VarNode) assignTargets[i];
         if (skipNode(assignTarget)) {
           continue;
         }

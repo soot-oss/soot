@@ -1,10 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -15,31 +10,29 @@ import java.util.Map;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.Body;
-import soot.Local;
-import soot.Scene;
-import soot.SootClass;
-import soot.Trap;
-import soot.Unit;
-import soot.Value;
+
+import soot.*;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
-import soot.jimple.GotoStmt;
-import soot.jimple.Jimple;
-import soot.jimple.NopStmt;
+import soot.jimple.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -97,18 +90,16 @@ public class CilTryCatchInstruction extends AbstractCilnstruction {
             CatchHandlerBody handler = new CatchHandlerBody(exceptionVar, handlerMsg, dotnetBody, tryContainerBlock, exceptionIdentityStmt, nopsToReplaceWithGoto);
             handlersList.add(handler);
 
-            if (handlerMsg.getVariable().getType().getFullname().equals(DotnetBasicTypes.SYSTEM_EXCEPTION)) {
-              systemExceptionHandler = handler;
-            }
+            if (handlerMsg.getVariable().getType().getFullname().equals(DotnetBasicTypes.SYSTEM_EXCEPTION))
+                systemExceptionHandler = handler;
         }
 
         for (CatchHandlerBody handlerBody : handlersList) {
             Body body = handlerBody.getBody();
             if (handlerBody == systemExceptionHandler) {
                 Map<Trap, Unit> tmpTrapEnds = new HashMap<>();
-                for (Trap trap : body.getTraps()) {
-                  tmpTrapEnds.put(trap, trap.getEndUnit());
-                }
+                for (Trap trap : body.getTraps())
+                    tmpTrapEnds.put(trap, trap.getEndUnit());
                 for (CatchFilterHandlerBody filterHandler : handlersWithFilterList) {
                     Local eVar = systemExceptionHandler.getExceptionVariable();
                     Body filterHandlerBody = filterHandler.getFilterHandlerBody(eVar);
@@ -116,20 +107,18 @@ public class CilTryCatchInstruction extends AbstractCilnstruction {
                     body.getUnits().insertAfter(filterHandlerBody.getUnits(), body.getUnits().getFirst());
                     body.getTraps().addAll(filterHandlerBody.getTraps());
                 }
-                for (Map.Entry<Trap, Unit> trapMap : tmpTrapEnds.entrySet()) {
-                  trapMap.getKey().setEndUnit(trapMap.getValue());
-                }
+                for (Map.Entry<Trap, Unit> trapMap : tmpTrapEnds.entrySet())
+                    trapMap.getKey().setEndUnit(trapMap.getValue());
             }
             jb.getUnits().addAll(body.getUnits());
             jb.getTraps().addAll(body.getTraps());
         }
 
         // If System.Exception catch not declared, add this trap, if any other exception then declared one was thrown
-        if (systemExceptionHandler == null) {
-          jb.getTraps().add(Jimple.v().newTrap(exceptionClass,
-                  tryContainerBlock.getUnits().getFirst(), tryContainerBlock.getUnits().getLast(),
-                  exceptionIdentityStmt));
-        }
+        if (systemExceptionHandler == null)
+            jb.getTraps().add(Jimple.v().newTrap(exceptionClass,
+                    tryContainerBlock.getUnits().getFirst(), tryContainerBlock.getUnits().getLast(),
+                    exceptionIdentityStmt));
 
 
         //--- add boilerplate code (uncaught exceptions in catch) to jimple body: add identity and throw stmt

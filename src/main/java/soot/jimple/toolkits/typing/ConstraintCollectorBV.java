@@ -10,12 +10,12 @@ package soot.jimple.toolkits.typing;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -25,19 +25,7 @@ package soot.jimple.toolkits.typing;
 import java.util.Iterator;
 import java.util.List;
 
-import soot.ArrayType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.Local;
-import soot.LongType;
-import soot.NullType;
-import soot.RefType;
-import soot.Scene;
-import soot.SootMethodRef;
-import soot.TrapManager;
-import soot.Type;
-import soot.Value;
+import soot.*;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -223,17 +211,14 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseBreakpointStmt(BreakpointStmt stmt) {
     // Do nothing
   }
 
-  @Override
   public void caseInvokeStmt(InvokeStmt stmt) {
     handleInvokeExpr(stmt.getInvokeExpr());
   }
 
-  @Override
   public void caseAssignStmt(AssignStmt stmt) {
     Value l = stmt.getLeftOp();
     Value r = stmt.getRightOp();
@@ -491,7 +476,6 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseIdentityStmt(IdentityStmt stmt) {
     Value l = stmt.getLeftOp();
     Value r = stmt.getRightOp();
@@ -519,7 +503,6 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
     if (uses) {
       if (stmt.getOp() instanceof Local) {
@@ -530,7 +513,6 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
     if (uses) {
       if (stmt.getOp() instanceof Local) {
@@ -541,11 +523,9 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseGotoStmt(GotoStmt stmt) {
   }
 
-  @Override
   public void caseIfStmt(IfStmt stmt) {
     if (uses) {
       ConditionExpr cond = (ConditionExpr) stmt.getCondition();
@@ -605,7 +585,6 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
     if (uses) {
       Value key = stmt.getKey();
@@ -616,11 +595,9 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseNopStmt(NopStmt stmt) {
   }
 
-  @Override
   public void caseReturnStmt(ReturnStmt stmt) {
     if (uses) {
       if (stmt.getOp() instanceof Local) {
@@ -629,11 +606,9 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
   }
 
-  @Override
   public void caseTableSwitchStmt(TableSwitchStmt stmt) {
     if (uses) {
       Value key = stmt.getKey();
@@ -644,7 +619,6 @@ class ConstraintCollectorBV extends AbstractStmtSwitch {
     }
   }
 
-  @Override
   public void caseThrowStmt(ThrowStmt stmt) {
     if (uses) {
       if (stmt.getOp() instanceof Local) {

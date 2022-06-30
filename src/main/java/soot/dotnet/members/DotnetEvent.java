@@ -10,12 +10,12 @@ package soot.dotnet.members;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -54,18 +54,15 @@ public class DotnetEvent extends AbstractDotnetMember {
   }
 
   private void initDotnetMethods() {
-    if (getCanAdd() && protoEvent.hasAddAccessorMethod()) {
+    if (getCanAdd() && protoEvent.hasAddAccessorMethod())
       this.addAccessorMethod
           = new DotnetMethod(protoEvent.getAddAccessorMethod(), declaringClass, DotnetMethod.DotnetMethodType.EVENT);
-    }
-    if (getCanInvoke() && protoEvent.hasInvokeAccessorMethod()) {
+    if (getCanInvoke() && protoEvent.hasInvokeAccessorMethod())
       this.invokeAccessorMethod
           = new DotnetMethod(protoEvent.getInvokeAccessorMethod(), declaringClass, DotnetMethod.DotnetMethodType.EVENT);
-    }
-    if (getCanRemove() && protoEvent.hasRemoveAccessorMethod()) {
+    if (getCanRemove() && protoEvent.hasRemoveAccessorMethod())
       this.removeAccessorMethod
           = new DotnetMethod(protoEvent.getRemoveAccessorMethod(), declaringClass, DotnetMethod.DotnetMethodType.EVENT);
-    }
   }
 
   public enum EventDirective {
@@ -85,23 +82,20 @@ public class DotnetEvent extends AbstractDotnetMember {
   }
 
   public SootMethod makeSootMethodAdd() {
-    if (!getCanAdd() || !protoEvent.hasAddAccessorMethod()) {
+    if (!getCanAdd() || !protoEvent.hasAddAccessorMethod())
       return null;
-    }
     return addAccessorMethod.toSootMethod(createMethodSource(EventDirective.ADD));
   }
 
   public SootMethod makeSootMethodInvoke() {
-    if (!getCanInvoke() || !protoEvent.hasInvokeAccessorMethod()) {
+    if (!getCanInvoke() || !protoEvent.hasInvokeAccessorMethod())
       return null;
-    }
     return invokeAccessorMethod.toSootMethod(createMethodSource(EventDirective.INVOKE));
   }
 
   public SootMethod makeSootMethodRemove() {
-    if (!getCanRemove() || !protoEvent.hasRemoveAccessorMethod()) {
+    if (!getCanRemove() || !protoEvent.hasRemoveAccessorMethod())
       return null;
-    }
     return removeAccessorMethod.toSootMethod(createMethodSource(EventDirective.REMOVE));
   }
 

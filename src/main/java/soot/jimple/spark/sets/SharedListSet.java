@@ -10,12 +10,12 @@ package soot.jimple.spark.sets;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -79,14 +79,12 @@ public class SharedListSet extends PointsToSetInternal {
   // used to construct SharedHybridSets
   public final static P2SetFactory getFactory() {
     return new P2SetFactory() {
-      @Override
       public final PointsToSetInternal newSet(Type type, PAG pag) {
         return new SharedListSet(type, pag);
       }
     };
   }
 
-  @Override
   public boolean contains(Node n) {
     for (ListNode i = data; i != null; i = i.next) {
       if (i.elem == n) {
@@ -96,12 +94,10 @@ public class SharedListSet extends PointsToSetInternal {
     return false;
   }
 
-  @Override
   public boolean isEmpty() {
     return data == null;
   }
 
-  @Override
   public boolean forall(P2SetVisitor v) {
     for (ListNode i = data; i != null; i = i.next) {
       v.visit(i.elem);
@@ -214,7 +210,6 @@ public class SharedListSet extends PointsToSetInternal {
     }
   }
 
-  @Override
   public boolean add(Node n) {
 
     // Prevent repeated code by saying add() is just a union() with one element in the
@@ -230,7 +225,6 @@ public class SharedListSet extends PointsToSetInternal {
     return added;
   }
 
-  @Override
   public boolean addAll(PointsToSetInternal other, PointsToSetInternal exclude) {
     if (other == null) {
       return false;
@@ -259,7 +253,6 @@ public class SharedListSet extends PointsToSetInternal {
       this.second = second;
     }
 
-    @Override
     public int hashCode() {
       // I don't think the Node will ever be null
       if (second == null) {
@@ -269,7 +262,6 @@ public class SharedListSet extends PointsToSetInternal {
       }
     }
 
-    @Override
     public boolean equals(Object other) {
       if (!(other instanceof Pair)) {
         return false;

@@ -10,12 +10,12 @@ package soot.shimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,7 +56,7 @@ import soot.toolkits.scalar.UnitValueBoxPair;
 public class ShimpleLocalUses implements LocalUses {
   private static final Logger logger = LoggerFactory.getLogger(ShimpleLocalUses.class);
 
-  protected Map<Local, List<UnitValueBoxPair>> localToUses = new HashMap<>();
+  protected Map<Local, List<UnitValueBoxPair>> localToUses = new HashMap<Local, List<UnitValueBoxPair>>();
 
   /**
    * Build a LocalUses interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not
@@ -82,7 +82,7 @@ public class ShimpleLocalUses implements LocalUses {
       for (ValueBox box : unit.getUseBoxes()) {
         Value value = box.getValue();
         if (value instanceof Local) {
-          localToUsesRef.get(value).add(new UnitValueBoxPair(unit, box));
+          localToUsesRef.get((Local) value).add(new UnitValueBoxPair(unit, box));
         }
       }
     }
@@ -119,7 +119,7 @@ public class ShimpleLocalUses implements LocalUses {
         }
       default:
         logger.warn("Unit has multiple definition boxes?");
-        List<UnitValueBoxPair> usesList = new ArrayList<>();
+        List<UnitValueBoxPair> usesList = new ArrayList<UnitValueBoxPair>();
         for (ValueBox next : defBoxes) {
           Value def = next.getValue();
           if (def instanceof Local) {

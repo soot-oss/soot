@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,7 +41,7 @@ import soot.util.Chain;
 
 /**
  * @author Michael Batchelder
- *
+ * 
  *         Created on 24-May-2006
  */
 public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransform {
@@ -50,24 +50,20 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
 
   public static String dependancies[] = new String[] { "bb.jbco_ptss", "bb.jbco_ful", "bb.lp" };
 
-  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_ptss";
 
-  @Override
   public String getName() {
     return name;
   }
 
-  @Override
   public void outputSummary() {
     out.println("Switches wrapped in Tries: " + totaltraps);
   }
 
-  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) {
@@ -80,7 +76,7 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
     PatchingChain<Unit> units = b.getUnits();
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
-      Unit u = it.next();
+      Unit u = (Unit) it.next();
       if (u instanceof TableSwitchInst) {
         TableSwitchInst twi = (TableSwitchInst) u;
 
@@ -88,7 +84,7 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
           if (handler == null) {
             Iterator<Unit> uit = units.snapshotIterator();
             while (uit.hasNext()) {
-              Unit uthrow = uit.next();
+              Unit uthrow = (Unit) uit.next();
               if (uthrow instanceof ThrowInst && !BodyBuilder.isExceptionCaughtAt(units, uthrow, traps.iterator())) {
                 handler = uthrow;
                 break;
@@ -102,7 +98,7 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
           }
 
           int size = 4;
-          Unit succ = units.getSuccOf(twi);
+          Unit succ = (Unit) units.getSuccOf(twi);
           while (!BodyBuilder.isExceptionCaughtAt(units, succ, traps.iterator()) && size-- > 0) {
             Object o = units.getSuccOf(succ);
             if (o != null) {

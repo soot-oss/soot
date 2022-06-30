@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.genericutil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,7 +30,6 @@ import java.util.NoSuchElementException;
 public class ArraySet<T> extends AbstractSet<T> {
 
   private static final ArraySet EMPTY = new ArraySet<Object>(0, true) {
-    @Override
     public boolean add(Object obj_) {
       throw new RuntimeException();
     }
@@ -38,7 +37,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   @SuppressWarnings("all")
   public static final <T> ArraySet<T> empty() {
-    return EMPTY;
+    return (ArraySet<T>) EMPTY;
   }
 
   private T[] _elems;
@@ -73,10 +72,9 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.AAASet#add(java.lang.Object)
    */
-  @Override
   @SuppressWarnings("all")
   public boolean add(T obj_) {
     assert obj_ != null;
@@ -105,10 +103,9 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.AAASet#contains(java.lang.Object)
    */
-  @Override
   public boolean contains(Object obj_) {
     for (int i = 0; i < _curIndex; i++) {
       if (_elems[i].equals(obj_)) {
@@ -129,7 +126,7 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.AAASet#forall(AAA.util.ObjectVisitor)
    */
   public void forall(ObjectVisitor<T> visitor_) {
@@ -138,7 +135,6 @@ public class ArraySet<T> extends AbstractSet<T> {
     }
   }
 
-  @Override
   public int size() {
     return _curIndex;
   }
@@ -147,7 +143,6 @@ public class ArraySet<T> extends AbstractSet<T> {
     return _elems[i];
   }
 
-  @Override
   public boolean remove(Object obj_) {
     int ind;
     for (ind = 0; ind < _curIndex && !_elems[ind].equals(obj_); ind++) {
@@ -170,17 +165,14 @@ public class ArraySet<T> extends AbstractSet<T> {
     return true;
   }
 
-  @Override
   public void clear() {
     _curIndex = 0;
   }
 
-  @Override
   public boolean isEmpty() {
     return size() == 0;
   }
 
-  @Override
   public String toString() {
     StringBuffer ret = new StringBuffer();
     ret.append('[');
@@ -196,20 +188,18 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see java.util.Set#toArray()
    */
-  @Override
   public Object[] toArray() {
     throw new UnsupportedOperationException();
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see java.util.Set#addAll(java.util.Collection)
    */
-  @Override
   public boolean addAll(Collection<? extends T> c) {
     boolean ret = false;
     for (T element : c) {
@@ -221,20 +211,18 @@ public class ArraySet<T> extends AbstractSet<T> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see java.util.Set#iterator()
    */
-  @Override
   public Iterator<T> iterator() {
     return new ArraySetIterator();
   }
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see java.util.Set#toArray(java.lang.Object[])
    */
-  @Override
   @SuppressWarnings("unchecked")
   public <U> U[] toArray(U[] a) {
     for (int i = 0; i < _curIndex; i++) {
@@ -254,37 +242,34 @@ public class ArraySet<T> extends AbstractSet<T> {
     final int setSize = size();
 
     /**
-     *
+     * 
      */
     public ArraySetIterator() {
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see java.util.Iterator#remove()
      */
-    @Override
     public void remove() {
       throw new UnsupportedOperationException();
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see java.util.Iterator#hasNext()
      */
-    @Override
     public boolean hasNext() {
       return ind < setSize;
     }
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see java.util.Iterator#next()
      */
-    @Override
     public T next() {
       if (ind >= setSize) {
         throw new NoSuchElementException();

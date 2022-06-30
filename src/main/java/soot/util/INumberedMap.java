@@ -12,12 +12,12 @@ import java.util.Iterator;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,7 +26,7 @@ import java.util.Iterator;
 
 /**
  * Common interface for numbered maps
- *
+ * 
  * @author Steven Arzt
  *
  * @param <K>
@@ -38,7 +38,7 @@ public interface INumberedMap<K extends Numberable, V> {
 
   /**
    * Associates a value with a key.
-   *
+   * 
    * @param key
    *          The key
    * @param value
@@ -49,7 +49,7 @@ public interface INumberedMap<K extends Numberable, V> {
 
   /**
    * Returns the value associated with a given key.
-   *
+   * 
    * @param key
    *          The key
    * @return The value associated with the given key
@@ -58,14 +58,14 @@ public interface INumberedMap<K extends Numberable, V> {
 
   /**
    * Returns an iterator over the keys with non-null values.
-   *
+   * 
    * @return The iterator
    */
   public Iterator<K> keyIterator();
 
   /**
    * Removes the given key from the map
-   *
+   * 
    * @param key
    *          The key to be removed
    */

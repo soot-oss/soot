@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -77,10 +77,10 @@ public class RectangularArrayFinder extends SceneTransformer {
     return G.v().soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder();
   }
 
-  private final ExtendedHashMutableDirectedGraph<Object> agraph = new ExtendedHashMutableDirectedGraph<>();
+  private final ExtendedHashMutableDirectedGraph<Object> agraph = new ExtendedHashMutableDirectedGraph<Object>();
 
-  private final Set<Object> falseSet = new HashSet<>();
-  private final Set<Object> trueSet = new HashSet<>();
+  private final Set<Object> falseSet = new HashSet<Object>();
+  private final Set<Object> trueSet = new HashSet<Object>();
   private CallGraph cg;
 
   @Override
@@ -97,7 +97,10 @@ public class RectangularArrayFinder extends SceneTransformer {
     for (SootClass c : sc.getApplicationClasses()) {
       for (Iterator<SootMethod> methodIt = c.methodIterator(); methodIt.hasNext();) {
         SootMethod method = methodIt.next();
-        if (!method.isConcrete() || !sc.getReachableMethods().contains(method)) {
+        if (!method.isConcrete()) {
+          continue;
+        }
+        if (!sc.getReachableMethods().contains(method)) {
           continue;
         }
 
@@ -129,7 +132,7 @@ public class RectangularArrayFinder extends SceneTransformer {
       List<Object> startNodes = agraph.getSuccsOf(BoolValue.v(false));
       falseSet.addAll(startNodes);
 
-      List<Object> changedNodeList = new ArrayList<>(startNodes);
+      List<Object> changedNodeList = new ArrayList<Object>(startNodes);
       while (!changedNodeList.isEmpty()) {
         Object node = changedNodeList.remove(0);
         for (Object succ : agraph.getSuccsOf(node)) {
@@ -143,7 +146,7 @@ public class RectangularArrayFinder extends SceneTransformer {
 
     /* propagate graph info from TRUE node then. */
     if (agraph.containsNode(BoolValue.v(true))) {
-      List<Object> changedNodeList = new ArrayList<>();
+      List<Object> changedNodeList = new ArrayList<Object>();
       for (Object node : agraph.getSuccsOf(BoolValue.v(true))) {
         if (!falseSet.contains(node)) {
           changedNodeList.add(node);
@@ -154,7 +157,10 @@ public class RectangularArrayFinder extends SceneTransformer {
       while (!changedNodeList.isEmpty()) {
         Object node = changedNodeList.remove(0);
         for (Object succ : agraph.getSuccsOf(node)) {
-          if (falseSet.contains(succ) || trueSet.contains(succ)) {
+          if (falseSet.contains(succ)) {
+            continue;
+          }
+          if (trueSet.contains(succ)) {
             continue;
           }
 
@@ -205,8 +211,8 @@ public class RectangularArrayFinder extends SceneTransformer {
 
     final Body body = method.getActiveBody();
 
-    Set<Object> tmpNode = new HashSet<>();
-    Set<Value> arrayLocal = new HashSet<>();
+    Set<Object> tmpNode = new HashSet<Object>();
+    Set<Value> arrayLocal = new HashSet<Value>();
 
     /* Collect the multi-array locals */
     for (Local local : body.getLocals()) {
@@ -221,7 +227,7 @@ public class RectangularArrayFinder extends SceneTransformer {
     }
 
     /* The method has a local graph. It will be merged to the whole graph after simplification. */
-    ExtendedHashMutableDirectedGraph<Object> ehmdg = new ExtendedHashMutableDirectedGraph<>();
+    ExtendedHashMutableDirectedGraph<Object> ehmdg = new ExtendedHashMutableDirectedGraph<Object>();
     for (Iterator<Unit> unitIt = body.getUnits().snapshotIterator(); unitIt.hasNext();) {
       Stmt s = (Stmt) unitIt.next();
 
@@ -317,7 +323,7 @@ public class RectangularArrayFinder extends SceneTransformer {
 
             boolean addEdge = true;
             if (ehmdg.containsNode(suspect)) {
-              Set<Object> neighbor = new HashSet<>();
+              Set<Object> neighbor = new HashSet<Object>();
               neighbor.addAll(ehmdg.getSuccsOf(suspect));
               neighbor.addAll(ehmdg.getSuccsOf(suspect));
 
@@ -416,7 +422,7 @@ public class RectangularArrayFinder extends SceneTransformer {
 
   private void recoverRectArray(final SootMethod method) {
     final Body body = method.getActiveBody();
-    HashSet<Value> malocal = new HashSet<>();
+    HashSet<Value> malocal = new HashSet<Value>();
     for (Local local : body.getLocals()) {
       Type type = local.getType();
       if (type instanceof ArrayType) {
@@ -431,8 +437,12 @@ public class RectangularArrayFinder extends SceneTransformer {
 
     Chain<Unit> units = body.getUnits();
     for (Stmt stmt = (Stmt) units.getFirst(); true;) {
+      if (stmt == null) {
+        break;
+      }
+
       /* only deal with the first block */
-      if ((stmt == null) || !stmt.fallsThrough()) {
+      if (!stmt.fallsThrough()) {
         break;
       }
 
@@ -494,7 +504,10 @@ public class RectangularArrayFinder extends SceneTransformer {
     int state = 1;
     while (true) {
       curstmt = (Stmt) units.getSuccOf(curstmt);
-      if ((curstmt == null) || !(curstmt instanceof AssignStmt)) {
+      if (curstmt == null) {
+        return -1;
+      }
+      if (!(curstmt instanceof AssignStmt)) {
         return -1;
       }
 
@@ -588,7 +601,7 @@ public class RectangularArrayFinder extends SceneTransformer {
     /* sequentially search and replace the sub dimension assignment */
     {
       /* change the first one, reset the right op */
-      List<Value> sizes = new ArrayList<>(2);
+      List<Value> sizes = new ArrayList<Value>(2);
       sizes.add(IntConstant.v(firstdim));
       sizes.add(IntConstant.v(seconddim));
       Value nmexpr = new JNewMultiArrayExpr((ArrayType) local.getType(), sizes);

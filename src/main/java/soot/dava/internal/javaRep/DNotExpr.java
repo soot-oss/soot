@@ -10,12 +10,12 @@ package soot.dava.internal.javaRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -45,24 +45,20 @@ public class DNotExpr extends AbstractUnopExpr {
     super(Grimp.v().newExprBox(op));
   }
 
-  @Override
   public Object clone() {
     return new DNotExpr(Grimp.cloneIfNecessary(getOpBox().getValue()));
   }
 
-  @Override
   public void toString(UnitPrinter up) {
     up.literal(" ! (");
     getOpBox().toString(up);
     up.literal(")");
   }
 
-  @Override
   public String toString() {
     return " ! (" + (getOpBox().getValue()).toString() + ")";
   }
 
-  @Override
   public Type getType() {
     Value op = getOpBox().getValue();
 
@@ -83,12 +79,10 @@ public class DNotExpr extends AbstractUnopExpr {
   /*
    * NOTE THIS IS AN EMPTY IMPLEMENTATION OF APPLY METHOD
    */
-  @Override
   public void apply(Switch sw) {
   }
 
   /** Compares the specified object with this one for structural equality. */
-  @Override
   public boolean equivTo(Object o) {
     if (o instanceof DNotExpr) {
       return getOpBox().getValue().equivTo(((DNotExpr) o).getOpBox().getValue());
@@ -97,7 +91,6 @@ public class DNotExpr extends AbstractUnopExpr {
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
-  @Override
   public int equivHashCode() {
     return getOpBox().getValue().equivHashCode();
   }

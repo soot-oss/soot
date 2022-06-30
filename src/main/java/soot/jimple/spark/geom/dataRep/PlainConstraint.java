@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.dataRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -32,7 +32,7 @@ import soot.util.Numberable;
 
 /**
  * The geometric encoding based constraint descriptor.
- *
+ * 
  * @author xiao
  *
  */
@@ -45,7 +45,7 @@ public class PlainConstraint implements Numberable {
   /** The type of this constraint, e.g. allocation, assignment or complex */
   public int type;
   /** The two pointers involved in this constraint */
-  public Pair<IVarAbstraction, IVarAbstraction> expr = new Pair<>();
+  public Pair<IVarAbstraction, IVarAbstraction> expr = new Pair<IVarAbstraction, IVarAbstraction>();
   /** Used in complex constraint. If this constraint is a store p.f = q, we say otherSide = q */
   public IVarAbstraction otherSide = null;
   /** Indicate the mapping relation between the two pointers, 1-1, 1-many, ... */

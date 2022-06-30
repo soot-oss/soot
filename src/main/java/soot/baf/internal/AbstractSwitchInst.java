@@ -10,12 +10,12 @@ package soot.baf.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -49,7 +49,7 @@ public abstract class AbstractSwitchInst extends AbstractInst implements SwitchI
     this.targetBoxes = tgts;
 
     // Build up 'unitBoxes'
-    List<UnitBox> unitBoxes = new ArrayList<>(numTargets + 1);
+    List<UnitBox> unitBoxes = new ArrayList<UnitBox>(numTargets + 1);
     for (UnitBox element : tgts) {
       unitBoxes.add(element);
     }
@@ -137,7 +137,7 @@ public abstract class AbstractSwitchInst extends AbstractInst implements SwitchI
 
   @Override
   public List<Unit> getTargets() {
-    List<Unit> targets = new ArrayList<>();
+    List<Unit> targets = new ArrayList<Unit>();
     for (UnitBox element : targetBoxes) {
       targets.add(element.getUnit());
     }

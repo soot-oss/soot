@@ -12,12 +12,12 @@ package soot.dava.internal.AST;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -65,7 +65,7 @@ public class ASTMethodNode extends ASTNode {
    *
    * Any local in the dontPrintLocals list is not printed in the top declarations
    */
-  private List<Local> dontPrintLocals = new ArrayList<>();
+  private List<Local> dontPrintLocals = new ArrayList<Local>();
 
   public ASTStatementSequenceNode getDeclarations() {
     return declarations;
@@ -84,7 +84,7 @@ public class ASTMethodNode extends ASTNode {
   }
 
   public void storeLocals(Body OrigBody) {
-    if (!(OrigBody instanceof DavaBody)) {
+    if ((OrigBody instanceof DavaBody) == false) {
       throw new RuntimeException("Only DavaBodies should invoke this method");
     }
 
@@ -115,7 +115,7 @@ public class ASTMethodNode extends ASTNode {
       if (typeToLocals.containsKey(t)) {
         localList = typeToLocals.get(t);
       } else {
-        localList = new ArrayList<>();
+        localList = new ArrayList<Local>();
         typeToLocals.put(t, localList);
       }
 
@@ -124,7 +124,7 @@ public class ASTMethodNode extends ASTNode {
 
     // create a StatementSequenceNode with all the declarations
 
-    List<AugmentedStmt> statementSequence = new ArrayList<>();
+    List<AugmentedStmt> statementSequence = new ArrayList<AugmentedStmt>();
 
     Iterator<Type> typeIt = typeToLocals.keySet().iterator();
 
@@ -146,7 +146,7 @@ public class ASTMethodNode extends ASTNode {
     declarations = new ASTStatementSequenceNode(statementSequence);
 
     body.add(0, declarations);
-    subBodies = new ArrayList<>();
+    subBodies = new ArrayList<Object>();
     subBodies.add(body);
   }
 
@@ -226,7 +226,7 @@ public class ASTMethodNode extends ASTNode {
     // the removal of a local might have made some declaration empty
     // remove such a declaraion
 
-    List<AugmentedStmt> newSequence = new ArrayList<>();
+    List<AugmentedStmt> newSequence = new ArrayList<AugmentedStmt>();
     for (AugmentedStmt as : declarations.getStatements()) {
       s = as.get_Stmt();
 
@@ -249,11 +249,10 @@ public class ASTMethodNode extends ASTNode {
    */
   public void replaceBody(List<Object> body) {
     this.body = body;
-    subBodies = new ArrayList<>();
+    subBodies = new ArrayList<Object>();
     subBodies.add(body);
   }
 
-  @Override
   public Object clone() {
     ASTMethodNode toReturn = new ASTMethodNode(body);
     toReturn.setDeclarations((ASTStatementSequenceNode) declarations.clone());
@@ -269,12 +268,10 @@ public class ASTMethodNode extends ASTNode {
     dontPrintLocals.add(toAdd);
   }
 
-  @Override
   public void perform_Analysis(ASTAnalysis a) {
     perform_AnalysisOnSubBodies(a);
   }
 
-  @Override
   public void toString(UnitPrinter up) {
     if (!(up instanceof DavaUnitPrinter)) {
       throw new RuntimeException("Only DavaUnitPrinter should be used to print DavaBody");
@@ -369,7 +366,11 @@ public class ASTMethodNode extends ASTNode {
             break;
           }
         }
-        if (!shouldContinue || (localDeclarations.size() == 0)) {
+        if (!shouldContinue) {
+          // shouldnt print this declaration stmt
+          continue;
+        }
+        if (localDeclarations.size() == 0) {
           continue;
         }
 
@@ -444,7 +445,6 @@ public class ASTMethodNode extends ASTNode {
     }
   }
 
-  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     /*
@@ -483,7 +483,6 @@ public class ASTMethodNode extends ASTNode {
    * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST See: soot.dava.toolkits.base.AST.analysis For
    * details
    */
-  @Override
   public void apply(Analysis a) {
     a.caseASTMethodNode(this);
   }

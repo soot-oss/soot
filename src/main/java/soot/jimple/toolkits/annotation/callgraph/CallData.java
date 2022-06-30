@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.callgraph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,12 +27,11 @@ import java.util.HashMap;
 
 public class CallData {
 
-  private final HashMap<Object, CallData> map = new HashMap<>();
-  private final ArrayList<CallData> children = new ArrayList<>();
-  private final ArrayList<CallData> outputs = new ArrayList<>();
+  private final HashMap<Object, CallData> map = new HashMap<Object, CallData>();
+  private final ArrayList<CallData> children = new ArrayList<CallData>();
+  private final ArrayList<CallData> outputs = new ArrayList<CallData>();
   private String data;
 
-  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
     sb.append("Data: ");

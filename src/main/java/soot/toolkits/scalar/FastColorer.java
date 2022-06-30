@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -66,7 +66,7 @@ public class FastColorer {
     final UnitInterferenceGraph intGraph
         = new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
 
-    Map<Local, String> localToOriginalName = new HashMap<>();
+    Map<Local, String> localToOriginalName = new HashMap<Local, String>();
 
     // Map each local variable to its original name
     for (Local local : intGraph.getLocals()) {
@@ -79,7 +79,7 @@ public class FastColorer {
     }
 
     // maps an original name to the colors being used for it
-    Map<StringGroupPair, List<Integer>> originalNameAndGroupToColors = new HashMap<>();
+    Map<StringGroupPair, List<Integer>> originalNameAndGroupToColors = new HashMap<StringGroupPair, List<Integer>>();
 
     // Assign a color for each local.
     {
@@ -118,7 +118,7 @@ public class FastColorer {
           StringGroupPair key = new StringGroupPair(localToOriginalName.get(local), group);
           List<Integer> originalNameColors = originalNameAndGroupToColors.get(key);
           if (originalNameColors == null) {
-            originalNameColors = new ArrayList<>();
+            originalNameColors = new ArrayList<Integer>();
             originalNameAndGroupToColors.put(key, originalNameColors);
           }
 
@@ -161,7 +161,7 @@ public class FastColorer {
     // Sort the locals first to maximize the locals per color. We first
     // assign those locals that have many conflicts and then assign the
     // easier ones to those color groups.
-    List<Local> sortedLocals = new ArrayList<>(intGraph.getLocals());
+    List<Local> sortedLocals = new ArrayList<Local>(intGraph.getLocals());
     Collections.sort(sortedLocals, new Comparator<Local>() {
       @Override
       public int compare(Local o1, Local o2) {
@@ -222,8 +222,8 @@ public class FastColorer {
     public UnitInterferenceGraph(Body body, Map<Local, ? extends Object> localToGroup, LiveLocals liveLocals,
         ExceptionalUnitGraph unitGraph) {
 
-      this.locals = new ArrayList<>(body.getLocals());
-      this.localToLocals = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
+      this.locals = new ArrayList<Local>(body.getLocals());
+      this.localToLocals = new HashMap<Local, Set<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
       // Go through code, noting interferences
       for (Unit unit : body.getUnits()) {
@@ -263,7 +263,7 @@ public class FastColorer {
           if (defValue instanceof Local) {
             Local defLocal = (Local) defValue;
 
-            Set<Local> liveLocalsAtUnit = new HashSet<>();
+            Set<Local> liveLocalsAtUnit = new HashSet<Local>();
             for (Unit succ : unitGraph.getSuccsOf(unit)) {
               liveLocalsAtUnit.addAll(liveLocals.getLiveLocalsBefore(succ));
             }
@@ -287,7 +287,7 @@ public class FastColorer {
       // l1 -> l2
       Set<Local> locals = localToLocals.get(l1);
       if (locals == null) {
-        locals = new ArraySet<>();
+        locals = new ArraySet<Local>();
         localToLocals.put(l1, locals);
       }
       locals.add(l2);
@@ -295,7 +295,7 @@ public class FastColorer {
       // l2 -> l1
       locals = localToLocals.get(l2);
       if (locals == null) {
-        locals = new ArraySet<>();
+        locals = new ArraySet<Local>();
         localToLocals.put(l2, locals);
       }
       locals.add(l1);

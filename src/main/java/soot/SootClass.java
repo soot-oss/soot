@@ -1,13 +1,5 @@
 package soot;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -31,6 +23,14 @@ import org.slf4j.LoggerFactory;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.options.Options;
@@ -127,9 +127,8 @@ public class SootClass extends AbstractHost implements Numberable {
   }
 
   public SootClass(String name, int modifiers, String moduleName) {
-    if (name.length() == 0) {
+    if (name.length() == 0)
       throw new RuntimeException("Class must not be empty!");
-    }
     if (name.length() > 0 && name.charAt(0) == '[') {
       throw new RuntimeException("Attempt to make a class whose name starts with [");
     }
@@ -185,7 +184,10 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void checkLevel(int level) {
     // Fast check: e.g. FastHierarchy.canStoreClass calls this method quite often
-    if ((resolvingLevel() >= level) || !Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
+    if (resolvingLevel() >= level) {
+      return;
+    }
+    if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
       return;
     }
     checkLevelIgnoreResolving(level);
@@ -1231,7 +1233,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * structure.
    */
   public void validate() {
-    final List<ValidationException> exceptionList = new ArrayList<>();
+    final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
     validate(exceptionList);
     if (!exceptionList.isEmpty()) {
       throw exceptionList.get(0);

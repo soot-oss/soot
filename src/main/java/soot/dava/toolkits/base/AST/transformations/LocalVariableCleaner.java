@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -82,7 +82,6 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
    * defined BUT never used then you may remove it IF AND ONLY IF The definition is either a copy stmt or an assignment of a
    * constant (i.e. no side effects)
    */
-  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     boolean redo = false;
 
@@ -92,7 +91,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
     // get all local variables declared in this method
     Iterator decIt = node.getDeclaredLocals().iterator();
 
-    ArrayList<Local> removeList = new ArrayList<>();
+    ArrayList<Local> removeList = new ArrayList<Local>();
     while (decIt.hasNext()) {
       // going through each local declared
 
@@ -188,7 +187,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
    * This method looks up all defs and returns those of this local
    */
   public List<DefinitionStmt> getDefs(Local var) {
-    List<DefinitionStmt> toReturn = new ArrayList<>();
+    List<DefinitionStmt> toReturn = new ArrayList<DefinitionStmt>();
 
     HashMap<Object, List> dU = useDefs.getDUHashMap();
     Iterator<Object> it = dU.keySet().iterator();
@@ -221,7 +220,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
     }
     ASTStatementSequenceNode parentNode = (ASTStatementSequenceNode) parent;
 
-    ArrayList<AugmentedStmt> newSequence = new ArrayList<>();
+    ArrayList<AugmentedStmt> newSequence = new ArrayList<AugmentedStmt>();
     int size = parentNode.getStatements().size();
     for (AugmentedStmt as : parentNode.getStatements()) {
       Stmt s = as.get_Stmt();

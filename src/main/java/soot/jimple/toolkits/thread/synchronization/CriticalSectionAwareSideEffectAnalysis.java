@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -79,12 +79,10 @@ class WholeObject {
     this.type = null;
   }
 
-  @Override
   public String toString() {
     return "All Fields" + (type == null ? "" : " (" + type + ")");
   }
 
-  @Override
   public int hashCode() {
     if (type == null) {
       return 1;
@@ -92,7 +90,6 @@ class WholeObject {
     return type.hashCode();
   }
 
-  @Override
   public boolean equals(Object o) {
     if (type == null) {
       return true;
@@ -119,8 +116,8 @@ class WholeObject {
 public class CriticalSectionAwareSideEffectAnalysis {
   PointsToAnalysis pa;
   CallGraph cg;
-  Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<>();
-  Map<SootMethod, CodeBlockRWSet> methodToNTWriteSet = new HashMap<>();
+  Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<SootMethod, CodeBlockRWSet>();
+  Map<SootMethod, CodeBlockRWSet> methodToNTWriteSet = new HashMap<SootMethod, CodeBlockRWSet>();
   int rwsetcount = 0;
   CriticalSectionVisibleEdgesPred tve;
   TransitiveTargets tt;
@@ -304,7 +301,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
     return null;
   }
 
-  private HashMap<Stmt, RWSet> RCache = new HashMap<>();
+  private HashMap<Stmt, RWSet> RCache = new HashMap<Stmt, RWSet>();
 
   public RWSet approximatedReadSet(SootMethod method, Stmt stmt, Value specialRead, boolean allFields) { // used for stmts
                                                                                                          // with method calls
@@ -361,7 +358,8 @@ public class CriticalSectionAwareSideEffectAnalysis {
             RCache.put(stmt, normalRW);
           }
           if (normalRW != null) {
-            for (Object field : normalRW.getFields()) {
+            for (Iterator fieldsIt = normalRW.getFields().iterator(); fieldsIt.hasNext();) {
+              Object field = fieldsIt.next();
               if (allRW.containsField(field)) {
                 PointsToSet otherBase = normalRW.getBaseForField(field);
                 if (otherBase instanceof FullObjectSet) {
@@ -451,7 +449,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
       }
     }
     RWSet ntr = ntReadSet(method, stmt);
-    if (!inaccessibleUses && ntr != null && stmt instanceof AssignStmt) {
+    if (inaccessibleUses == false && ntr != null && stmt instanceof AssignStmt) {
       AssignStmt a = (AssignStmt) stmt;
       Value r = a.getRightOp();
       if (r instanceof InstanceFieldRef) {
@@ -514,7 +512,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
     return null;
   }
 
-  private HashMap<Stmt, RWSet> WCache = new HashMap<>();
+  private HashMap<Stmt, RWSet> WCache = new HashMap<Stmt, RWSet>();
 
   public RWSet approximatedWriteSet(SootMethod method, Stmt stmt, Value v, boolean allFields) { // used for stmts with method
                                                                                                 // calls where the effect
@@ -566,7 +564,8 @@ public class CriticalSectionAwareSideEffectAnalysis {
             WCache.put(stmt, normalRW);
           }
           if (normalRW != null) {
-            for (Object field : normalRW.getFields()) {
+            for (Iterator fieldsIt = normalRW.getFields().iterator(); fieldsIt.hasNext();) {
+              Object field = fieldsIt.next();
               if (allRW.containsField(field)) {
                 PointsToSet otherBase = normalRW.getBaseForField(field);
                 if (otherBase instanceof FullObjectSet) {
@@ -745,7 +744,8 @@ public class CriticalSectionAwareSideEffectAnalysis {
       // Should actually get a list of fields of this object that are read/written
       // make fake RW set of <base, all fields> (use a special class)
       // intersect with the REAL RW set of this stmt
-      for (Object field : stmtRW.getFields()) {
+      for (Iterator fieldsIt = stmtRW.getFields().iterator(); fieldsIt.hasNext();) {
+        Object field = fieldsIt.next();
         PointsToSet fieldBase = stmtRW.getBaseForField(field);
         if (base.hasNonEmptyIntersection(fieldBase)) {
           ret.addFieldRef(base, field); // should use intersection of bases!!!
@@ -808,7 +808,6 @@ public class CriticalSectionAwareSideEffectAnalysis {
     return ret;
   }
 
-  @Override
   public String toString() {
     return "TransactionAwareSideEffectAnalysis: PA=" + pa + " CG=" + cg;
   }

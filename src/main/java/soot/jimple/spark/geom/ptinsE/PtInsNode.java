@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.ptinsE;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -92,9 +92,9 @@ public class PtInsNode extends IVarAbstraction {
 
   @Override
   public void reconstruct() {
-    flowto = new HashMap<>();
-    pt_objs = new HashMap<>();
-    new_pts = new HashMap<>();
+    flowto = new HashMap<PtInsNode, PtInsIntervalManager>();
+    pt_objs = new HashMap<AllocNode, PtInsIntervalManager>();
+    new_pts = new HashMap<AllocNode, PtInsIntervalManager>();
     complex_cons = null;
     lrf_value = 0;
   }
@@ -148,7 +148,7 @@ public class PtInsNode extends IVarAbstraction {
       pim.flush();
     }
 
-    new_pts = new HashMap<>();
+    new_pts = new HashMap<AllocNode, PtInsIntervalManager>();
   }
 
   @Override
@@ -225,7 +225,7 @@ public class PtInsNode extends IVarAbstraction {
   @Override
   public void put_complex_constraint(PlainConstraint cons) {
     if (complex_cons == null) {
-      complex_cons = new Vector<>();
+      complex_cons = new Vector<PlainConstraint>();
     }
     complex_cons.add(cons);
   }
@@ -271,7 +271,7 @@ public class PtInsNode extends IVarAbstraction {
             break;
           }
 
-          if (!objn.willUpdate) {
+          if (objn.willUpdate == false) {
             // This must be a store constraint
             // This object field is not need for computing
             // the points-to information of the seed pointers
@@ -323,7 +323,10 @@ public class PtInsNode extends IVarAbstraction {
         obj = entry2.getKey();
         pim2 = entry2.getValue();
 
-        if ((pim2 == deadManager) || !ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
+        if (pim2 == deadManager) {
+          continue;
+        }
+        if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
           continue;
         }
 
@@ -412,7 +415,8 @@ public class PtInsNode extends IVarAbstraction {
 
     qn = (PtInsNode) qv;
 
-    for (AllocNode an : pt_objs.keySet()) {
+    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
+      AllocNode an = it.next();
       if (an instanceof StringConstantNode) {
         continue;
       }
@@ -454,7 +458,8 @@ public class PtInsNode extends IVarAbstraction {
 
   @Override
   public void print_context_sensitive_points_to(PrintStream outPrintStream) {
-    for (AllocNode obj : pt_objs.keySet()) {
+    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
+      AllocNode obj = it.next();
       SegmentNode[] int_entry = find_points_to(obj);
       if (int_entry != null) {
         for (int j = 0; j < PtInsIntervalManager.Divisions; ++j) {
@@ -511,7 +516,7 @@ public class PtInsNode extends IVarAbstraction {
       SegmentNode[] int_entry = im.getFigures();
       for (int i = 0; i < PtInsIntervalManager.Divisions; ++i) {
         SegmentNode p = int_entry[i];
-        while (p != null && p.is_new) {
+        while (p != null && p.is_new == true) {
           ++ans;
           p = p.next;
         }
@@ -599,7 +604,7 @@ public class PtInsNode extends IVarAbstraction {
   @Override
   public void injectPts() {
     final GeomPointsTo geomPTA = (GeomPointsTo) Scene.v().getPointsToAnalysis();
-    pt_objs = new HashMap<>();
+    pt_objs = new HashMap<AllocNode, PtInsIntervalManager>();
 
     me.getP2Set().forall(new P2SetVisitor() {
       @Override

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -150,7 +150,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
     private final Chain<Unit> units;
 
     public Transformer(StmtBody body) {
-      this.stmtMap = new HashMap<>();
+      this.stmtMap = new HashMap<Stmt, Stmt>();
       this.isShimple = body instanceof ShimpleBody;
       this.units = body.getUnits();
     }
@@ -378,7 +378,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
      * Checks if removing the given {@link Unit} is "safe" when the body contains {@link soot.shimple.PhiExpr}. Specifically,
      * can {@link soot.shimple.Shimple#redirectToPreds(soot.Body, soot.Unit)} properly handle the phi back-reference update
      * after the {@link Unit} is removed (removal is trivially safe if there are no phi back-references to the Unit).
-     *
+     * 
      * For instance, a jump cannot (easily) be removed if the Unit that jumps is the target of a Shimple back-reference and
      * has multiple graph predecessors. Removing it would leave the related PhiExpr without a reference for every predecessor
      * (i.e. the existing back-reference would move to whatever node is before the removed Unit in the Chain but any other
@@ -405,7 +405,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
       // the current Unit. At the same time, collect the predecessors from the UnitBox references (i.e. jumps).
       boolean hasBackref = false;
       // NOTE: just counting won't work because fall-through pred could be an IfStmt and shouldn't be counted twice.
-      HashSet<UnitBox> predBoxes = new HashSet<>();
+      HashSet<UnitBox> predBoxes = new HashSet<UnitBox>();
       for (UnitBox ub : boxesPointingToThis) {
         if (ub.isBranchTarget()) {
           assert (stmt == ub.getUnit());// sanity check
@@ -437,7 +437,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
 
     private boolean hasNoPointersOrSingleJumpPred(Unit toRemove, Unit jumpPred) {
       boolean hasBackref = false;
-      HashSet<UnitBox> predBoxes = new HashSet<>();
+      HashSet<UnitBox> predBoxes = new HashSet<UnitBox>();
       for (UnitBox ub : toRemove.getBoxesPointingToThis()) {
         if (ub.isBranchTarget()) {
           assert (toRemove == ub.getUnit());// sanity check

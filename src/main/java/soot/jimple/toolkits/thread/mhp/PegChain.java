@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -103,10 +103,10 @@ public class PegChain extends HashChain {
   private final List tails = new ArrayList();
   private final FlowSet pegNodes = new ArraySparseSet();
 
-  private final Map<Unit, JPegStmt> unitToPeg = new HashMap<>();
+  private final Map<Unit, JPegStmt> unitToPeg = new HashMap<Unit, JPegStmt>();
   private final Map<String, FlowSet> waitingNodes;
   private final PegGraph pg;
-  private final Set<List<Object>> joinNeedReconsidered = new HashSet<>();
+  private final Set<List<Object>> joinNeedReconsidered = new HashSet<List<Object>>();
   public Body body; // body from which this peg chain was created
   // private Map startToThread;
 
@@ -168,8 +168,8 @@ public class PegChain extends HashChain {
     while (it.hasNext()) {
       Object head = it.next();
       // breadth first scan
-      Set<Unit> gray = new HashSet<>();
-      LinkedList<Object> queue = new LinkedList<>();
+      Set<Unit> gray = new HashSet<Unit>();
+      LinkedList<Object> queue = new LinkedList<Object>();
       queue.add(head);
 
       visit((Unit) queue.getFirst(), graph, sm, threadName, addBeginNode);
@@ -320,8 +320,8 @@ public class PegChain extends HashChain {
           }
           pg.getCanNotBeCompacted().add(pegStmt);
           addAndPut(unit, pegStmt);
-          List<PegChain> runMethodChainList = new ArrayList<>();
-          List<AllocNode> threadAllocNodesList = new ArrayList<>();
+          List<PegChain> runMethodChainList = new ArrayList<PegChain>();
+          List<AllocNode> threadAllocNodesList = new ArrayList<AllocNode>();
           // add Feb 01
           if (mayAlias.size() < 1) {
 
@@ -404,7 +404,7 @@ public class PegChain extends HashChain {
                 // System.out.println("allocNode toString: "+allocNode.toString());
                 JPegStmt pegStmt = new JoinStmt(value.toString(), threadName, unit, graph, sm);
                 if (!pg.getAllocNodeToThread().containsKey(allocNode)) {
-                  List<Object> list = new ArrayList<>();
+                  List<Object> list = new ArrayList<Object>();
                   list.add(pegStmt);
                   list.add(allocNode);
                   list.add(unit);
@@ -437,7 +437,7 @@ public class PegChain extends HashChain {
                 notifyAllSet.add(pegStmt);
                 pg.getNotifyAll().put(objName, notifyAllSet);
               } else {
-                Set<JPegStmt> notifyAllSet = new HashSet<>();
+                Set<JPegStmt> notifyAllSet = new HashSet<JPegStmt>();
                 notifyAllSet.add(pegStmt);
                 pg.getNotifyAll().put(objName, notifyAllSet);
               }
@@ -460,7 +460,7 @@ public class PegChain extends HashChain {
                 // System.out.println("isLibraryClass: "+method.getDeclaringClass().isLibraryClass());
                 if (method.isConcrete() && !method.getDeclaringClass().isLibraryClass()) {
 
-                  List<SootMethod> targetList = new LinkedList<>();
+                  List<SootMethod> targetList = new LinkedList<SootMethod>();
                   SootMethod targetMethod = null;
                   if (invokeExpr instanceof StaticInvokeExpr) {
                     targetMethod = method;
@@ -569,7 +569,7 @@ public class PegChain extends HashChain {
 
   private List<AllocNode> findMayAlias(PointsToSetInternal pts, Unit unit) {
     // returns a list of reaching objects' AllocNodes that are contained in the set of known AllocNodes
-    List<AllocNode> list = new ArrayList<>();
+    List<AllocNode> list = new ArrayList<AllocNode>();
     Iterator<AllocNode> it = makePtsIterator(pts);
     while (it.hasNext()) {
       AllocNode obj = it.next();
@@ -694,9 +694,8 @@ public class PegChain extends HashChain {
   }
 
   private Iterator<AllocNode> makePtsIterator(PointsToSetInternal pts) {
-    final HashSet<AllocNode> ret = new HashSet<>();
+    final HashSet<AllocNode> ret = new HashSet<AllocNode>();
     pts.forall(new P2SetVisitor() {
-      @Override
       public void visit(Node n) {
 
         ret.add((AllocNode) n);

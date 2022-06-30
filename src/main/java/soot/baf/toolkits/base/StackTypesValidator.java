@@ -10,12 +10,12 @@ package soot.baf.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -128,7 +128,7 @@ import soot.validation.ValidationException;
 
 /**
  * Checks if the locals and the operand stack will contain the correct types for each instruction in the {@link BafBody}.
- *
+ * 
  * NOTE: This validator assumes that each local will hold a single {@link Type} throughout the method. However, that is
  * actually a stronger requirement than necessary for bytecode. In fact, after running the
  * {@link soot.toolkits.scalar.LocalPacker} pass, there will likely be cases that are reported by this validator which are
@@ -261,7 +261,7 @@ public enum StackTypesValidator implements BodyValidator {
     protected static Type canonicalize(Type t) {
       return (t instanceof RefLikeType || t instanceof NullType) ? TYPE_REF : (t instanceof IntegerType) ? TYPE_INT : t;
     }
-
+    
     /**
      * Performs {@link #canonicalize(Type)} and converts the canonical {@link Type} to its 3-bit representation.
      *
@@ -291,10 +291,10 @@ public enum StackTypesValidator implements BodyValidator {
 
     /**
      * Convert the given 3-bit representation (right-most bits of the argument) to its canonical {@link Type}.
-     *
+     * 
      * @param bits
-     *
-     * @return
+     * 
+     * @return 
      */
     protected static Type bitsToType(int bits) {
       switch (bits) {

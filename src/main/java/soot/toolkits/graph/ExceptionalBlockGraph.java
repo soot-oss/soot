@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -122,10 +122,10 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
       }
     } else {
       int initialMapSize = (mBlocks.size() * 2) / 3;
-      blockToUnexceptionalPreds = new HashMap<>(initialMapSize);
-      blockToUnexceptionalSuccs = new HashMap<>(initialMapSize);
-      blockToExceptionalPreds = new HashMap<>(initialMapSize);
-      blockToExceptionalSuccs = new HashMap<>(initialMapSize);
+      blockToUnexceptionalPreds = new HashMap<Block, List<Block>>(initialMapSize);
+      blockToUnexceptionalSuccs = new HashMap<Block, List<Block>>(initialMapSize);
+      blockToExceptionalPreds = new HashMap<Block, List<Block>>(initialMapSize);
+      blockToExceptionalSuccs = new HashMap<Block, List<Block>>(initialMapSize);
 
       for (Block block : mBlocks) {
         Unit blockHead = block.getHead();
@@ -171,7 +171,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    *           if one of the elements in <code>keys</code> does not appear in <code>keyToValue</code>
    */
   private static <K, V> List<V> mappedValues(List<K> keys, Map<K, V> keyToValue) {
-    ArrayList<V> result = new ArrayList<>(keys.size());
+    ArrayList<V> result = new ArrayList<V>(keys.size());
     for (K key : keys) {
       V value = keyToValue.get(key);
       if (value == null) {
@@ -186,7 +186,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
   private Map<Block, Collection<ExceptionDest>> buildExceptionDests(ExceptionalUnitGraph unitGraph,
       Map<Unit, Block> unitToBlock) {
     Map<Block, Collection<ExceptionDest>> result =
-        new HashMap<>(mBlocks.size() * 2 + 1, 0.7f);
+        new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
     for (Block block : mBlocks) {
       result.put(block, collectDests(block, unitGraph, unitToBlock));
     }
@@ -234,7 +234,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
               // since ThrowableSet's limitations do not permit us
               // to add all the escaping type descriptions together.
               if (blocksDests == null) {
-                blocksDests = new ArrayList<>(10);
+                blocksDests = new ArrayList<ExceptionDest>(10);
               }
               blocksDests.add(new ExceptionDest(null, escapingThrowables, null));
             }
@@ -248,7 +248,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
           }
           caughtCount++;
           if (trapToThrowables == null) {
-            trapToThrowables = new HashMap<>(unitDests.size() * 2);
+            trapToThrowables = new HashMap<Trap, ThrowableSet>(unitDests.size() * 2);
           }
           Trap trap = unitDest.getTrap();
           ThrowableSet throwables = trapToThrowables.get(trap);
@@ -263,7 +263,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     }
 
     if (blocksDests == null) {
-      blocksDests = new ArrayList<>(caughtCount + 1);
+      blocksDests = new ArrayList<ExceptionDest>(caughtCount + 1);
     } else {
       blocksDests.ensureCapacity(blocksDests.size() + caughtCount);
     }

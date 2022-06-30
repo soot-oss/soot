@@ -10,12 +10,12 @@ package soot.shimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -72,7 +72,7 @@ public class ShimpleLocalDefs implements LocalDefs {
     // units in the body and saving the unique definition site for
     // each local -- no need for fancy analysis
     Chain<Unit> unitsChain = sb.getUnits();
-    this.localToDefs = new HashMap<>(unitsChain.size() * 2 + 1, 0.7f);
+    this.localToDefs = new HashMap<Value, List<Unit>>(unitsChain.size() * 2 + 1, 0.7f);
     for (Unit unit : unitsChain) {
       for (ValueBox vb : unit.getDefBoxes()) {
         Value value = vb.getValue();

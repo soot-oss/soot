@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -70,14 +70,14 @@ public class Hierarchy {
       Chain<SootClass> allClasses = sc.getClasses();
       final int mapSize = allClasses.size() * 2 + 1;
 
-      this.classToSubclasses = new HashMap<>(mapSize, 0.7f);
-      this.interfaceToSubinterfaces = new HashMap<>(mapSize, 0.7f);
-      this.interfaceToSuperinterfaces = new HashMap<>(mapSize, 0.7f);
+      this.classToSubclasses = new HashMap<SootClass, List<SootClass>>(mapSize, 0.7f);
+      this.interfaceToSubinterfaces = new HashMap<SootClass, List<SootClass>>(mapSize, 0.7f);
+      this.interfaceToSuperinterfaces = new HashMap<SootClass, List<SootClass>>(mapSize, 0.7f);
 
-      this.classToDirSubclasses = new HashMap<>(mapSize, 0.7f);
-      this.interfaceToDirSubinterfaces = new HashMap<>(mapSize, 0.7f);
-      this.interfaceToDirSuperinterfaces = new HashMap<>(mapSize, 0.7f);
-      this.interfaceToDirImplementers = new HashMap<>(mapSize, 0.7f);
+      this.classToDirSubclasses = new HashMap<SootClass, List<SootClass>>(mapSize, 0.7f);
+      this.interfaceToDirSubinterfaces = new HashMap<SootClass, List<SootClass>>(mapSize, 0.7f);
+      this.interfaceToDirSuperinterfaces = new HashMap<SootClass, List<SootClass>>(mapSize, 0.7f);
+      this.interfaceToDirImplementers = new HashMap<SootClass, List<SootClass>>(mapSize, 0.7f);
 
       initializeHierarchy(allClasses);
     }
@@ -149,14 +149,14 @@ public class Hierarchy {
         continue;
       }
       if (c.isInterface()) {
-        Set<SootClass> s = new ArraySet<>();
+        Set<SootClass> s = new ArraySet<SootClass>();
         for (SootClass c0 : interfaceToDirImplementers.get(c)) {
           if (c.resolvingLevel() < SootClass.HIERARCHY) {
             continue;
           }
           s.addAll(getSubclassesOfIncluding(c0));
         }
-        interfaceToDirImplementers.put(c, new ArrayList<>(s));
+        interfaceToDirImplementers.put(c, new ArrayList<SootClass>(s));
       } else if (c.hasSuperclass()) {
         List<SootClass> l = classToDirSubclasses.get(c);
         if (l != null) {
@@ -181,7 +181,7 @@ public class Hierarchy {
     }
 
     List<SootClass> subclasses = getSubclassesOf(c);
-    List<SootClass> result = new ArrayList<>(subclasses.size() + 1);
+    List<SootClass> result = new ArrayList<SootClass>(subclasses.size() + 1);
     result.addAll(subclasses);
     result.add(c);
 
@@ -205,7 +205,7 @@ public class Hierarchy {
 
     // Otherwise, build up the hashmap.
     {
-      ArrayList<SootClass> l = new ArrayList<>();
+      ArrayList<SootClass> l = new ArrayList<SootClass>();
       for (SootClass cls : classToDirSubclasses.get(c)) {
         if (cls.resolvingLevel() < SootClass.HIERARCHY) {
           continue;
@@ -340,7 +340,7 @@ public class Hierarchy {
     }
 
     List<SootClass> superinterfaces = getSuperinterfacesOf(c);
-    List<SootClass> result = new ArrayList<>(superinterfaces.size() + 1);
+    List<SootClass> result = new ArrayList<SootClass>(superinterfaces.size() + 1);
     result.addAll(superinterfaces);
     result.add(c);
 
@@ -364,7 +364,7 @@ public class Hierarchy {
 
     // Otherwise, build up the hashmap.
     {
-      ArrayList<SootClass> l = new ArrayList<>();
+      ArrayList<SootClass> l = new ArrayList<SootClass>();
       for (SootClass si : interfaceToDirSuperinterfaces.get(c)) {
         l.addAll(getSuperinterfacesOfIncluding(si));
       }
@@ -404,7 +404,7 @@ public class Hierarchy {
     checkState();
 
     List<SootClass> subclasses = classToDirSubclasses.get(c);
-    List<SootClass> l = new ArrayList<>(subclasses.size() + 1);
+    List<SootClass> l = new ArrayList<SootClass>(subclasses.size() + 1);
     l.addAll(subclasses);
     l.add(c);
 
@@ -438,7 +438,7 @@ public class Hierarchy {
     checkState();
 
     List<SootClass> subinterfaces = interfaceToDirSubinterfaces.get(c);
-    List<SootClass> l = new ArrayList<>(subinterfaces.size() + 1);
+    List<SootClass> l = new ArrayList<SootClass>(subinterfaces.size() + 1);
     l.addAll(subinterfaces);
     l.add(c);
 
@@ -466,11 +466,11 @@ public class Hierarchy {
 
     checkState();
 
-    ArraySet<SootClass> set = new ArraySet<>();
+    ArraySet<SootClass> set = new ArraySet<SootClass>();
     for (SootClass c : getSubinterfacesOfIncluding(i)) {
       set.addAll(getDirectImplementersOf(c));
     }
-    return Collections.unmodifiableList(new ArrayList<>(set));
+    return Collections.unmodifiableList(new ArrayList<SootClass>(set));
   }
 
   /**
@@ -646,7 +646,7 @@ public class Hierarchy {
     m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
     checkState();
 
-    Set<SootMethod> s = new ArraySet<>();
+    Set<SootMethod> s = new ArraySet<SootMethod>();
     for (Type cls : classes) {
       if (cls instanceof RefType) {
         s.add(resolveConcreteDispatch(((RefType) cls).getSootClass(), m));
@@ -657,7 +657,7 @@ public class Hierarchy {
       }
     }
 
-    return Collections.unmodifiableList(new ArrayList<>(s));
+    return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
   }
 
   // what can get called for c & all its subclasses
@@ -671,7 +671,7 @@ public class Hierarchy {
 
     Collection<SootClass> classes;
     if (c.isInterface()) {
-      classes = new HashSet<>();
+      classes = new HashSet<SootClass>();
       for (SootClass sootClass : getImplementersOf(c)) {
         classes.addAll(getSubclassesOfIncluding(sootClass));
       }
@@ -679,14 +679,14 @@ public class Hierarchy {
       classes = getSubclassesOfIncluding(c);
     }
 
-    Set<SootMethod> s = new ArraySet<>();
+    Set<SootMethod> s = new ArraySet<SootMethod>();
     for (SootClass cl : classes) {
       if (!Modifier.isAbstract(cl.getModifiers())) {
         s.add(resolveConcreteDispatch(cl, m));
       }
     }
 
-    return Collections.unmodifiableList(new ArrayList<>(s));
+    return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
   }
 
   // what can get called if you have a set of possible receiver types
@@ -696,12 +696,12 @@ public class Hierarchy {
   public List<SootMethod> resolveAbstractDispatch(List<SootClass> classes, SootMethod m) {
     m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
 
-    Set<SootMethod> s = new ArraySet<>();
+    Set<SootMethod> s = new ArraySet<SootMethod>();
     for (SootClass sootClass : classes) {
       s.addAll(resolveAbstractDispatch(sootClass, m));
     }
 
-    return Collections.unmodifiableList(new ArrayList<>(s));
+    return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
   }
 
   /** Returns the target for the given SpecialInvokeExpr. */

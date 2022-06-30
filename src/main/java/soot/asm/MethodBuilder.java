@@ -1,21 +1,5 @@
 package soot.asm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.Handle;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.commons.JSRInlinerAdapter;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.LocalVariableNode;
-import org.objectweb.asm.tree.TryCatchBlockNode;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -39,6 +23,22 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.Handle;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.commons.JSRInlinerAdapter;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.LocalVariableNode;
+import org.objectweb.asm.tree.TryCatchBlockNode;
 
 import soot.ArrayType;
 import soot.MethodSource;
@@ -139,12 +139,12 @@ public class MethodBuilder extends JSRInlinerAdapter {
         = new VisibilityAnnotationTag(visible ? AnnotationConstants.RUNTIME_VISIBLE : AnnotationConstants.RUNTIME_INVISIBLE);
     if (visible) {
       if (visibleLocalVarAnnotations == null) {
-        visibleLocalVarAnnotations = new ArrayList<>(2);
+        visibleLocalVarAnnotations = new ArrayList<VisibilityAnnotationTag>(2);
       }
       visibleLocalVarAnnotations.add(vat);
     } else {
       if (invisibleLocalVarAnnotations == null) {
-        invisibleLocalVarAnnotations = new ArrayList<>(2);
+        invisibleLocalVarAnnotations = new ArrayList<VisibilityAnnotationTag>(2);
       }
       invisibleLocalVarAnnotations.add(vat);
     }
@@ -305,14 +305,14 @@ public class MethodBuilder extends JSRInlinerAdapter {
 
   /**
    * Gets whether the given array is fully empty, i.e., contains only <code>null</code> values
-   *
+   * 
    * @param array
    *          The array to check
    * @return True if the given arry contains only <code>null</code> values, false otherwise
    */
   private boolean isFullyEmpty(String[] array) {
-    for (String element : array) {
-      if (element != null && !element.isEmpty()) {
+    for (int i = 0; i < array.length; i++) {
+      if (array[i] != null && !array[i].isEmpty()) {
         return false;
       }
     }

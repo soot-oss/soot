@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -84,7 +84,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Object>
 
   public boolean areEqualUses(Stmt firstStmt, Local firstLocal, Stmt secondStmt, Local secondLocal,
       List<Stmt> boundaryStmts) {
-    Map<Stmt, Local> stmtToLocal = new HashMap<>();
+    Map<Stmt, Local> stmtToLocal = new HashMap<Stmt, Local>();
     stmtToLocal.put(firstStmt, firstLocal);
     stmtToLocal.put(secondStmt, secondLocal);
     return areEqualUses(stmtToLocal, boundaryStmts);
@@ -101,8 +101,8 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Object>
     this.useStmts = stmtToLocal.keySet();
     this.useLocals = stmtToLocal.values();
     this.boundaryStmts = boundaryStmts;
-    this.redefStmts = new ArrayList<>();
-    this.firstUseToAliasSet = new HashMap<>();
+    this.redefStmts = new ArrayList<Stmt>();
+    this.firstUseToAliasSet = new HashMap<Stmt, List<Object>>();
 
     // logger.debug("Checking for Locals " + useLocals + " in these statements: " + useStmts);
 
@@ -169,7 +169,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Object>
     in.copy(out);
 
     // get list of definitions at this unit
-    List<Value> newDefs = new ArrayList<>();
+    List<Value> newDefs = new ArrayList<Value>();
     for (ValueBox vb : stmt.getDefBoxes()) {
       newDefs.add(vb.getValue());
     }
@@ -217,7 +217,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Object>
         if (aliasList.isEmpty()) {
           aliasList.add(l); // covers the case of this or a parameter, where getCopiesOfAt doesn't seem to work right now
         }
-        firstUseToAliasSet.put(stmt, new ArrayList<>(aliasList));
+        firstUseToAliasSet.put(stmt, new ArrayList<Object>(aliasList));
         // logger.debug("Aliases of " + l + " at " + stmt + " are " + aliasList);
         out.add(aliasList);
       }
@@ -254,11 +254,11 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Object>
 
   @Override
   protected FlowSet<Object> entryInitialFlow() {
-    return new ArraySparseSet<>();
+    return new ArraySparseSet<Object>();
   }
 
   @Override
   protected FlowSet<Object> newInitialFlow() {
-    return new ArraySparseSet<>();
+    return new ArraySparseSet<Object>();
   }
 }

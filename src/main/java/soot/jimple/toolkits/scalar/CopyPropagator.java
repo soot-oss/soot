@@ -111,7 +111,7 @@ public class CopyPropagator extends BodyTransformer {
     }
 
     // Count number of definitions for each local.
-    Map<Local, Integer> localToDefCount = new HashMap<>(b.getLocalCount() * 2 + 1);
+    Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>(b.getLocalCount() * 2 + 1);
     for (Unit u : b.getUnits()) {
       if (u instanceof DefinitionStmt) {
         Value leftOp = ((DefinitionStmt) u).getLeftOp();
@@ -155,7 +155,10 @@ public class CopyPropagator extends BodyTransformer {
             // We force propagating nulls. If a target can only be
             // null due to typing, we always inline that constant.
             if (!allLocals && !(l.getType() instanceof NullType)) {
-              if ((onlyRegularLocals && l.isStackLocal()) || (onlyStackLocals && !l.isStackLocal())) {
+              if (onlyRegularLocals && l.isStackLocal()) {
+                continue;
+              }
+              if (onlyStackLocals && !l.isStackLocal()) {
                 continue;
               }
             }

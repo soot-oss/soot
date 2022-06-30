@@ -10,12 +10,12 @@ package soot.dotnet.members;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -53,14 +53,12 @@ public class DotnetProperty extends AbstractDotnetMember {
   }
 
   private void initDotnetMethods() {
-    if (getCanGet() && protoProperty.hasGetter()) {
+    if (getCanGet() && protoProperty.hasGetter())
       this.getterMethod
           = new DotnetMethod(protoProperty.getGetter(), declaringClass, DotnetMethod.DotnetMethodType.PROPERTY);
-    }
-    if (getCanSet() && protoProperty.hasSetter()) {
+    if (getCanSet() && protoProperty.hasSetter())
       this.setterMethod
           = new DotnetMethod(protoProperty.getSetter(), declaringClass, DotnetMethod.DotnetMethodType.PROPERTY);
-    }
   }
 
   public boolean getCanGet() {
@@ -72,16 +70,14 @@ public class DotnetProperty extends AbstractDotnetMember {
   }
 
   public SootMethod makeSootMethodGetter() {
-    if (!protoProperty.getCanGet() || !protoProperty.hasGetter()) {
+    if (!protoProperty.getCanGet() || !protoProperty.hasGetter())
       return null;
-    }
     return getterMethod.toSootMethod(createPropertyMethodSource(false));
   }
 
   public SootMethod makeSootMethodSetter() {
-    if (!protoProperty.getCanSet() || !protoProperty.hasSetter()) {
+    if (!protoProperty.getCanSet() || !protoProperty.hasSetter())
       return null;
-    }
     return setterMethod.toSootMethod(createPropertyMethodSource(true));
   }
 

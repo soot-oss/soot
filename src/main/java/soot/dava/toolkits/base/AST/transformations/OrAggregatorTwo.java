@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -83,11 +83,9 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
     DEBUG = false;
   }
 
-  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
   }
 
-  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     // check whether the else body has another if and nothing else
 
@@ -96,12 +94,19 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
 
     List<Object> innerIfBody = checkElseHasOnlyIf(elseBody);
 
-    
+    if (innerIfBody == null) {
+      // pattern 1 did not match
+
+      // check for pattern 2
+      matchPatternTwo(node);
+
+      return;
+    }
     // pattern 1 is fine till now
     // compare the ifBody with the innerIfBody
     // They need to match exactly
 
-    if ((innerIfBody == null) || (ifBody.toString().compareTo(innerIfBody.toString()) != 0)) {
+    if (ifBody.toString().compareTo(innerIfBody.toString()) != 0) {
       matchPatternTwo(node);
       return;
     }
@@ -122,7 +127,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter {
     /*
      * Always have to follow with a parse to remove unwanted empty ElseBodies
      */
-    node.replaceElseBody(new ArrayList<>());
+    node.replaceElseBody(new ArrayList<Object>());
 
     G.v().ASTTransformations_modified = true;
   }

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,7 +50,7 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 public class MethodExtentBuilder {
 
   // private List inlineSites = new ArrayList();
-  private final Set<Object> methodsNeedingInlining = new HashSet<>();
+  private final Set<Object> methodsNeedingInlining = new HashSet<Object>();
 
   public MethodExtentBuilder(Body unitBody, PegCallGraph pcg, CallGraph cg) {
     // testCallGraph(cg);
@@ -139,7 +139,7 @@ public class MethodExtentBuilder {
      * if a method is not in methodsNeedingInlining, use DFS to find out if it's parents need inlining. If so, add it to
      * methodsNeedingInlining
      */
-    Set<Object> gray = new HashSet<>();
+    Set<Object> gray = new HashSet<Object>();
     Iterator it = cg.iterator();
 
     while (it.hasNext()) {

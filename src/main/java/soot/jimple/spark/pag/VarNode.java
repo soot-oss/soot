@@ -10,12 +10,12 @@ package soot.jimple.spark.pag;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,7 +63,6 @@ public abstract class VarNode extends ValNode implements Comparable {
     return fields == null ? null : fields.get(field);
   }
 
-  @Override
   public int compareTo(Object o) {
     VarNode other = (VarNode) o;
     if (other.finishingNumber == finishingNumber && other != this) {
@@ -143,7 +142,7 @@ public abstract class VarNode extends ValNode implements Comparable {
   /** Registers a frn as having this node as its base. */
   void addField(FieldRefNode frn, SparkField field) {
     if (fields == null) {
-      fields = new HashMap<>();
+      fields = new HashMap<SparkField, FieldRefNode>();
     }
     fields.put(field, frn);
   }

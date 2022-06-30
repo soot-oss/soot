@@ -11,12 +11,12 @@ package soot.util.annotations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,13 +27,13 @@ import java.lang.reflect.Array;
 
 /**
  * Loads classes without relying on JBoss.
- *
+ * 
  * A general note on dynamically loading classes based on information from
  * target programs: You don't want that. It's a horrible idea, can lead to
  * severe security vulnerabilities, and is bad style. Trust me. But people seem
  * to need it, so this class makes it at least slightly less horrible than the
  * old way. It's still insane, but now it's insanity with style. Somehow.
- *
+ * 
  * @author Steven Arzt
  *
  */
@@ -41,7 +41,7 @@ public class ClassLoaderUtils {
 
   /**
    * Don't call me. Just don't.
-   *
+   * 
    * @param className
    * @return
    * @throws ClassNotFoundException
@@ -52,7 +52,7 @@ public class ClassLoaderUtils {
 
   /**
    * Don't call me. Just don't.
-   *
+   * 
    * @param className
    * @return
    * @throws ClassNotFoundException

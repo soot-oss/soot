@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -84,7 +84,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
   Map<Ref, EquivalentValue> refToBase;
   Map<Ref, EquivalentValue> refToIndex;
 
-  static Set<SootMethod> analyzing = new HashSet<>();
+  static Set<SootMethod> analyzing = new HashSet<SootMethod>();
 
   public LockableReferenceAnalysis(UnitGraph g) {
     super(g);
@@ -96,8 +96,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     begin = null;
     lostObjects = false;
 
-    refToBase = new HashMap<>();
-    refToIndex = new HashMap<>();
+    refToBase = new HashMap<Ref, EquivalentValue>();
+    refToIndex = new HashMap<Ref, EquivalentValue>();
 
     // analysis is done on-demand, not now
   }
@@ -130,7 +130,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     }
 
     // STOP
-    List<EquivalentValue> lockset = new ArrayList<>();
+    List<EquivalentValue> lockset = new ArrayList<EquivalentValue>();
     LocksetFlowInfo resultsInfo = null;
     Map<soot.EquivalentValue, java.lang.Integer> results = null;
     if (begin == null) {
@@ -148,14 +148,14 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
 
     // Reverse the results so it maps value->keys instead of key->value
     // Then we can pick just one object (key) per group (value)
-    Map<Integer, List<EquivalentValue>> reversed = new HashMap<>();
+    Map<Integer, List<EquivalentValue>> reversed = new HashMap<Integer, List<EquivalentValue>>();
     for (Map.Entry<EquivalentValue, Integer> e : results.entrySet()) {
       EquivalentValue key = e.getKey();
       Integer value = e.getValue();
 
       List<EquivalentValue> keys;
       if (!reversed.containsKey(value)) {
-        keys = new ArrayList<>();
+        keys = new ArrayList<EquivalentValue>();
         reversed.put(value, keys);
       } else {
         keys = reversed.get(value);
@@ -217,7 +217,6 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     return refToIndex.get(ref);
   }
 
-  @Override
   protected void merge(LocksetFlowInfo in1, LocksetFlowInfo in2, LocksetFlowInfo out) {
     LocksetFlowInfo tmpInfo = new LocksetFlowInfo();
 
@@ -455,7 +454,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     if ((tn == null || tn.units.contains(stmt)) && !lostObjects) {
       // Prepare the RW set for the statement
       CodeBlockRWSet stmtRW = null;
-      Set<Value> allUses = new HashSet<>();
+      Set<Value> allUses = new HashSet<Value>();
       RWSet stmtRead = tasea.readSet(method, stmt, tn, allUses);
       if (stmtRead != null) {
         stmtRW = (CodeBlockRWSet) stmtRead;
@@ -471,7 +470,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
 
       // If the stmtRW intersects the contributingRW
       if (stmtRW != null && stmtRW.hasNonEmptyIntersection(contributingRWSet)) {
-        List<Value> uses = new ArrayList<>();
+        List<Value> uses = new ArrayList<Value>();
         Iterator<Value> allUsesIt = allUses.iterator();
         while (allUsesIt.hasNext()) {
           Value vEqVal = allUsesIt.next();
@@ -552,7 +551,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
         Iterator<Value> usesIt = uses.iterator();
 
         while (usesIt.hasNext() && !lostObjects) {
-          Value use = usesIt.next();
+          Value use = (Value) usesIt.next();
           // if present, ok, if not, add as new group
 
           if (use instanceof InstanceFieldRef) {
@@ -799,7 +798,6 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     }
   }
 
-  @Override
   protected void copy(LocksetFlowInfo sourceInfo, LocksetFlowInfo destInfo) {
     destInfo.groups.clear();
     destInfo.groups.putAll(sourceInfo.groups);
@@ -811,7 +809,6 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit, Lockse
     destInfo.refToIndexGroup.putAll(sourceInfo.refToIndexGroup);
   }
 
-  @Override
   protected LocksetFlowInfo newInitialFlow() {
     return new LocksetFlowInfo();
   }
@@ -826,13 +823,12 @@ class LocksetFlowInfo {
   public Map<Ref, Integer> refToIndexGroup; // map from ArrayRef to index group number
 
   public LocksetFlowInfo() {
-    groups = new HashMap<>();
+    groups = new HashMap<EquivalentValue, Integer>();
 
-    refToBaseGroup = new HashMap<>();
-    refToIndexGroup = new HashMap<>();
+    refToBaseGroup = new HashMap<Ref, Integer>();
+    refToIndexGroup = new HashMap<Ref, Integer>();
   }
 
-  @Override
   public Object clone() {
     LocksetFlowInfo ret = new LocksetFlowInfo();
 
@@ -843,12 +839,10 @@ class LocksetFlowInfo {
     return ret;
   }
 
-  @Override
   public int hashCode() {
     return groups.hashCode(); // + refToBaseGroup.keySet().hashCode() + refToIndexGroup.keySet().hashCode();
   }
 
-  @Override
   public boolean equals(Object o) {
     if (o instanceof LocksetFlowInfo) {
       LocksetFlowInfo other = (LocksetFlowInfo) o;

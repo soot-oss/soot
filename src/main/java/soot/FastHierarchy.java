@@ -1,18 +1,5 @@
 package soot;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -38,8 +25,21 @@ import java.util.Set;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import soot.dotnet.types.DotnetBasicTypes;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import soot.jimple.spark.internal.TypeManager;
+
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
@@ -65,38 +65,38 @@ public class FastHierarchy {
    * This map holds all key,value pairs such that value.getSuperclass() == key. This is one of the three maps that hold the
    * inverse of the relationships given by the getSuperclass and getInterfaces methods of SootClass.
    */
-  protected MultiMap<SootClass, SootClass> classToSubclasses = new ConcurrentHashMultiMap<>();
+  protected MultiMap<SootClass, SootClass> classToSubclasses = new ConcurrentHashMultiMap<SootClass, SootClass>();
 
   /**
    * This map holds all key,value pairs such that value is an interface and key is in value.getInterfaces(). This is one of
    * the three maps that hold the inverse of the relationships given by the getSuperclass and getInterfaces methods of
    * SootClass.
    */
-  protected MultiMap<SootClass, SootClass> interfaceToSubinterfaces = new ConcurrentHashMultiMap<>();
+  protected MultiMap<SootClass, SootClass> interfaceToSubinterfaces = new ConcurrentHashMultiMap<SootClass, SootClass>();
 
   /**
    * This map holds all key,value pairs such that value is a class (NOT an interface) and key is in value.getInterfaces().
    * This is one of the three maps that hold the inverse of the relationships given by the getSuperclass and getInterfaces
    * methods of SootClass.
    */
-  protected MultiMap<SootClass, SootClass> interfaceToImplementers = new ConcurrentHashMultiMap<>();
+  protected MultiMap<SootClass, SootClass> interfaceToImplementers = new ConcurrentHashMultiMap<SootClass, SootClass>();
 
   /**
    * This map is a transitive closure of interfaceToSubinterfaces, and each set contains its superinterface itself.
    */
-  protected MultiMap<SootClass, SootClass> interfaceToAllSubinterfaces = new ConcurrentHashMultiMap<>();
+  protected MultiMap<SootClass, SootClass> interfaceToAllSubinterfaces = new ConcurrentHashMultiMap<SootClass, SootClass>();
 
   /**
    * This map gives, for an interface, all concrete classes that implement that interface and all its subinterfaces, but NOT
    * their subclasses.
    */
-  protected MultiMap<SootClass, SootClass> interfaceToAllImplementers = new ConcurrentHashMultiMap<>();
+  protected MultiMap<SootClass, SootClass> interfaceToAllImplementers = new ConcurrentHashMultiMap<SootClass, SootClass>();
 
   /**
    * For each class (NOT interface), this map contains a Interval, which is a pair of numbers giving a preorder and postorder
    * ordering of classes in the inheritance tree.
    */
-  protected Map<SootClass, Interval> classToInterval = new HashMap<>();
+  protected Map<SootClass, Interval> classToInterval = new HashMap<SootClass, Interval>();
 
   protected final Scene sc;
   protected final RefType rtObject;
@@ -300,13 +300,12 @@ public class FastHierarchy {
       } else if (parent instanceof ArrayType) {
         Type base = ((AnySubType) child).getBase();
         // System.Array base class of arrays in CIL
-        if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        if (Options.v().src_prec() == Options.src_prec_dotnet)
           return base == cilArray;
-        }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return base == rtObject || base == rtSerializable || base == rtCloneable;
       } else {
-        Deque<SootClass> worklist = new ArrayDeque<>();
+        Deque<SootClass> worklist = new ArrayDeque<SootClass>();
         SootClass base = ((AnySubType) child).getBase().getSootClass();
         if (base.isInterface()) {
           worklist.addAll(getAllImplementersOfInterface(base));
@@ -331,9 +330,8 @@ public class FastHierarchy {
     } else if (child instanceof ArrayType) {
       if (parent instanceof RefType) {
         // base class System.Array for all arrays
-        if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        if (Options.v().src_prec() == Options.src_prec_dotnet)
           return parent == cilArray;
-        }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
       } else if (parent instanceof ArrayType) {
@@ -353,9 +351,8 @@ public class FastHierarchy {
           }
         } else if (achild.numDimensions > aparent.numDimensions) {
           final Type pBaseType = aparent.baseType;
-          if (Options.v().src_prec() == Options.src_prec_dotnet) {
+          if (Options.v().src_prec() == Options.src_prec_dotnet)
             return pBaseType == cilArray;
-          }
           return pBaseType == rtObject || pBaseType == rtSerializable || pBaseType == rtCloneable;
         } else {
           return false;
@@ -363,13 +360,16 @@ public class FastHierarchy {
       } else {
         return false;
       }
-    } else if (Options.v().src_prec() == Options.src_prec_dotnet && child instanceof PrimType && parent instanceof RefType) {
+    } else if (Options.v().src_prec() == Options.src_prec_dotnet
+            && child instanceof PrimType
+            && parent instanceof RefType) {
       // only dotnet
       // if right type prim type struct which implements these interfaces
       // if generic, base class System.Object is possible
-      return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible || parent == cilIformattable
-          || parent == cilIequatable1 || parent == rtObject;
-    } else {
+      return parent == cilIcomparable || parent == cilIcomparable1 || parent == cilIconvertible
+              || parent == cilIformattable || parent == cilIequatable1 || parent == rtObject;
+    }
+    else {
       return false;
     }
   }
@@ -465,10 +465,10 @@ public class FastHierarchy {
     final SootClass declaringClass = declaredTypeOfBase.getSootClass();
     declaringClass.checkLevel(SootClass.HIERARCHY);
 
-    Set<SootMethod> ret = new HashSet<>();
+    Set<SootMethod> ret = new HashSet<SootMethod>();
     for (final Type t : concreteTypes) {
       if (t instanceof AnySubType) {
-        HashSet<SootClass> s = new HashSet<>();
+        HashSet<SootClass> s = new HashSet<SootClass>();
         s.add(declaringClass);
         while (!s.isEmpty()) {
           final SootClass c = s.iterator().next();
@@ -536,10 +536,10 @@ public class FastHierarchy {
     final SootClass declaringClass = declaredTypeOfBase.getSootClass();
     declaringClass.checkLevel(SootClass.HIERARCHY);
 
-    Set<SootMethod> ret = new HashSet<>();
+    Set<SootMethod> ret = new HashSet<SootMethod>();
     for (final Type t : concreteTypes) {
       if (t instanceof AnySubType) {
-        HashSet<SootClass> s = new HashSet<>();
+        HashSet<SootClass> s = new HashSet<SootClass>();
         s.add(declaringClass);
         while (!s.isEmpty()) {
           final SootClass c = s.iterator().next();
@@ -958,9 +958,8 @@ public class FastHierarchy {
    */
   private SootMethod getSignaturePolymorphicMethod(SootClass concreteType, String name, List<Type> parameterTypes,
       Type returnType) {
-    if (concreteType == null) {
+    if (concreteType == null)
       throw new RuntimeException("The concreteType cannot not be null!");
-    }
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethods()) {
       if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
@@ -970,21 +969,20 @@ public class FastHierarchy {
       }
       // if dotnet structs or generics
       if (Options.v().src_prec() == Options.src_prec_dotnet) {
-        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size()
-            && canStoreType(returnType, method.getReturnType())) {
+        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size() &&
+                canStoreType(returnType, method.getReturnType())) {
           boolean canStore = true;
           for (int i = 0; i < method.getParameterCount(); i++) {
-            Type methodParameter = method.getParameterType(i);
-            Type calleeParameter = parameterTypes.get(i);
-            // base class can System.Object
-            if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter))) {
-              canStore = false;
+              Type methodParameter = method.getParameterType(i);
+              Type calleeParameter = parameterTypes.get(i);
+              // base class can System.Object
+              if (!(methodParameter.equals(calleeParameter) || canStoreType(calleeParameter, methodParameter)))
+                canStore = false;
             }
-          }
-          if (canStore) {
-            candidate = method;
-            returnType = method.getReturnType();
-          }
+            if (canStore) {
+              candidate = method;
+              returnType = method.getReturnType();
+            }
         }
       }
     }

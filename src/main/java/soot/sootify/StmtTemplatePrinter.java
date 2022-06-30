@@ -10,12 +10,12 @@ package soot.sootify;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -55,7 +55,7 @@ class StmtTemplatePrinter implements StmtSwitch {
 
   private final ValueTemplatePrinter vtp; // text for expression
 
-  private List<Unit> jumpTargets = new ArrayList<>();
+  private List<Unit> jumpTargets = new ArrayList<Unit>();
 
   public StmtTemplatePrinter(TemplatePrinter templatePrinter, PatchingChain<Unit> units) {
     this.p = templatePrinter;
@@ -68,7 +68,7 @@ class StmtTemplatePrinter implements StmtSwitch {
     }
 
     Collections.sort(jumpTargets, new Comparator<Unit>() {
-      final List<Unit> unitsList = new ArrayList<>(units);
+      final List<Unit> unitsList = new ArrayList<Unit>(units);
 
       @Override
       public int compare(Unit o1, Unit o2) {
@@ -186,7 +186,7 @@ class StmtTemplatePrinter implements StmtSwitch {
 
     p.println("List<IntConstant> lookupValues = new LinkedList<IntConstant>();");
     int i = 0;
-    for (IntConstant c : stmt.getLookupValues()) {
+    for (IntConstant c : (List<IntConstant>) stmt.getLookupValues()) {
       vtp.suggestVariableName("lookupValue" + i);
       c.apply(vtp);
       i++;

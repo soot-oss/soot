@@ -10,12 +10,12 @@ package soot.jimple.spark.sets;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -83,7 +83,6 @@ public class SharedHybridSet extends PointsToSetInternal {
    * moved into the base bit vector)
    */
 
-  @Override
   public boolean contains(Node n) {
     // Which should be checked first, bitVector or overflow? (for
     // performance)
@@ -91,15 +90,18 @@ public class SharedHybridSet extends PointsToSetInternal {
     // elements
 
     // Check the bit vector
+    if (bitVector != null && bitVector.contains(n)) {
+      return true;
+    }
+
     // Check overflow
-    if ((bitVector != null && bitVector.contains(n)) || overflow.contains(n)) {
+    if (overflow.contains(n)) {
       return true;
     }
 
     return false;
   }
 
-  @Override
   public boolean isEmpty() {
     return numElements == 0;
   }
@@ -181,7 +183,6 @@ public class SharedHybridSet extends PointsToSetInternal {
     bitVector = newBitVector;
   }
 
-  @Override
   public boolean add(Node n) {
     /*
      * This algorithm is described in the paper "IBM Research Report: Fast Pointer Analysis" by Hirzel, Dincklage, Diwan, and
@@ -412,7 +413,6 @@ public class SharedHybridSet extends PointsToSetInternal {
    * throw new RuntimeException("Assertion failed."); } }
    */
 
-  @Override
   public boolean addAll(PointsToSetInternal other, final PointsToSetInternal exclude) {
     // Look at the sort of craziness we have to do just because of a lack of
     // multimethods
@@ -426,7 +426,6 @@ public class SharedHybridSet extends PointsToSetInternal {
     }
   }
 
-  @Override
   public boolean forall(P2SetVisitor v) {
     // Iterate through the bit vector. Ripped from BitPointsToSet again.
     // It seems there should be a way to share code between BitPointsToSet
@@ -434,7 +433,7 @@ public class SharedHybridSet extends PointsToSetInternal {
     // SharedHybridSet, but I don't know how at the moment.
     if (bitVector != null) {
       for (BitSetIterator it = bitVector.iterator(); it.hasNext();) {
-        v.visit(pag.getAllocNodeNumberer().get(it.next()));
+        v.visit((Node) pag.getAllocNodeNumberer().get(it.next()));
       }
     }
     // Iterate through the overflow list
@@ -448,7 +447,6 @@ public class SharedHybridSet extends PointsToSetInternal {
   // used to construct SharedHybridSets
   public final static P2SetFactory getFactory() {
     return new P2SetFactory() {
-      @Override
       public final PointsToSetInternal newSet(Type type, PAG pag) {
         return new SharedHybridSet(type, pag);
       }
@@ -465,7 +463,6 @@ public class SharedHybridSet extends PointsToSetInternal {
 
   private int numElements = 0; // # of elements in the set
 
-  @Override
   public int size() {
     return numElements;
   }
@@ -490,7 +487,7 @@ public class SharedHybridSet extends PointsToSetInternal {
         // Get the next node in the bitset by looking it up in the
         // pointer assignment graph.
         // Ripped from BitPointsToSet.
-        Node n = (pag.getAllocNodeNumberer().get(it.next()));
+        Node n = (Node) (pag.getAllocNodeNumberer().get(it.next()));
         add(n);
       }
 

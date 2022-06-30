@@ -10,12 +10,12 @@ package soot.jimple.toolkits.pointer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,7 +60,7 @@ public class FieldRWTagger extends BodyTransformer {
   private CallGraph cg;
 
   protected class UniqueRWSets implements Iterable<RWSet> {
-    protected final ArrayList<RWSet> l = new ArrayList<>();
+    protected final ArrayList<RWSet> l = new ArrayList<RWSet>();
 
     RWSet getUnique(RWSet s) {
       if (s != null) {
@@ -115,7 +115,7 @@ public class FieldRWTagger extends BodyTransformer {
       if (!it.hasNext()) {
         return Collections.emptyList();
       }
-      ArrayList<Edge> ret = new ArrayList<>();
+      ArrayList<Edge> ret = new ArrayList<Edge>();
       while (it.hasNext()) {
         ret.add(it.next());
       }
@@ -130,8 +130,8 @@ public class FieldRWTagger extends BodyTransformer {
     initializationStuff(phaseName);
     SideEffectAnalysis sea = new SideEffectAnalysis(DumbPointerAnalysis.v(), Scene.v().getCallGraph());
     sea.findNTRWSets(body.getMethod());
-    HashMap<Object, RWSet> stmtToReadSet = new HashMap<>();
-    HashMap<Object, RWSet> stmtToWriteSet = new HashMap<>();
+    HashMap<Object, RWSet> stmtToReadSet = new HashMap<Object, RWSet>();
+    HashMap<Object, RWSet> stmtToWriteSet = new HashMap<Object, RWSet>();
     UniqueRWSets sets = new UniqueRWSets();
     optionDontTag = PhaseOptions.getBoolean(options, "dont-tag");
     final boolean justDoTotallyConservativeThing = "<clinit>".equals(body.getMethod().getName());

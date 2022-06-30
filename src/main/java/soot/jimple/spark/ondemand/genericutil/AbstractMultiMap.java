@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.genericutil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,7 +30,7 @@ import java.util.Set;
 
 abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
-  protected final Map<K, Set<V>> map = new HashMap<>();
+  protected final Map<K, Set<V>> map = new HashMap<K, Set<V>>();
 
   protected final boolean create;
 
@@ -46,7 +46,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#get(K)
    */
   @Override
@@ -65,7 +65,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#put(K, V)
    */
   @Override
@@ -80,7 +80,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#remove(K, V)
    */
   @Override
@@ -103,7 +103,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#keys()
    */
   @Override
@@ -113,7 +113,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#containsKey(java.lang.Object)
    */
   @Override
@@ -123,7 +123,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#size()
    */
   @Override
@@ -137,7 +137,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#toString()
    */
   @Override
@@ -147,7 +147,7 @@ abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 
   /*
    * (non-Javadoc)
-   *
+   * 
    * @see AAA.util.MultiMap#putAll(K, java.util.Set)
    */
   @Override

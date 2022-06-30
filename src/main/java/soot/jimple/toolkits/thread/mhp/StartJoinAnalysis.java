@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -81,14 +81,14 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
   public StartJoinAnalysis(UnitGraph g, SootMethod sm, CallGraph callGraph, PAG pag) {
     super(g);
 
-    startStatements = new HashSet<>();
-    joinStatements = new HashSet<>();
+    startStatements = new HashSet<Stmt>();
+    joinStatements = new HashSet<Stmt>();
 
     hierarchy = Scene.v().getActiveHierarchy();
 
-    startToRunMethods = new HashMap<>();
-    startToAllocNodes = new HashMap<>();
-    startToJoin = new HashMap<>();
+    startToRunMethods = new HashMap<Stmt, List<SootMethod>>();
+    startToAllocNodes = new HashMap<Stmt, List<AllocNode>>();
+    startToJoin = new HashMap<Stmt, Stmt>();
 
     // Get lists of start and join statements
     doFlowInsensitiveSingleIterationAnalysis();
@@ -107,9 +107,9 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
       while (startIt.hasNext()) {
         Stmt start = startIt.next();
 
-        List<SootMethod> runMethodsList = new ArrayList<>(); // will be a list of possible run methods called by
+        List<SootMethod> runMethodsList = new ArrayList<SootMethod>(); // will be a list of possible run methods called by
                                                                        // this start stmt
-        List<AllocNode> allocNodesList = new ArrayList<>(); // will be a list of possible allocation nodes for the
+        List<AllocNode> allocNodesList = new ArrayList<AllocNode>(); // will be a list of possible allocation nodes for the
                                                                      // thread object that's
                                                                      // getting started
 
@@ -188,10 +188,9 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
   }
 
   private List<AllocNode> getMayAliasList(PointsToSetInternal pts) {
-    List<AllocNode> list = new ArrayList<>();
-    final HashSet<AllocNode> ret = new HashSet<>();
+    List<AllocNode> list = new ArrayList<AllocNode>();
+    final HashSet<AllocNode> ret = new HashSet<AllocNode>();
     pts.forall(new P2SetVisitor() {
-      @Override
       public void visit(Node n) {
 
         ret.add((AllocNode) n);
@@ -233,7 +232,6 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
     }
   }
 
-  @Override
   protected void merge(Object in1, Object in2, Object out) {
     FlowSet inSet1 = (FlowSet) in1;
     FlowSet inSet2 = (FlowSet) in2;
@@ -242,7 +240,6 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
     inSet1.intersection(inSet2, outSet);
   }
 
-  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     Stmt stmt = (Stmt) unit;
 
@@ -304,7 +301,6 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
     }
   }
 
-  @Override
   protected void copy(Object source, Object dest) {
 
     FlowSet sourceSet = (FlowSet) source;
@@ -314,12 +310,10 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
 
   }
 
-  @Override
   protected Object entryInitialFlow() {
     return new ArraySparseSet();
   }
 
-  @Override
   protected Object newInitialFlow() {
     return new ArraySparseSet();
   }

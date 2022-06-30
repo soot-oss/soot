@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -24,7 +24,7 @@ package soot.coffi;
 
 /**
  * Represents a single field_info object.
- *
+ * 
  * @see ClassFile
  * @author Clark Verbrugge
  */
@@ -33,14 +33,14 @@ public class field_info {
   public int access_flags;
   /**
    * Constant pool index of the name of this field.
-   *
+   * 
    * @see ClassFile#constant_pool
    * @see CONSTANT_Utf8_info
    */
   public int name_index;
   /**
    * Constant pool index of the type descriptor of this field.
-   *
+   * 
    * @see ClassFile#constant_pool
    * @see CONSTANT_Utf8_info
    */
@@ -49,14 +49,14 @@ public class field_info {
   public int attributes_count;
   /**
    * Array of attribute_info objects for this field.
-   *
+   * 
    * @see attribute_info
    */
   public attribute_info attributes[];
 
   /**
    * Returns the name of this field.
-   *
+   * 
    * @param constant_pool
    *          the constant_pool for this class.
    * @return the name of this field.
@@ -69,7 +69,7 @@ public class field_info {
 
   /**
    * Returns the prototype of this field.
-   *
+   * 
    * @param constant_pool
    *          the constant_pool for this class.
    * @return the prototype (access + type + name) of this field.
@@ -89,7 +89,7 @@ public class field_info {
 
   /**
    * Locates a constant value attribute if one exists.
-   *
+   * 
    * @return the constant value attribute or <i>null</i>.
    * @see ConstantValue_attribute
    */

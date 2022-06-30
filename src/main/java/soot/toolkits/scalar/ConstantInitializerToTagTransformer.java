@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -97,10 +97,10 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
       return;
     }
 
-    Set<SootField> nonConstantFields = new HashSet<>();
-    Map<SootField, ConstantValueTag> newTags = new HashMap<>();
+    Set<SootField> nonConstantFields = new HashSet<SootField>();
+    Map<SootField, ConstantValueTag> newTags = new HashMap<SootField, ConstantValueTag>();
     // in case of mismatch between code/constant table values, constant tags are removed
-    Set<SootField> removeTagList = new HashSet<>();
+    Set<SootField> removeTagList = new HashSet<SootField>();
     for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator(); itU.hasNext();) {
       Unit u = itU.next();
       if (u instanceof AssignStmt) {
@@ -203,7 +203,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
     // remove constant tags
     for (SootField sf : removeTagList) {
       if (removeTagList.contains(sf)) {
-        List<Tag> toRemoveTagList = new ArrayList<>();
+        List<Tag> toRemoveTagList = new ArrayList<Tag>();
         for (Tag t : sf.getTags()) {
           if (t instanceof ConstantValueTag) {
             toRemoveTagList.add(t);

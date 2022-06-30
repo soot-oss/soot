@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -53,7 +53,10 @@ public class BlockGraphConverter {
     ADDSTART: {
       List<Block> heads = graph.getHeads();
       int headCount = heads.size();
-      if ((headCount == 0) || ((headCount == 1) && (heads.get(0) instanceof DummyBlock))) {
+      if (headCount == 0) {
+        break ADDSTART;
+      }
+      if ((headCount == 1) && (heads.get(0) instanceof DummyBlock)) {
         break ADDSTART;
       }
 
@@ -67,7 +70,7 @@ public class BlockGraphConverter {
         block.setIndexInMethod(block.getIndexInMethod() + 1);
       }
 
-      List<Block> newBlocks = new ArrayList<>();
+      List<Block> newBlocks = new ArrayList<Block>();
       newBlocks.add(head);
       newBlocks.addAll(blocks);
       graph.mBlocks = newBlocks;
@@ -76,7 +79,10 @@ public class BlockGraphConverter {
     ADDSTOP: {
       List<Block> tails = graph.getTails();
       int tailCount = tails.size();
-      if ((tailCount == 0) || ((tailCount == 1) && (tails.get(0) instanceof DummyBlock))) {
+      if (tailCount == 0) {
+        break ADDSTOP;
+      }
+      if ((tailCount == 1) && (tails.get(0) instanceof DummyBlock)) {
         break ADDSTOP;
       }
 
@@ -111,8 +117,8 @@ public class BlockGraphConverter {
     List<Block> heads = graph.getHeads();
     List<Block> tails = graph.getTails();
 
-    graph.mHeads = new ArrayList<>(tails);
-    graph.mTails = new ArrayList<>(heads);
+    graph.mHeads = new ArrayList<Block>(tails);
+    graph.mTails = new ArrayList<Block>(heads);
   }
 
   public static void main(String[] args) {
@@ -143,10 +149,10 @@ class DummyBlock extends Block {
 
   void makeHeadBlock(List<Block> oldHeads) {
     setPreds(new ArrayList<Block>());
-    setSuccs(new ArrayList<>(oldHeads));
+    setSuccs(new ArrayList<Block>(oldHeads));
 
     for (Block oldHead : oldHeads) {
-      List<Block> newPreds = new ArrayList<>();
+      List<Block> newPreds = new ArrayList<Block>();
       newPreds.add(this);
 
       List<Block> oldPreds = oldHead.getPreds();
@@ -160,13 +166,13 @@ class DummyBlock extends Block {
 
   void makeTailBlock(List<Block> oldTails) {
     setSuccs(new ArrayList<Block>());
-    setPreds(new ArrayList<>(oldTails));
+    setPreds(new ArrayList<Block>(oldTails));
 
     Iterator<Block> tailsIt = oldTails.iterator();
     while (tailsIt.hasNext()) {
       Block oldTail = tailsIt.next();
 
-      List<Block> newSuccs = new ArrayList<>();
+      List<Block> newSuccs = new ArrayList<Block>();
       newSuccs.add(this);
 
       List<Block> oldSuccs = oldTail.getSuccs();

@@ -10,12 +10,12 @@ package soot.shimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -91,7 +91,7 @@ public class DefaultShimpleFactory implements ShimpleFactory {
   public ReversibleGraph<Block> getReverseBlockGraph() {
     ReversibleGraph<Block> rbg = this.rbg;
     if (rbg == null) {
-      rbg = new HashReversibleGraph<>(getBlockGraph());
+      rbg = new HashReversibleGraph<Block>(getBlockGraph());
       rbg.reverse();
       this.rbg = rbg;
     }
@@ -102,7 +102,7 @@ public class DefaultShimpleFactory implements ShimpleFactory {
   public DominatorsFinder<Block> getReverseDominatorsFinder() {
     DominatorsFinder<Block> rdFinder = this.rdFinder;
     if (rdFinder == null) {
-      rdFinder = new SimpleDominatorsFinder<>(getReverseBlockGraph());
+      rdFinder = new SimpleDominatorsFinder<Block>(getReverseBlockGraph());
       this.rdFinder = rdFinder;
     }
     return rdFinder;
@@ -112,7 +112,7 @@ public class DefaultShimpleFactory implements ShimpleFactory {
   public DominatorTree<Block> getReverseDominatorTree() {
     DominatorTree<Block> rdTree = this.rdTree;
     if (rdTree == null) {
-      rdTree = new DominatorTree<>(getReverseDominatorsFinder());
+      rdTree = new DominatorTree<Block>(getReverseDominatorsFinder());
       this.rdTree = rdTree;
     }
     return rdTree;
@@ -122,7 +122,7 @@ public class DefaultShimpleFactory implements ShimpleFactory {
   public DominanceFrontier<Block> getReverseDominanceFrontier() {
     DominanceFrontier<Block> rdFrontier = this.rdFrontier;
     if (rdFrontier == null) {
-      rdFrontier = new CytronDominanceFrontier<>(getReverseDominatorTree());
+      rdFrontier = new CytronDominanceFrontier<Block>(getReverseDominatorTree());
       this.rdFrontier = rdFrontier;
     }
     return rdFrontier;
@@ -155,7 +155,7 @@ public class DefaultShimpleFactory implements ShimpleFactory {
   public DominatorsFinder<Block> getDominatorsFinder() {
     DominatorsFinder<Block> dFinder = this.dFinder;
     if (dFinder == null) {
-      dFinder = new SimpleDominatorsFinder<>(getBlockGraph());
+      dFinder = new SimpleDominatorsFinder<Block>(getBlockGraph());
       this.dFinder = dFinder;
     }
     return dFinder;
@@ -165,7 +165,7 @@ public class DefaultShimpleFactory implements ShimpleFactory {
   public DominatorTree<Block> getDominatorTree() {
     DominatorTree<Block> dTree = this.dTree;
     if (dTree == null) {
-      dTree = new DominatorTree<>(getDominatorsFinder());
+      dTree = new DominatorTree<Block>(getDominatorsFinder());
       this.dTree = dTree;
     }
     return dTree;
@@ -175,7 +175,7 @@ public class DefaultShimpleFactory implements ShimpleFactory {
   public DominanceFrontier<Block> getDominanceFrontier() {
     DominanceFrontier<Block> dFrontier = this.dFrontier;
     if (dFrontier == null) {
-      dFrontier = new CytronDominanceFrontier<>(getDominatorTree());
+      dFrontier = new CytronDominanceFrontier<Block>(getDominatorTree());
       this.dFrontier = dFrontier;
     }
     return dFrontier;

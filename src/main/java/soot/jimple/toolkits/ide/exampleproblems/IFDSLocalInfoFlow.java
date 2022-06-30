@@ -1,12 +1,5 @@
 package soot.jimple.toolkits.ide.exampleproblems;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -17,12 +10,12 @@ import java.util.Set;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,6 +31,14 @@ import heros.flowfunc.Identity;
 import heros.flowfunc.Kill;
 import heros.flowfunc.KillAll;
 import heros.flowfunc.Transfer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import soot.Local;
 import soot.NullType;
 import soot.Scene;
@@ -60,7 +61,6 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
     super(icfg);
   }
 
-  @Override
   public FlowFunctions<Unit, Local, SootMethod> createFlowFunctionsFactory() {
     return new FlowFunctions<Unit, Local, SootMethod>() {
 
@@ -71,7 +71,7 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
           Local leftLocal = (Local) is.getLeftOp();
           Value right = is.getRightOp();
           if (right instanceof ParameterRef) {
-            return new Gen<>(leftLocal, zeroValue());
+            return new Gen<Local>(leftLocal, zeroValue());
           }
         }
 
@@ -82,9 +82,9 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
             final Local leftLocal = (Local) assignStmt.getLeftOp();
             if (right instanceof Local) {
               final Local rightLocal = (Local) right;
-              return new Transfer<>(leftLocal, rightLocal);
+              return new Transfer<Local>(leftLocal, rightLocal);
             } else {
-              return new Kill<>(leftLocal);
+              return new Kill<Local>(leftLocal);
             }
           }
         }
@@ -96,19 +96,18 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
         Stmt s = (Stmt) src;
         InvokeExpr ie = s.getInvokeExpr();
         final List<Value> callArgs = ie.getArgs();
-        final List<Local> paramLocals = new ArrayList<>();
+        final List<Local> paramLocals = new ArrayList<Local>();
         for (int i = 0; i < dest.getParameterCount(); i++) {
           paramLocals.add(dest.getActiveBody().getParameterLocal(i));
         }
         return new FlowFunction<Local>() {
-          @Override
           public Set<Local> computeTargets(Local source) {
             // ignore implicit calls to static initializers
             if (dest.getName().equals(SootMethod.staticInitializerName) && dest.getParameterCount() == 0) {
               return Collections.emptySet();
             }
 
-            Set<Local> taintsInCaller = new HashSet<>();
+            Set<Local> taintsInCaller = new HashSet<Local>();
             for (int i = 0; i < callArgs.size(); i++) {
               if (callArgs.get(i).equivTo(source)) {
                 taintsInCaller.add(paramLocals.get(i));
@@ -133,7 +132,6 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
                 final Local retLocal = (Local) op;
                 return new FlowFunction<Local>() {
 
-                  @Override
                   public Set<Local> computeTargets(Local source) {
                     if (source == retLocal) {
                       return Collections.singleton(tgtLocal);
