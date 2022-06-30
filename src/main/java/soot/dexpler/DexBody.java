@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ArrayListMultimap;
+
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;
 import org.jf.dexlib2.analysis.ClassProvider;
@@ -60,8 +62,6 @@ import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
 import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ArrayListMultimap;
 
 import soot.Body;
 import soot.DoubleType;

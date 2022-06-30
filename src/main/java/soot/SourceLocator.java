@@ -23,10 +23,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.jf.dexlib2.iface.DexFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -56,6 +52,10 @@ import com.google.common.cache.ForwardingLoadingCache;
 import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+
+import org.jf.dexlib2.iface.DexFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;

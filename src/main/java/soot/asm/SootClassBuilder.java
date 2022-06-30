@@ -6,14 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.ModuleVisitor;
-import org.objectweb.asm.Opcodes;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -37,6 +29,14 @@ import org.objectweb.asm.Opcodes;
  */
 
 import com.google.common.base.Optional;
+
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.ModuleVisitor;
+import org.objectweb.asm.Opcodes;
 
 import soot.Modifier;
 import soot.ModuleRefType;

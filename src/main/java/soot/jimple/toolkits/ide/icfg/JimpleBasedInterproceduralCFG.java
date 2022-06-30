@@ -5,9 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -32,6 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import heros.DontSynchronize;
 import heros.InterproceduralCFG;

@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -36,6 +33,9 @@ import org.slf4j.LoggerFactory;
  */
 
 import com.google.common.base.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.asm.AsmUtil;
 import soot.jimple.ClassConstant;

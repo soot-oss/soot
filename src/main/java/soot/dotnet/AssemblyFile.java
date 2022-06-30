@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.google.common.base.Strings;
+
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
 
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;

@@ -2,9 +2,6 @@ package soot;
 
 import java.util.LinkedList;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -28,6 +25,9 @@ import org.slf4j.LoggerFactory;
  */
 
 import com.google.common.base.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
