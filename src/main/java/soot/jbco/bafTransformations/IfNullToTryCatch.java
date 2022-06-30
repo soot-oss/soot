@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -44,7 +44,7 @@ import soot.jimple.NullConstant;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 20-Jun-2006
  */
 public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform {
@@ -54,21 +54,25 @@ public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform 
 
   public static String dependancies[] = new String[] { "bb.jbco_riitcb", "bb.jbco_ful", "bb.lp" };
 
+  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_riitcb";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("If(Non)Nulls changed to traps: " + count);
     out.println("Total ifs found: " + totalifs);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) {

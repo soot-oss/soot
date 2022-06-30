@@ -15,12 +15,12 @@ package soot.dexpler.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -253,7 +253,7 @@ public abstract class DexlibAbstractInstruction {
    * @return a list of register indices
    */
   protected List<Integer> getUsedRegistersNums(RegisterRangeInstruction instruction) {
-    List<Integer> regs = new ArrayList<Integer>();
+    List<Integer> regs = new ArrayList<>();
     int start = instruction.getStartRegister();
     for (int i = start; i < start + instruction.getRegisterCount(); i++) {
       regs.add(i);
@@ -273,7 +273,7 @@ public abstract class DexlibAbstractInstruction {
     final int regCount = instruction.getRegisterCount();
     int[] regs = { instruction.getRegisterC(), instruction.getRegisterD(), instruction.getRegisterE(),
         instruction.getRegisterF(), instruction.getRegisterG(), };
-    List<Integer> l = new ArrayList<Integer>();
+    List<Integer> l = new ArrayList<>();
     // We have at least one app with regCount=6, reg=35c.
     // App is "com.mobirix.gk2019.apk" from 2020 PlayStore data set
     for (int i = 0; i < Math.min(regCount, regs.length); i++) {

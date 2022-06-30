@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -114,7 +114,7 @@ public class FinalFieldDefinition {
       return;
     }
 
-    cancelFinalModifier = new ArrayList<SootField>();
+    cancelFinalModifier = new ArrayList<>();
     analyzeMethod(node, interesting);
     for (SootField field : cancelFinalModifier) {
       field.setModifiers((soot.Modifier.FINAL ^ 0xFFFF) & field.getModifiers());
@@ -131,7 +131,7 @@ public class FinalFieldDefinition {
   public ArrayList<SootField> findFinalFields() {
 
     // first thing is to get a list of all final fields in the class
-    ArrayList<SootField> interestingFinalFields = new ArrayList<SootField>();
+    ArrayList<SootField> interestingFinalFields = new ArrayList<>();
     for (SootField tempField : sootClass.getFields()) {
       if (tempField.isFinal()) {
 
@@ -247,7 +247,7 @@ public class FinalFieldDefinition {
       }
     }
     if (!done) {
-      List<AugmentedStmt> newBody = new ArrayList<AugmentedStmt>();
+      List<AugmentedStmt> newBody = new ArrayList<>();
       newBody.add(defaultStmt);
 
       ASTStatementSequenceNode newNode = new ASTStatementSequenceNode(newBody);
@@ -270,7 +270,7 @@ public class FinalFieldDefinition {
       if (((SootField) field).isStatic()) {
         ref = new DStaticFieldRef(tempFieldRef, true);
       } else {
-        ref = new DInstanceFieldRef(new JimpleLocal("this", fieldType), tempFieldRef, new HashSet<Object>());
+        ref = new DInstanceFieldRef(new JimpleLocal("this", fieldType), tempFieldRef, new HashSet<>());
       }
 
     } else if (field instanceof Local) {
@@ -413,7 +413,7 @@ public class FinalFieldDefinition {
           body.remove(1);
         } else {
           // System.out.println("had to add new node");
-          List<AugmentedStmt> tempList = new ArrayList<AugmentedStmt>();
+          List<AugmentedStmt> tempList = new ArrayList<>();
           tempList.add(initialization);
           nodeSecond = new ASTStatementSequenceNode(tempList);
         }
@@ -433,7 +433,7 @@ public class FinalFieldDefinition {
         if (field.isStatic()) {
           ref = new DStaticFieldRef(tempFieldRef, true);
         } else {
-          ref = new DInstanceFieldRef(new JimpleLocal("this", field.getType()), tempFieldRef, new HashSet<Object>());
+          ref = new DInstanceFieldRef(new JimpleLocal("this", field.getType()), tempFieldRef, new HashSet<>());
           // throw new RuntimeException("STOPPED");
         }
 
@@ -496,7 +496,7 @@ public class FinalFieldDefinition {
                 // add the assign stmt here
 
                 List<AugmentedStmt> stmtsLast = (someNode).getStatements();
-                List<AugmentedStmt> newStmts = new ArrayList<AugmentedStmt>();
+                List<AugmentedStmt> newStmts = new ArrayList<>();
                 newStmts.add(assignStmt1);
                 newStmts.addAll(stmtsLast);
                 someNode.setStatements(newStmts);
@@ -510,7 +510,7 @@ public class FinalFieldDefinition {
                 }
               } else {
                 // create a new stmt seq node and add it here
-                List<AugmentedStmt> tempList = new ArrayList<AugmentedStmt>();
+                List<AugmentedStmt> tempList = new ArrayList<>();
                 tempList.add(assignStmt1);
                 ASTStatementSequenceNode lastNode = new ASTStatementSequenceNode(tempList);
                 ancestorSubBody.add(index + 1, lastNode);

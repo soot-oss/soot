@@ -10,12 +10,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -168,7 +168,7 @@ public class DexAnnotation {
                   AnnotationAnnotationElem aae = (AnnotationAnnotationElem) ae;
                   AnnotationTag at = aae.getValue();
                   // extract default elements
-                  Map<String, AnnotationElem> defaults = new HashMap<String, AnnotationElem>();
+                  Map<String, AnnotationElem> defaults = new HashMap<>();
                   for (AnnotationElem aelem : at.getElems()) {
                     defaults.put(aelem.getName(), aelem);
                   }
@@ -382,7 +382,7 @@ public class DexAnnotation {
             } else if (t instanceof SignatureTag) {
               SignatureTag sig = (SignatureTag) t;
 
-              ArrayList<AnnotationElem> sigElements = new ArrayList<AnnotationElem>();
+              ArrayList<AnnotationElem> sigElements = new ArrayList<>();
               for (String s : SootToDexUtils.splitSignature(sig.getSignature())) {
                 sigElements.add(new AnnotationStringElem(s, 's', "value"));
               }
@@ -407,8 +407,8 @@ public class DexAnnotation {
   }
 
   class MyAnnotations {
-    List<AnnotationTag> annotationList = new ArrayList<AnnotationTag>();
-    List<Integer> visibilityList = new ArrayList<Integer>();
+    List<AnnotationTag> annotationList = new ArrayList<>();
+    List<Integer> visibilityList = new ArrayList<>();
 
     public void add(AnnotationTag a, int visibility) {
       annotationList.add(a);
@@ -434,7 +434,7 @@ public class DexAnnotation {
       return null;
     }
 
-    List<Tag> tags = new ArrayList<Tag>();
+    List<Tag> tags = new ArrayList<>();
     VisibilityAnnotationTag[] vatg = new VisibilityAnnotationTag[3]; // RUNTIME_VISIBLE,
     // RUNTIME_INVISIBLE,
     // SOURCE_VISIBLE,
@@ -681,7 +681,7 @@ public class DexAnnotation {
 
   /**
    * Processes a normal annotation and adds it to the proper visibility annotation tag in the given array
-   * 
+   *
    * @param vatg
    *          the visibility annotation tags for different visibility levels
    * @param a
@@ -718,7 +718,7 @@ public class DexAnnotation {
   }
 
   private ArrayList<AnnotationElem> handleAnnotationElement(AnnotationElement ae, List<? extends EncodedValue> evList) {
-    ArrayList<AnnotationElem> aelemList = new ArrayList<AnnotationElem>();
+    ArrayList<AnnotationElem> aelemList = new ArrayList<>();
 
     for (EncodedValue ev : evList) {
       int type = ev.getValueType();
@@ -826,7 +826,7 @@ public class DexAnnotation {
           AnnotationEncodedValue v = (AnnotationEncodedValue) ev;
           AnnotationTag t = new AnnotationTag(DexType.toSootAT(v.getType()).toString());
           for (AnnotationElement newElem : v.getElements()) {
-            List<EncodedValue> l = new ArrayList<EncodedValue>();
+            List<EncodedValue> l = new ArrayList<>();
             l.add(newElem.getValue());
             List<AnnotationElem> aList = handleAnnotationElement(newElem, l);
             if (aList != null) {

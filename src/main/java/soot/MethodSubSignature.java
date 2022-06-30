@@ -1,5 +1,10 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,18 +29,13 @@ package soot;
 
 import com.google.common.base.Joiner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import soot.jimple.Stmt;
 import soot.util.NumberedString;
 
 /**
  * Allows one-time parsing of method subsignatures. Note that these method sub signatures are resolved, i.e. we resolve the
  * complete types upon construction.
- * 
+ *
  * @author Marc Miltenberger
  */
 public class MethodSubSignature {
@@ -85,7 +85,7 @@ public class MethodSubSignature {
   /**
    * Creates a new instance of the {@link MethodSubSignature} class based on a call site. The subsignature of the callee will
    * be taken from the method referenced at the call site.
-   * 
+   *
    * @param callSite
    *          The call site
    */
@@ -111,7 +111,7 @@ public class MethodSubSignature {
 
   /**
    * Tries to find the exact method in a class. Returns null if cannot be found
-   * 
+   *
    * @param c
    *          the class
    * @return the method (or null)
@@ -133,10 +133,7 @@ public class MethodSubSignature {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     MethodSubSignature other = (MethodSubSignature) obj;

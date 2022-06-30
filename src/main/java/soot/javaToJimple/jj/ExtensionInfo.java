@@ -10,12 +10,12 @@ package soot.javaToJimple.jj;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -31,7 +31,6 @@ import polyglot.frontend.Job;
 import polyglot.frontend.Source;
 import polyglot.main.Options;
 import polyglot.types.TypeSystem;
-
 import soot.javaToJimple.jj.ast.JjNodeFactory_c;
 import soot.javaToJimple.jj.types.JjTypeSystem_c;
 
@@ -44,10 +43,12 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
     new Topics();
   }
 
+  @Override
   public String defaultFileExtension() {
     return "jj";
   }
 
+  @Override
   public String compilerName() {
     return "jjc";
   }
@@ -57,14 +58,17 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
    * eq); Grm grm = new Grm(lexer, ts, nf, eq); return new CupParser(grm, source, eq); }
    */
 
+  @Override
   protected NodeFactory createNodeFactory() {
     return new JjNodeFactory_c();
   }
 
+  @Override
   protected TypeSystem createTypeSystem() {
     return new JjTypeSystem_c();
   }
 
+  @Override
   public List passes(Job job) {
     List passes = super.passes(job);
     // TODO: add passes as needed by your compiler
@@ -84,12 +88,14 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
   /**
    * Appends the soot classpath to the default system classpath.
    */
+  @Override
   protected Options createOptions() {
     return new Options(this) {
 
       /**
        * Appends the soot classpath to the default system classpath.
        */
+      @Override
       public String constructFullClasspath() {
         String cp = super.constructFullClasspath();
         cp += File.pathSeparator + soot.options.Options.v().soot_classpath();

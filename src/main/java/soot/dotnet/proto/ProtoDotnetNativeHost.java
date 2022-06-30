@@ -13,12 +13,12 @@ package soot.dotnet.proto;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -90,6 +90,7 @@ public final class ProtoDotnetNativeHost {
      */
     public static final int GET_TYPE_DEF_VALUE = 5;
 
+    @Override
     public final int getNumber() {
       if (this == UNRECOGNIZED) {
         throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
@@ -138,11 +139,13 @@ public final class ProtoDotnetNativeHost {
 
     private static final com.google.protobuf.Internal.EnumLiteMap<AnalyzerMethodCall> internalValueMap
         = new com.google.protobuf.Internal.EnumLiteMap<AnalyzerMethodCall>() {
+          @Override
           public AnalyzerMethodCall findValueByNumber(int number) {
             return AnalyzerMethodCall.forNumber(number);
           }
         };
 
+    @Override
     public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
       if (this == UNRECOGNIZED) {
         throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
@@ -150,6 +153,7 @@ public final class ProtoDotnetNativeHost {
       return getDescriptor().getValues().get(ordinal());
     }
 
+    @Override
     public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
       return getDescriptor();
     }
@@ -217,6 +221,7 @@ public final class ProtoDotnetNativeHost {
      */
     public static final int REMOVE_ACCESSOR_VALUE = 3;
 
+    @Override
     public final int getNumber() {
       if (this == UNRECOGNIZED) {
         throw new java.lang.IllegalArgumentException("Can't get the number of an unknown enum value.");
@@ -261,11 +266,13 @@ public final class ProtoDotnetNativeHost {
 
     private static final com.google.protobuf.Internal.EnumLiteMap<EventAccessorType> internalValueMap
         = new com.google.protobuf.Internal.EnumLiteMap<EventAccessorType>() {
+          @Override
           public EventAccessorType findValueByNumber(int number) {
             return EventAccessorType.forNumber(number);
           }
         };
 
+    @Override
     public final com.google.protobuf.Descriptors.EnumValueDescriptor getValueDescriptor() {
       if (this == UNRECOGNIZED) {
         throw new java.lang.IllegalStateException("Can't get the descriptor of an unrecognized enum value.");
@@ -273,6 +280,7 @@ public final class ProtoDotnetNativeHost {
       return getDescriptor().getValues().get(ordinal());
     }
 
+    @Override
     public final com.google.protobuf.Descriptors.EnumDescriptor getDescriptorForType() {
       return getDescriptor();
     }
@@ -308,133 +316,133 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for analyzerMethodCall.
      */
     int getAnalyzerMethodCallValue();
 
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-     * 
+     *
      * @return The analyzerMethodCall.
      */
     soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall getAnalyzerMethodCall();
 
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
-     * 
+     *
      * @return The assemblyFileAbsolutePath.
      */
     java.lang.String getAssemblyFileAbsolutePath();
 
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
-     * 
+     *
      * @return The bytes for assemblyFileAbsolutePath.
      */
     com.google.protobuf.ByteString getAssemblyFileAbsolutePathBytes();
 
     /**
      * <code>string type_reflection_name = 3;</code>
-     * 
+     *
      * @return The typeReflectionName.
      */
     java.lang.String getTypeReflectionName();
 
     /**
      * <code>string type_reflection_name = 3;</code>
-     * 
+     *
      * @return The bytes for typeReflectionName.
      */
     com.google.protobuf.ByteString getTypeReflectionNameBytes();
 
     /**
      * <code>string method_name = 4;</code>
-     * 
+     *
      * @return The methodName.
      */
     java.lang.String getMethodName();
 
     /**
      * <code>string method_name = 4;</code>
-     * 
+     *
      * @return The bytes for methodName.
      */
     com.google.protobuf.ByteString getMethodNameBytes();
 
     /**
      * <code>string method_name_suffix = 11;</code>
-     * 
+     *
      * @return The methodNameSuffix.
      */
     java.lang.String getMethodNameSuffix();
 
     /**
      * <code>string method_name_suffix = 11;</code>
-     * 
+     *
      * @return The bytes for methodNameSuffix.
      */
     com.google.protobuf.ByteString getMethodNameSuffixBytes();
 
     /**
      * <code>int32 method_pe_token = 12;</code>
-     * 
+     *
      * @return The methodPeToken.
      */
     int getMethodPeToken();
 
     /**
      * <code>string property_name = 6;</code>
-     * 
+     *
      * @return The propertyName.
      */
     java.lang.String getPropertyName();
 
     /**
      * <code>string property_name = 6;</code>
-     * 
+     *
      * @return The bytes for propertyName.
      */
     com.google.protobuf.ByteString getPropertyNameBytes();
 
     /**
      * <code>bool property_is_setter = 7;</code>
-     * 
+     *
      * @return The propertyIsSetter.
      */
     boolean getPropertyIsSetter();
 
     /**
      * <code>string event_name = 8;</code>
-     * 
+     *
      * @return The eventName.
      */
     java.lang.String getEventName();
 
     /**
      * <code>string event_name = 8;</code>
-     * 
+     *
      * @return The bytes for eventName.
      */
     com.google.protobuf.ByteString getEventNameBytes();
 
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for eventAccessorType.
      */
     int getEventAccessorTypeValue();
 
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
-     * 
+     *
      * @return The eventAccessorType.
      */
     soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType getEventAccessorType();
 
     /**
      * <code>bool debug_mode = 10;</code>
-     * 
+     *
      * @return The debugMode.
      */
     boolean getDebugMode();
@@ -588,7 +596,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for analyzerMethodCall.
      */
     @java.lang.Override
@@ -598,7 +606,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-     * 
+     *
      * @return The analyzerMethodCall.
      */
     @java.lang.Override
@@ -614,7 +622,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
-     * 
+     *
      * @return The assemblyFileAbsolutePath.
      */
     @java.lang.Override
@@ -632,7 +640,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string assembly_file_absolute_path = 2;</code>
-     * 
+     *
      * @return The bytes for assemblyFileAbsolutePath.
      */
     @java.lang.Override
@@ -652,7 +660,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string type_reflection_name = 3;</code>
-     * 
+     *
      * @return The typeReflectionName.
      */
     @java.lang.Override
@@ -670,7 +678,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string type_reflection_name = 3;</code>
-     * 
+     *
      * @return The bytes for typeReflectionName.
      */
     @java.lang.Override
@@ -690,7 +698,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string method_name = 4;</code>
-     * 
+     *
      * @return The methodName.
      */
     @java.lang.Override
@@ -708,7 +716,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string method_name = 4;</code>
-     * 
+     *
      * @return The bytes for methodName.
      */
     @java.lang.Override
@@ -728,7 +736,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string method_name_suffix = 11;</code>
-     * 
+     *
      * @return The methodNameSuffix.
      */
     @java.lang.Override
@@ -746,7 +754,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string method_name_suffix = 11;</code>
-     * 
+     *
      * @return The bytes for methodNameSuffix.
      */
     @java.lang.Override
@@ -766,7 +774,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>int32 method_pe_token = 12;</code>
-     * 
+     *
      * @return The methodPeToken.
      */
     @java.lang.Override
@@ -779,7 +787,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string property_name = 6;</code>
-     * 
+     *
      * @return The propertyName.
      */
     @java.lang.Override
@@ -797,7 +805,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string property_name = 6;</code>
-     * 
+     *
      * @return The bytes for propertyName.
      */
     @java.lang.Override
@@ -817,7 +825,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>bool property_is_setter = 7;</code>
-     * 
+     *
      * @return The propertyIsSetter.
      */
     @java.lang.Override
@@ -830,7 +838,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string event_name = 8;</code>
-     * 
+     *
      * @return The eventName.
      */
     @java.lang.Override
@@ -848,7 +856,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>string event_name = 8;</code>
-     * 
+     *
      * @return The bytes for eventName.
      */
     @java.lang.Override
@@ -868,7 +876,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for eventAccessorType.
      */
     @java.lang.Override
@@ -878,7 +886,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>.EventAccessorType event_accessor_type = 9;</code>
-     * 
+     *
      * @return The eventAccessorType.
      */
     @java.lang.Override
@@ -894,7 +902,7 @@ public final class ProtoDotnetNativeHost {
 
     /**
      * <code>bool debug_mode = 10;</code>
-     * 
+     *
      * @return The debugMode.
      */
     @java.lang.Override
@@ -907,10 +915,12 @@ public final class ProtoDotnetNativeHost {
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1)
+      if (isInitialized == 1) {
         return true;
-      if (isInitialized == 0)
+      }
+      if (isInitialized == 0) {
         return false;
+      }
 
       memoizedIsInitialized = 1;
       return true;
@@ -933,7 +943,7 @@ public final class ProtoDotnetNativeHost {
       if (!getPropertyNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 6, propertyName_);
       }
-      if (propertyIsSetter_ != false) {
+      if (propertyIsSetter_) {
         output.writeBool(7, propertyIsSetter_);
       }
       if (!getEventNameBytes().isEmpty()) {
@@ -942,7 +952,7 @@ public final class ProtoDotnetNativeHost {
       if (eventAccessorType_ != soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.NO_EVENT_METHOD.getNumber()) {
         output.writeEnum(9, eventAccessorType_);
       }
-      if (debugMode_ != false) {
+      if (debugMode_) {
         output.writeBool(10, debugMode_);
       }
       if (!getMethodNameSuffixBytes().isEmpty()) {
@@ -957,8 +967,9 @@ public final class ProtoDotnetNativeHost {
     @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
-      if (size != -1)
+      if (size != -1) {
         return size;
+      }
 
       size = 0;
       if (analyzerMethodCall_ != soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerMethodCall.NO_CALL.getNumber()) {
@@ -976,7 +987,7 @@ public final class ProtoDotnetNativeHost {
       if (!getPropertyNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, propertyName_);
       }
-      if (propertyIsSetter_ != false) {
+      if (propertyIsSetter_) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(7, propertyIsSetter_);
       }
       if (!getEventNameBytes().isEmpty()) {
@@ -985,7 +996,7 @@ public final class ProtoDotnetNativeHost {
       if (eventAccessorType_ != soot.dotnet.proto.ProtoDotnetNativeHost.EventAccessorType.NO_EVENT_METHOD.getNumber()) {
         size += com.google.protobuf.CodedOutputStream.computeEnumSize(9, eventAccessorType_);
       }
-      if (debugMode_ != false) {
+      if (debugMode_) {
         size += com.google.protobuf.CodedOutputStream.computeBoolSize(10, debugMode_);
       }
       if (!getMethodNameSuffixBytes().isEmpty()) {
@@ -1010,30 +1021,33 @@ public final class ProtoDotnetNativeHost {
       soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other
           = (soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg) obj;
 
-      if (analyzerMethodCall_ != other.analyzerMethodCall_)
+      if ((analyzerMethodCall_ != other.analyzerMethodCall_) || !getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath()) || !getTypeReflectionName().equals(other.getTypeReflectionName()) || !getMethodName().equals(other.getMethodName())) {
         return false;
-      if (!getAssemblyFileAbsolutePath().equals(other.getAssemblyFileAbsolutePath()))
+      }
+      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix())) {
         return false;
-      if (!getTypeReflectionName().equals(other.getTypeReflectionName()))
+      }
+      if (getMethodPeToken() != other.getMethodPeToken()) {
         return false;
-      if (!getMethodName().equals(other.getMethodName()))
+      }
+      if (!getPropertyName().equals(other.getPropertyName())) {
         return false;
-      if (!getMethodNameSuffix().equals(other.getMethodNameSuffix()))
+      }
+      if (getPropertyIsSetter() != other.getPropertyIsSetter()) {
         return false;
-      if (getMethodPeToken() != other.getMethodPeToken())
+      }
+      if (!getEventName().equals(other.getEventName())) {
         return false;
-      if (!getPropertyName().equals(other.getPropertyName()))
+      }
+      if (eventAccessorType_ != other.eventAccessorType_) {
         return false;
-      if (getPropertyIsSetter() != other.getPropertyIsSetter())
+      }
+      if (getDebugMode() != other.getDebugMode()) {
         return false;
-      if (!getEventName().equals(other.getEventName()))
+      }
+      if (!unknownFields.equals(other.unknownFields)) {
         return false;
-      if (eventAccessorType_ != other.eventAccessorType_)
-        return false;
-      if (getDebugMode() != other.getDebugMode())
-        return false;
-      if (!unknownFields.equals(other.unknownFields))
-        return false;
+      }
       return true;
     }
 
@@ -1299,8 +1313,9 @@ public final class ProtoDotnetNativeHost {
       }
 
       public Builder mergeFrom(soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg other) {
-        if (other == soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.getDefaultInstance())
+        if (other == soot.dotnet.proto.ProtoDotnetNativeHost.AnalyzerParamsMsg.getDefaultInstance()) {
           return this;
+        }
         if (other.analyzerMethodCall_ != 0) {
           setAnalyzerMethodCallValue(other.getAnalyzerMethodCallValue());
         }
@@ -1327,7 +1342,7 @@ public final class ProtoDotnetNativeHost {
           propertyName_ = other.propertyName_;
           onChanged();
         }
-        if (other.getPropertyIsSetter() != false) {
+        if (other.getPropertyIsSetter()) {
           setPropertyIsSetter(other.getPropertyIsSetter());
         }
         if (!other.getEventName().isEmpty()) {
@@ -1337,7 +1352,7 @@ public final class ProtoDotnetNativeHost {
         if (other.eventAccessorType_ != 0) {
           setEventAccessorTypeValue(other.getEventAccessorTypeValue());
         }
-        if (other.getDebugMode() != false) {
+        if (other.getDebugMode()) {
           setDebugMode(other.getDebugMode());
         }
         this.mergeUnknownFields(other.unknownFields);
@@ -1371,7 +1386,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for analyzerMethodCall.
        */
       @java.lang.Override
@@ -1381,7 +1396,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for analyzerMethodCall to set.
        * @return This builder for chaining.
@@ -1395,7 +1410,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-       * 
+       *
        * @return The analyzerMethodCall.
        */
       @java.lang.Override
@@ -1408,7 +1423,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-       * 
+       *
        * @param value
        *          The analyzerMethodCall to set.
        * @return This builder for chaining.
@@ -1425,7 +1440,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.AnalyzerMethodCall analyzer_method_call = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAnalyzerMethodCall() {
@@ -1439,9 +1454,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
-       * 
+       *
        * @return The assemblyFileAbsolutePath.
        */
+      @Override
       public java.lang.String getAssemblyFileAbsolutePath() {
         java.lang.Object ref = assemblyFileAbsolutePath_;
         if (!(ref instanceof java.lang.String)) {
@@ -1456,9 +1472,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
-       * 
+       *
        * @return The bytes for assemblyFileAbsolutePath.
        */
+      @Override
       public com.google.protobuf.ByteString getAssemblyFileAbsolutePathBytes() {
         java.lang.Object ref = assemblyFileAbsolutePath_;
         if (ref instanceof String) {
@@ -1472,7 +1489,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
-       * 
+       *
        * @param value
        *          The assemblyFileAbsolutePath to set.
        * @return This builder for chaining.
@@ -1489,7 +1506,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAssemblyFileAbsolutePath() {
@@ -1501,7 +1518,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string assembly_file_absolute_path = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for assemblyFileAbsolutePath to set.
        * @return This builder for chaining.
@@ -1521,9 +1538,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string type_reflection_name = 3;</code>
-       * 
+       *
        * @return The typeReflectionName.
        */
+      @Override
       public java.lang.String getTypeReflectionName() {
         java.lang.Object ref = typeReflectionName_;
         if (!(ref instanceof java.lang.String)) {
@@ -1538,9 +1556,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string type_reflection_name = 3;</code>
-       * 
+       *
        * @return The bytes for typeReflectionName.
        */
+      @Override
       public com.google.protobuf.ByteString getTypeReflectionNameBytes() {
         java.lang.Object ref = typeReflectionName_;
         if (ref instanceof String) {
@@ -1554,7 +1573,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string type_reflection_name = 3;</code>
-       * 
+       *
        * @param value
        *          The typeReflectionName to set.
        * @return This builder for chaining.
@@ -1571,7 +1590,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string type_reflection_name = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearTypeReflectionName() {
@@ -1583,7 +1602,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string type_reflection_name = 3;</code>
-       * 
+       *
        * @param value
        *          The bytes for typeReflectionName to set.
        * @return This builder for chaining.
@@ -1603,9 +1622,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name = 4;</code>
-       * 
+       *
        * @return The methodName.
        */
+      @Override
       public java.lang.String getMethodName() {
         java.lang.Object ref = methodName_;
         if (!(ref instanceof java.lang.String)) {
@@ -1620,9 +1640,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name = 4;</code>
-       * 
+       *
        * @return The bytes for methodName.
        */
+      @Override
       public com.google.protobuf.ByteString getMethodNameBytes() {
         java.lang.Object ref = methodName_;
         if (ref instanceof String) {
@@ -1636,7 +1657,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name = 4;</code>
-       * 
+       *
        * @param value
        *          The methodName to set.
        * @return This builder for chaining.
@@ -1653,7 +1674,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearMethodName() {
@@ -1665,7 +1686,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name = 4;</code>
-       * 
+       *
        * @param value
        *          The bytes for methodName to set.
        * @return This builder for chaining.
@@ -1685,9 +1706,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name_suffix = 11;</code>
-       * 
+       *
        * @return The methodNameSuffix.
        */
+      @Override
       public java.lang.String getMethodNameSuffix() {
         java.lang.Object ref = methodNameSuffix_;
         if (!(ref instanceof java.lang.String)) {
@@ -1702,9 +1724,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name_suffix = 11;</code>
-       * 
+       *
        * @return The bytes for methodNameSuffix.
        */
+      @Override
       public com.google.protobuf.ByteString getMethodNameSuffixBytes() {
         java.lang.Object ref = methodNameSuffix_;
         if (ref instanceof String) {
@@ -1718,7 +1741,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name_suffix = 11;</code>
-       * 
+       *
        * @param value
        *          The methodNameSuffix to set.
        * @return This builder for chaining.
@@ -1735,7 +1758,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name_suffix = 11;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearMethodNameSuffix() {
@@ -1747,7 +1770,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string method_name_suffix = 11;</code>
-       * 
+       *
        * @param value
        *          The bytes for methodNameSuffix to set.
        * @return This builder for chaining.
@@ -1767,7 +1790,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>int32 method_pe_token = 12;</code>
-       * 
+       *
        * @return The methodPeToken.
        */
       @java.lang.Override
@@ -1777,7 +1800,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>int32 method_pe_token = 12;</code>
-       * 
+       *
        * @param value
        *          The methodPeToken to set.
        * @return This builder for chaining.
@@ -1791,7 +1814,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>int32 method_pe_token = 12;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearMethodPeToken() {
@@ -1805,9 +1828,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string property_name = 6;</code>
-       * 
+       *
        * @return The propertyName.
        */
+      @Override
       public java.lang.String getPropertyName() {
         java.lang.Object ref = propertyName_;
         if (!(ref instanceof java.lang.String)) {
@@ -1822,9 +1846,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string property_name = 6;</code>
-       * 
+       *
        * @return The bytes for propertyName.
        */
+      @Override
       public com.google.protobuf.ByteString getPropertyNameBytes() {
         java.lang.Object ref = propertyName_;
         if (ref instanceof String) {
@@ -1838,7 +1863,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string property_name = 6;</code>
-       * 
+       *
        * @param value
        *          The propertyName to set.
        * @return This builder for chaining.
@@ -1855,7 +1880,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string property_name = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearPropertyName() {
@@ -1867,7 +1892,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string property_name = 6;</code>
-       * 
+       *
        * @param value
        *          The bytes for propertyName to set.
        * @return This builder for chaining.
@@ -1887,7 +1912,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>bool property_is_setter = 7;</code>
-       * 
+       *
        * @return The propertyIsSetter.
        */
       @java.lang.Override
@@ -1897,7 +1922,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>bool property_is_setter = 7;</code>
-       * 
+       *
        * @param value
        *          The propertyIsSetter to set.
        * @return This builder for chaining.
@@ -1911,7 +1936,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>bool property_is_setter = 7;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearPropertyIsSetter() {
@@ -1925,9 +1950,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string event_name = 8;</code>
-       * 
+       *
        * @return The eventName.
        */
+      @Override
       public java.lang.String getEventName() {
         java.lang.Object ref = eventName_;
         if (!(ref instanceof java.lang.String)) {
@@ -1942,9 +1968,10 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string event_name = 8;</code>
-       * 
+       *
        * @return The bytes for eventName.
        */
+      @Override
       public com.google.protobuf.ByteString getEventNameBytes() {
         java.lang.Object ref = eventName_;
         if (ref instanceof String) {
@@ -1958,7 +1985,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string event_name = 8;</code>
-       * 
+       *
        * @param value
        *          The eventName to set.
        * @return This builder for chaining.
@@ -1975,7 +2002,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string event_name = 8;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearEventName() {
@@ -1987,7 +2014,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>string event_name = 8;</code>
-       * 
+       *
        * @param value
        *          The bytes for eventName to set.
        * @return This builder for chaining.
@@ -2007,7 +2034,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for eventAccessorType.
        */
       @java.lang.Override
@@ -2017,7 +2044,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for eventAccessorType to set.
        * @return This builder for chaining.
@@ -2031,7 +2058,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
-       * 
+       *
        * @return The eventAccessorType.
        */
       @java.lang.Override
@@ -2044,7 +2071,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
-       * 
+       *
        * @param value
        *          The eventAccessorType to set.
        * @return This builder for chaining.
@@ -2061,7 +2088,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>.EventAccessorType event_accessor_type = 9;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearEventAccessorType() {
@@ -2075,7 +2102,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>bool debug_mode = 10;</code>
-       * 
+       *
        * @return The debugMode.
        */
       @java.lang.Override
@@ -2085,7 +2112,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>bool debug_mode = 10;</code>
-       * 
+       *
        * @param value
        *          The debugMode to set.
        * @return This builder for chaining.
@@ -2099,7 +2126,7 @@ public final class ProtoDotnetNativeHost {
 
       /**
        * <code>bool debug_mode = 10;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearDebugMode() {

@@ -10,12 +10,12 @@ package soot.jimple.spark.builder;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -263,7 +263,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   }
 
   final public Node caseThis() {
-    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, String>(method, PointsToAnalysis.THIS_NODE),
+    VarNode ret = pag.makeLocalVarNode(new Pair<>(method, PointsToAnalysis.THIS_NODE),
         method.getDeclaringClass().getType(), method);
     ret.setInterProcTarget();
     return ret;
@@ -275,7 +275,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     if (method.getParameterCount() < index + 1) {
       return null;
     }
-    VarNode ret = pag.makeLocalVarNode(new Pair<SootMethod, Integer>(method, new Integer(index)),
+    VarNode ret = pag.makeLocalVarNode(new Pair<>(method, new Integer(index)),
         method.getParameterType(index), method);
     ret.setInterProcTarget();
     return ret;
@@ -283,7 +283,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
   @Override
   final public void casePhiExpr(PhiExpr e) {
-    Pair<Expr, String> phiPair = new Pair<Expr, String>(e, PointsToAnalysis.PHI_NODE);
+    Pair<Expr, String> phiPair = new Pair<>(e, PointsToAnalysis.PHI_NODE);
     Node phiNode = pag.makeLocalVarNode(phiPair, e.getType(), method);
     for (Value op : e.getValues()) {
       op.apply(MethodNodeFactory.this);
@@ -316,7 +316,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
   @Override
   final public void caseCastExpr(CastExpr ce) {
-    Pair<Expr, String> castPair = new Pair<Expr, String>(ce, PointsToAnalysis.CAST_NODE);
+    Pair<Expr, String> castPair = new Pair<>(ce, PointsToAnalysis.CAST_NODE);
     ce.getOp().apply(this);
     Node opNode = getNode();
     Node castNode = pag.makeLocalVarNode(castPair, ce.getCastType(), method);
@@ -354,10 +354,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     }
     RefType rt = (RefType) t;
     String s = rt.toString();
-    if (s.equals("java.lang.StringBuffer")) {
-      return true;
-    }
-    if (s.equals("java.lang.StringBuilder")) {
+    if (s.equals("java.lang.StringBuffer") || s.equals("java.lang.StringBuilder")) {
       return true;
     }
     return false;

@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,17 +42,18 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
 
   private static final String[] EXCLUDED_NAMES = new String[] { "ca.mcgill.sable.soot.SootMethod" };
 
-  private Set<RefType> typesToCheck = new HashSet<RefType>();
+  private Set<RefType> typesToCheck = new HashSet<>();
 
-  private Set<RefType> notBothEndsTypes = new HashSet<RefType>();
+  private Set<RefType> notBothEndsTypes = new HashSet<>();
 
   private RefType newTypeOnQuery = null;
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see AAA.algs.Heuristic#newQuery()
    */
+  @Override
   public boolean runNewPass() {
     // if (!aggressive && reachedAggressive) {
     // aggressive = true;
@@ -71,9 +72,10 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see AAA.algs.Heuristic#validateMatchesForField(soot.jimple.spark.pag.SparkField)
    */
+  @Override
   public boolean validateMatchesForField(SparkField field) {
     // if (true) return true;
     if (field instanceof ArrayElement) {
@@ -106,6 +108,7 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
     this.manager = manager;
   }
 
+  @Override
   public String toString() {
     StringBuffer ret = new StringBuffer();
     ret.append("types ");
@@ -117,6 +120,7 @@ public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
     return ret.toString();
   }
 
+  @Override
   public boolean validFromBothEnds(SparkField field) {
     if (field instanceof SootField) {
       SootField sootField = (SootField) field;

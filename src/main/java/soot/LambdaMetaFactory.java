@@ -1,5 +1,17 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,18 +36,6 @@ package soot;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import soot.asm.AsmUtil;
 import soot.jimple.ClassConstant;
@@ -101,8 +101,8 @@ public class LambdaMetaFactory {
     }
 
     boolean serializable = (flags & 1 /* FLAGS_SERIALIZABLE */) != 0;
-    List<ClassConstant> markerInterfaces = new ArrayList<ClassConstant>();
-    List<MethodType> bridges = new ArrayList<MethodType>();
+    List<ClassConstant> markerInterfaces = new ArrayList<>();
+    List<MethodType> bridges = new ArrayList<>();
 
     int va = 4;
     if ((flags & 2 /* FLAG_MARKERS */) != 0) {
@@ -180,14 +180,14 @@ public class LambdaMetaFactory {
     if (serializable) {
       tclass.addInterface(RefType.v("java.io.Serializable").getSootClass());
     }
-    for (int i = 0; i < markerInterfaces.size(); i++) {
+    for (ClassConstant element : markerInterfaces) {
       tclass.addInterface(
-          ((RefType) AsmUtil.toBaseType(markerInterfaces.get(i).getValue(), Optional.fromNullable(tclass.moduleName)))
+          ((RefType) AsmUtil.toBaseType(element.getValue(), Optional.fromNullable(tclass.moduleName)))
               .getSootClass());
     }
 
     // It contains fields for all the captures in the lambda
-    List<SootField> capFields = new ArrayList<SootField>(capTypes.size());
+    List<SootField> capFields = new ArrayList<>(capTypes.size());
     for (int i = 0, e = capTypes.size(); i < e; i++) {
       SootField f = Scene.v().makeSootField("cap" + i, capTypes.get(i), 0);
       capFields.add(f);
@@ -241,7 +241,7 @@ public class LambdaMetaFactory {
 
   /**
    * Invalidates the class hierarchy due to some newly added class.
-   * 
+   *
    * @param tclass
    */
   protected void addClassAndInvalidateHierarchy(SootClass tclass) {
@@ -419,8 +419,8 @@ public class LambdaMetaFactory {
       PatchingChain<Unit> us = jb.getUnits();
       LocalGenerator lc = Scene.v().createLocalGenerator(jb);
 
-      List<Value> capValues = new ArrayList<Value>();
-      List<Type> capTypes = new ArrayList<Type>();
+      List<Value> capValues = new ArrayList<>();
+      List<Type> capTypes = new ArrayList<>();
       int i = 0;
       for (SootField capField : capFields) {
         Type type = capField.getType();
@@ -470,7 +470,7 @@ public class LambdaMetaFactory {
       }
 
       // captured arguments
-      List<Local> args = new ArrayList<Local>();
+      List<Local> args = new ArrayList<>();
       for (SootField f : capFields) {
         Local l = lc.generateLocal(f.getType());
         us.add(jimp.newAssignStmt(l, jimp.newInstanceFieldRef(this_, f.makeRef())));
@@ -521,11 +521,7 @@ public class LambdaMetaFactory {
         return fromLocal;
       }
 
-      if (from instanceof ArrayType) {
-        return wideningReferenceConversion(fromLocal);
-      }
-
-      if (from instanceof RefType && to instanceof RefType) {
+      if ((from instanceof ArrayType) || (from instanceof RefType && to instanceof RefType)) {
         return wideningReferenceConversion(fromLocal);
       }
 
@@ -563,7 +559,7 @@ public class LambdaMetaFactory {
         // Actually, the wrapper type could be also be other types if wirdcards (?) are used in generic code.
         if (wrapper.wrapperTypes.get(from) == null) {
           // Insert the cast
-          RefType boxedType = wrapper.primitiveTypes.get((PrimType) to);
+          RefType boxedType = wrapper.primitiveTypes.get(to);
           Local castLocal = lc.generateLocal(boxedType);
           us.add(Jimple.v().newAssignStmt(castLocal, Jimple.v().newCastExpr(fromLocal, boxedType)));
           fromLocal = castLocal;
@@ -633,15 +629,8 @@ public class LambdaMetaFactory {
     private Local narrowingReferenceConversion(Local fromLocal, Type to, JimpleBody jb, PatchingChain<Unit> us,
         LocalGenerator lc) {
       Type fromTy = fromLocal.getType();
-      if (fromTy.equals(to)) {
-        return fromLocal;
-      }
-
-      if (!(fromTy instanceof RefType || fromTy instanceof ArrayType)) {
-        return fromLocal;
-      }
       // throw new IllegalArgumentException("Expected source to have reference type");
-      if (!(to instanceof RefType || to instanceof ArrayType)) {
+      if (fromTy.equals(to) || !(fromTy instanceof RefType || fromTy instanceof ArrayType) || !(to instanceof RefType || to instanceof ArrayType)) {
         return fromLocal;
         // throw new IllegalArgumentException("Expected target to have reference type");
       }

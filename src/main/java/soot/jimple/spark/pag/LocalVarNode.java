@@ -10,12 +10,12 @@ package soot.jimple.spark.pag;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -43,6 +43,7 @@ public class LocalVarNode extends VarNode {
     return method;
   }
 
+  @Override
   public String toString() {
     return "LocalVarNode " + getNumber() + " " + variable + " " + method;
   }
@@ -57,7 +58,7 @@ public class LocalVarNode extends VarNode {
   /** Registers a cvn as having this node as its base. */
   void addContext(ContextVarNode cvn, Object context) {
     if (cvns == null) {
-      cvns = new HashMap<Object, ContextVarNode>();
+      cvns = new HashMap<>();
     }
     cvns.put(context, cvn);
   }

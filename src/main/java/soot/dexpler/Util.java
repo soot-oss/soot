@@ -15,12 +15,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -223,8 +223,8 @@ public class Util {
    */
   public static void emptyBody(Body jBody) {
     // identity statements
-    List<Unit> idStmts = new ArrayList<Unit>();
-    List<Local> idLocals = new ArrayList<Local>();
+    List<Unit> idStmts = new ArrayList<>();
+    List<Local> idLocals = new ArrayList<>();
     for (Unit u : jBody.getUnits()) {
       if (u instanceof IdentityStmt) {
         IdentityStmt i = (IdentityStmt) u;
@@ -288,7 +288,7 @@ public class Util {
     LocalCreation lc = Scene.v().createLocalCreation(b.getLocals());
     Local l = lc.newLocal(RefType.v(exceptionType));
 
-    List<Unit> newUnits = new ArrayList<Unit>();
+    List<Unit> newUnits = new ArrayList<>();
     Unit u1 = Jimple.v().newAssignStmt(l, Jimple.v().newNewExpr(RefType.v(exceptionType)));
     Unit u2
         = Jimple.v()
@@ -305,7 +305,7 @@ public class Util {
   }
 
   public static List<String> splitParameters(String parameters) {
-    List<String> pList = new ArrayList<String>();
+    List<String> pList = new ArrayList<>();
 
     int idx = 0;
     boolean object = false;

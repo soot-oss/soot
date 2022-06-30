@@ -10,12 +10,12 @@ package soot.toolkits.graph.pdg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -51,9 +51,9 @@ public class EnhancedUnitGraph extends UnitGraph {
 
   // This keeps a map from the beginning of each guarded block
   // to the corresponding special EHNopStmt.
-  protected final Hashtable<Unit, Unit> try2nop = new Hashtable<Unit, Unit>();
+  protected final Hashtable<Unit, Unit> try2nop = new Hashtable<>();
   // Keep the real header of the handler block
-  protected final Hashtable<Unit, Unit> handler2header = new Hashtable<Unit, Unit>();
+  protected final Hashtable<Unit, Unit> handler2header = new Hashtable<>();
 
   public EnhancedUnitGraph(Body body) {
     super(body);
@@ -61,8 +61,8 @@ public class EnhancedUnitGraph extends UnitGraph {
     // there could be a maximum of traps.size() of nop
     // units added to the CFG plus potentially START/STOP nodes.
     int size = (unitChain.size() + body.getTraps().size() + 2);
-    unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
-    unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+    unitToSuccs = new HashMap<>(size * 2 + 1, 0.7f);
+    unitToPreds = new HashMap<>(size * 2 + 1, 0.7f);
 
     // Initialize all units in the unitToSuccs and unitsToPreds
     for (Unit u : body.getUnits()) {
@@ -94,14 +94,14 @@ public class EnhancedUnitGraph extends UnitGraph {
   protected void handleMultipleReturns() {
     if (this.getTails().size() > 1) {
       Unit stop = new ExitStmt();
-      List<Unit> predsOfstop = new ArrayList<Unit>();
+      List<Unit> predsOfstop = new ArrayList<>();
 
       for (Unit tail : this.getTails()) {
         predsOfstop.add(tail);
 
         List<Unit> tailSuccs = this.unitToSuccs.get(tail);
         if (tailSuccs == null) {
-          tailSuccs = new ArrayList<Unit>();
+          tailSuccs = new ArrayList<>();
           this.unitToSuccs.put(tail, tailSuccs);
         }
         tailSuccs.add(stop);
@@ -132,7 +132,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
         this.unitToPreds.remove(head);
         for (Unit succ : this.unitToSuccs.get(head)) {
-          List<Unit> tobeRemoved = new ArrayList<Unit>();
+          List<Unit> tobeRemoved = new ArrayList<>();
           List<Unit> predOfSuccs = this.unitToPreds.get(succ);
           if (predOfSuccs != null) {
             for (Unit pred : predOfSuccs) {
@@ -156,11 +156,11 @@ public class EnhancedUnitGraph extends UnitGraph {
   }
 
   protected void handleExplicitThrowEdges() {
-    MHGDominatorTree<Unit> dom = new MHGDominatorTree<Unit>(new MHGDominatorsFinder<Unit>(this));
-    MHGDominatorTree<Unit> pdom = new MHGDominatorTree<Unit>(new MHGPostDominatorsFinder<Unit>(this));
+    MHGDominatorTree<Unit> dom = new MHGDominatorTree<>(new MHGDominatorsFinder<>(this));
+    MHGDominatorTree<Unit> pdom = new MHGDominatorTree<>(new MHGPostDominatorsFinder<>(this));
 
     // this keeps a map from the entry of a try-catch-block to a selected merge point
-    Hashtable<Unit, Unit> x2mergePoint = new Hashtable<Unit, Unit>();
+    Hashtable<Unit, Unit> x2mergePoint = new Hashtable<>();
 
     TailsLoop: for (Unit tail : this.getTails()) {
       if (!(tail instanceof ThrowStmt)) {
@@ -333,7 +333,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       List<Unit> throwSuccs = this.unitToSuccs.get(tail);
       if (throwSuccs == null) {
-        throwSuccs = new ArrayList<Unit>();
+        throwSuccs = new ArrayList<>();
         this.unitToSuccs.put(tail, throwSuccs);
       }
 
@@ -341,7 +341,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       List<Unit> mergePreds = this.unitToPreds.get(mergePoint);
       if (mergePreds == null) {
-        mergePreds = new ArrayList<Unit>();
+        mergePreds = new ArrayList<>();
         this.unitToPreds.put(mergePoint, mergePreds);
       }
       mergePreds.add(tail);
@@ -382,7 +382,7 @@ public class EnhancedUnitGraph extends UnitGraph {
     }
 
     // Only add a nop once
-    Hashtable<Unit, Boolean> nop2added = new Hashtable<Unit, Boolean>();
+    Hashtable<Unit, Boolean> nop2added = new Hashtable<>();
 
     // Now actually add the edge
     AddExceptionalEdge: for (Trap trap : body.getTraps()) {
@@ -413,17 +413,17 @@ public class EnhancedUnitGraph extends UnitGraph {
       Unit ehnop = try2nop.get(b);
       if (!nop2added.containsKey(ehnop)) {
         List<Unit> predsOfB = getPredsOf(b);
-        List<Unit> predsOfehnop = new ArrayList<Unit>(predsOfB);
+        List<Unit> predsOfehnop = new ArrayList<>(predsOfB);
 
         for (Unit a : predsOfB) {
           List<Unit> succsOfA = this.unitToSuccs.get(a);
           if (succsOfA == null) {
-            succsOfA = new ArrayList<Unit>();
+            succsOfA = new ArrayList<>();
             this.unitToSuccs.put(a, succsOfA);
           } else {
             succsOfA.remove(b);
           }
-          succsOfA.add((Unit) ehnop);
+          succsOfA.add(ehnop);
         }
 
         predsOfB.clear();
@@ -434,7 +434,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       List<Unit> succsOfehnop = this.unitToSuccs.get(ehnop);
       if (succsOfehnop == null) {
-        succsOfehnop = new ArrayList<Unit>();
+        succsOfehnop = new ArrayList<>();
         this.unitToSuccs.put(ehnop, succsOfehnop);
       }
 
@@ -446,7 +446,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 
       List<Unit> predsOfhandler = this.unitToPreds.get(handler);
       if (predsOfhandler == null) {
-        predsOfhandler = new ArrayList<Unit>();
+        predsOfhandler = new ArrayList<>();
         this.unitToPreds.put(handler, predsOfhandler);
       }
 
@@ -502,7 +502,7 @@ class GuardedBlock {
 /**
  * This class represents a special nop statement that marks the beginning of a try block at the Jimple level. This is going
  * to be used in the CFG enhancement.
- * 
+ *
  * @author Hossein Sadat-Mohtasham Feb 2010
  */
 @SuppressWarnings("serial")

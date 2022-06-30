@@ -10,12 +10,12 @@ package soot.jimple.spark.solver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -51,23 +51,24 @@ import soot.util.queue.QueueReader;
 
 /**
  * Propagates points-to sets along pointer assignment graph using a relevant aliases.
- * 
+ *
  * @author Ondrej Lhotak
  */
 
 public class PropAlias extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropAlias.class);
-  protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
+  protected final Set<VarNode> varNodeWorkList = new TreeSet<>();
   protected Set<VarNode> aliasWorkList;
-  protected Set<FieldRefNode> fieldRefWorkList = new HashSet<FieldRefNode>();
-  protected Set<FieldRefNode> outFieldRefWorkList = new HashSet<FieldRefNode>();
+  protected Set<FieldRefNode> fieldRefWorkList = new HashSet<>();
+  protected Set<FieldRefNode> outFieldRefWorkList = new HashSet<>();
 
   public PropAlias(PAG pag) {
     this.pag = pag;
-    loadSets = new LargeNumberedMap<FieldRefNode, PointsToSetInternal>(pag.getFieldRefNodeNumberer());
+    loadSets = new LargeNumberedMap<>(pag.getFieldRefNodeNumberer());
   }
 
   /** Actually does the propagation. */
+  @Override
   public void propagate() {
     ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
@@ -88,7 +89,7 @@ public class PropAlias extends Propagator {
       if (verbose) {
         logger.debug("Worklist has " + varNodeWorkList.size() + " nodes.");
       }
-      aliasWorkList = new HashSet<VarNode>();
+      aliasWorkList = new HashSet<>();
       while (!varNodeWorkList.isEmpty()) {
         VarNode src = varNodeWorkList.iterator().next();
         varNodeWorkList.remove(src);
@@ -128,7 +129,7 @@ public class PropAlias extends Propagator {
         }
         src.getP2Set().flushNew();
       }
-      fieldRefWorkList = new HashSet<FieldRefNode>();
+      fieldRefWorkList = new HashSet<>();
       for (FieldRefNode src : outFieldRefWorkList) {
         PointsToSetInternal set = getP2Set(src).getNewSet();
         if (set.isEmpty()) {
@@ -143,7 +144,7 @@ public class PropAlias extends Propagator {
         }
         getP2Set(src).flushNew();
       }
-      outFieldRefWorkList = new HashSet<FieldRefNode>();
+      outFieldRefWorkList = new HashSet<>();
     } while (!varNodeWorkList.isEmpty());
   }
 
@@ -186,8 +187,8 @@ public class PropAlias extends Propagator {
       ofcg.build();
 
       while (addedEdges.hasNext()) {
-        Node addedSrc = (Node) addedEdges.next();
-        Node addedTgt = (Node) addedEdges.next();
+        Node addedSrc = addedEdges.next();
+        Node addedTgt = addedEdges.next();
         ret = true;
         if (addedSrc instanceof VarNode) {
           VarNode edgeSrc = (VarNode) addedSrc;
@@ -298,8 +299,8 @@ public class PropAlias extends Propagator {
   }
 
   protected PAG pag;
-  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<SparkField, VarNode>();
-  protected MultiMap<FieldRefNode, FieldRefNode> aliasEdges = new HashMultiMap<FieldRefNode, FieldRefNode>();
+  protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<>();
+  protected MultiMap<FieldRefNode, FieldRefNode> aliasEdges = new HashMultiMap<>();
   protected LargeNumberedMap<FieldRefNode, PointsToSetInternal> loadSets;
   protected OnFlyCallGraph ofcg;
 }

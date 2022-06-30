@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -36,8 +36,9 @@ public class NumLocalsMetric extends ASTMetric {
 
   /*
    * Will be invoked by the super as well as whenever a new class is entered
-   * 
+   *
    */
+  @Override
   public void reset() {
     numLocals = 0;
   }
@@ -45,10 +46,12 @@ public class NumLocalsMetric extends ASTMetric {
   /*
    * Will be invoked whenever we are leaving a subtree which was a classDecl
    */
+  @Override
   public void addMetrics(ClassData data) {
     data.addMetric(new MetricData("Number-Locals", new Integer(numLocals)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     if (n instanceof LocalDecl) {
       // System.out.println("Local declared is"+ ((LocalDecl)n).name() );

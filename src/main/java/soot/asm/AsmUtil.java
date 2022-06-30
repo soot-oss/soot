@@ -1,5 +1,10 @@
 package soot.asm;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.objectweb.asm.Opcodes;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,11 +28,6 @@ package soot.asm;
  */
 
 import com.google.common.base.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.objectweb.asm.Opcodes;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -235,7 +235,7 @@ public class AsmUtil {
    * @return list of types.
    */
   public static List<Type> toJimpleDesc(String desc, Optional<String> moduleName) {
-    ArrayList<Type> types = new ArrayList<Type>(2);
+    ArrayList<Type> types = new ArrayList<>(2);
     int len = desc.length();
     int idx = 0;
     all: while (idx != len) {

@@ -11,12 +11,12 @@ package soot.dava.internal.AST;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,9 +38,10 @@ public abstract class ASTNode extends AbstractUnit {
   protected List<Object> subBodies;
 
   public ASTNode() {
-    subBodies = new ArrayList<Object>();
+    subBodies = new ArrayList<>();
   }
 
+  @Override
   public abstract void toString(UnitPrinter up);
 
   protected void body_toString(UnitPrinter up, List<Object> body) {
@@ -95,10 +96,12 @@ public abstract class ASTNode extends AbstractUnit {
     a.analyseASTNode(this);
   }
 
+  @Override
   public boolean fallsThrough() {
     return false;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }

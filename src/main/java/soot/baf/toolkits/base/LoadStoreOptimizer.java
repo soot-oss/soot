@@ -10,12 +10,12 @@ package soot.baf.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -77,7 +77,7 @@ import soot.util.Chain;
 
 public class LoadStoreOptimizer extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(LoadStoreOptimizer.class);
-  
+
   private static final boolean SKIP_SLOW_ASSERTS = true;
 
   public LoadStoreOptimizer(Singletons.Global g) {
@@ -255,7 +255,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
                 /*
                  * if(Options.getBoolean(gOptions, "s-elimination")) { // replace store by a pop and remove store from store
                  * list replaceUnit(unit, Baf.v().newPopInst(((StoreInst)unit).getOpType())); unitIt.remove();
-                 * 
+                 *
                  * hasChanged = true; hasChangedFlag = false; }
                  */
                 break;
@@ -645,11 +645,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
       }
 
       // xxx to be safe don't mess w/ monitors. These rules could be relaxed. ? Maybe.
-      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
-        return false;
-      }
-
-      if (aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
+      if (aUnitToGoOver instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst || aUnitToMove instanceof EnterMonitorInst || aUnitToGoOver instanceof ExitMonitorInst) {
         return false;
       }
 
@@ -733,7 +729,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
         }
         h += ((Inst) current).getInCount();
 
-        if (h == 0 && reachedStore == true) {
+        if (h == 0 && reachedStore) {
           if (!isRequiredByFollowingUnits(unitToMove, to)) {
             if (debug) {
               logger.debug(
@@ -986,7 +982,7 @@ public class LoadStoreOptimizer extends BodyTransformer {
       for (Unit u : mUnits) {
         assert (mUnitToBlockMap.containsKey(u));
       }
-      HashSet<Block> blocks = new HashSet<Block>();
+      HashSet<Block> blocks = new HashSet<>();
       for (Map.Entry<Unit, Block> e : mUnitToBlockMap.entrySet()) {
         blocks.add(e.getValue());
         // Ensure the Unit is mapped to the correct Block

@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,7 +39,6 @@ import polyglot.ast.LocalDecl;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
-
 import soot.options.Options;
 
 /**
@@ -99,8 +98,8 @@ public class IdentifiersMetric extends ASTMetric {
   private void initializeDictionary() {
     String line;
     BufferedReader br = null;
-    dictionary = new ArrayList<String>();
-    names = new HashMap<String, Double>();
+    dictionary = new ArrayList<>();
+    names = new HashMap<>();
 
     InputStream is = ClassLoader.getSystemResourceAsStream("mydict.txt");
     if (is != null) {
@@ -173,6 +172,7 @@ public class IdentifiersMetric extends ASTMetric {
    *
    * @see soot.toolkits.astmetrics.ASTMetric#reset()
    */
+  @Override
   public void reset() {
     nameComplexity = 0;
     nameCount = 0;
@@ -183,11 +183,13 @@ public class IdentifiersMetric extends ASTMetric {
    *
    * @see soot.toolkits.astmetrics.ASTMetric#addMetrics(soot.toolkits.astmetrics.ClassData)
    */
+  @Override
   public void addMetrics(ClassData data) {
     data.addMetric(new MetricData("NameComplexity", new Double(nameComplexity)));
     data.addMetric(new MetricData("NameCount", new Double(nameCount)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     double multiplier = 1;
     String name = null;
@@ -223,7 +225,7 @@ public class IdentifiersMetric extends ASTMetric {
       return names.get(name).doubleValue();
     }
 
-    ArrayList<String> strings = new ArrayList<String>();
+    ArrayList<String> strings = new ArrayList<>();
 
     // throw out non-alpha characters
     String tmp = "";
@@ -240,7 +242,7 @@ public class IdentifiersMetric extends ASTMetric {
       strings.add(tmp);
     }
 
-    ArrayList<String> tokens = new ArrayList<String>();
+    ArrayList<String> tokens = new ArrayList<>();
     for (int i = 0; i < strings.size(); i++) {
       tmp = strings.get(i);
       while (tmp.length() > 0) {

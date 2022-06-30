@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.helper;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
-import soot.Local;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
@@ -217,16 +216,14 @@ public class GeomEvaluator {
       return;
     }
     pn = pn.getRepresentative();
-    Set<SootMethod> tgts = new HashSet<SootMethod>();
+    Set<SootMethod> tgts = new HashSet<>();
     Set<AllocNode> set = pn.get_all_points_to_objects();
 
     LinkedList<CgEdge> list = ptsProvider.getCallEdgesInto(ptsProvider.getIDFromSootMethod(caller));
 
     FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
 
-    for (Iterator<CgEdge> it = list.iterator(); it.hasNext();) {
-      CgEdge p = it.next();
-
+    for (CgEdge p : list) {
       l = p.map_offset;
       r = l + ptsProvider.max_context_size_block[p.s];
       tgts.clear();
@@ -342,15 +339,12 @@ public class GeomEvaluator {
    * Count how many aliased base pointers appeared in all user's functions.
    */
   public void checkAliasAnalysis() {
-    Set<IVarAbstraction> access_expr = new HashSet<IVarAbstraction>();
-    ArrayList<IVarAbstraction> al = new ArrayList<IVarAbstraction>();
+    Set<IVarAbstraction> access_expr = new HashSet<>();
+    ArrayList<IVarAbstraction> al = new ArrayList<>();
     Value[] values = new Value[2];
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) {
-        continue;
-      }
-      if (!sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -380,7 +374,7 @@ public class GeomEvaluator {
                 continue;
               }
 
-              LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
+              LocalVarNode vn = ptsProvider.findLocalVarNode(ifr.getBase());
               if (vn == null) {
                 continue;
               }
@@ -450,10 +444,7 @@ public class GeomEvaluator {
   public void checkCastsSafety() {
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) {
-        continue;
-      }
-      if (!sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -488,7 +479,7 @@ public class GeomEvaluator {
             }
 
             evalRes.total_casts++;
-            final Type targetType = (RefLikeType) ((CastExpr) rhs).getCastType();
+            final Type targetType = ((CastExpr) rhs).getCastType();
 
             // We first use the geometric points-to result to
             // evaluate
@@ -496,7 +487,7 @@ public class GeomEvaluator {
             Set<AllocNode> set = pn.get_all_points_to_objects();
             for (AllocNode obj : set) {
               solved = ptsProvider.castNeverFails(obj.getType(), targetType);
-              if (solved == false) {
+              if (!solved) {
                 break;
               }
             }
@@ -508,8 +499,9 @@ public class GeomEvaluator {
             // Second is the SPARK result
             solved = true;
             node.getP2Set().forall(new P2SetVisitor() {
+              @Override
               public void visit(Node arg0) {
-                if (solved == false) {
+                if (!solved) {
                   return;
                 }
                 solved = ptsProvider.castNeverFails(arg0.getType(), targetType);
@@ -534,16 +526,13 @@ public class GeomEvaluator {
    * Estimate the size of the def-use graph for the heap memory. The heap graph is estimated without context information.
    */
   public void estimateHeapDefuseGraph() {
-    final Map<IVarAbstraction, int[]> defUseCounterForGeom = new HashMap<IVarAbstraction, int[]>();
-    final Map<AllocDotField, int[]> defUseCounterForSpark = new HashMap<AllocDotField, int[]>();
+    final Map<IVarAbstraction, int[]> defUseCounterForGeom = new HashMap<>();
+    final Map<AllocDotField, int[]> defUseCounterForSpark = new HashMap<>();
 
     Date begin = new Date();
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) {
-        continue;
-      }
-      if (!sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -578,7 +567,7 @@ public class GeomEvaluator {
         if (ifr != null) {
           final SootField field = ifr.getField();
 
-          LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
+          LocalVarNode vn = ptsProvider.findLocalVarNode(ifr.getBase());
           if (vn == null) {
             continue;
           }

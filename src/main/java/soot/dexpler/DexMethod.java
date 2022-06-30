@@ -15,12 +15,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -94,11 +94,7 @@ public class DexMethod {
 
     // if the method is abstract or native, no code needs to be transformed
     int flags = method.getAccessFlags();
-    if (Modifier.isAbstract(flags) || Modifier.isNative(flags)) {
-      return sm;
-    }
-
-    if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES) {
+    if (Modifier.isAbstract(flags) || Modifier.isNative(flags) || (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)) {
       return sm;
     }
 
@@ -136,7 +132,7 @@ public class DexMethod {
 
   protected List<Type> getParameterTypes(final Method method) {
     // retrieve all parameter types
-    List<Type> parameterTypes = new ArrayList<Type>();
+    List<Type> parameterTypes = new ArrayList<>();
     if (method.getParameters() != null) {
       List<? extends CharSequence> parameters = method.getParameterTypes();
 
@@ -151,7 +147,7 @@ public class DexMethod {
   protected List<SootClass> getThrownExceptions(final Method method) {
     // the following snippet retrieves all exceptions that this method
     // throws by analyzing its annotations
-    List<SootClass> thrownExceptions = new ArrayList<SootClass>();
+    List<SootClass> thrownExceptions = new ArrayList<>();
     for (Annotation a : method.getAnnotations()) {
       Type atype = DexType.toSoot(a.getType());
       String atypes = atype.toString();

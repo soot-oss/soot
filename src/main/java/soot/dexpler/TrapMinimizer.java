@@ -10,12 +10,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,13 +41,13 @@ import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 /**
  * Transformer that splits traps for Dalvik whenever a statements within the trap cannot reach the trap's handler.
- * 
+ *
  * Before: trap from label1 to label2 with handler
- * 
+ *
  * label1: stmt1 ----> handler stmt2 stmt3 ----> handler label2:
- * 
+ *
  * After: trap from label1 to label2 with handler trap from label3 to label4 with handler
- * 
+ *
  * label1: stmt1 ----> handler label2: stmt2 label3: stmt3 ----> handler label4:
  *
  * @author Alexandre Bartel
@@ -72,10 +72,10 @@ public class TrapMinimizer extends TrapTransformer {
         Options.v().omit_excepting_unit_edges());
     Set<Unit> unitsWithMonitor = getUnitsWithMonitor(eug);
 
-    Map<Trap, List<Trap>> replaceTrapBy = new HashMap<Trap, List<Trap>>(b.getTraps().size());
+    Map<Trap, List<Trap>> replaceTrapBy = new HashMap<>(b.getTraps().size());
     boolean updateTrap = false;
     for (Trap tr : b.getTraps()) {
-      List<Trap> newTraps = new ArrayList<Trap>(); // will contain the new
+      List<Trap> newTraps = new ArrayList<>(); // will contain the new
       // traps
       Unit firstTrapStmt = tr.getBeginUnit(); // points to the first unit
       // in the trap

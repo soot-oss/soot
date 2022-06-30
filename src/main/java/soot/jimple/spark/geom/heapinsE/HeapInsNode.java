@@ -16,12 +16,12 @@ package soot.jimple.spark.geom.heapinsE;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -99,9 +99,9 @@ public class HeapInsNode extends IVarAbstraction {
 
   @Override
   public void reconstruct() {
-    flowto = new HashMap<HeapInsNode, HeapInsIntervalManager>();
-    pt_objs = new HashMap<AllocNode, HeapInsIntervalManager>();
-    new_pts = new HashMap<AllocNode, HeapInsIntervalManager>();
+    flowto = new HashMap<>();
+    pt_objs = new HashMap<>();
+    new_pts = new HashMap<>();
     complex_cons = null;
     lrf_value = 0;
   }
@@ -155,7 +155,7 @@ public class HeapInsNode extends IVarAbstraction {
       im.flush();
     }
 
-    new_pts = new HashMap<AllocNode, HeapInsIntervalManager>();
+    new_pts = new HashMap<>();
   }
 
   @Override
@@ -232,7 +232,7 @@ public class HeapInsNode extends IVarAbstraction {
   @Override
   public void put_complex_constraint(PlainConstraint cons) {
     if (complex_cons == null) {
-      complex_cons = new Vector<PlainConstraint>();
+      complex_cons = new Vector<>();
     }
     complex_cons.add(cons);
   }
@@ -277,7 +277,7 @@ public class HeapInsNode extends IVarAbstraction {
             break;
           }
 
-          if (objn.willUpdate == false) {
+          if (!objn.willUpdate) {
             // This must be a store constraint
             // This object field is not need for computing
             // the points-to information of the seed pointers
@@ -329,10 +329,7 @@ public class HeapInsNode extends IVarAbstraction {
         obj = entry2.getKey();
         him2 = entry2.getValue();
 
-        if (him2 == deadManager) {
-          continue;
-        }
-        if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
+        if ((him2 == deadManager) || !ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
           continue;
         }
 
@@ -424,12 +421,8 @@ public class HeapInsNode extends IVarAbstraction {
 
     qn = (HeapInsNode) qv;
 
-    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
-      AllocNode an = it.next();
-      if (an instanceof ClassConstantNode) {
-        continue;
-      }
-      if (an instanceof StringConstantNode) {
+    for (AllocNode an : pt_objs.keySet()) {
+      if ((an instanceof ClassConstantNode) || (an instanceof StringConstantNode)) {
         continue;
       }
       qt = qn.find_points_to(an);
@@ -470,8 +463,7 @@ public class HeapInsNode extends IVarAbstraction {
 
   @Override
   public void print_context_sensitive_points_to(PrintStream outPrintStream) {
-    for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
-      AllocNode obj = it.next();
+    for (AllocNode obj : pt_objs.keySet()) {
       SegmentNode[] int_entry = find_points_to(obj);
       for (int j = 0; j < HeapInsIntervalManager.Divisions; ++j) {
         SegmentNode p = int_entry[j];
@@ -529,7 +521,7 @@ public class HeapInsNode extends IVarAbstraction {
       SegmentNode[] int_entry = im.getFigures();
       for (int i = 0; i < HeapInsIntervalManager.Divisions; ++i) {
         SegmentNode p = int_entry[i];
-        while (p != null && p.is_new == true) {
+        while (p != null && p.is_new) {
           ++ans;
           p = p.next;
         }
@@ -617,7 +609,7 @@ public class HeapInsNode extends IVarAbstraction {
   @Override
   public void injectPts() {
     final GeomPointsTo geomPTA = (GeomPointsTo) Scene.v().getPointsToAnalysis();
-    pt_objs = new HashMap<AllocNode, HeapInsIntervalManager>();
+    pt_objs = new HashMap<>();
 
     me.getP2Set().forall(new P2SetVisitor() {
       @Override

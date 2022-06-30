@@ -10,12 +10,12 @@ package soot.javaToJimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,10 +38,11 @@ public class AnonConstructorFinder extends polyglot.visit.ContextVisitor {
     super(job, ts, nf);
   }
 
+  @Override
   public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     if (n instanceof polyglot.ast.New && ((polyglot.ast.New) n).anonType() != null) {
       try {
-        List<Type> argTypes = new ArrayList<Type>();
+        List<Type> argTypes = new ArrayList<>();
         for (Iterator it = ((polyglot.ast.New) n).arguments().iterator(); it.hasNext();) {
           argTypes.add(((polyglot.ast.Expr) it.next()).type());
         }

@@ -15,12 +15,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -76,21 +76,21 @@ class MhpAnalysis {
   private final Map<String, FlowSet> monitor;
   private final Map<JPegStmt, Set<JPegStmt>> notifyPred;
   FlowSet fullSet = new ArraySparseSet();
-  LinkedList<Object> workList = new LinkedList<Object>();
+  LinkedList<Object> workList = new LinkedList<>();
 
   MhpAnalysis(PegGraph g) {
     // System.out.println("******entering MhpAnalysis");
     this.g = g;
     int size = g.size();
     Map startToThread = g.getStartToThread();
-    unitToGen = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
-    unitToKill = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
-    unitToM = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
+    unitToGen = new HashMap<>(size * 2 + 1, 0.7f);
+    unitToKill = new HashMap<>(size * 2 + 1, 0.7f);
+    unitToM = new HashMap<>(size * 2 + 1, 0.7f);
     // unitToMSym = new HashMap(size*2+1, 0.7f);
-    unitToOut = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
-    notifySucc = new HashMap<Object, FlowSet>(size * 2 + 1, 0.7f);
+    unitToOut = new HashMap<>(size * 2 + 1, 0.7f);
+    notifySucc = new HashMap<>(size * 2 + 1, 0.7f);
     // notifyEdge = new HashMap(size*2+1,0.7f);
-    notifyPred = new HashMap<JPegStmt, Set<JPegStmt>>(size * 2 + 1, 0.7f);
+    notifyPred = new HashMap<>(size * 2 + 1, 0.7f);
     // monitor = new HashMap(size*2+1,0.7f);
     monitor = g.getMonitor();
 
@@ -468,7 +468,7 @@ class MhpAnalysis {
       else {
         JPegStmt currentNode = (JPegStmt) currentObj;
 
-        Tag tag = (Tag) currentNode.getTags().get(0);
+        Tag tag = currentNode.getTags().get(0);
 
         if (currentNode instanceof NotifyStmt || currentNode instanceof NotifyAllStmt) {
           // if (currentNode.getName().equals("notify") ||currentNode.getName().equals("notifyAll") ){
@@ -505,7 +505,7 @@ class MhpAnalysis {
                       notifyPredSet.add(currentNode);
                       notifyPred.put(waitingSucc, notifyPredSet);
                     } else {
-                      Set<JPegStmt> notifyPredSet = new HashSet<JPegStmt>();
+                      Set<JPegStmt> notifyPredSet = new HashSet<>();
                       notifyPredSet.add(currentNode);
                       // notifyPredSet.add(waitingSucc);
                       notifyPred.put(waitingSucc, notifyPredSet);
@@ -943,7 +943,7 @@ class MhpAnalysis {
   // end add for debug
 
   private void computeMPairs() {
-    Set<Set<Object>> mSetPairs = new HashSet<Set<Object>>();
+    Set<Set<Object>> mSetPairs = new HashSet<>();
     Set maps = unitToM.entrySet();
     for (Iterator iter = maps.iterator(); iter.hasNext();) {
       Map.Entry entry = (Map.Entry) iter.next();
@@ -959,7 +959,7 @@ class MhpAnalysis {
          */
 
         Object m = it.next();
-        Set<Object> pair = new HashSet<Object>();
+        Set<Object> pair = new HashSet<>();
         pair.add(obj);
         pair.add(m);
         if (!mSetPairs.contains(pair)) {

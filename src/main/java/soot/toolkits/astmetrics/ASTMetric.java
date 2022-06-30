@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,7 +28,6 @@ import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
-
 import soot.G;
 
 public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
@@ -43,6 +42,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
   /*
    * Taking care of the change in classes within a polyglot ast
    */
+  @Override
   public final NodeVisitor enter(Node n) {
     if (n instanceof ClassDecl) {
       className = ((ClassDecl) n).name();
@@ -57,6 +57,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
    * This is done by invoking the addMetrics abstract method
    */
 
+  @Override
   public final Node leave(Node parent, Node old, Node n, NodeVisitor v) {
     if (n instanceof ClassDecl) {
       if (className == null) {
@@ -80,6 +81,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
   /*
    * Should be used to execute the traversal which will find the metric being calculated
    */
+  @Override
   public final void execute() {
     astNode.visit(this);
     // Testing testing testing

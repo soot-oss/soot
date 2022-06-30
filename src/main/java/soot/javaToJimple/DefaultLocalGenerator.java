@@ -71,6 +71,7 @@ public class DefaultLocalGenerator extends LocalGenerator {
     this.expectedModCount = -1;// init with invalid mod count
   }
 
+  @Override
   public Local generateLocal(Type type) {
     Supplier<String> nameGen;
     if (type instanceof IntType || type instanceof Integer1Type || type instanceof Integer127Type

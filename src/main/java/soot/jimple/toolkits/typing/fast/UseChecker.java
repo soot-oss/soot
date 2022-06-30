@@ -1,5 +1,14 @@
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -12,12 +21,12 @@ package soot.jimple.toolkits.typing.fast;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -25,16 +34,6 @@ package soot.jimple.toolkits.typing.fast;
  */
 
 import heros.solver.Pair;
-
-import java.util.ArrayDeque;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.G;
@@ -250,7 +249,7 @@ public class UseChecker extends AbstractStmtSwitch {
           at = tgType.makeArrayType();
         }
       }
-      tlhs = ((ArrayType) at).getElementType();
+      tlhs = at.getElementType();
 
       this.handleArrayRef(aref, stmt);
 
@@ -295,7 +294,7 @@ public class UseChecker extends AbstractStmtSwitch {
             }
             // First, we check the definitions. If we can see the definitions and know the array type
             // that way, we are safe.
-            ArrayDeque<Pair<Unit, Local>> worklist = new ArrayDeque<Pair<Unit, Local>>();
+            ArrayDeque<Pair<Unit, Local>> worklist = new ArrayDeque<>();
             Set<Pair<Unit, Local>> seen = new HashSet<>();
             worklist.add(new Pair<>(stmt, (Local) ((ArrayRef) rhs).getBase()));
             while (!worklist.isEmpty()) {
@@ -401,7 +400,7 @@ public class UseChecker extends AbstractStmtSwitch {
 
         at = et.makeArrayType();
       }
-      Type trhs = ((ArrayType) at).getElementType();
+      Type trhs = at.getElementType();
 
       this.handleArrayRef(aref, stmt);
 

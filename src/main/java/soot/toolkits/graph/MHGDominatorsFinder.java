@@ -11,12 +11,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -64,9 +64,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     this.graph = graph;
     this.heads = new HashSet<>(graph.getHeads());
     int size = graph.size() * 2 + 1;
-    this.nodeToFlowSet = new HashMap<N, BitSet>(size, 0.7f);
-    this.nodeToIndex = new HashMap<N, Integer>(size, 0.7f);
-    this.indexToNode = new HashMap<Integer, N>(size, 0.7f);
+    this.nodeToFlowSet = new HashMap<>(size, 0.7f);
+    this.nodeToIndex = new HashMap<>(size, 0.7f);
+    this.indexToNode = new HashMap<>(size, 0.7f);
     doAnalysis();
   }
 
@@ -148,7 +148,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
   @Override
   public List<N> getDominators(N node) {
     // reconstruct list of dominators from bitset
-    List<N> result = new ArrayList<N>();
+    List<N> result = new ArrayList<>();
     BitSet bitSet = getDominatorsBitSet(node);
     for (int i = bitSet.nextSetBit(0); i >= 0; i = bitSet.nextSetBit(i + 1)) {
       result.add(indexToNode.get(i));

@@ -10,12 +10,12 @@ package soot.util.cfgcmd;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -215,7 +215,7 @@ public class CFGToDotGraph {
     if (coll.size() <= 1) {
       return coll.iterator();
     } else {
-      ArrayList<T> list = new ArrayList<T>(coll);
+      ArrayList<T> list = new ArrayList<>(coll);
       Collections.sort(list, comp);
       return list.iterator();
     }
@@ -286,8 +286,8 @@ public class CFGToDotGraph {
    */
   public <N> DotGraph drawCFG(DirectedGraph<N> graph, Body body) {
     DotGraph canvas = initDotGraph(body);
-    DotNamer<N> namer = new DotNamer<N>((int) (graph.size() / 0.7f), 0.7f);
-    NodeComparator<N> comparator = new NodeComparator<N>(namer);
+    DotNamer<N> namer = new DotNamer<>((int) (graph.size() / 0.7f), 0.7f);
+    NodeComparator<N> comparator = new NodeComparator<>(namer);
 
     // To facilitate comparisons between different graphs of the same
     // method, prelabel the nodes in the order they appear
@@ -325,9 +325,9 @@ public class CFGToDotGraph {
   public <N> DotGraph drawCFG(ExceptionalGraph<N> graph) {
     Body body = graph.getBody();
     DotGraph canvas = initDotGraph(body);
-    DotNamer<Object> namer = new DotNamer<Object>((int) (graph.size() / 0.7f), 0.7f);
+    DotNamer<Object> namer = new DotNamer<>((int) (graph.size() / 0.7f), 0.7f);
     @SuppressWarnings("unchecked")
-    NodeComparator<N> nodeComparator = new NodeComparator<N>((DotNamer<N>) namer);
+    NodeComparator<N> nodeComparator = new NodeComparator<>((DotNamer<N>) namer);
 
     // Prelabel nodes in iterator order, to facilitate
     // comparisons between graphs of a given method.

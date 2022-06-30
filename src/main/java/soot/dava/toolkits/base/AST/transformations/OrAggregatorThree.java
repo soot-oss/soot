@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -178,7 +178,7 @@ public class OrAggregatorThree {
     }
 
     // create a new SubBody
-    List<Object> newSubBody = new ArrayList<Object>();
+    List<Object> newSubBody = new ArrayList<>();
 
     // this is an iterator of ASTNodes
     Iterator<Object> it = oldSubBody.iterator();
@@ -204,14 +204,9 @@ public class OrAggregatorThree {
 
     // get the next node that should also be an ASTIfNode
     ASTNode isItIfTwo = (ASTNode) it.next();
-    if (!(isItIfTwo instanceof ASTIfNode)) {
-      // something is wrong
-      return null;
-    }
-
     // double check by invoking matchPattern on these
     // if speed is an issue this check can be removed
-    if (!matchPattern((ASTIfNode) isItIfOne, (ASTIfNode) isItIfTwo)) {
+    if (!(isItIfTwo instanceof ASTIfNode) || !matchPattern((ASTIfNode) isItIfOne, (ASTIfNode) isItIfTwo)) {
       // pattern did not match
       return null;
     }

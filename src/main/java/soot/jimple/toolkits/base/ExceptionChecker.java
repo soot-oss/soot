@@ -10,12 +10,12 @@ package soot.jimple.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -99,11 +99,8 @@ public class ExceptionChecker extends BodyTransformer {
     final SootClass sootClassError = Scene.v().getSootClass("java.lang.Error");
 
     // handles case when exception is RuntimeException or Error
-    if (throwClass.equals(sootClassRuntimeException) || throwClass.equals(sootClassError)) {
-      return true;
-    }
     // handles case when exception is a subclass of RuntimeException or Error
-    if (hierarchy.isSubclass(throwClass, sootClassRuntimeException) || hierarchy.isSubclass(throwClass, sootClassError)) {
+    if (throwClass.equals(sootClassRuntimeException) || throwClass.equals(sootClassError) || hierarchy.isSubclass(throwClass, sootClassRuntimeException) || hierarchy.isSubclass(throwClass, sootClassError)) {
       return true;
     }
     // handles case when exact exception is thrown
@@ -176,7 +173,7 @@ public class ExceptionChecker extends BodyTransformer {
       return Collections.emptyList();
     }
 
-    List<SootClass> result = sm == null ? null : new ArrayList<SootClass>(sm.getExceptions());
+    List<SootClass> result = sm == null ? null : new ArrayList<>(sm.getExceptions());
     for (SootClass suprintr : intrface.getInterfaces()) {
       List<SootClass> other = getExceptionSpec(suprintr, sig);
       if (other != null) {

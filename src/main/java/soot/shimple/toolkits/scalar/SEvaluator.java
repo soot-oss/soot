@@ -10,12 +10,12 @@ package soot.shimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -104,11 +104,7 @@ public class SEvaluator {
       PhiExpr phi = (PhiExpr) v;
 
       for (Value arg : phi.getValues()) {
-        if (!(arg instanceof Constant)) {
-          continue;
-        }
-
-        if (arg instanceof TopConstant) {
+        if (!(arg instanceof Constant) || (arg instanceof TopConstant)) {
           continue;
         }
 
@@ -159,7 +155,7 @@ public class SEvaluator {
     if (v instanceof Constant) {
       return (Constant) v;
     } else if (v instanceof Local) {
-      return localToConstant.get((Local) v);
+      return localToConstant.get(v);
     } else if (!(v instanceof Expr)) {
       return BottomConstant.v();
     }
@@ -169,7 +165,7 @@ public class SEvaluator {
     for (ValueBox useBox : expr.getUseBoxes()) {
       Value use = useBox.getValue();
       if (use instanceof Local) {
-        Constant constant = localToConstant.get((Local) use);
+        Constant constant = localToConstant.get(use);
         if (useBox.canContainValue(constant)) {
           useBox.setValue(constant);
         }

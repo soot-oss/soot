@@ -10,12 +10,12 @@ package soot.tools;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -138,7 +138,7 @@ public class CFGViewer extends BodyTransformer {
    * @return an array of arguments to pass on to Soot.Main.main().
    */
   private String[] parse_options(String[] args) {
-    List<String> sootArgs = new ArrayList<String>(args.length);
+    List<String> sootArgs = new ArrayList<>(args.length);
 
     for (int i = 0, n = args.length; i < n; i++) {
       if (args[i].equals("--alt-classpath") || args[i].equals("--alt-class-path")) {
@@ -187,14 +187,14 @@ public class CFGViewer extends BodyTransformer {
           sootArgs.add(clsname);
           String methname = args[i].substring(smpos + 1);
           if (methodsToPrint == null) {
-            methodsToPrint = new HashMap<String, String>();
+            methodsToPrint = new HashMap<>();
           }
           methodsToPrint.put(methname, clsname);
         }
       }
     }
     String[] sootArgsArray = new String[sootArgs.size()];
-    return (String[]) sootArgs.toArray(sootArgsArray);
+    return sootArgs.toArray(sootArgsArray);
   }
 
   private void initialize(Map<String, String> options) {

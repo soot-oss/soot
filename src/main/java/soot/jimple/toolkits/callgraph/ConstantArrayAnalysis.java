@@ -10,12 +10,12 @@ package soot.jimple.toolkits.callgraph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -127,11 +127,11 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
     }
   }
 
-  private final Map<Local, Integer> localToInt = new HashMap<Local, Integer>();
-  private final Map<Type, Integer> typeToInt = new HashMap<Type, Integer>();
-  private final Map<Integer, Integer> sizeToInt = new HashMap<Integer, Integer>();
-  private final Map<Integer, Type> rvTypeToInt = new HashMap<Integer, Type>();
-  private final Map<Integer, Integer> rvSizeToInt = new HashMap<Integer, Integer>();
+  private final Map<Local, Integer> localToInt = new HashMap<>();
+  private final Map<Type, Integer> typeToInt = new HashMap<>();
+  private final Map<Integer, Integer> sizeToInt = new HashMap<>();
+  private final Map<Integer, Type> rvTypeToInt = new HashMap<>();
+  private final Map<Integer, Integer> rvSizeToInt = new HashMap<>();
 
   private int size;
   private int typeSize;
@@ -195,7 +195,7 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         }
       } else if (lhs instanceof ArrayRef) {
         ArrayRef ar = (ArrayRef) lhs;
-        int localRef = localToInt.get((Local) ar.getBase());
+        int localRef = localToInt.get(ar.getBase());
         Value indexVal = ar.getIndex();
         if (!(indexVal instanceof IntConstant)) {
           out.state[localRef] = null;
@@ -210,24 +210,24 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         }
       } else if (lhs instanceof Local) {
         if (rhs instanceof NullConstant && lhs.getType() instanceof ArrayType) {
-          int varRef = localToInt.get((Local) lhs);
+          int varRef = localToInt.get(lhs);
           out.active.clear(varRef);
           out.state[varRef] = null;
-        } else if (rhs instanceof Local && in.state[localToInt.get((Local) rhs)] != null
-            && in.active.get(localToInt.get((Local) rhs))) {
-          int lhsRef = localToInt.get((Local) lhs);
-          int rhsRef = localToInt.get((Local) rhs);
+        } else if (rhs instanceof Local && in.state[localToInt.get(rhs)] != null
+            && in.active.get(localToInt.get(rhs))) {
+          int lhsRef = localToInt.get(lhs);
+          int rhsRef = localToInt.get(rhs);
           out.active.set(lhsRef);
           out.state[lhsRef] = in.state[rhsRef];
           out.state[rhsRef] = null;
         } else if (rhs instanceof PhiExpr) {
           PhiExpr rPhi = (PhiExpr) rhs;
-          int lhsRef = localToInt.get((Local) lhs);
+          int lhsRef = localToInt.get(lhs);
           out.state[lhsRef] = null;
           int i = 0;
           List<Value> phiValues = rPhi.getValues();
           for (; i < phiValues.size(); i++) {
-            int argRef = localToInt.get((Local) phiValues.get(i));
+            int argRef = localToInt.get(phiValues.get(i));
             if (!in.active.get(argRef)) {
               continue;
             }
@@ -245,11 +245,11 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
             out.state[argRef] = null;
           }
           for (; i < phiValues.size(); i++) {
-            int argRef = localToInt.get((Local) phiValues.get(i));
+            int argRef = localToInt.get(phiValues.get(i));
             out.state[argRef] = null;
           }
         } else {
-          int varRef = localToInt.get((Local) lhs);
+          int varRef = localToInt.get(lhs);
           out.active.set(varRef);
           out.state[varRef] = null;
         }
@@ -257,7 +257,7 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
       for (ValueBox b : rhs.getUseBoxes()) {
         Value v = b.getValue();
         if (v instanceof Local) {
-          Integer localRef = localToInt.get((Local) v);
+          Integer localRef = localToInt.get(v);
           if (localRef != null) {
             int iLocalRef = localRef;
             out.state[iLocalRef] = null;
@@ -266,7 +266,7 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         }
       }
       if (rhs instanceof Local) {
-        Integer localRef = localToInt.get((Local) rhs);
+        Integer localRef = localToInt.get(rhs);
         if (localRef != null) {
           int iLocalRef = localRef;
           out.state[iLocalRef] = null;
@@ -277,7 +277,7 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
       for (ValueBox b : d.getUseBoxes()) {
         Value v = b.getValue();
         if (v instanceof Local) {
-          Integer localRef = localToInt.get((Local) v);
+          Integer localRef = localToInt.get(v);
           if (localRef != null) {
             int iLocalRef = localRef;
             out.state[iLocalRef] = null;
@@ -366,13 +366,13 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
     ArrayTypes toRet = new ArrayTypes();
     int varRef = localToInt.get(arrayLocal);
     ArrayTypesInternal ati = getFlowBefore(s).state[varRef];
-    toRet.possibleSizes = new HashSet<Integer>();
+    toRet.possibleSizes = new HashSet<>();
     toRet.possibleTypes = new Set[ati.typeState.length];
     for (int i = ati.sizeState.nextSetBit(0); i >= 0; i = ati.sizeState.nextSetBit(i + 1)) {
       toRet.possibleSizes.add(rvSizeToInt.get(i));
     }
     for (int i = 0; i < toRet.possibleTypes.length; i++) {
-      toRet.possibleTypes[i] = new HashSet<Type>();
+      toRet.possibleTypes[i] = new HashSet<>();
       for (int j = ati.typeState[i].nextSetBit(0); j >= 0; j = ati.typeState[i].nextSetBit(j + 1)) {
         toRet.possibleTypes[i].add(rvTypeToInt.get(j));
       }

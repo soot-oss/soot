@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,6 +40,7 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 
 public final class AllocAndContextSet extends ArraySet<AllocAndContext> implements EqualsSupportingPointsToSet {
 
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     if (other instanceof AllocAndContextSet) {
       return nonEmptyHelper((AllocAndContextSet) other);
@@ -80,8 +81,9 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
     return false;
   }
 
+  @Override
   public Set<ClassConstant> possibleClassConstants() {
-    Set<ClassConstant> res = new HashSet<ClassConstant>();
+    Set<ClassConstant> res = new HashSet<>();
     for (AllocAndContext allocAndContext : this) {
       AllocNode n = allocAndContext.alloc;
       if (n instanceof ClassConstantNode) {
@@ -93,8 +95,9 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
     return res;
   }
 
+  @Override
   public Set<String> possibleStringConstants() {
-    Set<String> res = new HashSet<String>();
+    Set<String> res = new HashSet<>();
     for (AllocAndContext allocAndContext : this) {
       AllocNode n = allocAndContext.alloc;
       if (n instanceof StringConstantNode) {
@@ -106,6 +109,7 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
     return res;
   }
 
+  @Override
   public Set<Type> possibleTypes() {
     Set res = new HashSet<Type>();
     for (AllocAndContext allocAndContext : this) {
@@ -118,6 +122,7 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
    * Computes a hash code based on the contents of the points-to set. Note that hashCode() is not overwritten on purpose.
    * This is because Spark relies on comparison by object identity.
    */
+  @Override
   public int pointsToSetHashCode() {
     final int PRIME = 31;
     int result = 1;
@@ -131,6 +136,7 @@ public final class AllocAndContextSet extends ArraySet<AllocAndContext> implemen
    * Returns <code>true</code> if and only if other holds the same alloc nodes as this. Note that equals() is not overwritten
    * on purpose. This is because Spark relies on comparison by object identity.
    */
+  @Override
   public boolean pointsToSetEquals(Object other) {
     if (this == other) {
       return true;

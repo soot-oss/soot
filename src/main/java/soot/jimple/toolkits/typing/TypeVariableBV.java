@@ -1,28 +1,5 @@
 package soot.jimple.toolkits.typing;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 2000 Etienne Gagnon.  All rights reserved.
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import java.util.Iterator;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -36,7 +13,7 @@ import soot.util.BitVector;
 
 /**
  * Represents a type variable.
- * 
+ *
  * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
  **/
 @Deprecated
@@ -73,9 +50,7 @@ class TypeVariableBV implements Comparable<Object> {
     this.type = type;
     approx = type;
 
-    for (Iterator<TypeNode> parentIt = type.parents().iterator(); parentIt.hasNext();) {
-
-      final TypeNode parent = parentIt.next();
+    for (TypeNode parent : type.parents()) {
 
       addParent(resolver.typeVariable(parent));
     }
@@ -86,6 +61,7 @@ class TypeVariableBV implements Comparable<Object> {
     }
   }
 
+  @Override
   public int hashCode() {
     if (rep != this) {
       return ecr().hashCode();
@@ -94,16 +70,13 @@ class TypeVariableBV implements Comparable<Object> {
     return id;
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (rep != this) {
       return ecr().equals(obj);
     }
 
-    if (obj == null) {
-      return false;
-    }
-
-    if (!obj.getClass().equals(getClass())) {
+    if ((obj == null) || !obj.getClass().equals(getClass())) {
       return false;
     }
 
@@ -116,6 +89,7 @@ class TypeVariableBV implements Comparable<Object> {
     return true;
   }
 
+  @Override
   public int compareTo(Object o) {
     if (rep != this) {
       return ecr().compareTo(o);
@@ -619,6 +593,7 @@ class TypeVariableBV implements Comparable<Object> {
     }
   }
 
+  @Override
   public String toString() {
     if (rep != this) {
       return ecr().toString();

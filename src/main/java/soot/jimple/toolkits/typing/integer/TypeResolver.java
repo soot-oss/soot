@@ -10,12 +10,12 @@ package soot.jimple.toolkits.typing.integer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,10 +56,10 @@ public class TypeResolver {
   private static final boolean IMPERFORMANT_TYPE_CHECK = false;
 
   /** All type variable instances **/
-  private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
+  private final List<TypeVariable> typeVariableList = new ArrayList<>();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariable **/
-  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<Object, TypeVariable>();
+  private final Map<Object, TypeVariable> typeVariableMap = new HashMap<>();
 
   final TypeVariable BOOLEAN = typeVariable(ClassHierarchy.v().BOOLEAN);
   final TypeVariable BYTE = typeVariable(ClassHierarchy.v().BYTE);
@@ -230,7 +230,7 @@ public class TypeResolver {
   private void merge_connected_components() throws TypeException {
     compute_solved();
     if (IMPERFORMANT_TYPE_CHECK) {
-      List<TypeVariable> list = new ArrayList<TypeVariable>(solved.size() + unsolved.size());
+      List<TypeVariable> list = new ArrayList<>(solved.size() + unsolved.size());
       list.addAll(solved);
       list.addAll(unsolved);
       // MMI: This method does not perform any changing effect
@@ -249,7 +249,7 @@ public class TypeResolver {
         var.fixChildren();
 
         TypeNode lca = null;
-        List<TypeVariable> children_to_remove = new LinkedList<TypeVariable>();
+        List<TypeVariable> children_to_remove = new LinkedList<>();
         for (TypeVariable child : var.children()) {
 
           TypeNode type = child.type();
@@ -293,7 +293,7 @@ public class TypeResolver {
           var.fixParents();
 
           TypeNode gcd = null;
-          List<TypeVariable> parents_to_remove = new LinkedList<TypeVariable>();
+          List<TypeVariable> parents_to_remove = new LinkedList<>();
           for (TypeVariable parent : var.parents()) {
             TypeNode type = parent.type();
 
@@ -481,7 +481,7 @@ public class TypeResolver {
 
   private void compute_approximate_types() throws TypeException {
     {
-      TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
+      TreeSet<TypeVariable> workList = new TreeSet<>();
       for (TypeVariable var : typeVariableList) {
         if (var.type() != null) {
           workList.add(var);
@@ -491,7 +491,7 @@ public class TypeResolver {
     }
 
     {
-      TreeSet<TypeVariable> workList = new TreeSet<TypeVariable>();
+      TreeSet<TypeVariable> workList = new TreeSet<>();
       for (TypeVariable var : typeVariableList) {
         if (var.type() != null) {
           workList.add(var);
@@ -508,8 +508,8 @@ public class TypeResolver {
   }
 
   private void compute_solved() {
-    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
-    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>();
+    Set<TypeVariable> unsolved_set = new TreeSet<>();
+    Set<TypeVariable> solved_set = new TreeSet<>();
 
     for (TypeVariable var : typeVariableList) {
       if (var.type() == null) {
@@ -524,8 +524,8 @@ public class TypeResolver {
   }
 
   private void refresh_solved() throws TypeException {
-    Set<TypeVariable> unsolved_set = new TreeSet<TypeVariable>();
-    Set<TypeVariable> solved_set = new TreeSet<TypeVariable>(solved);
+    Set<TypeVariable> unsolved_set = new TreeSet<>();
+    Set<TypeVariable> solved_set = new TreeSet<>(solved);
 
     for (TypeVariable var : unsolved) {
       if (var.type() == null) {

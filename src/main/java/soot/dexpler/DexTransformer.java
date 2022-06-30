@@ -1,5 +1,5 @@
-// 
-// (c) 2012 University of Luxembourg - Interdisciplinary Centre for 
+//
+// (c) 2012 University of Luxembourg - Interdisciplinary Centre for
 // Security Reliability and Trust (SnT) - All rights reserved
 //
 // Author: Alexandre Bartel
@@ -15,7 +15,7 @@
 // GNU Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
 package soot.dexpler;
@@ -30,12 +30,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -73,9 +73,9 @@ public abstract class DexTransformer extends BodyTransformer {
 
   /**
    * Collect definitions of l in body including the definitions of aliases of l.
-   * 
+   *
    * In this context an alias is a local that propagates its value to l.
-   * 
+   *
    * @param l
    *          the local whose definitions are to collect
    * @param localDefs
@@ -84,9 +84,9 @@ public abstract class DexTransformer extends BodyTransformer {
    *          the body that contains the local
    */
   protected List<Unit> collectDefinitionsWithAliases(Local l, LocalDefs localDefs, LocalUses localUses, Body body) {
-    Set<Local> seenLocals = new HashSet<Local>();
-    List<Local> newLocals = new ArrayList<Local>();
-    List<Unit> defs = new ArrayList<Unit>();
+    Set<Local> seenLocals = new HashSet<>();
+    List<Local> newLocals = new ArrayList<>();
+    List<Unit> defs = new ArrayList<>();
     newLocals.add(l);
     seenLocals.add(l);
 
@@ -121,7 +121,7 @@ public abstract class DexTransformer extends BodyTransformer {
 
   /**
    * Convenience method that collects all definitions of l.
-   * 
+   *
    * @param l
    *          the local whose definitions are to collect
    * @param localDefs
@@ -164,7 +164,7 @@ public abstract class DexTransformer extends BodyTransformer {
       if (alreadyVisitedDefs.contains(baseDef)) {
         continue;
       }
-      Set<Unit> newVisitedDefs = new HashSet<Unit>(alreadyVisitedDefs);
+      Set<Unit> newVisitedDefs = new HashSet<>(alreadyVisitedDefs);
       newVisitedDefs.add(baseDef);
 
       // baseDef is either an assignment statement or an identity

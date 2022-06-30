@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -49,7 +49,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  */
 public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>> {
 
-  protected final FlowSet<Value> emptySet = new ToppedSet<Value>(new ArraySparseSet<Value>());
+  protected final FlowSet<Value> emptySet = new ToppedSet<>(new ArraySparseSet<Value>());
 
   protected final SideEffectTester st;
   /** maps an rhs to its containing stmt. object equality in rhs. */
@@ -59,8 +59,8 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
   public FastAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m, SideEffectTester st) {
     super(dg);
     this.st = st;
-    this.rhsToContainingStmt = new HashMap<Value, Unit>();
-    this.unitToGenerateSet = new HashMap<Unit, FlowSet<Value>>(dg.size() * 2 + 1, 0.7f);
+    this.rhsToContainingStmt = new HashMap<>();
+    this.unitToGenerateSet = new HashMap<>(dg.size() * 2 + 1, 0.7f);
 
     // Create generate sets
     for (Unit s : dg) {
@@ -113,7 +113,7 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     }
 
     // iterate over things (avail) in out set.
-    for (Value avail : new ArrayList<Value>(out.toList())) {
+    for (Value avail : new ArrayList<>(out.toList())) {
       if (avail instanceof FieldRef) {
         if (st.unitCanWriteTo(u, avail)) {
           out.remove(avail, out);

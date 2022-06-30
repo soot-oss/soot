@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -107,7 +107,7 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph {
       // possibility, we should iterate here until we reach a fixed
       // point; but the old UnitGraph that we are attempting to
       // duplicate did not do that, so we won't either.
-      for (Unit pred : new ArrayList<Unit>(getPredsOf(trap.getBeginUnit()))) {
+      for (Unit pred : new ArrayList<>(getPredsOf(trap.getBeginUnit()))) {
         addEdge(unitToSuccs, unitToPreds, pred, catcher);
       }
     }

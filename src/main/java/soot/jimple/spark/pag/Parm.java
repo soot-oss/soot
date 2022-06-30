@@ -10,12 +10,12 @@ package soot.jimple.spark.pag;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -31,7 +31,7 @@ import soot.toolkits.scalar.Pair;
 
 /**
  * Represents a method parameter.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class Parm implements SparkField {
@@ -45,8 +45,8 @@ public class Parm implements SparkField {
   }
 
   public static Parm v(SootMethod m, int index) {
-    Pair<SootMethod, Integer> p = new Pair<SootMethod, Integer>(m, new Integer(index));
-    Parm ret = (Parm) G.v().Parm_pairToElement.get(p);
+    Pair<SootMethod, Integer> p = new Pair<>(m, new Integer(index));
+    Parm ret = G.v().Parm_pairToElement.get(p);
     if (ret == null) {
       G.v().Parm_pairToElement.put(p, ret = new Parm(m, index));
     }
@@ -57,14 +57,17 @@ public class Parm implements SparkField {
     G.v().Parm_pairToElement = null;
   }
 
+  @Override
   public String toString() {
     return "Parm " + index + " to " + method;
   }
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }
@@ -73,6 +76,7 @@ public class Parm implements SparkField {
     return index;
   }
 
+  @Override
   public Type getType() {
     if (index == PointsToAnalysis.RETURN_NODE) {
       return method.getReturnType();

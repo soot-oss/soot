@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,19 +47,23 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
 
   public static String dependancies[] = new String[] { "bb.jbco_rrps" };
 
+  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_rrps";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // removes all redundant load-stores
     boolean changed = true;

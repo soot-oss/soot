@@ -10,12 +10,12 @@ package soot.jbco.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -40,7 +40,7 @@ public class Debugger {
 
     System.out.println(b.getMethod().getName() + "\n");
     int i = 0;
-    Map<Unit, Integer> index = new HashMap<Unit, Integer>();
+    Map<Unit, Integer> index = new HashMap<>();
     Iterator<Unit> it = b.getUnits().iterator();
     while (it.hasNext()) {
       index.put(it.next(), new Integer(i++));
@@ -56,7 +56,7 @@ public class Debugger {
 
   public static void printUnits(Body b, String msg) {
     int i = 0;
-    Map<Unit, Integer> numbers = new HashMap<Unit, Integer>();
+    Map<Unit, Integer> numbers = new HashMap<>();
     PatchingChain<Unit> u = b.getUnits();
     Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext()) {
@@ -67,7 +67,7 @@ public class Debugger {
     System.out.println("\r\r" + b.getMethod().getName() + "  " + msg);
     Iterator<Unit> udit = u.snapshotIterator();
     while (udit.hasNext()) {
-      Unit unit = (Unit) udit.next();
+      Unit unit = udit.next();
       Integer numb = numbers.get(unit);
 
       if (numb.intValue() == 149) {
@@ -112,7 +112,7 @@ public class Debugger {
 
   public static void printUnits(PatchingChain<Unit> u, String msg) {
     int i = 0;
-    HashMap<Unit, Integer> numbers = new HashMap<Unit, Integer>();
+    HashMap<Unit, Integer> numbers = new HashMap<>();
     Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext()) {
       numbers.put(it.next(), new Integer(i++));
@@ -121,7 +121,7 @@ public class Debugger {
     System.out.println("\r\r***********  " + msg);
     Iterator<Unit> udit = u.snapshotIterator();
     while (udit.hasNext()) {
-      Unit unit = (Unit) udit.next();
+      Unit unit = udit.next();
       Integer numb = numbers.get(unit);
 
       if (numb.intValue() == 149) {

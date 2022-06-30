@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.geomPA;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,7 +27,7 @@ import soot.jimple.spark.geom.dataRep.SegmentNode;
 
 /**
  * An interface to standardize the functionality of a figure manager.
- * 
+ *
  * @author xiao
  *
  */
@@ -38,7 +38,7 @@ public abstract class IFigureManager {
 
   /**
    * Generate a segment node from our own cache.
-   * 
+   *
    * @return
    */
   protected static SegmentNode getSegmentNode() {
@@ -58,7 +58,7 @@ public abstract class IFigureManager {
 
   /**
    * Generate a rectangle node from our own cache.
-   * 
+   *
    * @return
    */
   protected static RectangleNode getRectangleNode() {
@@ -78,7 +78,7 @@ public abstract class IFigureManager {
 
   /**
    * Return the segment node to cache.
-   * 
+   *
    * @param p
    * @return
    */
@@ -91,7 +91,7 @@ public abstract class IFigureManager {
 
   /**
    * Return the rectangle node to cache.
-   * 
+   *
    * @param p
    * @return
    */

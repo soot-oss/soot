@@ -11,12 +11,12 @@ package soot.dava.internal.AST;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,10 +42,12 @@ public class ASTStatementSequenceNode extends ASTNode {
     this.statementSequence = statementSequence;
   }
 
+  @Override
   public Object clone() {
     return new ASTStatementSequenceNode(statementSequence);
   }
 
+  @Override
   public void perform_Analysis(ASTAnalysis a) {
     if (a.getAnalysisDepth() > ASTAnalysis.ANALYSE_AST) {
 
@@ -59,6 +61,7 @@ public class ASTStatementSequenceNode extends ASTNode {
     }
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     for (AugmentedStmt as : statementSequence) {
       // System.out.println("Stmt is:"+as.get_Stmt());
@@ -71,6 +74,7 @@ public class ASTStatementSequenceNode extends ASTNode {
     }
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
 
@@ -91,6 +95,7 @@ public class ASTStatementSequenceNode extends ASTNode {
     return statementSequence;
   }
 
+  @Override
   public void apply(Analysis a) {
     a.caseASTStatementSequenceNode(this);
   }

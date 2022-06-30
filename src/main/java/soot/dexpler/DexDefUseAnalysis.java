@@ -10,12 +10,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -48,9 +48,9 @@ import soot.toolkits.scalar.LocalDefs;
 public class DexDefUseAnalysis implements LocalDefs {
 
   private final Body body;
-  private final Map<Local, Set<Unit>> localToUses = new HashMap<Local, Set<Unit>>();
-  private final Map<Local, Set<Unit>> localToDefs = new HashMap<Local, Set<Unit>>();
-  private final Map<Local, Set<Unit>> localToDefsWithAliases = new HashMap<Local, Set<Unit>>();
+  private final Map<Local, Set<Unit>> localToUses = new HashMap<>();
+  private final Map<Local, Set<Unit>> localToDefs = new HashMap<>();
+  private final Map<Local, Set<Unit>> localToDefsWithAliases = new HashMap<>();
 
   protected Map<Local, Integer> localToNumber = new HashMap<>();
   protected BitSet[] localToDefsBits;
@@ -80,7 +80,7 @@ public class DexDefUseAnalysis implements LocalDefs {
       if (u instanceof DefinitionStmt) {
         Value val = ((DefinitionStmt) u).getLeftOp();
         if (val instanceof Local) {
-          final int localIdx = localToNumber.get((Local) val);
+          final int localIdx = localToNumber.get(val);
           BitSet bs = localToDefsBits[localIdx];
           if (bs == null) {
             localToDefsBits[localIdx] = bs = new BitSet();
@@ -93,7 +93,7 @@ public class DexDefUseAnalysis implements LocalDefs {
       for (ValueBox vb : u.getUseBoxes()) {
         Value val = vb.getValue();
         if (val instanceof Local) {
-          final int localIdx = localToNumber.get((Local) val);
+          final int localIdx = localToNumber.get(val);
           BitSet bs = localToUsesBits[localIdx];
           if (bs == null) {
             localToUsesBits[localIdx] = bs = new BitSet();
@@ -131,10 +131,10 @@ public class DexDefUseAnalysis implements LocalDefs {
   protected Set<Unit> collectDefinitionsWithAliases(Local l) {
     Set<Unit> defs = localToDefsWithAliases.get(l);
     if (defs == null) {
-      defs = new HashSet<Unit>();
+      defs = new HashSet<>();
 
-      Set<Local> seenLocals = new HashSet<Local>();
-      List<Local> newLocals = new ArrayList<Local>();
+      Set<Local> seenLocals = new HashSet<>();
+      List<Local> newLocals = new ArrayList<>();
       newLocals.add(l);
       while (!newLocals.isEmpty()) {
         Local curLocal = newLocals.remove(0);

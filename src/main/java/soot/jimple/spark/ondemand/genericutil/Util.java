@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.genericutil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -171,8 +171,7 @@ public class Util {
    * @return The first element satisfying the predicate; otherwise null.
    */
   public static <T> T find(Collection<T> c_, Predicate<T> p_) {
-    for (Iterator<T> iter = c_.iterator(); iter.hasNext();) {
-      T obj = iter.next();
+    for (T obj : c_) {
       if (p_.test(obj)) {
         return obj;
       }
@@ -187,10 +186,9 @@ public class Util {
    * @return All the elements satisfying the predicate
    */
   public static <T> Collection<T> findAll(Collection<T> c_, Predicate<T> p_) {
-    Collection<T> result = new LinkedList<T>();
+    Collection<T> result = new LinkedList<>();
 
-    for (Iterator<T> iter = c_.iterator(); iter.hasNext();) {
-      T obj = iter.next();
+    for (T obj : c_) {
       if (p_.test(obj)) {
         result.add(obj);
       }
@@ -231,7 +229,7 @@ public class Util {
    * reflection works really slowly in some implementations, so it's best to avoid it.
    */
   public static <T, U> List<U> map(List<T> srcList, Mapper<T, U> mapper_) {
-    ArrayList<U> result = new ArrayList<U>();
+    ArrayList<U> result = new ArrayList<>();
     for (Iterator<T> srcIter = srcList.iterator(); srcIter.hasNext();) {
       result.add(mapper_.map(srcIter.next()));
     }
@@ -245,9 +243,8 @@ public class Util {
    * so it's best to avoid it.
    */
   public static <T> List<T> filter(Collection<T> src_, Predicate<T> pred_) {
-    ArrayList<T> result = new ArrayList<T>();
-    for (Iterator<T> srcIter = src_.iterator(); srcIter.hasNext();) {
-      T curElem = srcIter.next();
+    ArrayList<T> result = new ArrayList<>();
+    for (T curElem : src_) {
       if (pred_.test(curElem)) {
         result.add(curElem);
       }
@@ -279,7 +276,7 @@ public class Util {
    * really slowly in some implementations, so it's best to avoid it.
    */
   public static <T, U> Set<U> mapToSet(Collection<T> srcSet, Mapper<T, U> mapper_) {
-    HashSet<U> result = new HashSet<U>();
+    HashSet<U> result = new HashSet<>();
     for (Iterator<T> srcIter = srcSet.iterator(); srcIter.hasNext();) {
       result.add(mapper_.map(srcIter.next()));
     }
@@ -331,6 +328,7 @@ public class Util {
     // Temporarily disable the security manager
     SecurityManager oldsecurity = System.getSecurityManager();
     System.setSecurityManager(new SecurityManager() {
+      @Override
       public void checkPermission(Permission perm) {
       }
     });
@@ -394,8 +392,8 @@ public class Util {
   public static int hashArray(Object[] objs) {
     // stolen from java.util.AbstractList
     int ret = 1;
-    for (int i = 0; i < objs.length; i++) {
-      ret = 31 * ret + (objs[i] == null ? 0 : objs[i].hashCode());
+    for (Object obj : objs) {
+      ret = 31 * ret + (obj == null ? 0 : obj.hashCode());
     }
     return ret;
 
@@ -424,6 +422,7 @@ public class Util {
    */
   public static <T> boolean intersecting(final Set<T> s1, final Set<T> s2) {
     return forSome(s1, new Predicate<T>() {
+      @Override
       public boolean test(T obj) {
         return s2.contains(obj);
       }
@@ -461,7 +460,7 @@ public class Util {
     if (vals.size() <= n) {
       return vals;
     }
-    HashSet<T> elems = new HashSet<T>();
+    HashSet<T> elems = new HashSet<>();
     Random rand = new Random(seed);
     for (int i = 0; i < n; i++) {
       boolean added = true;
@@ -471,6 +470,6 @@ public class Util {
       } while (!added);
 
     }
-    return new ArrayList<T>(elems);
+    return new ArrayList<>(elems);
   }
 } // class Util

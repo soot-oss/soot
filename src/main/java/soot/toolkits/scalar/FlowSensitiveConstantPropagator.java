@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -70,11 +70,11 @@ import soot.util.LocalBitSetPacker;
 //@formatter:off
 /**
  * A constant propagator which can cope with cases like <code>a = 2; b = a; a = b;</code>
- * 
+ *
  * as well as
- * 
+ *
  * <code>if (x) { a = 2; } else { a = 2; } b = a;</code>
- * 
+ *
  * @author Marc Miltenberger
  * @see BodyTransformer
  * @see LocalPacker
@@ -113,7 +113,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       throwAnalysis = Scene.v().getDefaultThrowAnalysis();
     }
 
-    if (omitExceptingUnitEdges == false) {
+    if (!omitExceptingUnitEdges) {
       omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
     }
 
@@ -136,7 +136,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
           Constant c = v.getConstant(l);
           if (c != null) {
             List<Tag> oldTags = assign.getRightOpBox().getTags();
-            assign.setRightOp((Constant) c);
+            assign.setRightOp(c);
             assign.getRightOpBox().getTags().addAll(oldTags);
             CopyPropagator.copyLineTags(assign.getUseBoxes().get(0), assign);
             continue;
@@ -164,7 +164,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
                   val = DoubleConstant.v(((LongConstant) val).value);
                 }
               }
-              r.setValue((Constant) val);
+              r.setValue(val);
             }
           }
         }
@@ -245,10 +245,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       ConstantState other = (ConstantState) obj;

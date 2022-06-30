@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -61,7 +61,7 @@ public class PhaseOptions {
   }
 
   private final Map<HasPhaseOptions, Map<String, String>> phaseToOptionMap
-      = new HashMap<HasPhaseOptions, Map<String, String>>();
+      = new HashMap<>();
 
   public Map<String, String> getPhaseOptions(String phaseName) {
     return getPhaseOptions(getPM().getPhase(phaseName));
@@ -70,9 +70,9 @@ public class PhaseOptions {
   public Map<String, String> getPhaseOptions(HasPhaseOptions phase) {
     Map<String, String> ret = phaseToOptionMap.get(phase);
     if (ret == null) {
-      ret = new HashMap<String, String>();
+      ret = new HashMap<>();
     } else {
-      ret = new HashMap<String, String>(ret);
+      ret = new HashMap<>(ret);
     }
     for (StringTokenizer st = new StringTokenizer(phase.getDefaultOptions()); st.hasMoreTokens();) {
       String opt = st.nextToken();
@@ -141,7 +141,7 @@ public class PhaseOptions {
   private Map<String, String> mapForPhase(HasPhaseOptions phase) {
     Map<String, String> optionMap = phaseToOptionMap.get(phase);
     if (optionMap == null) {
-      phaseToOptionMap.put(phase, optionMap = new HashMap<String, String>());
+      phaseToOptionMap.put(phase, optionMap = new HashMap<>());
     }
     return optionMap;
   }

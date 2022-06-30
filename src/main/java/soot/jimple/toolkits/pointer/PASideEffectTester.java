@@ -10,12 +10,12 @@ package soot.jimple.toolkits.pointer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,13 +42,13 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 
-//  ArrayRef, 
-//  CaughtExceptionRef, 
-//  FieldRef, 
-//  IdentityRef, 
-//  InstanceFieldRef, 
-//  InstanceInvokeExpr, 
-//  Local,  
+//  ArrayRef,
+//  CaughtExceptionRef,
+//  FieldRef,
+//  IdentityRef,
+//  InstanceFieldRef,
+//  InstanceInvokeExpr,
+//  Local,
 //  StaticFieldRef
 
 public class PASideEffectTester implements SideEffectTester {
@@ -74,9 +74,9 @@ public class PASideEffectTester implements SideEffectTester {
   /** Call this when starting to analyze a new method to setup the cache. */
   @Override
   public void newMethod(SootMethod m) {
-    this.unitToRead = new HashMap<Unit, RWSet>();
-    this.unitToWrite = new HashMap<Unit, RWSet>();
-    this.localToReachingObjects = new HashMap<Local, PointsToSet>();
+    this.unitToRead = new HashMap<>();
+    this.unitToWrite = new HashMap<>();
+    this.localToReachingObjects = new HashMap<>();
     this.currentMethod = m;
     this.sea.findNTRWSets(m);
   }

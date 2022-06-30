@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.utils;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,12 +46,12 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   public ZArrayNumberer() {
     // With default initialize size
     numberToObj = new Numberable[1023];
-    objContainer = new HashMap<E, E>(1023);
+    objContainer = new HashMap<>(1023);
   }
 
   public ZArrayNumberer(int initSize) {
     numberToObj = new Numberable[initSize];
-    objContainer = new HashMap<E, E>(initSize);
+    objContainer = new HashMap<>(initSize);
   }
 
   @Override
@@ -118,10 +118,7 @@ public class ZArrayNumberer<E extends Numberable> implements IterableNumberer<E>
   @Override
   public boolean remove(E o) {
     int id = o.getNumber();
-    if (id < 0) {
-      return false;
-    }
-    if (numberToObj[id] != o) {
+    if ((id < 0) || (numberToObj[id] != o)) {
       return false;
     }
 

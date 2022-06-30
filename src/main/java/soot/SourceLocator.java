@@ -72,7 +72,7 @@ import soot.util.SharedCloseable;
 public class SourceLocator {
   private static final Logger logger = LoggerFactory.getLogger(SourceLocator.class);
 
-  protected final Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
+  protected final Set<ClassLoader> additionalClassLoaders = new HashSet<>();
   protected List<ClassProvider> classProviders;
   protected List<String> classPath;
   protected List<String> sourcePath;
@@ -147,7 +147,7 @@ public class SourceLocator {
             @Override
             public Set<String> load(String archivePath) throws Exception {
               try (SharedCloseable<ZipFile> archive = archivePathToZip.getRef(archivePath)) {
-                Set<String> ret = new HashSet<String>();
+                Set<String> ret = new HashSet<>();
                 for (Enumeration<? extends ZipEntry> it = archive.get().entries(); it.hasMoreElements();) {
                   ret.add(it.nextElement().getName());
                 }
@@ -183,7 +183,7 @@ public class SourceLocator {
    * Explodes a class path into a list of individual class path entries.
    */
   public static List<String> explodeClassPath(String classPath) {
-    List<String> ret = new ArrayList<String>();
+    List<String> ret = new ArrayList<>();
     // the classpath is split at every path separator which is not escaped
     final String regex = "(?<!\\\\)" + Pattern.quote(File.pathSeparator);
     for (String originalDir : classPath.split(regex)) {
@@ -265,7 +265,7 @@ public class SourceLocator {
   }
 
   protected void setupClassProviders() {
-    final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
+    final List<ClassProvider> classProviders = new LinkedList<>();
     if (this.java9Mode) {
       classProviders.add(new AsmJava9ClassProvider());
     }
@@ -326,7 +326,7 @@ public class SourceLocator {
   public List<String> sourcePath() {
     List<String> sourcePath = this.sourcePath;
     if (sourcePath == null) {
-      sourcePath = new ArrayList<String>();
+      sourcePath = new ArrayList<>();
       for (String dir : classPath) {
         ClassSourceType cst = getClassSourceType(dir);
         if (cst != ClassSourceType.apk && cst != ClassSourceType.jar && cst != ClassSourceType.zip) {
@@ -353,14 +353,14 @@ public class SourceLocator {
   public List<String> getClassesUnder(String aPath, String prefix) {
     // FIXME: AD the dummy_classpath_variable should be replaced with a more stable concept
     if (ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS.equals(aPath)) {
-      ArrayList<String> foundClasses = new ArrayList<String>();
+      ArrayList<String> foundClasses = new ArrayList<>();
       for (List<String> classesInModule : ModulePathSourceLocator.v().getClassUnderModulePath("jrt:/").values()) {
         foundClasses.addAll(classesInModule);
       }
       return foundClasses;
     }
 
-    List<String> classes = new ArrayList<String>();
+    List<String> classes = new ArrayList<>();
     ClassSourceType cst = getClassSourceType(aPath);
     if (cst == ClassSourceType.apk || cst == ClassSourceType.dex) {
       // Get the dex file from an apk
@@ -400,19 +400,22 @@ public class SourceLocator {
     // load dotnet assemblies
     else if ((Options.v().src_prec() == Options.src_prec_dotnet && cst == ClassSourceType.directory)
         || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
-      if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path()))
+      if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path())) {
         throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
+      }
 
       File file = new File(aPath);
       File[] files = new File[1];
       if (cst == ClassSourceType.directory) {
         File[] fileList = file.listFiles();
 
-        if (fileList == null)
+        if (fileList == null) {
           return classes;
+        }
         files = fileList;
-      } else
+      } else {
         files[0] = new File(aPath);
+      }
 
       for (File element : files) {
         if (element.isDirectory()) {
@@ -425,16 +428,18 @@ public class SourceLocator {
               Map<String, File> classContainerIndex = SourceLocator.v().dexClassIndex();
               AssemblyFile assemblyFile;
               String canonicalPath = element.getCanonicalPath();
-              if (classContainerIndex.containsKey(canonicalPath))
+              if (classContainerIndex.containsKey(canonicalPath)) {
                 assemblyFile = (AssemblyFile) classContainerIndex.get(canonicalPath);
-              else {
+              } else {
                 assemblyFile = new AssemblyFile(canonicalPath);
-                if (!assemblyFile.isAssembly())
+                if (!assemblyFile.isAssembly()) {
                   continue;
+                }
               }
               List<String> allClassNames = assemblyFile.getAllTypeNames();
-              if (allClassNames != null)
+              if (allClassNames != null) {
                 classes.addAll(allClassNames);
+              }
             } catch (IOException e) {
               /* Ignore unreadable files */
               logger.debug("" + e.getMessage());
@@ -536,7 +541,7 @@ public class SourceLocator {
 
   /* This is called after sootClassPath has been defined. */
   public Set<String> classesInDynamicPackage(String str) {
-    HashSet<String> set = new HashSet<String>(0);
+    HashSet<String> set = new HashSet<>(0);
     StringTokenizer strtok = new StringTokenizer(Scene.v().getSootClassPath(), File.pathSeparator);
     while (strtok.hasMoreTokens()) {
       String path = strtok.nextToken();
@@ -733,7 +738,7 @@ public class SourceLocator {
         || newPathElement.endsWith(".dll")) {
       Set<String> dexClassPathExtensions = this.dexClassPathExtensions;
       if (dexClassPathExtensions == null) {
-        dexClassPathExtensions = new HashSet<String>();
+        dexClassPathExtensions = new HashSet<>();
         this.dexClassPathExtensions = dexClassPathExtensions;
       }
       this.dexClassPathExtensions.add(newPathElement);
@@ -787,8 +792,8 @@ public class SourceLocator {
           }
         };
 
-        private final ConcurrentHashMap<K, Integer> delayed = new ConcurrentHashMap<K, Integer>();
-        private final Queue<RemovalNotification<K, V>> delayQueue = new ConcurrentLinkedQueue<RemovalNotification<K, V>>();
+        private final ConcurrentHashMap<K, Integer> delayed = new ConcurrentHashMap<>();
+        private final Queue<RemovalNotification<K, V>> delayQueue = new ConcurrentLinkedQueue<>();
 
         @Override
         public void onRemoval(RemovalNotification<K, V> rn) {
@@ -816,7 +821,7 @@ public class SourceLocator {
         }
 
         private void process() {
-          Queue<RemovalNotification<K, V>> delayFurther = new LinkedList<RemovalNotification<K, V>>();
+          Queue<RemovalNotification<K, V>> delayFurther = new LinkedList<>();
           for (RemovalNotification<K, V> rn; (rn = delayQueue.poll()) != null;) {
             removeOrEnqueue(rn, delayFurther);
           }
@@ -838,7 +843,7 @@ public class SourceLocator {
       private final DelayedRemovalListener<K, SharedCloseable<V>> removalListener;
 
       public SharedResourceCache(int initSize, int maxSize, final CacheLoader<K, V> loader) {
-        this.removalListener = new DelayedRemovalListener<K, SharedCloseable<V>>();
+        this.removalListener = new DelayedRemovalListener<>();
         // NOTE: values must be strong references or else they could
         // be garbage collected before they are closed.
         this.delegate = CacheBuilder.newBuilder().initialCapacity(initSize).maximumSize(maxSize)
@@ -846,7 +851,7 @@ public class SourceLocator {
             .removalListener(removalListener).build(new CacheLoader<K, SharedCloseable<V>>() {
               @Override
               public SharedCloseable<V> load(K key) throws Exception {
-                return new SharedCloseable<V>(loader.load(key));
+                return new SharedCloseable<>(loader.load(key));
               }
             });
       }
@@ -870,7 +875,7 @@ public class SourceLocator {
     private final SharedResourceCache<String, ZipFile> cache;
 
     public SharedZipFileCacheWrapper(int initSize, int maxSize) {
-      this.cache = new SharedResourceCache<String, ZipFile>(initSize, maxSize, new CacheLoader<String, ZipFile>() {
+      this.cache = new SharedResourceCache<>(initSize, maxSize, new CacheLoader<String, ZipFile>() {
         @Override
         public ZipFile load(String archivePath) throws Exception {
           return new ZipFile(archivePath);

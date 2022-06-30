@@ -10,12 +10,12 @@ package soot.jbco.bafTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -57,20 +57,24 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
 
   public static String dependancies[] = new String[] { "bb.jbco_rlaii", "bb.jbco_ful", "bb.lp" };
 
+  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "bb.jbco_rlaii";
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void outputSummary() {
     out.println("Moved Loads Above Ifs: " + movedloads);
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
@@ -80,13 +84,13 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
 
     BriefUnitGraph bug = new BriefUnitGraph(b);
 
-    List<Unit> candidates = new ArrayList<Unit>();
-    List<Unit> visited = new ArrayList<Unit>();
-    List<Unit> worklist = new ArrayList<Unit>();
+    List<Unit> candidates = new ArrayList<>();
+    List<Unit> visited = new ArrayList<>();
+    List<Unit> worklist = new ArrayList<>();
     worklist.addAll(bug.getHeads());
 
     while (worklist.size() > 0) {
-      Unit u = (Unit) worklist.remove(0);
+      Unit u = worklist.remove(0);
       if (visited.contains(u)) {
         continue;
       }
@@ -162,15 +166,15 @@ public class MoveLoadsAboveIfs extends BodyTransformer implements IJbcoTransform
       movedloads++;
 
       // remove old loads after the jump
-      for (int j = 0; j < succs.size(); j++) {
-        Unit suc = (Unit) succs.get(j);
+      for (Unit succ : succs) {
+        Unit suc = succ;
         List<Unit> sucPreds = bug.getPredsOf(suc);
 
         if (sucPreds.size() > 1) {
           if (suc == ((TargetArgInst) u).getTarget()) {
-            ((TargetArgInst) u).setTarget((Unit) bug.getSuccsOf(suc).get(0));
+            ((TargetArgInst) u).setTarget(bug.getSuccsOf(suc).get(0));
           } else {
-            units.insertAfter(Baf.v().newGotoInst((Unit) bug.getSuccsOf(suc).get(0)), u);
+            units.insertAfter(Baf.v().newGotoInst(bug.getSuccsOf(suc).get(0)), u);
           }
         } else {
           units.remove(suc);

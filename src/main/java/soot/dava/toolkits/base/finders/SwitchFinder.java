@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.finders;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,6 +56,7 @@ public class SwitchFinder implements FactFinder {
   private LinkedList targetList, snTargetList, tSuccList;
   private HashMap index2target, tSucc2indexSet, tSucc2target, tSucc2Body;
 
+  @Override
   public void find(DavaBody davaBody, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException {
     Dava.v().log("SwitchFinder::find()");
 
@@ -67,7 +68,7 @@ public class SwitchFinder implements FactFinder {
 
       Stmt s = as.get_Stmt();
 
-      if (((s instanceof TableSwitchStmt) == false) && ((s instanceof LookupSwitchStmt) == false)) {
+      if (!(s instanceof TableSwitchStmt) && !(s instanceof LookupSwitchStmt)) {
         continue;
       }
 
@@ -132,7 +133,7 @@ public class SwitchFinder implements FactFinder {
         LinkedList worklist = new LinkedList();
         worklist.addAll(sng.getHeads());
 
-        while (worklist.isEmpty() == false) {
+        while (!worklist.isEmpty()) {
           SwitchNode sn = (SwitchNode) worklist.removeFirst();
 
           snTargetList.addLast(sn);
@@ -168,13 +169,13 @@ public class SwitchFinder implements FactFinder {
         targetHeads.addAll(sng.getHeads());
       }
 
-      LinkedList<SwitchNode> switchNodeList = new LinkedList<SwitchNode>();
+      LinkedList<SwitchNode> switchNodeList = new LinkedList<>();
 
       // Now, merge the targetHeads list and the killBodies list, keeping bundles of case fall throughs from the node graph.
       {
-        while ((targetHeads.isEmpty() == false) || (killBodies.isEmpty() == false)) {
+        while (!targetHeads.isEmpty() || !killBodies.isEmpty()) {
 
-          if ((targetHeads.isEmpty()) || ((targetHeads.isEmpty() == false) && (killBodies.isEmpty() == false)
+          if ((targetHeads.isEmpty()) || (!targetHeads.isEmpty() && !killBodies.isEmpty()
               && (((SwitchNode) targetHeads.first()).compareTo(killBodies.first()) > 0))) {
 
             SwitchNode nextNode = (SwitchNode) killBodies.first();
@@ -220,7 +221,7 @@ public class SwitchFinder implements FactFinder {
           while (fbit.hasNext()) {
             AugmentedStmt fbas = (AugmentedStmt) fbit.next();
 
-            if (tryBody.contains(fbas) == false) {
+            if (!tryBody.contains(fbas)) {
               body.remove(fbas);
 
               for (SwitchNode sn : switchNodeList) {
@@ -242,24 +243,24 @@ public class SwitchFinder implements FactFinder {
 
   private IterableSet find_SubBody(AugmentedStmt switchAS, AugmentedStmt branchS) {
     IterableSet subBody = new IterableSet();
-    LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
+    LinkedList<AugmentedStmt> worklist = new LinkedList<>();
 
     subBody.add(branchS);
-    branchS = (AugmentedStmt) branchS.bsuccs.get(0);
+    branchS = branchS.bsuccs.get(0);
 
     if (branchS.get_Dominators().contains(switchAS)) {
       worklist.addLast(branchS);
       subBody.add(branchS);
     }
 
-    while (worklist.isEmpty() == false) {
+    while (!worklist.isEmpty()) {
       AugmentedStmt as = worklist.removeFirst();
 
       Iterator sit = as.csuccs.iterator();
       while (sit.hasNext()) {
         AugmentedStmt sas = (AugmentedStmt) sit.next();
 
-        if ((subBody.contains(sas) == false) && (sas.get_Dominators().contains(branchS))) {
+        if (!subBody.contains(sas) && (sas.get_Dominators().contains(branchS))) {
           worklist.addLast(sas);
           subBody.add(sas);
         }
@@ -270,7 +271,7 @@ public class SwitchFinder implements FactFinder {
   }
 
   private void build_Bindings(AugmentedStmt swAs, Object index, AugmentedStmt target) {
-    AugmentedStmt tSucc = (AugmentedStmt) target.bsuccs.get(0);
+    AugmentedStmt tSucc = target.bsuccs.get(0);
 
     if (targetSet.add(tSucc)) {
       targetList.addLast(tSucc);

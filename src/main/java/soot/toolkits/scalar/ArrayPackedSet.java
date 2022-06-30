@@ -11,12 +11,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,7 +41,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
   protected final BitSet bits;
 
   public ArrayPackedSet(FlowUniverse<T> universe) {
-    this(new ObjectIntMapper<T>(universe));
+    this(new ObjectIntMapper<>(universe));
   }
 
   ArrayPackedSet(ObjectIntMapper<T> map) {
@@ -55,12 +55,12 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
 
   @Override
   public ArrayPackedSet<T> clone() {
-    return new ArrayPackedSet<T>(map, (BitSet) bits.clone());
+    return new ArrayPackedSet<>(map, (BitSet) bits.clone());
   }
 
   @Override
   public FlowSet<T> emptySet() {
-    return new ArrayPackedSet<T>(map);
+    return new ArrayPackedSet<>(map);
   }
 
   @Override
@@ -102,7 +102,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T> {
         return singletonList(map.getObject((base - 1) + bits.length()));
 
       default:
-        List<T> elements = new ArrayList<T>(len);
+        List<T> elements = new ArrayList<>(len);
 
         int i = bits.nextSetBit(0);
         do {

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.typing;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -73,11 +73,11 @@ public class TypeResolverBV {
   private final ClassHierarchy hierarchy;
 
   /** All type variable instances **/
-  private final List<TypeVariableBV> typeVariableList = new ArrayList<TypeVariableBV>();
+  private final List<TypeVariableBV> typeVariableList = new ArrayList<>();
   private final BitVector invalidIds = new BitVector();
 
   /** Hashtable: [TypeNode or Local] -> TypeVariableBV **/
-  private final Map<Object, TypeVariableBV> typeVariableMap = new HashMap<Object, TypeVariableBV>();
+  private final Map<Object, TypeVariableBV> typeVariableMap = new HashMap<>();
 
   private final JimpleBody stmtBody;
 
@@ -375,7 +375,7 @@ public class TypeResolverBV {
     @SuppressWarnings("unchecked")
     LinkedList<TypeVariableBV>[] lists = new LinkedList[max + 1];
     for (int i = 0; i <= max; i++) {
-      lists[i] = new LinkedList<TypeVariableBV>();
+      lists[i] = new LinkedList<>();
     }
 
     for (TypeVariableBV var : typeVariableList) {
@@ -600,7 +600,7 @@ public class TypeResolverBV {
       for (BitSetIterator varIt = multiple_parents.iterator(); varIt.hasNext();) {
 
         final TypeVariableBV var = typeVariableForId(varIt.next());
-        LinkedList<TypeVariableBV> hp = new LinkedList<TypeVariableBV>(); // hard parents
+        LinkedList<TypeVariableBV> hp = new LinkedList<>(); // hard parents
 
         for (BitSetIterator parentIt = var.parents().iterator(); parentIt.hasNext();) {
 
@@ -635,8 +635,7 @@ public class TypeResolverBV {
   }
 
   private void assign_types_1_2() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext();) {
-      final Local local = localIt.next();
+    for (Local local : stmtBody.getLocals()) {
       TypeVariableBV var = typeVariable(local);
 
       if (var == null) {
@@ -678,8 +677,7 @@ public class TypeResolverBV {
   }
 
   private void assign_types_3() throws TypeException {
-    for (Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext();) {
-      final Local local = localIt.next();
+    for (Local local : stmtBody.getLocals()) {
       TypeVariableBV var = typeVariable(local);
 
       if (var == null || var.approx() == null || var.approx().type() == null) {
@@ -742,7 +740,7 @@ public class TypeResolverBV {
   }
 
   private void compute_approximate_types() throws TypeException {
-    TreeSet<TypeVariableBV> workList = new TreeSet<TypeVariableBV>();
+    TreeSet<TypeVariableBV> workList = new TreeSet<>();
 
     for (TypeVariableBV var : typeVariableList) {
 

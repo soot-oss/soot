@@ -10,12 +10,12 @@ package soot.dotnet.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,12 +35,12 @@ import java.util.List;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -102,7 +102,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
 
   /**
    * Call Expression
-   * 
+   *
    * @param jb
    * @return
    */
@@ -119,8 +119,9 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
 
       // If System.Array.Empty
       Value rewriteField = AbstractDotnetMember.checkRewriteCilSpecificMember(clazz, method.getName());
-      if (rewriteField != null)
+      if (rewriteField != null) {
         return rewriteField;
+      }
 
       // arguments which are passed to this function
       for (int z = 0; z < instruction.getArgumentsCount(); z++) {
@@ -131,8 +132,9 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
         argsVariables.add(variable);
       }
       // method-parameters (signature)
-      for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions())
+      for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions()) {
         argsTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
+      }
 
       String methodName = method.getUniqueName();
 
@@ -168,10 +170,11 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     checkMethodAvailable();
     List<Local> argsVariables = new ArrayList<>();
     List<Type> methodParamTypes = new ArrayList<>();
-    if (instruction.getArgumentsCount() == 0)
+    if (instruction.getArgumentsCount() == 0) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
           + " of declared type " + method.getDeclaringClass().getName()
           + " has no arguments! This means there is no base variable for the virtual invoke!");
+    }
 
     Value baseValue
         = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(0), dotnetBody, cilBlock).jimplifyExpr(jb);
@@ -186,8 +189,9 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
         Local variable = (Local) variableValue;
         argsVariables.add(variable);
       }
-      for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : instruction.getMethod().getParameterList())
+      for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : instruction.getMethod().getParameterList()) {
         methodParamTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
+      }
     }
 
     // Check if cast is needed for correct validation, e.g.:
@@ -212,10 +216,11 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     // due to unsafe methods with "void*" rewrite this
     Type return_type;
     if (method.getReturnType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.POINTER)
-        && method.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID))
+        && method.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID)) {
       return_type = DotnetTypeFactory.toSootType(method.getProtoMessage().getDeclaringType());
-    else
+    } else {
       return_type = DotnetTypeFactory.toSootType(method.getProtoMessage().getReturnType());
+    }
 
     SootMethodRef methodRef
         = Scene.v().makeMethodRef(clazz, DotnetMethod.convertCtorName(methodName), methodParamTypes, return_type, false);
@@ -224,23 +229,26 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
   }
 
   private void checkMethodAvailable() {
-    if (method.getName().trim().isEmpty())
+    if (method.getName().trim().isEmpty()) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
           + " of declared type " + method.getDeclaringClass().getName() + " has no method name!");
+    }
   }
 
   private void checkVariabelIsLocal(Value var, int argPos, boolean isBase) {
     String err = "CALL: The given argument ";
     err += argPos;
     err += " ";
-    if (isBase)
+    if (isBase) {
       err += "(base variable)";
+    }
     err += " of invoked method " + method.getName() + " declared in " + clazz.getName() + " is not a local! "
         + "The value is: " + var.toString() + " of type " + var.getType() + "! " + "The resolving method body is: "
         + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature();
 
-    if (!(var instanceof Local))
+    if (!(var instanceof Local)) {
       throw new RuntimeException(err);
+    }
   }
 
   private static class MethodParams {

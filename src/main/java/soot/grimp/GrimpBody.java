@@ -10,12 +10,12 @@ package soot.grimp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -113,8 +113,8 @@ public class GrimpBody extends StmtBody {
 
     final Grimp grimp = Grimp.v();
     final Chain<Unit> thisUnits = getUnits();
-    final HashMap<Stmt, Stmt> oldToNew = new HashMap<Stmt, Stmt>(thisUnits.size() * 2 + 1, 0.7f);
-    final ArrayList<Unit> updates = new ArrayList<Unit>();
+    final HashMap<Stmt, Stmt> oldToNew = new HashMap<>(thisUnits.size() * 2 + 1, 0.7f);
+    final ArrayList<Unit> updates = new ArrayList<>();
 
     /* we should Grimpify the Stmt's here... */
     for (Unit u : jBody.getUnits()) {
@@ -230,7 +230,7 @@ public class GrimpBody extends StmtBody {
         @Override
         public void caseGotoStmt(GotoStmt s) {
           GotoStmt newStmt = (GotoStmt) oldToNew.get(s);
-          newStmt.setTarget(oldToNew.get((Stmt) newStmt.getTarget()));
+          newStmt.setTarget(oldToNew.get(newStmt.getTarget()));
         }
 
         @Override
@@ -242,10 +242,10 @@ public class GrimpBody extends StmtBody {
         @Override
         public void caseLookupSwitchStmt(LookupSwitchStmt s) {
           LookupSwitchStmt newStmt = (LookupSwitchStmt) oldToNew.get(s);
-          newStmt.setDefaultTarget(oldToNew.get((Stmt) newStmt.getDefaultTarget()));
+          newStmt.setDefaultTarget(oldToNew.get(newStmt.getDefaultTarget()));
           Unit[] newTargList = new Unit[newStmt.getTargetCount()];
           for (int i = 0; i < newTargList.length; i++) {
-            newTargList[i] = oldToNew.get((Stmt) newStmt.getTarget(i));
+            newTargList[i] = oldToNew.get(newStmt.getTarget(i));
           }
           newStmt.setTargets(newTargList);
         }
@@ -253,11 +253,11 @@ public class GrimpBody extends StmtBody {
         @Override
         public void caseTableSwitchStmt(TableSwitchStmt s) {
           TableSwitchStmt newStmt = (TableSwitchStmt) oldToNew.get(s);
-          newStmt.setDefaultTarget(oldToNew.get((Stmt) newStmt.getDefaultTarget()));
+          newStmt.setDefaultTarget(oldToNew.get(newStmt.getDefaultTarget()));
           int tc = newStmt.getHighIndex() - newStmt.getLowIndex() + 1;
-          LinkedList<Unit> newTargList = new LinkedList<Unit>();
+          LinkedList<Unit> newTargList = new LinkedList<>();
           for (int i = 0; i < tc; i++) {
-            newTargList.add(oldToNew.get((Stmt) newStmt.getTarget(i)));
+            newTargList.add(oldToNew.get(newStmt.getTarget(i)));
           }
           newStmt.setTargets(newTargList);
         }
@@ -270,8 +270,8 @@ public class GrimpBody extends StmtBody {
     {
       final Chain<Trap> thisTraps = getTraps();
       for (Trap oldTrap : jBody.getTraps()) {
-        thisTraps.add(grimp.newTrap(oldTrap.getException(), oldToNew.get((Stmt) oldTrap.getBeginUnit()),
-            oldToNew.get((Stmt) oldTrap.getEndUnit()), oldToNew.get((Stmt) oldTrap.getHandlerUnit())));
+        thisTraps.add(grimp.newTrap(oldTrap.getException(), oldToNew.get(oldTrap.getBeginUnit()),
+            oldToNew.get(oldTrap.getEndUnit()), oldToNew.get(oldTrap.getHandlerUnit())));
       }
     }
 

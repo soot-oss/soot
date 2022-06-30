@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,10 +63,10 @@ public class FastAvailableExpressions implements AvailableExpressions {
     }
 
     final Chain<Unit> units = b.getUnits();
-    this.unitToPairsAfter = new HashMap<Unit, List<UnitValueBoxPair>>(units.size() * 2 + 1, 0.7f);
-    this.unitToPairsBefore = new HashMap<Unit, List<UnitValueBoxPair>>(units.size() * 2 + 1, 0.7f);
-    this.unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
-    this.unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
+    this.unitToPairsAfter = new HashMap<>(units.size() * 2 + 1, 0.7f);
+    this.unitToPairsBefore = new HashMap<>(units.size() * 2 + 1, 0.7f);
+    this.unitToEquivsAfter = new HashMap<>(units.size() * 2 + 1, 0.7f);
+    this.unitToEquivsBefore = new HashMap<>(units.size() * 2 + 1, 0.7f);
 
     FastAvailableExpressionsAnalysis analysis =
         new FastAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), b.getMethod(), st);
@@ -77,8 +77,8 @@ public class FastAvailableExpressions implements AvailableExpressions {
         throw new RuntimeException("top! on " + s);
       }
       {
-        List<UnitValueBoxPair> pairsBefore = new ArrayList<UnitValueBoxPair>();
-        Chain<EquivalentValue> equivsBefore = new HashChain<EquivalentValue>();
+        List<UnitValueBoxPair> pairsBefore = new ArrayList<>();
+        Chain<EquivalentValue> equivsBefore = new HashChain<>();
 
         for (Value v : set) {
           Stmt containingStmt = (Stmt) analysis.rhsToContainingStmt.get(v);
@@ -93,8 +93,8 @@ public class FastAvailableExpressions implements AvailableExpressions {
         unitToEquivsBefore.put(s, equivsBefore);
       }
       {
-        List<UnitValueBoxPair> pairsAfter = new ArrayList<UnitValueBoxPair>();
-        Chain<EquivalentValue> equivsAfter = new HashChain<EquivalentValue>();
+        List<UnitValueBoxPair> pairsAfter = new ArrayList<>();
+        Chain<EquivalentValue> equivsAfter = new HashChain<>();
 
         for (Value v : analysis.getFlowAfter(s)) {
           Stmt containingStmt = (Stmt) analysis.rhsToContainingStmt.get(v);

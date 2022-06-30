@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.finders;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -54,6 +54,7 @@ public class LabeledBlockFinder implements FactFinder {
 
   private final HashMap<SETNode, Integer> orderNumber = new HashMap();
 
+  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException {
     Dava.v().log("LabeledBlockFinder::find()");
 
@@ -78,7 +79,7 @@ public class LabeledBlockFinder implements FactFinder {
       IterableSet body = sbit.next();
       IterableSet children = SETParent.get_Body2ChildChain().get(body);
 
-      HashSet<SETBasicBlock> touchSet = new HashSet<SETBasicBlock>();
+      HashSet<SETBasicBlock> touchSet = new HashSet<>();
       IterableSet childOrdering = new IterableSet();
       LinkedList worklist = new LinkedList();
       List<SETBasicBlock> SETBasicBlocks = null;
@@ -86,7 +87,7 @@ public class LabeledBlockFinder implements FactFinder {
       if (SETParent instanceof SETUnconditionalWhileNode) {
         SETNode startSETNode = ((SETUnconditionalWhileNode) SETParent).get_CharacterizingStmt().myNode;
 
-        while (children.contains(startSETNode) == false) {
+        while (!children.contains(startSETNode)) {
           startSETNode = startSETNode.get_Parent();
         }
 
@@ -103,7 +104,7 @@ public class LabeledBlockFinder implements FactFinder {
 
           Iterator pbit = as.cpreds.iterator();
           while (pbit.hasNext()) {
-            if (body.contains(pbit.next()) == false) {
+            if (!body.contains(pbit.next())) {
               startSETNode = as.myNode;
               break find_entry_loop;
             }
@@ -113,7 +114,7 @@ public class LabeledBlockFinder implements FactFinder {
           startSETNode = ((SETTryNode) SETParent).get_EntryStmt().myNode;
         }
 
-        while (children.contains(startSETNode) == false) {
+        while (!children.contains(startSETNode)) {
           startSETNode = startSETNode.get_Parent();
         }
 
@@ -134,7 +135,7 @@ public class LabeledBlockFinder implements FactFinder {
         }
       }
 
-      while (worklist.isEmpty() == false) {
+      while (!worklist.isEmpty()) {
         SETBasicBlock sbb = (SETBasicBlock) worklist.removeFirst();
 
         // extract and append the basic block to child ordering
@@ -161,7 +162,7 @@ public class LabeledBlockFinder implements FactFinder {
 
           Iterator psit = ssbb.get_Predecessors().iterator();
           while (psit.hasNext()) {
-            if (touchSet.contains(psit.next()) == false) {
+            if (!touchSet.contains(psit.next())) {
               continue SETBasicBlock_successor_loop;
             }
           }
@@ -217,11 +218,11 @@ public class LabeledBlockFinder implements FactFinder {
           SETNode srcNode = as.myNode;
           SETNode dstNode = sas.myNode;
 
-          while (children.contains(srcNode) == false) {
+          while (!children.contains(srcNode)) {
             srcNode = srcNode.get_Parent();
           }
 
-          while (children.contains(dstNode) == false) {
+          while (!children.contains(dstNode)) {
             dstNode = dstNode.get_Parent();
           }
 
@@ -230,11 +231,11 @@ public class LabeledBlockFinder implements FactFinder {
           }
 
           // hook up the src and dst nodes
-          if (srcNode.get_Successors().contains(dstNode) == false) {
+          if (!srcNode.get_Successors().contains(dstNode)) {
             srcNode.get_Successors().add(dstNode);
           }
 
-          if (dstNode.get_Predecessors().contains(srcNode) == false) {
+          if (!dstNode.get_Predecessors().contains(srcNode)) {
             dstNode.get_Predecessors().add(srcNode);
           }
         }
@@ -248,7 +249,7 @@ public class LabeledBlockFinder implements FactFinder {
      */
 
     // first create the basic blocks
-    LinkedList<SETBasicBlock> basicBlockList = new LinkedList<SETBasicBlock>();
+    LinkedList<SETBasicBlock> basicBlockList = new LinkedList<>();
 
     Iterator cit = children.iterator();
     while (cit.hasNext()) {
@@ -303,11 +304,11 @@ public class LabeledBlockFinder implements FactFinder {
 
         SETBasicBlock psbb = SETBasicBlock.get_SETBasicBlock(psn);
 
-        if (sbb.get_Predecessors().contains(psbb) == false) {
+        if (!sbb.get_Predecessors().contains(psbb)) {
           sbb.get_Predecessors().add(psbb);
         }
 
-        if (psbb.get_Successors().contains(sbb) == false) {
+        if (!psbb.get_Successors().contains(sbb)) {
           psbb.get_Successors().add(sbb);
         }
       }
@@ -344,13 +345,13 @@ public class LabeledBlockFinder implements FactFinder {
           while (pit.hasNext()) {
             AugmentedStmt pas = (AugmentedStmt) pit.next();
 
-            if (curBody.contains(pas) == false) {
+            if (!curBody.contains(pas)) {
               continue;
             }
 
             SETNode srcNode = pas.myNode;
 
-            while (children.contains(srcNode) == false) {
+            while (!children.contains(srcNode)) {
               srcNode = srcNode.get_Parent();
             }
 

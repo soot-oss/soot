@@ -10,12 +10,12 @@ package soot.xml;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -252,12 +252,12 @@ public class XMLPrinter {
     final LiveLocals sll = new SimpleLiveLocals(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
 
     // lists
-    ArrayList<String> useList = new ArrayList<String>();
-    ArrayList<ArrayList<Long>> useDataList = new ArrayList<ArrayList<Long>>();
-    ArrayList<String> defList = new ArrayList<String>();
-    ArrayList<ArrayList<Long>> defDataList = new ArrayList<ArrayList<Long>>();
-    ArrayList<ArrayList<String>> paramData = new ArrayList<ArrayList<String>>();
-    ArrayList<XMLLabel> xmlLabelsList = new ArrayList<XMLLabel>();
+    ArrayList<String> useList = new ArrayList<>();
+    ArrayList<ArrayList<Long>> useDataList = new ArrayList<>();
+    ArrayList<String> defList = new ArrayList<>();
+    ArrayList<ArrayList<Long>> defDataList = new ArrayList<>();
+    ArrayList<ArrayList<String>> paramData = new ArrayList<>();
+    ArrayList<XMLLabel> xmlLabelsList = new ArrayList<>();
     long statementCount = 0;
     long maxStmtCount = 0;
     long labelID = 0;
@@ -320,7 +320,7 @@ public class XMLPrinter {
           if (useDataList.size() > useIndex) {
             tempArrayList = useDataList.get(useIndex);
             if (tempArrayList == null) {
-              tempArrayList = new ArrayList<Long>();
+              tempArrayList = new ArrayList<>();
             }
             tempArrayList.add(statementCount);
             useDataList.set(useIndex, tempArrayList);
@@ -348,7 +348,7 @@ public class XMLPrinter {
           if (defDataList.size() > defIndex) {
             tempArrayList = defDataList.get(defIndex);
             if (tempArrayList == null) {
-              tempArrayList = new ArrayList<Long>();
+              tempArrayList = new ArrayList<>();
             }
             tempArrayList.add(statementCount);
             defDataList.set(defIndex, tempArrayList);
@@ -472,9 +472,9 @@ public class XMLPrinter {
     // print out locals
     {
       Collection<Local> locals = body.getLocals();
-      ArrayList<String> localTypes = new ArrayList<String>();
-      ArrayList<ArrayList<XMLNode>> typedLocals = new ArrayList<ArrayList<XMLNode>>();
-      ArrayList<Integer> typeCounts = new ArrayList<Integer>();
+      ArrayList<String> localTypes = new ArrayList<>();
+      ArrayList<ArrayList<XMLNode>> typedLocals = new ArrayList<>();
+      ArrayList<Integer> typeCounts = new ArrayList<>();
       int j = 0;
       int currentType = 0;
       for (Local localData : locals) {

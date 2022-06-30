@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -87,8 +87,8 @@ public abstract class StructuredAnalysis<E> {
   HashMap<Object, DavaFlowSet<E>> beforeSets, afterSets;
 
   public StructuredAnalysis() {
-    beforeSets = new HashMap<Object, DavaFlowSet<E>>();
-    afterSets = new HashMap<Object, DavaFlowSet<E>>();
+    beforeSets = new HashMap<>();
+    afterSets = new HashMap<>();
     MERGETYPE = UNDEFINED;
     // invoke user defined function which makes sure that you have the merge
     // operator set
@@ -354,7 +354,7 @@ public abstract class StructuredAnalysis<E> {
       output = process(s, output);
       if (DEBUG_STATEMENTS) {
         System.out.println("After Processing statement " + s + output.toString());
-        ;
+
       }
     }
     return output;
@@ -589,7 +589,7 @@ public abstract class StructuredAnalysis<E> {
     DavaFlowSet<E> out = null;
     DavaFlowSet<E> defaultOut = null;
 
-    List<DavaFlowSet<E>> toMergeBreaks = new ArrayList<DavaFlowSet<E>>();
+    List<DavaFlowSet<E>> toMergeBreaks = new ArrayList<>();
 
     while (it.hasNext()) {
       // going through all the cases of the switch
@@ -646,7 +646,7 @@ public abstract class StructuredAnalysis<E> {
     String label = getLabel(node);
 
     // have to handleBreaks for all the different cases
-    List<DavaFlowSet<E>> outList = new ArrayList<DavaFlowSet<E>>();
+    List<DavaFlowSet<E>> outList = new ArrayList<>();
 
     // handling breakLists of each of the toMergeBreaks
     for (DavaFlowSet<E> mset : toMergeBreaks) {
@@ -688,7 +688,7 @@ public abstract class StructuredAnalysis<E> {
 
     List<Object> catchList = node.get_CatchList();
     Iterator<Object> it = catchList.iterator();
-    List<DavaFlowSet<E>> catchOutput = new ArrayList<DavaFlowSet<E>>();
+    List<DavaFlowSet<E>> catchOutput = new ArrayList<>();
 
     while (it.hasNext()) {
       ASTTryNode.container catchBody = (ASTTryNode.container) it.next();
@@ -713,7 +713,7 @@ public abstract class StructuredAnalysis<E> {
      *
      * The correct way to handle this is create a list of handledBreak objects (in the outList) And then to merge them
      */
-    List<DavaFlowSet<E>> outList = new ArrayList<DavaFlowSet<E>>();
+    List<DavaFlowSet<E>> outList = new ArrayList<>();
 
     // handle breaks out of tryBodyOutput
     outList.add(handleBreak(label, tryBodyOutput, node));

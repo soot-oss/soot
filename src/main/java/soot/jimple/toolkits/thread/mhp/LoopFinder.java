@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -43,7 +43,7 @@ import soot.util.Chain;
 // -Richard L. Halpert, 2006-11-30
 
 public class LoopFinder {
-  private final Map<Chain, Set<Set<Object>>> chainToLoop = new HashMap<Chain, Set<Set<Object>>>();
+  private final Map<Chain, Set<Set<Object>>> chainToLoop = new HashMap<>();
 
   LoopFinder(PegGraph peg) {
     Chain chain = peg.getMainPegChain();
@@ -65,7 +65,7 @@ public class LoopFinder {
       System.out.println("---loop---");
       while (loopIt.hasNext()) {
         JPegStmt o = (JPegStmt) loopIt.next();
-        Tag tag = (Tag) o.getTags().get(0);
+        Tag tag = o.getTags().get(0);
         System.out.println(tag + " " + o);
       }
     }

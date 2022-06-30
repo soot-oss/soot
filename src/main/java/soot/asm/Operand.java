@@ -10,12 +10,12 @@ package soot.asm;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -33,7 +33,7 @@ import soot.ValueBox;
 
 /**
  * Stack operand.
- * 
+ *
  * @author Aaloan Miftah
  */
 final class Operand {
@@ -45,7 +45,7 @@ final class Operand {
 
   /**
    * Constructs a new stack operand.
-   * 
+   *
    * @param insn
    *          the instruction that produced this operand.
    * @param value
@@ -58,7 +58,7 @@ final class Operand {
 
   /**
    * Removes a value box from this operand.
-   * 
+   *
    * @param vb
    *          the value box.
    */
@@ -77,7 +77,7 @@ final class Operand {
 
   /**
    * Adds a value box to this operand.
-   * 
+   *
    * @param vb
    *          the value box.
    */
@@ -88,7 +88,7 @@ final class Operand {
       list.add(vb);
     } else if (boxes instanceof ValueBox) {
       ValueBox ovb = (ValueBox) boxes;
-      List<ValueBox> list = new ArrayList<ValueBox>();
+      List<ValueBox> list = new ArrayList<>();
       list.add(ovb);
       list.add(vb);
       boxes = list;
@@ -132,7 +132,7 @@ final class Operand {
 
   /**
    * Determines if this operand is equal to another operand.
-   * 
+   *
    * @param other
    *          the other operand.
    * @return {@code true} if this operand is equal to another operand, {@code false} otherwise.

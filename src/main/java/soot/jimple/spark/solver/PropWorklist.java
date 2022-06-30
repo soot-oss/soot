@@ -10,12 +10,12 @@ package soot.jimple.spark.solver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,19 +50,20 @@ import soot.util.queue.QueueReader;
 
 /**
  * Propagates points-to sets along pointer assignment graph using a worklist.
- * 
+ *
  * @author Ondrej Lhotak
  */
 
 public class PropWorklist extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropWorklist.class);
-  protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
+  protected final Set<VarNode> varNodeWorkList = new TreeSet<>();
 
   public PropWorklist(PAG pag) {
     this.pag = pag;
   }
 
   /** Actually does the propagation. */
+  @Override
   public void propagate() {
     ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
@@ -88,6 +89,7 @@ public class PropWorklist extends Propagator {
         for (Node element0 : targets) {
           final FieldRefNode target = (FieldRefNode) element0;
           target.getBase().makeP2Set().forall(new P2SetVisitor() {
+            @Override
             public final void visit(Node n) {
               AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, target.getField());
               if (ofcg != null) {
@@ -98,7 +100,7 @@ public class PropWorklist extends Propagator {
           });
         }
       }
-      HashSet<Object[]> edgesToPropagate = new HashSet<Object[]>();
+      HashSet<Object[]> edgesToPropagate = new HashSet<>();
       for (FieldRefNode object : pag.loadSources()) {
         handleFieldRefNode(object, edgesToPropagate);
       }
@@ -158,8 +160,8 @@ public class PropWorklist extends Propagator {
       ofcg.build();
 
       while (addedEdges.hasNext()) {
-        Node addedSrc = (Node) addedEdges.next();
-        Node addedTgt = (Node) addedEdges.next();
+        Node addedSrc = addedEdges.next();
+        Node addedTgt = addedEdges.next();
         ret = true;
         if (addedSrc instanceof VarNode) {
           VarNode edgeSrc = (VarNode) addedSrc.getReplacement();
@@ -242,6 +244,7 @@ public class PropWorklist extends Propagator {
       final FieldRefNode fr = (FieldRefNode) element;
       final SparkField f = fr.getField();
       ret = fr.getBase().getP2Set().forall(new P2SetVisitor() {
+        @Override
         public final void visit(Node n) {
           AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
           if (nDotF.makeP2Set().addAll(newP2Set, null)) {
@@ -251,13 +254,14 @@ public class PropWorklist extends Propagator {
       }) | ret;
     }
 
-    final HashSet<Node[]> storesToPropagate = new HashSet<Node[]>();
-    final HashSet<Node[]> loadsToPropagate = new HashSet<Node[]>();
+    final HashSet<Node[]> storesToPropagate = new HashSet<>();
+    final HashSet<Node[]> loadsToPropagate = new HashSet<>();
     for (final FieldRefNode fr : src.getAllFieldRefs()) {
       final SparkField field = fr.getField();
       final Node[] storeSources = pag.storeInvLookup(fr);
       if (storeSources.length > 0) {
         newP2Set.forall(new P2SetVisitor() {
+          @Override
           public final void visit(Node n) {
             AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, field);
             for (Node element : storeSources) {
@@ -271,6 +275,7 @@ public class PropWorklist extends Propagator {
       final Node[] loadTargets = pag.loadLookup(fr);
       if (loadTargets.length > 0) {
         newP2Set.forall(new P2SetVisitor() {
+          @Override
           public final void visit(Node n) {
             AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, field);
             if (nDotF != null) {
@@ -316,6 +321,7 @@ public class PropWorklist extends Propagator {
 
     src.getBase().getP2Set().forall(new P2SetVisitor() {
 
+      @Override
       public final void visit(Node n) {
         AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, field);
         if (nDotF != null) {

@@ -26,7 +26,7 @@ import com.google.common.base.Optional;
 
 /**
  * Loads symbols for SootClasses from either class files or jimple files.
- * 
+ *
  * @author Andreas Dann
  */
 public class SootModuleResolver extends SootResolver {

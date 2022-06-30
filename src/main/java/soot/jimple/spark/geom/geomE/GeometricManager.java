@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.geomE;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -49,14 +49,17 @@ public class GeometricManager extends IFigureManager {
   private int size[] = { 0, 0 };
   private boolean hasNewFigure = false;
 
+  @Override
   public SegmentNode[] getFigures() {
     return header;
   }
 
+  @Override
   public int[] getSizes() {
     return size;
   }
 
+  @Override
   public boolean isThereUnprocessedFigures() {
     return hasNewFigure;
   }
@@ -64,12 +67,13 @@ public class GeometricManager extends IFigureManager {
   /**
    * Remove the new labels for all the figures.
    */
+  @Override
   public void flush() {
     hasNewFigure = false;
 
     for (int i = 0; i < Divisions; ++i) {
       SegmentNode p = header[i];
-      while (p != null && p.is_new == true) {
+      while (p != null && p.is_new) {
         p.is_new = false;
         p = p.next;
       }
@@ -79,6 +83,7 @@ public class GeometricManager extends IFigureManager {
   /**
    * Insert a new figure into this manager if it is not covered by any exisiting figure.
    */
+  @Override
   public SegmentNode addNewFigure(int code, RectangleNode pnew) {
     SegmentNode p;
 
@@ -110,6 +115,7 @@ public class GeometricManager extends IFigureManager {
   /**
    * Merge the set of objects in the same category into one.
    */
+  @Override
   public void mergeFigures(int buget_size) {
     RectangleNode p;
 
@@ -121,7 +127,7 @@ public class GeometricManager extends IFigureManager {
     for (int i = 0; i < Divisions; ++i) {
       p = null;
 
-      if (size[i] > buget_size && header[i].is_new == true) {
+      if (size[i] > buget_size && header[i].is_new) {
         // Merging is finding the bounding rectangles for every type of objects
 
         switch (i) {
@@ -153,6 +159,7 @@ public class GeometricManager extends IFigureManager {
   /**
    * The lines that are included in some rectangles can be deleted.
    */
+  @Override
   public void removeUselessSegments() {
     SegmentNode p = header[GeometricManager.ONE_TO_ONE];
     SegmentNode q = null;
@@ -289,7 +296,7 @@ public class GeometricManager extends IFigureManager {
             break;
         }
 
-        if (flag == false) {
+        if (!flag) {
           // We keep this figure
           if (q_head == null) {
             q_head = pold;

@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics.DataHandlingApplication;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -61,7 +61,7 @@ public class ProcessData {
 
   private static String metricListFileName = null;
 
-  private static final ArrayList<String> xmlFileList = new ArrayList<String>();
+  private static final ArrayList<String> xmlFileList = new ArrayList<>();
 
   private static int aggregationMechanism = -1;
 
@@ -241,6 +241,7 @@ public class ProcessData {
     } else {
 
       FilenameFilter filter = new FilenameFilter() {
+        @Override
         public boolean accept(File dir, String name) {
           return name.endsWith(".xml");
         }
@@ -256,7 +257,7 @@ public class ProcessData {
   }
 
   private static void writeMetricLists(PrintWriter out) {
-    ArrayList<String> metricList = new ArrayList<String>();
+    ArrayList<String> metricList = new ArrayList<>();
 
     Iterator<String> it = xmlFileList.iterator();
     while (it.hasNext()) {
@@ -281,8 +282,8 @@ public class ProcessData {
 
             NodeList textFNList = name.getChildNodes();
             // System.out.println("MetricName: " + ((Node)textFNList.item(0)).getNodeValue().trim());
-            if (!metricList.contains(((Node) textFNList.item(0)).getNodeValue().trim())) {
-              metricList.add(((Node) textFNList.item(0)).getNodeValue().trim());
+            if (!metricList.contains(textFNList.item(0).getNodeValue().trim())) {
+              metricList.add(textFNList.item(0).getNodeValue().trim());
             }
 
           } // end of if clause
@@ -308,7 +309,7 @@ public class ProcessData {
   @SuppressWarnings("fallthrough")
   private static void generateMetricsTables() {
 
-    Vector<String> columns = new Vector<String>();
+    Vector<String> columns = new Vector<>();
 
     /*
      * create the columns which are the metriclist
@@ -329,7 +330,7 @@ public class ProcessData {
       System.exit(1);
     }
 
-    Vector<String> allMetrics = new Vector<String>();
+    Vector<String> allMetrics = new Vector<>();
 
     try {
       FileReader file = new FileReader("myList");
@@ -366,7 +367,7 @@ public class ProcessData {
        * For benchmarks we want to print xml files dealing with same benchmark in one table hence fft-enabled.xml
        * fft-disabled.xml should be in one table where as matrix-enabled.xml matrix-disabled.xml should be in another table
        */
-      Map<String, List<String>> benchMarkToFiles = new HashMap<String, List<String>>();
+      Map<String, List<String>> benchMarkToFiles = new HashMap<>();
       Iterator<String> it = xmlFileList.iterator();
       while (it.hasNext()) {
         String fileName = it.next();
@@ -379,7 +380,7 @@ public class ProcessData {
         List<String> temp = benchMarkToFiles.get(benchmark);
         List<String> tempList = null;
         if (temp == null) {
-          tempList = new ArrayList<String>();
+          tempList = new ArrayList<>();
         } else {
           tempList = temp;
         }
@@ -458,7 +459,7 @@ public class ProcessData {
 
           }
 
-          files = new ArrayList<String>();
+          files = new ArrayList<>();
           files.add(newFileOrder[0]);
           files.add(newFileOrder[1]);
           files.add(newFileOrder[2]);
@@ -492,7 +493,7 @@ public class ProcessData {
             }
           }
 
-          files = new ArrayList<String>();
+          files = new ArrayList<>();
           files.add(newFileOrder[0]);
           files.add(newFileOrder[1]);
           files.add(newFileOrder[2]);
@@ -524,7 +525,7 @@ public class ProcessData {
               }
             }
 
-            HashMap<String, Number> aggregatedValues = new HashMap<String, Number>();
+            HashMap<String, Number> aggregatedValues = new HashMap<>();
 
             // TODO Should compute all metrics always
             // only print out the one we want
@@ -851,7 +852,7 @@ public class ProcessData {
         Element name = (Element) metricName.item(0);
 
         NodeList textFNList = name.getChildNodes();
-        String tempName = ((Node) textFNList.item(0)).getNodeValue().trim();
+        String tempName = textFNList.item(0).getNodeValue().trim();
 
         Object tempObj = aggregated.get(tempName);
         if (tempObj == null) {
@@ -865,7 +866,7 @@ public class ProcessData {
         Element name1 = (Element) value.item(0);
 
         NodeList textFNList1 = name1.getChildNodes();
-        String valToPrint = ((Node) textFNList1.item(0)).getNodeValue().trim();
+        String valToPrint = textFNList1.item(0).getNodeValue().trim();
 
         boolean notInt = false;
         try {
@@ -923,8 +924,8 @@ public class ProcessData {
     /*
      * In order to print all class info alphabetically we will create a map of className to data to be displayed
      */
-    ArrayList<String> classNames = new ArrayList<String>();
-    HashMap<String, String> classData = new HashMap<String, String>();
+    ArrayList<String> classNames = new ArrayList<>();
+    HashMap<String, String> classData = new HashMap<>();
 
     // each row is a class the name is obtained from the tag Class
     NodeList classes = doc.getElementsByTagName("Class");
@@ -943,7 +944,7 @@ public class ProcessData {
         Element classNameElement = (Element) classNameNodeList.item(0);
 
         NodeList classNameTextFNList = classNameElement.getChildNodes();
-        String className = ((Node) classNameTextFNList.item(0)).getNodeValue().trim();
+        String className = classNameTextFNList.item(0).getNodeValue().trim();
 
         // writerOut.println("");
 
@@ -977,7 +978,7 @@ public class ProcessData {
             Element name = (Element) metricName.item(0);
 
             NodeList textFNList = name.getChildNodes();
-            String tempName = ((Node) textFNList.item(0)).getNodeValue().trim();
+            String tempName = textFNList.item(0).getNodeValue().trim();
 
             /*
              * If the name of this metric is not the next column name in the columns simply skip over it and continue
@@ -993,7 +994,7 @@ public class ProcessData {
             Element name1 = (Element) value.item(0);
 
             NodeList textFNList1 = name1.getChildNodes();
-            String valToPrint = ((Node) textFNList1.item(0)).getNodeValue().trim();
+            String valToPrint = textFNList1.item(0).getNodeValue().trim();
             System.out.print(" " + valToPrint);
             // writerOut.print("&"+valToPrint);
             data += "&" + valToPrint;

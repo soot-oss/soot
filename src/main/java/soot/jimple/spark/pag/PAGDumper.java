@@ -10,12 +10,12 @@ package soot.jimple.spark.pag;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,7 +42,7 @@ import soot.jimple.spark.solver.TopoSorter;
 
 /**
  * Dumps a pointer assignment graph to a file.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class PAGDumper {
@@ -67,6 +67,7 @@ public class PAGDumper {
           continue;
         }
         p2set.forall(new P2SetVisitor() {
+          @Override
           public final void visit(Node n) {
             try {
               dumpNode(vn, file);
@@ -162,13 +163,13 @@ public class PAGDumper {
   protected PAG pag;
   protected String output_dir;
   protected int fieldNum = 0;
-  protected HashMap<SparkField, Integer> fieldMap = new HashMap<SparkField, Integer>();
+  protected HashMap<SparkField, Integer> fieldMap = new HashMap<>();
   protected ObjectNumberer root = new ObjectNumberer(null, 0);
 
   protected void dumpTypes(PrintWriter file) throws IOException {
-    HashSet<Type> declaredTypes = new HashSet<Type>();
-    HashSet<Type> actualTypes = new HashSet<Type>();
-    HashSet<SparkField> allFields = new HashSet<SparkField>();
+    HashSet<Type> declaredTypes = new HashSet<>();
+    HashSet<Type> actualTypes = new HashSet<>();
+    HashSet<SparkField> allFields = new HashSet<>();
     for (Iterator nIt = pag.getVarNodeNumberer().iterator(); nIt.hasNext();) {
       final Node n = (Node) nIt.next();
       Type t = n.getType();
@@ -208,7 +209,7 @@ public class PAGDumper {
         actualTypes.add(t);
       }
     }
-    HashMap<Type, Integer> typeToInt = new HashMap<Type, Integer>();
+    HashMap<Type, Integer> typeToInt = new HashMap<>();
     int nextint = 1;
     for (Type type : declaredTypes) {
       typeToInt.put(type, new Integer(nextint++));
@@ -311,7 +312,7 @@ public class PAGDumper {
 
     ObjectNumberer findOrAdd(Object child) {
       if (children == null) {
-        children = new HashMap<Object, ObjectNumberer>();
+        children = new HashMap<>();
       }
       ObjectNumberer ret = children.get(child);
       if (ret == null) {

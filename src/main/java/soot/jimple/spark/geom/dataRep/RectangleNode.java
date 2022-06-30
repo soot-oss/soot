@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.dataRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -91,19 +91,7 @@ public class RectangleNode extends SegmentNode {
       // If the segment is not entirely above, below, to the left, to the right of this rectangle
       // then, they must intersect
 
-      if (p.I2 >= rect_q.I2 + rect_q.L_prime) {
-        return false;
-      }
-
-      if (p.I2 + p.L_prime <= rect_q.I2) {
-        return false;
-      }
-
-      if (p.I1 + p.L <= rect_q.I1) {
-        return false;
-      }
-
-      if (p.I1 >= rect_q.I1 + rect_q.L) {
+      if ((p.I2 >= rect_q.I2 + rect_q.L_prime) || (p.I2 + p.L_prime <= rect_q.I2) || (p.I1 + p.L <= rect_q.I1) || (p.I1 >= rect_q.I1 + rect_q.L)) {
         return false;
       }
 

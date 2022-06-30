@@ -10,12 +10,12 @@ package soot.jimple.toolkits.pointer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -74,7 +74,7 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
 
   public LocalMustNotAliasAnalysis(DirectedGraph<Unit> directedGraph, Body b) {
     super(directedGraph);
-    this.locals = new HashSet<Local>(b.getLocals());
+    this.locals = new HashSet<>(b.getLocals());
 
     doAnalysis();
   }
@@ -103,13 +103,13 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
       DefinitionStmt ds = (DefinitionStmt) unit;
       Value lhs = ds.getLeftOp();
       if (lhs instanceof Local) {
-        HashSet<NewExpr> lv = new HashSet<NewExpr>();
+        HashSet<NewExpr> lv = new HashSet<>();
         out.put((Local) lhs, lv);
         Value rhs = ds.getRightOp();
         if (rhs instanceof NewExpr) {
           lv.add((NewExpr) rhs);
         } else if (rhs instanceof Local) {
-          lv.addAll(in.get((Local) rhs));
+          lv.addAll(in.get(rhs));
         } else {
           lv.add(UNKNOWN);
         }
@@ -124,9 +124,9 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
 
   @Override
   protected HashMap<Local, Set<NewExpr>> entryInitialFlow() {
-    HashMap<Local, Set<NewExpr>> m = new HashMap<Local, Set<NewExpr>>();
+    HashMap<Local, Set<NewExpr>> m = new HashMap<>();
     for (Local l : locals) {
-      HashSet<NewExpr> s = new HashSet<NewExpr>();
+      HashSet<NewExpr> s = new HashSet<>();
       s.add(UNKNOWN);
       m.put(l, s);
     }
@@ -135,7 +135,7 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
 
   @Override
   protected HashMap<Local, Set<NewExpr>> newInitialFlow() {
-    HashMap<Local, Set<NewExpr>> m = new HashMap<Local, Set<NewExpr>>();
+    HashMap<Local, Set<NewExpr>> m = new HashMap<>();
     for (Local l : locals) {
       m.put(l, new HashSet<NewExpr>());
     }
@@ -169,7 +169,7 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
       return false;
     }
 
-    Set<NewExpr> n = new HashSet<NewExpr>(l1n);
+    Set<NewExpr> n = new HashSet<>(l1n);
     n.retainAll(l2n);
     return n.isEmpty();
   }

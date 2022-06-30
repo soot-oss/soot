@@ -10,12 +10,12 @@ package soot.jimple.validation;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -111,11 +111,11 @@ public enum NewValidator implements BodyValidator {
    * @return true if a call to a &lt;init&gt;-Method has been found on this way.
    */
   private boolean checkForInitializerOnPath(UnitGraph g, AssignStmt newStmt, List<ValidationException> exception) {
-    List<Unit> workList = new ArrayList<Unit>();
-    Set<Unit> doneSet = new HashSet<Unit>();
+    List<Unit> workList = new ArrayList<>();
+    Set<Unit> doneSet = new HashSet<>();
     workList.add(newStmt);
 
-    Set<Local> aliasingLocals = new HashSet<Local>();
+    Set<Local> aliasingLocals = new HashSet<>();
     aliasingLocals.add((Local) newStmt.getLeftOp());
 
     while (!workList.isEmpty()) {

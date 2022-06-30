@@ -10,12 +10,12 @@ package soot.jimple.spark.sets;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,18 +46,21 @@ public class DoublePointsToSet extends PointsToSetInternal {
   }
 
   /** Returns true if this set contains no run-time objects. */
+  @Override
   public boolean isEmpty() {
     return oldSet.isEmpty() && newSet.isEmpty();
   }
 
   /** Returns true if this set shares some objects with other. */
+  @Override
   public boolean hasNonEmptyIntersection(PointsToSet other) {
     return oldSet.hasNonEmptyIntersection(other) || newSet.hasNonEmptyIntersection(other);
   }
 
   /** Set of all possible run-time types of objects in the set. */
+  @Override
   public Set<Type> possibleTypes() {
-    Set<Type> ret = new HashSet<Type>();
+    Set<Type> ret = new HashSet<>();
     ret.addAll(oldSet.possibleTypes());
     ret.addAll(newSet.possibleTypes());
     return ret;
@@ -66,6 +69,7 @@ public class DoublePointsToSet extends PointsToSetInternal {
   /**
    * Adds contents of other into this set, returns true if this set changed.
    */
+  @Override
   public boolean addAll(PointsToSetInternal other, PointsToSetInternal exclude) {
     if (exclude != null) {
       throw new RuntimeException("NYI");
@@ -74,6 +78,7 @@ public class DoublePointsToSet extends PointsToSetInternal {
   }
 
   /** Calls v's visit method on all nodes in this set. */
+  @Override
   public boolean forall(P2SetVisitor v) {
     oldSet.forall(v);
     newSet.forall(v);
@@ -81,6 +86,7 @@ public class DoublePointsToSet extends PointsToSetInternal {
   }
 
   /** Adds n to this set, returns true if n was not already in this set. */
+  @Override
   public boolean add(Node n) {
     if (oldSet.contains(n)) {
       return false;
@@ -89,42 +95,45 @@ public class DoublePointsToSet extends PointsToSetInternal {
   }
 
   /** Returns set of nodes already present before last call to flushNew. */
+  @Override
   public PointsToSetInternal getOldSet() {
     return oldSet;
   }
 
   /** Returns set of newly-added nodes since last call to flushNew. */
+  @Override
   public PointsToSetInternal getNewSet() {
     return newSet;
   }
 
   /** Sets all newly-added nodes to old nodes. */
+  @Override
   public void flushNew() {
     oldSet.addAll(newSet, null);
     newSet = G.v().newSetFactory.newSet(type, pag);
   }
 
   /** Sets all nodes to newly-added nodes. */
+  @Override
   public void unFlushNew() {
     newSet.addAll(oldSet, null);
     oldSet = G.v().oldSetFactory.newSet(type, pag);
   }
 
   /** Merges other into this set. */
+  @Override
   public void mergeWith(PointsToSetInternal other) {
     if (!(other instanceof DoublePointsToSet)) {
       throw new RuntimeException("NYI");
     }
     final DoublePointsToSet o = (DoublePointsToSet) other;
-    if (other.type != null && !(other.type.equals(type))) {
-      throw new RuntimeException("different types " + type + " and " + other.type);
-    }
-    if (other.type == null && type != null) {
+    if ((other.type != null && !(other.type.equals(type))) || (other.type == null && type != null)) {
       throw new RuntimeException("different types " + type + " and " + other.type);
     }
     final PointsToSetInternal newNewSet = G.v().newSetFactory.newSet(type, pag);
     final PointsToSetInternal newOldSet = G.v().oldSetFactory.newSet(type, pag);
     oldSet.forall(new P2SetVisitor() {
+      @Override
       public final void visit(Node n) {
         if (o.oldSet.contains(n)) {
           newOldSet.add(n);
@@ -138,11 +147,13 @@ public class DoublePointsToSet extends PointsToSetInternal {
   }
 
   /** Returns true iff the set contains n. */
+  @Override
   public boolean contains(Node n) {
     return oldSet.contains(n) || newSet.contains(n);
   }
 
   private static P2SetFactory defaultP2SetFactory = new P2SetFactory() {
+    @Override
     public PointsToSetInternal newSet(Type type, PAG pag) {
       return new DoublePointsToSet(type, pag);
     }

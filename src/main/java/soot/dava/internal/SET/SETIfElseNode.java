@@ -10,12 +10,12 @@ package soot.dava.internal.SET;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,22 +46,24 @@ public class SETIfElseNode extends SETDagNode {
     add_SubBody(elseBody);
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
 
     IterableSet ifChain = body2childChain.get(ifBody);
-    if (ifChain.isEmpty() == false) {
+    if (!ifChain.isEmpty()) {
       c.addAll(((SETNode) ifChain.getLast()).get_NaturalExits());
     }
 
     IterableSet elseChain = body2childChain.get(elseBody);
-    if (elseChain.isEmpty() == false) {
+    if (!elseChain.isEmpty()) {
       c.addAll(((SETNode) elseChain.getLast()).get_NaturalExits());
     }
 
     return c;
   }
 
+  @Override
   public ASTNode emit_AST() {
     List<Object> astBody0 = emit_ASTBody(body2childChain.get(ifBody)),
         astBody1 = emit_ASTBody(body2childChain.get(elseBody));

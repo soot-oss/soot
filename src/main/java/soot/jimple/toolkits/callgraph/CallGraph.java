@@ -13,12 +13,12 @@ import java.util.HashSet;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -46,12 +46,12 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class CallGraph implements Iterable<Edge> {
-  protected Set<Edge> edges = new LinkedHashSet<Edge>();
-  protected ChunkedQueue<Edge> stream = new ChunkedQueue<Edge>();
+  protected Set<Edge> edges = new LinkedHashSet<>();
+  protected ChunkedQueue<Edge> stream = new ChunkedQueue<>();
   protected QueueReader<Edge> reader = stream.reader();
-  protected Map<MethodOrMethodContext, Edge> srcMethodToEdge = new LinkedHashMap<MethodOrMethodContext, Edge>();
-  protected Map<Unit, Edge> srcUnitToEdge = new LinkedHashMap<Unit, Edge>();
-  protected Map<MethodOrMethodContext, Edge> tgtToEdge = new LinkedHashMap<MethodOrMethodContext, Edge>();
+  protected Map<MethodOrMethodContext, Edge> srcMethodToEdge = new LinkedHashMap<>();
+  protected Map<Unit, Edge> srcUnitToEdge = new LinkedHashMap<>();
+  protected Map<MethodOrMethodContext, Edge> tgtToEdge = new LinkedHashMap<>();
   protected Edge dummy = new Edge(null, null, null, Kind.INVALID);
 
   /**
@@ -146,7 +146,7 @@ public class CallGraph implements Iterable<Edge> {
 
   /**
    * Removes the edge e from the call graph. Returns true iff the edge was originally present in the call graph.
-   * 
+   *
    * @param e
    *          the edge
    * @param removeInEdgeList
@@ -191,7 +191,7 @@ public class CallGraph implements Iterable<Edge> {
 
   /**
    * Removes the edges from the call graph. Returns true iff one edge was originally present in the call graph.
-   * 
+   *
    * @param edges
    *          the edges
    * @return whether the removal was successful.

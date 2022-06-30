@@ -10,12 +10,12 @@ package soot.shimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -211,7 +211,7 @@ public class Shimple {
     if (remove.getBoxesPointingToThis().isEmpty()) {
       return;
     }
-    
+
     /* Ok, continuing... */
     boolean debug = Options.v().debug();
     if (body instanceof ShimpleBody) {
@@ -219,8 +219,8 @@ public class Shimple {
     }
 
     final Chain<Unit> units = body.getUnits();
-    final Set<Unit> preds = new HashSet<Unit>();
-    final Set<PhiExpr> phis = new HashSet<PhiExpr>();
+    final Set<Unit> preds = new HashSet<>();
+    final Set<PhiExpr> phis = new HashSet<>();
 
     // find fall-through pred
     if (!remove.equals(units.getFirst())) {

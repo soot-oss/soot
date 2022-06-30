@@ -1,5 +1,13 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -10,12 +18,12 @@ package soot.jimple.toolkits.ide.icfg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,15 +38,6 @@ import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.MethodOrMethodContext;
 import soot.Scene;
 import soot.SootMethod;
@@ -92,7 +91,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         SootMethod m = edge.getTgt().method();
         if (includePhantomCallees || m.hasActiveBody()) {
           if (res == null) {
-            res = new ArrayList<SootMethod>();
+            res = new ArrayList<>();
           }
           res.add(m);
         } else if (IDESolver.DEBUG) {
@@ -126,7 +125,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
       = new CacheLoader<SootMethod, Collection<Unit>>() {
         @Override
         public Collection<Unit> load(SootMethod m) throws Exception {
-          ArrayList<Unit> res = new ArrayList<Unit>();
+          ArrayList<Unit> res = new ArrayList<>();
           // only retain callers that are explicit call sites or
           // Thread.start()
           Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
@@ -188,7 +187,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
   /**
    * Sets whether methods that operate on the callgraph shall return the immediate callee of a call site if the callgraph has
    * no outgoing edges
-   * 
+   *
    * @param fallbackToImmediateCallees
    *          True to return the immediate callee if the callgraph does not contain any edges for the respective call site,
    *          false to return an empty set in such cases

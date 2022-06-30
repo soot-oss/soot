@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp.pegcallgraph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -238,7 +238,7 @@ public class PegCallGraph implements DirectedGraph {
     for (Iterator iter = maps.iterator(); iter.hasNext();) {
       Map.Entry entry = (Map.Entry) iter.next();
       List list = (List) entry.getValue();
-      List<Object> newList = new ArrayList<Object>();
+      List<Object> newList = new ArrayList<>();
       Iterator it = list.iterator();
       while (it.hasNext()) {
         Object obj = it.next();
@@ -250,10 +250,12 @@ public class PegCallGraph implements DirectedGraph {
     }
   }
 
+  @Override
   public List getHeads() {
     return heads;
   }
 
+  @Override
   public List getTails() {
     return tails;
   }
@@ -266,6 +268,7 @@ public class PegCallGraph implements DirectedGraph {
     return methodToSuccsTrim.get(s);
   }
 
+  @Override
   public List getSuccsOf(Object s) {
     if (!methodToSuccs.containsKey(s)) {
       return java.util.Collections.EMPTY_LIST;
@@ -274,6 +277,7 @@ public class PegCallGraph implements DirectedGraph {
     return methodToSuccs.get(s);
   }
 
+  @Override
   public List getPredsOf(Object s) {
     if (!methodToPreds.containsKey(s)) {
       return java.util.Collections.EMPTY_LIST;
@@ -282,10 +286,12 @@ public class PegCallGraph implements DirectedGraph {
     return methodToPreds.get(s);
   }
 
+  @Override
   public Iterator iterator() {
     return chain.iterator();
   }
 
+  @Override
   public int size() {
     return chain.size();
   }

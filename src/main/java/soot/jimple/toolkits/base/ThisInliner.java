@@ -10,12 +10,12 @@ package soot.jimple.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -74,7 +74,7 @@ public class ThisInliner extends BodyTransformer {
       assert (b.getClass() == specInvokeBody.getClass());
 
       // Put locals from inlinee into container
-      HashMap<Local, Local> oldLocalsToNew = new HashMap<Local, Local>();
+      HashMap<Local, Local> oldLocalsToNew = new HashMap<>();
       for (Local l : specInvokeBody.getLocals()) {
         Local newLocal = (Local) l.clone();
         b.getLocals().add(newLocal);
@@ -87,7 +87,7 @@ public class ThisInliner extends BodyTransformer {
       // Find @this identity stmt of original method
       final Value origIdStmtLHS = findIdentityStmt(b).getLeftOp();
 
-      final HashMap<Unit, Unit> oldStmtsToNew = new HashMap<Unit, Unit>();
+      final HashMap<Unit, Unit> oldStmtsToNew = new HashMap<>();
       final Chain<Unit> containerUnits = b.getUnits();
       for (Unit u : specInvokeBody.getUnits()) {
         Stmt inlineeStmt = (Stmt) u;
@@ -98,7 +98,7 @@ public class ThisInliner extends BodyTransformer {
           final Value rightOp = idStmt.getRightOp();
 
           if (rightOp instanceof ThisRef) {
-            Stmt newThis = Jimple.v().newAssignStmt(oldLocalsToNew.get((Local) idStmt.getLeftOp()), origIdStmtLHS);
+            Stmt newThis = Jimple.v().newAssignStmt(oldLocalsToNew.get(idStmt.getLeftOp()), origIdStmtLHS);
             containerUnits.insertBefore(newThis, invokeStmt);
             oldStmtsToNew.put(inlineeStmt, newThis);
           } else if (rightOp instanceof CaughtExceptionRef) {
@@ -106,13 +106,13 @@ public class ThisInliner extends BodyTransformer {
             for (ValueBox vb : newInlinee.getUseAndDefBoxes()) {
               Value val = vb.getValue();
               if (val instanceof Local) {
-                vb.setValue(oldLocalsToNew.get((Local) val));
+                vb.setValue(oldLocalsToNew.get(val));
               }
             }
             containerUnits.insertBefore(newInlinee, invokeStmt);
             oldStmtsToNew.put(inlineeStmt, newInlinee);
           } else if (rightOp instanceof ParameterRef) {
-            Stmt newParam = Jimple.v().newAssignStmt(oldLocalsToNew.get((Local) idStmt.getLeftOp()),
+            Stmt newParam = Jimple.v().newAssignStmt(oldLocalsToNew.get(idStmt.getLeftOp()),
                 specInvokeExpr.getArg(((ParameterRef) rightOp).getIndex()));
             containerUnits.insertBefore(newParam, invokeStmt);
             oldStmtsToNew.put(inlineeStmt, newParam);
@@ -130,7 +130,7 @@ public class ThisInliner extends BodyTransformer {
           for (ValueBox vb : newInlinee.getUseAndDefBoxes()) {
             Value val = vb.getValue();
             if (val instanceof Local) {
-              vb.setValue(oldLocalsToNew.get((Local) val));
+              vb.setValue(oldLocalsToNew.get(val));
             }
           }
           containerUnits.insertBefore(newInlinee, invokeStmt);

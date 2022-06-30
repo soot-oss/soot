@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,7 +47,7 @@ public class DexClassProvider implements ClassProvider {
   private static final Logger logger = LoggerFactory.getLogger(DexClassProvider.class);
 
   public static Set<String> classesOfDex(DexFile dexFile) {
-    Set<String> classes = new HashSet<String>();
+    Set<String> classes = new HashSet<>();
     for (ClassDef c : dexFile.getClasses()) {
       classes.add(Util.dottedClassName(c.getType()));
     }
@@ -76,7 +76,7 @@ public class DexClassProvider implements ClassProvider {
     final SourceLocator loc = SourceLocator.v();
     Map<String, File> index = loc.dexClassIndex();
     if (index == null) {
-      index = new HashMap<String, File>();
+      index = new HashMap<>();
       buildDexIndex(index, loc.classPath());
       loc.setDexClassIndex(index);
     }
@@ -85,7 +85,7 @@ public class DexClassProvider implements ClassProvider {
     Set<String> extensions = loc.getDexClassPathExtensions();
     if (extensions != null) {
       buildDexIndex(index, new ArrayList<>(extensions));
-      loc.clearDexClassPathExtensions();;
+      loc.clearDexClassPathExtensions();
     }
   }
 

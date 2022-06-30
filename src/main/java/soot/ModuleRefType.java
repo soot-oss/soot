@@ -1,5 +1,10 @@
 package soot;
 
+import java.util.LinkedList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,18 +29,13 @@ package soot;
 
 import com.google.common.base.Optional;
 
-import java.util.LinkedList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 
 /**
  * A class that models Java's reference types. RefTypes are parameterized by a class name. Two RefType are equal iff they are
  * parameterized by the same class name as a String. Extends RefType in order to deal with Java 9 modules.
- * 
+ *
  * @author Andreas Dann
  */
 public class ModuleRefType extends RefType {
@@ -148,8 +148,9 @@ public class ModuleRefType extends RefType {
 
   @Override
   public Type getArrayElementType() {
-    if (getClassName().equals(Scene.v().getObjectType().toString()))
+    if (getClassName().equals(Scene.v().getObjectType().toString())) {
       return ModuleRefType.v(Scene.v().getObjectType().toString());
+    }
     switch (getClassName()) {
       case "java.lang.Object":
       case "java.io.Serializable":

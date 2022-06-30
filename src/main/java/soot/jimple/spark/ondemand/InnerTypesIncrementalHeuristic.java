@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,13 +38,13 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
 
   private final TypeManager manager;
 
-  private final Set<RefType> typesToCheck = new HashSet<RefType>();
+  private final Set<RefType> typesToCheck = new HashSet<>();
 
   private String newTypeOnQuery = null;
 
-  private final Set<RefType> bothEndsTypes = new HashSet<RefType>();
+  private final Set<RefType> bothEndsTypes = new HashSet<>();
 
-  private final Set<RefType> notBothEndsTypes = new HashSet<RefType>();
+  private final Set<RefType> notBothEndsTypes = new HashSet<>();
 
   private int numPasses = 0;
 
@@ -57,6 +57,7 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
     this.passesInDirection = maxPasses / 2;
   }
 
+  @Override
   public boolean runNewPass() {
     numPasses++;
     if (numPasses == passesInDirection) {
@@ -91,6 +92,7 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
     }
   }
 
+  @Override
   public boolean validateMatchesForField(SparkField field) {
     if (field instanceof ArrayElement) {
       return true;
@@ -117,6 +119,7 @@ public class InnerTypesIncrementalHeuristic implements FieldCheckHeuristic {
     return false;
   }
 
+  @Override
   public boolean validFromBothEnds(SparkField field) {
     if (allNotBothEnds) {
       return false;

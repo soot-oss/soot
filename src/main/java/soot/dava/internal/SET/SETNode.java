@@ -10,12 +10,12 @@ package soot.dava.internal.SET;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -67,8 +67,8 @@ public abstract class SETNode {
 
     parent = null;
     label = new SETNodeLabel();
-    subBodies = new LinkedList<IterableSet>();
-    body2childChain = new HashMap<IterableSet, IterableSet>();
+    subBodies = new LinkedList<>();
+    body2childChain = new HashMap<>();
     predecessors = new IterableSet();
     successors = new IterableSet();
   }
@@ -121,7 +121,7 @@ public abstract class SETNode {
   }
 
   public boolean remove_Child(SETNode child, IterableSet children) {
-    if ((this == child) || (children.contains(child) == false)) {
+    if ((this == child) || !children.contains(child)) {
       return false;
     }
 
@@ -131,7 +131,7 @@ public abstract class SETNode {
   }
 
   public boolean insert_ChildBefore(SETNode child, SETNode point, IterableSet children) {
-    if ((this == child) || (this == point) || (children.contains(point) == false)) {
+    if ((this == child) || (this == point) || !children.contains(point)) {
       return false;
     }
 
@@ -141,7 +141,7 @@ public abstract class SETNode {
   }
 
   public List<Object> emit_ASTBody(IterableSet children) {
-    LinkedList<Object> l = new LinkedList<Object>();
+    LinkedList<Object> l = new LinkedList<>();
 
     Iterator cit = children.iterator();
     while (cit.hasNext()) {
@@ -221,7 +221,7 @@ public abstract class SETNode {
 
       IterableSet body = sbit.next();
       IterableSet children = body2childChain.get(body);
-      HashSet<AugmentedStmt> childUnion = new HashSet<AugmentedStmt>();
+      HashSet<AugmentedStmt> childUnion = new HashSet<>();
 
       Iterator cit = children.iterator();
       while (cit.hasNext()) {
@@ -298,7 +298,7 @@ public abstract class SETNode {
   }
 
   public boolean nest(SETNode other) {
-    if (other.resolve(this) == false) {
+    if (!other.resolve(this)) {
       return false;
     }
 
@@ -395,7 +395,7 @@ public abstract class SETNode {
 
       Iterator bit = body.iterator();
       while (bit.hasNext()) {
-        if ((bit.next() instanceof AugmentedStmt) == false) {
+        if (!(bit.next() instanceof AugmentedStmt)) {
           logger.debug("Error in body: " + getClass());
         }
       }
@@ -409,17 +409,11 @@ public abstract class SETNode {
 
   @Override
   public boolean equals(Object other) {
-    if (other instanceof SETNode == false) {
+    if (!(other instanceof SETNode)) {
       return false;
     }
     SETNode typed_other = (SETNode) other;
-    if (body.equals(typed_other.body) == false) {
-      return false;
-    }
-    if (subBodies.equals(typed_other.subBodies) == false) {
-      return false;
-    }
-    if (body2childChain.equals(typed_other.body2childChain) == false) {
+    if (!body.equals(typed_other.body) || !subBodies.equals(typed_other.subBodies) || !body2childChain.equals(typed_other.body2childChain)) {
       return false;
     }
     return true;

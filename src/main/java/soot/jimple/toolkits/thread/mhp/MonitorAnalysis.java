@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -65,10 +65,10 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
   private static final Logger logger = LoggerFactory.getLogger(MonitorAnalysis.class);
 
   private PegGraph g;
-  private final HashMap<String, FlowSet> monitor = new HashMap<String, FlowSet>();
-  private final Vector<Object> nodes = new Vector<Object>();
-  private final Vector<Object> valueBefore = new Vector<Object>();
-  private final Vector<Object> valueAfter = new Vector<Object>();
+  private final HashMap<String, FlowSet> monitor = new HashMap<>();
+  private final Vector<Object> nodes = new Vector<>();
+  private final Vector<Object> valueBefore = new Vector<>();
+  private final Vector<Object> valueAfter = new Vector<>();
 
   public MonitorAnalysis(PegGraph g) {
     super(g);
@@ -79,9 +79,10 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
     // testMonitor();
   }
 
+  @Override
   protected void doAnalysis() {
-    LinkedList<Object> changedUnits = new LinkedList<Object>();
-    HashSet<Object> changedUnitsSet = new HashSet<Object>();
+    LinkedList<Object> changedUnits = new LinkedList<>();
+    HashSet<Object> changedUnitsSet = new HashSet<>();
 
     int numNodes = graph.size();
     int numComputations = 0;
@@ -212,6 +213,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
 
   // STEP 4: Is the merge operator union or intersection?
   // UNION
+  @Override
   protected void merge(Object in1, Object in2, Object out) {
     MonitorSet inSet1 = (MonitorSet) in1;
     MonitorSet inSet2 = (MonitorSet) in2;
@@ -224,11 +226,12 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
   // STEP 5: Define flow equations.
   // in(s) = ( out(s) minus defs(s) ) union uses(s)
   //
+  @Override
   protected void flowThrough(Object inValue, Object unit, Object outValue) {
     MonitorSet in = (MonitorSet) inValue;
     MonitorSet out = (MonitorSet) outValue;
     JPegStmt s = (JPegStmt) unit;
-    Tag tag = (Tag) s.getTags().get(0);
+    Tag tag = s.getTags().get(0);
     // System.out.println("s: "+tag+" "+s);
     // Copy in to out
     // if (in.contains("&")) in.remove("&");
@@ -309,6 +312,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
    *
    * ((MonitorSet)valueAfter.elementAt(pos)).test(); } } } System.out.println("--------test for debug end------"); }
    */
+  @Override
   protected void copy(Object source, Object dest) {
     MonitorSet sourceSet = (MonitorSet) source;
     MonitorSet destSet = (MonitorSet) dest;
@@ -321,10 +325,12 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
   //
   // start node: empty set
   // initial approximation: empty set
+  @Override
   protected Object entryInitialFlow() {
     return new MonitorSet();
   }
 
+  @Override
   protected Object newInitialFlow() {
     MonitorSet fullSet = new MonitorSet();
     fullSet.add("&");
@@ -412,7 +418,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
   private void createWorkList(LinkedList<Object> changedUnits, HashSet<Object> changedUnitsSet, PegChain chain) {
     // Depth first scan
     Iterator it = chain.getHeads().iterator();
-    Set<Object> gray = new HashSet<Object>();
+    Set<Object> gray = new HashSet<>();
 
     while (it.hasNext()) {
       Object head = it.next();
@@ -462,7 +468,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis {
         Iterator it = list.iterator();
         while (it.hasNext()) {
           JPegStmt stmt = (JPegStmt) it.next();
-          Tag tag1 = (Tag) stmt.getTags().get(0);
+          Tag tag1 = stmt.getTags().get(0);
           System.out.println(tag1 + " " + stmt);
 
         }

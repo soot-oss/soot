@@ -10,12 +10,12 @@ package soot.dava.internal.asg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -55,7 +55,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   public AugmentedStmtGraph(AugmentedStmtGraph other) {
     this();
 
-    HashMap<AugmentedStmt, AugmentedStmt> old2new = new HashMap<AugmentedStmt, AugmentedStmt>();
+    HashMap<AugmentedStmt, AugmentedStmt> old2new = new HashMap<>();
 
     for (AugmentedStmt oas : other.aug_list) {
       Stmt s = oas.get_Stmt();
@@ -69,7 +69,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
     }
 
     for (AugmentedStmt oas : other.aug_list) {
-      AugmentedStmt nas = (AugmentedStmt) old2new.get(oas);
+      AugmentedStmt nas = old2new.get(oas);
 
       for (AugmentedStmt aug : oas.bpreds) {
         nas.bpreds.add(old2new.get(aug));
@@ -133,15 +133,15 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   }
 
   public AugmentedStmtGraph() {
-    binding = new HashMap<Stmt, AugmentedStmt>();
-    original2clone = new HashMap<AugmentedStmt, AugmentedStmt>();
-    aug_list = new IterableSet<AugmentedStmt>();
-    stmt_list = new IterableSet<Stmt>();
+    binding = new HashMap<>();
+    original2clone = new HashMap<>();
+    aug_list = new IterableSet<>();
+    stmt_list = new IterableSet<>();
 
-    bheads = new LinkedList<AugmentedStmt>();
-    btails = new LinkedList<AugmentedStmt>();
-    cheads = new LinkedList<AugmentedStmt>();
-    ctails = new LinkedList<AugmentedStmt>();
+    bheads = new LinkedList<>();
+    btails = new LinkedList<>();
+    cheads = new LinkedList<>();
+    ctails = new LinkedList<>();
   }
 
   public void add_AugmentedStmt(AugmentedStmt as) {
@@ -204,8 +204,8 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
       return;
     }
 
-    LinkedList<AugmentedStmt> worklist = new LinkedList<AugmentedStmt>();
-    HashSet<AugmentedStmt> touchSet = new HashSet<AugmentedStmt>();
+    LinkedList<AugmentedStmt> worklist = new LinkedList<>();
+    HashSet<AugmentedStmt> touchSet = new HashSet<>();
 
     worklist.addLast(source);
     touchSet.add(source);
@@ -241,7 +241,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   }
 
   public void calculate_Reachability(AugmentedStmt source, AugmentedStmt blocker, AugmentedStmt dominator) {
-    HashSet<AugmentedStmt> h = new HashSet<AugmentedStmt>();
+    HashSet<AugmentedStmt> h = new HashSet<>();
 
     h.add(blocker);
 
@@ -249,7 +249,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   }
 
   public void calculate_Reachability(Collection<AugmentedStmt> sources, AugmentedStmt blocker, AugmentedStmt dominator) {
-    HashSet<AugmentedStmt> h = new HashSet<AugmentedStmt>();
+    HashSet<AugmentedStmt> h = new HashSet<>();
 
     h.add(blocker);
 
@@ -330,7 +330,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   }
 
   public IterableSet<AugmentedStmt> get_ChainView() {
-    return new IterableSet<AugmentedStmt>(aug_list);
+    return new IterableSet<>(aug_list);
   }
 
   @Override
@@ -417,7 +417,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   private void mirror_PredsSuccs(AugmentedStmt as, UnitGraph ug) {
     Stmt s = as.get_Stmt();
 
-    LinkedList<AugmentedStmt> preds = new LinkedList<AugmentedStmt>(), succs = new LinkedList<AugmentedStmt>();
+    LinkedList<AugmentedStmt> preds = new LinkedList<>(), succs = new LinkedList<>();
 
     // mirror the predecessors
     for (Unit u : ug.getPredsOf(s)) {
@@ -462,10 +462,10 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
   }
 
   public IterableSet<AugmentedStmt> clone_Body(IterableSet<AugmentedStmt> oldBody) {
-    HashMap<AugmentedStmt, AugmentedStmt> old2new = new HashMap<AugmentedStmt, AugmentedStmt>();
-    HashMap<AugmentedStmt, AugmentedStmt> new2old = new HashMap<AugmentedStmt, AugmentedStmt>();
+    HashMap<AugmentedStmt, AugmentedStmt> old2new = new HashMap<>();
+    HashMap<AugmentedStmt, AugmentedStmt> new2old = new HashMap<>();
 
-    IterableSet<AugmentedStmt> newBody = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> newBody = new IterableSet<>();
 
     for (AugmentedStmt as : oldBody) {
       AugmentedStmt clone = (AugmentedStmt) as.clone();
@@ -490,7 +490,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
       add_AugmentedStmt(au);
     }
 
-    HashMap<Unit, Stmt> so2n = new HashMap<Unit, Stmt>();
+    HashMap<Unit, Stmt> so2n = new HashMap<>();
 
     for (AugmentedStmt as : oldBody) {
       Stmt os = as.get_Stmt();
@@ -515,7 +515,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
         Unit newTgt = so2n.get(target);
         ntss.setDefaultTarget(newTgt == null ? target : newTgt);
 
-        LinkedList<Unit> new_target_list = new LinkedList<Unit>();
+        LinkedList<Unit> new_target_list = new LinkedList<>();
         int target_count = otss.getHighIndex() - otss.getLowIndex() + 1;
         for (int i = 0; i < target_count; i++) {
           target = otss.getTarget(i);
@@ -585,7 +585,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
     }
 
     // build the worklist
-    IterableSet<AugmentedStmt> worklist = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> worklist = new IterableSet<>();
     worklist.addAll(aug_list);
 
     // keep going until the worklist is empty
@@ -593,7 +593,7 @@ public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt> {
       AugmentedStmt as = worklist.getFirst();
       worklist.removeFirst();
 
-      IterableSet<AugmentedStmt> pred_intersection = new IterableSet<AugmentedStmt>();
+      IterableSet<AugmentedStmt> pred_intersection = new IterableSet<>();
       boolean first_pred = true;
 
       // run through all the predecessors and get their dominance

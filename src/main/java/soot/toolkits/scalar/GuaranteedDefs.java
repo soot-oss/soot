@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -53,7 +53,7 @@ public class GuaranteedDefs {
     if (Options.v().verbose()) {
       logger.debug("[" + graph.getBody().getMethod().getName() + "]     Constructing GuaranteedDefs...");
     }
-    this.unitToGuaranteedDefs = new HashMap<Unit, List<Value>>(graph.size() * 2 + 1, 0.7f);
+    this.unitToGuaranteedDefs = new HashMap<>(graph.size() * 2 + 1, 0.7f);
 
     GuaranteedDefsAnalysis analysis = new GuaranteedDefsAnalysis(graph);
     for (Unit s : graph) {
@@ -74,14 +74,14 @@ public class GuaranteedDefs {
  * Flow analysis to determine all locals guaranteed to be defined at a given program point.
  **/
 class GuaranteedDefsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>> {
-  private static final FlowSet<Value> EMPTY_SET = new ArraySparseSet<Value>();
+  private static final FlowSet<Value> EMPTY_SET = new ArraySparseSet<>();
   private final Map<Unit, FlowSet<Value>> unitToGenerateSet;
 
   GuaranteedDefsAnalysis(UnitGraph graph) {
     super(graph);
-    this.unitToGenerateSet = new HashMap<Unit, FlowSet<Value>>(graph.size() * 2 + 1, 0.7f);
+    this.unitToGenerateSet = new HashMap<>(graph.size() * 2 + 1, 0.7f);
 
-    DominatorsFinder<Unit> df = new MHGDominatorsFinder<Unit>(graph);
+    DominatorsFinder<Unit> df = new MHGDominatorsFinder<>(graph);
 
     // pre-compute generate sets
     for (Unit s : graph) {

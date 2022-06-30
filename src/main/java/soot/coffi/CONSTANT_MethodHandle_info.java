@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -26,7 +26,7 @@ import soot.Value;
 
 /**
  * A constant pool entry of type CONSTANT_MethodHandle
- * 
+ *
  * @see cp_info
  * @author Eric Bodden
  */
@@ -36,18 +36,20 @@ class CONSTANT_MethodHandle_info extends cp_info {
 
   public int target_index;
 
+  @Override
   public int size() {
     return 4;
   }
 
   /**
    * Returns a String representation of this entry.
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile.
    * @return String representation of this entry.
    * @see cp_info#toString
    */
+  @Override
   public String toString(cp_info constant_pool[]) {
     // currently neglects field "kind"
     cp_info target = constant_pool[target_index];
@@ -56,17 +58,18 @@ class CONSTANT_MethodHandle_info extends cp_info {
 
   /**
    * Returns a String description of what kind of entry this is.
-   * 
+   *
    * @return the String "methodhandle".
    * @see cp_info#typeName
    */
+  @Override
   public String typeName() {
     return "methodhandle";
   }
 
   /**
    * Compares this entry with another cp_info object (which may reside in a different constant pool).
-   * 
+   *
    * @param constant_pool
    *          constant pool of ClassFile for this.
    * @param cp
@@ -76,6 +79,7 @@ class CONSTANT_MethodHandle_info extends cp_info {
    * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
    * @see cp_info#compareTo
    */
+  @Override
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
     int i;
     if (tag != cp.tag) {
@@ -89,6 +93,7 @@ class CONSTANT_MethodHandle_info extends cp_info {
     return kind - cu.kind;
   }
 
+  @Override
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
     // FIXME may need to determine static-ness based on "kind" field
     return constant_pool[target_index].createJimpleConstantValue(constant_pool);

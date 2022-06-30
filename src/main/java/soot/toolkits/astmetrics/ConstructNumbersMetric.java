@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -48,12 +48,14 @@ public class ConstructNumbersMetric extends ASTMetric {
     super(node);
   }
 
+  @Override
   public void reset() {
     numIf = numIfElse = 0;
     numLabeledBlocks = 0;
     doLoop = forLoop = whileLoop = whileTrue = 0;
   }
 
+  @Override
   public void addMetrics(ClassData data) {
     // TODO Auto-generated method stub
     // conditionals
@@ -72,6 +74,7 @@ public class ConstructNumbersMetric extends ASTMetric {
     data.addMetric(new MetricData("Total Loops", new Integer(whileTrue + whileLoop + forLoop + doLoop)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
 
     /*

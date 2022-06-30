@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.misc;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -55,7 +55,7 @@ public class PackageNamer {
   }
 
   public boolean use_ShortName(String fixedPackageName, String fixedShortClassName) {
-    if (fixed == false) {
+    if (!fixed) {
       return false;
     }
 
@@ -89,7 +89,7 @@ public class PackageNamer {
   }
 
   public String get_FixedClassName(String originalFullClassName) {
-    if (fixed == false) {
+    if (!fixed) {
       return originalFullClassName;
     }
 
@@ -105,7 +105,7 @@ public class PackageNamer {
   }
 
   public String get_FixedPackageName(String originalPackageName) {
-    if (fixed == false) {
+    if (!fixed) {
       return originalPackageName;
     }
 
@@ -139,7 +139,7 @@ public class PackageNamer {
       this.parent = parent;
       this.isClass = isClass;
 
-      children = new ArrayList<NameHolder>();
+      children = new ArrayList<>();
     }
 
     public NameHolder get_Parent() {
@@ -159,7 +159,7 @@ public class PackageNamer {
     }
 
     public boolean is_Package() {
-      return (children.isEmpty() == false);
+      return !children.isEmpty();
     }
 
     public String get_PackageName() {
@@ -203,7 +203,7 @@ public class PackageNamer {
     }
 
     public String get_FixedName(StringTokenizer st, boolean forClass) {
-      if (st.nextToken().equals(originalName) == false) {
+      if (!st.nextToken().equals(originalName)) {
         throw new RuntimeException("Unable to resolve naming.");
       }
 
@@ -211,7 +211,7 @@ public class PackageNamer {
     }
 
     private String retrieve_FixedName(StringTokenizer st, boolean forClass) {
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         if (forClass) {
           return className;
         } else {
@@ -236,7 +236,7 @@ public class PackageNamer {
     }
 
     public String get_OriginalPackageName(StringTokenizer st) {
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         return get_OriginalName();
       }
 
@@ -261,7 +261,7 @@ public class PackageNamer {
     }
 
     public boolean contains_OriginalName(StringTokenizer st, boolean forClass) {
-      if (get_OriginalName().equals(st.nextToken()) == false) {
+      if (!get_OriginalName().equals(st.nextToken())) {
         return false;
       }
 
@@ -269,7 +269,7 @@ public class PackageNamer {
     }
 
     private boolean finds_OriginalName(StringTokenizer st, boolean forClass) {
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         return (((forClass) && (is_Class())) || ((!forClass) && (is_Package())));
       }
 
@@ -307,7 +307,7 @@ public class PackageNamer {
     }
 
     public void fix_PackageNames() {
-      if ((is_Package()) && (verify_PackageName() == false)) {
+      if ((is_Package()) && !verify_PackageName()) {
         String tPackageName = packageName;
 
         if (Character.isUpperCase(packageName.charAt(0))) {
@@ -315,7 +315,7 @@ public class PackageNamer {
           packageName = tPackageName;
         }
 
-        for (int i = 0; verify_PackageName() == false; i++) {
+        for (int i = 0; !verify_PackageName(); i++) {
           packageName = tPackageName + "_p" + i;
         }
       }
@@ -327,8 +327,8 @@ public class PackageNamer {
     }
 
     public boolean verify_PackageName() {
-      return ((keywords.contains(packageName) == false) && (siblingClashes(packageName) == false)
-          && ((is_Class() == false) || (className.equals(packageName) == false)));
+      return (!keywords.contains(packageName) && !siblingClashes(packageName)
+          && (!is_Class() || !className.equals(packageName)));
     }
 
     public boolean siblingClashes(String name) {
@@ -379,9 +379,9 @@ public class PackageNamer {
   }
 
   private boolean fixed = false;
-  private final ArrayList<NameHolder> appRoots = new ArrayList<NameHolder>();
-  private final ArrayList<NameHolder> otherRoots = new ArrayList<NameHolder>();
-  private final HashSet<String> keywords = new HashSet<String>();
+  private final ArrayList<NameHolder> appRoots = new ArrayList<>();
+  private final ArrayList<NameHolder> otherRoots = new ArrayList<>();
+  private final HashSet<String> keywords = new HashSet<>();
   private char fileSep;
   private String classPath, pathSep;
 
@@ -444,7 +444,7 @@ public class PackageNamer {
 
         if (child.get_OriginalName().equals(curName)) {
 
-          if (st.hasMoreTokens() == false) {
+          if (!st.hasMoreTokens()) {
             child.set_ClassAttr();
           }
 
@@ -454,7 +454,7 @@ public class PackageNamer {
       }
 
       if (!found) {
-        child = new NameHolder(curName, curNode, st.hasMoreTokens() == false);
+        child = new NameHolder(curName, curNode, !st.hasMoreTokens());
         children.add(child);
       }
 
@@ -466,7 +466,7 @@ public class PackageNamer {
   public boolean package_ContainsClass(String classpathDir, String packageName, String className) {
     File p = new File(classpathDir);
 
-    if (p.exists() == false) {
+    if (!p.exists()) {
       return false;
     }
 
@@ -507,7 +507,7 @@ public class PackageNamer {
 
       StringTokenizer st = new StringTokenizer(currentPackage, ".");
 
-      if (st.hasMoreTokens() == false) {
+      if (!st.hasMoreTokens()) {
         newContext.add(currentPackage);
         continue;
       }

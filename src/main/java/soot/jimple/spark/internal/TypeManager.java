@@ -10,12 +10,12 @@ package soot.jimple.spark.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,8 +63,8 @@ import soot.util.queue.QueueReader;
  */
 public final class TypeManager {
 
-  private Map<SootClass, List<AllocNode>> class2allocs = new HashMap<SootClass, List<AllocNode>>(1024);
-  private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();
+  private Map<SootClass, List<AllocNode>> class2allocs = new HashMap<>(1024);
+  private List<AllocNode> anySubtypeAllocs = new LinkedList<>();
 
   protected final RefType rtObject;
   protected final RefType rtSerializable;
@@ -119,13 +119,7 @@ public final class TypeManager {
         types = Scene.v().getOrMakeFastHierarchy().canStoreTypeList(nt);
       }
       for (final Type t : types) {
-        if (!(t instanceof RefLikeType)) {
-          continue;
-        }
-        if (t instanceof AnySubType) {
-          continue;
-        }
-        if (isUnresolved(t)) {
+        if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
           continue;
         }
 
@@ -143,7 +137,7 @@ public final class TypeManager {
 
       }
     }
-    BitVector ret = (BitVector) typeMask.get(type);
+    BitVector ret = typeMask.get(type);
     if (ret == null && fh != null) {
       // If we have a phantom class and have no type mask, we assume that
       // it is not cast-compatible to anything
@@ -171,7 +165,7 @@ public final class TypeManager {
 
   final public void makeTypeMask() {
     RefType.v("java.lang.Class");
-    typeMask = new LargeNumberedMap<Type, BitVector>(Scene.v().getTypeNumberer());
+    typeMask = new LargeNumberedMap<>(Scene.v().getTypeNumberer());
     if (fh == null) {
       return;
     }
@@ -190,13 +184,7 @@ public final class TypeManager {
     // **
     ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
     for (Type t : Scene.v().getTypeNumberer()) {
-      if (!(t instanceof RefLikeType)) {
-        continue;
-      }
-      if (t instanceof AnySubType) {
-        continue;
-      }
-      if (isUnresolved(t)) {
+      if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
         continue;
       }
       // **
@@ -271,16 +259,18 @@ public final class TypeManager {
 
   final private void addAllocNode(final AllocNode alloc) {
     alloc.getType().apply(new TypeSwitch() {
+      @Override
       final public void caseRefType(RefType t) {
         SootClass cl = t.getSootClass();
         List<AllocNode> list;
         if ((list = class2allocs.get(cl)) == null) {
-          list = new LinkedList<AllocNode>();
+          list = new LinkedList<>();
           class2allocs.put(cl, list);
         }
         list.add(alloc);
       }
 
+      @Override
       final public void caseAnySubType(AnySubType t) {
         anySubtypeAllocs.add(alloc);
       }

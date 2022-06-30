@@ -10,12 +10,12 @@ package soot.jimple.parser;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -51,7 +51,7 @@ class CstPoolExtractor {
 
   public Set<String> getCstPool() {
     if (mRefTypes == null) {
-      mRefTypes = new HashSet<String>();
+      mRefTypes = new HashSet<>();
       CstPoolExtractorWalker walker = new CstPoolExtractorWalker();
       mParseTree.apply(walker);
       mParseTree = null; // allow garbage collection
@@ -63,10 +63,12 @@ class CstPoolExtractor {
     CstPoolExtractorWalker() {
     }
 
+    @Override
     public void inStart(Start node) {
       defaultIn(node);
     }
 
+    @Override
     public void outAQuotedClassName(AQuotedClassName node) {
       String tokenString = node.getQuotedName().getText();
       tokenString = tokenString.substring(1, tokenString.length() - 1);
@@ -76,6 +78,7 @@ class CstPoolExtractor {
 
     }
 
+    @Override
     public void outAIdentClassName(AIdentClassName node) {
       String tokenString = node.getIdentifier().getText();
       tokenString = StringTools.getUnEscapedStringOf(tokenString);
@@ -83,14 +86,17 @@ class CstPoolExtractor {
       mRefTypes.add(tokenString);
     }
 
+    @Override
     public void outAFullIdentClassName(AFullIdentClassName node) {
       String tokenString = node.getFullIdentifier().getText();
-      tokenString = Scene.v().unescapeName(tokenString);
+      Scene.v();
+      tokenString = Scene.unescapeName(tokenString);
       tokenString = StringTools.getUnEscapedStringOf(tokenString);
 
       mRefTypes.add(tokenString);
     }
 
+    @Override
     public void outAQuotedNonvoidType(AQuotedNonvoidType node) {
       String tokenString = node.getQuotedName().getText();
       tokenString = tokenString.substring(1, tokenString.length() - 1);
@@ -99,14 +105,17 @@ class CstPoolExtractor {
       mRefTypes.add(tokenString);
     }
 
+    @Override
     public void outAFullIdentNonvoidType(AFullIdentNonvoidType node) {
       String tokenString = node.getFullIdentifier().getText();
-      tokenString = Scene.v().unescapeName(tokenString);
+      Scene.v();
+      tokenString = Scene.unescapeName(tokenString);
       tokenString = StringTools.getUnEscapedStringOf(tokenString);
 
       mRefTypes.add(tokenString);
     }
 
+    @Override
     public void outAIdentNonvoidType(AIdentNonvoidType node) {
       String tokenString = node.getIdentifier().getText();
       tokenString = StringTools.getUnEscapedStringOf(tokenString);

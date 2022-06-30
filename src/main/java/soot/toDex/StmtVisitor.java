@@ -10,12 +10,12 @@ package soot.toDex;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -244,10 +244,7 @@ public class StmtVisitor implements StmtSwitch {
     for (int i = 0; i < this.insns.size() - 1; i++) {
       Insn curInsn = this.insns.get(i);
       // Only consider real instructions
-      if (curInsn instanceof AddressInsn) {
-        continue;
-      }
-      if (!isReducableMoveInstruction(curInsn.getOpcode())) {
+      if ((curInsn instanceof AddressInsn) || !isReducableMoveInstruction(curInsn.getOpcode())) {
         continue;
       }
 
@@ -601,7 +598,7 @@ public class StmtVisitor implements StmtSwitch {
 
     // Convert the list of values into a list of numbers
     int elementSize = 0;
-    List<Number> numbers = new ArrayList<Number>(values.size());
+    List<Number> numbers = new ArrayList<>(values.size());
     for (Value val : values) {
       if (val instanceof IntConstant) {
         elementSize = Math.max(elementSize, 4);

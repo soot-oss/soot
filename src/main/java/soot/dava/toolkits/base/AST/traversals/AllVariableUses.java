@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.traversals;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -74,13 +74,14 @@ public class AllVariableUses extends DepthFirstAdapter {
   }
 
   public void init() {
-    localsToUses = new HashMap<Local, List>();
-    fieldsToUses = new HashMap<SootField, List>();
+    localsToUses = new HashMap<>();
+    fieldsToUses = new HashMap<>();
   }
 
   /*
    * Notice as things stand synchblocks cant have the use of a SootField
    */
+  @Override
   public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     Local local = node.getLocal();
     addLocalUse(local, node);
@@ -91,10 +92,11 @@ public class AllVariableUses extends DepthFirstAdapter {
    *
    * Hence the some what indirect approach
    */
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Value val = node.get_Key();
-    List<Value> localUses = new ArrayList<Value>();
-    List<Value> fieldUses = new ArrayList<Value>();
+    List<Value> localUses = new ArrayList<>();
+    List<Value> fieldUses = new ArrayList<>();
 
     if (val instanceof Local) {
       localUses.add(val);
@@ -138,6 +140,7 @@ public class AllVariableUses extends DepthFirstAdapter {
     } // end of going through all FieldRef uses in switch key
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -154,6 +157,7 @@ public class AllVariableUses extends DepthFirstAdapter {
    * The init of a for loop can use a local/Sootfield The condition of a for node can use a local/SootField The update in a
    * for loop can use a local/SootField
    */
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
 
     // checking uses in init
@@ -217,6 +221,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of an if node can use a local
    */
+  @Override
   public void inASTIfNode(ASTIfNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -225,6 +230,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of an ifElse node can use a local
    */
+  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -233,6 +239,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of a while node can use a local
    */
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -241,6 +248,7 @@ public class AllVariableUses extends DepthFirstAdapter {
   /*
    * The condition of a doWhile node can use a local
    */
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -254,14 +262,14 @@ public class AllVariableUses extends DepthFirstAdapter {
    * @return a list containing all Locals and FieldRefs used in this condition
    */
   public List<Value> getUseList(ASTCondition cond) {
-    ArrayList<Value> useList = new ArrayList<Value>();
+    ArrayList<Value> useList = new ArrayList<>();
     if (cond instanceof ASTAggregatedCondition) {
       useList.addAll(getUseList(((ASTAggregatedCondition) cond).getLeftOp()));
       useList.addAll(getUseList(((ASTAggregatedCondition) cond).getRightOp()));
       return useList;
     } else if (cond instanceof ASTUnaryCondition) {
       // get uses from unary condition
-      List<Value> uses = new ArrayList<Value>();
+      List<Value> uses = new ArrayList<>();
 
       Value val = ((ASTUnaryCondition) cond).getValue();
       if (val instanceof Local || val instanceof FieldRef) {
@@ -285,7 +293,7 @@ public class AllVariableUses extends DepthFirstAdapter {
     Object temp = localsToUses.get(local);
     List<Object> uses;
     if (temp == null) {
-      uses = new ArrayList<Object>();
+      uses = new ArrayList<>();
     } else {
       uses = (ArrayList<Object>) temp;
     }
@@ -302,7 +310,7 @@ public class AllVariableUses extends DepthFirstAdapter {
     Object temp = fieldsToUses.get(field);
     List<Object> uses;
     if (temp == null) {
-      uses = new ArrayList<Object>();
+      uses = new ArrayList<>();
     } else {
       uses = (ArrayList<Object>) temp;
     }
@@ -318,7 +326,7 @@ public class AllVariableUses extends DepthFirstAdapter {
    * Method is used to strip away boxes from the actual values only those are returned which are locals or FieldRefs
    */
   private List<Value> getUsesFromBoxes(List useBoxes) {
-    ArrayList<Value> toReturn = new ArrayList<Value>();
+    ArrayList<Value> toReturn = new ArrayList<>();
     Iterator it = useBoxes.iterator();
     while (it.hasNext()) {
       Value val = ((ValueBox) it.next()).getValue();

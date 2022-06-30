@@ -10,12 +10,12 @@ package soot.jbco.jimpleTransformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,18 +60,21 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
   int switchesadded = 0;
 
+  @Override
   public void outputSummary() {
     out.println("Switches added: " + switchesadded);
   }
 
   public static String dependancies[] = new String[] { "wjtp.jbco_fr", "jtp.jbco_adss", "bb.jbco_ful" };
 
+  @Override
   public String[] getDependencies() {
     return dependancies;
   }
 
   public static String name = "jtp.jbco_adss";
 
+  @Override
   public String getName() {
     return name;
   }
@@ -88,6 +91,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     return false;
   }
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if (b.getMethod().getSignature().indexOf("<clinit>") >= 0) {
       return;
@@ -99,7 +103,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
     New2InitFlowAnalysis fa = new New2InitFlowAnalysis(new BriefUnitGraph(b));
 
-    Vector<Unit> zeroheight = new Vector<Unit>();
+    Vector<Unit> zeroheight = new Vector<>();
     PatchingChain<Unit> units = b.getUnits();
 
     Unit first = null;
@@ -114,7 +118,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
     Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
-      Unit unit = (Unit) it.next();
+      Unit unit = it.next();
       if (unit instanceof IdentityStmt || checkTraps(unit, b)) {
         continue;
       }
@@ -132,7 +136,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     Unit u = null;
     for (int i = 0; i < zeroheight.size(); i++) {
       idx = Rand.getInt(zeroheight.size() - 1) + 1;
-      u = (Unit) zeroheight.get(idx);
+      u = zeroheight.get(idx);
       if (u.fallsThrough()) {
         break;
       }
@@ -149,7 +153,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     }
 
     Collection<Local> locals = b.getLocals();
-    List<Unit> targs = new ArrayList<Unit>();
+    List<Unit> targs = new ArrayList<>();
     targs.addAll(zeroheight);
 
     SootField ops[] = FieldRenamer.v().getRandomOpaques();
@@ -194,7 +198,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
     Iterator<Unit> tit = targs.iterator();
     while (tit.hasNext()) {
-      Unit nxt = (Unit) tit.next();
+      Unit nxt = tit.next();
       if (Rand.getInt(5) < 4) {
         units.insertBefore(Jimple.v().newAssignStmt(l, Jimple.v().newAddExpr(l, IntConstant.v(Rand.getInt(3) + 1))), nxt);
       }

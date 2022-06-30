@@ -10,12 +10,12 @@ package soot.shimple.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -52,8 +52,8 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   public SimpleGlobalValueNumberer(BlockGraph cfg) {
     this.cfg = cfg;
     vg = new ValueGraph(cfg);
-    partitions = new HashSet<Partition>(); // not deterministic
-    nodeToPartition = new HashMap<Node, Partition>();
+    partitions = new HashSet<>(); // not deterministic
+    nodeToPartition = new HashMap<>();
     currentPartitionNumber = 0;
 
     initPartition();
@@ -74,11 +74,13 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
     System.out.println(sgvn);
   }
 
+  @Override
   public int getGlobalValueNumber(Local local) {
     Node node = vg.getNode(local);
     return nodeToPartition.get(node).getPartitionNumber();
   }
 
+  @Override
   public boolean areEqual(Local local1, Local local2) {
     Node node1 = vg.getNode(local1);
     Node node2 = vg.getNode(local2);
@@ -87,7 +89,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   }
 
   protected void initPartition() {
-    Map<String, Partition> labelToPartition = new HashMap<String, Partition>();
+    Map<String, Partition> labelToPartition = new HashMap<>();
 
     Iterator<Node> topNodesIt = vg.getTopNodes().iterator();
     while (topNodesIt.hasNext()) {
@@ -109,7 +111,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
   protected List<Partition> newPartitions;
 
   protected void iterPartition() {
-    newPartitions = new ArrayList<Partition>();
+    newPartitions = new ArrayList<>();
 
     Iterator<Partition> partitionsIt = partitions.iterator();
     while (partitionsIt.hasNext()) {
@@ -196,6 +198,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer {
     return true;
   }
 
+  @Override
   public String toString() {
     StringBuffer tmp = new StringBuffer();
 

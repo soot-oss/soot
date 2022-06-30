@@ -30,12 +30,12 @@ package soot.dexpler.typing;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -116,12 +116,12 @@ public class DalvikTyper implements IDalvikTyper {
 
   private static DalvikTyper dt = null;
 
-  private Set<Constraint> constraints = new HashSet<Constraint>();
-  private Map<ValueBox, Type> typed = new HashMap<ValueBox, Type>();
-  private Map<Local, Type> localTyped = new HashMap<Local, Type>();
-  private Set<Local> localTemp = new HashSet<Local>();
-  private List<LocalObj> localObjList = new ArrayList<LocalObj>();
-  private Map<Local, List<LocalObj>> local2Obj = new HashMap<Local, List<LocalObj>>();
+  private Set<Constraint> constraints = new HashSet<>();
+  private Map<ValueBox, Type> typed = new HashMap<>();
+  private Map<Local, Type> localTyped = new HashMap<>();
+  private Set<Local> localTemp = new HashSet<>();
+  private List<LocalObj> localObjList = new ArrayList<>();
+  private Map<Local, List<LocalObj>> local2Obj = new HashMap<>();
 
   private DalvikTyper() {
   }
@@ -181,7 +181,7 @@ public class DalvikTyper implements IDalvikTyper {
     constraints.clear();
     localObjList.clear();
 
-    final Set<Unit> todoUnits = new HashSet<Unit>();
+    final Set<Unit> todoUnits = new HashSet<>();
 
     // put constraints:
     for (Unit u : b.getUnits()) {
@@ -431,8 +431,8 @@ public class DalvikTyper implements IDalvikTyper {
           if (rType instanceof ArrayType && ass.getLeftOp() instanceof Local) {
             // Debug.printDbg("propagate-array: checking ", u);
             // propagate array type through aliases
-            Set<Unit> done = new HashSet<Unit>();
-            Set<DefinitionStmt> toDo = new HashSet<DefinitionStmt>();
+            Set<Unit> done = new HashSet<>();
+            Set<DefinitionStmt> toDo = new HashSet<>();
             toDo.add(ass);
             while (!toDo.isEmpty()) {
               DefinitionStmt currentUnit = toDo.iterator().next();
@@ -571,14 +571,9 @@ public class DalvikTyper implements IDalvikTyper {
     List<ValueBox> vbList = b.getUseAndDefBoxes();
 
     // clear constraints after local splitting and dead code eliminator
-    List<Constraint> toRemove = new ArrayList<Constraint>();
+    List<Constraint> toRemove = new ArrayList<>();
     for (Constraint c : constraints) {
-      if (!vbList.contains(c.l)) {
-        // Debug.printDbg(IDalvikTyper.DEBUG, "warning: ", c.l, " not in locals! removing...");
-        toRemove.add(c);
-        continue;
-      }
-      if (!vbList.contains(c.r)) {
+      if (!vbList.contains(c.l) || !vbList.contains(c.r)) {
         // Debug.printDbg(IDalvikTyper.DEBUG, "warning: ", c.r, " not in locals! removing...");
         toRemove.add(c);
         continue;
@@ -756,10 +751,7 @@ public class DalvikTyper implements IDalvikTyper {
         continue;
       }
       AssignStmt ass = (AssignStmt) u;
-      if (!(ass.getLeftOp() instanceof Local)) {
-        continue;
-      }
-      if (!(ass.getRightOp() instanceof UntypedConstant)) {
+      if (!(ass.getLeftOp() instanceof Local) || !(ass.getRightOp() instanceof UntypedConstant)) {
         continue;
       }
       UntypedConstant uc = (UntypedConstant) ass.getRightOp();

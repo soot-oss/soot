@@ -1,5 +1,14 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -10,12 +19,12 @@ package soot.jimple.toolkits.ide.icfg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,16 +37,6 @@ import com.google.common.cache.LoadingCache;
 import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.PatchingChain;
 import soot.SootMethod;
@@ -88,7 +87,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   protected Map<Unit, Body> createUnitToOwnerMap() {
-    return new LinkedHashMap<Unit, Body>();
+    return new LinkedHashMap<>();
   }
 
   public AbstractJimpleBasedICFG(boolean enableExceptions) {
@@ -135,7 +134,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     for (Unit u : m.getActiveBody().getUnits()) {
       if (isCallStmt(u)) {
         if (res == null) {
-          res = new LinkedHashSet<Unit>();
+          res = new LinkedHashSet<>();
         }
         res.add(u);
       }
@@ -207,7 +206,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   @Override
   public Set<Unit> allNonCallStartNodes() {
-    Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
+    Set<Unit> res = new LinkedHashSet<>(unitToOwner.keySet());
     for (Iterator<Unit> iter = res.iterator(); iter.hasNext();) {
       Unit u = iter.next();
       if (isStartPoint(u) || isCallStmt(u)) {
@@ -219,7 +218,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   @Override
   public Set<Unit> allNonCallEndNodes() {
-    Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
+    Set<Unit> res = new LinkedHashSet<>(unitToOwner.keySet());
     for (Iterator<Unit> iter = res.iterator(); iter.hasNext();) {
       Unit u = iter.next();
       if (isExitStmt(u) || isCallStmt(u)) {

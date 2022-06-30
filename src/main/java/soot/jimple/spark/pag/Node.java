@@ -10,12 +10,12 @@ package soot.jimple.spark.pag;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -36,10 +36,12 @@ import soot.util.Numberable;
  * @author Ondrej Lhotak
  */
 public class Node implements ReferenceVariable, Numberable {
+  @Override
   public final int hashCode() {
     return number;
   }
 
+  @Override
   public final boolean equals(Object other) {
     return this == other;
   }
@@ -151,10 +153,12 @@ public class Node implements ReferenceVariable, Numberable {
 
   /* End of package methods. */
 
+  @Override
   public final int getNumber() {
     return number;
   }
 
+  @Override
   public final void setNumber(int number) {
     this.number = number;
   }

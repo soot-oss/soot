@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.callgraph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -63,10 +63,10 @@ public class CallGraphGrapher extends SceneTransformer {
   private ArrayList<MethInfo> getTgtMethods(SootMethod method, boolean recurse) {
     // logger.debug("meth for tgts: "+method);
     if (!method.hasActiveBody()) {
-      return new ArrayList<MethInfo>();
+      return new ArrayList<>();
     }
     Body b = method.getActiveBody();
-    ArrayList<MethInfo> list = new ArrayList<MethInfo>();
+    ArrayList<MethInfo> list = new ArrayList<>();
     Iterator sIt = b.getUnits().iterator();
     while (sIt.hasNext()) {
       Stmt s = (Stmt) sIt.next();
@@ -116,7 +116,7 @@ public class CallGraphGrapher extends SceneTransformer {
 
   private ArrayList<MethInfo> getSrcMethods(SootMethod method, boolean recurse) {
     // logger.debug("meth for srcs: "+method);
-    ArrayList<MethInfo> list = new ArrayList<MethInfo>();
+    ArrayList<MethInfo> list = new ArrayList<>();
 
     for (Iterator momcIt = methodToContexts.get(method).iterator(); momcIt.hasNext();) {
       final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
@@ -145,6 +145,7 @@ public class CallGraphGrapher extends SceneTransformer {
     return list;
   }
 
+  @Override
   protected void internalTransform(String phaseName, Map options) {
 
     CGGOptions opts = new CGGOptions(options);
@@ -183,7 +184,7 @@ public class CallGraphGrapher extends SceneTransformer {
     if (sm != null) {
       return sm;
     } else {
-      return (SootMethod) sc.getMethods().get(0);
+      return sc.getMethods().get(0);
     }
   }
 

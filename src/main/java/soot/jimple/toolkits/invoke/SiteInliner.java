@@ -10,12 +10,12 @@ package soot.jimple.toolkits.invoke;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -171,8 +171,8 @@ public class SiteInliner {
     final Unit exitPoint = containerUnits.getSuccOf(toInline);
 
     // First, clone all of the inlinee's units & locals.
-    HashMap<Local, Local> oldLocalsToNew = new HashMap<Local, Local>();
-    HashMap<Unit, Unit> oldUnitsToNew = new HashMap<Unit, Unit>();
+    HashMap<Local, Local> oldLocalsToNew = new HashMap<>();
+    HashMap<Unit, Unit> oldUnitsToNew = new HashMap<>();
     {
       Unit cursor = toInline;
       for (Unit u : inlineeUnits) {
@@ -205,7 +205,7 @@ public class SiteInliner {
       for (ValueBox box : patchee.getUseAndDefBoxes()) {
         Value value = box.getValue();
         if (value instanceof Local) {
-          Local lPrime = oldLocalsToNew.get((Local) value);
+          Local lPrime = oldLocalsToNew.get(value);
           if (lPrime == null) {
             throw new RuntimeException("local has no clone!");
           }
@@ -246,7 +246,7 @@ public class SiteInliner {
 
     // Handle identity stmt's and returns.
     {
-      ArrayList<Unit> cuCopy = new ArrayList<Unit>();
+      ArrayList<Unit> cuCopy = new ArrayList<>();
       for (Iterator<Unit> it =
           containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it.hasNext();) {
         cuCopy.add(it.next());
@@ -284,7 +284,7 @@ public class SiteInliner {
       }
     }
 
-    List<Unit> newStmts = new ArrayList<Unit>();
+    List<Unit> newStmts = new ArrayList<>();
     for (Iterator<Unit> i =
         containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
       newStmts.add(i.next());

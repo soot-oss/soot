@@ -10,12 +10,12 @@ package soot.jimple.toolkits.invoke;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -82,14 +82,14 @@ public class StaticMethodBinder extends SceneTransformer {
     final Filter instanceInvokesFilter = new Filter(new InstanceInvokeEdgesPred());
     final SMBOptions options = new SMBOptions(opts);
     final String modifierOptions = PhaseOptions.getString(opts, "allowed-modifier-changes");
-    final HashMap<SootMethod, SootMethod> instanceToStaticMap = new HashMap<SootMethod, SootMethod>();
+    final HashMap<SootMethod, SootMethod> instanceToStaticMap = new HashMap<>();
 
     final Scene scene = Scene.v();
     final CallGraph cg = scene.getCallGraph();
     final Hierarchy hierarchy = scene.getActiveHierarchy();
 
     for (SootClass c : scene.getApplicationClasses()) {
-      LinkedList<SootMethod> methodsList = new LinkedList<SootMethod>();
+      LinkedList<SootMethod> methodsList = new LinkedList<>();
       for (Iterator<SootMethod> it = c.methodIterator(); it.hasNext();) {
         SootMethod next = it.next();
         methodsList.add(next);
@@ -97,16 +97,13 @@ public class StaticMethodBinder extends SceneTransformer {
 
       while (!methodsList.isEmpty()) {
         SootMethod container = methodsList.removeFirst();
-        if (!container.isConcrete()) {
-          continue;
-        }
-        if (!instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
+        if (!container.isConcrete() || !instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
           continue;
         }
 
         final Body b = container.getActiveBody();
         final Chain<Unit> bUnits = b.getUnits();
-        for (Unit u : new ArrayList<Unit>(bUnits)) {
+        for (Unit u : new ArrayList<>(bUnits)) {
           final Stmt s = (Stmt) u;
           if (!s.containsInvokeExpr()) {
             continue;
@@ -141,7 +138,7 @@ public class StaticMethodBinder extends SceneTransformer {
           }
 
           if (!instanceToStaticMap.containsKey(target)) {
-            List<Type> newParameterTypes = new ArrayList<Type>();
+            List<Type> newParameterTypes = new ArrayList<>();
             newParameterTypes.add(RefType.v(targetDeclClass.getName()));
             newParameterTypes.addAll(target.getParameterTypes());
 
@@ -225,7 +222,7 @@ public class StaticMethodBinder extends SceneTransformer {
 
           // Now rebind the method call & fix the invoke graph.
           {
-            List<Value> newArgs = new ArrayList<Value>();
+            List<Value> newArgs = new ArrayList<>();
             newArgs.add(thisToAdd);
             newArgs.addAll(ie.getArgs());
 

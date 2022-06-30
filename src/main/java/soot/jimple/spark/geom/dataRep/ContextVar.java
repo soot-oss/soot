@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.dataRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,7 +27,7 @@ import soot.util.Numberable;
 
 /**
  * The root class for representing context sensitive pointer/object in explicit form.
- * 
+ *
  * @author xiao
  *
  */
@@ -54,7 +54,7 @@ public abstract class ContextVar implements Numberable {
 
   /**
    * Test if current context variable contains the information for passed in variable
-   * 
+   *
    * @param cv
    * @return
    */
@@ -62,7 +62,7 @@ public abstract class ContextVar implements Numberable {
 
   /**
    * Merge two context variables if possible Merged information is written into current variable.
-   * 
+   *
    * @param cv
    * @return true if mergable.
    */
@@ -70,7 +70,7 @@ public abstract class ContextVar implements Numberable {
 
   /**
    * Two context sensitive variables have intersected contexts.
-   * 
+   *
    * @param cv
    * @return
    */

@@ -33,16 +33,16 @@ import soot.ShortType;
 
 /**
  * Contains several utilities for integer typing.
- * 
+ *
  * @author Marc Miltenberger
  */
 public class IntUtils {
 
   /**
    * Returns an appropriate integer for a given maximum element.
-   * 
+   *
    * Throws an exception in case of an unsupported size.
-   * 
+   *
    * @param maxValue
    *          the max value
    * @return the integer
@@ -64,7 +64,7 @@ public class IntUtils {
 
   /**
    * Returns the maximum value an integer type can have.
-   * 
+   *
    * @param t
    *          the integer type
    * @return the maximum value

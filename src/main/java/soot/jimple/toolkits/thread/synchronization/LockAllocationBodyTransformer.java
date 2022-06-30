@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -76,6 +76,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
   private static int throwableNum = 0; // doesn't matter if not reinitialized
   // to 0
 
+  @Override
   protected void internalTransform(Body b, String phase, Map opts) {
     throw new RuntimeException("Not Supported");
   }
@@ -264,7 +265,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
           csr = tn;
           moreLocks = false;
         } else if (tn.group.useLocksets) {
-          Value lock = getLockFor((EquivalentValue) tn.lockset.get(lockNum)); // adds
+          Value lock = getLockFor(tn.lockset.get(lockNum)); // adds
           // local
           // vars
           // and
@@ -381,7 +382,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
           }
 
           // For each early end, reuse or insert exitmonitor stmt
-          List<Pair<Stmt, Stmt>> newEarlyEnds = new ArrayList<Pair<Stmt, Stmt>>();
+          List<Pair<Stmt, Stmt>> newEarlyEnds = new ArrayList<>();
           for (Pair<Stmt, Stmt> end : csr.earlyEnds) {
             Stmt earlyEnd = end.getO1();
             Stmt exitmonitor = end.getO2();
@@ -401,14 +402,14 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
               // redirectTraps(b, exitmonitor, newExitmonitor); //
               // EXPERIMENTAL
               units.remove(exitmonitor);
-              newEarlyEnds.add(new Pair<Stmt, Stmt>(earlyEnd, newExitmonitor));
+              newEarlyEnds.add(new Pair<>(earlyEnd, newExitmonitor));
             } else {
               if (newPrep != null) {
                 Stmt tmp = (Stmt) newPrep.clone();
                 units.insertBefore(tmp, earlyEnd);
               }
               units.insertBefore(newExitmonitor, earlyEnd);
-              newEarlyEnds.add(new Pair<Stmt, Stmt>(earlyEnd, newExitmonitor));
+              newEarlyEnds.add(new Pair<>(earlyEnd, newExitmonitor));
             }
           }
           csr.earlyEnds = newEarlyEnds;
@@ -427,7 +428,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
               // redirectTraps(b, exitmonitor, newExitmonitor); //
               // EXPERIMENTAL
               units.remove(exitmonitor);
-              csr.end = new Pair<Stmt, Stmt>(csr.end.getO1(), newExitmonitor);
+              csr.end = new Pair<>(csr.end.getO1(), newExitmonitor);
             } else {
               if (newPrep != null) {
                 Stmt tmp = (Stmt) newPrep.clone();
@@ -443,7 +444,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
               // monitorexit
               Stmt newGotoStmt = Jimple.v().newGotoStmt(csr.after);
               units.insertBeforeNoRedirect(newGotoStmt, csr.after);
-              csr.end = new Pair<Stmt, Stmt>(newGotoStmt, newExitmonitor);
+              csr.end = new Pair<>(newGotoStmt, newExitmonitor);
               csr.last = newGotoStmt;
             }
           }
@@ -460,7 +461,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
             units.insertBefore(newExitmonitor, exitmonitor);
 
             units.remove(exitmonitor);
-            csr.exceptionalEnd = new Pair<Stmt, Stmt>(csr.exceptionalEnd.getO1(), newExitmonitor);
+            csr.exceptionalEnd = new Pair<>(csr.exceptionalEnd.getO1(), newExitmonitor);
           } else {
             // insert after the last end
             Stmt lastEnd = null; // last end stmt (not same as last
@@ -503,7 +504,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
             SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
             b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, newExitmonitor, newThrow, newCatch));
             b.getTraps().addFirst(Jimple.v().newTrap(throwableClass, csr.beginning, lastEnd, newCatch));
-            csr.exceptionalEnd = new Pair<Stmt, Stmt>(newThrow, newExitmonitor);
+            csr.exceptionalEnd = new Pair<>(newThrow, newExitmonitor);
           }
         }
         lockNum++;
@@ -583,7 +584,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 
       // make it equal to the right value
       Stmt baseAssign = Jimple.v().newAssignStmt(baseLocal, newBase);
-      if (redirect == true) {
+      if (redirect) {
         units.insertBefore(baseAssign, insertBefore);
       } else {
         units.insertBeforeNoRedirect(baseAssign, insertBefore);
@@ -601,7 +602,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
   }
 
   static int lockNumber = 0;
-  static Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<EquivalentValue, StaticFieldRef>();
+  static Map<EquivalentValue, StaticFieldRef> lockEqValToLock = new HashMap<>();
 
   static public Value getLockFor(EquivalentValue lockEqVal) {
     Value lock = lockEqVal.getValue();

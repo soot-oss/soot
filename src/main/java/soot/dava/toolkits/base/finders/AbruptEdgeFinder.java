@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.finders;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -45,6 +45,7 @@ public class AbruptEdgeFinder implements FactFinder {
     return G.v().soot_dava_toolkits_base_finders_AbruptEdgeFinder();
   }
 
+  @Override
   public void find(DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException {
     Dava.v().log("AbruptEdgeFinder::find()");
 
@@ -52,7 +53,7 @@ public class AbruptEdgeFinder implements FactFinder {
   }
 
   public void find_Continues(SETNode SETParent, IterableSet body, IterableSet children) {
-    if ((SETParent instanceof SETCycleNode) == false) {
+    if (!(SETParent instanceof SETCycleNode)) {
       return;
     }
 
@@ -63,7 +64,7 @@ public class AbruptEdgeFinder implements FactFinder {
     while (pit.hasNext()) {
       AugmentedStmt pas = (AugmentedStmt) pit.next();
 
-      if ((body.contains(pas)) && (naturalPreds.contains(pas) == false)) {
+      if ((body.contains(pas)) && !naturalPreds.contains(pas)) {
         ((SETStatementSequenceNode) pas.myNode).insert_AbruptStmt(new DAbruptStmt("continue", scn.get_Label()));
       }
     }
@@ -76,11 +77,11 @@ public class AbruptEdgeFinder implements FactFinder {
     while (pit.hasNext()) {
       AugmentedStmt pas = (AugmentedStmt) pit.next();
 
-      if (prev.get_Body().contains(pas) == false) {
+      if (!prev.get_Body().contains(pas)) {
         continue;
       }
 
-      if (naturalPreds.contains(pas) == false) {
+      if (!naturalPreds.contains(pas)) {
         Object temp = pas.myNode;
         /*
          * Nomair debugging bug number 29

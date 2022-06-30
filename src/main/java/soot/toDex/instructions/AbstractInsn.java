@@ -10,12 +10,12 @@ package soot.toDex.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,25 +47,30 @@ public abstract class AbstractInsn implements Insn {
       throw new IllegalArgumentException("opcode must not be null");
     }
     this.opc = opc;
-    regs = new ArrayList<Register>();
+    regs = new ArrayList<>();
   }
 
+  @Override
   public Opcode getOpcode() {
     return opc;
   }
 
+  @Override
   public List<Register> getRegs() {
     return regs;
   }
 
+  @Override
   public BitSet getIncompatibleRegs() {
     return new BitSet(0);
   }
 
+  @Override
   public boolean hasIncompatibleRegs() {
     return getIncompatibleRegs().cardinality() > 0;
   }
 
+  @Override
   public int getMinimumRegsNeeded() {
     BitSet incompatRegs = getIncompatibleRegs();
     int resultNeed = 0;
@@ -107,6 +112,7 @@ public abstract class AbstractInsn implements Insn {
     return opc.toString() + " " + regs;
   }
 
+  @Override
   public int getSize() {
     return opc.format.size / 2; // the format size is in byte count, we need word count
   }

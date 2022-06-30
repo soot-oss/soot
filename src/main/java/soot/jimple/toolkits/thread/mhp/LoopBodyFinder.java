@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -43,8 +43,8 @@ import soot.util.FastStack;
 
 public class LoopBodyFinder {
 
-  private final FastStack<Object> stack = new FastStack<Object>();
-  private final Set<Set<Object>> loops = new HashSet<Set<Object>>();
+  private final FastStack<Object> stack = new FastStack<>();
+  private final Set<Set<Object>> loops = new HashSet<>();
 
   LoopBodyFinder(Map<Object, Object> backEdges, DirectedGraph g) {
     findLoopBody(backEdges, g);
@@ -65,7 +65,7 @@ public class LoopBodyFinder {
   }
 
   private Set<Object> finder(Object tail, Object head, DirectedGraph g) {
-    Set<Object> loop = new HashSet<Object>();
+    Set<Object> loop = new HashSet<>();
     loop.add(head);
     insert(tail, loop);
     while (!stack.empty()) {

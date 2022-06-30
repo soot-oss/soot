@@ -10,12 +10,12 @@ package soot.dexpler;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -36,16 +36,16 @@ import soot.jimple.NullConstant;
 
 /**
  * Transformer that swaps
- * 
+ *
  * if null == 0 goto x
- * 
+ *
  * with
- * 
+ *
  * if null == null goto x
- * 
+ *
  * In dex they are the same thing. If we do not do that, soot might assume that the condition is not met and optimize the
  * wrong branch away.
- * 
+ *
  * @author Marc Miltenberger
  *
  */
@@ -82,10 +82,7 @@ public class DexNullIfTransformer extends BodyTransformer {
   }
 
   private boolean isNull(Value l) {
-    if (l instanceof NullConstant) {
-      return true;
-    }
-    if (l instanceof IntConstant && ((IntConstant) l).value == 0) {
+    if ((l instanceof NullConstant) || (l instanceof IntConstant && ((IntConstant) l).value == 0)) {
       return true;
     }
     return false;

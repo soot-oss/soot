@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -98,7 +98,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       Unit currentUnit = nextUnit;
       nextUnit = unitIt.hasNext() ? unitIt.next() : null;
 
-      ArrayList<Unit> successors = new ArrayList<Unit>();
+      ArrayList<Unit> successors = new ArrayList<>();
 
       if (currentUnit.fallsThrough()) {
         // Add the next unit as the successor
@@ -107,7 +107,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
 
           List<Unit> preds = unitToPreds.get(nextUnit);
           if (preds == null) {
-            preds = new ArrayList<Unit>();
+            preds = new ArrayList<>();
             unitToPreds.put(nextUnit, preds);
           }
           preds.add(currentUnit);
@@ -124,7 +124,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
 
             List<Unit> preds = unitToPreds.get(target);
             if (preds == null) {
-              preds = new ArrayList<Unit>();
+              preds = new ArrayList<>();
               unitToPreds.put(target, preds);
             }
             preds.add(currentUnit);
@@ -154,8 +154,8 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
    * </p>
    */
   protected void buildHeadsAndTails() {
-    tails = new ArrayList<Unit>();
-    heads = new ArrayList<Unit>();
+    tails = new ArrayList<>();
+    heads = new ArrayList<>();
 
     Unit entryPoint = null;
     if (!unitChain.isEmpty()) {
@@ -199,7 +199,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
    */
   protected Map<Unit, List<Unit>> combineMapValues(Map<Unit, List<Unit>> mapA, Map<Unit, List<Unit>> mapB) {
     // The duplicate screen
-    Map<Unit, List<Unit>> result = new LinkedHashMap<Unit, List<Unit>>(mapA.size() * 2 + 1, 0.7f);
+    Map<Unit, List<Unit>> result = new LinkedHashMap<>(mapA.size() * 2 + 1, 0.7f);
     for (Unit unit : unitChain) {
       List<Unit> listA = mapA.get(unit);
       if (listA == null) {
@@ -214,7 +214,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       if (resultSize == 0) {
         result.put(unit, Collections.<Unit>emptyList());
       } else {
-        List<Unit> resultList = new ArrayList<Unit>(resultSize);
+        List<Unit> resultList = new ArrayList<>(resultSize);
         List<Unit> list;
         // As a minor optimization of the duplicate screening,
         // copy the longer list first.
@@ -261,14 +261,14 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   protected void addEdge(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds, Unit head, Unit tail) {
     List<Unit> headsSuccs = unitToSuccs.get(head);
     if (headsSuccs == null) {
-      headsSuccs = new ArrayList<Unit>(3); // We expect this list to remain short.
+      headsSuccs = new ArrayList<>(3); // We expect this list to remain short.
       unitToSuccs.put(head, headsSuccs);
     }
     if (!headsSuccs.contains(tail)) {
       headsSuccs.add(tail);
       List<Unit> tailsPreds = unitToPreds.get(tail);
       if (tailsPreds == null) {
-        tailsPreds = new ArrayList<Unit>();
+        tailsPreds = new ArrayList<>();
         unitToPreds.put(tail, tailsPreds);
       }
       tailsPreds.add(head);
@@ -303,8 +303,8 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
 
     // pathStack := list of succs lists
     // pathStackIndex := last visited index in pathStack
-    LinkedList<Unit> pathStack = new LinkedList<Unit>();
-    LinkedList<Integer> pathStackIndex = new LinkedList<Integer>();
+    LinkedList<Unit> pathStack = new LinkedList<>();
+    LinkedList<Integer> pathStackIndex = new LinkedList<>();
 
     pathStack.add(from);
     pathStackIndex.add(0);

@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -62,8 +62,9 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
     // AST.apply(parentOf);
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
-    List<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> toRemove = new ArrayList<>();
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
       // System.out.println("HERE!!!"+s.toString());
@@ -77,6 +78,7 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void normalRetrieving(ASTNode node) {
     if (node instanceof ASTSwitchNode) {
       dealWithSwitchNode((ASTSwitchNode) node);
@@ -84,7 +86,7 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
     }
 
     // from the Node get the subBodes
-    List<ASTNode> toReturn = new ArrayList<ASTNode>();
+    List<ASTNode> toReturn = new ArrayList<>();
     Iterator<Object> sbit = node.get_SubBodies().iterator();
     while (sbit.hasNext()) {
       Object subBody = sbit.next();
@@ -113,13 +115,14 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
   }
 
   // TODO
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     // get try body
     List<Object> tryBody = node.get_TryBody();
     Iterator<Object> it = tryBody.iterator();
 
     // go over the ASTNodes in this tryBody and apply
-    List<Object> toReturn = new ArrayList<Object>();
+    List<Object> toReturn = new ArrayList<>();
     while (it.hasNext()) {
       ASTNode temp = (ASTNode) it.next();
       if (!codeFinder.isConstructReachable(temp)) {
@@ -162,7 +165,7 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 
       // apply on catchBody
       List<Object> body = (List<Object>) catchBody.o;
-      toReturn = new ArrayList<Object>();
+      toReturn = new ArrayList<>();
       itBody = body.iterator();
       while (itBody.hasNext()) {
         ASTNode temp = (ASTNode) itBody.next();
@@ -200,7 +203,7 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 
       // this body is a list of ASTNodes
 
-      List<ASTNode> toReturn = new ArrayList<ASTNode>();
+      List<ASTNode> toReturn = new ArrayList<>();
       Iterator itBody = body.iterator();
       // go over the ASTNodes and apply
       while (itBody.hasNext()) {

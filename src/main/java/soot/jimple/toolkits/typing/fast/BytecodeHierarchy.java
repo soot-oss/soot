@@ -53,10 +53,10 @@ public class BytecodeHierarchy implements IHierarchy {
       return Collections.emptyList();
     }
 
-    LinkedList<AncestryTreeNode> leafs = new LinkedList<AncestryTreeNode>();
+    LinkedList<AncestryTreeNode> leafs = new LinkedList<>();
     leafs.add(new AncestryTreeNode(null, root));
 
-    LinkedList<AncestryTreeNode> r = new LinkedList<AncestryTreeNode>();
+    LinkedList<AncestryTreeNode> r = new LinkedList<>();
     final RefType objectType = Scene.v().getObjectType();
     while (!leafs.isEmpty()) {
       AncestryTreeNode node = leafs.remove();
@@ -129,7 +129,7 @@ public class BytecodeHierarchy implements IHierarchy {
         ts = lcas_(eta, etb);
       }
 
-      LinkedList<Type> r = new LinkedList<Type>();
+      LinkedList<Type> r = new LinkedList<>();
       if (ts.isEmpty()) {
         if (useWeakObjectType) {
           r.add(new WeakObjectType(Scene.v().getObjectType().toString()));
@@ -151,7 +151,7 @@ public class BytecodeHierarchy implements IHierarchy {
        * If the reference type implements Serializable or Cloneable then these are the least common supertypes, otherwise the
        * only one is Object.
        */
-      LinkedList<Type> r = new LinkedList<Type>();
+      LinkedList<Type> r = new LinkedList<>();
       /*
        * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is
        * enabled and rt.jar is not available) otherwise an infinite loop can result.
@@ -175,7 +175,7 @@ public class BytecodeHierarchy implements IHierarchy {
       // a and b are both RefType
       Collection<AncestryTreeNode> treea = buildAncestryTree((RefType) a), treeb = buildAncestryTree((RefType) b);
 
-      LinkedList<Type> r = new LinkedList<Type>();
+      LinkedList<Type> r = new LinkedList<>();
       for (AncestryTreeNode nodea : treea) {
         for (AncestryTreeNode nodeb : treeb) {
           RefType t = leastCommonNode(nodea, nodeb);
@@ -236,7 +236,7 @@ public class BytecodeHierarchy implements IHierarchy {
    * types class is phantom. Note anchor should always be type {@link Throwable} as this is the root of all exception types.
    */
   private static Deque<RefType> superclassPath(RefType t, RefType anchor) {
-    Deque<RefType> r = new ArrayDeque<RefType>();
+    Deque<RefType> r = new ArrayDeque<>();
     r.addFirst(t);
 
     if (TypeResolver.typesEqual(t, anchor)) {

@@ -10,12 +10,12 @@ package soot.dotnet.specifications;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,16 +34,21 @@ public class DotnetModifier {
 
     int modifier = convertAccessibility(protoType.getAccessibility());
 
-    if (protoType.getIsAbstract())
+    if (protoType.getIsAbstract()) {
       modifier |= Modifier.ABSTRACT;
-    if (protoType.getIsStatic())
+    }
+    if (protoType.getIsStatic()) {
       modifier |= Modifier.STATIC;
-    if (protoType.getIsSealed())
+    }
+    if (protoType.getIsSealed()) {
       modifier |= Modifier.FINAL;
-    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.INTERFACE))
+    }
+    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.INTERFACE)) {
       modifier |= Modifier.INTERFACE;
-    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ENUM))
+    }
+    if (protoType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ENUM)) {
       modifier |= Modifier.ENUM;
+    }
 
     return modifier;
   }
@@ -52,17 +57,21 @@ public class DotnetModifier {
 
     int modifier = convertAccessibility(methodDefinition.getAccessibility());
 
-    if (methodDefinition.getIsAbstract())
+    if (methodDefinition.getIsAbstract()) {
       modifier |= Modifier.ABSTRACT;
-    if (methodDefinition.getIsStatic())
+    }
+    if (methodDefinition.getIsStatic()) {
       modifier |= Modifier.STATIC;
+    }
     // cannot do this due to hiding property of c#
     // if (!methodDefinition.getIsVirtual())
     // modifier |= Modifier.FINAL;
-    if (methodDefinition.getIsSealed())
+    if (methodDefinition.getIsSealed()) {
       modifier |= Modifier.FINAL;
-    if (methodDefinition.getIsExtern())
+    }
+    if (methodDefinition.getIsExtern()) {
       modifier |= Modifier.NATIVE;
+    }
 
     return modifier;
   }
@@ -71,12 +80,15 @@ public class DotnetModifier {
 
     int modifier = convertAccessibility(fieldDefinition.getAccessibility());
 
-    if (fieldDefinition.getIsAbstract() || fieldDefinition.getIsVirtual())
+    if (fieldDefinition.getIsAbstract() || fieldDefinition.getIsVirtual()) {
       modifier |= Modifier.ABSTRACT;
-    if (fieldDefinition.getIsStatic())
+    }
+    if (fieldDefinition.getIsStatic()) {
       modifier |= Modifier.STATIC;
-    if (fieldDefinition.getIsReadOnly())
+    }
+    if (fieldDefinition.getIsReadOnly()) {
       modifier |= Modifier.FINAL;
+    }
 
     return modifier;
   }

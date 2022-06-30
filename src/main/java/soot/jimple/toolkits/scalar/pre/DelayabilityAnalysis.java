@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar.pre;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -70,7 +70,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
   public DelayabilityAnalysis(DirectedGraph<Unit> dg, EarliestnessComputation earliest,
       Map<Unit, EquivalentValue> equivRhsMap) {
     this(dg, earliest, equivRhsMap,
-        new ArrayPackedSet<EquivalentValue>(new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+        new ArrayPackedSet<>(new CollectionFlowUniverse<>(equivRhsMap.values())));
   }
 
   /**
@@ -121,7 +121,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
     out.union(earliest.getFlowBefore(u));
 
     /* Perform kill */
-    EquivalentValue equiVal = (EquivalentValue) unitToKillValue.get(u);
+    EquivalentValue equiVal = unitToKillValue.get(u);
     if (equiVal != null) {
       out.remove(equiVal);
     }
@@ -132,6 +132,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equi
     inSet1.intersection(inSet2, outSet);
   }
 
+  @Override
   protected void copy(FlowSet<EquivalentValue> sourceSet, FlowSet<EquivalentValue> destSet) {
     sourceSet.copy(destSet);
   }

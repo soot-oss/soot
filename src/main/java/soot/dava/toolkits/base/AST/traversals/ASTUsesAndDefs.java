@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.traversals;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -77,15 +77,15 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   ReachingDefs reaching; // using structural analysis information
 
   public ASTUsesAndDefs(ASTNode AST) {
-    uD = new HashMap<Object, List<DefinitionStmt>>();
-    dU = new HashMap<Object, List>();
+    uD = new HashMap<>();
+    dU = new HashMap<>();
     reaching = new ReachingDefs(AST);
   }
 
   public ASTUsesAndDefs(boolean verbose, ASTNode AST) {
     super(verbose);
-    uD = new HashMap<Object, List<DefinitionStmt>>();
-    dU = new HashMap<Object, List>();
+    uD = new HashMap<>();
+    dU = new HashMap<>();
     reaching = new ReachingDefs(AST);
   }
 
@@ -93,7 +93,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
    * Method is used to strip away boxes from the actual values only those are returned which are locals
    */
   private List<Value> getUsesFromBoxes(List useBoxes) {
-    ArrayList<Value> toReturn = new ArrayList<Value>();
+    ArrayList<Value> toReturn = new ArrayList<>();
     Iterator it = useBoxes.iterator();
     while (it.hasNext()) {
       Value val = ((ValueBox) it.next()).getValue();
@@ -164,7 +164,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
       Object useObj = dU.get(defStmt);
       List<Object> uses = null;
       if (useObj == null) {
-        uses = new ArrayList<Object>();
+        uses = new ArrayList<>();
       } else {
         uses = (List<Object>) useObj;
       }
@@ -181,14 +181,14 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
    * Given a unary/binary or aggregated condition this method is used to find the locals used in the condition
    */
   public List<Value> getUseList(ASTCondition cond) {
-    ArrayList<Value> useList = new ArrayList<Value>();
+    ArrayList<Value> useList = new ArrayList<>();
     if (cond instanceof ASTAggregatedCondition) {
       useList.addAll(getUseList(((ASTAggregatedCondition) cond).getLeftOp()));
       useList.addAll(getUseList(((ASTAggregatedCondition) cond).getRightOp()));
       return useList;
     } else if (cond instanceof ASTUnaryCondition) {
       // get uses from unary condition
-      List<Value> uses = new ArrayList<Value>();
+      List<Value> uses = new ArrayList<>();
 
       Value val = ((ASTUnaryCondition) cond).getValue();
       if (val instanceof Local) {
@@ -233,9 +233,10 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
    *
    * Hence the some what indirect approach
    */
+  @Override
   public void inASTSwitchNode(ASTSwitchNode node) {
     Value val = node.get_Key();
-    List<Value> uses = new ArrayList<Value>();
+    List<Value> uses = new ArrayList<>();
     if (val instanceof Local) {
       uses.add(val);
     } else {
@@ -253,6 +254,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
       // System.out.println("SWITCH uses end:");
   }
 
+  @Override
   public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     Local local = node.getLocal();
     createUDDUChain(local, node);
@@ -261,6 +263,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   /*
    * The condition of an if node can use a local
    */
+  @Override
   public void inASTIfNode(ASTIfNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -269,6 +272,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   /*
    * The condition of an ifElse node can use a local
    */
+  @Override
   public void inASTIfElseNode(ASTIfElseNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -277,6 +281,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   /*
    * The condition of a while node can use a local
    */
+  @Override
   public void inASTWhileNode(ASTWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -285,6 +290,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
   /*
    * The condition of a doWhile node can use a local
    */
+  @Override
   public void inASTDoWhileNode(ASTDoWhileNode node) {
     ASTCondition cond = node.get_Condition();
     checkConditionalUses(cond, node);
@@ -294,6 +300,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
    * The init of a for loop can use a local The condition of a for node can use a local The update in a for loop can use a
    * local
    */
+  @Override
   public void inASTForLoopNode(ASTForLoopNode node) {
 
     // checking uses in init
@@ -313,6 +320,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
     for (AugmentedStmt as : node.getStatements()) {
       Stmt s = as.get_Stmt();
@@ -347,6 +355,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter {
     return dU;
   }
 
+  @Override
   public void outASTMethodNode(ASTMethodNode node) {
     // print();
   }

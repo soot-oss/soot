@@ -10,12 +10,12 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -105,8 +105,9 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
 
   /** Any other statement */
   protected void caseUninterestingStmt(Stmt s) {
-  };
+  }
 
+  @Override
   public final void caseAssignStmt(AssignStmt s) {
     statement = s;
     Value lhs = s.getLeftOp();
@@ -182,6 +183,7 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public final void caseReturnStmt(ReturnStmt s) {
     statement = s;
     Value op = s.getOp();
@@ -196,16 +198,19 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public final void caseReturnVoidStmt(ReturnVoidStmt s) {
     statement = s;
     caseReturnStmt((Local) null);
   }
 
+  @Override
   public final void caseInvokeStmt(InvokeStmt s) {
     statement = s;
     caseInvokeStmt(null, s.getInvokeExpr());
   }
 
+  @Override
   public final void caseIdentityStmt(IdentityStmt s) {
     statement = s;
     Value lhs = s.getLeftOp();
@@ -223,6 +228,7 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
     }
   }
 
+  @Override
   public final void caseThrowStmt(ThrowStmt s) {
     statement = s;
     caseThrowStmt((Local) s.getOp());

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -91,10 +91,11 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
   }
 
   // override
+  @Override
   protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa,
       UseFinder uf, SootClass sc) {
     // find the right run methods to use for threads of type sc
-    List<SootMethod> runMethods = new ArrayList<SootMethod>();
+    List<SootMethod> runMethods = new ArrayList<>();
     Iterator<AbstractRuntimeThread> threadsIt = threads.iterator();
     while (threadsIt.hasNext()) {
       AbstractRuntimeThread thread = threadsIt.next();
@@ -111,6 +112,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
   }
 
   // Determines if a RefType Local or a FieldRef is Thread-Local
+  @Override
   public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm) {
     if (threads.size() <= 1) {
       return true;

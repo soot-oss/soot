@@ -1,5 +1,8 @@
 package soot.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -10,12 +13,12 @@ package soot.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,9 +26,6 @@ package soot.util;
  */
 
 import heros.ThreadSafe;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A class that numbers strings, so they can be placed in bitsets.
@@ -35,7 +35,7 @@ import java.util.Map;
 @ThreadSafe
 public class StringNumberer extends ArrayNumberer<NumberedString> {
 
-  private final Map<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
+  private final Map<String, NumberedString> stringToNumbered = new HashMap<>(1024);
 
   public synchronized NumberedString findOrAdd(String s) {
     NumberedString ret = stringToNumbered.get(s);

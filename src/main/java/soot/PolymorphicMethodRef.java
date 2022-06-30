@@ -33,7 +33,7 @@ import soot.tagkit.VisibilityAnnotationTag;
  * https://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.12.4.4 method references to the methods with a
  * polymorphic signature, which are the methods in `java.lang.invoke.MethodHandle` and `java.lang.invoke.VarHandle`, require
  * special treatment
- * 
+ *
  * @author Andreas Dann created on 06.02.19
  * @author Manuel Benz 27.2.19
  */
@@ -48,7 +48,7 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
   /**
    * Check if the declaring class "has the rights" to declare polymorphic methods
    * {@see http://docs.oracle.com/javase/specs/jls/se11/html/jls-15.html#jls-15.12.4.4}
-   * 
+   *
    * @param declaringClass
    *          the class to check
    * @return if the class is allowed according to the JVM Spec

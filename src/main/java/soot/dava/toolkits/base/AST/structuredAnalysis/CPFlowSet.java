@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.structuredAnalysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -113,7 +113,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     // System.out.println("addIfnotPresent invoked");
     // going through all the elements in the set
     for (int i = 0; i < this.numElements; i++) {
-      CPTuple current = (CPTuple) elements[i];
+      CPTuple current = elements[i];
       if (!(current.getSootClassName().equals(newTuple.getSootClassName()))) {
         // different classNAmes
         continue;
@@ -155,7 +155,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     // System.out.println("addIfnotPresent invoked");
     // going through all the elements in the set
     for (int i = 0; i < this.numElements; i++) {
-      CPTuple current = (CPTuple) elements[i];
+      CPTuple current = elements[i];
       if (!(current.getSootClassName().equals(newTuple.getSootClassName()))) {
         // different classNAmes
         continue;
@@ -208,6 +208,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
    *
    *
    */
+  @Override
   public void intersection(FlowSet otherFlow, FlowSet destFlow) {
     // System.out.println("In specialized intersection for CopyPropagation");
     if (!(otherFlow instanceof CPFlowSet && destFlow instanceof CPFlowSet)) {
@@ -256,12 +257,8 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
         // check that the two tuples have the same class
         String tempClass = otherTuple.getSootClassName();
-        if (!tempClass.equals(className)) {
-          continue;
-        }
-
         // Check that the variable contained is the same name and type (local or sootfield)
-        if (!otherTuple.getVariable().equals(thisVar)) {
+        if (!tempClass.equals(className) || !otherTuple.getVariable().equals(thisVar)) {
           continue;
         }
 
@@ -340,11 +337,7 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
         String thisClassName = thisTuple.getSootClassName();
         CPVariable thisVar = thisTuple.getVariable();
 
-        if (!otherClassName.equals(thisClassName)) {
-          continue;
-        }
-
-        if (!thisVar.equals(otherVar)) {
+        if (!otherClassName.equals(thisClassName) || !thisVar.equals(otherVar)) {
           continue;
         }
 
@@ -378,16 +371,18 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
     } // end going through other elements
   }
 
+  @Override
   public CPFlowSet clone() {
 
     return new CPFlowSet(this);
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     b.append("Printing CPFlowSet: ");
     for (int i = 0; i < this.numElements; i++) {
-      b.append("\n" + ((CPTuple) elements[i]).toString());
+      b.append("\n" + elements[i].toString());
     }
     b.append("\n");
     return b.toString();

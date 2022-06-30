@@ -10,12 +10,12 @@ package soot.tagkit;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,7 +42,7 @@ public class AbstractHost implements Host {
 
   /**
    * Get the {@link List} of {@link Tag Tags} on {@code this} {@link Host}. This list should not be modified!
-   * 
+   *
    * @return
    */
   @Override
@@ -52,7 +52,7 @@ public class AbstractHost implements Host {
 
   /**
    * Remove the {@link Tag} named {@code aName} from {@code this} {@link Host}.
-   * 
+   *
    * @param aName
    */
   @Override
@@ -82,9 +82,9 @@ public class AbstractHost implements Host {
   /**
    * Return the {@link Tag} named {@code aName} from {@code this} {@link Host} or {@code null} if there is no such
    * {@link Tag}.
-   * 
+   *
    * @param aName
-   * 
+   *
    * @return
    */
   @Override
@@ -95,9 +95,9 @@ public class AbstractHost implements Host {
 
   /**
    * Check if {@code this} {@link Host} has a {@link Tag} named {@code aName}.
-   * 
+   *
    * @param aName
-   * 
+   *
    * @return
    */
   @Override
@@ -107,13 +107,13 @@ public class AbstractHost implements Host {
 
   /**
    * Add the given {@link Tag} to {@code this} {@link Host}.
-   * 
+   *
    * @param t
    */
   @Override
   public void addTag(Tag t) {
     if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(1);
+      mTagList = new ArrayList<>(1);
     }
     mTagList.add(t);
   }
@@ -128,7 +128,7 @@ public class AbstractHost implements Host {
 
   /**
    * Adds all the tags from the given {@link Host} to {@code this} {@link Host}.
-   * 
+   *
    * @param h
    */
   @Override
@@ -136,7 +136,7 @@ public class AbstractHost implements Host {
     List<Tag> tags = h.getTags();
     if (!tags.isEmpty()) {
       if (mTagList == null) {
-        mTagList = new ArrayList<Tag>(tags.size());
+        mTagList = new ArrayList<>(tags.size());
       }
       mTagList.addAll(tags);
     }

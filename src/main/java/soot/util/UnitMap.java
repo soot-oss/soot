@@ -10,12 +10,12 @@ package soot.util;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,7 +47,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    *          a Body
    */
   public UnitMap(Body b) {
-    this.unitToResult = new HashMap<Unit, T>();
+    this.unitToResult = new HashMap<>();
     map(b);
   }
 
@@ -74,7 +74,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    *          the initialCapacity of the internal map.
    */
   public UnitMap(Body b, int initialCapacity) {
-    this.unitToResult = new HashMap<Unit, T>(initialCapacity);
+    this.unitToResult = new HashMap<>(initialCapacity);
     map(b);
   }
 
@@ -105,7 +105,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    *          the loadFactor of the internal map.
    */
   public UnitMap(Body b, int initialCapacity, float loadFactor) {
-    this.unitToResult = new HashMap<Unit, T>(initialCapacity);
+    this.unitToResult = new HashMap<>(initialCapacity);
     init();
     map(b);
   }
@@ -144,7 +144,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * If not overwritten does nothing.
    */
   protected void init() {
-  };
+  }
 
   /**
    * maps a unit to an object. This method is called for every unit. If the returned object is <code>null</code> no object

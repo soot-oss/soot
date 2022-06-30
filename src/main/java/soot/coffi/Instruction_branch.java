@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -66,10 +66,12 @@ abstract class Instruction_branch extends Instruction {
     branches = true;
   }
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool) + argsep + "[label_" + Integer.toString(target.label) + "]";
   }
 
+  @Override
   public void offsetToPointer(ByteCode bc) {
     target = bc.locateInst(arg_i + label);
     if (target == null) {
@@ -82,6 +84,7 @@ abstract class Instruction_branch extends Instruction {
 
   // returns the array of instructions which might be the target of a
   // branch with this instruction, assuming the next instruction is next
+  @Override
   public Instruction[] branchpoints(Instruction next) {
     Instruction i[] = new Instruction[2];
     i[0] = target;
@@ -89,6 +92,7 @@ abstract class Instruction_branch extends Instruction {
     return i;
   }
 
+  @Override
   public String toString() {
     return super.toString() + "\t" + target.label;
   }

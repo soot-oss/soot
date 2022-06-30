@@ -10,12 +10,12 @@ package soot.jimple.spark.ondemand.pautil;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -97,12 +97,12 @@ public class SootUtil {
       FieldRefNode frNode = (FieldRefNode) frNodeIter.next();
       SparkField field = frNode.getField();
       Node[] targets = pag.storeInvLookup(frNode);
-      for (int i = 0; i < targets.length; i++) {
-        VarNode target = (VarNode) targets[i];
+      for (Node target2 : targets) {
+        VarNode target = (VarNode) target2;
         if (target instanceof GlobalVarNode) {
           continue;
         }
-        ret.put(field, new Pair<FieldRefNode, LocalVarNode>(frNode, (LocalVarNode) target));
+        ret.put(field, new Pair<>(frNode, (LocalVarNode) target));
       }
     }
     return ret;
@@ -186,8 +186,7 @@ public class SootUtil {
    * @return
    */
   public static boolean inLibrary(String className) {
-    for (int i = 0; i < lib13Packages.length; i++) {
-      String libPackage = lib13Packages[i];
+    for (String libPackage : lib13Packages) {
       if (className.startsWith(libPackage)) {
         return true;
       }
@@ -234,9 +233,9 @@ public class SootUtil {
       VarNode source = frNode.getBase();
       SparkField field = frNode.getField();
       Node[] targets = pag.storeInvLookup(frNode);
-      for (int i = 0; i < targets.length; i++) {
-        VarNode target = (VarNode) targets[i];
-        storesOnField.put(field, new Pair<VarNode, VarNode>(target, source));
+      for (Node target2 : targets) {
+        VarNode target = (VarNode) target2;
+        storesOnField.put(field, new Pair<>(target, source));
       }
     }
     return storesOnField;
@@ -250,9 +249,9 @@ public class SootUtil {
       VarNode source = frNode.getBase();
       SparkField field = frNode.getField();
       Node[] targets = pag.loadLookup(frNode);
-      for (int i = 0; i < targets.length; i++) {
-        VarNode target = (VarNode) targets[i];
-        loadsOnField.put(field, new Pair<VarNode, VarNode>(target, source));
+      for (Node target2 : targets) {
+        VarNode target = (VarNode) target2;
+        loadsOnField.put(field, new Pair<>(target, source));
       }
     }
     return loadsOnField;
@@ -403,10 +402,7 @@ public class SootUtil {
 
   public static boolean isResolvableCall(SootMethod invokedMethod) {
     // TODO make calls through invokespecial resolvable
-    if (invokedMethod.isStatic()) {
-      return true;
-    }
-    if (isConstructor(invokedMethod)) {
+    if (invokedMethod.isStatic() || isConstructor(invokedMethod)) {
       return true;
     }
     return false;
@@ -420,7 +416,7 @@ public class SootUtil {
     ChunkedQueue chunkedQueue = new ChunkedQueue();
     Iterator iter = chunkedQueue.reader();
     VirtualCalls.v().resolve(type, receiverType, invokedMethod.makeRef(), null, chunkedQueue);
-    Set<SootMethod> ret = new ArraySet<SootMethod>();
+    Set<SootMethod> ret = new ArraySet<>();
     for (; iter.hasNext();) {
       SootMethod target = (SootMethod) iter.next();
       ret.add(target);

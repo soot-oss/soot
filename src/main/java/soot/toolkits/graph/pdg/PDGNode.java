@@ -10,12 +10,12 @@ package soot.toolkits.graph.pdg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,16 +41,16 @@ public class PDGNode {
 
   public enum Type {
     REGION, CFGNODE
-  };
+  }
 
   public enum Attribute {
     NORMAL, ENTRY, CONDHEADER, LOOPHEADER
-  };
+  }
 
   protected Type m_type;
   protected Object m_node = null;
-  protected List<PDGNode> m_dependents = new ArrayList<PDGNode>();
-  protected List<PDGNode> m_backDependents = new ArrayList<PDGNode>();
+  protected List<PDGNode> m_dependents = new ArrayList<>();
+  protected List<PDGNode> m_backDependents = new ArrayList<>();
   // This is used to keep an ordered list of the nodes in a region, based on the control-flow
   // between them (if any).
   protected PDGNode m_next = null;
@@ -137,6 +137,7 @@ public class PDGNode {
     return this.m_backDependents;
   }
 
+  @Override
   public String toString() {
     String s = new String();
     s = "Type: " + ((this.m_type == Type.REGION) ? "REGION: " : "CFGNODE: ");

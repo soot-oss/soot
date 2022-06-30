@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -84,6 +84,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @return number of bytes occupied by this object.
    * @see cp_info#size
    */
+  @Override
   public int size() {
     return length() + 3;
   }
@@ -156,6 +157,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @see cp_info#compareTo
    * @see CONSTANT_Utf8_info#compareTo(cp_info)
    */
+  @Override
   public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
     return compareTo(cp);
   }
@@ -223,6 +225,7 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @return String representation of this entry.
    * @see cp_info#toString
    */
+  @Override
   public String toString(cp_info constant_pool[]) {
     return convert();
   }
@@ -233,10 +236,12 @@ public class CONSTANT_Utf8_info extends cp_info {
    * @return the String "utf8".
    * @see cp_info#typeName
    */
+  @Override
   public String typeName() {
     return "utf8";
   }
 
+  @Override
   public Value createJimpleConstantValue(cp_info[] constant_pool) {
     return StringConstant.v(convert());
   }

@@ -10,12 +10,12 @@ package soot.rtlib.tamiflex;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,21 +27,27 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class SilentHandler implements IUnexpectedReflectiveCallHandler {
+  @Override
   public void methodInvoke(Object receiver, Method m) {
   }
 
+  @Override
   public void constructorNewInstance(Constructor<?> c) {
   }
 
+  @Override
   public void classNewInstance(Class<?> c) {
   }
 
+  @Override
   public void classForName(String typeName) {
   }
 
+  @Override
   public void fieldSet(Object receiver, Field f) {
   }
 
+  @Override
   public void fieldGet(Object receiver, Field f) {
   }
 }

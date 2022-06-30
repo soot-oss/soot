@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,23 +27,23 @@ import java.util.NoSuchElementException;
 
 /**
  * A queue of BasicBlocks.
- * 
+ *
  * @author Clark Verbrugge
  * @see BasicBlock
  */
 final class BBQ {
 
-  private final ArrayList<BasicBlock> q = new ArrayList<BasicBlock>();
+  private final ArrayList<BasicBlock> q = new ArrayList<>();
 
   /**
    * Adds a block to the end of the queue, but only if its <i>inq</i> flag is false.
-   * 
+   *
    * @param b
    *          the Basic Block in question.
    * @see BasicBlock#inq
    */
   public void push(BasicBlock b) {
-    if (b.inq != true) { // ensure only in queue once...
+    if (!b.inq) { // ensure only in queue once...
       b.inq = true;
       q.add(b);
     }
@@ -51,7 +51,7 @@ final class BBQ {
 
   /**
    * Removes the first block in the queue (and resets its <i>inq</i> flag).
-   * 
+   *
    * @return BasicBlock which was first.
    * @exception java.util.NoSuchElementException
    *              if the queue is empty.
@@ -69,7 +69,7 @@ final class BBQ {
 
   /**
    * Answers whether a block is in the queue or not.
-   * 
+   *
    * @param BasicBlock
    *          in question.
    * @return <i>true</i> if it is, <i>false</i> if it ain't.
@@ -81,7 +81,7 @@ final class BBQ {
 
   /**
    * Answers the size of the queue.
-   * 
+   *
    * @return size of the queue.
    */
   public int size() {
@@ -90,7 +90,7 @@ final class BBQ {
 
   /**
    * Answers whether the queue is empty
-   * 
+   *
    * @return <i>true</i> if it is, <i>false</i> if it ain't.
    */
   public boolean isEmpty() {

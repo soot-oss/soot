@@ -11,12 +11,12 @@ package soot.dava.internal.javaRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -39,6 +39,7 @@ public class DInterfaceInvokeExpr extends GInterfaceInvokeExpr {
     super(base, methodRef, args);
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     if (getBase().getType() instanceof NullType) {
       // OL: I don't know what this is for; I'm just refactoring the
@@ -77,6 +78,7 @@ public class DInterfaceInvokeExpr extends GInterfaceInvokeExpr {
     }
   }
 
+  @Override
   public String toString() {
     if (getBase().getType() instanceof NullType) {
       StringBuffer b = new StringBuffer();
@@ -114,6 +116,7 @@ public class DInterfaceInvokeExpr extends GInterfaceInvokeExpr {
     return super.toString();
   }
 
+  @Override
   public Object clone() {
     ArrayList clonedArgs = new ArrayList(getArgCount());
 

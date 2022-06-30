@@ -10,12 +10,12 @@ package soot.toolkits.astmetrics;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,7 +28,7 @@ import polyglot.visit.NodeVisitor;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 7-Mar-2006
  */
 public class ExpressionComplexityMetric extends ASTMetric {
@@ -42,6 +42,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     super(node);
   }
 
+  @Override
   public void reset() {
     currentExprDepth = 0;
     exprDepthSum = 0;
@@ -49,6 +50,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     inExpr = 0;
   }
 
+  @Override
   public void addMetrics(ClassData data) {
     double a = exprDepthSum;
     double b = exprCount;
@@ -57,6 +59,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     data.addMetric(new MetricData("Expr-Count", new Double(b)));
   }
 
+  @Override
   public NodeVisitor enter(Node parent, Node n) {
     if (n instanceof Expr) {
       inExpr++;
@@ -66,6 +69,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
     return enter(n);
   }
 
+  @Override
   public Node leave(Node old, Node n, NodeVisitor v) {
     if (n instanceof Expr) {
       if (currentExprDepth == 1) {

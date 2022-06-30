@@ -10,12 +10,12 @@ package soot.jimple.spark.solver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,13 +47,14 @@ import soot.jimple.spark.sets.PointsToSetInternal;
 
 public class PropMerge extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropMerge.class);
-  protected final Set<Node> varNodeWorkList = new TreeSet<Node>();
+  protected final Set<Node> varNodeWorkList = new TreeSet<>();
 
   public PropMerge(PAG pag) {
     this.pag = pag;
   }
 
   /** Actually does the propagation. */
+  @Override
   public void propagate() {
     new TopoSorter(pag, false).sort();
     for (Object object : pag.allocSources()) {
@@ -160,6 +161,7 @@ public class PropMerge extends Propagator {
     for (final FieldRefNode fr : src.getAllFieldRefs()) {
       final SparkField field = fr.getField();
       ret = newP2Set.forall(new P2SetVisitor() {
+        @Override
         public final void visit(Node n) {
           AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, field);
           Node nDotFNode = nDotF.getReplacement();

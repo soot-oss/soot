@@ -10,12 +10,12 @@ package soot.util.dot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -62,8 +62,8 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
   private DotGraph(String graphname, boolean isSubGraph) {
     this.graphname = graphname;
     this.isSubGraph = isSubGraph;
-    this.nodes = new HashMap<String, DotGraphNode>(100);
-    this.drawElements = new LinkedList<Renderable>();
+    this.nodes = new HashMap<>(100);
+    this.drawElements = new LinkedList<>();
     this.dontQuoteNodeNames = false;
   }
 
@@ -260,7 +260,7 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
 
   /**
    * sets any general attributes
-   * 
+   *
    * NOTE: Alias for {@link #setAttribute(java.lang.String, java.lang.String)}.
    *
    * @param id
@@ -274,7 +274,7 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
 
   /**
    * sets any general attributes
-   * 
+   *
    * NOTE: Alias for {@link #setAttribute(soot.util.dot.DotGraphAttribute)}.
    *
    * @param attr
@@ -286,7 +286,7 @@ public class DotGraph extends AbstractDotGraphElement implements Renderable {
 
   /**
    * creates a sub graph.
-   * 
+   *
    * NOTE: Some renderers require subgraph labels to start with "cluster".
    *
    * @return the newly created sub graph.

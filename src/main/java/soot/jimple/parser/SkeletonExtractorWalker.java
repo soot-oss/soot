@@ -10,12 +10,12 @@ package soot.jimple.parser;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -51,6 +51,7 @@ public class SkeletonExtractorWalker extends Walker {
     super(aResolver);
   }
 
+  @Override
   public void caseAFile(AFile node) {
     inAFile(node);
     {
@@ -89,6 +90,7 @@ public class SkeletonExtractorWalker extends Walker {
     outAFile(node);
   }
 
+  @Override
   public void outAFile(AFile node) {
     List implementsList = null;
     String superClass = null;
@@ -132,6 +134,7 @@ public class SkeletonExtractorWalker extends Walker {
    * throws_clause? method_body;
    */
 
+  @Override
   public void caseAMethodMember(AMethodMember node) {
     inAMethodMember(node);
     {
@@ -164,6 +167,7 @@ public class SkeletonExtractorWalker extends Walker {
     outAMethodMember(node);
   }
 
+  @Override
   public void outAMethodMember(AMethodMember node) {
     int modifier = 0;
     Type type;
@@ -200,11 +204,12 @@ public class SkeletonExtractorWalker extends Walker {
   /*
    * throws_clause = throws class_name_list;
    */
+  @Override
   public void outAThrowsClause(AThrowsClause node) {
     List l = (List) mProductions.removeLast();
 
     Iterator it = l.iterator();
-    List<SootClass> exceptionClasses = new ArrayList<SootClass>(l.size());
+    List<SootClass> exceptionClasses = new ArrayList<>(l.size());
 
     while (it.hasNext()) {
       String className = (String) it.next();

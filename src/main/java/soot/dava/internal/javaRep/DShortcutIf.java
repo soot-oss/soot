@@ -10,12 +10,12 @@ package soot.dava.internal.javaRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -43,11 +43,13 @@ public class DShortcutIf implements Expr {
     falseExprBox = right;
   }
 
+  @Override
   public Object clone() {
     // does not work
     return this;
   }
 
+  @Override
   public List getUseBoxes() {
     List toReturn = new ArrayList();
     toReturn.addAll(testExprBox.getValue().getUseBoxes());
@@ -59,10 +61,12 @@ public class DShortcutIf implements Expr {
     return toReturn;
   }
 
+  @Override
   public Type getType() {
     return exprType;
   }
 
+  @Override
   public String toString() {
     String toReturn = "";
     toReturn += testExprBox.getValue().toString();
@@ -73,6 +77,7 @@ public class DShortcutIf implements Expr {
     return toReturn;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     testExprBox.getValue().toString(up);
     up.literal(" ? ");
@@ -81,16 +86,19 @@ public class DShortcutIf implements Expr {
     falseExprBox.getValue().toString(up);
   }
 
+  @Override
   public void apply(Switch sw) {
     // TODO Auto-generated method stub
 
   }
 
+  @Override
   public boolean equivTo(Object o) {
     // TODO Auto-generated method stub
     return false;
   }
 
+  @Override
   public int equivHashCode() {
     int toReturn = 0;
     toReturn += testExprBox.getValue().equivHashCode();

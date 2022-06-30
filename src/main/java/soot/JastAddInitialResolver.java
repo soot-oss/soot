@@ -11,12 +11,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,14 +56,15 @@ public class JastAddInitialResolver implements IInitialResolver {
     return soot.G.v().soot_JastAddInitialResolver();
   }
 
-  protected Map<String, CompilationUnit> classNameToCU = new HashMap<String, CompilationUnit>();
+  protected Map<String, CompilationUnit> classNameToCU = new HashMap<>();
 
+  @Override
   public void formAst(String fullPath, List<String> locations, String className) {
     Program program = SootResolver.v().getProgram();
     CompilationUnit u = program.getCachedOrLoadCompilationUnit(fullPath);
     if (u != null && !u.isResolved) {
       u.isResolved = true;
-      java.util.ArrayList<soot.JastAddJ.Problem> errors = new java.util.ArrayList<soot.JastAddJ.Problem>();
+      java.util.ArrayList<soot.JastAddJ.Problem> errors = new java.util.ArrayList<>();
       u.errorCheck(errors);
       if (!errors.isEmpty()) {
         for (soot.JastAddJ.Problem p : errors) {
@@ -76,7 +77,7 @@ public class JastAddInitialResolver implements IInitialResolver {
       u.transformation();
       u.jimplify1phase1();
       u.jimplify1phase2();
-      HashSet<SootClass> types = new HashSet<SootClass>();
+      HashSet<SootClass> types = new HashSet<>();
       for (TypeDecl typeDecl : u.getTypeDecls()) {
         collectTypeDecl(typeDecl, types);
       }
@@ -112,6 +113,7 @@ public class JastAddInitialResolver implements IInitialResolver {
     return null;
   }
 
+  @Override
   public Dependencies resolveFromJavaFile(SootClass sootclass) {
     CompilationUnit u = classNameToCU.get(sootclass.getName());
 
@@ -119,7 +121,7 @@ public class JastAddInitialResolver implements IInitialResolver {
       throw new RuntimeException("Error: couldn't find class: " + sootclass.getName() + " are the packages set properly?");
     }
 
-    HashSet<SootClass> types = new HashSet<SootClass>();
+    HashSet<SootClass> types = new HashSet<>();
     for (TypeDecl typeDecl : u.getTypeDecls()) {
       collectTypeDecl(typeDecl, types);
     }
@@ -130,6 +132,7 @@ public class JastAddInitialResolver implements IInitialResolver {
     for (SootClass sc : types) {
       for (SootMethod m : sc.getMethods()) {
         m.setSource(new MethodSource() {
+          @Override
           public Body getBody(SootMethod m, String phaseName) {
             SootClass sc = m.getDeclaringClass();
             CompilationUnit u = classNameToCU.get(sc.getName());

@@ -10,12 +10,12 @@ package soot.jimple.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -67,16 +67,16 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
 
   public SlowAvailableExpressionsAnalysis(DirectedGraph<Unit> dg) {
     super(dg);
-    this.valueToEquivValue = new HashMap<Value, EquivalentValue>();
-    this.rhsToContainingStmt = new HashMap<Value, Stmt>();
+    this.valueToEquivValue = new HashMap<>();
+    this.rhsToContainingStmt = new HashMap<>();
 
     /* we need a universe of all of the expressions. */
-    HashSet<Value> exprs = new HashSet<Value>();
+    HashSet<Value> exprs = new HashSet<>();
 
     // Consider "a + b". containingExprs maps a and b (object equality) both to "a + b" (equivalence).
-    Map<EquivalentValue, Chain<EquivalentValue>> containingExprs = new HashMap<EquivalentValue, Chain<EquivalentValue>>();
+    Map<EquivalentValue, Chain<EquivalentValue>> containingExprs = new HashMap<>();
 
-    Map<EquivalentValue, Chain<Value>> equivValToSiblingList = new HashMap<EquivalentValue, Chain<Value>>();
+    Map<EquivalentValue, Chain<Value>> equivValToSiblingList = new HashMap<>();
 
     // Create the set of all expressions, and a map from values to their containing expressions.
     final UnitGraph g = (UnitGraph) dg;
@@ -92,7 +92,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
 
         Chain<Value> sibList = equivValToSiblingList.get(ev);
         if (sibList == null) {
-          equivValToSiblingList.put(ev, sibList = new HashChain<Value>());
+          equivValToSiblingList.put(ev, sibList = new HashChain<>());
         }
 
         if (!sibList.contains(v)) {
@@ -116,7 +116,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
 
             sibList = equivValToSiblingList.get(eo);
             if (sibList == null) {
-              equivValToSiblingList.put(eo, sibList = new HashChain<Value>());
+              equivValToSiblingList.put(eo, sibList = new HashChain<>());
             }
 
             if (!sibList.contains(o)) {
@@ -125,7 +125,7 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
 
             Chain<EquivalentValue> l = containingExprs.get(eo);
             if (l == null) {
-              containingExprs.put(eo, l = new HashChain<EquivalentValue>());
+              containingExprs.put(eo, l = new HashChain<>());
             }
 
             if (!l.contains(ev)) {
@@ -136,13 +136,13 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
       }
     }
 
-    FlowUniverse<Value> exprUniv = new ArrayFlowUniverse<Value>(exprs.toArray(new Value[exprs.size()]));
-    this.emptySet = new ArrayPackedSet<Value>(exprUniv);
+    FlowUniverse<Value> exprUniv = new ArrayFlowUniverse<>(exprs.toArray(new Value[exprs.size()]));
+    this.emptySet = new ArrayPackedSet<>(exprUniv);
 
     // Create preserve sets.
-    this.unitToPreserveSet = new HashMap<Unit, BoundedFlowSet<Value>>(g.size() * 2 + 1, 0.7f);
+    this.unitToPreserveSet = new HashMap<>(g.size() * 2 + 1, 0.7f);
     for (Unit s : g) {
-      BoundedFlowSet<Value> killSet = new ArrayPackedSet<Value>(exprUniv);
+      BoundedFlowSet<Value> killSet = new ArrayPackedSet<>(exprUniv);
 
       // We need to do more! In particular handle invokeExprs, etc.
 
@@ -165,9 +165,9 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
     }
 
     // Create generate sets
-    this.unitToGenerateSet = new HashMap<Unit, BoundedFlowSet<Value>>(g.size() * 2 + 1, 0.7f);
+    this.unitToGenerateSet = new HashMap<>(g.size() * 2 + 1, 0.7f);
     for (Unit s : g) {
-      BoundedFlowSet<Value> genSet = new ArrayPackedSet<Value>(exprUniv);
+      BoundedFlowSet<Value> genSet = new ArrayPackedSet<>(exprUniv);
       // In Jimple, expressions only occur as the RHS of an AssignStmt.
       if (s instanceof AssignStmt) {
         AssignStmt as = (AssignStmt) s;

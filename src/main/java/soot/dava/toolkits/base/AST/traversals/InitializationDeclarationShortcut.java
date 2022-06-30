@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.traversals;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,10 +34,10 @@ import soot.jimple.Stmt;
 
 /*
  * Given a statement of interest this traversal checks whether
- * a, the defined variable is a local 
+ * a, the defined variable is a local
  * b, there is any def of the defined local of interest before
  * the given statement
- * 
+ *
  * if no then possible is set to true
  * else false
  */
@@ -63,6 +63,7 @@ public class InitializationDeclarationShortcut extends DepthFirstAdapter {
   /*
    * Check that the stmt of interest defines a local in the DVariableDeclarationNode of the method else set to false and stop
    */
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     Stmt s = ofInterest.get_Stmt();
     // check this is a definition
@@ -87,6 +88,7 @@ public class InitializationDeclarationShortcut extends DepthFirstAdapter {
     definedLocal = (Local) defined;
   }
 
+  @Override
   public void inDefinitionStmt(DefinitionStmt s) {
     if (definedLocal == null) {
       return;

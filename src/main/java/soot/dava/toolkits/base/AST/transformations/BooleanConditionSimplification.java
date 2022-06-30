@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,6 +50,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
   }
 
@@ -60,6 +61,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
    * The method checks whether a particular ASTBinaryCondition is a comparison of a local with a boolean If so the
    * ASTBinaryCondition is replaced by a ASTUnaryCondition
    */
+  @Override
   public void outASTIfNode(ASTIfNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {
@@ -71,6 +73,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {
@@ -82,6 +85,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {
@@ -93,6 +97,7 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     }
   }
 
+  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     ASTCondition condition = node.get_Condition();
     if (condition instanceof ASTBinaryCondition) {

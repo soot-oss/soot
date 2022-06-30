@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.mhp.findobject;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -54,7 +54,7 @@ import soot.toolkits.scalar.FlowSet;
 
 public class MultiCalledMethods {
 
-  Set<SootMethod> multiCalledMethods = new HashSet<SootMethod>();
+  Set<SootMethod> multiCalledMethods = new HashSet<>();
 
   MultiCalledMethods(PegCallGraph pcg, Set<SootMethod> mcm) {
     multiCalledMethods = mcm;
@@ -78,7 +78,7 @@ public class MultiCalledMethods {
 
   private void propagate(PegCallGraph pcg) {
     Set<SootMethod> visited = new HashSet();
-    List<SootMethod> reachable = new ArrayList<SootMethod>();
+    List<SootMethod> reachable = new ArrayList<>();
     reachable.addAll(multiCalledMethods);
     while (reachable.size() >= 1) {
       SootMethod popped = reachable.remove(0);
@@ -105,8 +105,8 @@ public class MultiCalledMethods {
     while (it.hasNext()) {
       Object head = it.next();
       // breadth first scan
-      Set<Object> gray = new HashSet<Object>();
-      LinkedList<Object> queue = new LinkedList<Object>();
+      Set<Object> gray = new HashSet<>();
+      LinkedList<Object> queue = new LinkedList<>();
       queue.add(head);
 
       while (queue.size() > 0) {
@@ -136,8 +136,8 @@ public class MultiCalledMethods {
   private void finder2(PegCallGraph pcg) {
 
     pcg.trim();
-    Set<SootMethod> first = new HashSet<SootMethod>();
-    Set<SootMethod> second = new HashSet<SootMethod>();
+    Set<SootMethod> first = new HashSet<>();
+    Set<SootMethod> second = new HashSet<>();
     // Visit each node
     Iterator it = pcg.iterator();
     while (it.hasNext()) {

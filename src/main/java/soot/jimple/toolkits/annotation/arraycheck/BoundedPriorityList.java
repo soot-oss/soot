@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,7 +30,7 @@ import java.util.ListIterator;
 
 /**
  * BoundedPriorityList keeps a list in a priority queue. The order is decided by the initial list.
- * 
+ *
  * @author Eric Bodden (adapted from Feng Qian's code)
  */
 public class BoundedPriorityList implements Collection {
@@ -42,6 +42,7 @@ public class BoundedPriorityList implements Collection {
     this.worklist = new ArrayList(list);
   }
 
+  @Override
   public boolean isEmpty() {
     return worklist.isEmpty();
   }
@@ -50,6 +51,7 @@ public class BoundedPriorityList implements Collection {
     return worklist.remove(0);
   }
 
+  @Override
   public boolean add(Object toadd) {
     if (contains(toadd)) {
       return false;
@@ -75,10 +77,10 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean addAll(Collection c) {
     boolean addedSomething = false;
-    for (Iterator iter = c.iterator(); iter.hasNext();) {
-      Object o = iter.next();
+    for (Object o : c) {
       addedSomething |= add(o);
     }
     return addedSomething;
@@ -94,6 +96,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public void clear() {
     worklist.clear();
   }
@@ -101,6 +104,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean contains(Object o) {
     return worklist.contains(o);
   }
@@ -108,6 +112,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean containsAll(Collection c) {
     return worklist.containsAll(c);
   }
@@ -115,6 +120,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public Iterator iterator() {
     return worklist.iterator();
   }
@@ -122,6 +128,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean remove(Object o) {
     return worklist.remove(o);
   }
@@ -129,6 +136,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean removeAll(Collection c) {
     return worklist.removeAll(c);
   }
@@ -136,6 +144,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean retainAll(Collection c) {
     return worklist.retainAll(c);
   }
@@ -143,6 +152,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public int size() {
     return worklist.size();
   }
@@ -150,6 +160,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public Object[] toArray() {
     return worklist.toArray();
   }
@@ -157,6 +168,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public Object[] toArray(Object[] a) {
     return worklist.toArray(a);
   }
@@ -164,6 +176,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public String toString() {
     return worklist.toString();
   }
@@ -171,6 +184,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public boolean equals(Object obj) {
     return worklist.equals(obj);
   }
@@ -178,6 +192,7 @@ public class BoundedPriorityList implements Collection {
   /**
    * {@inheritDoc}
    */
+  @Override
   public int hashCode() {
     return worklist.hashCode();
   }

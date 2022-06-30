@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -113,6 +113,7 @@ public class LockAllocator extends SceneTransformer {
   boolean optionPrintTable = false;
   boolean optionPrintDebug = false;
 
+  @Override
   protected void internalTransform(String phaseName, Map<String, String> options) {
     // Get phase options
     String lockingScheme = PhaseOptions.getString(options, "locking-scheme");
@@ -206,8 +207,8 @@ public class LockAllocator extends SceneTransformer {
     // For all methods, run the intraprocedural analysis (TransactionAnalysis)
     Date start = new Date();
     logger.debug("[wjtp.tn] *** Find and Name Transactions *** " + start);
-    Map<SootMethod, FlowSet> methodToFlowSet = new HashMap<SootMethod, FlowSet>();
-    Map<SootMethod, ExceptionalUnitGraph> methodToExcUnitGraph = new HashMap<SootMethod, ExceptionalUnitGraph>();
+    Map<SootMethod, FlowSet> methodToFlowSet = new HashMap<>();
+    Map<SootMethod, ExceptionalUnitGraph> methodToExcUnitGraph = new HashMap<>();
     Iterator<SootClass> runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     while (runAnalysisClassesIt.hasNext()) {
       SootClass appClass = runAnalysisClassesIt.next();
@@ -223,7 +224,7 @@ public class LockAllocator extends SceneTransformer {
           SynchronizedRegionFinder ta = new SynchronizedRegionFinder(eug, b, optionPrintDebug, optionOpenNesting, tlo);
           Chain<Unit> units = b.getUnits();
           Unit lastUnit = units.getLast();
-          FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
+          FlowSet fs = ta.getFlowBefore(lastUnit);
 
           // add the results to the list of results
           methodToFlowSet.put(method, fs);
@@ -232,11 +233,11 @@ public class LockAllocator extends SceneTransformer {
     }
 
     // Create a composite list of all transactions
-    criticalSections = new Vector<CriticalSection>();
+    criticalSections = new Vector<>();
     for (FlowSet fs : methodToFlowSet.values()) {
       List fList = fs.toList();
-      for (int i = 0; i < fList.size(); i++) {
-        criticalSections.add(((SynchronizedRegionFlowPair) fList.get(i)).tn);
+      for (Object element : fList) {
+        criticalSections.add(((SynchronizedRegionFlowPair) element).tn);
       }
     }
 
@@ -274,7 +275,7 @@ public class LockAllocator extends SceneTransformer {
       }
     }
     long longTime = ((new Date()).getTime() - start.getTime()) / 100;
-    float time = ((float) longTime) / 10.0f;
+    float time = (longTime) / 10.0f;
     if (optionOnFlyTLO) {
       logger.debug("[wjtp.tn] TLO totals (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/"
           + ClassInfoFlowAnalysis.methodCount);
@@ -343,8 +344,8 @@ public class LockAllocator extends SceneTransformer {
       setFlagsForDynamicAllocations(ig);
 
       // Data structures for determining lock numbers
-      lockPTSets = new ArrayList<PointsToSetInternal>();
-      lockToLockNum = new HashMap<Value, Integer>();
+      lockPTSets = new ArrayList<>();
+      lockToLockNum = new HashMap<>();
 
       findLockableReferences(criticalSections, pta, tasea, lockToLockNum, lockPTSets);
 
@@ -445,7 +446,7 @@ public class LockAllocator extends SceneTransformer {
             Value newStaticLock = new NewStaticLock(tn.method.getDeclaringClass());
             EquivalentValue newStaticLockEqVal = new EquivalentValue(newStaticLock);
             for (CriticalSection groupTn : tn.group) {
-              groupTn.lockset = new ArrayList<EquivalentValue>();
+              groupTn.lockset = new ArrayList<>();
               groupTn.lockset.add(newStaticLockEqVal);
             }
 
@@ -534,7 +535,7 @@ public class LockAllocator extends SceneTransformer {
             tn.group.lockObject = null;
           } else { // Found exactly one lock
                    // Use it!
-            tn.lockObject = (Value) tn.lockset.get(0);
+            tn.lockObject = tn.lockset.get(0);
 
             // If it's the best lock we've found in the group yet, use it for display
             if (tn.group.lockObject == null || tn.lockObject instanceof Ref) {
@@ -671,7 +672,7 @@ public class LockAllocator extends SceneTransformer {
     // Sort transactions into bins... one for each method name
 
     // Get list of method names
-    List<String> methodNamesTemp = new ArrayList<String>();
+    List<String> methodNamesTemp = new ArrayList<>();
     Iterator<CriticalSection> tnIt5 = AllTransactions.iterator();
     while (tnIt5.hasNext()) {
       CriticalSection tn1 = tnIt5.next();
@@ -726,9 +727,9 @@ public class LockAllocator extends SceneTransformer {
     final String[] colors = { "black", "blue", "blueviolet", "chartreuse", "crimson", "darkgoldenrod1", "darkseagreen",
         "darkslategray", "deeppink", "deepskyblue1", "firebrick1", "forestgreen", "gold", "gray80", "navy", "pink", "red",
         "sienna", "turquoise1", "yellow" };
-    Map<Integer, String> lockColors = new HashMap<Integer, String>();
+    Map<Integer, String> lockColors = new HashMap<>();
     int colorNum = 0;
-    HashSet<CriticalSection> visited = new HashSet<CriticalSection>();
+    HashSet<CriticalSection> visited = new HashSet<>();
 
     logger.debug("[transaction-graph]" + (optionUseLocksets ? "" : " strict") + " graph transactions {");
     // "\n[transaction-graph]

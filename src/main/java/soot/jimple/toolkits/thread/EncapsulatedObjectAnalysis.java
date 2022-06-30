@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -47,8 +47,8 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 
   public EncapsulatedObjectAnalysis() {
     cachedClasses = new ArrayList();
-    objectPureMethods = new ArrayList<SootMethod>();
-    objectPureInitMethods = new ArrayList<SootMethod>();
+    objectPureMethods = new ArrayList<>();
+    objectPureInitMethods = new ArrayList<>();
   }
 
   public boolean isMethodPureOnObject(SootMethod sm) {
@@ -57,7 +57,7 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
       SootMethod initMethod = null;
       Collection methods = sm.getDeclaringClass().getMethods();
       Iterator methodsIt = methods.iterator();
-      List<SootMethod> mayBePureMethods = new ArrayList<SootMethod>(methods.size());
+      List<SootMethod> mayBePureMethods = new ArrayList<>(methods.size());
       while (methodsIt.hasNext()) {
         SootMethod method = (SootMethod) methodsIt.next();
         if (method.isConcrete()) {

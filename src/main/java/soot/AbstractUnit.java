@@ -10,12 +10,12 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -86,7 +86,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
   public void addBoxPointingToThis(UnitBox b) {
     List<UnitBox> ref = boxesPointingToThis;
     if (ref == null) {
-      boxesPointingToThis = ref = new ArrayList<UnitBox>();
+      boxesPointingToThis = ref = new ArrayList<>();
     }
     ref.add(b);
   }
@@ -118,7 +118,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
     } else if (defBoxes.isEmpty()) {
       return useBoxes;
     } else {
-      List<ValueBox> valueBoxes = new ArrayList<ValueBox>(defBoxes.size() + useBoxes.size());
+      List<ValueBox> valueBoxes = new ArrayList<>(defBoxes.size() + useBoxes.size());
       valueBoxes.addAll(defBoxes);
       valueBoxes.addAll(useBoxes);
       return valueBoxes;

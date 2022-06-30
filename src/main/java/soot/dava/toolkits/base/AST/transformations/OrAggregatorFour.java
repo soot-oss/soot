@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -82,9 +82,11 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
   }
 
+  @Override
   public void outASTForLoopNode(ASTForLoopNode node) {
     String label = node.get_Label().toString();
     if (label == null) {
@@ -105,6 +107,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     UselessLabelFinder.v().findAndKill(node);
   }
 
+  @Override
   public void outASTWhileNode(ASTWhileNode node) {
     String label = node.get_Label().toString();
     if (label == null) {
@@ -125,6 +128,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     UselessLabelFinder.v().findAndKill(node);
   }
 
+  @Override
   public void outASTDoWhileNode(ASTDoWhileNode node) {
     String label = node.get_Label().toString();
     if (label == null) {
@@ -144,6 +148,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     UselessLabelFinder.v().findAndKill(node);
   }
 
+  @Override
   public void outASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     String label = node.get_Label().toString();
     if (label == null) {
@@ -221,7 +226,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
 
   private List<Object> createWhileBody(List subBody, List labeledBlocksSubBody, int nodeNumber) {
     // create BodyA, Nodes from 0 to nodeNumber
-    List<Object> bodyA = new ArrayList<Object>();
+    List<Object> bodyA = new ArrayList<>();
 
     // this is an iterator of ASTNodes
     Iterator it = subBody.iterator();
@@ -244,7 +249,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     // create an aggregated condition
     Iterator<ASTCondition> condIt = conditions.iterator();
     ASTCondition newCond = null;
-    ;
+
     while (condIt.hasNext()) {
       ASTCondition next = condIt.next();
       if (newCond == null) {
@@ -256,7 +261,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
 
     // create BodyB
     it.next();// this skips the LabeledBlockNode
-    List<Object> bodyB = new ArrayList<Object>();
+    List<Object> bodyB = new ArrayList<>();
     while (it.hasNext()) {
       bodyB.add(it.next());
     }
@@ -273,7 +278,7 @@ public class OrAggregatorFour extends DepthFirstAdapter {
    * it knows the following: All nodes are ASTIFNodes
    */
   private List<ASTCondition> getConditions(Iterator it) {
-    List<ASTCondition> toReturn = new ArrayList<ASTCondition>();
+    List<ASTCondition> toReturn = new ArrayList<>();
     while (it.hasNext()) {
       // safe cast since we know these are all ASTIfNodes
       ASTIfNode node = (ASTIfNode) it.next();

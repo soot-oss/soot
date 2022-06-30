@@ -10,12 +10,12 @@ package soot.jimple.spark.builder;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,7 +23,6 @@ package soot.jimple.spark.builder;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,7 @@ import soot.util.queue.QueueReader;
 
 /**
  * A context insensitive pointer assignment graph builder.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public class ContextInsensitiveBuilder {
@@ -56,16 +55,9 @@ public class ContextInsensitiveBuilder {
     boolean change = true;
     while (change) {
       change = false;
-      for (Iterator<SootClass> cIt = new ArrayList<>(Scene.v().getClasses()).iterator(); cIt.hasNext();) {
-        final SootClass c = cIt.next();
+      for (SootClass c : new ArrayList<>(Scene.v().getClasses())) {
         for (final SootMethod m : c.getMethods()) {
-          if (!m.isConcrete()) {
-            continue;
-          }
-          if (m.isNative()) {
-            continue;
-          }
-          if (m.isPhantom()) {
+          if (!m.isConcrete() || m.isNative() || m.isPhantom()) {
             continue;
           }
           if (!m.hasActiveBody()) {

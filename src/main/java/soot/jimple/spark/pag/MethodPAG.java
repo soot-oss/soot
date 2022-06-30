@@ -10,12 +10,12 @@ package soot.jimple.spark.pag;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -81,7 +81,7 @@ public final class MethodPAG {
       hasBeenAdded = true;
     } else {
       if (addedContexts == null) {
-        addedContexts = new HashSet<Context>();
+        addedContexts = new HashSet<>();
       }
       if (!addedContexts.add(varNodeParameter)) {
         return;
@@ -144,9 +144,9 @@ public final class MethodPAG {
     }
   }
 
-  private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<Node>();
-  private final ChunkedQueue<Node> inEdges = new ChunkedQueue<Node>();
-  private final ChunkedQueue<Node> outEdges = new ChunkedQueue<Node>();
+  private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<>();
+  private final ChunkedQueue<Node> inEdges = new ChunkedQueue<>();
+  private final ChunkedQueue<Node> outEdges = new ChunkedQueue<>();
   private final QueueReader<Node> internalReader = internalEdges.reader();
   private final QueueReader<Node> inReader = inEdges.reader();
   private final QueueReader<Node> outReader = outEdges.reader();

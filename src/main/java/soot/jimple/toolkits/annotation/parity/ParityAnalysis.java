@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.parity;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -83,8 +83,8 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
     this.body = g.getBody();
     this.filter = filter;
 
-    filterUnitToBeforeFlow = new HashMap<Unit, Map<Value, Parity>>();
-    filterUnitToAfterFlow = new HashMap<Unit, Map<Value, Parity>>();
+    filterUnitToBeforeFlow = new HashMap<>();
+    filterUnitToAfterFlow = new HashMap<>();
     buildBeforeFilterMap();
 
     doAnalysis();
@@ -106,7 +106,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
 
       // if (!((left.getType() instanceof IntegerType) || (left.getType() instanceof LongType))) continue;
 
-      Map<Value, Parity> map = new HashMap<Value, Parity>();
+      Map<Value, Parity> map = new HashMap<>();
       for (Local l : filter.getLiveLocalsBefore(s)) {
         map.put(l, BOTTOM);
       }
@@ -256,7 +256,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
   }
 
   private void buildAfterFilterMap(Unit s) {
-    Map<Value, Parity> map = new HashMap<Value, Parity>();
+    Map<Value, Parity> map = new HashMap<>();
     for (Local local : filter.getLiveLocalsAfter(s)) {
       map.put(local, BOTTOM);
     }
@@ -310,7 +310,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
 
   @Override
   protected Map<Value, Parity> newInitialFlow() {
-    Map<Value, Parity> initMap = new HashMap<Value, Parity>();
+    Map<Value, Parity> initMap = new HashMap<>();
 
     for (Local l : body.getLocals()) {
       Type t = l.getType();

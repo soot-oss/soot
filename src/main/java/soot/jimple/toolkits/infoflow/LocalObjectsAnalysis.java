@@ -10,12 +10,12 @@ package soot.jimple.toolkits.infoflow;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -78,8 +78,8 @@ public class LocalObjectsAnalysis {
     this.uf = new UseFinder();
     this.cg = Scene.v().getCallGraph();
 
-    classToClassLocalObjectsAnalysis = new HashMap<SootClass, ClassLocalObjectsAnalysis>();
-    mloaCache = new HashMap<SootMethod, SmartMethodLocalObjectsAnalysis>();
+    classToClassLocalObjectsAnalysis = new HashMap<>();
+    mloaCache = new HashMap<>();
   }
 
   public ClassLocalObjectsAnalysis getClassLocalObjectsAnalysis(SootClass sc) {
@@ -257,7 +257,7 @@ public class LocalObjectsAnalysis {
    * if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain)) {
    * logger.debug("      SHARED"); return false; } } logger.debug("      LOCAL"); return true; }
    */
-  Map<SootMethod, ReachableMethods> rmCache = new HashMap<SootMethod, ReachableMethods>();
+  Map<SootMethod, ReachableMethods> rmCache = new HashMap<>();
 
   public CallChain getNextCallChainBetween(SootMethod start, SootMethod goal, List previouslyFound) {
     // callChains.add(new LinkedList()); // Represents the one way to get from goal to goal (which is to already be there)
@@ -269,7 +269,7 @@ public class LocalObjectsAnalysis {
     if (rmCache.containsKey(start)) {
       rm = rmCache.get(start);
     } else {
-      List<MethodOrMethodContext> entryPoints = new ArrayList<MethodOrMethodContext>();
+      List<MethodOrMethodContext> entryPoints = new ArrayList<>();
       entryPoints.add(start);
       rm = new ReachableMethods(cg, entryPoints);
       rm.update();
@@ -426,7 +426,7 @@ public class LocalObjectsAnalysis {
 
     // Get list of reachable methods declared in this class
     // Also get list of fields declared in this class
-    List<SootMethod> scopeMethods = new ArrayList<SootMethod>();
+    List<SootMethod> scopeMethods = new ArrayList<>();
     Iterator scopeMethodsIt = sootClass.methodIterator();
     while (scopeMethodsIt.hasNext()) {
       SootMethod scopeMethod = (SootMethod) scopeMethodsIt.next();

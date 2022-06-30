@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -71,7 +71,7 @@ public class CriticalSectionInterferenceGraph {
 
   public void calculateGroups() {
     nextGroup = 1;
-    groups = new ArrayList<CriticalSectionGroup>();
+    groups = new ArrayList<>();
     groups.add(new CriticalSectionGroup(0)); // dummy group
 
     if (optionOneGlobalLock) // use one group for all transactions
@@ -107,9 +107,7 @@ public class CriticalSectionInterferenceGraph {
             CriticalSection tn2 = tnIt2.next();
 
             // check if this transactional region is going to be deleted
-            if (tn2.setNumber == -1) {
-              continue;
-            }
+            
 
             // check if they're already marked as having an interference
             // NOTE: this results in a sound grouping, but a badly
@@ -119,7 +117,7 @@ public class CriticalSectionInterferenceGraph {
             // continue;
 
             // check if these two transactions can't ever be in parallel
-            if (!mayHappenInParallel(tn1, tn2)) {
+            if ((tn2.setNumber == -1) || !mayHappenInParallel(tn1, tn2)) {
               continue;
             }
 

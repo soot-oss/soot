@@ -10,12 +10,12 @@ package soot.jimple.toolkits.thread.synchronization;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -75,7 +75,7 @@ public class DeadlockDetector {
       iteration++;
       logger.debug("[DeadlockDetector] Deadlock Iteration #" + iteration);
       foundDeadlock = false;
-      lockOrder = new HashMutableDirectedGraph<CriticalSectionGroup>(); // start each iteration with a fresh graph
+      lockOrder = new HashMutableDirectedGraph<>(); // start each iteration with a fresh graph
 
       // Assemble the partial ordering of locks
       Iterator<CriticalSection> deadlockIt1 = criticalSections.iterator();
@@ -94,7 +94,7 @@ public class DeadlockDetector {
 
         // Get list of tn1's target methods
         if (tn1.transitiveTargets == null) {
-          tn1.transitiveTargets = new HashSet<MethodOrMethodContext>();
+          tn1.transitiveTargets = new HashSet<>();
           for (Unit tn1Invoke : tn1.invokes) {
             Iterator<MethodOrMethodContext> targetIt = tt.iterator(tn1Invoke);
             while (targetIt.hasNext()) {
@@ -129,7 +129,7 @@ public class DeadlockDetector {
             }
 
             // Check if tn2lock before tn1lock is in our lock order
-            List<CriticalSectionGroup> afterTn2 = new ArrayList<CriticalSectionGroup>();
+            List<CriticalSectionGroup> afterTn2 = new ArrayList<>();
             afterTn2.addAll(lockOrder.getSuccsOf(tn2.group));
             for (int i = 0; i < afterTn2.size(); i++) {
               for (CriticalSectionGroup o : lockOrder.getSuccsOf(afterTn2.get(i))) {
@@ -175,7 +175,7 @@ public class DeadlockDetector {
   public MutableEdgeLabelledDirectedGraph<Integer, CriticalSection> detectLocksetDeadlock(Map<Value, Integer> lockToLockNum,
       List<PointsToSetInternal> lockPTSets) {
     HashMutableEdgeLabelledDirectedGraph<Integer, CriticalSection> permanentOrder
-        = new HashMutableEdgeLabelledDirectedGraph<Integer, CriticalSection>();
+        = new HashMutableEdgeLabelledDirectedGraph<>();
     MutableEdgeLabelledDirectedGraph<Integer, CriticalSection> lockOrder;
     boolean foundDeadlock;
     int iteration = 0;
@@ -206,7 +206,7 @@ public class DeadlockDetector {
 
         // Get list of tn1's target methods
         if (tn1.transitiveTargets == null) {
-          tn1.transitiveTargets = new HashSet<MethodOrMethodContext>();
+          tn1.transitiveTargets = new HashSet<>();
           for (Unit tn1Invoke : tn1.invokes) {
             Iterator<MethodOrMethodContext> targetIt = tt.iterator(tn1Invoke);
             while (targetIt.hasNext()) {
@@ -247,7 +247,7 @@ public class DeadlockDetector {
               Value lock2 = lock2EqVal.getValue();
               Integer lock2Num = lockToLockNum.get(lock2);
 
-              List<Integer> afterTn2 = new ArrayList<Integer>();
+              List<Integer> afterTn2 = new ArrayList<>();
               afterTn2.addAll(lockOrder.getSuccsOf(lock2Num)); // filter here!
               ListIterator<Integer> lit = afterTn2.listIterator();
               while (lit.hasNext()) {
@@ -379,7 +379,7 @@ public class DeadlockDetector {
       MutableEdgeLabelledDirectedGraph<Integer, CriticalSection> lockOrder) {
     for (CriticalSection tn : criticalSections) {
       // Get the portion of the lock order that is visible to tn
-      HashMutableDirectedGraph<Integer> visibleOrder = new HashMutableDirectedGraph<Integer>();
+      HashMutableDirectedGraph<Integer> visibleOrder = new HashMutableDirectedGraph<>();
       if (tn.group != null) {
         for (CriticalSection otherTn : criticalSections) {
           // Check if otherTn and tn share a static lock
@@ -422,7 +422,7 @@ public class DeadlockDetector {
         visibleOrder.printGraph();
 
         // Order locks in tn's lockset according to the visible order (insertion sort)
-        List<EquivalentValue> newLockset = new ArrayList<EquivalentValue>();
+        List<EquivalentValue> newLockset = new ArrayList<>();
         for (EquivalentValue lockEqVal : tn.lockset) {
           Value lockToInsert = lockEqVal.getValue();
           Integer lockNumToInsert = lockToLockNum.get(lockToInsert);

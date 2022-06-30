@@ -1,30 +1,6 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import heros.util.SootThreadGroup;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +11,29 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2018 Raja Vallée-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import heros.util.SootThreadGroup;
 import soot.Kind;
 import soot.PointsToAnalysis;
 import soot.Scene;
@@ -78,7 +77,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
   Thread self;
 
   public SynchObliviousMhpAnalysis() {
-    threadList = new ArrayList<AbstractRuntimeThread>();
+    threadList = new ArrayList<>();
     optionPrintDebug = false;
 
     self = null;
@@ -100,6 +99,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
     }
   }
 
+  @Override
   public void run() {
     SootMethod mainMethod = Scene.v().getMainClass().getMethodByName("main");
 
@@ -140,7 +140,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
 
     // Build MHP Lists
     // logger.debug(" MHP: Building MHP Lists");
-    List<AbstractRuntimeThread> runAtOnceCandidates = new ArrayList<AbstractRuntimeThread>();
+    List<AbstractRuntimeThread> runAtOnceCandidates = new ArrayList<>();
     Iterator threadIt = startToRunMethods.entrySet().iterator();
     int threadNum = 0;
     while (threadIt.hasNext()) {
@@ -240,7 +240,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
         thread.setJoinStmt(startToJoin.get(startStmt));
         mayBeRunMultipleTimes = false; // well, actually, we don't know yet
         methodNum = 0;
-        List<SootMethod> containingMethodCalls = new ArrayList<SootMethod>();
+        List<SootMethod> containingMethodCalls = new ArrayList<>();
         containingMethodCalls.add(startStmtMethod);
         while (methodNum < containingMethodCalls.size()) // iterate over all methods in threadMethods, even as new methods
                                                          // are being added to it
@@ -348,6 +348,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
     }
   }
 
+  @Override
   public boolean mayHappenInParallel(SootMethod m1, Unit u1, SootMethod m2, Unit u2) {
     if (optionThreaded) {
       if (self == null) {
@@ -366,6 +367,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
     return mayHappenInParallelInternal(m1, m2);
   }
 
+  @Override
   public boolean mayHappenInParallel(SootMethod m1, SootMethod m2) {
     if (optionThreaded) {
       if (self == null) {
@@ -403,6 +405,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
     return false;
   }
 
+  @Override
   public void printMhpSummary() {
     if (optionThreaded) {
       if (self == null) {
@@ -418,7 +421,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
       }
     }
 
-    List<AbstractRuntimeThread> threads = new ArrayList<AbstractRuntimeThread>();
+    List<AbstractRuntimeThread> threads = new ArrayList<>();
     int size = threadList.size();
     logger.debug("[mhp]");
     for (int i = 0; i < size; i++) {
@@ -449,7 +452,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
       return null;
     }
 
-    List<SootClass> threadClasses = new ArrayList<SootClass>();
+    List<SootClass> threadClasses = new ArrayList<>();
     int size = threadList.size();
     for (int i = 0; i < size; i++) {
       AbstractRuntimeThread thread = threadList.get(i);
@@ -464,6 +467,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
     return threadClasses;
   }
 
+  @Override
   public List<AbstractRuntimeThread> getThreads() {
     if (optionThreaded) {
       if (self == null) {
@@ -483,7 +487,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
       return null;
     }
 
-    List<AbstractRuntimeThread> threads = new ArrayList<AbstractRuntimeThread>();
+    List<AbstractRuntimeThread> threads = new ArrayList<>();
     int size = threadList.size();
     for (int i = 0; i < size; i++) {
       if (!threads.contains(threadList.get(i))) {

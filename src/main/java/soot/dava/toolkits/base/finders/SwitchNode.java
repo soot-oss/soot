@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.finders;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -85,7 +85,7 @@ public class SwitchNode implements Comparable {
   }
 
   public TreeSet<Object> get_IndexSet() {
-    return new TreeSet<Object>(indexSet);
+    return new TreeSet<>(indexSet);
   }
 
   public IterableSet get_Body() {
@@ -100,16 +100,16 @@ public class SwitchNode implements Comparable {
   }
 
   public void setup_Graph(HashMap<AugmentedStmt, SwitchNode> binding) {
-    Iterator rit = ((AugmentedStmt) as.bsuccs.get(0)).get_Reachers().iterator();
+    Iterator rit = as.bsuccs.get(0).get_Reachers().iterator();
     while (rit.hasNext()) {
       SwitchNode pred = binding.get(rit.next());
 
       if (pred != null) {
-        if (preds.contains(pred) == false) {
+        if (!preds.contains(pred)) {
           preds.add(pred);
         }
 
-        if (pred.succs.contains(this) == false) {
+        if (!pred.succs.contains(this)) {
           pred.succs.add(this);
         }
       }
@@ -120,6 +120,7 @@ public class SwitchNode implements Comparable {
    * Can compare to an Integer, a String, a set of Indices, and another SwitchNode.
    */
 
+  @Override
   public int compareTo(Object o) {
     if (o == this) {
       return 0;

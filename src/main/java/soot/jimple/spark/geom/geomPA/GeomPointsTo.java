@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.geomPA;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -83,7 +83,6 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.options.SparkOptions;
 import soot.toolkits.scalar.Pair;
-import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
@@ -184,6 +183,7 @@ public class GeomPointsTo extends PAG {
     super(opts);
   }
 
+  @Override
   public String toString() {
     return "Geometric Points-To Analysis";
   }
@@ -194,33 +194,33 @@ public class GeomPointsTo extends PAG {
    */
   private void prepareContainers() {
     // All kinds of variables
-    consG = new HashMap<Node, IVarAbstraction>(39341);
+    consG = new HashMap<>(39341);
 
     // Only the pointer variables
-    pointers = new ZArrayNumberer<IVarAbstraction>(25771);
+    pointers = new ZArrayNumberer<>(25771);
 
     // Only the heap variables
-    allocations = new ZArrayNumberer<IVarAbstraction>();
+    allocations = new ZArrayNumberer<>();
 
     // The constraints extracted from code
-    constraints = new ZArrayNumberer<PlainConstraint>(25771);
+    constraints = new ZArrayNumberer<>(25771);
 
     // The statements that fork a new thread
-    thread_run_callsites = new HashSet<Stmt>(251);
+    thread_run_callsites = new HashSet<>(251);
 
     // The virtual callsites that have multiple call targets
-    multiCallsites = new HashSet<Stmt>(251);
+    multiCallsites = new HashSet<>(251);
 
     // The fake virtual call edges created by SPARK
     // obsoletedEdges = new Vector<CgEdge>(4021);
 
     // A linkedlist used for traversing the call graph
-    queue_cg = new LinkedList<Integer>();
+    queue_cg = new LinkedList<>();
 
     // Containers for functions and call graph edges
-    func2int = new HashMap<SootMethod, Integer>(5011);
-    int2func = new HashMap<Integer, SootMethod>(5011);
-    edgeMapping = new HashMap<Edge, CgEdge>(19763);
+    func2int = new HashMap<>(5011);
+    int2func = new HashMap<>(5011);
+    edgeMapping = new HashMap<>(19763);
 
     consG.clear();
     constraints.clear();
@@ -277,7 +277,7 @@ public class GeomPointsTo extends PAG {
       }
 
       // We create the log file
-      File log_file = new File(dump_dir, encoding_name + (opts.geom_blocking() == true ? "_blocked" : "_unblocked") + "_frac"
+      File log_file = new File(dump_dir, encoding_name + (opts.geom_blocking() ? "_blocked" : "_unblocked") + "_frac"
           + opts.geom_frac_base() + "_runs" + opts.geom_runs() + "_log.txt");
       try {
         ps = new PrintStream(log_file);
@@ -298,7 +298,7 @@ public class GeomPointsTo extends PAG {
       try {
         FileReader fr = new FileReader(method_verify_file);
         java.util.Scanner fin = new java.util.Scanner(fr);
-        validMethods = new HashMap<String, Boolean>();
+        validMethods = new HashMap<>();
 
         while (fin.hasNextLine()) {
           validMethods.put(fin.nextLine(), Boolean.FALSE);
@@ -320,7 +320,7 @@ public class GeomPointsTo extends PAG {
     // Output the SPARK running information
     double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
     ps.println();
-    ps.printf("[Spark] Time: %.3f s\n", (double) spark_run_time / 1000);
+    ps.printf("[Spark] Time: %.3f s\n", spark_run_time / 1000);
     ps.printf("[Spark] Memory: %.1f MB\n", mem / 1024 / 1024);
 
     // Get type manager from SPARK
@@ -425,15 +425,12 @@ public class GeomPointsTo extends PAG {
     }
 
     // We build the wrappers for all the pointers built by SPARK
-    for (Iterator<VarNode> it = getVarNodeNumberer().iterator(); it.hasNext();) {
-      VarNode vn = it.next();
+    for (VarNode vn : getVarNodeNumberer()) {
       IVarAbstraction pn = makeInternalNode(vn);
       pointers.add(pn);
     }
 
-    for (Iterator<AllocDotField> it = getAllocDotFieldNodeNumberer().iterator(); it.hasNext();) {
-      AllocDotField adf = it.next();
-
+    for (AllocDotField adf : getAllocDotFieldNodeNumberer()) {
       // Some allocdotfield is invalid, we check and remove them
       SparkField field = adf.getField();
       if (field instanceof SootField) {
@@ -450,8 +447,7 @@ public class GeomPointsTo extends PAG {
       pointers.add(pn);
     }
 
-    for (Iterator<AllocNode> it = getAllocNodeNumberer().iterator(); it.hasNext();) {
-      AllocNode obj = it.next();
+    for (AllocNode obj : getAllocNodeNumberer()) {
       IVarAbstraction pn = makeInternalNode(obj);
       allocations.add(pn);
     }
@@ -471,7 +467,7 @@ public class GeomPointsTo extends PAG {
     }
 
     // The assign constraints, p -> q
-    Pair<Node, Node> intercall = new Pair<Node, Node>();
+    Pair<Node, Node> intercall = new Pair<>();
     for (Object object : simpleSources()) {
       IVarAbstraction p = makeInternalNode((VarNode) object);
       Node[] succs = simpleLookup((VarNode) object);
@@ -754,7 +750,7 @@ public class GeomPointsTo extends PAG {
       CgEdge p = call_graph[i];
 
       while (p != null) {
-        if (p.scc_edge == false) {
+        if (!p.scc_edge) {
           // Consider the representative only
           j = rep_cg[p.t];
 
@@ -848,7 +844,7 @@ public class GeomPointsTo extends PAG {
           j = p.t;
           if (j != i // This is not a self-loop, and a self-loop is treated specially in the initial
               // encoding phase
-              && p.scc_edge == true) {
+              && p.scc_edge) {
             // max_context_size_block[i] == max_context_size_block[j]
             // So, we don't distinguish them
             if (context_size[j] <= Constants.MAX_CONTEXTS - max_context_size_block[i]) {
@@ -917,9 +913,9 @@ public class GeomPointsTo extends PAG {
     int all_virtual_edges = 0, n_obsoleted = 0;
 
     CallGraph cg = Scene.v().getCallGraph();
-    ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+    ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<>();
     QueueReader<SootMethod> targets = targetsQueue.reader();
-    Set<SootMethod> resolvedMethods = new HashSet<SootMethod>();
+    Set<SootMethod> resolvedMethods = new HashSet<>();
     // obsoletedEdges.clear();
 
     // We first update the virtual callsites
@@ -993,7 +989,7 @@ public class GeomPointsTo extends PAG {
 
         CgEdge temp = p.next;
 
-        if (p.is_obsoleted == false) {
+        if (!p.is_obsoleted) {
           p.next = q;
           q = p;
         } else {
@@ -1022,7 +1018,7 @@ public class GeomPointsTo extends PAG {
   private void prepareNextRun() {
     // Clean the context sensitive points-to results for the representative pointers
     for (IVarAbstraction pn : pointers) {
-      if (pn.willUpdate == true) {
+      if (pn.willUpdate) {
         pn.reconstruct();
       }
     }
@@ -1085,7 +1081,7 @@ public class GeomPointsTo extends PAG {
    * The reversed call graph might be used by evaluating queries.
    */
   private void buildRevCallGraph() {
-    rev_call_graph = new HashMap<Integer, LinkedList<CgEdge>>();
+    rev_call_graph = new HashMap<>();
 
     for (int i = 0; i < n_func; ++i) {
       CgEdge p = call_graph[i];
@@ -1093,7 +1089,7 @@ public class GeomPointsTo extends PAG {
       while (p != null) {
         LinkedList<CgEdge> list = rev_call_graph.get(p.t);
         if (list == null) {
-          list = new LinkedList<CgEdge>();
+          list = new LinkedList<>();
           rev_call_graph.put(p.t, list);
         }
 
@@ -1115,13 +1111,13 @@ public class GeomPointsTo extends PAG {
       IVarAbstraction po = it.next();
       AllocNode obj = (AllocNode) po.getWrappedNode();
       SootMethod sm = obj.getMethod();
-      if (sm != null && func2int.containsKey(sm) == false) {
+      if (sm != null && !func2int.containsKey(sm)) {
         it.remove();
       }
     }
 
     // Clean the unreachable pointers
-    final Vector<AllocNode> removeSet = new Vector<AllocNode>();
+    final Vector<AllocNode> removeSet = new Vector<>();
 
     for (Iterator<IVarAbstraction> it = pointers.iterator(); it.hasNext();) {
       IVarAbstraction pn = it.next();
@@ -1137,7 +1133,7 @@ public class GeomPointsTo extends PAG {
       }
 
       if (sm != null) {
-        if (func2int.containsKey(sm) == false) {
+        if (!func2int.containsKey(sm)) {
           pn.deleteAll();
           vn.discardP2Set();
           it.remove();
@@ -1155,8 +1151,7 @@ public class GeomPointsTo extends PAG {
         // We remove the useless shapes or objects
         Set<AllocNode> objSet = pn.get_all_points_to_objects();
 
-        for (Iterator<AllocNode> oit = objSet.iterator(); oit.hasNext();) {
-          AllocNode obj = oit.next();
+        for (AllocNode obj : objSet) {
           IVarAbstraction po = consG.get(obj);
           if (!po.reachable() || pn.isDeadObject(obj)) {
             removeSet.add(obj);
@@ -1386,11 +1381,11 @@ public class GeomPointsTo extends PAG {
   public void ddSolve(Set<Node> qryNodes) {
     long solve_time = 0, prepare_time = 0;
 
-    if (hasExecuted == false) {
+    if (!hasExecuted) {
       solve();
     }
 
-    if (ddPrepared == false || offlineProcessor == null) {
+    if (!ddPrepared || offlineProcessor == null) {
       offlineProcessor = new OfflineProcessor(this);
       IFigureManager.cleanCache();
       ddPrepared = true;
@@ -1461,7 +1456,7 @@ public class GeomPointsTo extends PAG {
    * Keep only the pointers the users are interested in. Just used for reducing memory occupation.
    */
   public void keepOnly(Set<IVarAbstraction> usefulPointers) {
-    Set<IVarAbstraction> reps = new HashSet<IVarAbstraction>();
+    Set<IVarAbstraction> reps = new HashSet<>();
 
     for (IVarAbstraction pn : usefulPointers) {
       reps.add(pn.getRepresentative());
@@ -1534,7 +1529,7 @@ public class GeomPointsTo extends PAG {
     if (validMethods != null) {
       ps.println("\nThe following methods are not evaluated because they are unreachable:");
       for (Map.Entry<String, Boolean> entry : validMethods.entrySet()) {
-        if (entry.getValue().equals(Boolean.FALSE)) {
+        if (!entry.getValue()) {
           ps.println(entry.getKey());
         }
       }
@@ -1755,6 +1750,7 @@ public class GeomPointsTo extends PAG {
     final PointsToSetInternal ret = getSetFactory().newSet(f.getType(), this);
 
     bases.forall(new P2SetVisitor() {
+      @Override
       public final void visit(Node n) {
         Node nDotF = ((AllocNode) n).dot(f);
         if (nDotF != null) {
@@ -1793,12 +1789,8 @@ public class GeomPointsTo extends PAG {
 
     // In case this pointer has no geomPTA result
     // This is perhaps a bug
-    if (pn == null) {
-      return vn.getP2Set();
-    }
-
     // Return the cached result
-    if (hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
+    if ((pn == null) || hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
       return vn.getP2Set();
     }
 
@@ -1895,12 +1887,8 @@ public class GeomPointsTo extends PAG {
     }
 
     IVarAbstraction pn = consG.get(vn);
-    if (pn == null) {
-      return vn.getP2Set();
-    }
-
     // Lookup the cache
-    if (hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
+    if ((pn == null) || hasTransformed || vn.getP2Set() != EmptyPointsToSet.v()) {
       return vn.getP2Set();
     }
 
@@ -1957,11 +1945,7 @@ public class GeomPointsTo extends PAG {
     }
 
     // Not seen by geomPTA
-    if (pn == null) {
-      return adf.getP2Set();
-    }
-
-    if (hasTransformed || adf.getP2Set() != EmptyPointsToSet.v()) {
+    if ((pn == null) || hasTransformed || adf.getP2Set() != EmptyPointsToSet.v()) {
       return adf.getP2Set();
     }
 

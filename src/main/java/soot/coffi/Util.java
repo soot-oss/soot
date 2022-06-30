@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -297,7 +297,7 @@ public class Util {
       {
         Type[] types = jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
-        parameterTypes = new ArrayList<Type>();
+        parameterTypes = new ArrayList<>();
         for (int j = 0; j < types.length - 1; j++) {
           references.add(types[j]);
           parameterTypes.add(types[j]);
@@ -479,7 +479,7 @@ public class Util {
     return types[types.length - 1];
   }
 
-  private final ArrayList<Type> conversionTypes = new ArrayList<Type>();
+  private final ArrayList<Type> conversionTypes = new ArrayList<>();
 
   /*
    * private Map cache = new HashMap(); public Type[] jimpleTypesOfFieldOrMethodDescriptor( String descriptor) { Type[] ret =
@@ -521,7 +521,7 @@ public class Util {
    * ret = (Type[]) conversionTypes.toArray(new Type[0]); cache.put(descriptor, ret); return ret; }
    */
 
-  private final Map<String, Type[]> cache = new HashMap<String, Type[]>();
+  private final Map<String, Type[]> cache = new HashMap<>();
 
   public Type[] jimpleTypesOfFieldOrMethodDescriptor(String descriptor) {
     Type[] ret = null;
@@ -533,7 +533,7 @@ public class Util {
     }
     char[] d = descriptor.toCharArray();
     int p = 0;
-    List<Type> conversionTypes = new ArrayList<Type>();
+    List<Type> conversionTypes = new ArrayList<>();
 
     outer: while (p < d.length) {
       boolean isArray = false;
@@ -863,13 +863,13 @@ public class Util {
     }
 
     if (nameToIndexToLocal == null) {
-      nameToIndexToLocal = new HashMap<String, Map<Integer, Local>>();
+      nameToIndexToLocal = new HashMap<>();
     }
 
     Map<Integer, Local> indexToLocal;
 
     if (!nameToIndexToLocal.containsKey(name)) {
-      indexToLocal = new HashMap<Integer, Local>();
+      indexToLocal = new HashMap<>();
       nameToIndexToLocal.put(name, indexToLocal);
     } else {
       indexToLocal = nameToIndexToLocal.get(name);
@@ -925,11 +925,7 @@ public class Util {
     }
     for (int i = 0; i < prospectiveName.length(); i++) {
       char c = prospectiveName.charAt(i);
-      if (i == 0 && c >= '0' && c <= '9') {
-        return false;
-      }
-
-      if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_' || c == '$'))) {
+      if ((i == 0 && c >= '0' && c <= '9') || !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_' || c == '$'))) {
         return false;
       }
     }
@@ -991,7 +987,7 @@ public class Util {
   }
 
   private ArrayList<AnnotationElem> createElementTags(int count, ClassFile coffiClass, element_value[] elems) {
-    ArrayList<AnnotationElem> list = new ArrayList<AnnotationElem>();
+    ArrayList<AnnotationElem> list = new ArrayList<>();
     for (int j = 0; j < count; j++) {
       element_value ev = elems[j];
       char kind = ev.tag;

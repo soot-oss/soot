@@ -10,12 +10,12 @@ package soot.jimple.spark.solver;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -70,6 +70,7 @@ public class Checker {
 
   protected void checkAll(final Node container, PointsToSetInternal nodes, final Node upstream) {
     nodes.forall(new P2SetVisitor() {
+      @Override
       public final void visit(Node n) {
         checkNode(container, n, upstream);
       }
@@ -119,6 +120,7 @@ public class Checker {
       final FieldRefNode fr = (FieldRefNode) element;
       final SparkField f = fr.getField();
       fr.getBase().getP2Set().forall(new P2SetVisitor() {
+        @Override
         public final void visit(Node n) {
           AllocDotField nDotF = pag.makeAllocDotField((AllocNode) n, f);
           checkAll(nDotF, srcSet, src);
@@ -131,6 +133,7 @@ public class Checker {
     final Node[] loadTargets = pag.loadLookup(src);
     final SparkField f = src.getField();
     src.getBase().getP2Set().forall(new P2SetVisitor() {
+      @Override
       public final void visit(Node n) {
         AllocDotField nDotF = ((AllocNode) n).dot(f);
         if (nDotF == null) {

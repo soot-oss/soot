@@ -10,12 +10,12 @@ package soot.toolkits.graph.pdg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -23,7 +23,6 @@ package soot.toolkits.graph.pdg;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class Region implements IRegion {
   // The following are needed to create a tree of regions based on the containment (dependency)
   // relation between regions.
   private IRegion m_parent = null;
-  private List<IRegion> m_children = new ArrayList<IRegion>();
+  private List<IRegion> m_children = new ArrayList<>();
 
   public Region(int id, SootMethod m, SootClass c, UnitGraph ug) {
     this(id, new ArrayList<Block>(), m, c, ug);
@@ -74,6 +73,7 @@ public class Region implements IRegion {
 
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public Object clone() {
     Region r = new Region(this.m_id, this.m_method, this.m_class, this.m_unitGraph);
@@ -83,29 +83,32 @@ public class Region implements IRegion {
 
   }
 
+  @Override
   public SootMethod getSootMethod() {
     return this.m_method;
   }
 
+  @Override
   public SootClass getSootClass() {
     return this.m_class;
   }
 
+  @Override
   public List<Block> getBlocks() {
     return this.m_blocks;
   }
 
+  @Override
   public UnitGraph getUnitGraph() {
     return this.m_unitGraph;
   }
 
+  @Override
   public List<Unit> getUnits() {
     if (this.m_units == null) {
-      this.m_units = new LinkedList<Unit>();
-      for (Iterator<Block> itr = this.m_blocks.iterator(); itr.hasNext();) {
-        Block b = itr.next();
-        for (Iterator<Unit> itr1 = b.iterator(); itr1.hasNext();) {
-          Unit u = itr1.next();
+      this.m_units = new LinkedList<>();
+      for (Block b : this.m_blocks) {
+        for (Unit u : b) {
           ((LinkedList<Unit>) this.m_units).addLast(u);
 
         }
@@ -116,12 +119,14 @@ public class Region implements IRegion {
     return this.m_units;
   }
 
+  @Override
   public List<Unit> getUnits(Unit from, Unit to) {
 
     return m_units.subList(m_units.indexOf(from), m_units.indexOf(to));
 
   }
 
+  @Override
   public Unit getLast() {
     if (this.m_units != null) {
       if (this.m_units.size() > 0) {
@@ -132,6 +137,7 @@ public class Region implements IRegion {
     return null;
   }
 
+  @Override
   public Unit getFirst() {
     if (this.m_units != null) {
       if (this.m_units.size() > 0) {
@@ -160,10 +166,12 @@ public class Region implements IRegion {
     this.m_units = null;
   }
 
+  @Override
   public int getID() {
     return this.m_id;
   }
 
+  @Override
   public boolean occursBefore(Unit u1, Unit u2) {
     int i = this.m_units.lastIndexOf(u1);
     int j = this.m_units.lastIndexOf(u2);
@@ -175,31 +183,35 @@ public class Region implements IRegion {
     return i < j;
   }
 
+  @Override
   public void setParent(IRegion pr) {
     this.m_parent = pr;
   }
 
+  @Override
   public IRegion getParent() {
     return this.m_parent;
   }
 
+  @Override
   public void addChildRegion(IRegion chr) {
     if (!this.m_children.contains(chr)) {
       this.m_children.add(chr);
     }
   }
 
+  @Override
   public List<IRegion> getChildRegions() {
     return this.m_children;
   }
 
+  @Override
   public String toString() {
     String str = new String();
     str += "Begin-----------Region:  " + this.m_id + "-------------\n";
 
     List<Unit> regionUnits = this.getUnits();
-    for (Iterator<Unit> itr = regionUnits.iterator(); itr.hasNext();) {
-      Unit u = itr.next();
+    for (Unit u : regionUnits) {
       str += u + "\n";
 
     }

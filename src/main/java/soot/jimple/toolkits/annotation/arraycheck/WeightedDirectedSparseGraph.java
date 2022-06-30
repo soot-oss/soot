@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -34,7 +34,7 @@ class WeightedDirectedSparseGraph {
 
   /* The graph is in linked list structure. */
   private Hashtable<Object, Hashtable<Object, IntContainer>> sources
-      = new Hashtable<Object, Hashtable<Object, IntContainer>>();
+      = new Hashtable<>();
 
   /* vertex set, may contain superious nodes. */
   private HashSet vertexes = new HashSet();
@@ -74,7 +74,7 @@ class WeightedDirectedSparseGraph {
 
     if (targets == null) {
       /* a new node was added to the graph */
-      targets = new Hashtable<Object, IntContainer>();
+      targets = new Hashtable<>();
       sources.put(from, targets);
     }
 
@@ -160,7 +160,7 @@ class WeightedDirectedSparseGraph {
       addAll(othergraph);
     }
 
-    List<Object> sourceList = new ArrayList<Object>(this.sources.keySet());
+    List<Object> sourceList = new ArrayList<>(this.sources.keySet());
 
     Iterator<Object> firstSrcIt = sourceList.iterator();
 
@@ -213,7 +213,7 @@ class WeightedDirectedSparseGraph {
 
     Hashtable<Object, Hashtable<Object, IntContainer>> othersources = other.sources;
 
-    List<Object> sourceList = new ArrayList<Object>(this.sources.keySet());
+    List<Object> sourceList = new ArrayList<>(this.sources.keySet());
 
     Iterator<Object> srcIt = sourceList.iterator();
     while (srcIt.hasNext()) {
@@ -265,7 +265,7 @@ class WeightedDirectedSparseGraph {
 
     this.makeShortestPathGraph();
 
-    List<Object> sourceList = new ArrayList<Object>(sources.keySet());
+    List<Object> sourceList = new ArrayList<>(sources.keySet());
 
     Iterator<Object> srcIt = sourceList.iterator();
 
@@ -344,7 +344,7 @@ class WeightedDirectedSparseGraph {
         continue;
       }
 
-      Hashtable<Object, IntContainer> thistargets = new Hashtable<Object, IntContainer>();
+      Hashtable<Object, IntContainer> thistargets = new Hashtable<>();
       Iterator othertargetIt = othertargets.keySet().iterator();
       while (othertargetIt.hasNext()) {
         Object key = othertargetIt.next();
@@ -378,7 +378,7 @@ class WeightedDirectedSparseGraph {
 
       Hashtable othertargets = othersources.get(src);
 
-      Hashtable<Object, IntContainer> thistargets = new Hashtable<Object, IntContainer>(othersources.size());
+      Hashtable<Object, IntContainer> thistargets = new Hashtable<>(othersources.size());
       this.sources.put(src, thistargets);
 
       Iterator targetIt = othertargets.keySet().iterator();
@@ -392,12 +392,9 @@ class WeightedDirectedSparseGraph {
     }
   }
 
+  @Override
   public boolean equals(Object other) {
-    if (other == null) {
-      return false;
-    }
-
-    if (!(other instanceof WeightedDirectedSparseGraph)) {
+    if ((other == null) || !(other instanceof WeightedDirectedSparseGraph)) {
       return false;
     }
 
@@ -451,6 +448,7 @@ class WeightedDirectedSparseGraph {
     return true;
   }
 
+  @Override
   public String toString() {
     String graphstring = "WeightedDirectedSparseGraph:\n";
 
@@ -488,7 +486,7 @@ class WeightedDirectedSparseGraph {
   public boolean makeShortestPathGraph() {
     boolean nonegcycle = true;
 
-    List<Object> srcList = new ArrayList<Object>(sources.keySet());
+    List<Object> srcList = new ArrayList<>(sources.keySet());
 
     Iterator<Object> srcIt = srcList.iterator();
 
@@ -503,18 +501,14 @@ class WeightedDirectedSparseGraph {
     return nonegcycle;
   }
 
-  private final HashSet<Object> reachableNodes = new HashSet<Object>();
-  private final HashSet<WeightedDirectedEdge> reachableEdges = new HashSet<WeightedDirectedEdge>();
-  private final Hashtable<Object, IntContainer> distance = new Hashtable<Object, IntContainer>();
-  private final Hashtable<Object, Object> pei = new Hashtable<Object, Object>();
+  private final HashSet<Object> reachableNodes = new HashSet<>();
+  private final HashSet<WeightedDirectedEdge> reachableEdges = new HashSet<>();
+  private final Hashtable<Object, IntContainer> distance = new Hashtable<>();
+  private final Hashtable<Object, Object> pei = new Hashtable<>();
 
   private boolean SSSPFinder(Object src) {
     Hashtable<Object, IntContainer> outedges = sources.get(src);
-    if (outedges == null) {
-      return true;
-    }
-
-    if (outedges.size() == 0) {
+    if ((outedges == null) || (outedges.size() == 0)) {
       return true;
     }
 
@@ -583,7 +577,7 @@ class WeightedDirectedSparseGraph {
   }
 
   private void getReachableNodesAndEdges(Object src) {
-    LinkedList<Object> worklist = new LinkedList<Object>();
+    LinkedList<Object> worklist = new LinkedList<>();
 
     reachableNodes.add(src);
     worklist.add(src);

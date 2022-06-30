@@ -87,8 +87,8 @@ public class TypeResolver {
 
   public TypeResolver(JimpleBody jb) {
     this.jb = jb;
-    this.assignments = new ArrayList<DefinitionStmt>();
-    this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
+    this.assignments = new ArrayList<>();
+    this.depends = new HashMap<>(jb.getLocalCount());
     this.localGenerator = Scene.v().createLocalGenerator(jb);
     this.initAssignments();
   }
@@ -511,7 +511,7 @@ public class TypeResolver {
   }
 
   protected List<Typing> createResultList() {
-    return new ArrayList<Typing>();
+    return new ArrayList<>();
   }
 
   // The ArrayType.equals method seems odd in Soot 2.2.5

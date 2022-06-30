@@ -10,12 +10,12 @@ package soot.jimple.toolkits.base;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -84,7 +84,7 @@ public class Aggregator extends BodyTransformer {
       Timers.v().aggregationTimer.start();
     }
 
-    Map<ValueBox, Zone> boxToZone = new HashMap<ValueBox, Zone>(body.getUnits().size() * 2 + 1, 0.7f);
+    Map<ValueBox, Zone> boxToZone = new HashMap<>(body.getUnits().size() * 2 + 1, 0.7f);
     // Determine the zone of every box
     {
       Zonation zonation = new Zonation(body);
@@ -146,12 +146,8 @@ public class Aggregator extends BodyTransformer {
         usepairValueBox = usepair.valueBox;
       }
 
-      if (localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1) {
-        continue;
-      }
-
       // Check to make sure aggregation pair in the same zone
-      if (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox)) {
+      if ((localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1) || (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox))) {
         continue;
       }
 
@@ -171,8 +167,8 @@ public class Aggregator extends BodyTransformer {
         boolean propagatingInvokeExpr = false;
         boolean propagatingFieldRef = false;
         boolean propagatingArrayRef = false;
-        ArrayList<FieldRef> fieldRefList = new ArrayList<FieldRef>();// iteration
-        HashSet<Value> localsUsed = new HashSet<Value>();// fast contains check
+        ArrayList<FieldRef> fieldRefList = new ArrayList<>();// iteration
+        HashSet<Value> localsUsed = new HashSet<>();// fast contains check
         for (ValueBox vb : s.getUseBoxes()) {
           Value v = vb.getValue();
           if (v instanceof Local) {

@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.analysis;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -106,6 +106,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTMethodNode(ASTMethodNode node) {
     inASTMethodNode(node);
     normalRetrieving(node);
@@ -124,6 +125,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node) {
     inASTSynchronizedBlockNode(node);
 
@@ -155,6 +157,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTLabeledBlockNode(ASTLabeledBlockNode node) {
     inASTLabeledBlockNode(node);
     normalRetrieving(node);
@@ -173,6 +176,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTUnconditionalLoopNode(ASTUnconditionalLoopNode node) {
     inASTUnconditionalLoopNode(node);
     normalRetrieving(node);
@@ -191,6 +195,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTSwitchNode(ASTSwitchNode node) {
     inASTSwitchNode(node);
 
@@ -222,6 +227,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTIfNode(ASTIfNode node) {
     inASTIfNode(node);
 
@@ -250,6 +256,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTIfElseNode(ASTIfElseNode node) {
     inASTIfElseNode(node);
 
@@ -279,6 +286,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTWhileNode(ASTWhileNode node) {
     inASTWhileNode(node);
 
@@ -307,6 +315,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTForLoopNode(ASTForLoopNode node) {
     inASTForLoopNode(node);
 
@@ -372,6 +381,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTDoWhileNode(ASTDoWhileNode node) {
     inASTDoWhileNode(node);
 
@@ -400,6 +410,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     inASTTryNode(node);
 
@@ -459,6 +470,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTUnaryCondition(ASTUnaryCondition uc) {
     inASTUnaryCondition(uc);
     // apply on the value
@@ -478,6 +490,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTBinaryCondition(ASTBinaryCondition bc) {
     inASTBinaryCondition(bc);
 
@@ -501,6 +514,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTAndCondition(ASTAndCondition ac) {
     inASTAndCondition(ac);
 
@@ -522,6 +536,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTOrCondition(ASTOrCondition oc) {
     inASTOrCondition(oc);
 
@@ -543,6 +558,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseType(Type t) {
     inType(t);
     outType(t);
@@ -576,6 +592,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
     inASTStatementSequenceNode(node);
     for (AugmentedStmt as : node.getStatements()) {
@@ -617,6 +634,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseDefinitionStmt(DefinitionStmt s) {
     inDefinitionStmt(s);
 
@@ -643,6 +661,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseReturnStmt(ReturnStmt s) {
     inReturnStmt(s);
 
@@ -666,6 +685,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseInvokeStmt(InvokeStmt s) {
     inInvokeStmt(s);
 
@@ -687,6 +707,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseThrowStmt(ThrowStmt s) {
     inThrowStmt(s);
     caseExprOrRefValueBox(s.getOpBox());
@@ -707,6 +728,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseDVariableDeclarationStmt(DVariableDeclarationStmt s) {
     inDVariableDeclarationStmt(s);
 
@@ -741,6 +763,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseStmt(Stmt s) {
     inStmt(s);
     outStmt(s);
@@ -812,6 +835,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseValue(Value v) {
     inValue(v);
     outValue(v);
@@ -829,6 +853,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseExpr(Expr e) {
     inExpr(e);
     decideCaseExpr(e);
@@ -847,6 +872,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseRef(Ref r) {
     inRef(r);
     decideCaseRef(r);
@@ -883,6 +909,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseBinopExpr(BinopExpr be) {
     inBinopExpr(be);
 
@@ -906,6 +933,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseUnopExpr(UnopExpr ue) {
     inUnopExpr(ue);
 
@@ -927,6 +955,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseNewArrayExpr(NewArrayExpr nae) {
     inNewArrayExpr(nae);
 
@@ -948,6 +977,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseNewMultiArrayExpr(NewMultiArrayExpr nmae) {
     inNewMultiArrayExpr(nmae);
 
@@ -970,6 +1000,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseInstanceOfExpr(InstanceOfExpr ioe) {
     inInstanceOfExpr(ioe);
 
@@ -991,6 +1022,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseInvokeExpr(InvokeExpr ie) {
     inInvokeExpr(ie);
 
@@ -1017,6 +1049,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseInstanceInvokeExpr(InstanceInvokeExpr iie) {
     inInstanceInvokeExpr(iie);
 
@@ -1038,6 +1071,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseCastExpr(CastExpr ce) {
     inCastExpr(ce);
     Type type = ce.getCastType();
@@ -1072,6 +1106,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseArrayRef(ArrayRef ar) {
     inArrayRef(ar);
     caseExprOrRefValueBox(ar.getBaseBox());
@@ -1098,6 +1133,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseInstanceFieldRef(InstanceFieldRef ifr) {
     inInstanceFieldRef(ifr);
     caseExprOrRefValueBox(ifr.getBaseBox());
@@ -1117,6 +1153,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
     }
   }
 
+  @Override
   public void caseStaticFieldRef(StaticFieldRef sfr) {
     inStaticFieldRef(sfr);
 

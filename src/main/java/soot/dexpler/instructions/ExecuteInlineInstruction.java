@@ -10,12 +10,12 @@ package soot.dexpler.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,6 +35,7 @@ import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35mi;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rmi;
+
 import soot.dexpler.DexBody;
 
 public class ExecuteInlineInstruction extends MethodInvocationInstruction implements OdexInstruction {
@@ -74,6 +75,7 @@ public class ExecuteInlineInstruction extends MethodInvocationInstruction implem
    *
    * @return a list of register indices
    */
+  @Override
   protected List<Integer> getUsedRegistersNums() {
     if (instruction instanceof Instruction35mi) {
       return getUsedRegistersNums((Instruction35mi) instruction);

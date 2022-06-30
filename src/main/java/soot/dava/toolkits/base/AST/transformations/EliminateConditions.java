@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -91,6 +91,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     this.AST = AST;
   }
 
+  @Override
   public void normalRetrieving(ASTNode node) {
     modified = false;
     if (node instanceof ASTSwitchNode) {
@@ -303,6 +304,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     return null;
   }
 
+  @Override
   public void caseASTTryNode(ASTTryNode node) {
     modified = false;
     inASTTryNode(node);
@@ -435,17 +437,17 @@ public class EliminateConditions extends DepthFirstAdapter {
           }
         }
         return true;
-      } else if (temp instanceof ASTWhileNode && returned.booleanValue() == false) {
+      } else if (temp instanceof ASTWhileNode && !returned.booleanValue()) {
         // notice we only remove if ASTWhileNode has false condition
         bodyContainingNode.remove(temp);
         return true;
-      } else if (temp instanceof ASTDoWhileNode && returned.booleanValue() == false) {
+      } else if (temp instanceof ASTDoWhileNode && !returned.booleanValue()) {
         // System.out.println("in try dowhile false");
         // remove the loop copy the body out since it gets executed once
         bodyContainingNode.remove(temp);
         bodyContainingNode.addAll(index, (List) temp.get_SubBodies().get(0));
         return true;
-      } else if (temp instanceof ASTForLoopNode && returned.booleanValue() == false) {
+      } else if (temp instanceof ASTForLoopNode && !returned.booleanValue()) {
         bodyContainingNode.remove(temp);
         ASTStatementSequenceNode newNode = new ASTStatementSequenceNode(((ASTForLoopNode) temp).getInit());
         bodyContainingNode.add(index, newNode);

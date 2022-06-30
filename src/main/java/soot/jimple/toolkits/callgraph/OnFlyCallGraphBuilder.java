@@ -174,14 +174,14 @@ public class OnFlyCallGraphBuilder {
   protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants;
   protected final SmallNumberedMap<Local, List<VirtualCallSite>> stringConstToSites;
 
-  protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
+  protected final HashSet<SootMethod> analyzedMethods = new HashSet<>();
   protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
   protected final MultiMap<Local, InvokeCallSite> invokeArgsToInvokeSite = new HashMultiMap<>();
   protected final Map<Local, BitSet> invokeArgsToSize = new IdentityHashMap<>();
   protected final MultiMap<AllocDotField, Local> allocDotFieldToLocal = new HashMultiMap<>();
   protected final MultiMap<Local, Type> reachingArgTypes = new HashMultiMap<>();
   protected final MultiMap<Local, Type> reachingBaseTypes = new HashMultiMap<>();
-  protected final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+  protected final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<>();
   protected final QueueReader<SootMethod> targets = targetsQueue.reader();
 
   protected final ReflectionModel reflectionModel;
@@ -203,21 +203,22 @@ public class OnFlyCallGraphBuilder {
     final Scene sc = Scene.v();
     {
       final StringNumberer nmbr = sc.getSubSigNumberer();
-      if (Options.v().src_prec() == Options.src_prec_dotnet)
+      if (Options.v().src_prec() == Options.src_prec_dotnet) {
         this.sigFinalize = nmbr.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
-      else
+      } else {
         this.sigFinalize = nmbr.findOrAdd(JavaMethods.SIG_FINALIZE);
+      }
       this.sigInit = nmbr.findOrAdd(JavaMethods.SIG_INIT);
       this.sigForName = nmbr.findOrAdd(JavaMethods.SIG_INIT);
     }
     {
-      this.receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>(sc.getLocalNumberer());
+      this.receiverToSites = new LargeNumberedMap<>(sc.getLocalNumberer());
       final IterableNumberer<SootMethod> methodNumberer = sc.getMethodNumberer();
-      this.methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.stringConstToSites = new SmallNumberedMap<Local, List<VirtualCallSite>>();
+      this.methodToReceivers = new LargeNumberedMap<>(methodNumberer);
+      this.methodToInvokeBases = new LargeNumberedMap<>(methodNumberer);
+      this.methodToInvokeArgs = new LargeNumberedMap<>(methodNumberer);
+      this.methodToStringConstants = new LargeNumberedMap<>(methodNumberer);
+      this.stringConstToSites = new SmallNumberedMap<>();
     }
 
     this.cm = cm;
@@ -667,8 +668,7 @@ public class OnFlyCallGraphBuilder {
   public void addStringConstant(Local l, Context srcContext, String constant) {
     if (constant != null) {
       final Scene sc = Scene.v();
-      for (Iterator<VirtualCallSite> siteIt = stringConstToSites.get(l).iterator(); siteIt.hasNext();) {
-        final VirtualCallSite site = siteIt.next();
+      for (VirtualCallSite site : stringConstToSites.get(l)) {
         final int constLen = constant.length();
         if (constLen > 0 && constant.charAt(0) == '[') {
           if (constLen > 2 && constant.charAt(1) == 'L' && constant.charAt(constLen - 1) == ';') {
@@ -690,8 +690,7 @@ public class OnFlyCallGraphBuilder {
         }
       }
     } else if (options.verbose()) {
-      for (Iterator<VirtualCallSite> siteIt = stringConstToSites.get(l).iterator(); siteIt.hasNext();) {
-        final VirtualCallSite site = siteIt.next();
+      for (VirtualCallSite site : stringConstToSites.get(l)) {
         logger.warn("Method " + site.getContainer() + " is reachable, and calls Class.forName on a non-constant"
             + " String; graph will be incomplete! Use safe-forname option for a conservative result.");
       }
@@ -781,10 +780,10 @@ public class OnFlyCallGraphBuilder {
       Kind kind) {
     List<VirtualCallSite> sites = receiverToSites.get(receiver);
     if (sites == null) {
-      receiverToSites.put(receiver, sites = new ArrayList<VirtualCallSite>());
+      receiverToSites.put(receiver, sites = new ArrayList<>());
       List<Local> receivers = methodToReceivers.get(m);
       if (receivers == null) {
-        methodToReceivers.put(m, receivers = new ArrayList<Local>());
+        methodToReceivers.put(m, receivers = new ArrayList<>());
       }
       receivers.add(receiver);
     }
@@ -1037,13 +1036,13 @@ public class OnFlyCallGraphBuilder {
 
     protected final CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
-    protected final HashSet<SootMethod> warnedAlready = new HashSet<SootMethod>();
+    protected final HashSet<SootMethod> warnedAlready = new HashSet<>();
 
     @Override
     public void classForName(SootMethod source, Stmt s) {
       List<Local> stringConstants = methodToStringConstants.get(source);
       if (stringConstants == null) {
-        methodToStringConstants.put(source, stringConstants = new ArrayList<Local>());
+        methodToStringConstants.put(source, stringConstants = new ArrayList<>());
       }
       Value className = s.getInvokeExpr().getArg(0);
       if (className instanceof StringConstant) {
@@ -1065,7 +1064,7 @@ public class OnFlyCallGraphBuilder {
           VirtualCallSite site = new VirtualCallSite(s, source, null, null, Kind.CLINIT);
           List<VirtualCallSite> sites = stringConstToSites.get(constant);
           if (sites == null) {
-            stringConstToSites.put(constant, sites = new ArrayList<VirtualCallSite>());
+            stringConstToSites.put(constant, sites = new ArrayList<>());
             stringConstants.add(constant);
           }
           sites.add(site);
@@ -1166,7 +1165,7 @@ public class OnFlyCallGraphBuilder {
       }
 
       this.reflectionInfo = new ReflectionTraceInfo(logFile);
-      this.guards = new HashSet<Guard>();
+      this.guards = new HashSet<>();
     }
 
     /**

@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.geomPA;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -102,7 +102,7 @@ public class GeomQueries {
       int rep = rep_cg[i];
       while (p != null) {
         // To speedup context searching, SCC edges are all removed
-        if (p.scc_edge == false) {
+        if (!p.scc_edge) {
           CgEdge q = p.duplicate();
 
           // The non-SCC edge is attached to the SCC representative
@@ -145,7 +145,7 @@ public class GeomQueries {
     top_rank = new int[n_func];
     Arrays.fill(top_rank, 0);
 
-    topQ = new LinkedList<Integer>();
+    topQ = new LinkedList<>();
     topQ.add(Constants.SUPER_MAIN);
 
     while (!topQ.isEmpty()) {
@@ -200,7 +200,7 @@ public class GeomQueries {
     while (p != null) {
       int t = p.t;
       int rep_t = rep_cg[t];
-      if (in_degree[rep_t] != 0 || (top_rank[rep_t] <= top_rank[rep_target] && dfsScanSubgraph(t, target) == true)) {
+      if (in_degree[rep_t] != 0 || (top_rank[rep_t] <= top_rank[rep_target] && dfsScanSubgraph(t, target))) {
         in_degree[rep_t]++;
         reachable = true;
       }
@@ -344,7 +344,7 @@ public class GeomQueries {
   public boolean contextsGoBy(Edge sootEdge, Local l, PtSensVisitor visitor) {
     // Obtain the internal representation of specified context
     CgEdge ctxt = geomPTA.getInternalEdgeFromSootEdge(sootEdge);
-    if (ctxt == null || ctxt.is_obsoleted == true) {
+    if (ctxt == null || ctxt.is_obsoleted) {
       return false;
     }
 
@@ -415,7 +415,7 @@ public class GeomQueries {
   @SuppressWarnings("rawtypes")
   public boolean contextsGoBy(Edge sootEdge, Local l, SparkField field, PtSensVisitor visitor) {
     Obj_full_extractor pts_l = new Obj_full_extractor();
-    if (contextsGoBy(sootEdge, l, pts_l) == false) {
+    if (!contextsGoBy(sootEdge, l, pts_l)) {
       return false;
     }
 
@@ -497,10 +497,9 @@ public class GeomQueries {
     visitor.prepare();
 
     long L = 1;
-    for (int i = 0; i < callEdgeChain.length; ++i) {
-      Edge sootEdge = callEdgeChain[i];
+    for (Edge sootEdge : callEdgeChain) {
       CgEdge ctxt = geomPTA.getInternalEdgeFromSootEdge(sootEdge);
-      if (ctxt == null || ctxt.is_obsoleted == true) {
+      if (ctxt == null || ctxt.is_obsoleted) {
         return false;
       }
 
@@ -543,7 +542,7 @@ public class GeomQueries {
   public boolean kCFA(Edge[] callEdgeChain, Local l, SparkField field, PtSensVisitor visitor) {
     // We first obtain the points-to information for l
     Obj_full_extractor pts_l = new Obj_full_extractor();
-    if (kCFA(callEdgeChain, l, pts_l) == false) {
+    if (!kCFA(callEdgeChain, l, pts_l)) {
       return false;
     }
 

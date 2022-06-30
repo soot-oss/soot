@@ -10,12 +10,12 @@ package soot.jimple.toolkits.pointer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,7 +38,6 @@ import soot.Scene;
 import soot.Singletons;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
 import soot.tagkit.ColorTag;
@@ -55,7 +54,7 @@ public class ParameterAliasTagger extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    Set<IdentityStmt> parms = new HashSet<IdentityStmt>();
+    Set<IdentityStmt> parms = new HashSet<>();
     for (Unit u : b.getUnits()) {
       if (u instanceof IdentityStmt) {
         IdentityStmt is = (IdentityStmt) u;
@@ -80,7 +79,7 @@ public class ParameterAliasTagger extends BodyTransformer {
       parm.getRightOpBox().addTag(new ColorTag(colour, "Parameter Alias"));
       parms.remove(parm);
       PointsToSet ps = pa.reachingObjects((Local) parm.getLeftOp());
-      for (IdentityStmt is : new LinkedList<IdentityStmt>(parms)) {
+      for (IdentityStmt is : new LinkedList<>(parms)) {
         if (ps.hasNonEmptyIntersection(pa.reachingObjects((Local) is.getLeftOp()))) {
           fill(parms, is, colour, pa);
         }

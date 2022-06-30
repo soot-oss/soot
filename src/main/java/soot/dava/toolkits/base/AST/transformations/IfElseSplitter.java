@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -80,10 +80,12 @@ public class IfElseSplitter extends DepthFirstAdapter {
     super(verbose);
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     methodNode = node;
   }
 
+  @Override
   public void outASTMethodNode(ASTMethodNode a) {
     if (!transform) {
       return;
@@ -110,6 +112,7 @@ public class IfElseSplitter extends DepthFirstAdapter {
 
   }
 
+  @Override
   public void outASTIfElseNode(ASTIfElseNode node) {
     // if some pattern has already matched cant do another one in this go
     if (transform) {
@@ -160,8 +163,8 @@ public class IfElseSplitter extends DepthFirstAdapter {
       if (DEBUG) {
         System.out.println("New IF Node is: " + newNode.toString());
         System.out.println("Outer scope body list is:\n");
-        for (int i = 0; i < outerScopeBody.size(); i++) {
-          System.out.println("\n\n " + outerScopeBody.get(i).toString());
+        for (Object element : outerScopeBody) {
+          System.out.println("\n\n " + element.toString());
         }
       }
 
@@ -189,17 +192,7 @@ public class IfElseSplitter extends DepthFirstAdapter {
 
   public boolean tryBodyPattern(List<Object> body, SETNodeLabel label, List<Object> otherBody) {
     Stmt lastStmt = getLastStmt(body);
-    if (lastStmt == null) {
-      // dont have a last stmt so cant match pattern
-      return false;
-    }
-
-    if (!(lastStmt instanceof ReturnStmt || lastStmt instanceof ReturnVoidStmt || lastStmt instanceof DAbruptStmt)) {
-      // lastStmt is not an abrupt stmt
-      return false;
-    }
-
-    if (bodyTargetsLabel(label, body) || bodyTargetsLabel(label, otherBody)) {
+    if ((lastStmt == null) || !(lastStmt instanceof ReturnStmt || lastStmt instanceof ReturnVoidStmt || lastStmt instanceof DAbruptStmt) || bodyTargetsLabel(label, body) || bodyTargetsLabel(label, otherBody)) {
       // one of the bodies targets the label on the ifelse cant match pattern
       return false;
     }
@@ -215,12 +208,8 @@ public class IfElseSplitter extends DepthFirstAdapter {
    */
   public boolean bodyTargetsLabel(SETNodeLabel label, List<Object> body) {
     // no SETNodeLabel is good
-    if (label == null) {
-      return false;
-    }
-
     // SETNodeLabel but with no string is also good
-    if (label.toString() == null) {
+    if ((label == null) || (label.toString() == null)) {
       return false;
     }
 
@@ -235,6 +224,7 @@ public class IfElseSplitter extends DepthFirstAdapter {
 
       temp.apply(new DepthFirstAdapter() {
         // set targeted to true if DAbruptStmt targets it
+        @Override
         public void inStmt(Stmt s) {
           // only interested in abrupt stmts
           if (!(s instanceof DAbruptStmt)) {

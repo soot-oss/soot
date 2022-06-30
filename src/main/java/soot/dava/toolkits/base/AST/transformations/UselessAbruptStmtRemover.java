@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.AST.transformations;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -54,16 +54,16 @@ import soot.jimple.Stmt;
  *      BodyA
  *      break label1
  *    }
- *    
+ *
  *    As in the above code the break stmt is absolutely unnessary as the code
  *    will itself flow to the required position.
- *    
- *    However, remember that breaks and continues are also used to 
+ *
+ *    However, remember that breaks and continues are also used to
  *    exit or repeat a loop in which case we should keep the break and continue!!!
- *    
+ *
  *    TODO Also if we do decide to remove an abrupt stmt make sure that the
  *    stmt seq node has not become empty. If it has remove the node and see
- *    if the construct carrying this node has become empty and so on..... 
+ *    if the construct carrying this node has become empty and so on.....
  */
 public class UselessAbruptStmtRemover extends DepthFirstAdapter {
   public static boolean DEBUG = false;
@@ -81,12 +81,14 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
     finder = null;
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     methodNode = node;
     mapper = new LabelToNodeMapper();
     methodNode.apply(mapper);
   }
 
+  @Override
   public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
     Iterator<AugmentedStmt> it = node.getStatements().iterator();
     AugmentedStmt remove = null;

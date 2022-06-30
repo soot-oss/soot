@@ -10,12 +10,12 @@ package soot.dava.internal.SET;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -38,6 +38,7 @@ public class SETWhileNode extends SETCycleNode {
     add_SubBody(subBody);
   }
 
+  @Override
   public IterableSet get_NaturalExits() {
     IterableSet c = new IterableSet();
 
@@ -46,11 +47,13 @@ public class SETWhileNode extends SETCycleNode {
     return c;
   }
 
+  @Override
   public ASTNode emit_AST() {
     return new ASTWhileNode(get_Label(), (ConditionExpr) ((IfStmt) get_CharacterizingStmt().get_Stmt()).getCondition(),
         emit_ASTBody(body2childChain.get(subBodies.get(0))));
   }
 
+  @Override
   public AugmentedStmt get_EntryStmt() {
     return get_CharacterizingStmt();
   }

@@ -10,12 +10,12 @@ package soot.dotnet.instructions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,10 +50,12 @@ public class CilStObjInstruction extends AbstractCilnstruction {
     Value value = cilExpr.jimplifyExpr(jb);
 
     // create this cast, to validate successfully
-    if (value instanceof Local && !target.getType().toString().equals(value.getType().toString()))
+    if (value instanceof Local && !target.getType().toString().equals(value.getType().toString())) {
       if (value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-          && !target.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT))
+          && !target.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
         value = Jimple.v().newCastExpr(value, target.getType());
+      }
+    }
 
     // if rvalue is not single value and lvalue is static-ref, rewrite with a local variable to meet three address
     // requirement
@@ -69,10 +71,11 @@ public class CilStObjInstruction extends AbstractCilnstruction {
 
     // if new Obj also add call of constructor - relevant for structs (System.ValueType)
     if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
-      if (!(target instanceof Local))
+      if (!(target instanceof Local)) {
         throw new RuntimeException("STOBJ: The given target is not a local! " + "The value is: " + target.toString()
             + " of type " + target.getType() + "! " + "The resolving method body is: "
             + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
+      }
       ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) target);
     }
   }

@@ -10,12 +10,12 @@ package soot.toolkits.graph.pdg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -61,7 +61,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   // relation between regions.
   private IRegion m_parent = null;
   // The following keeps the child regions
-  private List<IRegion> m_children = new ArrayList<IRegion>();
+  private List<IRegion> m_children = new ArrayList<>();
 
   public PDGRegion(int id, SootMethod m, SootClass c, UnitGraph ug, PDGNode node) {
     this(id, new ArrayList<PDGNode>(), m, c, ug, node);
@@ -85,7 +85,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   }
 
   public PDGRegion(PDGNode node) {
-    this(((IRegion) node.getNode()).getID(), (List<PDGNode>) new ArrayList<PDGNode>(),
+    this(((IRegion) node.getNode()).getID(), new ArrayList<PDGNode>(),
         ((IRegion) node.getNode()).getSootMethod(), ((IRegion) node.getNode()).getSootClass(),
         ((IRegion) node.getNode()).getUnitGraph(), node);
 
@@ -95,6 +95,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     return this.m_corrspondingPDGNode;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   public Object clone() {
     PDGRegion r = new PDGRegion(this.m_id, this.m_method, this.m_class, this.m_unitGraph, m_corrspondingPDGNode);
@@ -104,10 +105,12 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
 
   }
 
+  @Override
   public SootMethod getSootMethod() {
     return this.m_method;
   }
 
+  @Override
   public SootClass getSootClass() {
     return this.m_class;
   }
@@ -116,6 +119,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     return this.m_nodes;
   }
 
+  @Override
   public UnitGraph getUnitGraph() {
     return this.m_unitGraph;
   }
@@ -134,6 +138,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
       m_list = list;
     }
 
+    @Override
     public boolean hasNext() {
       if (beginning) {
         if (m_list.size() > 0) {
@@ -144,6 +149,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
       return (m_current != null && m_current.getNext() != null);
     }
 
+    @Override
     public PDGNode next() {
 
       if (beginning) {
@@ -169,8 +175,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
            *
            */
 
-          for (Iterator<PDGNode> depItr = m_list.iterator(); depItr.hasNext();) {
-            PDGNode dep = depItr.next();
+          for (PDGNode dep : m_list) {
             if (dep.getType() == PDGNode.Type.CFGNODE || dep.getAttrib() == PDGNode.Attribute.LOOPHEADER) {
               m_current = dep;
               // go to the beginning of the flow
@@ -191,6 +196,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
       return m_current;
     }
 
+    @Override
     public void remove() {
 
     }
@@ -203,18 +209,18 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
    * region.
    *
    */
+  @Override
   public Iterator<PDGNode> iterator() {
     return new ChildPDGFlowIterator(this.m_nodes);
   }
 
+  @Override
   public List<Unit> getUnits() {
     if (this.m_units == null) {
-      this.m_units = new LinkedList<Unit>();
-      this.m_unit2pdgnode = new LinkedHashMap<Unit, PDGNode>();
+      this.m_units = new LinkedList<>();
+      this.m_unit2pdgnode = new LinkedHashMap<>();
 
-      for (Iterator<PDGNode> itr = this.iterator(); itr.hasNext();) {
-        PDGNode node = itr.next();
-
+      for (PDGNode node : this) {
         if (node.getType() == PDGNode.Type.REGION) {
           // Actually, we should only get here if a loop header region is in this region's children list.
           // Or if the PDG is based on an ExceptionalUnitGraph, then this could be the region corresponding
@@ -224,8 +230,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
             LoopedPDGNode n = (LoopedPDGNode) node;
             PDGNode header = n.getHeader();
             Block headerBlock = (Block) header.getNode();
-            for (Iterator<Unit> itr1 = headerBlock.iterator(); itr1.hasNext();) {
-              Unit u = itr1.next();
+            for (Unit u : headerBlock) {
               ((LinkedList<Unit>) this.m_units).addLast(u);
               this.m_unit2pdgnode.put(u, header);
 
@@ -234,8 +239,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
 
         } else if (node.getType() == PDGNode.Type.CFGNODE) {
           Block b = (Block) node.getNode();
-          for (Iterator<Unit> itr1 = b.iterator(); itr1.hasNext();) {
-            Unit u = itr1.next();
+          for (Unit u : b) {
             ((LinkedList<Unit>) this.m_units).addLast(u);
             this.m_unit2pdgnode.put(u, node);
 
@@ -266,12 +270,14 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     }
   }
 
+  @Override
   public List<Unit> getUnits(Unit from, Unit to) {
 
     return m_units.subList(m_units.indexOf(from), m_units.indexOf(to));
 
   }
 
+  @Override
   public Unit getLast() {
     if (this.m_units != null) {
       if (this.m_units.size() > 0) {
@@ -282,6 +288,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     return null;
   }
 
+  @Override
   public Unit getFirst() {
     if (this.m_units != null) {
       if (this.m_units.size() > 0) {
@@ -293,18 +300,21 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
   }
 
   // FIXME: return the real list of blocks
+  @Override
   public List<Block> getBlocks() {
-    return new ArrayList<Block>();
+    return new ArrayList<>();
   }
 
   public void addPDGNode(PDGNode node) {
     this.m_nodes.add(node);
   }
 
+  @Override
   public int getID() {
     return this.m_id;
   }
 
+  @Override
   public boolean occursBefore(Unit u1, Unit u2) {
     int i = this.m_units.lastIndexOf(u1);
     int j = this.m_units.lastIndexOf(u2);
@@ -316,24 +326,29 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     return i < j;
   }
 
+  @Override
   public void setParent(IRegion pr) {
     this.m_parent = pr;
   }
 
+  @Override
   public IRegion getParent() {
     return this.m_parent;
   }
 
+  @Override
   public void addChildRegion(IRegion chr) {
     if (!this.m_children.contains(chr)) {
       this.m_children.add(chr);
     }
   }
 
+  @Override
   public List<IRegion> getChildRegions() {
     return this.m_children;
   }
 
+  @Override
   public String toString() {
     String str = new String();
     str += "Begin-----------PDGRegion:  " + this.m_id + "-------------\n";
@@ -343,14 +358,13 @@ public class PDGRegion implements IRegion, Iterable<PDGNode> {
     str += "Children Regions are: ";
 
     for (Iterator<IRegion> ritr = this.m_children.iterator(); ritr.hasNext();) {
-      str += ((IRegion) ritr.next()).getID() + ", ";
+      str += ritr.next().getID() + ", ";
     }
 
     str += "\nUnits are: \n";
 
     List<Unit> regionUnits = this.getUnits();
-    for (Iterator<Unit> itr = regionUnits.iterator(); itr.hasNext();) {
-      Unit u = itr.next();
+    for (Unit u : regionUnits) {
       str += u + "\n";
 
     }

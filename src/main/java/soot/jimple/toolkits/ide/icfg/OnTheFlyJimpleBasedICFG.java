@@ -1,5 +1,15 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -10,12 +20,12 @@ package soot.jimple.toolkits.ide.icfg;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -27,17 +37,6 @@ import com.google.common.cache.LoadingCache;
 
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.FastHierarchy;
@@ -134,7 +133,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
       });
 
   @SynchronizedBy("explicit lock on data structure")
-  protected Map<SootMethod, Set<Unit>> methodToCallers = new HashMap<SootMethod, Set<Unit>>();
+  protected Map<SootMethod, Set<Unit>> methodToCallers = new HashMap<>();
 
   public OnTheFlyJimpleBasedICFG(SootMethod... entryPoints) {
     this(Arrays.asList(entryPoints));
@@ -192,7 +191,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
     synchronized (methodToCallers) {
       Set<Unit> callers = methodToCallers.get(target);
       if (callers == null) {
-        callers = new HashSet<Unit>();
+        callers = new HashSet<>();
         methodToCallers.put(target, callers);
       }
       callers.add(callSite);
@@ -228,8 +227,8 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 
         SootMethod mainMethod = Scene.v().getMainMethod();
         OnTheFlyJimpleBasedICFG icfg = new OnTheFlyJimpleBasedICFG(mainMethod);
-        Set<SootMethod> worklist = new LinkedHashSet<SootMethod>();
-        Set<SootMethod> visited = new HashSet<SootMethod>();
+        Set<SootMethod> worklist = new LinkedHashSet<>();
+        Set<SootMethod> visited = new HashSet<>();
         worklist.add(mainMethod);
         int monomorphic = 0, polymorphic = 0;
         while (!worklist.isEmpty()) {

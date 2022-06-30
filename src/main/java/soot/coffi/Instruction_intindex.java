@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -60,27 +60,33 @@ class Instruction_intindex extends Instruction {
     super(c);
   }
 
+  @Override
   public String toString(cp_info constant_pool[]) {
     return super.toString(constant_pool) + argsep + "[" + constant_pool[arg_i].toString(constant_pool) + "]";
   }
 
+  @Override
   public int nextOffset(int curr) {
     return curr + 3;
   }
 
+  @Override
   public void markCPRefs(boolean[] refs) {
     refs[arg_i] = true;
   }
 
+  @Override
   public void redirectCPRefs(short redirect[]) {
     arg_i = redirect[arg_i];
   }
 
+  @Override
   public int parse(byte bc[], int index) {
     arg_i = getShort(bc, index);
     return index + 2;
   }
 
+  @Override
   public int compile(byte bc[], int index) {
     bc[index++] = code;
     shortToBytes((short) arg_i, bc, index);

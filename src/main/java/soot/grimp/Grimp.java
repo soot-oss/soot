@@ -11,12 +11,12 @@ package soot.grimp;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -714,86 +714,107 @@ public class Grimp {
     if (value instanceof Expr) {
       final ExprBox returnedExpr = new ExprBox(IntConstant.v(0));
       ((Expr) value).apply(new AbstractExprSwitch() {
+        @Override
         public void caseAddExpr(AddExpr v) {
           returnedExpr.setValue(newAddExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseAndExpr(AndExpr v) {
           returnedExpr.setValue(newAndExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseCmpExpr(CmpExpr v) {
           returnedExpr.setValue(newCmpExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseCmpgExpr(CmpgExpr v) {
           returnedExpr.setValue(newCmpgExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseCmplExpr(CmplExpr v) {
           returnedExpr.setValue(newCmplExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseDivExpr(DivExpr v) {
           returnedExpr.setValue(newDivExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseEqExpr(EqExpr v) {
           returnedExpr.setValue(newEqExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseNeExpr(NeExpr v) {
           returnedExpr.setValue(newNeExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseGeExpr(GeExpr v) {
           returnedExpr.setValue(newGeExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseGtExpr(GtExpr v) {
           returnedExpr.setValue(newGtExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseLeExpr(LeExpr v) {
           returnedExpr.setValue(newLeExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseLtExpr(LtExpr v) {
           returnedExpr.setValue(newLtExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseMulExpr(MulExpr v) {
           returnedExpr.setValue(newMulExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseOrExpr(OrExpr v) {
           returnedExpr.setValue(newOrExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseRemExpr(RemExpr v) {
           returnedExpr.setValue(newRemExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseShlExpr(ShlExpr v) {
           returnedExpr.setValue(newShlExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseShrExpr(ShrExpr v) {
           returnedExpr.setValue(newShrExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseUshrExpr(UshrExpr v) {
           returnedExpr.setValue(newUshrExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseSubExpr(SubExpr v) {
           returnedExpr.setValue(newSubExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseXorExpr(XorExpr v) {
           returnedExpr.setValue(newXorExpr(newExpr(v.getOp1()), newExpr(v.getOp2())));
         }
 
+        @Override
         public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v) {
           ArrayList newArgList = new ArrayList();
           for (int i = 0; i < v.getArgCount(); i++) {
@@ -802,6 +823,7 @@ public class Grimp {
           returnedExpr.setValue(newInterfaceInvokeExpr((Local) (v.getBase()), v.getMethodRef(), newArgList));
         }
 
+        @Override
         public void caseSpecialInvokeExpr(SpecialInvokeExpr v) {
           ArrayList newArgList = new ArrayList();
           for (int i = 0; i < v.getArgCount(); i++) {
@@ -810,6 +832,7 @@ public class Grimp {
           returnedExpr.setValue(newSpecialInvokeExpr((Local) (v.getBase()), v.getMethodRef(), newArgList));
         }
 
+        @Override
         public void caseStaticInvokeExpr(StaticInvokeExpr v) {
           ArrayList newArgList = new ArrayList();
           for (int i = 0; i < v.getArgCount(); i++) {
@@ -818,6 +841,7 @@ public class Grimp {
           returnedExpr.setValue(newStaticInvokeExpr(v.getMethodRef(), newArgList));
         }
 
+        @Override
         public void caseVirtualInvokeExpr(VirtualInvokeExpr v) {
           ArrayList newArgList = new ArrayList();
           for (int i = 0; i < v.getArgCount(); i++) {
@@ -826,6 +850,7 @@ public class Grimp {
           returnedExpr.setValue(newVirtualInvokeExpr((Local) (v.getBase()), v.getMethodRef(), newArgList));
         }
 
+        @Override
         public void caseDynamicInvokeExpr(DynamicInvokeExpr v) {
           ArrayList newArgList = new ArrayList();
           for (int i = 0; i < v.getArgCount(); i++) {
@@ -835,34 +860,42 @@ public class Grimp {
               v.getHandleTag(), newArgList));
         }
 
+        @Override
         public void caseCastExpr(CastExpr v) {
           returnedExpr.setValue(newCastExpr(newExpr(v.getOp()), v.getType()));
         }
 
+        @Override
         public void caseInstanceOfExpr(InstanceOfExpr v) {
           returnedExpr.setValue(newInstanceOfExpr(newExpr(v.getOp()), v.getCheckType()));
         }
 
+        @Override
         public void caseNewArrayExpr(NewArrayExpr v) {
           returnedExpr.setValue(newNewArrayExpr(v.getBaseType(), v.getSize()));
         }
 
+        @Override
         public void caseNewMultiArrayExpr(NewMultiArrayExpr v) {
           returnedExpr.setValue(newNewMultiArrayExpr(v.getBaseType(), v.getSizes()));
         }
 
+        @Override
         public void caseNewExpr(NewExpr v) {
           returnedExpr.setValue(newNewExpr(v.getBaseType()));
         }
 
+        @Override
         public void caseLengthExpr(LengthExpr v) {
           returnedExpr.setValue(newLengthExpr(newExpr(v.getOp())));
         }
 
+        @Override
         public void caseNegExpr(NegExpr v) {
           returnedExpr.setValue(newNegExpr(newExpr(v.getOp())));
         }
 
+        @Override
         public void defaultCase(Object v) {
           returnedExpr.setValue((Expr) v);
         }

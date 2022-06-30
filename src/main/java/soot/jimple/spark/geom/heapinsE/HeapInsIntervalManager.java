@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.heapinsE;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -53,24 +53,28 @@ public class HeapInsIntervalManager extends IFigureManager {
   private SegmentNode header[] = { null, null, null };
   private boolean hasNewFigure = false;
 
+  @Override
   public SegmentNode[] getFigures() {
     return header;
   }
 
+  @Override
   public int[] getSizes() {
     return size;
   }
 
+  @Override
   public boolean isThereUnprocessedFigures() {
     return hasNewFigure;
   }
 
+  @Override
   public void flush() {
     hasNewFigure = false;
 
     for (int i = 0; i < Divisions; ++i) {
       SegmentNode p = header[i];
-      while (p != null && p.is_new == true) {
+      while (p != null && p.is_new) {
         p.is_new = false;
         p = p.next;
       }
@@ -93,6 +97,7 @@ public class HeapInsIntervalManager extends IFigureManager {
    * pnew.L < 0 is a special case we used to indicate a square: L = L_prime This case is specially handled because it is very
    * common in the program. And, treating it as a MANY-TO-ALL is loss of precision.
    */
+  @Override
   public SegmentNode addNewFigure(int code, RectangleNode pnew) {
     SegmentNode p;
 
@@ -173,6 +178,7 @@ public class HeapInsIntervalManager extends IFigureManager {
   }
 
   // This function tries to do the geometric merging
+  @Override
   public void mergeFigures(int upperSize) {
     if (!hasNewFigure) {
       return;
@@ -181,7 +187,7 @@ public class HeapInsIntervalManager extends IFigureManager {
     /*
      * We start the merging from ONE_TO_ONE, because the generated figure may be merged with those figures in MANY_TO_ALL
      */
-    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new == true) {
+    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new) {
 
       // We prefer to generate a heap insensitive figure
       SegmentNode p = generate_many_to_all(header[ONE_TO_ONE]);
@@ -193,19 +199,20 @@ public class HeapInsIntervalManager extends IFigureManager {
       size[ONE_TO_ONE] = 0;
     }
 
-    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new == true) {
+    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new) {
 
       header[MANY_TO_ALL] = generate_many_to_all(header[MANY_TO_ALL]);
       size[MANY_TO_ALL] = 1;
     }
 
-    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new == true) {
+    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new) {
 
       header[ALL_TO_MANY] = generate_all_to_many(header[ALL_TO_MANY]);
       size[ALL_TO_MANY] = 1;
     }
   }
 
+  @Override
   public void removeUselessSegments() {
     int i;
     SegmentNode p, q, temp;
@@ -233,7 +240,7 @@ public class HeapInsIntervalManager extends IFigureManager {
       }
 
       temp = p.next;
-      if (contained == false) {
+      if (!contained) {
         p.next = q;
         q = p;
         ++size[ONE_TO_ONE];
@@ -433,7 +440,7 @@ public class HeapInsIntervalManager extends IFigureManager {
           && (predator.I1 + predator.L >= list.I2 + L)) {
         // The checked figure is completely contained in the predator
         // So we ignore it
-        ;
+
       } else {
         if (q == null) {
           p = q = list;

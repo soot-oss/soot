@@ -10,12 +10,12 @@ package soot.toolkits.exceptions;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -69,6 +69,7 @@ public final class TrapTightener extends TrapTransformer {
     this.throwAnalysis = ta;
   }
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
     if (this.throwAnalysis == null) {
       this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
@@ -110,14 +111,9 @@ public final class TrapTightener extends TrapTransformer {
         }
         if (firstTrappedThrower != null) {
           for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {
-            if (mightThrowTo(graph, u, trap)) {
-              lastTrappedThrower = u;
-              break;
-            }
-
             // If this is the catch-all block and the current unit
             // has an, active monitor, we need to keep the block
-            if (isCatchAll && unitsWithMonitor.contains(u)) {
+            if (mightThrowTo(graph, u, trap) || (isCatchAll && unitsWithMonitor.contains(u))) {
               lastTrappedThrower = u;
               break;
             }

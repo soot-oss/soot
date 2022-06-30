@@ -10,12 +10,12 @@ package soot.dava.internal.SET;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,9 +41,10 @@ public abstract class SETControlFlowNode extends SETNode {
     return characterizingStmt;
   }
 
+  @Override
   protected boolean resolve(SETNode parent) {
     for (IterableSet subBody : parent.get_SubBodies()) {
-      if (subBody.contains(get_EntryStmt()) == false) {
+      if (!subBody.contains(get_EntryStmt())) {
         continue;
       }
 
@@ -58,9 +59,9 @@ public abstract class SETControlFlowNode extends SETNode {
 
           for (Iterator<AugmentedStmt> asIt = get_Body().snapshotIterator(); asIt.hasNext();) {
             AugmentedStmt as = asIt.next();
-            if (childBody.contains(as) == false) {
+            if (!childBody.contains(as)) {
               remove_AugmentedStmt(as);
-            } else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
+            } else if ((child instanceof SETControlFlowNode) && !(child instanceof SETUnconditionalWhileNode)) {
               SETControlFlowNode scfn = (SETControlFlowNode) child;
 
               if ((scfn.get_CharacterizingStmt() == as) || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt)

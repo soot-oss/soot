@@ -10,12 +10,12 @@ package soot.jimple.toolkits.annotation.purity;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -73,7 +73,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
    */
   public DirectedCallGraph(CallGraph cg, SootMethodFilter filter, Iterator<SootMethod> heads, boolean verbose) {
     // filter heads by filter
-    List<SootMethod> filteredHeads = new LinkedList<SootMethod>();
+    List<SootMethod> filteredHeads = new LinkedList<>();
     while (heads.hasNext()) {
       SootMethod m = heads.next();
       if (m.isConcrete() && filter.want(m)) {
@@ -81,19 +81,19 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
       }
     }
 
-    this.nodes = new HashSet<SootMethod>(filteredHeads);
+    this.nodes = new HashSet<>(filteredHeads);
 
-    MultiMap<SootMethod, SootMethod> s = new HashMultiMap<SootMethod, SootMethod>();
-    MultiMap<SootMethod, SootMethod> p = new HashMultiMap<SootMethod, SootMethod>();
+    MultiMap<SootMethod, SootMethod> s = new HashMultiMap<>();
+    MultiMap<SootMethod, SootMethod> p = new HashMultiMap<>();
 
     if (verbose) {
       logger.debug("[AM] dumping method dependencies");
     }
     // simple breadth-first visit
     int nb = 0;
-    Set<SootMethod> remain = new HashSet<SootMethod>(filteredHeads);
+    Set<SootMethod> remain = new HashSet<>(filteredHeads);
     while (!remain.isEmpty()) {
-      Set<SootMethod> newRemain = new HashSet<SootMethod>();
+      Set<SootMethod> newRemain = new HashSet<>();
       for (SootMethod m : remain) {
         if (verbose) {
           logger.debug(" |- " + m.toString() + " calls");
@@ -121,15 +121,15 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
     logger.debug("[AM] number of methods to be analysed: " + nb);
 
     // MultiMap -> Map of List
-    this.succ = new HashMap<SootMethod, List<SootMethod>>();
-    this.pred = new HashMap<SootMethod, List<SootMethod>>();
-    this.tails = new LinkedList<SootMethod>();
-    this.heads = new LinkedList<SootMethod>();
+    this.succ = new HashMap<>();
+    this.pred = new HashMap<>();
+    this.tails = new LinkedList<>();
+    this.heads = new LinkedList<>();
     for (SootMethod x : this.nodes) {
       Set<SootMethod> ss = s.get(x);
       Set<SootMethod> pp = p.get(x);
-      this.succ.put(x, new LinkedList<SootMethod>(ss));
-      this.pred.put(x, new LinkedList<SootMethod>(pp));
+      this.succ.put(x, new LinkedList<>(ss));
+      this.pred.put(x, new LinkedList<>(pp));
       if (ss.isEmpty()) {
         this.tails.add(x);
       }

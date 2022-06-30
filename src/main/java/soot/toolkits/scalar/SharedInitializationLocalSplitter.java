@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -66,11 +66,11 @@ import soot.util.MultiMap;
  * splitter does not split the local since it would require the introduction of a new initialization statement. Therefore, we
  * split for each usage of a constant variable, such as: <code>
  * $u2#6 = 0;
- * $u2#6_2 = 0; 
+ * $u2#6_2 = 0;
  * interfaceinvoke $u5#30.<Foo: void setMomentary(android.view.View,boolean)>($u4, $u2#6);
  * interfaceinvoke $u5#56.<Foo: void setSelectedIndex(android.view.View,int)>($u4, $u2#6_2);
  * </code>
- * 
+ *
  * @author Marc Miltenberger
  */
 // @formatter:on
@@ -131,7 +131,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       throwAnalysis = Scene.v().getDefaultThrowAnalysis();
     }
 
-    if (omitExceptingUnitEdges == false) {
+    if (!omitExceptingUnitEdges) {
       omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
     }
 
@@ -152,7 +152,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
-    final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
+    final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<>();
 
     final Chain<Unit> units = body.getUnits();
     for (Unit s : units) {
@@ -161,11 +161,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         if (v instanceof Local) {
           Local luse = (Local) v;
           List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
-          if (allAffectingDefs.isEmpty()) {
-            continue;
-          }
           // Make sure we are only affected by Constant definitions via AssignStmt
-          if (!allAffectingDefs.stream()
+          if (allAffectingDefs.isEmpty() || !allAffectingDefs.stream()
               .allMatch(u -> (u instanceof AssignStmt) && (((AssignStmt) u).getRightOp() instanceof Constant))) {
             continue;
           }

@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.dataMgr;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,7 +35,7 @@ import soot.jimple.spark.pag.Node;
  *
  */
 public class Obj_full_extractor extends PtSensVisitor<IntervalContextVar> {
-  private List<IntervalContextVar> backupList = new ArrayList<IntervalContextVar>();
+  private List<IntervalContextVar> backupList = new ArrayList<>();
   private IntervalContextVar tmp_icv = new IntervalContextVar();
 
   @Override
@@ -48,7 +48,7 @@ public class Obj_full_extractor extends PtSensVisitor<IntervalContextVar> {
 
     if (resList == null) {
       // The first time this object is inserted
-      resList = new ArrayList<IntervalContextVar>();
+      resList = new ArrayList<>();
     } else {
       // We search the list and merge the context sensitive objects
       backupList.clear();

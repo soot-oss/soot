@@ -10,12 +10,12 @@ package soot.toolkits.scalar;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -142,7 +142,7 @@ public class LocalSplitter extends BodyTransformer {
 
     {
       int w = 0;
-      Set<Unit> visited = new HashSet<Unit>();
+      Set<Unit> visited = new HashSet<>();
       for (Unit s : body.getUnits()) {
         Iterator<ValueBox> defsInUnitItr = s.getDefBoxes().iterator();
         if (!defsInUnitItr.hasNext()) {
@@ -152,12 +152,8 @@ public class LocalSplitter extends BodyTransformer {
         if (defsInUnitItr.hasNext()) {
           throw new RuntimeException("stmt with more than 1 defbox!");
         }
-        if (!(singleDef instanceof Local)) {
-          continue;
-        }
-
         // we don't want to visit a node twice
-        if (visited.remove(s)) {
+        if (!(singleDef instanceof Local) || visited.remove(s)) {
           continue;
         }
 
@@ -176,7 +172,7 @@ public class LocalSplitter extends BodyTransformer {
         }
         body.getLocals().add(newLocal);
 
-        Deque<Unit> queue = new ArrayDeque<Unit>();
+        Deque<Unit> queue = new ArrayDeque<>();
         queue.addFirst(s);
         do {
           final Unit head = queue.removeFirst();

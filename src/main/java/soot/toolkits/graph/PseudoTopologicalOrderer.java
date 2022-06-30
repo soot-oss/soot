@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -69,7 +69,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 
     /**
      * Orders in pseudo-topological order.
-     * 
+     *
      * @param reverse
      *          specify if we want reverse pseudo-topological ordering, or not.
      * @return an ordered list of the graph's nodes.
@@ -123,7 +123,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 
     /**
      * Reverses the order of the elements in the specified array.
-     * 
+     *
      * @param array
      */
     private static <T> void reverseArray(T[] array) {
@@ -147,7 +147,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
   @Override
   public List<N> newList(DirectedGraph<N> g, boolean reverse) {
     this.mIsReversed = reverse;
-    return (new ReverseOrderBuilder<N>(g)).computeOrder(!reverse);
+    return (new ReverseOrderBuilder<>(g)).computeOrder(!reverse);
   }
 
   // deprecated methods and constructors follow
@@ -168,12 +168,12 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
    */
   @Deprecated
   public List<N> newList(DirectedGraph<N> g) {
-    return (new ReverseOrderBuilder<N>(g)).computeOrder(!mIsReversed);
+    return (new ReverseOrderBuilder<>(g)).computeOrder(!mIsReversed);
   }
 
   /**
    * Set the ordering for the orderer.
-   * 
+   *
    * @param isReversed
    *          specify if we want reverse pseudo-topological ordering, or not.
    * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
@@ -185,7 +185,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 
   /**
    * Check the ordering for the orderer.
-   * 
+   *
    * @return true if we have reverse pseudo-topological ordering, false otherwise.
    * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
    */

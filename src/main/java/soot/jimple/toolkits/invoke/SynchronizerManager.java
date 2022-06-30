@@ -10,12 +10,12 @@ package soot.jimple.toolkits.invoke;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -57,7 +57,7 @@ import soot.util.Chain;
 public class SynchronizerManager {
 
   /** Maps classes to class$ fields. Don't trust default. */
-  public HashMap<SootClass, SootField> classToClassField = new HashMap<SootClass, SootField>();
+  public HashMap<SootClass, SootField> classToClassField = new HashMap<>();
 
   public SynchronizerManager(Singletons.Global g) {
   }
@@ -222,14 +222,7 @@ public class SynchronizerManager {
 
       final IdentityStmt is = (IdentityStmt) s;
       final Value ro = is.getRightOp();
-      if (!(ro instanceof ParameterRef)) {
-        continue;
-      }
-      if (((ParameterRef) ro).getIndex() != 0) {
-        continue;
-      }
-
-      if (!unitsIt.hasNext()) {
+      if (!(ro instanceof ParameterRef) || (((ParameterRef) ro).getIndex() != 0) || !unitsIt.hasNext()) {
         continue;
       }
       s = (Stmt) unitsIt.next();
@@ -280,13 +273,13 @@ public class SynchronizerManager {
                java.lang.ClassNotFoundException r1, $r3;
                java.lang.Class $r2;
                java.lang.NoClassDefFoundError $r4;
-  
+
                r0 := @parameter0: java.lang.String;
-  
+
            label0:
                $r2 = .staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(r0);
                .return $r2;
-  
+
            label1:
                $r3 := @caughtexception;
                r1 = $r3;
@@ -294,7 +287,7 @@ public class SynchronizerManager {
                $r5 = .virtualinvoke r1.<java.lang.Throwable: java.lang.String getMessage()>();
                .specialinvoke $r4.<java.lang.NoClassDefFoundError: .void <init>(java.lang.String)>($r5);
                .throw $r4;
-  
+
                .catch java.lang.ClassNotFoundException .from label0 .to label1 .with label1;
            }
    * </pre></code>
@@ -420,7 +413,7 @@ public class SynchronizerManager {
       Local eRef = jimp.newLocal("__exception", Scene.v().getBaseExceptionType());
       b.getLocals().add(eRef);
 
-      List<Unit> l = new ArrayList<Unit>();
+      List<Unit> l = new ArrayList<>();
       Stmt handlerStmt = jimp.newIdentityStmt(eRef, jimp.newCaughtExceptionRef());
       l.add(handlerStmt);
       l.add((Unit) exitMon.clone());

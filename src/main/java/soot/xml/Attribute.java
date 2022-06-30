@@ -10,12 +10,12 @@ package soot.xml;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -56,7 +56,7 @@ public class Attribute {
   public void addColor(ColorAttribute ca) {
     ArrayList<ColorAttribute> colors = this.colors;
     if (colors == null) {
-      this.colors = colors = new ArrayList<ColorAttribute>();
+      this.colors = colors = new ArrayList<>();
     }
     colors.add(ca);
   }
@@ -64,7 +64,7 @@ public class Attribute {
   public void addText(StringAttribute s) {
     ArrayList<StringAttribute> texts = this.texts;
     if (texts == null) {
-      this.texts = texts = new ArrayList<StringAttribute>();
+      this.texts = texts = new ArrayList<>();
     }
     texts.add(s);
   }
@@ -72,7 +72,7 @@ public class Attribute {
   public void addLink(LinkAttribute la) {
     ArrayList<LinkAttribute> links = this.links;
     if (links == null) {
-      this.links = links = new ArrayList<LinkAttribute>();
+      this.links = links = new ArrayList<>();
     }
     links.add(la);
   }

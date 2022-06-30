@@ -1,5 +1,29 @@
 package soot;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,14 +51,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
 import soot.dexpler.DalvikThrowAnalysis;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.types.DotnetBasicTypes;
+import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.pag.SparkField;
@@ -50,15 +75,14 @@ import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
-import soot.util.*;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import soot.util.ArrayNumberer;
+import soot.util.Chain;
+import soot.util.HashChain;
+import soot.util.IterableNumberer;
+import soot.util.MapNumberer;
+import soot.util.Numberer;
+import soot.util.StringNumberer;
+import soot.util.WeakMapNumberer;
 
 /**
  * Manages the SootClasses of the application being analyzed.
@@ -69,23 +93,23 @@ public class Scene {
   private static final int defaultSdkVersion = 15;
   private static final Pattern arrayPattern = Pattern.compile("([^\\[\\]]*)(.*)");
 
-  protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<String, RefType>();
+  protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<>();
 
-  protected final ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>(
+  protected final ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<>(
       new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT, Kind.THREAD,
           Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
 
-  protected final Set<String> reservedNames = new HashSet<String>();
+  protected final Set<String> reservedNames = new HashSet<>();
   @SuppressWarnings("unchecked")
   protected final Set<String>[] basicclasses = new Set[4];
 
-  protected Chain<SootClass> classes = new HashChain<SootClass>();
-  protected Chain<SootClass> applicationClasses = new HashChain<SootClass>();
-  protected Chain<SootClass> libraryClasses = new HashChain<SootClass>();
-  protected Chain<SootClass> phantomClasses = new HashChain<SootClass>();
+  protected Chain<SootClass> classes = new HashChain<>();
+  protected Chain<SootClass> applicationClasses = new HashChain<>();
+  protected Chain<SootClass> libraryClasses = new HashChain<>();
+  protected Chain<SootClass> phantomClasses = new HashChain<>();
 
-  protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
-  protected Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
+  protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<>();
+  protected Numberer<Unit> unitNumberer = new MapNumberer<>();
   protected StringNumberer subSigNumberer = new StringNumberer();
   protected IterableNumberer<SootClass> classNumberer;
   protected Numberer<SparkField> fieldNumberer;
@@ -117,7 +141,7 @@ public class Scene {
   private List<String> pkgList;
   private int stateCount = 0;
 
-  private final Map<String, Integer> maxAPIs = new HashMap<String, Integer>();
+  private final Map<String, Integer> maxAPIs = new HashMap<>();
   private AndroidVersionInfo androidSDKVersionInfo;
   private int androidAPIVersion = -1;
 
@@ -131,15 +155,15 @@ public class Scene {
     }
 
     if (Options.v().weak_map_structures()) {
-      this.classNumberer = new WeakMapNumberer<SootClass>();
-      this.fieldNumberer = new WeakMapNumberer<SparkField>();
-      this.methodNumberer = new WeakMapNumberer<SootMethod>();
-      this.localNumberer = new WeakMapNumberer<Local>();
+      this.classNumberer = new WeakMapNumberer<>();
+      this.fieldNumberer = new WeakMapNumberer<>();
+      this.methodNumberer = new WeakMapNumberer<>();
+      this.localNumberer = new WeakMapNumberer<>();
     } else {
-      this.classNumberer = new ArrayNumberer<SootClass>();
-      this.fieldNumberer = new ArrayNumberer<SparkField>();
-      this.methodNumberer = new ArrayNumberer<SootMethod>();
-      this.localNumberer = new ArrayNumberer<Local>();
+      this.classNumberer = new ArrayNumberer<>();
+      this.fieldNumberer = new ArrayNumberer<>();
+      this.methodNumberer = new ArrayNumberer<>();
+      this.localNumberer = new ArrayNumberer<>();
     }
 
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
@@ -164,9 +188,9 @@ public class Scene {
     {
       List<String> exclude = options.exclude();
       if (exclude == null) {
-        excludedPackages = new LinkedList<String>();
+        excludedPackages = new LinkedList<>();
       } else {
-        excludedPackages = new LinkedList<String>(exclude);
+        excludedPackages = new LinkedList<>(exclude);
       }
     }
 
@@ -319,7 +343,7 @@ public class Scene {
       } else if (Options.v().prepend_classpath()) {
         cp += File.pathSeparatorChar + defaultClassPath();
       }
-      List<String> dirs = new LinkedList<String>();
+      List<String> dirs = new LinkedList<>();
       dirs.addAll(Options.v().process_dir());
       // Add process-jar-dirs
       List<String> jarDirs = Options.v().process_jar_dir();
@@ -627,11 +651,11 @@ public class Scene {
       }
     } else if (androidJars != null && !androidJars.isEmpty()) {
       List<String> classPathEntries
-          = new ArrayList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
+          = new ArrayList<>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
       classPathEntries.addAll(Options.v().process_dir());
 
       String targetApk = "";
-      Set<String> targetDexs = new HashSet<String>();
+      Set<String> targetDexs = new HashSet<>();
       for (String entry : classPathEntries) {
         if (isApk(new File(entry))) {
           if (targetApk != null && !targetApk.isEmpty()) {
@@ -1538,12 +1562,13 @@ public class Scene {
           break;
 
         case Options.throw_analysis_auto_select:
-          if (Options.v().src_prec() == Options.src_prec_apk)
+          if (Options.v().src_prec() == Options.src_prec_apk) {
             defaultThrowAnalysis = DalvikThrowAnalysis.v();
-          else if (Options.v().src_prec() == Options.src_prec_dotnet)
+          } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
             defaultThrowAnalysis = DotnetThrowAnalysis.v();
-          else
+          } else {
             defaultThrowAnalysis = UnitThrowAnalysis.v();
+          }
           break;
         default:
           throw new IllegalStateException("Options.v().throw_analysis() == " + Options.v().throw_analysis());
@@ -1630,9 +1655,9 @@ public class Scene {
   }
 
   private void addSootBasicClasses() {
-    basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
-    basicclasses[SootClass.SIGNATURES] = new HashSet<String>();
-    basicclasses[SootClass.BODIES] = new HashSet<String>();
+    basicclasses[SootClass.HIERARCHY] = new HashSet<>();
+    basicclasses[SootClass.SIGNATURES] = new HashSet<>();
+    basicclasses[SootClass.BODIES] = new HashSet<>();
 
     addBasicClass("java.lang.Object");
     addBasicClass("java.lang.Class", SootClass.SIGNATURES);
@@ -1817,7 +1842,7 @@ public class Scene {
   }
 
   public Set<String> getBasicClasses() {
-    Set<String> all = new HashSet<String>();
+    Set<String> all = new HashSet<>();
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       all.addAll(basicclasses[i]);
     }
@@ -1834,7 +1859,7 @@ public class Scene {
   }
 
   protected void addReflectionTraceClasses() {
-    Set<String> classNames = new HashSet<String>();
+    Set<String> classNames = new HashSet<>();
 
     CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     String log = options.reflection_log();
@@ -1851,7 +1876,7 @@ public class Scene {
             switch (kind) {
               case "Class.forName":
               case "Class.getFields":
-              case "Class.getMethods":  
+              case "Class.getMethods":
                 classNames.add(target);
                 break;
               case "Class.newInstance":
@@ -1950,10 +1975,10 @@ public class Scene {
   }
 
   public void loadDynamicClasses() {
-    final ArrayList<SootClass> dynamicClasses = new ArrayList<SootClass>();
+    final ArrayList<SootClass> dynamicClasses = new ArrayList<>();
     final Options opts = Options.v();
 
-    final HashSet<String> temp = new HashSet<String>(opts.dynamic_class());
+    final HashSet<String> temp = new HashSet<>(opts.dynamic_class());
 
     final SourceLocator sloc = SourceLocator.v();
     for (String path : opts.dynamic_dir()) {
@@ -1987,9 +2012,9 @@ public class Scene {
   protected void prepareClasses() {
     final List<String> optionsClasses = Options.v().classes();
     // Remove/add all classes from packageInclusionMask as per -i option
-    Chain<SootClass> processedClasses = new HashChain<SootClass>();
+    Chain<SootClass> processedClasses = new HashChain<>();
     while (true) {
-      Chain<SootClass> unprocessedClasses = new HashChain<SootClass>(getClasses());
+      Chain<SootClass> unprocessedClasses = new HashChain<>(getClasses());
       unprocessedClasses.removeAll(processedClasses);
       if (unprocessedClasses.isEmpty()) {
         break;
@@ -2025,8 +2050,9 @@ public class Scene {
   }
 
   public boolean isExcluded(String className) {
-    if (excludedPackages == null)
+    if (excludedPackages == null) {
       return false;
+    }
     for (String pkg : excludedPackages) {
       if (className.equals(pkg)
           || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
@@ -2080,7 +2106,7 @@ public class Scene {
 
   /** Returns the list of SootClasses that have been resolved at least to the level specified. */
   public List<SootClass> getClasses(int desiredLevel) {
-    List<SootClass> ret = new ArrayList<SootClass>();
+    List<SootClass> ret = new ArrayList<>();
     for (SootClass cl : getClasses()) {
       if (cl.resolvingLevel() >= desiredLevel) {
         ret.add(cl);

@@ -10,12 +10,12 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -144,12 +144,12 @@ public class JasminClass extends AbstractJasminClass {
       logger.debug("[" + body.getMethod().getName() + "] Performing peephole optimizations...");
     }
 
-    subroutineToReturnAddressSlot = new HashMap<Unit, Integer>(10, 0.7f);
+    subroutineToReturnAddressSlot = new HashMap<>(10, 0.7f);
     Chain<Unit> units = body.getUnits();
 
     // Determine the unitToLabel map
     {
-      unitToLabel = new HashMap<Unit, String>(units.size() * 2 + 1, 0.7f);
+      unitToLabel = new HashMap<>(units.size() * 2 + 1, 0.7f);
       labelCount = 0;
 
       for (UnitBox ubox : body.getUnitBoxes(true)) {
@@ -176,11 +176,11 @@ public class JasminClass extends AbstractJasminClass {
       int localCount = 0;
       int[] paramSlots = new int[method.getParameterCount()];
       int thisSlot = 0;
-      Set<Local> assignedLocals = new HashSet<Local>();
+      Set<Local> assignedLocals = new HashSet<>();
       Map<GroupIntPair, Integer> groupColorPairToSlot =
-          new HashMap<GroupIntPair, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+          new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
 
-      localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
+      localToSlot = new HashMap<>(body.getLocalCount() * 2 + 1, 0.7f);
 
       assignColorsToLocals(body);
 
@@ -194,7 +194,7 @@ public class JasminClass extends AbstractJasminClass {
         List<Type> paramTypes = method.getParameterTypes();
         for (int i = 0; i < paramTypes.size(); i++) {
           paramSlots[i] = localCount;
-          localCount += sizeOfType((Type) paramTypes.get(i));
+          localCount += sizeOfType(paramTypes.get(i));
         }
       }
 
@@ -303,12 +303,8 @@ public class JasminClass extends AbstractJasminClass {
         PEEP: if (enablePeephole) {
           // Test for postincrement operators ++ and --
           // We can optimize them further.
-          if (!(s instanceof AssignStmt)) {
-            break PEEP;
-          }
-
           // sanityCheck: see that we have another statement after s.
-          if (!codeIt.hasNext()) {
+          if (!(s instanceof AssignStmt) || !codeIt.hasNext()) {
             break PEEP;
           }
 
@@ -1179,7 +1175,7 @@ public class JasminClass extends AbstractJasminClass {
             // simulate the pushing of the exception onto the stack by the jvm
             modifyStackHeight(1);
 
-            int slot = localToSlot.get((Local) leftOp);
+            int slot = localToSlot.get(leftOp);
             if (slot >= 0 && slot <= 3) {
               emit("astore_" + slot, -1);
             } else {
@@ -1198,7 +1194,7 @@ public class JasminClass extends AbstractJasminClass {
       public void caseInvokeStmt(InvokeStmt s) {
         emitValue(s.getInvokeExpr());
 
-        Type returnType = ((InvokeExpr) s.getInvokeExpr()).getMethodRef().returnType();
+        Type returnType = s.getInvokeExpr().getMethodRef().returnType();
         if (!VoidType.v().equals(returnType)) {
           // Need to do some cleanup because this value is not used.
           if (sizeOfType(returnType) == 1) {

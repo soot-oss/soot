@@ -11,12 +11,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -93,12 +93,12 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
   protected final Set<N> tails;
 
   public HashMutableEdgeLabelledDirectedGraph() {
-    this.nodeToPreds = new HashMap<N, List<N>>();
-    this.nodeToSuccs = new HashMap<N, List<N>>();
-    this.edgeToLabels = new HashMap<DGEdge<N>, List<L>>();
-    this.labelToEdges = new HashMap<L, List<DGEdge<N>>>();
-    this.heads = new HashSet<N>();
-    this.tails = new HashSet<N>();
+    this.nodeToPreds = new HashMap<>();
+    this.nodeToSuccs = new HashMap<>();
+    this.edgeToLabels = new HashMap<>();
+    this.labelToEdges = new HashMap<>();
+    this.heads = new HashSet<>();
+    this.tails = new HashSet<>();
   }
 
   // copy constructor
@@ -107,14 +107,14 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
     this.nodeToSuccs = deepCopy(orig.nodeToSuccs);
     this.edgeToLabels = deepCopy(orig.edgeToLabels);
     this.labelToEdges = deepCopy(orig.labelToEdges);
-    this.heads = new HashSet<N>(orig.heads);
-    this.tails = new HashSet<N>(orig.tails);
+    this.heads = new HashSet<>(orig.heads);
+    this.tails = new HashSet<>(orig.tails);
   }
 
   private static <A, B> Map<A, List<B>> deepCopy(Map<A, List<B>> in) {
     HashMap<A, List<B>> retVal = new HashMap<>(in);
     for (Map.Entry<A, List<B>> e : retVal.entrySet()) {
-      e.setValue(new ArrayList<B>(e.getValue()));
+      e.setValue(new ArrayList<>(e.getValue()));
     }
     return retVal;
   }
@@ -210,15 +210,15 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
       predsList.add(from);
     }
 
-    DGEdge<N> edge = new DGEdge<N>(from, to);
+    DGEdge<N> edge = new DGEdge<>(from, to);
     List<L> labels = edgeToLabels.get(edge);
     if (labels == null) {
-      edgeToLabels.put(edge, labels = new ArrayList<L>());
+      edgeToLabels.put(edge, labels = new ArrayList<>());
     }
 
     List<DGEdge<N>> edges = labelToEdges.get(label);
     if (edges == null) {
-      labelToEdges.put(label, edges = new ArrayList<DGEdge<N>>());
+      labelToEdges.put(label, edges = new ArrayList<>());
     }
 
     // if(!labels.contains(label))
@@ -229,14 +229,14 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
 
   @Override
   public List<L> getLabelsForEdges(N from, N to) {
-    DGEdge<N> edge = new DGEdge<N>(from, to);
+    DGEdge<N> edge = new DGEdge<>(from, to);
     return edgeToLabels.get(edge);
   }
 
   @Override
   public MutableDirectedGraph<N> getEdgesForLabel(L label) {
     List<DGEdge<N>> edges = labelToEdges.get(label);
-    MutableDirectedGraph<N> ret = new HashMutableDirectedGraph<N>();
+    MutableDirectedGraph<N> ret = new HashMutableDirectedGraph<>();
     if (edges == null) {
       return ret;
     }
@@ -256,7 +256,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
 
   @Override
   public void removeEdge(N from, N to, L label) {
-    DGEdge<N> edge = new DGEdge<N>(from, to);
+    DGEdge<N> edge = new DGEdge<>(from, to);
     List<L> labels = edgeToLabels.get(edge);
     if (labels == null || !labels.contains(label)) {
       // i.e. containsEdge(from, to, label)==false
@@ -308,7 +308,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
 
   @Override
   public void removeAllEdges(N from, N to) {
-    DGEdge<N> edge = new DGEdge<N>(from, to);
+    DGEdge<N> edge = new DGEdge<>(from, to);
     List<L> labels = edgeToLabels.get(edge);
     if (labels == null || labels.isEmpty()) {
       // i.e. containsAnyEdge(from, to)==false
@@ -370,12 +370,12 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
 
   @Override
   public void removeNode(N node) {
-    for (N n : new ArrayList<N>(nodeToSuccs.get(node))) {
+    for (N n : new ArrayList<>(nodeToSuccs.get(node))) {
       removeAllEdges(node, n);
     }
     nodeToSuccs.remove(node);
 
-    for (N n : new ArrayList<N>(nodeToPreds.get(node))) {
+    for (N n : new ArrayList<>(nodeToPreds.get(node))) {
       removeAllEdges(n, node);
     }
     nodeToPreds.remove(node);
@@ -390,14 +390,14 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
 
       logger.debug("Preds:");
       for (N pred : getPredsOf(node)) {
-        DGEdge<N> edge = new DGEdge<N>(pred, node);
+        DGEdge<N> edge = new DGEdge<>(pred, node);
         List<L> labels = edgeToLabels.get(edge);
         logger.debug("     " + pred + " [" + labels + "]");
       }
 
       logger.debug("Succs:");
       for (N succ : getSuccsOf(node)) {
-        DGEdge<N> edge = new DGEdge<N>(node, succ);
+        DGEdge<N> edge = new DGEdge<>(node, succ);
         List<L> labels = edgeToLabels.get(edge);
         logger.debug("     " + succ + " [" + labels + "]");
       }

@@ -10,12 +10,12 @@ package soot.toolkits.graph;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -41,8 +41,8 @@ import soot.util.FastStack;
  */
 public class StronglyConnectedComponentsFast<N> {
 
-  protected final List<List<N>> componentList = new ArrayList<List<N>>();
-  protected final List<List<N>> trueComponentList = new ArrayList<List<N>>();
+  protected final List<List<N>> componentList = new ArrayList<>();
+  protected final List<List<N>> trueComponentList = new ArrayList<>();
 
   protected int index = 0;
   protected Map<N, Integer> indexForNode, lowlinkForNode;
@@ -56,9 +56,9 @@ public class StronglyConnectedComponentsFast<N> {
    */
   public StronglyConnectedComponentsFast(DirectedGraph<N> g) {
     this.g = g;
-    this.s = new FastStack<N>();
-    this.indexForNode = new HashMap<N, Integer>();
-    this.lowlinkForNode = new HashMap<N, Integer>();
+    this.s = new FastStack<>();
+    this.indexForNode = new HashMap<>();
+    this.lowlinkForNode = new HashMap<>();
 
     for (N node : g) {
       if (!indexForNode.containsKey(node)) {
@@ -97,7 +97,7 @@ public class StronglyConnectedComponentsFast<N> {
       }
     }
     if (lowLinkForNodeV == indexForNode.get(v)) {
-      List<N> scc = new ArrayList<N>();
+      List<N> scc = new ArrayList<>();
       N v2;
       do {
         v2 = s.pop();
@@ -116,8 +116,8 @@ public class StronglyConnectedComponentsFast<N> {
   }
 
   protected void iterate(N x) {
-    List<N> workList = new ArrayList<N>();
-    List<N> backtrackList = new ArrayList<N>();
+    List<N> workList = new ArrayList<>();
+    List<N> backtrackList = new ArrayList<>();
     workList.add(x);
     while (!workList.isEmpty()) {
       N v = workList.remove(0);
@@ -158,7 +158,7 @@ public class StronglyConnectedComponentsFast<N> {
 
         int lowLinkForNodeV = lowlinkForNode.get(v);
         if (lowLinkForNodeV == indexForNode.get(v)) {
-          List<N> scc = new ArrayList<N>();
+          List<N> scc = new ArrayList<>();
           N v2;
           do {
             v2 = s.pop();

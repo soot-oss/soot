@@ -10,12 +10,12 @@ package soot.jimple.internal;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -127,7 +127,7 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
   @Override
   public List<Value> getSizes() {
     final ValueBox[] boxes = sizeBoxes;
-    List<Value> toReturn = new ArrayList<Value>(boxes.length);
+    List<Value> toReturn = new ArrayList<>(boxes.length);
     for (ValueBox element : boxes) {
       toReturn.add(element.getValue());
     }
@@ -141,7 +141,7 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
 
   @Override
   public final List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
     Collections.addAll(list, sizeBoxes);
     for (ValueBox element : sizeBoxes) {
       list.addAll(element.getValue().getUseBoxes());

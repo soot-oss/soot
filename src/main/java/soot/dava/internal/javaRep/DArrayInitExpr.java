@@ -10,12 +10,12 @@ package soot.dava.internal.javaRep;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -50,8 +50,9 @@ public class DArrayInitExpr implements Value {
   /*
    * go through the elements array return useBoxes of each value plus the valuebox itself
    */
+  @Override
   public List<ValueBox> getUseBoxes() {
-    List<ValueBox> list = new ArrayList<ValueBox>();
+    List<ValueBox> list = new ArrayList<>();
 
     for (ValueBox element : elements) {
       list.addAll(element.getValue().getUseBoxes());
@@ -63,14 +64,17 @@ public class DArrayInitExpr implements Value {
   /*
    * TODO: Does not work
    */
+  @Override
   public Object clone() {
     return this;
   }
 
+  @Override
   public Type getType() {
     return type;
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal("{");
     for (int i = 0; i < elements.length; i++) {
@@ -82,6 +86,7 @@ public class DArrayInitExpr implements Value {
     up.literal("}");
   }
 
+  @Override
   public String toString() {
     StringBuffer b = new StringBuffer();
     b.append("{");
@@ -95,16 +100,19 @@ public class DArrayInitExpr implements Value {
     return b.toString();
   }
 
+  @Override
   public void apply(Switch sw) {
     // TODO Auto-generated method stub
 
   }
 
+  @Override
   public boolean equivTo(Object o) {
     // TODO Auto-generated method stub
     return false;
   }
 
+  @Override
   public int equivHashCode() {
     int toReturn = 0;
     for (ValueBox element : elements) {

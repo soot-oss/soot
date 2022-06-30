@@ -10,12 +10,12 @@ package soot.coffi;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -48,6 +48,7 @@ public class CoffiMethodSource implements MethodSource {
     this.coffiMethod = coffiMethod;
   }
 
+  @Override
   public Body getBody(SootMethod m, String phaseName) {
     JimpleBody jb = Jimple.v().newBody(m);
 
@@ -60,7 +61,7 @@ public class CoffiMethodSource implements MethodSource {
 
     /*
      * I need to set these to null to free Coffi structures. fileBody.coffiClass = null; bafBody.coffiMethod = null;
-     * 
+     *
      */
     if (Options.v().verbose()) {
       logger.debug("[" + m.getName() + "] Constructing JimpleBody from coffi...");

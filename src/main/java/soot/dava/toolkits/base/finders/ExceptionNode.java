@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.finders;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -53,7 +53,7 @@ public class ExceptionNode {
     this.exception = exception;
     this.handlerAugmentedStmt = handlerAugmentedStmt;
 
-    body = new IterableSet<AugmentedStmt>(tryBody);
+    body = new IterableSet<>(tryBody);
 
     dirty = true;
     exitList = null;
@@ -64,7 +64,7 @@ public class ExceptionNode {
 
   public boolean add_TryStmts(Collection<AugmentedStmt> c) {
     for (AugmentedStmt as : c) {
-      if (add_TryStmt(as) == false) {
+      if (!add_TryStmt(as)) {
         return false;
       }
     }
@@ -105,7 +105,7 @@ public class ExceptionNode {
   }
 
   public boolean remove(AugmentedStmt as) {
-    if (body.contains(as) == false) {
+    if (!body.contains(as)) {
       return false;
     }
 
@@ -129,12 +129,12 @@ public class ExceptionNode {
     }
 
     if (dirty) {
-      exitList = new LinkedList<AugmentedStmt>();
+      exitList = new LinkedList<>();
       dirty = false;
 
       for (AugmentedStmt as : catchBody) {
         for (AugmentedStmt succ : as.bsuccs) {
-          if (catchBody.contains(succ) == false) {
+          if (!catchBody.contains(succ)) {
             exitList.add(as);
             break;
           }
@@ -147,14 +147,14 @@ public class ExceptionNode {
 
   public void splitOff_ExceptionNode(IterableSet<AugmentedStmt> newTryBody, AugmentedStmtGraph asg,
       IterableSet<ExceptionNode> enlist) {
-    IterableSet<AugmentedStmt> oldTryBody = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> oldTryBody = new IterableSet<>();
     oldTryBody.addAll(tryBody);
 
-    IterableSet<AugmentedStmt> oldBody = new IterableSet<AugmentedStmt>();
+    IterableSet<AugmentedStmt> oldBody = new IterableSet<>();
     oldBody.addAll(body);
 
     for (AugmentedStmt as : newTryBody) {
-      if (remove(as) == false) {
+      if (!remove(as)) {
 
         StringBuffer b = new StringBuffer();
         for (AugmentedStmt auBody : newTryBody) {
@@ -198,7 +198,7 @@ public class ExceptionNode {
 
       if (catchBody.isSupersetOf(en.get_Body())) {
 
-        IterableSet<AugmentedStmt> clonedTryBody = new IterableSet<AugmentedStmt>();
+        IterableSet<AugmentedStmt> clonedTryBody = new IterableSet<>();
 
         for (AugmentedStmt au : en.get_TryBody()) {
           clonedTryBody.add(asg.get_CloneOf(au));
@@ -230,10 +230,10 @@ public class ExceptionNode {
 
   public void add_CatchBody(IterableSet<AugmentedStmt> newCatchBody, SootClass except) {
     if (catchList == null) {
-      catchList = new LinkedList<IterableSet<AugmentedStmt>>();
+      catchList = new LinkedList<>();
       catchList.addLast(catchBody);
 
-      catch2except = new HashMap<IterableSet<AugmentedStmt>, SootClass>();
+      catch2except = new HashMap<>();
       catch2except.put(catchBody, exception);
     }
 
@@ -246,7 +246,7 @@ public class ExceptionNode {
     List<IterableSet<AugmentedStmt>> l = catchList;
 
     if (l == null) {
-      l = new LinkedList<IterableSet<AugmentedStmt>>();
+      l = new LinkedList<>();
       l.add(catchBody);
     }
 
@@ -257,7 +257,7 @@ public class ExceptionNode {
     Map<IterableSet<AugmentedStmt>, SootClass> m = catch2except;
 
     if (m == null) {
-      m = new HashMap<IterableSet<AugmentedStmt>, SootClass>();
+      m = new HashMap<>();
       m.put(catchBody, exception);
     }
 

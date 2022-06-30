@@ -11,12 +11,12 @@ package soot.jimple.toolkits.pointer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -110,7 +110,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
   public LocalMustAliasAnalysis(UnitGraph g, boolean tryTrackFieldAssignments) {
     super(g);
     this.container = g.getBody().getMethod();
-    this.localsAndFieldRefs = new HashSet<Value>();
+    this.localsAndFieldRefs = new HashSet<>();
 
     // add all locals
     for (Local l : g.getBody().getLocals()) {
@@ -123,8 +123,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
       this.localsAndFieldRefs.addAll(trackableFields());
     }
 
-    this.rhsToNumber = new HashMap<Value, Integer>();
-    this.mergePointToValueToNumber = new HashMap<Unit, Map<Value, Integer>>();
+    this.rhsToNumber = new HashMap<>();
+    this.mergePointToValueToNumber = new HashMap<>();
 
     doAnalysis();
 
@@ -138,7 +138,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
    * method or any method transitively called by this method.
    */
   private Set<Value> trackableFields() {
-    Set<Value> usedFieldRefs = new HashSet<Value>();
+    Set<Value> usedFieldRefs = new HashSet<>();
     // add all field references that are in use boxes
     for (Unit unit : this.graph) {
       for (ValueBox useBox : unit.getUseBoxes()) {
@@ -213,7 +213,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
         Integer number = null;
         Map<Value, Integer> valueToNumber = mergePointToValueToNumber.get(succUnit);
         if (valueToNumber == null) {
-          valueToNumber = new HashMap<Value, Integer>();
+          valueToNumber = new HashMap<>();
           mergePointToValueToNumber.put(succUnit, valueToNumber);
         } else {
           number = valueToNumber.get(l);
@@ -300,13 +300,13 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
   /** Initial most conservative value: We leave it away to save memory, implicitly UNKNOWN. */
   @Override
   protected HashMap<Value, Integer> entryInitialFlow() {
-    return new HashMap<Value, Integer>();
+    return new HashMap<>();
   }
 
   /** Initial bottom value: objects have no definitions. */
   @Override
   protected HashMap<Value, Integer> newInitialFlow() {
-    return new HashMap<Value, Integer>();
+    return new HashMap<>();
   }
 
   /**

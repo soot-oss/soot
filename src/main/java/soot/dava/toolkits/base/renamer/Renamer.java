@@ -10,12 +10,12 @@ package soot.dava.toolkits.base.renamer;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -54,13 +54,13 @@ public class Renamer {
     locals = null;
     methodNode = node;
 
-    changedOrNot = new HashMap<Local, Boolean>();
+    changedOrNot = new HashMap<>();
     Iterator<Local> localIt = info.getLocalsIterator();
     while (localIt.hasNext()) {
       changedOrNot.put(localIt.next(), new Boolean(false));
     }
 
-    forLoopNames = new ArrayList<String>();
+    forLoopNames = new ArrayList<>();
     forLoopNames.add("i");
     forLoopNames.add("j");
     forLoopNames.add("k");
@@ -417,7 +417,7 @@ public class Renamer {
             newName = null;
             break;
           }
-          newName = (String) forLoopNames.get(count);
+          newName = forLoopNames.get(count);
         } while (!isUniqueName(newName));
 
         if (newName != null) {

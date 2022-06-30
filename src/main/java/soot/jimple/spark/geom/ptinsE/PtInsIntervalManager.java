@@ -10,12 +10,12 @@ package soot.jimple.spark.geom.ptinsE;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -45,30 +45,35 @@ public class PtInsIntervalManager extends IFigureManager {
   SegmentNode header[] = { null, null, null };
   private boolean hasNewObject = false;
 
+  @Override
   public SegmentNode[] getFigures() {
     return header;
   }
 
+  @Override
   public int[] getSizes() {
     return size;
   }
 
+  @Override
   public boolean isThereUnprocessedFigures() {
     return hasNewObject;
   }
 
+  @Override
   public void flush() {
     hasNewObject = false;
 
     for (int i = 0; i < Divisions; ++i) {
       SegmentNode p = header[i];
-      while (p != null && p.is_new == true) {
+      while (p != null && p.is_new) {
         p.is_new = false;
         p = p.next;
       }
     }
   }
 
+  @Override
   public SegmentNode addNewFigure(int code, RectangleNode pnew) {
     SegmentNode p;
 
@@ -143,8 +148,9 @@ public class PtInsIntervalManager extends IFigureManager {
     return p;
   }
 
+  @Override
   public void mergeFigures(int upperSize) {
-    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new == true) {
+    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new) {
       // After the merging, we must propagate this interval, thus it has to be a new interval
 
       SegmentNode p = generate_all_to_many(header[ONE_TO_ONE]);
@@ -156,19 +162,20 @@ public class PtInsIntervalManager extends IFigureManager {
       size[ONE_TO_ONE] = 0;
     }
 
-    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new == true) {
+    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new) {
 
       header[MANY_TO_ALL] = generate_many_to_all(header[MANY_TO_ALL]);
       size[MANY_TO_ALL] = 1;
     }
 
-    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new == true) {
+    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new) {
 
       header[0] = generate_all_to_many(header[ALL_TO_MANY]);
       size[ALL_TO_MANY] = 1;
     }
   }
 
+  @Override
   public void removeUselessSegments() {
     int i;
     SegmentNode p, q, temp;
@@ -193,7 +200,7 @@ public class PtInsIntervalManager extends IFigureManager {
       }
 
       temp = p.next;
-      if (contained == false) {
+      if (!contained) {
         p.next = q;
         q = p;
         ++size[ONE_TO_ONE];
@@ -388,7 +395,7 @@ public class PtInsIntervalManager extends IFigureManager {
           && (predator.I1 + predator.L >= list.I2 + L)) {
         // The checked figure is completely contained in the predator
         // So we ignore it
-        ;
+
       } else {
         if (q == null) {
           p = q = list;

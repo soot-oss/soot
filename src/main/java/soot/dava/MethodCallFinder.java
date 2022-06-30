@@ -10,12 +10,12 @@ package soot.dava;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -71,6 +71,7 @@ public class MethodCallFinder extends DepthFirstAdapter {
     underAnalysis = null;
   }
 
+  @Override
   public void inASTMethodNode(ASTMethodNode node) {
     underAnalysis = node;
   }
@@ -85,6 +86,7 @@ public class MethodCallFinder extends DepthFirstAdapter {
    * Notice that since this class is only invoked for clinit methods this invoke statement is some invocation that occured
    * within the clinit method
    */
+  @Override
   public void inInvokeStmt(InvokeStmt s) {
     InvokeExpr invokeExpr = s.getInvokeExpr();
     SootMethod maybeInline = invokeExpr.getMethod();
@@ -139,10 +141,10 @@ public class MethodCallFinder extends DepthFirstAdapter {
             GThrowStmt throwStmt = new GThrowStmt(newInvokeExpr);
 
             AugmentedStmt augStmt = new AugmentedStmt(throwStmt);
-            List<AugmentedStmt> sequence = new ArrayList<AugmentedStmt>();
+            List<AugmentedStmt> sequence = new ArrayList<>();
             sequence.add(augStmt);
             ASTStatementSequenceNode seqNode = new ASTStatementSequenceNode(sequence);
-            List<Object> subBody = new ArrayList<Object>();
+            List<Object> subBody = new ArrayList<>();
             subBody.add(seqNode);
 
             toInlineASTMethod.replaceBody(subBody);
@@ -165,7 +167,7 @@ public class MethodCallFinder extends DepthFirstAdapter {
   public List<Object> createNewSubBody(List<Object> orignalBody, List<ASTStatementSequenceNode> partNewBody,
       Object stmtSeqNode) {
 
-    List<Object> newBody = new ArrayList<Object>();
+    List<Object> newBody = new ArrayList<>();
 
     Iterator<Object> it = orignalBody.iterator();
     while (it.hasNext()) {
@@ -394,7 +396,7 @@ public class MethodCallFinder extends DepthFirstAdapter {
 
     // copying the stmts till above the inoke stmt into one stmt sequence
     // node
-    List<AugmentedStmt> newInitialNode = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> newInitialNode = new ArrayList<>();
     Iterator<AugmentedStmt> it = orignal.getStatements().iterator();
     while (it.hasNext()) {
       AugmentedStmt as = it.next();
@@ -409,12 +411,12 @@ public class MethodCallFinder extends DepthFirstAdapter {
     }
 
     // copy remaining stmts into the AFTER stmt sequence node
-    List<AugmentedStmt> newSecondNode = new ArrayList<AugmentedStmt>();
+    List<AugmentedStmt> newSecondNode = new ArrayList<>();
     while (it.hasNext()) {
       newSecondNode.add(it.next());
     }
 
-    List<ASTStatementSequenceNode> toReturn = new ArrayList<ASTStatementSequenceNode>();
+    List<ASTStatementSequenceNode> toReturn = new ArrayList<>();
 
     if (newInitialNode.size() != 0) {
       toReturn.add(new ASTStatementSequenceNode(newInitialNode));
