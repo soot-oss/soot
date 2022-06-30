@@ -90,7 +90,7 @@ public class BadFields extends SceneTransformer {
         if (typeName.equals("java.lang.String")) {
           continue;
         }
-        if (typeName.equals(Scene.v().getObjectType().toString())) {
+        if (typeName.equals("java.lang.Object")) {
           continue;
         }
         if (typeName.equals("java.lang.Integer")) {
@@ -179,7 +179,7 @@ public class BadFields extends SceneTransformer {
       if (target.getDeclaringClass().getName().equals("java.lang.String")) {
         return;
       }
-      if (target.getDeclaringClass().getName().equals(Scene.v().getObjectType().toString())) {
+      if (target.getDeclaringClass().getName().equals("java.lang.Object")) {
         return;
       }
     }

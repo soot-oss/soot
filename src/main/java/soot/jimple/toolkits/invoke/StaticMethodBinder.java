@@ -136,7 +136,7 @@ public class StaticMethodBinder extends SceneTransformer {
           }
 
           // Don't modify java.lang.Object
-          if (targetDeclClass == scene.getSootClass(Scene.v().getObjectType().toString())) {
+          if (targetDeclClass == scene.getSootClass("java.lang.Object")) {
             continue;
           }
 

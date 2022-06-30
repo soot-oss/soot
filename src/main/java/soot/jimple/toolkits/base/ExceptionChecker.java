@@ -171,7 +171,7 @@ public class ExceptionChecker extends BodyTransformer {
     if (sm != null) {
       return sm.getExceptions();
     }
-    sm = Scene.v().getSootClass(Scene.v().getObjectType().toString()).getMethodUnsafe(sig);
+    sm = Scene.v().getSootClass("java.lang.Object").getMethodUnsafe(sig);
     if (sm != null && sm.getExceptionsUnsafe() == null) {
       return Collections.emptyList();
     }

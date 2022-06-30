@@ -25,25 +25,11 @@ package soot.jimple.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.LongType;
-import soot.RefType;
-import soot.ShortType;
-import soot.SootClass;
-import soot.Type;
 import soot.UnitPrinter;
-import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
-import soot.options.Options;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBinopExpr implements Expr {
@@ -145,68 +131,5 @@ public abstract class AbstractBinopExpr implements Expr {
         up.literal(")");
       }
     }
-  }
-
-  protected Type getType(BinopExprEnum exprTypes) {
-    final Type t1 = this.op1Box.getValue().getType();
-    final Type t2 = this.op2Box.getValue().getType();
-
-    final IntType tyInt = IntType.v();
-    final ByteType tyByte = ByteType.v();
-    final ShortType tyShort = ShortType.v();
-    final CharType tyChar = CharType.v();
-    final BooleanType tyBool = BooleanType.v();
-    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1))
-        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2))) {
-      return tyInt;
-    }
-    final LongType tyLong = LongType.v();
-    if (tyLong.equals(t1) || tyLong.equals(t2)) {
-      return tyLong;
-    }
-    if (exprTypes.equals(BinopExprEnum.ABSTRACT_FLOAT_BINOP_EXPR)) {
-      final DoubleType tyDouble = DoubleType.v();
-      if (tyDouble.equals(t1) || tyDouble.equals(t2)) {
-        return tyDouble;
-      }
-      final FloatType tyFloat = FloatType.v();
-      if (tyFloat.equals(t1) || tyFloat.equals(t2)) {
-        return tyFloat;
-      }
-    }
-
-    // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2))
-        return tyInt;
-    }
-    return UnknownType.v();
-
-  }
-
-  /**
-   * Returns true if the superclass of the given Type is a System.Enum (.Net)
-   * 
-   * @param t
-   * @return
-   */
-  public boolean isSuperclassSystemEnum(Type t) {
-    if (Options.v().src_prec() != Options.src_prec_dotnet)
-      return false;
-    if (!(t instanceof RefType))
-      return false;
-    SootClass sootClass = ((RefType) t).getSootClass();
-    if (sootClass == null)
-      return false;
-    SootClass superclass = sootClass.getSuperclass();
-    if (superclass == null)
-      return false;
-    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM))
-      return true;
-    return false;
-  }
-
-  public enum BinopExprEnum {
-    ABASTRACT_INT_LONG_BINOP_EXPR, ABSTRACT_FLOAT_BINOP_EXPR
   }
 }

@@ -54,7 +54,7 @@ public class ArrayElement implements SparkField {
   }
 
   public Type getType() {
-    return Scene.v().getObjectType();
+    return RefType.v("java.lang.Object");
   }
 
   private int number = 0;
