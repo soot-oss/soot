@@ -30,18 +30,6 @@ import java.util.Set;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-<<<<<<< HEAD
-=======
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.Body;
 import soot.G;
 import soot.IntType;
@@ -287,6 +275,12 @@ public class DavaBody extends Body {
     Body b = Dava.v().newBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
     return b;
+  }
+
+  @Override
+  public Object clone(boolean noLocalsClone) {
+    // not implemented
+    return null;
   }
 
   public IterableSet<ExceptionNode> get_SynchronizedBlockFacts() {

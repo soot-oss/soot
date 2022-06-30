@@ -21,19 +21,12 @@ package soot.jimple.toolkits.pointer;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-<<<<<<< HEAD
-=======
-
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.Context;
 import soot.G;
 import soot.Local;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
-<<<<<<< HEAD
 import soot.PrimType;
-=======
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.RefType;
 import soot.Singletons;
 import soot.SootField;
@@ -55,7 +48,6 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
   @Override
   public PointsToSet reachingObjects(Local l) {
     Type t = l.getType();
-<<<<<<< HEAD
     if (t instanceof RefType) {
       return FullObjectSet.v((RefType) t);
     }
@@ -63,9 +55,6 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
       return FullObjectSet.v((PrimType) t);
     }
     return FullObjectSet.v();
-=======
-    return (t instanceof RefType) ? FullObjectSet.v((RefType) t) : FullObjectSet.v();
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
   }
 
   /** Returns the set of objects pointed to by variable l in context c. */

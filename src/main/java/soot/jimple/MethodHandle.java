@@ -30,6 +30,8 @@ import soot.RefType;
 import soot.SootFieldRef;
 import soot.SootMethodRef;
 import soot.Type;
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 public class MethodHandle extends Constant {
@@ -115,14 +117,11 @@ public class MethodHandle extends Constant {
 
   @Override
   public Type getType() {
-<<<<<<< HEAD
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
       return isMethodRef() ?
               RefType.v(DotnetBasicTypes.SYSTEM_RUNTIMEMETHODHANDLE) :
               RefType.v(DotnetBasicTypes.SYSTEM_RUNTIMEFIELDHANDLE);
     }
-=======
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
     return RefType.v("java.lang.invoke.MethodHandle");
   }
 

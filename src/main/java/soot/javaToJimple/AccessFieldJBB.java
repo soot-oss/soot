@@ -25,12 +25,7 @@ import java.util.List;
  * #L%
  */
 
-<<<<<<< HEAD
 import soot.Scene;
-=======
-import java.util.ArrayList;
-import java.util.List;
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 
 public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
 
@@ -110,7 +105,7 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder {
   private soot.Local handleCall(polyglot.ast.Field field, polyglot.ast.Call call, soot.Value param, soot.Local base) {
 
     soot.Type sootRecType = Util.getSootType(call.target().type());
-    soot.SootClass receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+    soot.SootClass receiverTypeClass = soot.Scene.v().getSootClass(Scene.v().getObjectType().toString());
     if (sootRecType instanceof soot.RefType) {
       receiverTypeClass = ((soot.RefType) sootRecType).getSootClass();
     }

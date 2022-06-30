@@ -410,7 +410,7 @@ public class SynchronizerManager {
       Stmt newGoto = jimp.newGotoStmt(units.getSuccOf(exitMon));
       units.insertAfter(newGoto, exitMon);
 
-      Local eRef = jimp.newLocal("__exception", RefType.v("java.lang.Throwable"));
+      Local eRef = jimp.newLocal("__exception", Scene.v().getBaseExceptionType());
       b.getLocals().add(eRef);
 
       List<Unit> l = new ArrayList<Unit>();
@@ -421,7 +421,7 @@ public class SynchronizerManager {
       units.insertAfter(l, newGoto);
 
       b.getTraps()
-          .addFirst(jimp.newTrap(Scene.v().getSootClass("java.lang.Throwable"), stmt, units.getSuccOf(stmt), handlerStmt));
+          .addFirst(jimp.newTrap(Scene.v().getSootClass(Scene.v().getBaseExceptionType().toString()), stmt, units.getSuccOf(stmt), handlerStmt));
     }
   }
 }

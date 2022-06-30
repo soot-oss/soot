@@ -81,20 +81,7 @@ public class BadFields extends SceneTransformer {
         continue;
       }
       if (f.isFinal()) {
-<<<<<<< HEAD
         if ((f.getType() instanceof PrimType) || typeName.equals("java.io.PrintStream") || typeName.equals("java.lang.String") || typeName.equals(Scene.v().getObjectType().toString())) {
-=======
-        if (f.getType() instanceof PrimType) {
-          continue;
-        }
-        if (typeName.equals("java.io.PrintStream")) {
-          continue;
-        }
-        if (typeName.equals("java.lang.String")) {
-          continue;
-        }
-        if (typeName.equals("java.lang.Object")) {
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
           continue;
         }
         if (typeName.equals("java.lang.Integer")) {
@@ -174,7 +161,7 @@ public class BadFields extends SceneTransformer {
       if (target.getDeclaringClass().getName().equals("java.io.PrintStream") || target.getDeclaringClass().getName().equals("java.lang.Boolean") || target.getDeclaringClass().getName().equals("java.lang.Integer") || target.getDeclaringClass().getName().equals("java.lang.String")) {
         return;
       }
-      if (target.getDeclaringClass().getName().equals("java.lang.Object")) {
+      if (target.getDeclaringClass().getName().equals(Scene.v().getObjectType().toString())) {
         return;
       }
     }

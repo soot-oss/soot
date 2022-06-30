@@ -45,6 +45,7 @@ import soot.ShortType;
 import soot.TrapManager;
 import soot.Type;
 import soot.Value;
+import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;
@@ -157,7 +158,7 @@ public class AugEvalFunction implements IEvalFunction {
         return t;
       }
     } else if (expr instanceof CaughtExceptionRef) {
-      RefType throwableType = Scene.v().getRefType("java.lang.Throwable");
+      RefType throwableType = Scene.v().getBaseExceptionType();
       RefType r = null;
       for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb)) {
         if (t.getSootClass().isPhantom()) {
@@ -185,16 +186,14 @@ public class AugEvalFunction implements IEvalFunction {
         return at;
       } else if (at instanceof RefType) {
         String name = ((RefType) at).getSootClass().getName();
-<<<<<<< HEAD
         if (name.equals(Scene.v().getObjectType().toString())) {
           return new WeakObjectType(name);
         }
-=======
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
         switch (name) {
           case "java.lang.Cloneable":
           case "java.lang.Object":
           case "java.io.Serializable":
+          case DotnetBasicTypes.SYSTEM_ARRAY:
             return new WeakObjectType(name);
           default:
             return BottomType.v();

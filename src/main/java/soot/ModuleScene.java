@@ -36,22 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 
-<<<<<<< HEAD
 import soot.dotnet.types.DotnetBasicTypes;
-=======
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.options.Options;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -366,6 +351,9 @@ public class ModuleScene extends Scene {
 
   @Override
   public RefType getObjectType() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return getRefType(DotnetBasicTypes.SYSTEM_OBJECT);
+    }
     return getRefType("java.lang.Object", Optional.of("java.base"));
   }
 

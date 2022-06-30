@@ -115,7 +115,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
                   RefType refType = (RefType) base.getType();
                   baseTypeClass = refType.getSootClass();
                 } else if (base.getType() instanceof ArrayType) {
-                  baseTypeClass = Scene.v().getSootClass("java.lang.Object");
+                  baseTypeClass = Scene.v().getSootClass(Scene.v().getObjectType().toString());
                 } else if (base.getType() instanceof NullType) {
                   // if the base is definitely null then there is no call target
                   return Collections.emptySet();

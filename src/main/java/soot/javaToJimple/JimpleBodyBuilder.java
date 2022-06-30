@@ -1489,7 +1489,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       } else if (errorType instanceof soot.ByteType) {
         paramTypes.add(soot.IntType.v());
       } else {
-        paramTypes.add(soot.Scene.v().getSootClass("java.lang.Object").getType());
+        paramTypes.add(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType());
       }
 
       params.add(errorExpr);
@@ -3521,7 +3521,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       if (toApp instanceof soot.jimple.StringConstant) {
         appendType = soot.RefType.v("java.lang.String");
       } else if (toApp instanceof soot.jimple.NullConstant) {
-        appendType = soot.RefType.v("java.lang.Object");
+        appendType = soot.Scene.v().getObjectType();
       } else if (toApp instanceof soot.jimple.Constant) {
         appendType = toApp.getType();
       } else if (toApp instanceof soot.Local) {
@@ -3533,11 +3533,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
           } else if (((soot.Local) toApp).getType().toString().equals("java.lang.StringBuffer")) {
             appendType = soot.RefType.v("java.lang.StringBuffer");
           } else {
-            appendType = soot.RefType.v("java.lang.Object");
+            appendType = soot.Scene.v().getObjectType();
           }
         } else {
           // this is for arrays
-          appendType = soot.RefType.v("java.lang.Object");
+          appendType = soot.Scene.v().getObjectType();
         }
       } else if (toApp instanceof soot.jimple.ConditionExpr) {
         toApp = handleCondBinExpr((soot.jimple.ConditionExpr) toApp);
@@ -3885,7 +3885,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     // if its already the right type
     if (castExpr.expr().type().equals(castExpr.type())
-        || (castExpr.type().isClass() && Util.getSootType(castExpr.type()).toString().equals("java.lang.Object"))) {
+        || (castExpr.type().isClass() && Util.getSootType(castExpr.type()).toString().equals(Scene.v().getObjectType().toString()))) {
       return base().createAggressiveExpr(castExpr.expr(), false, false);
     }
 
@@ -4234,9 +4234,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
   protected soot.SootMethodRef getSootMethodRef(polyglot.ast.Call call) {
     soot.Type sootRecType;
     soot.SootClass receiverTypeClass;
-    if (Util.getSootType(call.methodInstance().container()).equals(soot.RefType.v("java.lang.Object"))) {
-      sootRecType = soot.RefType.v("java.lang.Object");
-      receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+    if (Util.getSootType(call.methodInstance().container()).equals(Scene.v().getObjectType())) {
+      sootRecType = Scene.v().getObjectType();
+      receiverTypeClass = soot.Scene.v().getSootClass(Scene.v().getObjectType().toString());
     } else {
       if (call.target().type() == null) {
         sootRecType = Util.getSootType(call.methodInstance().container());
@@ -4246,7 +4246,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       if (sootRecType instanceof soot.RefType) {
         receiverTypeClass = ((soot.RefType) sootRecType).getSootClass();
       } else if (sootRecType instanceof soot.ArrayType) {
-        receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+        receiverTypeClass = soot.Scene.v().getSootClass(Scene.v().getObjectType().toString());
       } else {
         throw new RuntimeException("call target problem: " + call);
       }
@@ -4302,9 +4302,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     soot.Type sootRecType;
     soot.SootClass receiverTypeClass;
-    if (Util.getSootType(call.methodInstance().container()).equals(soot.RefType.v("java.lang.Object"))) {
-      sootRecType = soot.RefType.v("java.lang.Object");
-      receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+    if (Util.getSootType(call.methodInstance().container()).equals(Scene.v().getObjectType())) {
+      sootRecType = Scene.v().getObjectType();
+      receiverTypeClass = soot.Scene.v().getSootClass(Scene.v().getObjectType().toString());
     } else {
       if (call.target().type() == null) {
         sootRecType = Util.getSootType(call.methodInstance().container());
@@ -4314,7 +4314,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       if (sootRecType instanceof soot.RefType) {
         receiverTypeClass = ((soot.RefType) sootRecType).getSootClass();
       } else if (sootRecType instanceof soot.ArrayType) {
-        receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+        receiverTypeClass = soot.Scene.v().getSootClass(Scene.v().getObjectType().toString());
       } else {
         throw new RuntimeException("call target problem: " + call);
       }

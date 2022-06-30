@@ -286,7 +286,7 @@ public class UseChecker extends AbstractStmtSwitch {
         // For some fixed type T, we assume that we can fix the array to T[].
         if (bt instanceof RefType || bt instanceof NullType) {
           String btName = bt instanceof NullType ? null : ((RefType) bt).getSootClass().getName();
-          if (btName == null || "java.lang.Object".equals(btName) || "java.io.Serializable".equals(btName)
+          if (btName == null || Scene.v().getObjectType().toString().equals(btName) || "java.io.Serializable".equals(btName)
               || "java.lang.Cloneable".equals(btName)) {
             if (defs == null) {
               defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
@@ -418,7 +418,7 @@ public class UseChecker extends AbstractStmtSwitch {
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof InstanceOfExpr) {
       InstanceOfExpr ioe = (InstanceOfExpr) rhs;
-      ioe.setOp(this.uv.visit(ioe.getOp(), RefType.v("java.lang.Object"), stmt));
+      ioe.setOp(this.uv.visit(ioe.getOp(), Scene.v().getObjectType(), stmt));
       stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof NewArrayExpr) {
       NewArrayExpr nae = (NewArrayExpr) rhs;
@@ -522,7 +522,7 @@ public class UseChecker extends AbstractStmtSwitch {
 
   @Override
   public void caseThrowStmt(ThrowStmt stmt) {
-    stmt.setOp(this.uv.visit(stmt.getOp(), RefType.v("java.lang.Throwable"), stmt));
+    stmt.setOp(this.uv.visit(stmt.getOp(), Scene.v().getBaseExceptionType(), stmt));
   }
 
   @Override

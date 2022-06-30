@@ -124,12 +124,9 @@ public class SootResolver {
    * will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
-<<<<<<< HEAD
     if (className.length() == 0) {
       throw new RuntimeException("Classname must not be empty!");
     }
-=======
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
     final Scene scene = Scene.v();
     if (scene.containsClass(className)) {
       return scene.getSootClass(className);

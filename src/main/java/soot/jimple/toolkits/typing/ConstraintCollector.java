@@ -21,10 +21,6 @@ package soot.jimple.toolkits.typing;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-<<<<<<< HEAD
-=======
-
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -33,10 +29,7 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.RefType;
-<<<<<<< HEAD
 import soot.Scene;
-=======
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
 import soot.SootField;
 import soot.SootMethodRef;
 import soot.TrapManager;
@@ -449,7 +442,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
           resolver.typeVariable(t).addParent(left);
         }
         if (uses) {
-          left.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
+          left.addParent(resolver.typeVariable(Scene.v().getBaseExceptionType()));
         }
       } else {
         TypeVariable right = resolver.typeVariable(r.getType());
@@ -588,7 +581,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
       Value op = stmt.getOp();
       if (op instanceof Local) {
         TypeVariable var = resolver.typeVariable((Local) op);
-        var.addParent(resolver.typeVariable(RefType.v("java.lang.Throwable")));
+        var.addParent(resolver.typeVariable(Scene.v().getBaseExceptionType()));
       }
     }
   }

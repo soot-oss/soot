@@ -1,5 +1,7 @@
 package soot;
 
+import java.util.ArrayDeque;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,8 +26,8 @@ package soot;
 
 import com.google.common.base.Optional;
 
-import java.util.ArrayDeque;
-
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -240,7 +242,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
   @Override
   public Type getArrayElementType() {
-<<<<<<< HEAD
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
       if (DotnetBasicTypes.SYSTEM_OBJECT.equals(className) || DotnetBasicTypes.SYSTEM_ICLONEABLE.equals(className)) {
         return Scene.v().getObjectType();
@@ -250,11 +251,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     if (JavaBasicTypes.JAVA_LANG_OBJECT.equals(className) || JavaBasicTypes.JAVA_IO_SERIALIZABLE.equals(className)
         || JavaBasicTypes.JAVA_LANG_CLONABLE.equals(className)) {
       return Scene.v().getObjectType();
-=======
-    if ("java.lang.Object".equals(className) || "java.io.Serializable".equals(className)
-        || "java.lang.Cloneable".equals(className)) {
-      return RefType.v("java.lang.Object");
->>>>>>> 28fc08f44575f933546d4263f6a96279f80facd8
     }
     throw new RuntimeException("Attempt to get array base type of a non-array");
   }
