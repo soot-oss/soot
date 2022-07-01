@@ -1,7 +1,5 @@
 package soot;
 
-import java.util.LinkedList;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,6 +23,8 @@ import java.util.LinkedList;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.LinkedList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

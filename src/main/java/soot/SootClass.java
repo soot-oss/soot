@@ -1,10 +1,5 @@
 package soot;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -28,6 +23,11 @@ import java.util.List;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

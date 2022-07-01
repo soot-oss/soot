@@ -1,7 +1,5 @@
 package soot;
 
-import java.util.ArrayDeque;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,6 +23,8 @@ import java.util.ArrayDeque;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayDeque;
 
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;

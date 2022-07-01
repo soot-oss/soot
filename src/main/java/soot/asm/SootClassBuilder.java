@@ -1,11 +1,5 @@
 package soot.asm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -29,6 +23,12 @@ import java.util.Set;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;

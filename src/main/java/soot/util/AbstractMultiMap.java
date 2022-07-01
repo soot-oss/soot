@@ -1,12 +1,5 @@
 package soot.util;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -30,6 +23,13 @@ import java.util.Set;
  */
 
 import heros.solver.Pair;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializable {
 

@@ -29,6 +29,8 @@ package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
+import com.google.common.collect.ArrayListMultimap;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,8 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.collect.ArrayListMultimap;
 
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;

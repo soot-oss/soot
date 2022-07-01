@@ -1,5 +1,7 @@
 package soot.dotnet;
 
+import com.google.common.base.Strings;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,8 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import com.google.common.base.Strings;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;

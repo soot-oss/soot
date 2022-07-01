@@ -1,10 +1,5 @@
 package soot.asm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -28,6 +23,11 @@ import java.util.Map;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;

@@ -1,10 +1,5 @@
 package soot.jimple.toolkits.ide.icfg;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -30,14 +25,20 @@ import java.util.Iterator;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import heros.DontSynchronize;
 import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.MethodOrMethodContext;
 import soot.Scene;
 import soot.SootMethod;

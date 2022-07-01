@@ -1,13 +1,5 @@
 package soot;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -31,6 +23,14 @@ import java.util.Set;
  */
 
 import com.google.common.base.Optional;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import soot.dava.toolkits.base.misc.PackageNamer;
 
