@@ -13,12 +13,12 @@ package soot.dotnet.proto;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -563,21 +563,21 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @return A list containing the allReferencedModuleTypes.
      */
     java.util.List<java.lang.String> getAllReferencedModuleTypesList();
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @return The count of allReferencedModuleTypes.
      */
     int getAllReferencedModuleTypesCount();
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The allReferencedModuleTypes at the given index.
@@ -586,7 +586,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @param index
      *          The index of the value to return.
      * @return The bytes of the allReferencedModuleTypes at the given index.
@@ -746,7 +746,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @return A list containing the allReferencedModuleTypes.
      */
     public com.google.protobuf.ProtocolStringList getAllReferencedModuleTypesList() {
@@ -755,7 +755,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @return The count of allReferencedModuleTypes.
      */
     public int getAllReferencedModuleTypesCount() {
@@ -764,7 +764,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The allReferencedModuleTypes at the given index.
@@ -775,7 +775,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string all_referenced_module_types = 2;</code>
-     * 
+     *
      * @param index
      *          The index of the value to return.
      * @return The bytes of the allReferencedModuleTypes at the given index.
@@ -1423,7 +1423,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @return A list containing the allReferencedModuleTypes.
        */
       public com.google.protobuf.ProtocolStringList getAllReferencedModuleTypesList() {
@@ -1432,7 +1432,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @return The count of allReferencedModuleTypes.
        */
       public int getAllReferencedModuleTypesCount() {
@@ -1441,7 +1441,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @param index
        *          The index of the element to return.
        * @return The allReferencedModuleTypes at the given index.
@@ -1452,7 +1452,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @param index
        *          The index of the value to return.
        * @return The bytes of the allReferencedModuleTypes at the given index.
@@ -1463,7 +1463,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @param index
        *          The index to set the value at.
        * @param value
@@ -1482,7 +1482,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @param value
        *          The allReferencedModuleTypes to add.
        * @return This builder for chaining.
@@ -1499,7 +1499,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @param values
        *          The allReferencedModuleTypes to add.
        * @return This builder for chaining.
@@ -1513,7 +1513,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAllReferencedModuleTypes() {
@@ -1525,7 +1525,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string all_referenced_module_types = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes of the allReferencedModuleTypes to add.
        * @return This builder for chaining.
@@ -1596,84 +1596,84 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>string fullname = 2;</code>
-     * 
+     *
      * @return The fullname.
      */
     java.lang.String getFullname();
 
     /**
      * <code>string fullname = 2;</code>
-     * 
+     *
      * @return The bytes for fullname.
      */
     com.google.protobuf.ByteString getFullnameBytes();
 
     /**
      * <code>string namespace = 3;</code>
-     * 
+     *
      * @return The namespace.
      */
     java.lang.String getNamespace();
 
     /**
      * <code>string namespace = 3;</code>
-     * 
+     *
      * @return The bytes for namespace.
      */
     com.google.protobuf.ByteString getNamespaceBytes();
 
     /**
      * <code>bool is_abstract = 4;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_read_only = 5;</code>
-     * 
+     *
      * @return The isReadOnly.
      */
     boolean getIsReadOnly();
 
     /**
      * <code>bool is_sealed = 6;</code>
-     * 
+     *
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>bool is_static = 7;</code>
-     * 
+     *
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>string declaring_outer_class = 8;</code>
-     * 
+     *
      * @return The declaringOuterClass.
      */
     java.lang.String getDeclaringOuterClass();
 
     /**
      * <code>string declaring_outer_class = 8;</code>
-     * 
+     *
      * @return The bytes for declaringOuterClass.
      */
     com.google.protobuf.ByteString getDeclaringOuterClassBytes();
@@ -1706,14 +1706,14 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for typeKind.
      */
     int getTypeKindValue();
 
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
-     * 
+     *
      * @return The typeKind.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind();
@@ -1873,7 +1873,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>int32 array_dimensions = 17;</code>
-     * 
+     *
      * @return The arrayDimensions.
      */
     int getArrayDimensions();
@@ -1909,7 +1909,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 19;</code>
-     * 
+     *
      * @return The peToken.
      */
     int getPeToken();
@@ -2162,7 +2162,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     @java.lang.Override
@@ -2172,7 +2172,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     @java.lang.Override
@@ -2188,7 +2188,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string fullname = 2;</code>
-     * 
+     *
      * @return The fullname.
      */
     @java.lang.Override
@@ -2206,7 +2206,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string fullname = 2;</code>
-     * 
+     *
      * @return The bytes for fullname.
      */
     @java.lang.Override
@@ -2226,7 +2226,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string namespace = 3;</code>
-     * 
+     *
      * @return The namespace.
      */
     @java.lang.Override
@@ -2244,7 +2244,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string namespace = 3;</code>
-     * 
+     *
      * @return The bytes for namespace.
      */
     @java.lang.Override
@@ -2264,7 +2264,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_abstract = 4;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -2277,7 +2277,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_read_only = 5;</code>
-     * 
+     *
      * @return The isReadOnly.
      */
     @java.lang.Override
@@ -2290,7 +2290,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_sealed = 6;</code>
-     * 
+     *
      * @return The isSealed.
      */
     @java.lang.Override
@@ -2303,7 +2303,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_static = 7;</code>
-     * 
+     *
      * @return The isStatic.
      */
     @java.lang.Override
@@ -2316,7 +2316,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string declaring_outer_class = 8;</code>
-     * 
+     *
      * @return The declaringOuterClass.
      */
     @java.lang.Override
@@ -2334,7 +2334,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string declaring_outer_class = 8;</code>
-     * 
+     *
      * @return The bytes for declaringOuterClass.
      */
     @java.lang.Override
@@ -2398,7 +2398,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for typeKind.
      */
     @java.lang.Override
@@ -2408,7 +2408,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 10;</code>
-     * 
+     *
      * @return The typeKind.
      */
     @java.lang.Override
@@ -2688,7 +2688,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>int32 array_dimensions = 17;</code>
-     * 
+     *
      * @return The arrayDimensions.
      */
     @java.lang.Override
@@ -2749,7 +2749,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 19;</code>
-     * 
+     *
      * @return The peToken.
      */
     @java.lang.Override
@@ -2924,28 +2924,11 @@ public final class ProtoAssemblyAllTypes {
           || (getIsStatic() != other.getIsStatic()) || !getDeclaringOuterClass().equals(other.getDeclaringOuterClass())) {
         return false;
       }
-      if (!getDirectBaseTypesList().equals(other.getDirectBaseTypesList())) {
+      if (!getDirectBaseTypesList().equals(other.getDirectBaseTypesList()) || (typeKind_ != other.typeKind_)
+          || !getMethodsList().equals(other.getMethodsList()) || !getFieldsList().equals(other.getFieldsList())) {
         return false;
       }
-      if (typeKind_ != other.typeKind_) {
-        return false;
-      }
-      if (!getMethodsList().equals(other.getMethodsList())) {
-        return false;
-      }
-      if (!getFieldsList().equals(other.getFieldsList())) {
-        return false;
-      }
-      if (!getPropertiesList().equals(other.getPropertiesList())) {
-        return false;
-      }
-      if (!getNestedTypesList().equals(other.getNestedTypesList())) {
-        return false;
-      }
-      if (!getAttributesList().equals(other.getAttributesList())) {
-        return false;
-      }
-      if (!getGenericTypeArgumentsList().equals(other.getGenericTypeArgumentsList())) {
+      if (!getPropertiesList().equals(other.getPropertiesList()) || !getNestedTypesList().equals(other.getNestedTypesList()) || !getAttributesList().equals(other.getAttributesList()) || !getGenericTypeArgumentsList().equals(other.getGenericTypeArgumentsList())) {
         return false;
       }
       if (getArrayDimensions() != other.getArrayDimensions()) {
@@ -3659,7 +3642,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for accessibility.
        */
       @java.lang.Override
@@ -3669,7 +3652,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
@@ -3683,7 +3666,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The accessibility.
        */
       @java.lang.Override
@@ -3696,7 +3679,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The accessibility to set.
        * @return This builder for chaining.
@@ -3713,7 +3696,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
@@ -3727,7 +3710,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string fullname = 2;</code>
-       * 
+       *
        * @return The fullname.
        */
       public java.lang.String getFullname() {
@@ -3744,7 +3727,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string fullname = 2;</code>
-       * 
+       *
        * @return The bytes for fullname.
        */
       public com.google.protobuf.ByteString getFullnameBytes() {
@@ -3760,7 +3743,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string fullname = 2;</code>
-       * 
+       *
        * @param value
        *          The fullname to set.
        * @return This builder for chaining.
@@ -3777,7 +3760,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string fullname = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearFullname() {
@@ -3789,7 +3772,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string fullname = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for fullname to set.
        * @return This builder for chaining.
@@ -3809,7 +3792,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string namespace = 3;</code>
-       * 
+       *
        * @return The namespace.
        */
       public java.lang.String getNamespace() {
@@ -3826,7 +3809,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string namespace = 3;</code>
-       * 
+       *
        * @return The bytes for namespace.
        */
       public com.google.protobuf.ByteString getNamespaceBytes() {
@@ -3842,7 +3825,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string namespace = 3;</code>
-       * 
+       *
        * @param value
        *          The namespace to set.
        * @return This builder for chaining.
@@ -3859,7 +3842,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string namespace = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearNamespace() {
@@ -3871,7 +3854,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string namespace = 3;</code>
-       * 
+       *
        * @param value
        *          The bytes for namespace to set.
        * @return This builder for chaining.
@@ -3891,7 +3874,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 4;</code>
-       * 
+       *
        * @return The isAbstract.
        */
       @java.lang.Override
@@ -3901,7 +3884,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 4;</code>
-       * 
+       *
        * @param value
        *          The isAbstract to set.
        * @return This builder for chaining.
@@ -3915,7 +3898,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
@@ -3929,7 +3912,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_read_only = 5;</code>
-       * 
+       *
        * @return The isReadOnly.
        */
       @java.lang.Override
@@ -3939,7 +3922,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_read_only = 5;</code>
-       * 
+       *
        * @param value
        *          The isReadOnly to set.
        * @return This builder for chaining.
@@ -3953,7 +3936,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_read_only = 5;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsReadOnly() {
@@ -3967,7 +3950,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 6;</code>
-       * 
+       *
        * @return The isSealed.
        */
       @java.lang.Override
@@ -3977,7 +3960,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 6;</code>
-       * 
+       *
        * @param value
        *          The isSealed to set.
        * @return This builder for chaining.
@@ -3991,7 +3974,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
@@ -4005,7 +3988,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 7;</code>
-       * 
+       *
        * @return The isStatic.
        */
       @java.lang.Override
@@ -4015,7 +3998,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 7;</code>
-       * 
+       *
        * @param value
        *          The isStatic to set.
        * @return This builder for chaining.
@@ -4029,7 +4012,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 7;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
@@ -4043,7 +4026,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string declaring_outer_class = 8;</code>
-       * 
+       *
        * @return The declaringOuterClass.
        */
       public java.lang.String getDeclaringOuterClass() {
@@ -4060,7 +4043,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string declaring_outer_class = 8;</code>
-       * 
+       *
        * @return The bytes for declaringOuterClass.
        */
       public com.google.protobuf.ByteString getDeclaringOuterClassBytes() {
@@ -4076,7 +4059,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string declaring_outer_class = 8;</code>
-       * 
+       *
        * @param value
        *          The declaringOuterClass to set.
        * @return This builder for chaining.
@@ -4093,7 +4076,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string declaring_outer_class = 8;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearDeclaringOuterClass() {
@@ -4105,7 +4088,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string declaring_outer_class = 8;</code>
-       * 
+       *
        * @param value
        *          The bytes for declaringOuterClass to set.
        * @return This builder for chaining.
@@ -4375,7 +4358,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for typeKind.
        */
       @java.lang.Override
@@ -4385,7 +4368,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for typeKind to set.
        * @return This builder for chaining.
@@ -4399,7 +4382,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
-       * 
+       *
        * @return The typeKind.
        */
       @java.lang.Override
@@ -4412,7 +4395,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
-       * 
+       *
        * @param value
        *          The typeKind to set.
        * @return This builder for chaining.
@@ -4429,7 +4412,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 10;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearTypeKind() {
@@ -5933,7 +5916,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>int32 array_dimensions = 17;</code>
-       * 
+       *
        * @return The arrayDimensions.
        */
       @java.lang.Override
@@ -5943,7 +5926,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>int32 array_dimensions = 17;</code>
-       * 
+       *
        * @param value
        *          The arrayDimensions to set.
        * @return This builder for chaining.
@@ -5957,7 +5940,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>int32 array_dimensions = 17;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearArrayDimensions() {
@@ -6221,7 +6204,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 19;</code>
-       * 
+       *
        * @return The peToken.
        */
       @java.lang.Override
@@ -6235,7 +6218,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 19;</code>
-       * 
+       *
        * @param value
        *          The peToken to set.
        * @return This builder for chaining.
@@ -6253,7 +6236,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 19;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
@@ -6318,35 +6301,35 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The name.
      */
     java.lang.String getName();
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>bool has_body = 3;</code>
-     * 
+     *
      * @return The hasBody.
      */
     boolean getHasBody();
@@ -6379,91 +6362,91 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_abstract = 5;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_accessor = 6;</code>
-     * 
+     *
      * @return The isAccessor.
      */
     boolean getIsAccessor();
 
     /**
      * <code>bool is_constructor = 7;</code>
-     * 
+     *
      * @return The isConstructor.
      */
     boolean getIsConstructor();
 
     /**
      * <code>bool is_destructor = 8;</code>
-     * 
+     *
      * @return The isDestructor.
      */
     boolean getIsDestructor();
 
     /**
      * <code>bool is_explicit_interface_implementation = 9;</code>
-     * 
+     *
      * @return The isExplicitInterfaceImplementation.
      */
     boolean getIsExplicitInterfaceImplementation();
 
     /**
      * <code>bool is_static = 10;</code>
-     * 
+     *
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>bool is_virtual = 11;</code>
-     * 
+     *
      * @return The isVirtual.
      */
     boolean getIsVirtual();
 
     /**
      * <code>bool is_operator = 16;</code>
-     * 
+     *
      * @return The isOperator.
      */
     boolean getIsOperator();
 
     /**
      * <code>bool is_extern = 17;</code>
-     * 
+     *
      * @return The isExtern.
      */
     boolean getIsExtern();
 
     /**
      * <code>bool is_unsafe = 18;</code>
-     * 
+     *
      * @return The isUnsafe.
      */
     boolean getIsUnsafe();
 
     /**
      * <code>bool is_sealed = 19;</code>
-     * 
+     *
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>.TypeDefinition return_type = 12;</code>
-     * 
+     *
      * @return Whether the returnType field is set.
      */
     boolean hasReturnType();
 
     /**
      * <code>.TypeDefinition return_type = 12;</code>
-     * 
+     *
      * @return The returnType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getReturnType();
@@ -6501,28 +6484,28 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string full_name = 14;</code>
-     * 
+     *
      * @return The fullName.
      */
     java.lang.String getFullName();
 
     /**
      * <code>string full_name = 14;</code>
-     * 
+     *
      * @return The bytes for fullName.
      */
     com.google.protobuf.ByteString getFullNameBytes();
 
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
-     * 
+     *
      * @return Whether the declaringType field is set.
      */
     boolean hasDeclaringType();
 
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
-     * 
+     *
      * @return The declaringType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType();
@@ -6538,7 +6521,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 20;</code>
-     * 
+     *
      * @return The peToken.
      */
     int getPeToken();
@@ -6762,7 +6745,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     @java.lang.Override
@@ -6772,7 +6755,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     @java.lang.Override
@@ -6788,7 +6771,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The name.
      */
     @java.lang.Override
@@ -6806,7 +6789,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -6826,7 +6809,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool has_body = 3;</code>
-     * 
+     *
      * @return The hasBody.
      */
     @java.lang.Override
@@ -6883,7 +6866,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_abstract = 5;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -6896,7 +6879,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_accessor = 6;</code>
-     * 
+     *
      * @return The isAccessor.
      */
     @java.lang.Override
@@ -6909,7 +6892,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_constructor = 7;</code>
-     * 
+     *
      * @return The isConstructor.
      */
     @java.lang.Override
@@ -6922,7 +6905,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_destructor = 8;</code>
-     * 
+     *
      * @return The isDestructor.
      */
     @java.lang.Override
@@ -6935,7 +6918,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_explicit_interface_implementation = 9;</code>
-     * 
+     *
      * @return The isExplicitInterfaceImplementation.
      */
     @java.lang.Override
@@ -6948,7 +6931,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_static = 10;</code>
-     * 
+     *
      * @return The isStatic.
      */
     @java.lang.Override
@@ -6961,7 +6944,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_virtual = 11;</code>
-     * 
+     *
      * @return The isVirtual.
      */
     @java.lang.Override
@@ -6974,7 +6957,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_operator = 16;</code>
-     * 
+     *
      * @return The isOperator.
      */
     @java.lang.Override
@@ -6987,7 +6970,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_extern = 17;</code>
-     * 
+     *
      * @return The isExtern.
      */
     @java.lang.Override
@@ -7000,7 +6983,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_unsafe = 18;</code>
-     * 
+     *
      * @return The isUnsafe.
      */
     @java.lang.Override
@@ -7013,7 +6996,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_sealed = 19;</code>
-     * 
+     *
      * @return The isSealed.
      */
     @java.lang.Override
@@ -7026,7 +7009,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition return_type = 12;</code>
-     * 
+     *
      * @return Whether the returnType field is set.
      */
     @java.lang.Override
@@ -7036,7 +7019,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition return_type = 12;</code>
-     * 
+     *
      * @return The returnType.
      */
     @java.lang.Override
@@ -7102,7 +7085,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string full_name = 14;</code>
-     * 
+     *
      * @return The fullName.
      */
     @java.lang.Override
@@ -7120,7 +7103,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string full_name = 14;</code>
-     * 
+     *
      * @return The bytes for fullName.
      */
     @java.lang.Override
@@ -7140,7 +7123,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
-     * 
+     *
      * @return Whether the declaringType field is set.
      */
     @java.lang.Override
@@ -7150,7 +7133,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition declaring_type = 15;</code>
-     * 
+     *
      * @return The declaringType.
      */
     @java.lang.Override
@@ -7176,7 +7159,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 20;</code>
-     * 
+     *
      * @return The peToken.
      */
     @java.lang.Override
@@ -7357,28 +7340,12 @@ public final class ProtoAssemblyAllTypes {
           || (getIsConstructor() != other.getIsConstructor()) || (getIsDestructor() != other.getIsDestructor())) {
         return false;
       }
-      if (getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation()) {
+      if ((getIsExplicitInterfaceImplementation() != other.getIsExplicitInterfaceImplementation())
+          || (getIsStatic() != other.getIsStatic()) || (getIsVirtual() != other.getIsVirtual())
+          || (getIsOperator() != other.getIsOperator())) {
         return false;
       }
-      if (getIsStatic() != other.getIsStatic()) {
-        return false;
-      }
-      if (getIsVirtual() != other.getIsVirtual()) {
-        return false;
-      }
-      if (getIsOperator() != other.getIsOperator()) {
-        return false;
-      }
-      if (getIsExtern() != other.getIsExtern()) {
-        return false;
-      }
-      if (getIsUnsafe() != other.getIsUnsafe()) {
-        return false;
-      }
-      if (getIsSealed() != other.getIsSealed()) {
-        return false;
-      }
-      if (hasReturnType() != other.hasReturnType()) {
+      if ((getIsExtern() != other.getIsExtern()) || (getIsUnsafe() != other.getIsUnsafe()) || (getIsSealed() != other.getIsSealed()) || (hasReturnType() != other.hasReturnType())) {
         return false;
       }
       if (hasReturnType()) {
@@ -7909,7 +7876,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for accessibility.
        */
       @java.lang.Override
@@ -7919,7 +7886,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
@@ -7933,7 +7900,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The accessibility.
        */
       @java.lang.Override
@@ -7946,7 +7913,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The accessibility to set.
        * @return This builder for chaining.
@@ -7963,7 +7930,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
@@ -7977,7 +7944,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -7994,7 +7961,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString getNameBytes() {
@@ -8010,7 +7977,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @param value
        *          The name to set.
        * @return This builder for chaining.
@@ -8027,7 +7994,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -8039,7 +8006,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for name to set.
        * @return This builder for chaining.
@@ -8059,7 +8026,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool has_body = 3;</code>
-       * 
+       *
        * @return The hasBody.
        */
       @java.lang.Override
@@ -8069,7 +8036,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool has_body = 3;</code>
-       * 
+       *
        * @param value
        *          The hasBody to set.
        * @return This builder for chaining.
@@ -8083,7 +8050,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool has_body = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearHasBody() {
@@ -8345,7 +8312,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 5;</code>
-       * 
+       *
        * @return The isAbstract.
        */
       @java.lang.Override
@@ -8355,7 +8322,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 5;</code>
-       * 
+       *
        * @param value
        *          The isAbstract to set.
        * @return This builder for chaining.
@@ -8369,7 +8336,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 5;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
@@ -8383,7 +8350,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_accessor = 6;</code>
-       * 
+       *
        * @return The isAccessor.
        */
       @java.lang.Override
@@ -8393,7 +8360,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_accessor = 6;</code>
-       * 
+       *
        * @param value
        *          The isAccessor to set.
        * @return This builder for chaining.
@@ -8407,7 +8374,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_accessor = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsAccessor() {
@@ -8421,7 +8388,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_constructor = 7;</code>
-       * 
+       *
        * @return The isConstructor.
        */
       @java.lang.Override
@@ -8431,7 +8398,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_constructor = 7;</code>
-       * 
+       *
        * @param value
        *          The isConstructor to set.
        * @return This builder for chaining.
@@ -8445,7 +8412,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_constructor = 7;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsConstructor() {
@@ -8459,7 +8426,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_destructor = 8;</code>
-       * 
+       *
        * @return The isDestructor.
        */
       @java.lang.Override
@@ -8469,7 +8436,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_destructor = 8;</code>
-       * 
+       *
        * @param value
        *          The isDestructor to set.
        * @return This builder for chaining.
@@ -8483,7 +8450,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_destructor = 8;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsDestructor() {
@@ -8497,7 +8464,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 9;</code>
-       * 
+       *
        * @return The isExplicitInterfaceImplementation.
        */
       @java.lang.Override
@@ -8507,7 +8474,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 9;</code>
-       * 
+       *
        * @param value
        *          The isExplicitInterfaceImplementation to set.
        * @return This builder for chaining.
@@ -8521,7 +8488,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 9;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsExplicitInterfaceImplementation() {
@@ -8535,7 +8502,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 10;</code>
-       * 
+       *
        * @return The isStatic.
        */
       @java.lang.Override
@@ -8545,7 +8512,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 10;</code>
-       * 
+       *
        * @param value
        *          The isStatic to set.
        * @return This builder for chaining.
@@ -8559,7 +8526,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 10;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
@@ -8573,7 +8540,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 11;</code>
-       * 
+       *
        * @return The isVirtual.
        */
       @java.lang.Override
@@ -8583,7 +8550,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 11;</code>
-       * 
+       *
        * @param value
        *          The isVirtual to set.
        * @return This builder for chaining.
@@ -8597,7 +8564,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 11;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsVirtual() {
@@ -8611,7 +8578,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_operator = 16;</code>
-       * 
+       *
        * @return The isOperator.
        */
       @java.lang.Override
@@ -8621,7 +8588,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_operator = 16;</code>
-       * 
+       *
        * @param value
        *          The isOperator to set.
        * @return This builder for chaining.
@@ -8635,7 +8602,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_operator = 16;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsOperator() {
@@ -8649,7 +8616,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_extern = 17;</code>
-       * 
+       *
        * @return The isExtern.
        */
       @java.lang.Override
@@ -8659,7 +8626,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_extern = 17;</code>
-       * 
+       *
        * @param value
        *          The isExtern to set.
        * @return This builder for chaining.
@@ -8673,7 +8640,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_extern = 17;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsExtern() {
@@ -8687,7 +8654,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_unsafe = 18;</code>
-       * 
+       *
        * @return The isUnsafe.
        */
       @java.lang.Override
@@ -8697,7 +8664,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_unsafe = 18;</code>
-       * 
+       *
        * @param value
        *          The isUnsafe to set.
        * @return This builder for chaining.
@@ -8711,7 +8678,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_unsafe = 18;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsUnsafe() {
@@ -8725,7 +8692,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 19;</code>
-       * 
+       *
        * @return The isSealed.
        */
       @java.lang.Override
@@ -8735,7 +8702,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 19;</code>
-       * 
+       *
        * @param value
        *          The isSealed to set.
        * @return This builder for chaining.
@@ -8749,7 +8716,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 19;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
@@ -8764,7 +8731,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition return_type = 12;</code>
-       * 
+       *
        * @return Whether the returnType field is set.
        */
       public boolean hasReturnType() {
@@ -8773,7 +8740,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition return_type = 12;</code>
-       * 
+       *
        * @return The returnType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getReturnType() {
@@ -9139,7 +9106,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 14;</code>
-       * 
+       *
        * @return The fullName.
        */
       public java.lang.String getFullName() {
@@ -9156,7 +9123,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 14;</code>
-       * 
+       *
        * @return The bytes for fullName.
        */
       public com.google.protobuf.ByteString getFullNameBytes() {
@@ -9172,7 +9139,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 14;</code>
-       * 
+       *
        * @param value
        *          The fullName to set.
        * @return This builder for chaining.
@@ -9189,7 +9156,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 14;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearFullName() {
@@ -9201,7 +9168,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 14;</code>
-       * 
+       *
        * @param value
        *          The bytes for fullName to set.
        * @return This builder for chaining.
@@ -9222,7 +9189,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
-       * 
+       *
        * @return Whether the declaringType field is set.
        */
       public boolean hasDeclaringType() {
@@ -9231,7 +9198,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition declaring_type = 15;</code>
-       * 
+       *
        * @return The declaringType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType() {
@@ -9352,7 +9319,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 20;</code>
-       * 
+       *
        * @return The peToken.
        */
       @java.lang.Override
@@ -9366,7 +9333,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 20;</code>
-       * 
+       *
        * @param value
        *          The peToken to set.
        * @return This builder for chaining.
@@ -9384,7 +9351,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 20;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
@@ -9449,14 +9416,14 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     boolean hasType();
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
@@ -9468,42 +9435,42 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string parameter_name = 2;</code>
-     * 
+     *
      * @return The parameterName.
      */
     java.lang.String getParameterName();
 
     /**
      * <code>string parameter_name = 2;</code>
-     * 
+     *
      * @return The bytes for parameterName.
      */
     com.google.protobuf.ByteString getParameterNameBytes();
 
     /**
      * <code>bool is_ref = 3;</code>
-     * 
+     *
      * @return The isRef.
      */
     boolean getIsRef();
 
     /**
      * <code>bool is_out = 4;</code>
-     * 
+     *
      * @return The isOut.
      */
     boolean getIsOut();
 
     /**
      * <code>bool is_in = 5;</code>
-     * 
+     *
      * @return The isIn.
      */
     boolean getIsIn();
 
     /**
      * <code>bool is_optional = 6;</code>
-     * 
+     *
      * @return The isOptional.
      */
     boolean getIsOptional();
@@ -9631,7 +9598,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     @java.lang.Override
@@ -9641,7 +9608,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return The type.
      */
     @java.lang.Override
@@ -9662,7 +9629,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string parameter_name = 2;</code>
-     * 
+     *
      * @return The parameterName.
      */
     @java.lang.Override
@@ -9680,7 +9647,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string parameter_name = 2;</code>
-     * 
+     *
      * @return The bytes for parameterName.
      */
     @java.lang.Override
@@ -9700,7 +9667,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_ref = 3;</code>
-     * 
+     *
      * @return The isRef.
      */
     @java.lang.Override
@@ -9713,7 +9680,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_out = 4;</code>
-     * 
+     *
      * @return The isOut.
      */
     @java.lang.Override
@@ -9726,7 +9693,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_in = 5;</code>
-     * 
+     *
      * @return The isIn.
      */
     @java.lang.Override
@@ -9739,7 +9706,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_optional = 6;</code>
-     * 
+     *
      * @return The isOptional.
      */
     @java.lang.Override
@@ -10152,7 +10119,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 1;</code>
-       * 
+       *
        * @return Whether the type field is set.
        */
       public boolean hasType() {
@@ -10161,7 +10128,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 1;</code>
-       * 
+       *
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -10276,7 +10243,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string parameter_name = 2;</code>
-       * 
+       *
        * @return The parameterName.
        */
       public java.lang.String getParameterName() {
@@ -10293,7 +10260,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string parameter_name = 2;</code>
-       * 
+       *
        * @return The bytes for parameterName.
        */
       public com.google.protobuf.ByteString getParameterNameBytes() {
@@ -10309,7 +10276,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string parameter_name = 2;</code>
-       * 
+       *
        * @param value
        *          The parameterName to set.
        * @return This builder for chaining.
@@ -10326,7 +10293,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string parameter_name = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearParameterName() {
@@ -10338,7 +10305,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string parameter_name = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for parameterName to set.
        * @return This builder for chaining.
@@ -10358,7 +10325,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_ref = 3;</code>
-       * 
+       *
        * @return The isRef.
        */
       @java.lang.Override
@@ -10368,7 +10335,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_ref = 3;</code>
-       * 
+       *
        * @param value
        *          The isRef to set.
        * @return This builder for chaining.
@@ -10382,7 +10349,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_ref = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsRef() {
@@ -10396,7 +10363,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_out = 4;</code>
-       * 
+       *
        * @return The isOut.
        */
       @java.lang.Override
@@ -10406,7 +10373,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_out = 4;</code>
-       * 
+       *
        * @param value
        *          The isOut to set.
        * @return This builder for chaining.
@@ -10420,7 +10387,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_out = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsOut() {
@@ -10434,7 +10401,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_in = 5;</code>
-       * 
+       *
        * @return The isIn.
        */
       @java.lang.Override
@@ -10444,7 +10411,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_in = 5;</code>
-       * 
+       *
        * @param value
        *          The isIn to set.
        * @return This builder for chaining.
@@ -10458,7 +10425,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_in = 5;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsIn() {
@@ -10472,7 +10439,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_optional = 6;</code>
-       * 
+       *
        * @return The isOptional.
        */
       @java.lang.Override
@@ -10482,7 +10449,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_optional = 6;</code>
-       * 
+       *
        * @param value
        *          The isOptional to set.
        * @return This builder for chaining.
@@ -10496,7 +10463,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_optional = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsOptional() {
@@ -10561,84 +10528,84 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>bool is_abstract = 2;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_sealed = 3;</code>
-     * 
+     *
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>bool is_explicit_interface_implementation = 4;</code>
-     * 
+     *
      * @return The isExplicitInterfaceImplementation.
      */
     boolean getIsExplicitInterfaceImplementation();
 
     /**
      * <code>bool is_override = 5;</code>
-     * 
+     *
      * @return The isOverride.
      */
     boolean getIsOverride();
 
     /**
      * <code>bool is_virtual = 6;</code>
-     * 
+     *
      * @return The isVirtual.
      */
     boolean getIsVirtual();
 
     /**
      * <code>bool is_const = 7;</code>
-     * 
+     *
      * @return The isConst.
      */
     boolean getIsConst();
 
     /**
      * <code>bool is_read_only = 8;</code>
-     * 
+     *
      * @return The isReadOnly.
      */
     boolean getIsReadOnly();
 
     /**
      * <code>bool is_static = 9;</code>
-     * 
+     *
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>.TypeDefinition type = 10;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     boolean hasType();
 
     /**
      * <code>.TypeDefinition type = 10;</code>
-     * 
+     *
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
@@ -10650,56 +10617,56 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for typeKind.
      */
     int getTypeKindValue();
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The typeKind.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind();
 
     /**
      * <code>string name = 11;</code>
-     * 
+     *
      * @return The name.
      */
     java.lang.String getName();
 
     /**
      * <code>string name = 11;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>string full_name = 12;</code>
-     * 
+     *
      * @return The fullName.
      */
     java.lang.String getFullName();
 
     /**
      * <code>string full_name = 12;</code>
-     * 
+     *
      * @return The bytes for fullName.
      */
     com.google.protobuf.ByteString getFullNameBytes();
 
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
-     * 
+     *
      * @return Whether the declaringType field is set.
      */
     boolean hasDeclaringType();
 
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
-     * 
+     *
      * @return The declaringType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType();
@@ -10741,7 +10708,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 16;</code>
-     * 
+     *
      * @return The peToken.
      */
     int getPeToken();
@@ -10938,7 +10905,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     @java.lang.Override
@@ -10948,7 +10915,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     @java.lang.Override
@@ -10964,7 +10931,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_abstract = 2;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -10977,7 +10944,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_sealed = 3;</code>
-     * 
+     *
      * @return The isSealed.
      */
     @java.lang.Override
@@ -10990,7 +10957,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_explicit_interface_implementation = 4;</code>
-     * 
+     *
      * @return The isExplicitInterfaceImplementation.
      */
     @java.lang.Override
@@ -11003,7 +10970,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_override = 5;</code>
-     * 
+     *
      * @return The isOverride.
      */
     @java.lang.Override
@@ -11016,7 +10983,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_virtual = 6;</code>
-     * 
+     *
      * @return The isVirtual.
      */
     @java.lang.Override
@@ -11029,7 +10996,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_const = 7;</code>
-     * 
+     *
      * @return The isConst.
      */
     @java.lang.Override
@@ -11042,7 +11009,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_read_only = 8;</code>
-     * 
+     *
      * @return The isReadOnly.
      */
     @java.lang.Override
@@ -11055,7 +11022,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_static = 9;</code>
-     * 
+     *
      * @return The isStatic.
      */
     @java.lang.Override
@@ -11068,7 +11035,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 10;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     @java.lang.Override
@@ -11078,7 +11045,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 10;</code>
-     * 
+     *
      * @return The type.
      */
     @java.lang.Override
@@ -11099,7 +11066,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for typeKind.
      */
     @java.lang.Override
@@ -11109,7 +11076,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The typeKind.
      */
     @java.lang.Override
@@ -11125,7 +11092,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 11;</code>
-     * 
+     *
      * @return The name.
      */
     @java.lang.Override
@@ -11143,7 +11110,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 11;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -11163,7 +11130,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string full_name = 12;</code>
-     * 
+     *
      * @return The fullName.
      */
     @java.lang.Override
@@ -11181,7 +11148,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string full_name = 12;</code>
-     * 
+     *
      * @return The bytes for fullName.
      */
     @java.lang.Override
@@ -11201,7 +11168,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
-     * 
+     *
      * @return Whether the declaringType field is set.
      */
     @java.lang.Override
@@ -11211,7 +11178,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition declaring_type = 13;</code>
-     * 
+     *
      * @return The declaringType.
      */
     @java.lang.Override
@@ -11281,7 +11248,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 16;</code>
-     * 
+     *
      * @return The peToken.
      */
     @java.lang.Override
@@ -11439,10 +11406,7 @@ public final class ProtoAssemblyAllTypes {
           || (getIsConst() != other.getIsConst()) || (getIsReadOnly() != other.getIsReadOnly())) {
         return false;
       }
-      if (getIsStatic() != other.getIsStatic()) {
-        return false;
-      }
-      if (hasType() != other.hasType()) {
+      if ((getIsStatic() != other.getIsStatic()) || (hasType() != other.hasType())) {
         return false;
       }
       if (hasType()) {
@@ -11450,16 +11414,7 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (typeKind_ != other.typeKind_) {
-        return false;
-      }
-      if (!getName().equals(other.getName())) {
-        return false;
-      }
-      if (!getFullName().equals(other.getFullName())) {
-        return false;
-      }
-      if (hasDeclaringType() != other.hasDeclaringType()) {
+      if ((typeKind_ != other.typeKind_) || !getName().equals(other.getName()) || !getFullName().equals(other.getFullName()) || (hasDeclaringType() != other.hasDeclaringType())) {
         return false;
       }
       if (hasDeclaringType()) {
@@ -11910,7 +11865,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for accessibility.
        */
       @java.lang.Override
@@ -11920,7 +11875,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
@@ -11934,7 +11889,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The accessibility.
        */
       @java.lang.Override
@@ -11947,7 +11902,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The accessibility to set.
        * @return This builder for chaining.
@@ -11964,7 +11919,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
@@ -11978,7 +11933,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 2;</code>
-       * 
+       *
        * @return The isAbstract.
        */
       @java.lang.Override
@@ -11988,7 +11943,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 2;</code>
-       * 
+       *
        * @param value
        *          The isAbstract to set.
        * @return This builder for chaining.
@@ -12002,7 +11957,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
@@ -12016,7 +11971,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 3;</code>
-       * 
+       *
        * @return The isSealed.
        */
       @java.lang.Override
@@ -12026,7 +11981,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 3;</code>
-       * 
+       *
        * @param value
        *          The isSealed to set.
        * @return This builder for chaining.
@@ -12040,7 +11995,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
@@ -12054,7 +12009,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 4;</code>
-       * 
+       *
        * @return The isExplicitInterfaceImplementation.
        */
       @java.lang.Override
@@ -12064,7 +12019,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 4;</code>
-       * 
+       *
        * @param value
        *          The isExplicitInterfaceImplementation to set.
        * @return This builder for chaining.
@@ -12078,7 +12033,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsExplicitInterfaceImplementation() {
@@ -12092,7 +12047,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_override = 5;</code>
-       * 
+       *
        * @return The isOverride.
        */
       @java.lang.Override
@@ -12102,7 +12057,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_override = 5;</code>
-       * 
+       *
        * @param value
        *          The isOverride to set.
        * @return This builder for chaining.
@@ -12116,7 +12071,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_override = 5;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsOverride() {
@@ -12130,7 +12085,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 6;</code>
-       * 
+       *
        * @return The isVirtual.
        */
       @java.lang.Override
@@ -12140,7 +12095,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 6;</code>
-       * 
+       *
        * @param value
        *          The isVirtual to set.
        * @return This builder for chaining.
@@ -12154,7 +12109,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsVirtual() {
@@ -12168,7 +12123,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_const = 7;</code>
-       * 
+       *
        * @return The isConst.
        */
       @java.lang.Override
@@ -12178,7 +12133,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_const = 7;</code>
-       * 
+       *
        * @param value
        *          The isConst to set.
        * @return This builder for chaining.
@@ -12192,7 +12147,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_const = 7;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsConst() {
@@ -12206,7 +12161,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_read_only = 8;</code>
-       * 
+       *
        * @return The isReadOnly.
        */
       @java.lang.Override
@@ -12216,7 +12171,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_read_only = 8;</code>
-       * 
+       *
        * @param value
        *          The isReadOnly to set.
        * @return This builder for chaining.
@@ -12230,7 +12185,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_read_only = 8;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsReadOnly() {
@@ -12244,7 +12199,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 9;</code>
-       * 
+       *
        * @return The isStatic.
        */
       @java.lang.Override
@@ -12254,7 +12209,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 9;</code>
-       * 
+       *
        * @param value
        *          The isStatic to set.
        * @return This builder for chaining.
@@ -12268,7 +12223,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 9;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
@@ -12283,7 +12238,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 10;</code>
-       * 
+       *
        * @return Whether the type field is set.
        */
       public boolean hasType() {
@@ -12292,7 +12247,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 10;</code>
-       * 
+       *
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -12407,7 +12362,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for typeKind.
        */
       @java.lang.Override
@@ -12417,7 +12372,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for typeKind to set.
        * @return This builder for chaining.
@@ -12431,7 +12386,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @return The typeKind.
        */
       @java.lang.Override
@@ -12444,7 +12399,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @param value
        *          The typeKind to set.
        * @return This builder for chaining.
@@ -12461,7 +12416,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearTypeKind() {
@@ -12475,7 +12430,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 11;</code>
-       * 
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -12492,7 +12447,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 11;</code>
-       * 
+       *
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString getNameBytes() {
@@ -12508,7 +12463,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 11;</code>
-       * 
+       *
        * @param value
        *          The name to set.
        * @return This builder for chaining.
@@ -12525,7 +12480,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 11;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -12537,7 +12492,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 11;</code>
-       * 
+       *
        * @param value
        *          The bytes for name to set.
        * @return This builder for chaining.
@@ -12557,7 +12512,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 12;</code>
-       * 
+       *
        * @return The fullName.
        */
       public java.lang.String getFullName() {
@@ -12574,7 +12529,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 12;</code>
-       * 
+       *
        * @return The bytes for fullName.
        */
       public com.google.protobuf.ByteString getFullNameBytes() {
@@ -12590,7 +12545,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 12;</code>
-       * 
+       *
        * @param value
        *          The fullName to set.
        * @return This builder for chaining.
@@ -12607,7 +12562,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 12;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearFullName() {
@@ -12619,7 +12574,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 12;</code>
-       * 
+       *
        * @param value
        *          The bytes for fullName to set.
        * @return This builder for chaining.
@@ -12640,7 +12595,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
-       * 
+       *
        * @return Whether the declaringType field is set.
        */
       public boolean hasDeclaringType() {
@@ -12649,7 +12604,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition declaring_type = 13;</code>
-       * 
+       *
        * @return The declaringType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getDeclaringType() {
@@ -13019,7 +12974,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 16;</code>
-       * 
+       *
        * @return The peToken.
        */
       @java.lang.Override
@@ -13033,7 +12988,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 16;</code>
-       * 
+       *
        * @param value
        *          The peToken to set.
        * @return This builder for chaining.
@@ -13051,7 +13006,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 16;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
@@ -13116,91 +13071,91 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>bool can_get = 2;</code>
-     * 
+     *
      * @return The canGet.
      */
     boolean getCanGet();
 
     /**
      * <code>bool can_set = 3;</code>
-     * 
+     *
      * @return The canSet.
      */
     boolean getCanSet();
 
     /**
      * <code>bool is_abstract = 4;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     boolean getIsAbstract();
 
     /**
      * <code>bool is_sealed = 5;</code>
-     * 
+     *
      * @return The isSealed.
      */
     boolean getIsSealed();
 
     /**
      * <code>bool is_explicit_interface_implementation = 6;</code>
-     * 
+     *
      * @return The isExplicitInterfaceImplementation.
      */
     boolean getIsExplicitInterfaceImplementation();
 
     /**
      * <code>bool is_override = 7;</code>
-     * 
+     *
      * @return The isOverride.
      */
     boolean getIsOverride();
 
     /**
      * <code>bool is_virtual = 8;</code>
-     * 
+     *
      * @return The isVirtual.
      */
     boolean getIsVirtual();
 
     /**
      * <code>bool is_static = 9;</code>
-     * 
+     *
      * @return The isStatic.
      */
     boolean getIsStatic();
 
     /**
      * <code>bool is_extern = 15;</code>
-     * 
+     *
      * @return The isExtern.
      */
     boolean getIsExtern();
 
     /**
      * <code>.MethodDefinition getter = 10;</code>
-     * 
+     *
      * @return Whether the getter field is set.
      */
     boolean hasGetter();
 
     /**
      * <code>.MethodDefinition getter = 10;</code>
-     * 
+     *
      * @return The getter.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getGetter();
@@ -13212,14 +13167,14 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition setter = 11;</code>
-     * 
+     *
      * @return Whether the setter field is set.
      */
     boolean hasSetter();
 
     /**
      * <code>.MethodDefinition setter = 11;</code>
-     * 
+     *
      * @return The setter.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getSetter();
@@ -13231,14 +13186,14 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 12;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     boolean hasType();
 
     /**
      * <code>.TypeDefinition type = 12;</code>
-     * 
+     *
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
@@ -13250,28 +13205,28 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for typeKind.
      */
     int getTypeKindValue();
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The typeKind.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef getTypeKind();
 
     /**
      * <code>string name = 13;</code>
-     * 
+     *
      * @return The name.
      */
     java.lang.String getName();
 
     /**
      * <code>string name = 13;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString getNameBytes();
@@ -13308,7 +13263,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 17;</code>
-     * 
+     *
      * @return The peToken.
      */
     int getPeToken();
@@ -13517,7 +13472,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     @java.lang.Override
@@ -13527,7 +13482,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     @java.lang.Override
@@ -13543,7 +13498,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool can_get = 2;</code>
-     * 
+     *
      * @return The canGet.
      */
     @java.lang.Override
@@ -13556,7 +13511,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool can_set = 3;</code>
-     * 
+     *
      * @return The canSet.
      */
     @java.lang.Override
@@ -13569,7 +13524,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_abstract = 4;</code>
-     * 
+     *
      * @return The isAbstract.
      */
     @java.lang.Override
@@ -13582,7 +13537,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_sealed = 5;</code>
-     * 
+     *
      * @return The isSealed.
      */
     @java.lang.Override
@@ -13595,7 +13550,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_explicit_interface_implementation = 6;</code>
-     * 
+     *
      * @return The isExplicitInterfaceImplementation.
      */
     @java.lang.Override
@@ -13608,7 +13563,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_override = 7;</code>
-     * 
+     *
      * @return The isOverride.
      */
     @java.lang.Override
@@ -13621,7 +13576,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_virtual = 8;</code>
-     * 
+     *
      * @return The isVirtual.
      */
     @java.lang.Override
@@ -13634,7 +13589,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_static = 9;</code>
-     * 
+     *
      * @return The isStatic.
      */
     @java.lang.Override
@@ -13647,7 +13602,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool is_extern = 15;</code>
-     * 
+     *
      * @return The isExtern.
      */
     @java.lang.Override
@@ -13660,7 +13615,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition getter = 10;</code>
-     * 
+     *
      * @return Whether the getter field is set.
      */
     @java.lang.Override
@@ -13670,7 +13625,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition getter = 10;</code>
-     * 
+     *
      * @return The getter.
      */
     @java.lang.Override
@@ -13691,7 +13646,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition setter = 11;</code>
-     * 
+     *
      * @return Whether the setter field is set.
      */
     @java.lang.Override
@@ -13701,7 +13656,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition setter = 11;</code>
-     * 
+     *
      * @return The setter.
      */
     @java.lang.Override
@@ -13722,7 +13677,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 12;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     @java.lang.Override
@@ -13732,7 +13687,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 12;</code>
-     * 
+     *
      * @return The type.
      */
     @java.lang.Override
@@ -13753,7 +13708,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for typeKind.
      */
     @java.lang.Override
@@ -13763,7 +13718,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeKindDef type_kind = 14;</code>
-     * 
+     *
      * @return The typeKind.
      */
     @java.lang.Override
@@ -13779,7 +13734,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 13;</code>
-     * 
+     *
      * @return The name.
      */
     @java.lang.Override
@@ -13797,7 +13752,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 13;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -13865,7 +13820,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 17;</code>
-     * 
+     *
      * @return The peToken.
      */
     @java.lang.Override
@@ -14029,13 +13984,8 @@ public final class ProtoAssemblyAllTypes {
           || (getIsOverride() != other.getIsOverride()) || (getIsVirtual() != other.getIsVirtual())) {
         return false;
       }
-      if (getIsStatic() != other.getIsStatic()) {
-        return false;
-      }
-      if (getIsExtern() != other.getIsExtern()) {
-        return false;
-      }
-      if (hasGetter() != other.hasGetter()) {
+      if ((getIsStatic() != other.getIsStatic()) || (getIsExtern() != other.getIsExtern())
+          || (hasGetter() != other.hasGetter())) {
         return false;
       }
       if (hasGetter()) {
@@ -14059,16 +14009,7 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (typeKind_ != other.typeKind_) {
-        return false;
-      }
-      if (!getName().equals(other.getName())) {
-        return false;
-      }
-      if (!getAttributesList().equals(other.getAttributesList())) {
-        return false;
-      }
-      if (getPeToken() != other.getPeToken()) {
+      if ((typeKind_ != other.typeKind_) || !getName().equals(other.getName()) || !getAttributesList().equals(other.getAttributesList()) || (getPeToken() != other.getPeToken())) {
         return false;
       }
       if (!unknownFields.equals(other.unknownFields)) {
@@ -14525,7 +14466,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for accessibility.
        */
       @java.lang.Override
@@ -14535,7 +14476,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
@@ -14549,7 +14490,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The accessibility.
        */
       @java.lang.Override
@@ -14562,7 +14503,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The accessibility to set.
        * @return This builder for chaining.
@@ -14579,7 +14520,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
@@ -14593,7 +14534,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_get = 2;</code>
-       * 
+       *
        * @return The canGet.
        */
       @java.lang.Override
@@ -14603,7 +14544,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_get = 2;</code>
-       * 
+       *
        * @param value
        *          The canGet to set.
        * @return This builder for chaining.
@@ -14617,7 +14558,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_get = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearCanGet() {
@@ -14631,7 +14572,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_set = 3;</code>
-       * 
+       *
        * @return The canSet.
        */
       @java.lang.Override
@@ -14641,7 +14582,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_set = 3;</code>
-       * 
+       *
        * @param value
        *          The canSet to set.
        * @return This builder for chaining.
@@ -14655,7 +14596,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_set = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearCanSet() {
@@ -14669,7 +14610,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 4;</code>
-       * 
+       *
        * @return The isAbstract.
        */
       @java.lang.Override
@@ -14679,7 +14620,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 4;</code>
-       * 
+       *
        * @param value
        *          The isAbstract to set.
        * @return This builder for chaining.
@@ -14693,7 +14634,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_abstract = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsAbstract() {
@@ -14707,7 +14648,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 5;</code>
-       * 
+       *
        * @return The isSealed.
        */
       @java.lang.Override
@@ -14717,7 +14658,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 5;</code>
-       * 
+       *
        * @param value
        *          The isSealed to set.
        * @return This builder for chaining.
@@ -14731,7 +14672,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_sealed = 5;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsSealed() {
@@ -14745,7 +14686,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 6;</code>
-       * 
+       *
        * @return The isExplicitInterfaceImplementation.
        */
       @java.lang.Override
@@ -14755,7 +14696,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 6;</code>
-       * 
+       *
        * @param value
        *          The isExplicitInterfaceImplementation to set.
        * @return This builder for chaining.
@@ -14769,7 +14710,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_explicit_interface_implementation = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsExplicitInterfaceImplementation() {
@@ -14783,7 +14724,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_override = 7;</code>
-       * 
+       *
        * @return The isOverride.
        */
       @java.lang.Override
@@ -14793,7 +14734,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_override = 7;</code>
-       * 
+       *
        * @param value
        *          The isOverride to set.
        * @return This builder for chaining.
@@ -14807,7 +14748,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_override = 7;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsOverride() {
@@ -14821,7 +14762,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 8;</code>
-       * 
+       *
        * @return The isVirtual.
        */
       @java.lang.Override
@@ -14831,7 +14772,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 8;</code>
-       * 
+       *
        * @param value
        *          The isVirtual to set.
        * @return This builder for chaining.
@@ -14845,7 +14786,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_virtual = 8;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsVirtual() {
@@ -14859,7 +14800,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 9;</code>
-       * 
+       *
        * @return The isStatic.
        */
       @java.lang.Override
@@ -14869,7 +14810,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 9;</code>
-       * 
+       *
        * @param value
        *          The isStatic to set.
        * @return This builder for chaining.
@@ -14883,7 +14824,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_static = 9;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsStatic() {
@@ -14897,7 +14838,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_extern = 15;</code>
-       * 
+       *
        * @return The isExtern.
        */
       @java.lang.Override
@@ -14907,7 +14848,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_extern = 15;</code>
-       * 
+       *
        * @param value
        *          The isExtern to set.
        * @return This builder for chaining.
@@ -14921,7 +14862,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool is_extern = 15;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearIsExtern() {
@@ -14936,7 +14877,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition getter = 10;</code>
-       * 
+       *
        * @return Whether the getter field is set.
        */
       public boolean hasGetter() {
@@ -14945,7 +14886,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition getter = 10;</code>
-       * 
+       *
        * @return The getter.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getGetter() {
@@ -15061,7 +15002,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition setter = 11;</code>
-       * 
+       *
        * @return Whether the setter field is set.
        */
       public boolean hasSetter() {
@@ -15070,7 +15011,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition setter = 11;</code>
-       * 
+       *
        * @return The setter.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getSetter() {
@@ -15186,7 +15127,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 12;</code>
-       * 
+       *
        * @return Whether the type field is set.
        */
       public boolean hasType() {
@@ -15195,7 +15136,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 12;</code>
-       * 
+       *
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -15310,7 +15251,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for typeKind.
        */
       @java.lang.Override
@@ -15320,7 +15261,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for typeKind to set.
        * @return This builder for chaining.
@@ -15334,7 +15275,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @return The typeKind.
        */
       @java.lang.Override
@@ -15347,7 +15288,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @param value
        *          The typeKind to set.
        * @return This builder for chaining.
@@ -15364,7 +15305,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeKindDef type_kind = 14;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearTypeKind() {
@@ -15378,7 +15319,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 13;</code>
-       * 
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -15395,7 +15336,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 13;</code>
-       * 
+       *
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString getNameBytes() {
@@ -15411,7 +15352,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 13;</code>
-       * 
+       *
        * @param value
        *          The name to set.
        * @return This builder for chaining.
@@ -15428,7 +15369,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 13;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -15440,7 +15381,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 13;</code>
-       * 
+       *
        * @param value
        *          The bytes for name to set.
        * @return This builder for chaining.
@@ -15713,7 +15654,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 17;</code>
-       * 
+       *
        * @return The peToken.
        */
       @java.lang.Override
@@ -15727,7 +15668,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 17;</code>
-       * 
+       *
        * @param value
        *          The peToken to set.
        * @return This builder for chaining.
@@ -15745,7 +15686,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 17;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {
@@ -15810,14 +15751,14 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
-     * 
+     *
      * @return Whether the attributeType field is set.
      */
     boolean hasAttributeType();
 
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
-     * 
+     *
      * @return The attributeType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getAttributeType();
@@ -15829,14 +15770,14 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string constructor = 2;</code>
-     * 
+     *
      * @return The constructor.
      */
     java.lang.String getConstructor();
 
     /**
      * <code>string constructor = 2;</code>
-     * 
+     *
      * @return The bytes for constructor.
      */
     com.google.protobuf.ByteString getConstructorBytes();
@@ -16045,7 +15986,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
-     * 
+     *
      * @return Whether the attributeType field is set.
      */
     @java.lang.Override
@@ -16055,7 +15996,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition attribute_type = 1;</code>
-     * 
+     *
      * @return The attributeType.
      */
     @java.lang.Override
@@ -16077,7 +16018,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string constructor = 2;</code>
-     * 
+     *
      * @return The constructor.
      */
     @java.lang.Override
@@ -16095,7 +16036,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string constructor = 2;</code>
-     * 
+     *
      * @return The bytes for constructor.
      */
     @java.lang.Override
@@ -16670,7 +16611,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
-       * 
+       *
        * @return Whether the attributeType field is set.
        */
       public boolean hasAttributeType() {
@@ -16679,7 +16620,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition attribute_type = 1;</code>
-       * 
+       *
        * @return The attributeType.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getAttributeType() {
@@ -16796,7 +16737,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string constructor = 2;</code>
-       * 
+       *
        * @return The constructor.
        */
       public java.lang.String getConstructor() {
@@ -16813,7 +16754,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string constructor = 2;</code>
-       * 
+       *
        * @return The bytes for constructor.
        */
       public com.google.protobuf.ByteString getConstructorBytes() {
@@ -16829,7 +16770,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string constructor = 2;</code>
-       * 
+       *
        * @param value
        *          The constructor to set.
        * @return This builder for chaining.
@@ -16846,7 +16787,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string constructor = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearConstructor() {
@@ -16858,7 +16799,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string constructor = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for constructor to set.
        * @return This builder for chaining.
@@ -17513,14 +17454,14 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     boolean hasType();
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
@@ -17532,35 +17473,35 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The name.
      */
     java.lang.String getName();
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @return A list containing the valueString.
      */
     java.util.List<java.lang.String> getValueStringList();
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @return The count of valueString.
      */
     int getValueStringCount();
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueString at the given index.
@@ -17569,7 +17510,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @param index
      *          The index of the value to return.
      * @return The bytes of the valueString at the given index.
@@ -17578,21 +17519,21 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * 
+     *
      * @return A list containing the valueInt32.
      */
     java.util.List<java.lang.Integer> getValueInt32List();
 
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * 
+     *
      * @return The count of valueInt32.
      */
     int getValueInt32Count();
 
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueInt32 at the given index.
@@ -17601,21 +17542,21 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * 
+     *
      * @return A list containing the valueInt64.
      */
     java.util.List<java.lang.Long> getValueInt64List();
 
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * 
+     *
      * @return The count of valueInt64.
      */
     int getValueInt64Count();
 
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueInt64 at the given index.
@@ -17624,21 +17565,21 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated double value_double = 6;</code>
-     * 
+     *
      * @return A list containing the valueDouble.
      */
     java.util.List<java.lang.Double> getValueDoubleList();
 
     /**
      * <code>repeated double value_double = 6;</code>
-     * 
+     *
      * @return The count of valueDouble.
      */
     int getValueDoubleCount();
 
     /**
      * <code>repeated double value_double = 6;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueDouble at the given index.
@@ -17647,21 +17588,21 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated float value_float = 7;</code>
-     * 
+     *
      * @return A list containing the valueFloat.
      */
     java.util.List<java.lang.Float> getValueFloatList();
 
     /**
      * <code>repeated float value_float = 7;</code>
-     * 
+     *
      * @return The count of valueFloat.
      */
     int getValueFloatCount();
 
     /**
      * <code>repeated float value_float = 7;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueFloat at the given index.
@@ -17880,7 +17821,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     @java.lang.Override
@@ -17890,7 +17831,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return The type.
      */
     @java.lang.Override
@@ -17911,7 +17852,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The name.
      */
     @java.lang.Override
@@ -17929,7 +17870,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -17949,7 +17890,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @return A list containing the valueString.
      */
     public com.google.protobuf.ProtocolStringList getValueStringList() {
@@ -17958,7 +17899,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @return The count of valueString.
      */
     public int getValueStringCount() {
@@ -17967,7 +17908,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueString at the given index.
@@ -17978,7 +17919,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated string value_string = 3;</code>
-     * 
+     *
      * @param index
      *          The index of the value to return.
      * @return The bytes of the valueString at the given index.
@@ -17992,7 +17933,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * 
+     *
      * @return A list containing the valueInt32.
      */
     @java.lang.Override
@@ -18002,7 +17943,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * 
+     *
      * @return The count of valueInt32.
      */
     public int getValueInt32Count() {
@@ -18011,7 +17952,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int32 value_int32 = 4;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueInt32 at the given index.
@@ -18027,7 +17968,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * 
+     *
      * @return A list containing the valueInt64.
      */
     @java.lang.Override
@@ -18037,7 +17978,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * 
+     *
      * @return The count of valueInt64.
      */
     public int getValueInt64Count() {
@@ -18046,7 +17987,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated int64 value_int64 = 5;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueInt64 at the given index.
@@ -18062,7 +18003,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated double value_double = 6;</code>
-     * 
+     *
      * @return A list containing the valueDouble.
      */
     @java.lang.Override
@@ -18072,7 +18013,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated double value_double = 6;</code>
-     * 
+     *
      * @return The count of valueDouble.
      */
     public int getValueDoubleCount() {
@@ -18081,7 +18022,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated double value_double = 6;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueDouble at the given index.
@@ -18097,7 +18038,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated float value_float = 7;</code>
-     * 
+     *
      * @return A list containing the valueFloat.
      */
     @java.lang.Override
@@ -18107,7 +18048,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated float value_float = 7;</code>
-     * 
+     *
      * @return The count of valueFloat.
      */
     public int getValueFloatCount() {
@@ -18116,7 +18057,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>repeated float value_float = 7;</code>
-     * 
+     *
      * @param index
      *          The index of the element to return.
      * @return The valueFloat at the given index.
@@ -18665,7 +18606,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 1;</code>
-       * 
+       *
        * @return Whether the type field is set.
        */
       public boolean hasType() {
@@ -18674,7 +18615,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.TypeDefinition type = 1;</code>
-       * 
+       *
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -18789,7 +18730,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -18806,7 +18747,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString getNameBytes() {
@@ -18822,7 +18763,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @param value
        *          The name to set.
        * @return This builder for chaining.
@@ -18839,7 +18780,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -18851,7 +18792,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for name to set.
        * @return This builder for chaining.
@@ -18878,7 +18819,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @return A list containing the valueString.
        */
       public com.google.protobuf.ProtocolStringList getValueStringList() {
@@ -18887,7 +18828,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @return The count of valueString.
        */
       public int getValueStringCount() {
@@ -18896,7 +18837,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @param index
        *          The index of the element to return.
        * @return The valueString at the given index.
@@ -18907,7 +18848,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @param index
        *          The index of the value to return.
        * @return The bytes of the valueString at the given index.
@@ -18918,7 +18859,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @param index
        *          The index to set the value at.
        * @param value
@@ -18937,7 +18878,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @param value
        *          The valueString to add.
        * @return This builder for chaining.
@@ -18954,7 +18895,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @param values
        *          The valueString to add.
        * @return This builder for chaining.
@@ -18968,7 +18909,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueString() {
@@ -18980,7 +18921,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated string value_string = 3;</code>
-       * 
+       *
        * @param value
        *          The bytes of the valueString to add.
        * @return This builder for chaining.
@@ -19007,7 +18948,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * 
+       *
        * @return A list containing the valueInt32.
        */
       public java.util.List<java.lang.Integer> getValueInt32List() {
@@ -19016,7 +18957,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * 
+       *
        * @return The count of valueInt32.
        */
       public int getValueInt32Count() {
@@ -19025,7 +18966,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * 
+       *
        * @param index
        *          The index of the element to return.
        * @return The valueInt32 at the given index.
@@ -19036,7 +18977,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * 
+       *
        * @param index
        *          The index to set the value at.
        * @param value
@@ -19052,7 +18993,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * 
+       *
        * @param value
        *          The valueInt32 to add.
        * @return This builder for chaining.
@@ -19066,7 +19007,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * 
+       *
        * @param values
        *          The valueInt32 to add.
        * @return This builder for chaining.
@@ -19080,7 +19021,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int32 value_int32 = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueInt32() {
@@ -19101,7 +19042,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * 
+       *
        * @return A list containing the valueInt64.
        */
       public java.util.List<java.lang.Long> getValueInt64List() {
@@ -19110,7 +19051,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * 
+       *
        * @return The count of valueInt64.
        */
       public int getValueInt64Count() {
@@ -19119,7 +19060,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * 
+       *
        * @param index
        *          The index of the element to return.
        * @return The valueInt64 at the given index.
@@ -19130,7 +19071,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * 
+       *
        * @param index
        *          The index to set the value at.
        * @param value
@@ -19146,7 +19087,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * 
+       *
        * @param value
        *          The valueInt64 to add.
        * @return This builder for chaining.
@@ -19160,7 +19101,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * 
+       *
        * @param values
        *          The valueInt64 to add.
        * @return This builder for chaining.
@@ -19174,7 +19115,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated int64 value_int64 = 5;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueInt64() {
@@ -19195,7 +19136,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated double value_double = 6;</code>
-       * 
+       *
        * @return A list containing the valueDouble.
        */
       public java.util.List<java.lang.Double> getValueDoubleList() {
@@ -19204,7 +19145,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated double value_double = 6;</code>
-       * 
+       *
        * @return The count of valueDouble.
        */
       public int getValueDoubleCount() {
@@ -19213,7 +19154,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated double value_double = 6;</code>
-       * 
+       *
        * @param index
        *          The index of the element to return.
        * @return The valueDouble at the given index.
@@ -19224,7 +19165,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated double value_double = 6;</code>
-       * 
+       *
        * @param index
        *          The index to set the value at.
        * @param value
@@ -19240,7 +19181,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated double value_double = 6;</code>
-       * 
+       *
        * @param value
        *          The valueDouble to add.
        * @return This builder for chaining.
@@ -19254,7 +19195,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated double value_double = 6;</code>
-       * 
+       *
        * @param values
        *          The valueDouble to add.
        * @return This builder for chaining.
@@ -19268,7 +19209,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated double value_double = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueDouble() {
@@ -19289,7 +19230,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated float value_float = 7;</code>
-       * 
+       *
        * @return A list containing the valueFloat.
        */
       public java.util.List<java.lang.Float> getValueFloatList() {
@@ -19298,7 +19239,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated float value_float = 7;</code>
-       * 
+       *
        * @return The count of valueFloat.
        */
       public int getValueFloatCount() {
@@ -19307,7 +19248,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated float value_float = 7;</code>
-       * 
+       *
        * @param index
        *          The index of the element to return.
        * @return The valueFloat at the given index.
@@ -19318,7 +19259,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated float value_float = 7;</code>
-       * 
+       *
        * @param index
        *          The index to set the value at.
        * @param value
@@ -19334,7 +19275,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated float value_float = 7;</code>
-       * 
+       *
        * @param value
        *          The valueFloat to add.
        * @return This builder for chaining.
@@ -19348,7 +19289,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated float value_float = 7;</code>
-       * 
+       *
        * @param values
        *          The valueFloat to add.
        * @return This builder for chaining.
@@ -19362,7 +19303,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>repeated float value_float = 7;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueFloat() {
@@ -19427,28 +19368,28 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     int getAccessibilityValue();
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.Accessibility getAccessibility();
 
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
-     * 
+     *
      * @return Whether the addAccessorMethod field is set.
      */
     boolean hasAddAccessorMethod();
 
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
-     * 
+     *
      * @return The addAccessorMethod.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getAddAccessorMethod();
@@ -19460,49 +19401,49 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool can_add = 3;</code>
-     * 
+     *
      * @return The canAdd.
      */
     boolean getCanAdd();
 
     /**
      * <code>bool can_invoke = 4;</code>
-     * 
+     *
      * @return The canInvoke.
      */
     boolean getCanInvoke();
 
     /**
      * <code>bool can_remove = 5;</code>
-     * 
+     *
      * @return The canRemove.
      */
     boolean getCanRemove();
 
     /**
      * <code>string full_name = 6;</code>
-     * 
+     *
      * @return The fullName.
      */
     java.lang.String getFullName();
 
     /**
      * <code>string full_name = 6;</code>
-     * 
+     *
      * @return The bytes for fullName.
      */
     com.google.protobuf.ByteString getFullNameBytes();
 
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
-     * 
+     *
      * @return Whether the invokeAccessorMethod field is set.
      */
     boolean hasInvokeAccessorMethod();
 
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
-     * 
+     *
      * @return The invokeAccessorMethod.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getInvokeAccessorMethod();
@@ -19514,28 +19455,28 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 8;</code>
-     * 
+     *
      * @return The name.
      */
     java.lang.String getName();
 
     /**
      * <code>string name = 8;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
-     * 
+     *
      * @return Whether the removeAccessorMethod field is set.
      */
     boolean hasRemoveAccessorMethod();
 
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
-     * 
+     *
      * @return The removeAccessorMethod.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getRemoveAccessorMethod();
@@ -19551,7 +19492,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 10;</code>
-     * 
+     *
      * @return The peToken.
      */
     int getPeToken();
@@ -19717,7 +19658,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for accessibility.
      */
     @java.lang.Override
@@ -19727,7 +19668,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.Accessibility accessibility = 1;</code>
-     * 
+     *
      * @return The accessibility.
      */
     @java.lang.Override
@@ -19743,7 +19684,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
-     * 
+     *
      * @return Whether the addAccessorMethod field is set.
      */
     @java.lang.Override
@@ -19753,7 +19694,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition add_accessor_method = 2;</code>
-     * 
+     *
      * @return The addAccessorMethod.
      */
     @java.lang.Override
@@ -19775,7 +19716,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool can_add = 3;</code>
-     * 
+     *
      * @return The canAdd.
      */
     @java.lang.Override
@@ -19788,7 +19729,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool can_invoke = 4;</code>
-     * 
+     *
      * @return The canInvoke.
      */
     @java.lang.Override
@@ -19801,7 +19742,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>bool can_remove = 5;</code>
-     * 
+     *
      * @return The canRemove.
      */
     @java.lang.Override
@@ -19814,7 +19755,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string full_name = 6;</code>
-     * 
+     *
      * @return The fullName.
      */
     @java.lang.Override
@@ -19832,7 +19773,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string full_name = 6;</code>
-     * 
+     *
      * @return The bytes for fullName.
      */
     @java.lang.Override
@@ -19852,7 +19793,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
-     * 
+     *
      * @return Whether the invokeAccessorMethod field is set.
      */
     @java.lang.Override
@@ -19862,7 +19803,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition invoke_accessor_method = 7;</code>
-     * 
+     *
      * @return The invokeAccessorMethod.
      */
     @java.lang.Override
@@ -19884,7 +19825,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 8;</code>
-     * 
+     *
      * @return The name.
      */
     @java.lang.Override
@@ -19902,7 +19843,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>string name = 8;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -19922,7 +19863,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
-     * 
+     *
      * @return Whether the removeAccessorMethod field is set.
      */
     @java.lang.Override
@@ -19932,7 +19873,7 @@ public final class ProtoAssemblyAllTypes {
 
     /**
      * <code>.MethodDefinition remove_accessor_method = 9;</code>
-     * 
+     *
      * @return The removeAccessorMethod.
      */
     @java.lang.Override
@@ -19958,7 +19899,7 @@ public final class ProtoAssemblyAllTypes {
      * </pre>
      *
      * <code>int32 pe_token = 10;</code>
-     * 
+     *
      * @return The peToken.
      */
     @java.lang.Override
@@ -20091,10 +20032,7 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (!getName().equals(other.getName())) {
-        return false;
-      }
-      if (hasRemoveAccessorMethod() != other.hasRemoveAccessorMethod()) {
+      if (!getName().equals(other.getName()) || (hasRemoveAccessorMethod() != other.hasRemoveAccessorMethod())) {
         return false;
       }
       if (hasRemoveAccessorMethod()) {
@@ -20102,10 +20040,7 @@ public final class ProtoAssemblyAllTypes {
           return false;
         }
       }
-      if (getPeToken() != other.getPeToken()) {
-        return false;
-      }
-      if (!unknownFields.equals(other.unknownFields)) {
+      if ((getPeToken() != other.getPeToken()) || !unknownFields.equals(other.unknownFields)) {
         return false;
       }
       return true;
@@ -20464,7 +20399,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for accessibility.
        */
       @java.lang.Override
@@ -20474,7 +20409,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for accessibility to set.
        * @return This builder for chaining.
@@ -20488,7 +20423,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return The accessibility.
        */
       @java.lang.Override
@@ -20501,7 +20436,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @param value
        *          The accessibility to set.
        * @return This builder for chaining.
@@ -20518,7 +20453,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.Accessibility accessibility = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearAccessibility() {
@@ -20533,7 +20468,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
-       * 
+       *
        * @return Whether the addAccessorMethod field is set.
        */
       public boolean hasAddAccessorMethod() {
@@ -20542,7 +20477,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition add_accessor_method = 2;</code>
-       * 
+       *
        * @return The addAccessorMethod.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getAddAccessorMethod() {
@@ -20660,7 +20595,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_add = 3;</code>
-       * 
+       *
        * @return The canAdd.
        */
       @java.lang.Override
@@ -20670,7 +20605,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_add = 3;</code>
-       * 
+       *
        * @param value
        *          The canAdd to set.
        * @return This builder for chaining.
@@ -20684,7 +20619,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_add = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearCanAdd() {
@@ -20698,7 +20633,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_invoke = 4;</code>
-       * 
+       *
        * @return The canInvoke.
        */
       @java.lang.Override
@@ -20708,7 +20643,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_invoke = 4;</code>
-       * 
+       *
        * @param value
        *          The canInvoke to set.
        * @return This builder for chaining.
@@ -20722,7 +20657,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_invoke = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearCanInvoke() {
@@ -20736,7 +20671,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_remove = 5;</code>
-       * 
+       *
        * @return The canRemove.
        */
       @java.lang.Override
@@ -20746,7 +20681,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_remove = 5;</code>
-       * 
+       *
        * @param value
        *          The canRemove to set.
        * @return This builder for chaining.
@@ -20760,7 +20695,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>bool can_remove = 5;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearCanRemove() {
@@ -20774,7 +20709,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 6;</code>
-       * 
+       *
        * @return The fullName.
        */
       public java.lang.String getFullName() {
@@ -20791,7 +20726,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 6;</code>
-       * 
+       *
        * @return The bytes for fullName.
        */
       public com.google.protobuf.ByteString getFullNameBytes() {
@@ -20807,7 +20742,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 6;</code>
-       * 
+       *
        * @param value
        *          The fullName to set.
        * @return This builder for chaining.
@@ -20824,7 +20759,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 6;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearFullName() {
@@ -20836,7 +20771,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string full_name = 6;</code>
-       * 
+       *
        * @param value
        *          The bytes for fullName to set.
        * @return This builder for chaining.
@@ -20857,7 +20792,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
-       * 
+       *
        * @return Whether the invokeAccessorMethod field is set.
        */
       public boolean hasInvokeAccessorMethod() {
@@ -20866,7 +20801,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition invoke_accessor_method = 7;</code>
-       * 
+       *
        * @return The invokeAccessorMethod.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getInvokeAccessorMethod() {
@@ -20986,7 +20921,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 8;</code>
-       * 
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -21003,7 +20938,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 8;</code>
-       * 
+       *
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString getNameBytes() {
@@ -21019,7 +20954,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 8;</code>
-       * 
+       *
        * @param value
        *          The name to set.
        * @return This builder for chaining.
@@ -21036,7 +20971,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 8;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -21048,7 +20983,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>string name = 8;</code>
-       * 
+       *
        * @param value
        *          The bytes for name to set.
        * @return This builder for chaining.
@@ -21069,7 +21004,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
-       * 
+       *
        * @return Whether the removeAccessorMethod field is set.
        */
       public boolean hasRemoveAccessorMethod() {
@@ -21078,7 +21013,7 @@ public final class ProtoAssemblyAllTypes {
 
       /**
        * <code>.MethodDefinition remove_accessor_method = 9;</code>
-       * 
+       *
        * @return The removeAccessorMethod.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getRemoveAccessorMethod() {
@@ -21202,7 +21137,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 10;</code>
-       * 
+       *
        * @return The peToken.
        */
       @java.lang.Override
@@ -21216,7 +21151,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 10;</code>
-       * 
+       *
        * @param value
        *          The peToken to set.
        * @return This builder for chaining.
@@ -21234,7 +21169,7 @@ public final class ProtoAssemblyAllTypes {
        * </pre>
        *
        * <code>int32 pe_token = 10;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearPeToken() {

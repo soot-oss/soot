@@ -10,12 +10,12 @@ package soot.dotnet.types;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -74,7 +74,7 @@ public class DotnetType {
 
   /**
    * Resolve this .NET Type to a SootClass
-   * 
+   *
    * @param sootClass
    *          SootClass to fill with information
    * @return dependencies which this type depend on (base class, implemented interfaces, method calls, etc.)
@@ -145,7 +145,7 @@ public class DotnetType {
 
   /**
    * Visit Method Header of a dotnet class and generate sootMethod
-   * 
+   *
    * @param declaringClass
    */
   private void resolveMethods(SootClass declaringClass) {
@@ -227,7 +227,7 @@ public class DotnetType {
   /**
    * .NET Types can have attributes, resolve them as Jimple annotations
    * https://docs.microsoft.com/de-de/dotnet/csharp/programming-guide/concepts/attributes/
-   * 
+   *
    * @param declaringClass
    */
   @SuppressWarnings("DuplicatedCode")
@@ -255,6 +255,7 @@ public class DotnetType {
           declaringClass.addTag(new DeprecatedTag());
         }
       } catch (Exception ignore) {
+        logger.info("Ignored", ignore);
       }
     }
 

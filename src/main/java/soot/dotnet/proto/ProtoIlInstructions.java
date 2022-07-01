@@ -13,12 +13,12 @@ package soot.dotnet.proto;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -42,14 +42,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return Whether the body field is set.
      */
     boolean hasBody();
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return The body.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody();
@@ -190,7 +190,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return Whether the body field is set.
      */
     @java.lang.Override
@@ -200,7 +200,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return The body.
      */
     @java.lang.Override
@@ -637,7 +637,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
-       * 
+       *
        * @return Whether the body field is set.
        */
       public boolean hasBody() {
@@ -646,7 +646,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
-       * 
+       *
        * @return The body.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
@@ -1987,14 +1987,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>string block_name = 2;</code>
-     * 
+     *
      * @return The blockName.
      */
     java.lang.String getBlockName();
 
     /**
      * <code>string block_name = 2;</code>
-     * 
+     *
      * @return The bytes for blockName.
      */
     com.google.protobuf.ByteString getBlockNameBytes();
@@ -2141,7 +2141,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>string block_name = 2;</code>
-     * 
+     *
      * @return The blockName.
      */
     @java.lang.Override
@@ -2159,7 +2159,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>string block_name = 2;</code>
-     * 
+     *
      * @return The bytes for blockName.
      */
     @java.lang.Override
@@ -2785,7 +2785,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string block_name = 2;</code>
-       * 
+       *
        * @return The blockName.
        */
       public java.lang.String getBlockName() {
@@ -2802,7 +2802,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string block_name = 2;</code>
-       * 
+       *
        * @return The bytes for blockName.
        */
       public com.google.protobuf.ByteString getBlockNameBytes() {
@@ -2818,7 +2818,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string block_name = 2;</code>
-       * 
+       *
        * @param value
        *          The blockName to set.
        * @return This builder for chaining.
@@ -2835,7 +2835,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string block_name = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearBlockName() {
@@ -2847,7 +2847,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string block_name = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for blockName to set.
        * @return This builder for chaining.
@@ -2917,14 +2917,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for opCode.
      */
     int getOpCodeValue();
 
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-     * 
+     *
      * @return The opCode.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode getOpCode();
@@ -2935,7 +2935,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
-     * 
+     *
      * @return Whether the method field is set.
      */
     boolean hasMethod();
@@ -2946,7 +2946,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
-     * 
+     *
      * @return The method.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getMethod();
@@ -2991,7 +2991,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
-     * 
+     *
      * @return Whether the valueInstruction field is set.
      */
     boolean hasValueInstruction();
@@ -3002,7 +3002,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
-     * 
+     *
      * @return The valueInstruction.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getValueInstruction();
@@ -3022,7 +3022,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
-     * 
+     *
      * @return The valueConstantString.
      */
     java.lang.String getValueConstantString();
@@ -3033,35 +3033,35 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
-     * 
+     *
      * @return The bytes for valueConstantString.
      */
     com.google.protobuf.ByteString getValueConstantStringBytes();
 
     /**
      * <code>int32 value_constant_int32 = 16;</code>
-     * 
+     *
      * @return The valueConstantInt32.
      */
     int getValueConstantInt32();
 
     /**
      * <code>int64 value_constant_int64 = 38;</code>
-     * 
+     *
      * @return The valueConstantInt64.
      */
     long getValueConstantInt64();
 
     /**
      * <code>float value_constant_float = 39;</code>
-     * 
+     *
      * @return The valueConstantFloat.
      */
     float getValueConstantFloat();
 
     /**
      * <code>double value_constant_double = 40;</code>
-     * 
+     *
      * @return The valueConstantDouble.
      */
     double getValueConstantDouble();
@@ -3072,7 +3072,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
-     * 
+     *
      * @return Whether the target field is set.
      */
     boolean hasTarget();
@@ -3083,7 +3083,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
-     * 
+     *
      * @return The target.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTarget();
@@ -3103,7 +3103,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     boolean hasType();
@@ -3114,7 +3114,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
-     * 
+     *
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
@@ -3134,7 +3134,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
-     * 
+     *
      * @return Whether the field field is set.
      */
     boolean hasField();
@@ -3145,7 +3145,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
-     * 
+     *
      * @return The field.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition getField();
@@ -3165,7 +3165,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
-     * 
+     *
      * @return Whether the variable field is set.
      */
     boolean hasVariable();
@@ -3176,7 +3176,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
-     * 
+     *
      * @return The variable.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable();
@@ -3196,7 +3196,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for operator.
      */
     int getOperatorValue();
@@ -3207,35 +3207,35 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-     * 
+     *
      * @return The operator.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlBinaryNumericOperator getOperator();
 
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for sign.
      */
     int getSignValue();
 
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-     * 
+     *
      * @return The sign.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlSign getSign();
 
     /**
      * <code>.IlInstructionMsg left = 14;</code>
-     * 
+     *
      * @return Whether the left field is set.
      */
     boolean hasLeft();
 
     /**
      * <code>.IlInstructionMsg left = 14;</code>
-     * 
+     *
      * @return The left.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getLeft();
@@ -3247,14 +3247,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg right = 15;</code>
-     * 
+     *
      * @return Whether the right field is set.
      */
     boolean hasRight();
 
     /**
      * <code>.IlInstructionMsg right = 15;</code>
-     * 
+     *
      * @return The right.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getRight();
@@ -3270,7 +3270,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string target_label = 18;</code>
-     * 
+     *
      * @return The targetLabel.
      */
     java.lang.String getTargetLabel();
@@ -3281,21 +3281,21 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string target_label = 18;</code>
-     * 
+     *
      * @return The bytes for targetLabel.
      */
     com.google.protobuf.ByteString getTargetLabelBytes();
 
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for comparisonKind.
      */
     int getComparisonKindValue();
 
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-     * 
+     *
      * @return The comparisonKind.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlComparisonKind getComparisonKind();
@@ -3306,7 +3306,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
-     * 
+     *
      * @return Whether the condition field is set.
      */
     boolean hasCondition();
@@ -3317,7 +3317,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
-     * 
+     *
      * @return The condition.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getCondition();
@@ -3333,14 +3333,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
-     * 
+     *
      * @return Whether the trueInst field is set.
      */
     boolean hasTrueInst();
 
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
-     * 
+     *
      * @return The trueInst.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTrueInst();
@@ -3352,14 +3352,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
-     * 
+     *
      * @return Whether the falseInst field is set.
      */
     boolean hasFalseInst();
 
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
-     * 
+     *
      * @return The falseInst.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFalseInst();
@@ -3375,7 +3375,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
-     * 
+     *
      * @return Whether the array field is set.
      */
     boolean hasArray();
@@ -3386,7 +3386,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
-     * 
+     *
      * @return The array.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArray();
@@ -3402,42 +3402,42 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for conversionKind.
      */
     int getConversionKindValue();
 
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-     * 
+     *
      * @return The conversionKind.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlConversionKind getConversionKind();
 
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for inputType.
      */
     int getInputTypeValue();
 
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-     * 
+     *
      * @return The inputType.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getInputType();
 
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for targetType.
      */
     int getTargetTypeValue();
 
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-     * 
+     *
      * @return The targetType.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType getTargetType();
@@ -3448,7 +3448,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
-     * 
+     *
      * @return Whether the argument field is set.
      */
     boolean hasArgument();
@@ -3459,7 +3459,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
-     * 
+     *
      * @return The argument.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArgument();
@@ -3479,7 +3479,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for resultType.
      */
     int getResultTypeValue();
@@ -3490,7 +3490,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-     * 
+     *
      * @return The resultType.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlStackType getResultType();
@@ -3546,7 +3546,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
-     * 
+     *
      * @return Whether the tryBlock field is set.
      */
     boolean hasTryBlock();
@@ -3557,7 +3557,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
-     * 
+     *
      * @return The tryBlock.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getTryBlock();
@@ -3599,14 +3599,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
-     * 
+     *
      * @return Whether the finallyBlock field is set.
      */
     boolean hasFinallyBlock();
 
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
-     * 
+     *
      * @return The finallyBlock.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFinallyBlock();
@@ -3618,14 +3618,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
-     * 
+     *
      * @return Whether the faultBlock field is set.
      */
     boolean hasFaultBlock();
 
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
-     * 
+     *
      * @return The faultBlock.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFaultBlock();
@@ -3641,7 +3641,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
-     * 
+     *
      * @return Whether the body field is set.
      */
     boolean hasBody();
@@ -3652,7 +3652,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
-     * 
+     *
      * @return The body.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody();
@@ -3672,7 +3672,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
-     * 
+     *
      * @return Whether the keyInstr field is set.
      */
     boolean hasKeyInstr();
@@ -3683,7 +3683,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
-     * 
+     *
      * @return The keyInstr.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getKeyInstr();
@@ -3699,14 +3699,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
-     * 
+     *
      * @return Whether the defaultInst field is set.
      */
     boolean hasDefaultInst();
 
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
-     * 
+     *
      * @return The defaultInst.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getDefaultInst();
@@ -6124,7 +6124,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for opCode.
      */
     @java.lang.Override
@@ -6134,7 +6134,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-     * 
+     *
      * @return The opCode.
      */
     @java.lang.Override
@@ -6154,7 +6154,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
-     * 
+     *
      * @return Whether the method field is set.
      */
     @java.lang.Override
@@ -6168,7 +6168,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.MethodDefinition method = 4;</code>
-     * 
+     *
      * @return The method.
      */
     @java.lang.Override
@@ -6241,7 +6241,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
-     * 
+     *
      * @return Whether the valueInstruction field is set.
      */
     @java.lang.Override
@@ -6255,7 +6255,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg value_instruction = 6;</code>
-     * 
+     *
      * @return The valueInstruction.
      */
     @java.lang.Override
@@ -6285,7 +6285,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
-     * 
+     *
      * @return The valueConstantString.
      */
     @java.lang.Override
@@ -6307,7 +6307,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string value_constant_string = 7;</code>
-     * 
+     *
      * @return The bytes for valueConstantString.
      */
     @java.lang.Override
@@ -6327,7 +6327,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>int32 value_constant_int32 = 16;</code>
-     * 
+     *
      * @return The valueConstantInt32.
      */
     @java.lang.Override
@@ -6340,7 +6340,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>int64 value_constant_int64 = 38;</code>
-     * 
+     *
      * @return The valueConstantInt64.
      */
     @java.lang.Override
@@ -6353,7 +6353,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>float value_constant_float = 39;</code>
-     * 
+     *
      * @return The valueConstantFloat.
      */
     @java.lang.Override
@@ -6366,7 +6366,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>double value_constant_double = 40;</code>
-     * 
+     *
      * @return The valueConstantDouble.
      */
     @java.lang.Override
@@ -6383,7 +6383,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
-     * 
+     *
      * @return Whether the target field is set.
      */
     @java.lang.Override
@@ -6397,7 +6397,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg target = 8;</code>
-     * 
+     *
      * @return The target.
      */
     @java.lang.Override
@@ -6426,7 +6426,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     @java.lang.Override
@@ -6440,7 +6440,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.TypeDefinition type = 9;</code>
-     * 
+     *
      * @return The type.
      */
     @java.lang.Override
@@ -6469,7 +6469,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
-     * 
+     *
      * @return Whether the field field is set.
      */
     @java.lang.Override
@@ -6483,7 +6483,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.FieldDefinition field = 10;</code>
-     * 
+     *
      * @return The field.
      */
     @java.lang.Override
@@ -6512,7 +6512,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
-     * 
+     *
      * @return Whether the variable field is set.
      */
     @java.lang.Override
@@ -6526,7 +6526,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlVariableMsg variable = 11;</code>
-     * 
+     *
      * @return The variable.
      */
     @java.lang.Override
@@ -6555,7 +6555,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for operator.
      */
     @java.lang.Override
@@ -6569,7 +6569,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-     * 
+     *
      * @return The operator.
      */
     @java.lang.Override
@@ -6586,7 +6586,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for sign.
      */
     @java.lang.Override
@@ -6596,7 +6596,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-     * 
+     *
      * @return The sign.
      */
     @java.lang.Override
@@ -6612,7 +6612,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg left = 14;</code>
-     * 
+     *
      * @return Whether the left field is set.
      */
     @java.lang.Override
@@ -6622,7 +6622,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg left = 14;</code>
-     * 
+     *
      * @return The left.
      */
     @java.lang.Override
@@ -6643,7 +6643,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg right = 15;</code>
-     * 
+     *
      * @return Whether the right field is set.
      */
     @java.lang.Override
@@ -6653,7 +6653,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg right = 15;</code>
-     * 
+     *
      * @return The right.
      */
     @java.lang.Override
@@ -6678,7 +6678,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string target_label = 18;</code>
-     * 
+     *
      * @return The targetLabel.
      */
     @java.lang.Override
@@ -6700,7 +6700,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>string target_label = 18;</code>
-     * 
+     *
      * @return The bytes for targetLabel.
      */
     @java.lang.Override
@@ -6720,7 +6720,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for comparisonKind.
      */
     @java.lang.Override
@@ -6730,7 +6730,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-     * 
+     *
      * @return The comparisonKind.
      */
     @java.lang.Override
@@ -6750,7 +6750,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
-     * 
+     *
      * @return Whether the condition field is set.
      */
     @java.lang.Override
@@ -6764,7 +6764,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg condition = 22;</code>
-     * 
+     *
      * @return The condition.
      */
     @java.lang.Override
@@ -6789,7 +6789,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
-     * 
+     *
      * @return Whether the trueInst field is set.
      */
     @java.lang.Override
@@ -6799,7 +6799,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg true_inst = 23;</code>
-     * 
+     *
      * @return The trueInst.
      */
     @java.lang.Override
@@ -6820,7 +6820,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
-     * 
+     *
      * @return Whether the falseInst field is set.
      */
     @java.lang.Override
@@ -6830,7 +6830,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg false_inst = 24;</code>
-     * 
+     *
      * @return The falseInst.
      */
     @java.lang.Override
@@ -6855,7 +6855,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
-     * 
+     *
      * @return Whether the array field is set.
      */
     @java.lang.Override
@@ -6869,7 +6869,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg array = 30;</code>
-     * 
+     *
      * @return The array.
      */
     @java.lang.Override
@@ -6894,7 +6894,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for conversionKind.
      */
     @java.lang.Override
@@ -6904,7 +6904,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-     * 
+     *
      * @return The conversionKind.
      */
     @java.lang.Override
@@ -6920,7 +6920,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for inputType.
      */
     @java.lang.Override
@@ -6930,7 +6930,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-     * 
+     *
      * @return The inputType.
      */
     @java.lang.Override
@@ -6946,7 +6946,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for targetType.
      */
     @java.lang.Override
@@ -6956,7 +6956,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-     * 
+     *
      * @return The targetType.
      */
     @java.lang.Override
@@ -6976,7 +6976,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
-     * 
+     *
      * @return Whether the argument field is set.
      */
     @java.lang.Override
@@ -6990,7 +6990,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg argument = 29;</code>
-     * 
+     *
      * @return The argument.
      */
     @java.lang.Override
@@ -7019,7 +7019,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for resultType.
      */
     @java.lang.Override
@@ -7033,7 +7033,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-     * 
+     *
      * @return The resultType.
      */
     @java.lang.Override
@@ -7117,7 +7117,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
-     * 
+     *
      * @return Whether the tryBlock field is set.
      */
     @java.lang.Override
@@ -7131,7 +7131,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg try_block = 32;</code>
-     * 
+     *
      * @return The tryBlock.
      */
     @java.lang.Override
@@ -7200,7 +7200,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
-     * 
+     *
      * @return Whether the finallyBlock field is set.
      */
     @java.lang.Override
@@ -7210,7 +7210,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg finally_block = 34;</code>
-     * 
+     *
      * @return The finallyBlock.
      */
     @java.lang.Override
@@ -7232,7 +7232,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
-     * 
+     *
      * @return Whether the faultBlock field is set.
      */
     @java.lang.Override
@@ -7242,7 +7242,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg fault_block = 35;</code>
-     * 
+     *
      * @return The faultBlock.
      */
     @java.lang.Override
@@ -7268,7 +7268,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
-     * 
+     *
      * @return Whether the body field is set.
      */
     @java.lang.Override
@@ -7282,7 +7282,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlBlockContainerMsg body = 37;</code>
-     * 
+     *
      * @return The body.
      */
     @java.lang.Override
@@ -7311,7 +7311,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
-     * 
+     *
      * @return Whether the keyInstr field is set.
      */
     @java.lang.Override
@@ -7325,7 +7325,7 @@ public final class ProtoIlInstructions {
      * </pre>
      *
      * <code>.IlInstructionMsg key_instr = 41;</code>
-     * 
+     *
      * @return The keyInstr.
      */
     @java.lang.Override
@@ -7350,7 +7350,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
-     * 
+     *
      * @return Whether the defaultInst field is set.
      */
     @java.lang.Override
@@ -7360,7 +7360,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg default_inst = 42;</code>
-     * 
+     *
      * @return The defaultInst.
      */
     @java.lang.Override
@@ -7712,17 +7712,8 @@ public final class ProtoIlInstructions {
           return false;
         }
       }
-      if (!getValueConstantString().equals(other.getValueConstantString())) {
-        return false;
-      }
-      if (getValueConstantInt32() != other.getValueConstantInt32()) {
-        return false;
-      }
-      if (getValueConstantInt64() != other.getValueConstantInt64()) {
-        return false;
-      }
-      if (java.lang.Float.floatToIntBits(getValueConstantFloat()) != java.lang.Float
-          .floatToIntBits(other.getValueConstantFloat())) {
+      if (!getValueConstantString().equals(other.getValueConstantString()) || (getValueConstantInt32() != other.getValueConstantInt32()) || (getValueConstantInt64() != other.getValueConstantInt64()) || (java.lang.Float.floatToIntBits(getValueConstantFloat()) != java.lang.Float
+          .floatToIntBits(other.getValueConstantFloat()))) {
         return false;
       }
       if (java.lang.Double.doubleToLongBits(getValueConstantDouble()) != java.lang.Double
@@ -8785,7 +8776,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for opCode.
        */
       @java.lang.Override
@@ -8795,7 +8786,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for opCode to set.
        * @return This builder for chaining.
@@ -8809,7 +8800,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-       * 
+       *
        * @return The opCode.
        */
       @java.lang.Override
@@ -8822,7 +8813,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-       * 
+       *
        * @param value
        *          The opCode to set.
        * @return This builder for chaining.
@@ -8839,7 +8830,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlOpCode op_code = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearOpCode() {
@@ -8858,7 +8849,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.MethodDefinition method = 4;</code>
-       * 
+       *
        * @return Whether the method field is set.
        */
       public boolean hasMethod() {
@@ -8871,7 +8862,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.MethodDefinition method = 4;</code>
-       * 
+       *
        * @return The method.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.MethodDefinition getMethod() {
@@ -9267,7 +9258,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg value_instruction = 6;</code>
-       * 
+       *
        * @return Whether the valueInstruction field is set.
        */
       public boolean hasValueInstruction() {
@@ -9280,7 +9271,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg value_instruction = 6;</code>
-       * 
+       *
        * @return The valueInstruction.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getValueInstruction() {
@@ -9429,7 +9420,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
-       * 
+       *
        * @return The valueConstantString.
        */
       public java.lang.String getValueConstantString() {
@@ -9450,7 +9441,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
-       * 
+       *
        * @return The bytes for valueConstantString.
        */
       public com.google.protobuf.ByteString getValueConstantStringBytes() {
@@ -9470,7 +9461,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
-       * 
+       *
        * @param value
        *          The valueConstantString to set.
        * @return This builder for chaining.
@@ -9491,7 +9482,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueConstantString() {
@@ -9507,7 +9498,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string value_constant_string = 7;</code>
-       * 
+       *
        * @param value
        *          The bytes for valueConstantString to set.
        * @return This builder for chaining.
@@ -9527,7 +9518,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int32 value_constant_int32 = 16;</code>
-       * 
+       *
        * @return The valueConstantInt32.
        */
       @java.lang.Override
@@ -9537,7 +9528,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int32 value_constant_int32 = 16;</code>
-       * 
+       *
        * @param value
        *          The valueConstantInt32 to set.
        * @return This builder for chaining.
@@ -9551,7 +9542,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int32 value_constant_int32 = 16;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueConstantInt32() {
@@ -9565,7 +9556,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int64 value_constant_int64 = 38;</code>
-       * 
+       *
        * @return The valueConstantInt64.
        */
       @java.lang.Override
@@ -9575,7 +9566,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int64 value_constant_int64 = 38;</code>
-       * 
+       *
        * @param value
        *          The valueConstantInt64 to set.
        * @return This builder for chaining.
@@ -9589,7 +9580,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int64 value_constant_int64 = 38;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueConstantInt64() {
@@ -9603,7 +9594,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>float value_constant_float = 39;</code>
-       * 
+       *
        * @return The valueConstantFloat.
        */
       @java.lang.Override
@@ -9613,7 +9604,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>float value_constant_float = 39;</code>
-       * 
+       *
        * @param value
        *          The valueConstantFloat to set.
        * @return This builder for chaining.
@@ -9627,7 +9618,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>float value_constant_float = 39;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueConstantFloat() {
@@ -9641,7 +9632,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>double value_constant_double = 40;</code>
-       * 
+       *
        * @return The valueConstantDouble.
        */
       @java.lang.Override
@@ -9651,7 +9642,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>double value_constant_double = 40;</code>
-       * 
+       *
        * @param value
        *          The valueConstantDouble to set.
        * @return This builder for chaining.
@@ -9665,7 +9656,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>double value_constant_double = 40;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearValueConstantDouble() {
@@ -9684,7 +9675,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg target = 8;</code>
-       * 
+       *
        * @return Whether the target field is set.
        */
       public boolean hasTarget() {
@@ -9697,7 +9688,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg target = 8;</code>
-       * 
+       *
        * @return The target.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTarget() {
@@ -9845,7 +9836,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.TypeDefinition type = 9;</code>
-       * 
+       *
        * @return Whether the type field is set.
        */
       public boolean hasType() {
@@ -9858,7 +9849,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.TypeDefinition type = 9;</code>
-       * 
+       *
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -10006,7 +9997,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.FieldDefinition field = 10;</code>
-       * 
+       *
        * @return Whether the field field is set.
        */
       public boolean hasField() {
@@ -10019,7 +10010,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.FieldDefinition field = 10;</code>
-       * 
+       *
        * @return The field.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition getField() {
@@ -10167,7 +10158,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlVariableMsg variable = 11;</code>
-       * 
+       *
        * @return Whether the variable field is set.
        */
       public boolean hasVariable() {
@@ -10180,7 +10171,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlVariableMsg variable = 11;</code>
-       * 
+       *
        * @return The variable.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable() {
@@ -10327,7 +10318,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for operator.
        */
       @java.lang.Override
@@ -10341,7 +10332,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for operator to set.
        * @return This builder for chaining.
@@ -10359,7 +10350,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-       * 
+       *
        * @return The operator.
        */
       @java.lang.Override
@@ -10377,7 +10368,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-       * 
+       *
        * @param value
        *          The operator to set.
        * @return This builder for chaining.
@@ -10398,7 +10389,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlBinaryNumericOperator operator = 12;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearOperator() {
@@ -10412,7 +10403,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for sign.
        */
       @java.lang.Override
@@ -10422,7 +10413,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for sign to set.
        * @return This builder for chaining.
@@ -10436,7 +10427,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-       * 
+       *
        * @return The sign.
        */
       @java.lang.Override
@@ -10449,7 +10440,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-       * 
+       *
        * @param value
        *          The sign to set.
        * @return This builder for chaining.
@@ -10466,7 +10457,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlSign sign = 20;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearSign() {
@@ -10481,7 +10472,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg left = 14;</code>
-       * 
+       *
        * @return Whether the left field is set.
        */
       public boolean hasLeft() {
@@ -10490,7 +10481,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg left = 14;</code>
-       * 
+       *
        * @return The left.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getLeft() {
@@ -10606,7 +10597,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg right = 15;</code>
-       * 
+       *
        * @return Whether the right field is set.
        */
       public boolean hasRight() {
@@ -10615,7 +10606,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg right = 15;</code>
-       * 
+       *
        * @return The right.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getRight() {
@@ -10734,7 +10725,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string target_label = 18;</code>
-       * 
+       *
        * @return The targetLabel.
        */
       public java.lang.String getTargetLabel() {
@@ -10755,7 +10746,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string target_label = 18;</code>
-       * 
+       *
        * @return The bytes for targetLabel.
        */
       public com.google.protobuf.ByteString getTargetLabelBytes() {
@@ -10775,7 +10766,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string target_label = 18;</code>
-       * 
+       *
        * @param value
        *          The targetLabel to set.
        * @return This builder for chaining.
@@ -10796,7 +10787,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string target_label = 18;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearTargetLabel() {
@@ -10812,7 +10803,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>string target_label = 18;</code>
-       * 
+       *
        * @param value
        *          The bytes for targetLabel to set.
        * @return This builder for chaining.
@@ -10832,7 +10823,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for comparisonKind.
        */
       @java.lang.Override
@@ -10842,7 +10833,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for comparisonKind to set.
        * @return This builder for chaining.
@@ -10856,7 +10847,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-       * 
+       *
        * @return The comparisonKind.
        */
       @java.lang.Override
@@ -10870,7 +10861,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-       * 
+       *
        * @param value
        *          The comparisonKind to set.
        * @return This builder for chaining.
@@ -10887,7 +10878,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlComparisonKind comparison_kind = 21;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearComparisonKind() {
@@ -10906,7 +10897,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg condition = 22;</code>
-       * 
+       *
        * @return Whether the condition field is set.
        */
       public boolean hasCondition() {
@@ -10919,7 +10910,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg condition = 22;</code>
-       * 
+       *
        * @return The condition.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getCondition() {
@@ -11065,7 +11056,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
-       * 
+       *
        * @return Whether the trueInst field is set.
        */
       public boolean hasTrueInst() {
@@ -11074,7 +11065,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg true_inst = 23;</code>
-       * 
+       *
        * @return The trueInst.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTrueInst() {
@@ -11192,7 +11183,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
-       * 
+       *
        * @return Whether the falseInst field is set.
        */
       public boolean hasFalseInst() {
@@ -11201,7 +11192,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg false_inst = 24;</code>
-       * 
+       *
        * @return The falseInst.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFalseInst() {
@@ -11323,7 +11314,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg array = 30;</code>
-       * 
+       *
        * @return Whether the array field is set.
        */
       public boolean hasArray() {
@@ -11336,7 +11327,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg array = 30;</code>
-       * 
+       *
        * @return The array.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArray() {
@@ -11479,7 +11470,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for conversionKind.
        */
       @java.lang.Override
@@ -11489,7 +11480,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for conversionKind to set.
        * @return This builder for chaining.
@@ -11503,7 +11494,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-       * 
+       *
        * @return The conversionKind.
        */
       @java.lang.Override
@@ -11517,7 +11508,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-       * 
+       *
        * @param value
        *          The conversionKind to set.
        * @return This builder for chaining.
@@ -11534,7 +11525,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlConversionKind conversion_kind = 25;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearConversionKind() {
@@ -11548,7 +11539,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for inputType.
        */
       @java.lang.Override
@@ -11558,7 +11549,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for inputType to set.
        * @return This builder for chaining.
@@ -11572,7 +11563,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-       * 
+       *
        * @return The inputType.
        */
       @java.lang.Override
@@ -11585,7 +11576,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-       * 
+       *
        * @param value
        *          The inputType to set.
        * @return This builder for chaining.
@@ -11602,7 +11593,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlStackType input_type = 26;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearInputType() {
@@ -11616,7 +11607,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for targetType.
        */
       @java.lang.Override
@@ -11626,7 +11617,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for targetType to set.
        * @return This builder for chaining.
@@ -11640,7 +11631,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-       * 
+       *
        * @return The targetType.
        */
       @java.lang.Override
@@ -11654,7 +11645,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-       * 
+       *
        * @param value
        *          The targetType to set.
        * @return This builder for chaining.
@@ -11671,7 +11662,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg.IlPrimitiveType target_type = 28;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearTargetType() {
@@ -11690,7 +11681,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg argument = 29;</code>
-       * 
+       *
        * @return Whether the argument field is set.
        */
       public boolean hasArgument() {
@@ -11703,7 +11694,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg argument = 29;</code>
-       * 
+       *
        * @return The argument.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getArgument() {
@@ -11852,7 +11843,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for resultType.
        */
       @java.lang.Override
@@ -11866,7 +11857,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for resultType to set.
        * @return This builder for chaining.
@@ -11884,7 +11875,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-       * 
+       *
        * @return The resultType.
        */
       @java.lang.Override
@@ -11901,7 +11892,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-       * 
+       *
        * @param value
        *          The resultType to set.
        * @return This builder for chaining.
@@ -11922,7 +11913,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg.IlStackType result_type = 27;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearResultType() {
@@ -12259,7 +12250,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlBlockContainerMsg try_block = 32;</code>
-       * 
+       *
        * @return Whether the tryBlock field is set.
        */
       public boolean hasTryBlock() {
@@ -12272,7 +12263,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlBlockContainerMsg try_block = 32;</code>
-       * 
+       *
        * @return The tryBlock.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getTryBlock() {
@@ -12666,7 +12657,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
-       * 
+       *
        * @return Whether the finallyBlock field is set.
        */
       public boolean hasFinallyBlock() {
@@ -12675,7 +12666,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
-       * 
+       *
        * @return The finallyBlock.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFinallyBlock() {
@@ -12793,7 +12784,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
-       * 
+       *
        * @return Whether the faultBlock field is set.
        */
       public boolean hasFaultBlock() {
@@ -12802,7 +12793,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
-       * 
+       *
        * @return The faultBlock.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFaultBlock() {
@@ -12924,7 +12915,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlBlockContainerMsg body = 37;</code>
-       * 
+       *
        * @return Whether the body field is set.
        */
       public boolean hasBody() {
@@ -12937,7 +12928,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlBlockContainerMsg body = 37;</code>
-       * 
+       *
        * @return The body.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
@@ -13085,7 +13076,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg key_instr = 41;</code>
-       * 
+       *
        * @return Whether the keyInstr field is set.
        */
       public boolean hasKeyInstr() {
@@ -13098,7 +13089,7 @@ public final class ProtoIlInstructions {
        * </pre>
        *
        * <code>.IlInstructionMsg key_instr = 41;</code>
-       * 
+       *
        * @return The keyInstr.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getKeyInstr() {
@@ -13244,7 +13235,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
-       * 
+       *
        * @return Whether the defaultInst field is set.
        */
       public boolean hasDefaultInst() {
@@ -13253,7 +13244,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
-       * 
+       *
        * @return The defaultInst.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getDefaultInst() {
@@ -13671,14 +13662,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     boolean hasType();
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return The type.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType();
@@ -13690,35 +13681,35 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The name.
      */
     java.lang.String getName();
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     com.google.protobuf.ByteString getNameBytes();
 
     /**
      * <code>bool has_initial_value = 3;</code>
-     * 
+     *
      * @return The hasInitialValue.
      */
     boolean getHasInitialValue();
 
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for variableKind.
      */
     int getVariableKindValue();
 
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-     * 
+     *
      * @return The variableKind.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.IlVariableKind getVariableKind();
@@ -14066,7 +14057,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return Whether the type field is set.
      */
     @java.lang.Override
@@ -14076,7 +14067,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.TypeDefinition type = 1;</code>
-     * 
+     *
      * @return The type.
      */
     @java.lang.Override
@@ -14097,7 +14088,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The name.
      */
     @java.lang.Override
@@ -14115,7 +14106,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>string name = 2;</code>
-     * 
+     *
      * @return The bytes for name.
      */
     @java.lang.Override
@@ -14135,7 +14126,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>bool has_initial_value = 3;</code>
-     * 
+     *
      * @return The hasInitialValue.
      */
     @java.lang.Override
@@ -14148,7 +14139,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-     * 
+     *
      * @return The enum numeric value on the wire for variableKind.
      */
     @java.lang.Override
@@ -14158,7 +14149,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-     * 
+     *
      * @return The variableKind.
      */
     @java.lang.Override
@@ -14536,7 +14527,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.TypeDefinition type = 1;</code>
-       * 
+       *
        * @return Whether the type field is set.
        */
       public boolean hasType() {
@@ -14545,7 +14536,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.TypeDefinition type = 1;</code>
-       * 
+       *
        * @return The type.
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition getType() {
@@ -14660,7 +14651,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -14677,7 +14668,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return The bytes for name.
        */
       public com.google.protobuf.ByteString getNameBytes() {
@@ -14693,7 +14684,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @param value
        *          The name to set.
        * @return This builder for chaining.
@@ -14710,7 +14701,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -14722,7 +14713,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>string name = 2;</code>
-       * 
+       *
        * @param value
        *          The bytes for name to set.
        * @return This builder for chaining.
@@ -14742,7 +14733,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>bool has_initial_value = 3;</code>
-       * 
+       *
        * @return The hasInitialValue.
        */
       @java.lang.Override
@@ -14752,7 +14743,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>bool has_initial_value = 3;</code>
-       * 
+       *
        * @param value
        *          The hasInitialValue to set.
        * @return This builder for chaining.
@@ -14766,7 +14757,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>bool has_initial_value = 3;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearHasInitialValue() {
@@ -14780,7 +14771,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-       * 
+       *
        * @return The enum numeric value on the wire for variableKind.
        */
       @java.lang.Override
@@ -14790,7 +14781,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-       * 
+       *
        * @param value
        *          The enum numeric value on the wire for variableKind to set.
        * @return This builder for chaining.
@@ -14804,7 +14795,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-       * 
+       *
        * @return The variableKind.
        */
       @java.lang.Override
@@ -14817,7 +14808,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-       * 
+       *
        * @param value
        *          The variableKind to set.
        * @return This builder for chaining.
@@ -14834,7 +14825,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlVariableMsg.IlVariableKind variable_kind = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearVariableKind() {
@@ -14899,14 +14890,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return Whether the body field is set.
      */
     boolean hasBody();
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return The body.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody();
@@ -14918,14 +14909,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlVariableMsg variable = 2;</code>
-     * 
+     *
      * @return Whether the variable field is set.
      */
     boolean hasVariable();
 
     /**
      * <code>.IlVariableMsg variable = 2;</code>
-     * 
+     *
      * @return The variable.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable();
@@ -14937,14 +14928,14 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
-     * 
+     *
      * @return Whether the filter field is set.
      */
     boolean hasFilter();
 
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
-     * 
+     *
      * @return The filter.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFilter();
@@ -14956,7 +14947,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>bool has_filter = 4;</code>
-     * 
+     *
      * @return The hasFilter.
      */
     boolean getHasFilter();
@@ -15086,7 +15077,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return Whether the body field is set.
      */
     @java.lang.Override
@@ -15096,7 +15087,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg body = 1;</code>
-     * 
+     *
      * @return The body.
      */
     @java.lang.Override
@@ -15117,7 +15108,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlVariableMsg variable = 2;</code>
-     * 
+     *
      * @return Whether the variable field is set.
      */
     @java.lang.Override
@@ -15127,7 +15118,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlVariableMsg variable = 2;</code>
-     * 
+     *
      * @return The variable.
      */
     @java.lang.Override
@@ -15148,7 +15139,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
-     * 
+     *
      * @return Whether the filter field is set.
      */
     @java.lang.Override
@@ -15158,7 +15149,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlBlockContainerMsg filter = 3;</code>
-     * 
+     *
      * @return The filter.
      */
     @java.lang.Override
@@ -15179,7 +15170,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>bool has_filter = 4;</code>
-     * 
+     *
      * @return The hasFilter.
      */
     @java.lang.Override
@@ -15590,7 +15581,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
-       * 
+       *
        * @return Whether the body field is set.
        */
       public boolean hasBody() {
@@ -15599,7 +15590,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg body = 1;</code>
-       * 
+       *
        * @return The body.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getBody() {
@@ -15715,7 +15706,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlVariableMsg variable = 2;</code>
-       * 
+       *
        * @return Whether the variable field is set.
        */
       public boolean hasVariable() {
@@ -15724,7 +15715,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlVariableMsg variable = 2;</code>
-       * 
+       *
        * @return The variable.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg getVariable() {
@@ -15840,7 +15831,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
-       * 
+       *
        * @return Whether the filter field is set.
        */
       public boolean hasFilter() {
@@ -15849,7 +15840,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlBlockContainerMsg filter = 3;</code>
-       * 
+       *
        * @return The filter.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg getFilter() {
@@ -15964,7 +15955,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>bool has_filter = 4;</code>
-       * 
+       *
        * @return The hasFilter.
        */
       @java.lang.Override
@@ -15974,7 +15965,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>bool has_filter = 4;</code>
-       * 
+       *
        * @param value
        *          The hasFilter to set.
        * @return This builder for chaining.
@@ -15988,7 +15979,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>bool has_filter = 4;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearHasFilter() {
@@ -16053,21 +16044,21 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>int64 label = 1;</code>
-     * 
+     *
      * @return The label.
      */
     long getLabel();
 
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
-     * 
+     *
      * @return Whether the targetInstr field is set.
      */
     boolean hasTargetInstr();
 
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
-     * 
+     *
      * @return The targetInstr.
      */
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTargetInstr();
@@ -16174,7 +16165,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>int64 label = 1;</code>
-     * 
+     *
      * @return The label.
      */
     @java.lang.Override
@@ -16187,7 +16178,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
-     * 
+     *
      * @return Whether the targetInstr field is set.
      */
     @java.lang.Override
@@ -16197,7 +16188,7 @@ public final class ProtoIlInstructions {
 
     /**
      * <code>.IlInstructionMsg target_instr = 2;</code>
-     * 
+     *
      * @return The targetInstr.
      */
     @java.lang.Override
@@ -16552,7 +16543,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int64 label = 1;</code>
-       * 
+       *
        * @return The label.
        */
       @java.lang.Override
@@ -16562,7 +16553,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int64 label = 1;</code>
-       * 
+       *
        * @param value
        *          The label to set.
        * @return This builder for chaining.
@@ -16576,7 +16567,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>int64 label = 1;</code>
-       * 
+       *
        * @return This builder for chaining.
        */
       public Builder clearLabel() {
@@ -16591,7 +16582,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
-       * 
+       *
        * @return Whether the targetInstr field is set.
        */
       public boolean hasTargetInstr() {
@@ -16600,7 +16591,7 @@ public final class ProtoIlInstructions {
 
       /**
        * <code>.IlInstructionMsg target_instr = 2;</code>
-       * 
+       *
        * @return The targetInstr.
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getTargetInstr() {

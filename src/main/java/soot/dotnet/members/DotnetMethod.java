@@ -13,12 +13,12 @@ import java.util.List;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -143,7 +143,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Create a SootMethod of this .NET Method
-   * 
+   *
    * @return
    */
   public SootMethod toSootMethod() {
@@ -153,7 +153,7 @@ public class DotnetMethod extends AbstractDotnetMember {
   /**
    * Create SootMethod with specific MethodSource (used by Events and Properties) Events and Properties have other sources for
    * method bodies
-   * 
+   *
    * @param methodSource
    * @return
    */
@@ -197,7 +197,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * MethodSource for .NET Method (this)
-   * 
+   *
    * @return
    */
   private MethodSource createMethodSource() {
@@ -216,7 +216,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Generate Jimple Body of this Method
-   * 
+   *
    * @param ilFunctionMsg
    *          ProtoMsg Method Body
    * @return
@@ -250,7 +250,7 @@ public class DotnetMethod extends AbstractDotnetMember {
   /**
    * .NET Methods can have attributes, resolve them as Jimple annotations
    * https://docs.microsoft.com/de-de/dotnet/csharp/programming-guide/concepts/attributes/
-   * 
+   *
    * @param method
    */
   @SuppressWarnings("DuplicatedCode")
@@ -285,7 +285,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Visit Method Parameters and check which one is call-by-value, which one call-by-reference
-   * 
+   *
    * @param method
    *          e.g. MyMethod(ref param1, param2)
    */
@@ -306,7 +306,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Get parameters of this Method
-   * 
+   *
    * @return
    */
   public List<ProtoAssemblyAllTypes.ParameterDefinition> getParameterDefinitions() {
@@ -323,7 +323,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Check if this method contains call-by-ref parameters (e.g. MyMethod(param1&))
-   * 
+   *
    * @return bool
    */
   public boolean hasCallByRefParameters() {
@@ -332,7 +332,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Check whether this method has generics or call-by-ref parameters
-   * 
+   *
    * @return bool
    */
   public boolean hasGenericParameters() {
@@ -341,7 +341,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Check whether this method contains CIL primitives, such as uint sbyte
-   * 
+   *
    * @return
    */
   public boolean hasCilPrimitiveParameters() {
@@ -352,7 +352,7 @@ public class DotnetMethod extends AbstractDotnetMember {
   /**
    * Process Name Mangling to achieve a unique name in the declared class Convert method name to a unique method name if it has
    * generics or call-by-ref as parameters
-   * 
+   *
    * @return unique name
    */
   public String getUniqueName() {
@@ -367,7 +367,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
   /**
    * Convert Dotnet/CLI constructor names to java byte code constructors, if available
-   * 
+   *
    * @param methodName
    *          dotnet constructor name
    * @return java constructor name

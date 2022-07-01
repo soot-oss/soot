@@ -486,11 +486,11 @@ public class Walker extends DepthFirstAdapter {
     }
 
     /*
-     * Iterator it = mLabelToStmtMap.keySet().iterator(); while(it.hasNext()) { String label = (String) it.next(); Unit
-     * target = (Unit) mLabelToStmtMap.get(label);
+     * Iterator it = mLabelToStmtMap.keySet().iterator(); while(it.hasNext()) { String label = (String) it.next(); Unit target =
+     * (Unit) mLabelToStmtMap.get(label);
      *
-     * List l = (List) mLabelToPatchList.get(label); if(l != null) { Iterator patchIt = l.iterator();
-     * while(patchIt.hasNext()) { UnitBox box = (UnitBox) patchIt.next(); box.setUnit(target); } } }
+     * List l = (List) mLabelToPatchList.get(label); if(l != null) { Iterator patchIt = l.iterator(); while(patchIt.hasNext()) {
+     * UnitBox box = (UnitBox) patchIt.next(); box.setUnit(target); } } }
      */
 
     mProductions.addLast(jBody);
@@ -560,8 +560,8 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * catch_clause = catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with
-   * [with_label]:label_name semicolon;
+   * catch_clause = catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name
+   * semicolon;
    */
 
   // public void caseACatchClause(ACatchClause node){}
@@ -627,12 +627,12 @@ public class Walker extends DepthFirstAdapter {
   }
 
   /*
-   * statement = {label} label_name colon | {breakpoint} breakpoint semicolon | {entermonitor} entermonitor immediate
-   * semicolon | {exitmonitor} exitmonitor immediate semicolon | {switch} switch l_paren immediate r_paren l_brace case_stmt+
-   * r_brace semicolon | {identity} local_name colon_equals at_identifier type semicolon | {identity_no_type} local_name
-   * colon_equals at_identifier semicolon | {assign} variable equals expression semicolon | {if} if bool_expr goto_stmt |
-   * {goto} goto_stmt | {nop} nop semicolon | {ret} ret immediate? semicolon | {return} return immediate? semicolon | {throw}
-   * throw immediate semicolon | {invoke} invoke_expr semicolon;
+   * statement = {label} label_name colon | {breakpoint} breakpoint semicolon | {entermonitor} entermonitor immediate semicolon
+   * | {exitmonitor} exitmonitor immediate semicolon | {switch} switch l_paren immediate r_paren l_brace case_stmt+ r_brace
+   * semicolon | {identity} local_name colon_equals at_identifier type semicolon | {identity_no_type} local_name colon_equals
+   * at_identifier semicolon | {assign} variable equals expression semicolon | {if} if bool_expr goto_stmt | {goto} goto_stmt |
+   * {nop} nop semicolon | {ret} ret immediate? semicolon | {return} return immediate? semicolon | {throw} throw immediate
+   * semicolon | {invoke} invoke_expr semicolon;
    */
 
   public void outALabelStatement(ALabelStatement node) {
