@@ -278,6 +278,7 @@ public class DotnetMethod extends AbstractDotnetMember {
           method.addTag(new DeprecatedTag());
         }
       } catch (Exception ignore) {
+        logger.info("Ignores", ignore);
       }
     }
 
