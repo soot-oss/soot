@@ -34,8 +34,8 @@ import soot.jimple.StringConstant;
 public abstract class AbstractDotnetMember implements DotnetTypeMember {
 
   /**
-   * If we have specific return or assignment characteristics, rewrite it (mostly reftypes) Due to the different eco system of
-   * .NET and unsafe methods
+   * If we have specific return or assignment characteristics, rewrite it (mostly reftypes) Due to the different eco system
+   * of .NET and unsafe methods
    *
    * @param declaringClass
    * @param fieldMethodName
@@ -43,15 +43,15 @@ public abstract class AbstractDotnetMember implements DotnetTypeMember {
    */
   public static Value checkRewriteCilSpecificMember(SootClass declaringClass, String fieldMethodName) {
     /*
-     * Normally System.String.Empty == Reftype(System.String), because is string, lead to errors in validation With this fix:
-     * System.String.Empty == StringConstant
+     * Normally System.String.Empty == Reftype(System.String), because is string, lead to errors in validation With this
+     * fix: System.String.Empty == StringConstant
      */
     if (declaringClass.getName().equals(DotnetBasicTypes.SYSTEM_STRING) && fieldMethodName.equals("Empty")) {
       return StringConstant.v("");
     }
     /*
-     * If System.Array.Empty, normal RefType(System.Array) Problem with System.Type[] = System.Array.Empty With this fix null
-     * constant
+     * If System.Array.Empty, normal RefType(System.Array) Problem with System.Type[] = System.Array.Empty With this fix
+     * null constant
      */
     if (declaringClass.getName().equals(DotnetBasicTypes.SYSTEM_ARRAY) && fieldMethodName.equals("Empty")) {
       // return Jimple.v().newNewExpr(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY));

@@ -364,8 +364,8 @@ public class AssemblyFile extends File {
   private native byte[] nativeGetMethodBodyOfEventMsg(String pathToNativeHost, byte[] disassemblerParams);
 
   /**
-   * Universal method for getting content of Soot.Dotnet.Decompiler. Purpose of this method is that we do not need to edit the
-   * bridge Soot.Dotnet.NativeHost
+   * Universal method for getting content of Soot.Dotnet.Decompiler. Purpose of this method is that we do not need to edit
+   * the bridge Soot.Dotnet.NativeHost
    *
    * @param pathToNativeHost
    *          Path where the library file of the native host is located, e.g.

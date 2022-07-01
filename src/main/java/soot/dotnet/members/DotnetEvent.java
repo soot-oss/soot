@@ -35,8 +35,8 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 
 /**
- * Represents a .NET Event (Member) SourceLocator -> ClassProvider -> ClassSource -> MethodSource (DotnetEvent, DotnetMethod)
- * An event consists of a add, invoke and remove method (directive)
+ * Represents a .NET Event (Member) SourceLocator -> ClassProvider -> ClassSource -> MethodSource (DotnetEvent,
+ * DotnetMethod) An event consists of a add, invoke and remove method (directive)
  */
 public class DotnetEvent extends AbstractDotnetMember {
   private static final Logger logger = LoggerFactory.getLogger(DotnetEvent.class);

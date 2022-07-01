@@ -38,8 +38,8 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 /**
- * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g. elem[1,5]);
- * unfolding it
+ * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g.
+ * elem[1,5]); unfolding it
  */
 public class CilLdElemaInstruction extends AbstractCilnstruction {
   public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {

@@ -42,8 +42,8 @@ import soot.jimple.MethodHandle;
 import soot.jimple.StringConstant;
 
 /**
- * ldtoken was split up by ILspy: LdMemberToken for Method and Field handles and LdTypeToken Load a method/field handle token
- * (e.g. reflection)
+ * ldtoken was split up by ILspy: LdMemberToken for Method and Field handles and LdTypeToken Load a method/field handle
+ * token (e.g. reflection)
  */
 public class CilLdMemberTokenInstruction extends AbstractCilnstruction {
   public CilLdMemberTokenInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
