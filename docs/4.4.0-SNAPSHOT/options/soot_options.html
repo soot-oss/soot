@@ -540,6 +540,10 @@
             </td>
          </tr>
          <tr>
+            <td><tt>-dotnet-nativehost-path <var>arg</var></tt><br></td>
+            <td colspan="2">Use  to locate your NativeHost Java JNI library.</td>
+         </tr>
+         <tr>
             <td><tt>-pp </tt><br><tt>-prepend-classpath </tt><br></td>
             <td colspan="2">Prepend the given soot classpath to the default classpath.</td>
          </tr>
@@ -622,6 +626,7 @@
                   </tt><br><tt>apk&nbsp;
                   </tt><br><tt>apk-class-jimple&nbsp;
                   </tt><tt>apk-c-j&nbsp;
+                  </tt><br><tt>dotnet&nbsp;
                   </tt><br></td>
             <td colspan="1">Sets source precedence to
                <var>format</var>
@@ -632,6 +637,14 @@
          <tr>
             <td><tt>-full-resolver </tt><br></td>
             <td colspan="2">Force transitive resolving of referenced classes</td>
+         </tr>
+         <tr>
+            <td><tt>-ignore-methodsource-error </tt><br></td>
+            <td colspan="2">Ignore errors from method source and return empty jimple body</td>
+         </tr>
+         <tr>
+            <td><tt>-resolve-all-dotnet-methods </tt><br></td>
+            <td colspan="2">Resolve all dotnet methods, such as unsafe methods</td>
          </tr>
          <tr>
             <td><tt>-allow-phantom-refs </tt><br></td>
@@ -860,6 +873,7 @@
             <td><tt>pedantic&nbsp;
                   </tt><br><tt>unit&nbsp;
                   </tt><br><tt>dalvik&nbsp;
+                  </tt><br><tt>dotnet&nbsp;
                   </tt><br><tt>auto-select&nbsp;
                   </tt><br></td>
             <td colspan="1"></td>
@@ -870,6 +884,7 @@
                   </tt><br><tt>pedantic&nbsp;
                   </tt><br><tt>unit&nbsp;
                   </tt><br><tt>dalvik&nbsp;
+                  </tt><br><tt>dotnet&nbsp;
                   </tt><br></td>
             <td colspan="1"></td>
          </tr>

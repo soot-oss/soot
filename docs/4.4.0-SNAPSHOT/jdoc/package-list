@@ -25,6 +25,16 @@ soot.dexpler
 soot.dexpler.instructions
 soot.dexpler.tags
 soot.dexpler.typing
+soot.dotnet
+soot.dotnet.exceptions
+soot.dotnet.exceptiontoolkits
+soot.dotnet.instructions
+soot.dotnet.members
+soot.dotnet.members.method
+soot.dotnet.proto
+soot.dotnet.soot
+soot.dotnet.specifications
+soot.dotnet.types
 soot.grimp
 soot.grimp.internal
 soot.grimp.toolkits.base
