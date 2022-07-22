@@ -962,7 +962,10 @@ public class FastHierarchy {
       throw new RuntimeException("The concreteType cannot not be null!");
     }
     SootMethod candidate = null;
-    for (SootMethod method : concreteType.getMethods()) {
+    List<SootMethod> methods = concreteType.getMethods();
+    int idx = 0;
+    while (idx < methods.size()) {
+      SootMethod method = methods.get(idx);
       if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
           && canStoreType(method.getReturnType(), returnType)) {
         candidate = method;
@@ -987,6 +990,7 @@ public class FastHierarchy {
           }
         }
       }
+      idx++;
     }
     return candidate;
   }
