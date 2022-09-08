@@ -755,7 +755,7 @@ public class Scene {
    * @return the default class path (or null if none could be found)
    */
   public static String defaultJavaClassPath() {
-    final String javaHome = System.getProperty("java.home");
+    final String javaHome = G.v().getJdkInfo().getPath();
     StringBuilder sb = new StringBuilder();
     if ("Mac OS X".equals(System.getProperty("os.name"))) {
       // in older Mac OS X versions, rt.jar was split into classes.jar and
@@ -772,7 +772,7 @@ public class Scene {
       }
     }
     // behavior for Java versions >=9, which do not have a rt.jar file
-    final boolean javaGEQ9 = isJavaGEQ9(System.getProperty("java.version"));
+    final boolean javaGEQ9 = G.v().getJdkInfo().getVersion() >= 9;
     if (javaGEQ9) {
       sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
       // this is a new basic class in java >= 9 that needs to be laoded

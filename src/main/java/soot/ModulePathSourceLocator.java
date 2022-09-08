@@ -243,7 +243,7 @@ public class ModulePathSourceLocator extends SourceLocator {
   }
 
   public static Path getRootModulesPathOfJDK() {
-    Path p = Paths.get(URI.create("jrt:/"));
+    Path p = G.v().jdkFileSystem.getPath("/");
     if (p.endsWith("modules")) {
       return p;
     }
