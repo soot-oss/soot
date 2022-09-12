@@ -215,13 +215,7 @@ public class TypeResolver {
         return op;
       }
 
-      boolean needCast = false;
-      if (useType instanceof PrimType && t instanceof PrimType) {
-        if (t.isAllowedInFinalCode() && useType.isAllowedInFinalCode()) {
-          needCast = true;
-        }
-      }
-      if (!needCast && this.h.ancestor(useType, t)) {
+      if (this.h.ancestor(useType, t)) {
         return op;
       }
 
