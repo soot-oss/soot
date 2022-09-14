@@ -151,7 +151,7 @@ public class ModuleScene extends Scene {
     StringBuilder sb = new StringBuilder();
 
     // test for java 9
-    File rtJar = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar").toFile();
+    File rtJar = Paths.get(G.v().getJdkInfo().getPath(), "lib", "jrt-fs.jar").toFile();
     if ((rtJar.exists() && rtJar.isFile()) || !Options.v().soot_modulepath().isEmpty()) {
       sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
     } else {

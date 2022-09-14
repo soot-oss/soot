@@ -22,12 +22,26 @@ package soot;
  * #L%
  */
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.ProviderNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,6 +62,13 @@ import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons {
+  public G() {
+    initJdk(G.getJdkInfoFromEnvironment());
+  }
+
+  public JreInfo getJdkInfo() {
+    return jreInfo;
+  }
 
   public static interface GlobalObjectGetter {
     public G getG();
@@ -74,6 +95,13 @@ public class G extends Singletons {
 
     @Override
     public void reset() {
+      try {
+        for (Closeable openResource : instance.openResources) {
+          openResource.close();
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
       instance = new G();
     }
   };
@@ -89,6 +117,72 @@ public class G extends Singletons {
   public PrintStream out = System.out;
 
   public class Global {
+  }
+
+  private List<Closeable> openResources = new LinkedList<>();
+  public static class JreInfo {
+    private final String path;
+    private final int version;
+
+    public JreInfo(String path, int version) {
+      this.path = path;
+      this.version = version;
+    }
+
+    public String getPath() {
+      return path;
+    }
+
+    public int getVersion() {
+      return version;
+    }
+  }
+  private JreInfo jreInfo;
+  private static JreInfo getJdkInfoFromEnvironment() {
+    String version = System.getProperty("java.version");
+
+    if (version.startsWith("1.")) {
+      version = version.substring(2, 3);
+    } else {
+      int dot = version.indexOf(".");
+      if (dot != -1) {
+        version = version.substring(0, dot);
+      }
+    }
+    int ver = Integer.parseInt(version);
+
+    return new JreInfo(System.getProperty("java.home"), ver);
+  }
+
+  public FileSystem jdkFileSystem;
+  public void initJdk(JreInfo jreInfo) {
+    this.jreInfo = jreInfo;
+    if (jreInfo.version >= 9) {
+      try {
+        try {
+          jdkFileSystem = FileSystems.newFileSystem(
+                  URI.create("jrt:/"),
+                  Collections.singletonMap("java.home", jreInfo.path)
+          );
+        } catch (ProviderNotFoundException e) { // we are running under java 8 and the target code is >= 9
+          Path pathToJre = Paths.get(jreInfo.getPath());
+
+          Path p = pathToJre.resolve("lib").resolve("jrt-fs.jar");
+          if (Files.exists(p)) {
+            URLClassLoader loader = new URLClassLoader(new URL[]{p.toUri().toURL()});
+            jdkFileSystem = FileSystems.newFileSystem(URI.create("jrt:/"),
+                    Collections.emptyMap(),
+                    loader);
+            openResources.add(loader);
+          } else {
+            throw new FileSystemNotFoundException("Can't find " + p);
+          }
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      openResources.add(jdkFileSystem);
+    }
   }
 
   public long coffi_BasicBlock_ids = 0;
