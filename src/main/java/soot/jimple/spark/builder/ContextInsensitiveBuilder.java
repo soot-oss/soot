@@ -104,7 +104,7 @@ public class ContextInsensitiveBuilder {
     }
     while (callEdges.hasNext()) {
       Edge e = callEdges.next();
-      if (!e.isInvalid() && e.getTgt().method().getDeclaringClass().isConcrete()) {
+      if (!e.isInvalid()) {
         if (e.tgt().isConcrete() || e.tgt().isNative()) {
           MethodPAG.v(pag, e.tgt()).addToPAG(null);
         }
@@ -123,7 +123,7 @@ public class ContextInsensitiveBuilder {
   /* End of package methods. */
   protected void handleClass(SootClass c) {
     boolean incedClasses = false;
-    if (c.isConcrete()) {
+    if (c.isConcrete() || Scene.v().getFastHierarchy().getSubclassesOf(c).stream().anyMatch(SootClass::isConcrete)) {
       for (SootMethod m : c.getMethods()) {
         if (!m.isConcrete() && !m.isNative()) {
           continue;
