@@ -335,7 +335,9 @@ public class DexAnnotation {
     for (MethodParameter p : method.getParameters()) {
       String name = p.getName();
       if (name != null) {
-        parameterNames = new String[method.getParameters().size()];
+        if (parameterNames == null) {
+          parameterNames = new String[method.getParameters().size()];
+        }
         parameterNames[i] = name;
       }
       i++;
