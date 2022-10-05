@@ -502,16 +502,16 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
     // transform the path to a String to reuse the
     String uriString = foundModulePath.toUri().toString();
-    String dir = uriString.startsWith("jrt:/") ? uriString : foundModulePath.toAbsolutePath().toString();
+    Path dir = uriString.startsWith("jrt:/") ? foundModulePath : foundModulePath.toAbsolutePath();
 
     ClassSourceType cst = getClassSourceType(foundModulePath);
     if (null != cst) {
       switch (cst) {
         case zip:
         case jar:
-          return lookupInArchive(dir, className);
+          return lookupInArchive(dir.toUri().toString(), className);
         case directory:
-          return lookupInDir(dir, className);
+          return lookupInDir(dir.toUri().toString(), className);
         case jrt:
           return lookUpInVirtualFileSystem(dir, className);
       }
@@ -587,9 +587,8 @@ public class ModulePathSourceLocator extends SourceLocator {
    *          the file to search
    * @return the FoundFile
    */
-  public IFoundFile lookUpInVirtualFileSystem(String archivePath, String fileName) {
-    // FileSystem fs = FileSystems.getFileSystem(URI.create(archivePath));
-    Path foundFile = Paths.get(URI.create(archivePath)).resolve(fileName);
+  public IFoundFile lookUpInVirtualFileSystem(Path archivePath, String fileName) {
+    Path foundFile = archivePath.resolve(fileName);
     if (foundFile != null && Files.isRegularFile(foundFile)) {
       return new FoundFile(foundFile);
     } else {
