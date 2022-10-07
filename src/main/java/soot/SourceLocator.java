@@ -95,7 +95,7 @@ public class SourceLocator {
   // size must be able to contain all paths in the classpath or else
   // methods such as lookupInClassPath(..) that search for a file by
   // traversing each path in the classpath will cause cache thrashing.
-  private static final int PATH_CACHE_CAPACITY = 1000;
+  private static final int PATH_CACHE_CAPACITY = 100000;
 
   final SharedZipFileCacheWrapper archivePathToZip = new SharedZipFileCacheWrapper(5, PATH_CACHE_CAPACITY);
 
