@@ -21,7 +21,6 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -1339,9 +1338,9 @@ public class AsmMethodSource implements MethodSource {
     } else if (val instanceof Handle) {
       Handle h = (Handle) val;
       if (MethodHandle.isMethodRef(h.getTag())) {
-        v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
+        v = MethodHandle.v(toSootMethodRef(h), h.getTag());
       } else {
-        v = MethodHandle.v(toSootFieldRef((Handle) val), ((Handle) val).getTag());
+        v = MethodHandle.v(toSootFieldRef(h), h.getTag());
       }
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
@@ -2373,10 +2372,16 @@ public class AsmMethodSource implements MethodSource {
               for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null;) {
                 i = i.getNext();
               }
+              if (uStart instanceof UnitContainer) {
+                uStart = ((UnitContainer) uStart).getFirstUnit();
+              }
               // Get the previous real instruction before 'end'
               Unit uEnd;
               for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null;) {
                 i = i.getPrevious();
+              }
+              if (uEnd instanceof UnitContainer) {
+                uEnd = ((UnitContainer) uEnd).getFirstUnit();
               }
               if (newLocals == null) {
                 newLocals = HashBasedTable.create(this.maxLocals, 1);

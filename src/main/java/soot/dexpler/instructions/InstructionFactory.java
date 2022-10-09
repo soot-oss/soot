@@ -254,11 +254,11 @@ public class InstructionFactory {
       case EXECUTE_INLINE:
       case EXECUTE_INLINE_RANGE:
         return new ExecuteInlineInstruction(instruction, codeAddress);
-        
+
       case INVOKE_POLYMORPHIC:
       case INVOKE_POLYMORPHIC_RANGE:
         return new InvokePolymorphicInstruction(instruction, codeAddress);
- 
+
       case INVOKE_CUSTOM:
       case INVOKE_CUSTOM_RANGE:
         return new InvokeCustomInstruction(instruction, codeAddress);

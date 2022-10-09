@@ -386,10 +386,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       StaticinvokeSource other = (StaticinvokeSource) obj;
@@ -453,10 +450,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       InstanceinvokeSource other = (InstanceinvokeSource) obj;
@@ -521,10 +515,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
@@ -587,10 +578,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (!super.equals(obj)) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if (!super.equals(obj) || (getClass() != obj.getClass())) {
         return false;
       }
       return true;
@@ -680,10 +668,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (!super.equals(obj)) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if (!super.equals(obj) || (getClass() != obj.getClass())) {
         return false;
       }
       IndirectTarget other = (IndirectTarget) obj;
@@ -766,10 +751,7 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       VirtualEdge other = (VirtualEdge) obj;

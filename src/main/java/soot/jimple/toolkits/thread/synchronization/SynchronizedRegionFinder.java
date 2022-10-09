@@ -188,7 +188,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
     Iterator<SynchronizedRegionFlowPair> outIt0 = out.iterator();
     while (outIt0.hasNext()) {
       SynchronizedRegionFlowPair srfp = outIt0.next();
-      if (srfp.tn.nestLevel > nestLevel && srfp.inside == true) {
+      if (srfp.tn.nestLevel > nestLevel && srfp.inside) {
         nestLevel = srfp.tn.nestLevel;
       }
     }
@@ -209,7 +209,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
       }
 
       // if this is the immediately enclosing transaction
-      if (srfp.inside == true && (tn.nestLevel == nestLevel || optionOpenNesting == false)) {
+      if (srfp.inside && (tn.nestLevel == nestLevel || !optionOpenNesting)) {
         printed = true; // for debugging purposes, indicated that we'll print a debug output for this statement
 
         // Add this unit to the current transactional region

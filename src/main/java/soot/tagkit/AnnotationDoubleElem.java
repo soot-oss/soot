@@ -31,6 +31,10 @@ public class AnnotationDoubleElem extends AnnotationElem {
 
   private final double value;
 
+  public AnnotationDoubleElem(double v, String name) {
+    this(v, 'D', name);
+  }
+
   public AnnotationDoubleElem(double v, char kind, String name) {
     super(kind, name);
     this.value = v;
@@ -64,10 +68,7 @@ public class AnnotationDoubleElem extends AnnotationElem {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (this.getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (this.getClass() != obj.getClass())) {
       return false;
     }
     AnnotationDoubleElem other = (AnnotationDoubleElem) obj;

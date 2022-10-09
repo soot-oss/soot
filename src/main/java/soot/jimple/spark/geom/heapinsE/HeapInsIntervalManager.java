@@ -70,7 +70,7 @@ public class HeapInsIntervalManager extends IFigureManager {
 
     for (int i = 0; i < Divisions; ++i) {
       SegmentNode p = header[i];
-      while (p != null && p.is_new == true) {
+      while (p != null && p.is_new) {
         p.is_new = false;
         p = p.next;
       }
@@ -181,7 +181,7 @@ public class HeapInsIntervalManager extends IFigureManager {
     /*
      * We start the merging from ONE_TO_ONE, because the generated figure may be merged with those figures in MANY_TO_ALL
      */
-    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new == true) {
+    if (size[ONE_TO_ONE] > upperSize && header[ONE_TO_ONE].is_new) {
 
       // We prefer to generate a heap insensitive figure
       SegmentNode p = generate_many_to_all(header[ONE_TO_ONE]);
@@ -193,13 +193,13 @@ public class HeapInsIntervalManager extends IFigureManager {
       size[ONE_TO_ONE] = 0;
     }
 
-    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new == true) {
+    if (size[MANY_TO_ALL] > upperSize && header[MANY_TO_ALL].is_new) {
 
       header[MANY_TO_ALL] = generate_many_to_all(header[MANY_TO_ALL]);
       size[MANY_TO_ALL] = 1;
     }
 
-    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new == true) {
+    if (size[ALL_TO_MANY] > upperSize && header[ALL_TO_MANY].is_new) {
 
       header[ALL_TO_MANY] = generate_all_to_many(header[ALL_TO_MANY]);
       size[ALL_TO_MANY] = 1;
@@ -233,7 +233,7 @@ public class HeapInsIntervalManager extends IFigureManager {
       }
 
       temp = p.next;
-      if (contained == false) {
+      if (!contained) {
         p.next = q;
         q = p;
         ++size[ONE_TO_ONE];
@@ -433,7 +433,7 @@ public class HeapInsIntervalManager extends IFigureManager {
           && (predator.I1 + predator.L >= list.I2 + L)) {
         // The checked figure is completely contained in the predator
         // So we ignore it
-        ;
+
       } else {
         if (q == null) {
           p = q = list;

@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
+import soot.dotnet.members.DotnetMethod;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
@@ -596,7 +597,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   public boolean isMain() {
     return isPublic() && isStatic()
-        && Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])").equals(subsignature);
+        && Scene.v().getSubSigNumberer()
+            .findOrAdd(Options.v().src_prec() != Options.src_prec_dotnet ? "void main(java.lang.String[])"
+                : DotnetMethod.MAIN_METHOD_SIGNATURE)
+            .equals(subsignature);
   }
 
   /**

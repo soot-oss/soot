@@ -447,8 +447,8 @@ public class FinalFieldDefinition {
 
         // the def is at (GAssignStmt) defs.get(0)
         // its parent is ASTStatementSequence and its parent is now needed
-        soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder parentFinder =
-            new soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder();
+        soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder parentFinder
+            = new soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder();
         node.apply(parentFinder);
 
         Object parent = parentFinder.getParentOf(defs.get(0));

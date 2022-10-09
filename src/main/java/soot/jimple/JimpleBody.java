@@ -24,6 +24,7 @@ package soot.jimple;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,6 +95,13 @@ public class JimpleBody extends StmtBody {
   public Object clone() {
     Body b = new JimpleBody(getMethodUnsafe());
     b.importBodyContentsFrom(this);
+    return b;
+  }
+
+  @Override
+  public Object clone(boolean noLocalsClone) {
+    Body b = new JimpleBody(getMethod());
+    b.importBodyContentsFrom(this, true);
     return b;
   }
 

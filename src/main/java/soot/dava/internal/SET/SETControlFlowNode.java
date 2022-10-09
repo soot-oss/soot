@@ -43,7 +43,7 @@ public abstract class SETControlFlowNode extends SETNode {
 
   protected boolean resolve(SETNode parent) {
     for (IterableSet subBody : parent.get_SubBodies()) {
-      if (subBody.contains(get_EntryStmt()) == false) {
+      if (!subBody.contains(get_EntryStmt())) {
         continue;
       }
 
@@ -58,9 +58,9 @@ public abstract class SETControlFlowNode extends SETNode {
 
           for (Iterator<AugmentedStmt> asIt = get_Body().snapshotIterator(); asIt.hasNext();) {
             AugmentedStmt as = asIt.next();
-            if (childBody.contains(as) == false) {
+            if (!childBody.contains(as)) {
               remove_AugmentedStmt(as);
-            } else if ((child instanceof SETControlFlowNode) && ((child instanceof SETUnconditionalWhileNode) == false)) {
+            } else if ((child instanceof SETControlFlowNode) && !(child instanceof SETUnconditionalWhileNode)) {
               SETControlFlowNode scfn = (SETControlFlowNode) child;
 
               if ((scfn.get_CharacterizingStmt() == as) || ((as.cpreds.size() == 1) && (as.get_Stmt() instanceof GotoStmt)

@@ -379,10 +379,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
    */
   private boolean checkImplicit(DAbruptStmt ab) {
     SETNodeLabel label = ab.getLabel();
-    if (label == null) {
-      return true;
-    }
-    if (label.toString() == null) {
+    if ((label == null) || (label.toString() == null)) {
       return true;
     }
     return false;
@@ -602,12 +599,8 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
     if (listOne == null && listTwo == null) {
       return true;
     }
-    if (listOne == null || listTwo == null) {
-      return false;
-    }
-
     // compare elements of the list
-    if (listOne.size() != listTwo.size()) {
+    if (listOne == null || listTwo == null || (listOne.size() != listTwo.size())) {
       // size has to be same for lists to match
       return false;
     }

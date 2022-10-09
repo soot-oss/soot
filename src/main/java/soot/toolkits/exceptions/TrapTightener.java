@@ -86,7 +86,7 @@ public final class TrapTightener extends TrapTransformer {
 
       for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext();) {
         Trap trap = trapIt.next();
-        boolean isCatchAll = trap.getException().getName().equals("java.lang.Throwable");
+        boolean isCatchAll = trap.getException().getName().equals(Scene.v().getBaseExceptionType().toString());
         Unit firstTrappedUnit = trap.getBeginUnit();
         Unit firstTrappedThrower = null;
         Unit firstUntrappedUnit = trap.getEndUnit();
@@ -110,14 +110,9 @@ public final class TrapTightener extends TrapTransformer {
         }
         if (firstTrappedThrower != null) {
           for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {
-            if (mightThrowTo(graph, u, trap)) {
-              lastTrappedThrower = u;
-              break;
-            }
-
             // If this is the catch-all block and the current unit
             // has an, active monitor, we need to keep the block
-            if (isCatchAll && unitsWithMonitor.contains(u)) {
+            if (mightThrowTo(graph, u, trap) || (isCatchAll && unitsWithMonitor.contains(u))) {
               lastTrappedThrower = u;
               break;
             }

@@ -118,10 +118,7 @@ public class IntervalContextVar extends ContextVar implements Comparable<Interva
   public boolean intersect(ContextVar cv) {
     IntervalContextVar icv = (IntervalContextVar) cv;
 
-    if (L <= icv.L && icv.L < R) {
-      return true;
-    }
-    if (icv.L <= L && L < icv.R) {
+    if ((L <= icv.L && icv.L < R) || (icv.L <= L && L < icv.R)) {
       return true;
     }
     return false;

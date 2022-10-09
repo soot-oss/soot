@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -60,8 +62,11 @@ public class DoubleType extends PrimType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Double");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotnetBasicTypes.SYSTEM_DOUBLE;
+    }
+    return JavaBasicTypes.JAVA_LANG_DOUBLE;
   }
 
   @Override

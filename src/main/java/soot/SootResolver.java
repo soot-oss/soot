@@ -124,6 +124,9 @@ public class SootResolver {
    * will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
+    if (className.length() == 0) {
+      throw new RuntimeException("Classname must not be empty!");
+    }
     final Scene scene = Scene.v();
     if (scene.containsClass(className)) {
       return scene.getSootClass(className);
@@ -172,8 +175,8 @@ public class SootResolver {
         SootClass sc = currWorklist.pop();
         if (resolveEverything) {
           // Whole program mode
-          boolean onlySignatures = sc.isPhantom()
-              || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.isBasicClass(sc.getName()));
+          boolean onlySignatures
+              = sc.isPhantom() || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.isBasicClass(sc.getName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();

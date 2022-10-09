@@ -31,6 +31,10 @@ public class AnnotationLongElem extends AnnotationElem {
 
   private final long value;
 
+  public AnnotationLongElem(long v, String name) {
+    this(v, 'J', name);
+  }
+
   public AnnotationLongElem(long v, char kind, String name) {
     super(kind, name);
     this.value = v;
@@ -63,10 +67,7 @@ public class AnnotationLongElem extends AnnotationElem {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (this.getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (this.getClass() != obj.getClass())) {
       return false;
     }
     AnnotationLongElem other = (AnnotationLongElem) obj;

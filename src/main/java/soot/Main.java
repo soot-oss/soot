@@ -160,24 +160,10 @@ public class Main {
       String stackStraceString = bos.toString();
 
       final String TRACKER_URL = "https://github.com/soot-oss/soot/issues/new?";
-      String body = "Steps to reproduce:\n1.) ...\n\n"
-              + "Files used to reproduce: \n...\n\n"
-              + "Soot version: "
-              + "<pre>"
-              + escape(versionString)
-              + "</pre>\n\n"
-              + "Command line:\n"
-              + "<pre>"
-              + escape(String.join(" ", args))
-              + "</pre>\n\n"
-              + "Max Memory:\n"
-              + "<pre>"
-              + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
-              + "</pre>\n\n"
-              + "Stack trace:\n"
-              + "<pre>"
-              + escape(stackStraceString)
-              + "</pre>";
+      String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>"
+          + escape(versionString) + "</pre>\n\n" + "Command line:\n" + "<pre>" + escape(String.join(" ", args))
+          + "</pre>\n\n" + "Max Memory:\n" + "<pre>" + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
+          + "</pre>\n\n" + "Stack trace:\n" + "<pre>" + escape(stackStraceString) + "</pre>";
       String title = e.getClass().getName() + " when ...";
 
       try {

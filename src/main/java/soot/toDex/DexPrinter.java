@@ -185,9 +185,10 @@ import soot.util.Chain;
  * classes.
  * </p>
  * <p>
- * If the printer has found the original {@code APK} of an added class (via {@link SourceLocator#dexClassIndex()}), the files
- * in the {@code APK} are copied to a new one, replacing it's {@code classes.dex} and excluding the signature files. Note
- * that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.
+ * If the printer has found the original {@code APK} of an added class (via
+ * {@link SourceLocator#classContainerFileClassIndex()}), the files in the {@code APK} are copied to a new one, replacing
+ * it's {@code classes.dex} and excluding the signature files. Note that you have to sign and align the APK yourself, with
+ * jarsigner and zipalign, respectively.
  * </p>
  * <p>
  * If {@link Options#output_jar} flag is set, the printer produces {@code JAR} file.
@@ -286,7 +287,7 @@ public class DexPrinter {
   private void printZip() throws IOException {
     try (ZipOutputStream outputZip = getZipOutputStream()) {
       LOGGER.info("Do not forget to sign the .apk file with jarsigner and to align it with zipalign");
-	
+
       if (originalApk != null) {
         // Copy over additional resources from original APK
         try (ZipFile original = new ZipFile(originalApk)) {
@@ -322,7 +323,7 @@ public class DexPrinter {
           Files.delete(file);
           return FileVisitResult.CONTINUE;
         }
-	  
+
         @Override
         public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
           Files.delete(dir);
@@ -930,11 +931,7 @@ public class DexPrinter {
   }
 
   private Annotation buildEnclosingMethodTag(EnclosingMethodTag t, Set<String> skipList) {
-    if (!skipList.add("Ldalvik/annotation/EnclosingMethod;")) {
-      return null;
-    }
-
-    if (t.getEnclosingMethod() == null) {
+    if (!skipList.add("Ldalvik/annotation/EnclosingMethod;") || (t.getEnclosingMethod() == null)) {
       return null;
     }
 
@@ -999,8 +996,8 @@ public class DexPrinter {
         // InnerClass annotation
         List<AnnotationElement> elements = new ArrayList<AnnotationElement>();
 
-        ImmutableAnnotationElement flagsElement =
-            new ImmutableAnnotationElement("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
+        ImmutableAnnotationElement flagsElement
+            = new ImmutableAnnotationElement("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
         elements.add(flagsElement);
 
         ImmutableEncodedValue nameValue;

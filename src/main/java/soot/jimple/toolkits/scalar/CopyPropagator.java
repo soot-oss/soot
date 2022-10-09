@@ -155,10 +155,7 @@ public class CopyPropagator extends BodyTransformer {
             // We force propagating nulls. If a target can only be
             // null due to typing, we always inline that constant.
             if (!allLocals && !(l.getType() instanceof NullType)) {
-              if (onlyRegularLocals && l.isStackLocal()) {
-                continue;
-              }
-              if (onlyStackLocals && !l.isStackLocal()) {
+              if ((onlyRegularLocals && l.isStackLocal()) || (onlyStackLocals && !l.isStackLocal())) {
                 continue;
               }
             }

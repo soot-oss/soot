@@ -108,20 +108,14 @@ public class ThrowManager {
         }
 
         InvokeExpr ie = ((InvokeStmt) prosInvoke).getInvokeExpr();
-        if (!(ie instanceof SpecialInvokeExpr)) {
-          continue;
-        }
-
-        if (((SpecialInvokeExpr) ie).getBase() != throwee || !"<init>".equals(ie.getMethodRef().name())) {
+        if (!(ie instanceof SpecialInvokeExpr) || ((SpecialInvokeExpr) ie).getBase() != throwee
+            || !"<init>".equals(ie.getMethodRef().name())) {
           continue;
         }
 
         Value ro = ((AssignStmt) prosNew).getRightOp();
-        if (((AssignStmt) prosNew).getLeftOp() != throwee || !(ro instanceof NewExpr)) {
-          continue;
-        }
-
-        if (!((NewExpr) ro).getBaseType().equals(RefType.v("java.lang.NullPointerException"))) {
+        if (((AssignStmt) prosNew).getLeftOp() != throwee || !(ro instanceof NewExpr)
+            || !((NewExpr) ro).getBaseType().equals(RefType.v("java.lang.NullPointerException"))) {
           continue;
         }
 

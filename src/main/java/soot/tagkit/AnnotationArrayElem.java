@@ -33,6 +33,10 @@ public class AnnotationArrayElem extends AnnotationElem {
 
   private final ArrayList<AnnotationElem> values;
 
+  public AnnotationArrayElem(ArrayList<AnnotationElem> types, String elemName) {
+    this(types, '[', elemName);
+  }
+
   public AnnotationArrayElem(ArrayList<AnnotationElem> t, char kind, String name) {
     super(kind, name);
     this.values = t;
@@ -77,10 +81,7 @@ public class AnnotationArrayElem extends AnnotationElem {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (this.getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (this.getClass() != obj.getClass())) {
       return false;
     }
     AnnotationArrayElem other = (AnnotationArrayElem) obj;

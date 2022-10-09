@@ -37,7 +37,6 @@ import polyglot.ast.FieldDecl;
 import polyglot.ast.Node;
 import polyglot.types.Type;
 import polyglot.util.IdentityKey;
-
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -113,7 +112,7 @@ public class ClassResolver {
 
     // super class
     if (cDecl.superClass() == null) {
-      soot.SootClass superClass = soot.Scene.v().getSootClass("java.lang.Object");
+      soot.SootClass superClass = soot.Scene.v().getSootClass(Scene.v().getObjectType().toString());
       sootClass.setSuperclass(superClass);
     } else {
       sootClass.setSuperclass(((soot.RefType) Util.getSootType(cDecl.superClass().type())).getSootClass());
@@ -195,10 +194,7 @@ public class ClassResolver {
 
     for (Type type : typeListBuilder.getList()) {
 
-      if (type.isPrimitive()) {
-        continue;
-      }
-      if (!type.isClass()) {
+      if (type.isPrimitive() || !type.isClass()) {
         continue;
       }
       polyglot.types.ClassType classType = (polyglot.types.ClassType) type;
@@ -335,7 +331,8 @@ public class ClassResolver {
     // possibly eventually to send in the finals
 
     polyglot.types.ClassType superType = (polyglot.types.ClassType) nodeKeyType.superType();
-    while (!Util.getSootType(superType).equals(soot.Scene.v().getSootClass("java.lang.Object").getType())) {
+    while (!Util.getSootType(superType)
+        .equals(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType())) {
       if (InitialResolver.v().finalLocalInfo().containsKey(new polyglot.util.IdentityKey(superType))) {
         AnonLocalClassInfo lInfo = InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(superType));
         for (IdentityKey next : lInfo.finalLocalsAvail()) {
@@ -373,7 +370,7 @@ public class ClassResolver {
     // set superclass
     if (((polyglot.types.ClassType) aNew.objectType().type()).flags().isInterface()) {
       sootClass.addInterface(typeClass);
-      sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+      sootClass.setSuperclass(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()));
     } else {
       sootClass.setSuperclass(typeClass);
       if (((polyglot.types.ClassType) aNew.objectType().type()).isNested()) {
@@ -494,7 +491,7 @@ public class ClassResolver {
       soot.Scene.v().addClass(specialClass);
       specialClass.setApplicationClass();
       specialClass.addTag(new SyntheticTag());
-      specialClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+      specialClass.setSuperclass(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()));
       Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
       Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
       InitialResolver.v().addNameToAST(specialClassName);
@@ -527,8 +524,8 @@ public class ClassResolver {
     String fieldName = "$assertionsDisabled";
     soot.Type fieldType = soot.BooleanType.v();
     if (!sootClass.declaresField(fieldName, fieldType)) {
-      soot.SootField assertionsDisabledField =
-          Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL);
+      soot.SootField assertionsDisabledField
+          = Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL);
       sootClass.addField(assertionsDisabledField);
       assertionsDisabledField.addTag(new SyntheticTag());
     }
@@ -820,7 +817,8 @@ public class ClassResolver {
             tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getOuterClass().getName(),
             tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getSimpleName(),
             tag2.getInnerType() == InnerClassInfo.ANON && soot.Modifier.isInterface(tag2.getOuterClass().getModifiers())
-                ? soot.Modifier.STATIC | soot.Modifier.PUBLIC : outerClass.getModifiers());
+                ? soot.Modifier.STATIC | soot.Modifier.PUBLIC
+                : outerClass.getModifiers());
         outerClass = tag2.getOuterClass();
       }
     }

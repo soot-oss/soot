@@ -35,6 +35,7 @@ import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35mi;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rmi;
+
 import soot.dexpler.DexBody;
 
 public class ExecuteInlineInstruction extends MethodInvocationInstruction implements OdexInstruction {

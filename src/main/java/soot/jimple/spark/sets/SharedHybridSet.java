@@ -90,12 +90,8 @@ public class SharedHybridSet extends PointsToSetInternal {
     // elements
 
     // Check the bit vector
-    if (bitVector != null && bitVector.contains(n)) {
-      return true;
-    }
-
     // Check overflow
-    if (overflow.contains(n)) {
+    if ((bitVector != null && bitVector.contains(n)) || overflow.contains(n)) {
       return true;
     }
 

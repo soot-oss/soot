@@ -39,7 +39,6 @@ import polyglot.ast.LocalDecl;
 import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
-
 import soot.options.Options;
 
 /**

@@ -521,11 +521,7 @@ public class LambdaMetaFactory {
         return fromLocal;
       }
 
-      if (from instanceof ArrayType) {
-        return wideningReferenceConversion(fromLocal);
-      }
-
-      if (from instanceof RefType && to instanceof RefType) {
+      if ((from instanceof ArrayType) || (from instanceof RefType && to instanceof RefType)) {
         return wideningReferenceConversion(fromLocal);
       }
 
@@ -633,15 +629,9 @@ public class LambdaMetaFactory {
     private Local narrowingReferenceConversion(Local fromLocal, Type to, JimpleBody jb, PatchingChain<Unit> us,
         LocalGenerator lc) {
       Type fromTy = fromLocal.getType();
-      if (fromTy.equals(to)) {
-        return fromLocal;
-      }
-
-      if (!(fromTy instanceof RefType || fromTy instanceof ArrayType)) {
-        return fromLocal;
-      }
       // throw new IllegalArgumentException("Expected source to have reference type");
-      if (!(to instanceof RefType || to instanceof ArrayType)) {
+      if (fromTy.equals(to) || !(fromTy instanceof RefType || fromTy instanceof ArrayType)
+          || !(to instanceof RefType || to instanceof ArrayType)) {
         return fromLocal;
         // throw new IllegalArgumentException("Expected target to have reference type");
       }

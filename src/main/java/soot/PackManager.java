@@ -659,8 +659,8 @@ public class PackManager {
     if (threadNum < 1) {
       threadNum = Runtime.getRuntime().availableProcessors();
     }
-    CountingThreadPoolExecutor executor =
-        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    CountingThreadPoolExecutor executor
+        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -696,9 +696,10 @@ public class PackManager {
     // concurrently. Otherwise, we need to synchronize for not destroying
     // the shared output stream.
     int threadNum = Options.v().output_format() == Options.output_format_class && jarFile == null
-        ? Runtime.getRuntime().availableProcessors() : 1;
-    CountingThreadPoolExecutor executor =
-        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        ? Runtime.getRuntime().availableProcessors()
+        : 1;
+    CountingThreadPoolExecutor executor
+        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     while (classes.hasNext()) {
       final SootClass c = classes.next();
@@ -747,8 +748,8 @@ public class PackManager {
 
   /* post process for DAVA */
   private void postProcessDAVA() {
-    final boolean transformations =
-        PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.transformations"), "enabled");
+    final boolean transformations
+        = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.transformations"), "enabled");
 
     /*
      * apply analyses etc
@@ -1019,7 +1020,7 @@ public class PackManager {
     if (produceDava) {
       for (SootMethod m : c.getMethods()) {
         if (!m.isConcrete() || !m.hasActiveBody()) {
-          //note: abnormal class can have a concrete method without body.
+          // note: abnormal class can have a concrete method without body.
           continue;
         }
         // all the work done in decompilation is done in DavaBody which
@@ -1197,10 +1198,7 @@ public class PackManager {
   }
 
   private void postProcessXML(Iterator<SootClass> classes) {
-    if (!Options.v().xml_attributes()) {
-      return;
-    }
-    if (Options.v().output_format() != Options.output_format_jimple) {
+    if (!Options.v().xml_attributes() || (Options.v().output_format() != Options.output_format_jimple)) {
       return;
     }
     while (classes.hasNext()) {
@@ -1239,8 +1237,8 @@ public class PackManager {
   private void retrieveAllBodies() {
     // The old coffi front-end is not thread-safe
     int threadNum = Options.v().coffi() ? 1 : Runtime.getRuntime().availableProcessors();
-    CountingThreadPoolExecutor executor =
-        new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    CountingThreadPoolExecutor executor
+        = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     for (Iterator<SootClass> clIt = reachableClasses(); clIt.hasNext();) {
       SootClass cl = clIt.next();

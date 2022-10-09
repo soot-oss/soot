@@ -146,12 +146,9 @@ public class Aggregator extends BodyTransformer {
         usepairValueBox = usepair.valueBox;
       }
 
-      if (localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1) {
-        continue;
-      }
-
       // Check to make sure aggregation pair in the same zone
-      if (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox)) {
+      if ((localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1)
+          || (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox))) {
         continue;
       }
 

@@ -73,7 +73,7 @@ public final class TypeManager {
   public TypeManager(PAG pag) {
     this.pag = pag;
 
-    this.rtObject = RefType.v("java.lang.Object");
+    this.rtObject = Scene.v().getObjectType();
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
   }
@@ -96,8 +96,7 @@ public final class TypeManager {
         } else {
           rt.setSootClass(c);
         }
-      }
-      else {
+      } else {
         return true;
       }
     }
@@ -119,13 +118,7 @@ public final class TypeManager {
         types = Scene.v().getOrMakeFastHierarchy().canStoreTypeList(nt);
       }
       for (final Type t : types) {
-        if (!(t instanceof RefLikeType)) {
-          continue;
-        }
-        if (t instanceof AnySubType) {
-          continue;
-        }
-        if (isUnresolved(t)) {
+        if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
           continue;
         }
 
@@ -178,7 +171,7 @@ public final class TypeManager {
 
     // **
     initClass2allocs();
-    makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
+    makeClassTypeMask(Scene.v().getSootClass(Scene.v().getObjectType().getClassName()));
     BitVector visitedTypes = new BitVector();
     {
       Iterator<Type> it = typeMask.keyIterator();
@@ -190,13 +183,7 @@ public final class TypeManager {
     // **
     ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
     for (Type t : Scene.v().getTypeNumberer()) {
-      if (!(t instanceof RefLikeType)) {
-        continue;
-      }
-      if (t instanceof AnySubType) {
-        continue;
-      }
-      if (isUnresolved(t)) {
+      if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
         continue;
       }
       // **

@@ -506,25 +506,25 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         returnType = RefType.v("java.lang.Class");
         break;
       case ClassNewInstance:
-        returnType = RefType.v("java.lang.Object");
+        returnType = Scene.v().getObjectType();
         break;
       case ConstructorNewInstance:
-        returnType = RefType.v("java.lang.Object");
+        returnType = Scene.v().getObjectType();
         parameterTypes.add(ArrayType.v(returnType, 1));
         break;
       case MethodInvoke:
-        returnType = RefType.v("java.lang.Object");
+        returnType = Scene.v().getObjectType();
         parameterTypes.add(returnType);
         parameterTypes.add(ArrayType.v(returnType, 1));
         break;
       case FieldSet:
         returnType = VoidType.v();
-        parameterTypes.add(RefType.v("java.lang.Object"));
+        parameterTypes.add(Scene.v().getObjectType());
         parameterTypes.add(fieldSetGetType);
         break;
       case FieldGet:
         returnType = fieldSetGetType;
-        parameterTypes.add(RefType.v("java.lang.Object"));
+        parameterTypes.add(Scene.v().getObjectType());
         break;
       default:
         throw new IllegalStateException();
@@ -567,7 +567,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         paramLocals = new Local[constructor.getParameterCount()];
         if (constructor.getParameterCount() > 0) {
           // argArrayLocal = @parameter-0
-          ArrayType arrayType = ArrayType.v(RefType.v("java.lang.Object"), 1);
+          ArrayType arrayType = ArrayType.v(Scene.v().getObjectType(), 1);
           Local argArrayLocal = localGen.generateLocal(arrayType);
           newUnits.add(jimp.newIdentityStmt(argArrayLocal, jimp.newParameterRef(arrayType, 0)));
           int i = 0;
@@ -589,13 +589,13 @@ public class ReflectiveCallsInliner extends SceneTransformer {
          */
         SootMethod method = scene.getMethod(target);
         // recvObject = @parameter-0
-        RefType objectType = RefType.v("java.lang.Object");
+        RefType objectType = Scene.v().getObjectType();
         Local recvObject = localGen.generateLocal(objectType);
         newUnits.add(jimp.newIdentityStmt(recvObject, jimp.newParameterRef(objectType, 0)));
         paramLocals = new Local[method.getParameterCount()];
         if (method.getParameterCount() > 0) {
           // argArrayLocal = @parameter-1
-          ArrayType arrayType = ArrayType.v(RefType.v("java.lang.Object"), 1);
+          ArrayType arrayType = ArrayType.v(Scene.v().getObjectType(), 1);
           Local argArrayLocal = localGen.generateLocal(arrayType);
           newUnits.add(jimp.newIdentityStmt(argArrayLocal, jimp.newParameterRef(arrayType, 1)));
           int i = 0;
@@ -615,7 +615,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
         /*
          * replace f.set(o,v) by: Object obj = @parameter-0; T freshLocal = (T)obj;
          */
-        RefType objectType = RefType.v("java.lang.Object");
+        RefType objectType = Scene.v().getObjectType();
         Local recvObject = localGen.generateLocal(objectType);
         newUnits.add(jimp.newIdentityStmt(recvObject, jimp.newParameterRef(objectType, 0)));
 
@@ -777,14 +777,14 @@ public class ReflectiveCallsInliner extends SceneTransformer {
     if (paramType instanceof PrimType) {
       // Unbox the value if needed
       RefType boxedType = ((PrimType) paramType).boxedType();
-      Local boxedLocal = localGen.generateLocal(RefType.v("java.lang.Object"));
+      Local boxedLocal = localGen.generateLocal(Scene.v().getObjectType());
       newUnits.add(jimp.newAssignStmt(boxedLocal, jimp.newArrayRef(argsArrayLocal, IntConstant.v(paramIndex))));
       Local castedLocal = localGen.generateLocal(boxedType);
       newUnits.add(jimp.newAssignStmt(castedLocal, jimp.newCastExpr(boxedLocal, boxedType)));
       newUnits.add(jimp.newAssignStmt(paramLocals[paramIndex], jimp.newVirtualInvokeExpr(castedLocal, Scene.v()
           .makeMethodRef(boxedType.getSootClass(), paramType + "Value", Collections.emptyList(), paramType, false))));
     } else {
-      Local boxedLocal = localGen.generateLocal(RefType.v("java.lang.Object"));
+      Local boxedLocal = localGen.generateLocal(Scene.v().getObjectType());
       newUnits.add(jimp.newAssignStmt(boxedLocal, jimp.newArrayRef(argsArrayLocal, IntConstant.v(paramIndex))));
       Local castedLocal = localGen.generateLocal(paramType);
       newUnits.add(jimp.newAssignStmt(castedLocal, jimp.newCastExpr(boxedLocal, paramType)));

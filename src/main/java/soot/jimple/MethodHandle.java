@@ -30,6 +30,8 @@ import soot.RefType;
 import soot.SootFieldRef;
 import soot.SootMethodRef;
 import soot.Type;
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 public class MethodHandle extends Constant {
@@ -37,15 +39,12 @@ public class MethodHandle extends Constant {
   private static final long serialVersionUID = -7948291265532721191L;
 
   public static enum Kind {
-    REF_GET_FIELD(Opcodes.H_GETFIELD, "REF_GET_FIELD"),
-    REF_GET_FIELD_STATIC(Opcodes.H_GETSTATIC, "REF_GET_FIELD_STATIC"),
-    REF_PUT_FIELD(Opcodes.H_PUTFIELD, "REF_PUT_FIELD"),
-    REF_PUT_FIELD_STATIC(Opcodes.H_PUTSTATIC, "REF_PUT_FIELD_STATIC"),
-    REF_INVOKE_VIRTUAL(Opcodes.H_INVOKEVIRTUAL, "REF_INVOKE_VIRTUAL"),
-    REF_INVOKE_STATIC(Opcodes.H_INVOKESTATIC, "REF_INVOKE_STATIC"),
-    REF_INVOKE_SPECIAL(Opcodes.H_INVOKESPECIAL, "REF_INVOKE_SPECIAL"),
-    REF_INVOKE_CONSTRUCTOR(Opcodes.H_NEWINVOKESPECIAL, "REF_INVOKE_CONSTRUCTOR"),
-    REF_INVOKE_INTERFACE(Opcodes.H_INVOKEINTERFACE, "REF_INVOKE_INTERFACE");
+    REF_GET_FIELD(Opcodes.H_GETFIELD, "REF_GET_FIELD"), REF_GET_FIELD_STATIC(Opcodes.H_GETSTATIC,
+        "REF_GET_FIELD_STATIC"), REF_PUT_FIELD(Opcodes.H_PUTFIELD, "REF_PUT_FIELD"), REF_PUT_FIELD_STATIC(
+            Opcodes.H_PUTSTATIC, "REF_PUT_FIELD_STATIC"), REF_INVOKE_VIRTUAL(Opcodes.H_INVOKEVIRTUAL,
+                "REF_INVOKE_VIRTUAL"), REF_INVOKE_STATIC(Opcodes.H_INVOKESTATIC, "REF_INVOKE_STATIC"), REF_INVOKE_SPECIAL(
+                    Opcodes.H_INVOKESPECIAL, "REF_INVOKE_SPECIAL"), REF_INVOKE_CONSTRUCTOR(Opcodes.H_NEWINVOKESPECIAL,
+                        "REF_INVOKE_CONSTRUCTOR"), REF_INVOKE_INTERFACE(Opcodes.H_INVOKEINTERFACE, "REF_INVOKE_INTERFACE");
 
     private final int val;
     private final String valStr;
@@ -115,6 +114,10 @@ public class MethodHandle extends Constant {
 
   @Override
   public Type getType() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return isMethodRef() ? RefType.v(DotnetBasicTypes.SYSTEM_RUNTIMEMETHODHANDLE)
+          : RefType.v(DotnetBasicTypes.SYSTEM_RUNTIMEFIELDHANDLE);
+    }
     return RefType.v("java.lang.invoke.MethodHandle");
   }
 

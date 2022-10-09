@@ -185,8 +185,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 
   private Map<Block, Collection<ExceptionDest>> buildExceptionDests(ExceptionalUnitGraph unitGraph,
       Map<Unit, Block> unitToBlock) {
-    Map<Block, Collection<ExceptionDest>> result =
-        new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
+    Map<Block, Collection<ExceptionDest>> result
+        = new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
     for (Block block : mBlocks) {
       result.put(block, collectDests(block, unitGraph, unitToBlock));
     }

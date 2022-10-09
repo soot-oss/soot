@@ -189,12 +189,8 @@ public class SootModuleInfo extends SootClass {
     }
 
     // all packages are exported/open to self
-    if (this.getModuleName().equals(toModule)) {
-      return this.modulePackages.contains(packaze);
-    }
-
     // all packages in open and automatic modules are open
-    if (this.isAutomaticModule()) {
+    if (this.getModuleName().equals(toModule) || this.isAutomaticModule()) {
       return this.modulePackages.contains(packaze);
     }
 
@@ -215,12 +211,8 @@ public class SootModuleInfo extends SootClass {
     }
 
     /// all packages are exported/open to self
-    if (this.getModuleName().equals(toModule)) {
-      return this.modulePackages.contains(packaze);
-    }
-
     // a automatic module exports all its packages
-    if (this.isAutomaticModule()) {
+    if (this.getModuleName().equals(toModule) || this.isAutomaticModule()) {
       return this.modulePackages.contains(packaze);
     }
 

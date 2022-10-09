@@ -38,8 +38,8 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
  */
 public final class SharedCloseable<T extends Closeable> implements AutoCloseable {
 
-  private static final AtomicLongFieldUpdater<SharedCloseable> NUM_REFS_UPDATER =
-      AtomicLongFieldUpdater.newUpdater(SharedCloseable.class, "numRefs");
+  private static final AtomicLongFieldUpdater<SharedCloseable> NUM_REFS_UPDATER
+      = AtomicLongFieldUpdater.newUpdater(SharedCloseable.class, "numRefs");
 
   // NOTE: only accessed via the AtomicLongFieldUpdater
   private volatile long numRefs = 1;

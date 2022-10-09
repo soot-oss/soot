@@ -82,13 +82,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
   }
 
   private static enum BranchType {
-    TOTAL_COUNT,
-    GOTO_GOTO,
-    IF_TO_GOTO,
-    GOTO_IF,
-    IF_TO_IF,
-    IF_SAME_TARGET,
-    GOTO_SUCCESSOR;
+    TOTAL_COUNT, GOTO_GOTO, IF_TO_GOTO, GOTO_IF, IF_TO_IF, IF_SAME_TARGET, GOTO_SUCCESSOR;
   } // BranchType
 
   private static class HandleRes {

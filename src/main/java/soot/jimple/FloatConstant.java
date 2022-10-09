@@ -38,7 +38,7 @@ public class FloatConstant extends RealConstant {
 
   public final float value;
 
-  private FloatConstant(float value) {
+  protected FloatConstant(float value) {
     this.value = value;
   }
 

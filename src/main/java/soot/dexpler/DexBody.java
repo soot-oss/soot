@@ -30,6 +30,7 @@ package soot.dexpler;
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
 import com.google.common.collect.ArrayListMultimap;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -628,12 +629,12 @@ public class DexBody {
         dangling.finalize(this, instruction);
         dangling = null;
       }
-      instruction.jimplify(this);
       if (instruction.getLineNumber() > 0) {
         prevLineNumber = instruction.getLineNumber();
       } else {
         instruction.setLineNumber(prevLineNumber);
       }
+      instruction.jimplify(this);
     }
     if (dangling != null) {
       dangling.finalize(this, null);
@@ -785,10 +786,7 @@ public class DexBody {
             if (op1 instanceof Constant && op2 instanceof Local) {
               Local l = (Local) op2;
               Type ltype = l.getType();
-              if (ltype instanceof PrimType) {
-                continue;
-              }
-              if (!(op1 instanceof IntConstant)) {
+              if ((ltype instanceof PrimType) || !(op1 instanceof IntConstant)) {
                 // null is
                 // IntConstant(0)
                 // in Dalvik
@@ -803,10 +801,7 @@ public class DexBody {
             } else if (op1 instanceof Local && op2 instanceof Constant) {
               Local l = (Local) op1;
               Type ltype = l.getType();
-              if (ltype instanceof PrimType) {
-                continue;
-              }
-              if (!(op2 instanceof IntConstant)) {
+              if ((ltype instanceof PrimType) || !(op2 instanceof IntConstant)) {
                 // null is
                 // IntConstant(0)
                 // in Dalvik

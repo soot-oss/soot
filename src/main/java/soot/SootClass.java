@@ -127,6 +127,9 @@ public class SootClass extends AbstractHost implements Numberable {
   }
 
   public SootClass(String name, int modifiers, String moduleName) {
+    if (name.length() == 0) {
+      throw new RuntimeException("Class must not be empty!");
+    }
     if (name.length() > 0 && name.charAt(0) == '[') {
       throw new RuntimeException("Attempt to make a class whose name starts with [");
     }
@@ -182,10 +185,7 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void checkLevel(int level) {
     // Fast check: e.g. FastHierarchy.canStoreClass calls this method quite often
-    if (resolvingLevel() >= level) {
-      return;
-    }
-    if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
+    if ((resolvingLevel() >= level) || !Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
       return;
     }
     checkLevelIgnoreResolving(level);
