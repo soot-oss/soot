@@ -53,7 +53,7 @@ public class AsmJava9ClassProvider implements ClassProvider {
     try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
       for (Path entry : stream) {
         // check each module folder for the class
-        file = ModulePathSourceLocator.v().lookUpInVirtualFileSystem(entry.toUri().toString(), clsFile);
+        file = ModulePathSourceLocator.v().lookUpInVirtualFileSystem(entry, clsFile);
         if (file != null) {
           break;
         }
