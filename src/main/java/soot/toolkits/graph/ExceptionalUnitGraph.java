@@ -437,9 +437,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
             if (thrower == entryPoint) {
               trapsThatAreHeads.add(catcher);
             }
-            for (Unit pred : throwersPreds) {
-              addEdge(unitToSuccs, unitToPreds, pred, catcher);
-            }
+//            for (Unit pred : throwersPreds) {
+//              addEdge(unitToSuccs, unitToPreds, pred, catcher);
+//            }
           }
           if (alwaysAddSelfEdges || (selfThrowables != null && selfThrowables.catchableAs(trapsType))) {
             addEdge(unitToSuccs, unitToPreds, thrower, catcher);
