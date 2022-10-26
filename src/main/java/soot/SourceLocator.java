@@ -189,6 +189,7 @@ public class SourceLocator {
     for (String originalDir : classPath.split(regex)) {
       if (!originalDir.isEmpty()) {
         try {
+          originalDir = originalDir.replaceAll("\\\\" + Pattern.quote(File.pathSeparator), File.pathSeparator);
           String canonicalDir = new File(originalDir).getCanonicalPath();
           if (ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS.equals(originalDir)) {
             SourceLocator.v().java9Mode = true;
