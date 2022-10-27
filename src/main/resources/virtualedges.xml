@@ -124,6 +124,7 @@
             <direct subsignature="void onPreExecute()" target-position="base"/>
             <direct subsignature="void onProgressUpdate(java.lang.Object[])" target-position="base"/>
             <direct subsignature="void onPostExecute(java.lang.Object)" target-position="base"/>
+            <direct subsignature="void onCancelled(java.lang.Object)" target-position="base"/>
         </targets>
     </edge>
 	<!-- doPrivileged -->
