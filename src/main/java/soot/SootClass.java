@@ -266,9 +266,9 @@ public class SootClass extends AbstractHost implements Numberable {
     if (fields == null) {
       fields = new HashChain<>();
     }
-    fields.add(f);
     f.setDeclared(true);
     f.setDeclaringClass(this);
+    fields.add(f);
   }
 
   /**
@@ -726,9 +726,9 @@ public class SootClass extends AbstractHost implements Numberable {
       this.fields = new HashChain<>();
     }
 
-    this.fields.add(f);
     f.setDeclared(true);
     f.setDeclaringClass(this);
+    this.fields.add(f);
     return f;
   }
 
