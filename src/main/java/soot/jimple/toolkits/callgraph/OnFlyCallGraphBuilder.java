@@ -792,7 +792,7 @@ public class OnFlyCallGraphBuilder {
     sites.add(new VirtualCallSite(s, m, iie, subSig, kind));
   }
 
-  private void processNewMethod(SootMethod m) {
+  protected void processNewMethod(SootMethod m) {
     if (m.isConcrete()) {
       Body b = m.retrieveActiveBody();
       getImplicitTargets(m);
@@ -800,7 +800,7 @@ public class OnFlyCallGraphBuilder {
     }
   }
 
-  private void findReceivers(SootMethod m, Body b) {
+  protected void findReceivers(SootMethod m, Body b) {
     for (final Unit u : b.getUnits()) {
       final Stmt s = (Stmt) u;
       if (s.containsInvokeExpr()) {
