@@ -220,7 +220,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
 
     // if we compare a local with null then process further...
-    if (val != null && val instanceof Local) {
+    if (val instanceof Local) {
       if (eqExpr instanceof JEqExpr) {
         // a==null
         handleEquality(val, out, outBranch);
