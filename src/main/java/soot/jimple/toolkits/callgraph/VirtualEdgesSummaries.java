@@ -444,6 +444,10 @@ public class VirtualEdgesSummaries {
     public String toString() {
       return (declaringType != null ? declaringType + "." : "") + subSignature.toString();
     }
+    
+    public RefType getDeclaringType() {
+      return declaringType;
+    }
 
     public MethodSubSignature getSubSignature() {
       return subSignature;
