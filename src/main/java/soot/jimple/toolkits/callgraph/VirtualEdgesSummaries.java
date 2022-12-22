@@ -22,8 +22,6 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import com.google.common.collect.Iterables;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,9 +50,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.common.collect.Iterables;
+
 import soot.Kind;
 import soot.MethodSubSignature;
 import soot.ModuleUtil;
+import soot.RefType;
 import soot.Scene;
 import soot.jimple.Stmt;
 import soot.util.StringNumberer;
@@ -281,7 +282,12 @@ public class VirtualEdgesSummaries {
   private static VirtualEdgeSource parseEdgeSource(Element source) {
     switch (source.getAttribute("invoketype")) {
       case "instance":
-        return new InstanceinvokeSource(source.getAttribute("subsignature"));
+        String declClass = source.getAttribute("declaringClass");
+        RefType dClass = null;
+        if (declClass != null && !declClass.isEmpty()) {
+          dClass = RefType.v(declClass);
+        }
+        return new InstanceinvokeSource(dClass, source.getAttribute("subsignature"));
       case "static":
         return new StaticinvokeSource(source.getAttribute("signature"));
       default:
@@ -407,15 +413,20 @@ public class VirtualEdgesSummaries {
      */
     MethodSubSignature subSignature;
 
+    RefType declaringType;
+
     /**
      * Creates a new instance of the {@link InstanceinvokeSource} class based on a method that is being invoked on the
      * current object instance
      * 
+     * @param declaringType
+     *          A type where the method with the subsignature is declared.
      * @param subSignature
      *          The subsignature of the method that is invoked
      */
-    public InstanceinvokeSource(String subSignature) {
+    public InstanceinvokeSource(RefType declaringType, String subSignature) {
       this.subSignature = new MethodSubSignature(Scene.v().getSubSigNumberer().findOrAdd(subSignature));
+      this.declaringType = declaringType;
     }
 
     /**
@@ -425,12 +436,13 @@ public class VirtualEdgesSummaries {
      *          The statement at the call site
      */
     public InstanceinvokeSource(Stmt invokeStmt) {
-      this(invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
+      this(invokeStmt.getInvokeExpr().getMethodRef().getDeclaringClass().getType(),
+          invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
     }
 
     @Override
     public String toString() {
-      return subSignature.toString();
+      return (declaringType != null ? declaringType + "." : "") + subSignature.toString();
     }
 
     public MethodSubSignature getSubSignature() {
@@ -441,28 +453,33 @@ public class VirtualEdgesSummaries {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
+      result = prime * result + ((declaringType == null) ? 0 : declaringType.hashCode());
       result = prime * result + ((subSignature == null) ? 0 : subSignature.hashCode());
       return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj) {
+      if (this == obj)
         return true;
-      }
-      if ((obj == null) || (getClass() != obj.getClass())) {
+      if (obj == null)
         return false;
-      }
+      if (getClass() != obj.getClass())
+        return false;
       InstanceinvokeSource other = (InstanceinvokeSource) obj;
-      if (subSignature == null) {
-        if (other.subSignature != null) {
+      if (declaringType == null) {
+        if (other.declaringType != null)
           return false;
-        }
-      } else if (!subSignature.equals(other.subSignature)) {
+      } else if (!declaringType.equals(other.declaringType))
         return false;
-      }
+      if (subSignature == null) {
+        if (other.subSignature != null)
+          return false;
+      } else if (!subSignature.equals(other.subSignature))
+        return false;
       return true;
     }
+
   }
 
   public static abstract class VirtualEdgeTarget {
@@ -733,7 +750,7 @@ public class VirtualEdgesSummaries {
       for (VirtualEdgeTarget t : targets) {
         sb.append(t.toString()).append(' ');
       }
-      return String.format("%s %s => %s", edgeType, source.toString(), sb.toString());
+      return String.format("%s %s => %s\n", edgeType, source.toString(), sb.toString());
     }
 
     @Override
