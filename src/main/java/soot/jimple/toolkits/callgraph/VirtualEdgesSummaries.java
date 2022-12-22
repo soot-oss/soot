@@ -22,8 +22,6 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import com.google.common.collect.Iterables;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,6 +48,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import com.google.common.collect.Iterables;
 import org.xml.sax.SAXException;
 
 import soot.Kind;
@@ -444,7 +443,7 @@ public class VirtualEdgesSummaries {
     public String toString() {
       return (declaringType != null ? declaringType + "." : "") + subSignature.toString();
     }
-    
+
     public RefType getDeclaringType() {
       return declaringType;
     }
@@ -464,23 +463,30 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       InstanceinvokeSource other = (InstanceinvokeSource) obj;
       if (declaringType == null) {
-        if (other.declaringType != null)
+        if (other.declaringType != null) {
           return false;
-      } else if (!declaringType.equals(other.declaringType))
+        }
+      } else if (!declaringType.equals(other.declaringType)) {
         return false;
+      }
       if (subSignature == null) {
-        if (other.subSignature != null)
+        if (other.subSignature != null) {
           return false;
-      } else if (!subSignature.equals(other.subSignature))
+        }
+      } else if (!subSignature.equals(other.subSignature)) {
         return false;
+      }
       return true;
     }
 
