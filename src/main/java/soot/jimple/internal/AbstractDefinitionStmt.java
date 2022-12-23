@@ -67,7 +67,7 @@ public abstract class AbstractDefinitionStmt extends AbstractStmt implements Def
   }
 
   @Override
-  public final List<ValueBox> getUseBoxes() {
+  public List<ValueBox> getUseBoxes() {
     List<ValueBox> list = new ArrayList<ValueBox>();
     list.addAll(getLeftOp().getUseBoxes());
     list.add(rightBox);
