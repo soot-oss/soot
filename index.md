@@ -6,6 +6,9 @@
 
 Originally, Soot started off as a Java optimization framework. By now, researchers and practitioners from around the world use Soot to analyze, instrument, optimize and visualize Java and Android applications.
 
+# IMPORTANT: Soot is now succeeded by SootUp!
+**In December 2022, we have officially released [SootUp](https://soot-oss.github.io/SootUp/announce/), a version of Soot with a completely overhauled, more modular, testable, maintainable and usable architecture. Please check this out in case you wish to start a new program-analysis project.**
+
 # What input formats does Soot provide?
 
 Currently, Soot can process code from the following sources:
