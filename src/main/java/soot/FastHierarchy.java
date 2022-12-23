@@ -653,7 +653,9 @@ public class FastHierarchy {
       public boolean addAll(Collection<? extends SootClass> c) {
         boolean b = false;
         for (SootClass e : c) {
-          b = b || add(e);
+          if (add(e)) {
+            b = true;
+          }
         }
         return b;
       }
