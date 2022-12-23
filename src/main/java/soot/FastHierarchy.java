@@ -648,14 +648,29 @@ public class FastHierarchy {
     HashSet<SootClass> resolved = new HashSet<>();
     HashSet<SootMethod> ret = new HashSet<>();
 
-    ArrayDeque<SootClass> worklist = new ArrayDeque<>();
+    ArrayDeque<SootClass> worklist = new ArrayDeque<SootClass>() {
+      @Override
+      public boolean addAll(Collection<? extends SootClass> c) {
+        boolean b = false;
+        for (SootClass e : c) {
+          b = b || add(e);
+        }
+        return b;
+      }
+
+      @Override
+      public boolean add(SootClass e) {
+        if (resolved.contains(e) && classToSubclasses.get(e).isEmpty()) {
+          return false;
+        }
+        return super.add(e);
+      }
+    };
     worklist.add(baseType);
     while (true) {
       SootClass concreteType = worklist.poll();
       if (concreteType == null) {
         break;
-      } else if (resolved.contains(concreteType) && classToSubclasses.get(concreteType).isEmpty()) {
-        continue;
       }
 
       if (concreteType.isInterface()) {
