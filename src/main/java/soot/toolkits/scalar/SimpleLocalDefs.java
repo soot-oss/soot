@@ -148,7 +148,7 @@ public class SimpleLocalDefs implements LocalDefs {
 
       for (int j = 0, i = 0; i < N; this.localRange[++i] = j) {
         List<Unit> currUnitList = unitList[i];
-        if (currUnitList.isEmpty()) {
+        if (currUnitList == null || currUnitList.isEmpty()) {
           continue;
         }
 
