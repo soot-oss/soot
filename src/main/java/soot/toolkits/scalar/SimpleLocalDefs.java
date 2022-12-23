@@ -365,7 +365,7 @@ public class SimpleLocalDefs implements LocalDefs {
     return oldNumbers;
   }
 
-  private LocalDefs init(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
+  protected LocalDefs init(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
     @SuppressWarnings("unchecked")
     List<Unit>[] unitList = new List[locals.length];
     Arrays.fill(unitList, Collections.emptyList());
