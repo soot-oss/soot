@@ -892,10 +892,9 @@ public class FastHierarchy {
         while (!worklist.isEmpty()) {
           SootClass iFace = worklist.poll();
 
-          if (interfaceIgnoreList.contains(iFace)) {
+          if (!interfaceIgnoreList.add(iFace)) {
             continue;
           }
-          interfaceIgnoreList.add(iFace);
 
           SootMethod method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
           if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
@@ -963,16 +962,14 @@ public class FastHierarchy {
       throw new RuntimeException("The concreteType cannot not be null!");
     }
     SootMethod candidate = null;
-    for (SootMethod method : concreteType.getMethods()) {
-      if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
-          && canStoreType(method.getReturnType(), returnType)) {
+    for (SootMethod method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
+      if (method.getParameterTypes().equals(parameterTypes) && canStoreType(method.getReturnType(), returnType)) {
         candidate = method;
         returnType = method.getReturnType();
       }
       // if dotnet structs or generics
       if (Options.v().src_prec() == Options.src_prec_dotnet) {
-        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size()
-            && canStoreType(returnType, method.getReturnType())) {
+        if (method.getParameterCount() == parameterTypes.size() && canStoreType(returnType, method.getReturnType())) {
           boolean canStore = true;
           for (int i = 0; i < method.getParameterCount(); i++) {
             Type methodParameter = method.getParameterType(i);
