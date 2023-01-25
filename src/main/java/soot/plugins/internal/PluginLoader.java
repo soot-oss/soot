@@ -25,12 +25,11 @@ package soot.plugins.internal;
 import java.io.File;
 import java.security.InvalidParameterException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import soot.PackManager;
 import soot.Transform;
 import soot.plugins.SootPhasePlugin;
