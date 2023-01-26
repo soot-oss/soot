@@ -23,42 +23,37 @@ package soot.options;
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-
-import java.util.*;
+import java.util.Map;
 
 /** Option parser for Copy Propagator. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class CPOptions {
 
-    private Map<String, String> options;
+  private Map<String, String> options;
 
-    public CPOptions(Map<String, String> options) {
-        this.options = options;
-    }
+  public CPOptions(Map<String, String> options) {
+    this.options = options;
+  }
 
-    /**
-     * Enabled
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean(options, "enabled");
-    }
+  /**
+   * Enabled
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
 
-    /**
-     * Only Regular Locals
-     * Only propagate copies through ``regular'' locals, that is, those 
-     * declared in the source bytecode.
-     */
-    public boolean only_regular_locals() {
-        return soot.PhaseOptions.getBoolean(options, "only-regular-locals");
-    }
+  /**
+   * Only Regular Locals Only propagate copies through ``regular'' locals, that is, those declared in the source bytecode.
+   */
+  public boolean only_regular_locals() {
+    return soot.PhaseOptions.getBoolean(options, "only-regular-locals");
+  }
 
-    /**
-     * Only Stack Locals
-     * Only propagate copies through locals that represent stack 
-     * locations in the original bytecode.
-     */
-    public boolean only_stack_locals() {
-        return soot.PhaseOptions.getBoolean(options, "only-stack-locals");
-    }
+  /**
+   * Only Stack Locals Only propagate copies through locals that represent stack locations in the original bytecode.
+   */
+  public boolean only_stack_locals() {
+    return soot.PhaseOptions.getBoolean(options, "only-stack-locals");
+  }
 
 }

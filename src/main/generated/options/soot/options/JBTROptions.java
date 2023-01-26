@@ -23,64 +23,55 @@ package soot.options;
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-
-import java.util.*;
+import java.util.Map;
 
 /** Option parser for Type Assigner. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class JBTROptions {
 
-    private Map<String, String> options;
+  private Map<String, String> options;
 
-    public JBTROptions(Map<String, String> options) {
-        this.options = options;
-    }
+  public JBTROptions(Map<String, String> options) {
+    this.options = options;
+  }
 
-    /**
-     * Enabled
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean(options, "enabled");
-    }
+  /**
+   * Enabled
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
 
-    /**
-     * Use older type assigner --
-     * Enables the older type assigner.
-     *
-     * This enables the older type assigner that was in use until May 
-     * 2008. The current type assigner is a reimplementation by Ben 
-     * Bellamy that uses an entirely new and faster algorithm which 
-     * always assigns the most narrow type possible. If 
-     * compare-type-assigners is on, this option causes the older type 
-     * assigner to execute first. (Otherwise the newer one is executed 
-     * first.)
-     */
-    public boolean use_older_type_assigner() {
-        return soot.PhaseOptions.getBoolean(options, "use-older-type-assigner");
-    }
+  /**
+   * Use older type assigner -- Enables the older type assigner.
+   *
+   * This enables the older type assigner that was in use until May 2008. The current type assigner is a reimplementation by
+   * Ben Bellamy that uses an entirely new and faster algorithm which always assigns the most narrow type possible. If
+   * compare-type-assigners is on, this option causes the older type assigner to execute first. (Otherwise the newer one is
+   * executed first.)
+   */
+  public boolean use_older_type_assigner() {
+    return soot.PhaseOptions.getBoolean(options, "use-older-type-assigner");
+  }
 
-    /**
-     * Compare type assigners --
-     * Compares Ben Bellamy's and the older type assigner.
-     *
-     * Enables comparison (both runtime and results) of Ben Bellamy's 
-     * type assigner with the older type assigner that was in Soot.
-     */
-    public boolean compare_type_assigners() {
-        return soot.PhaseOptions.getBoolean(options, "compare-type-assigners");
-    }
+  /**
+   * Compare type assigners -- Compares Ben Bellamy's and the older type assigner.
+   *
+   * Enables comparison (both runtime and results) of Ben Bellamy's type assigner with the older type assigner that was in
+   * Soot.
+   */
+  public boolean compare_type_assigners() {
+    return soot.PhaseOptions.getBoolean(options, "compare-type-assigners");
+  }
 
-    /**
-     * Ignore Nullpointer Dereferences --
-     * Ignores virtual method calls on base objects that may only be 
-     * null.
-     *
-     * If this option is enabled, Soot wiil not check whether the base 
-     * object of a virtual method call can only be null. This will lead 
-     * to the null_type pseudo type being used in your Jimple code.
-     */
-    public boolean ignore_nullpointer_dereferences() {
-        return soot.PhaseOptions.getBoolean(options, "ignore-nullpointer-dereferences");
-    }
+  /**
+   * Ignore Nullpointer Dereferences -- Ignores virtual method calls on base objects that may only be null.
+   *
+   * If this option is enabled, Soot wiil not check whether the base object of a virtual method call can only be null. This
+   * will lead to the null_type pseudo type being used in your Jimple code.
+   */
+  public boolean ignore_nullpointer_dereferences() {
+    return soot.PhaseOptions.getBoolean(options, "ignore-nullpointer-dereferences");
+  }
 
 }
