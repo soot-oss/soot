@@ -118,6 +118,11 @@ public class RegisterAllocator {
 
   private Register currentLocalRegister;
 
+  // used for asParameter as cache
+  private SootMethod cachedParamMethod;
+  private int lastParamIdx;
+  private List<Local> cachedParamList;
+
   private Register asConstant(Constant c, ConstantVisitor constantV) {
     Register constantRegister = null;
 
@@ -220,19 +225,46 @@ public class RegisterAllocator {
       }
     }
     if (!found) {
-      for (int i = 0; i < sm.getParameterCount(); i++) {
-        if (sm.getActiveBody().getParameterLocal(i) == l) {
-          // For a non-static method, p0 is <this>.
-          if (!sm.isStatic()) {
-            paramRegNum++;
+      List<Local> pm;
+      if (cachedParamMethod == sm) {
+        pm = cachedParamList;
+        int cidx = lastParamIdx + 1;
+        // Check whether we are getting asked in the correct order
+        // (which is essentially always), so that we can be much faster.
+        if (cidx < pm.size()) {
+          Local pl = pm.get(cidx);
+          if (pl == l) {
+            Integer id = localToLastRegNum.get(pm.get(lastParamIdx));
+            if (id != null) {
+              paramRegNum = id;
+              Type paramType = pm.get(lastParamIdx).getType();
+              paramRegNum += SootToDexUtils.getDexWords(paramType);
+              found = true;
+              lastParamIdx = cidx;
+            }
           }
-          found = true;
-          break;
         }
+      } else {
+        pm = sm.getActiveBody().getParameterLocals();
+        cachedParamList = pm;
+        cachedParamMethod = sm;
+      }
+      if (!found) {
+        for (int i = 0; i < pm.size(); i++) {
+          if (pm.get(i) == l) {
+            // For a non-static method, p0 is <this>.
+            if (!sm.isStatic()) {
+              paramRegNum++;
+            }
+            found = true;
+            lastParamIdx = i;
+            break;
+          }
 
-        // Long and Double values consume two registers
-        Type paramType = sm.getParameterType(i);
-        paramRegNum += SootToDexUtils.getDexWords(paramType);
+          // Long and Double values consume two registers
+          Type paramType = sm.getParameterType(i);
+          paramRegNum += SootToDexUtils.getDexWords(paramType);
+        }
       }
     }
     if (!found) {
