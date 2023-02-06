@@ -23,81 +23,68 @@ package soot.options;
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-
-import java.util.*;
+import java.util.Map;
 
 /** Option parser for Lazy Code Motion. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class LCMOptions {
 
-    private Map<String, String> options;
+  private Map<String, String> options;
 
-    public LCMOptions(Map<String, String> options) {
-        this.options = options;
-    }
+  public LCMOptions(Map<String, String> options) {
+    this.options = options;
+  }
 
-    /**
-     * Enabled
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean(options, "enabled");
-    }
+  /**
+   * Enabled
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
 
-    /**
-     * Unroll
-     * If true, perform loop inversion before doing the transformation.
-     */
-    public boolean unroll() {
-        return soot.PhaseOptions.getBoolean(options, "unroll");
-    }
+  /**
+   * Unroll If true, perform loop inversion before doing the transformation.
+   */
+  public boolean unroll() {
+    return soot.PhaseOptions.getBoolean(options, "unroll");
+  }
 
-    /**
-     * Naive Side Effect Tester --
-     * Use a naive side effect analysis even if interprocedural 
-     * information is available.
-     *
-     * If Naive Side Effect Tester is set to true, Lazy Code Motion 
-     * uses the conservative side effect information provided by the 
-     * NaiveSideEffectTester class, even if interprocedural information 
-     * about side effects is available. The naive side effect analysis 
-     * is based solely on the information available locally about a 
-     * statement. It assumes, for example, that any method call has the 
-     * potential to write and read all instance and static fields in 
-     * the program. If Naive Side Effect Tester is set to false and 
-     * Soot is in whole program mode, then Lazy Code Motion uses the 
-     * side effect information provided by the PASideEffectTester 
-     * class. PASideEffectTester uses a points-to analysis to determine 
-     * which fields and statics may be written or read by a given 
-     * statement. If whole program analysis is not performed, naive 
-     * side effect information is used regardless of the setting of 
-     * Naive Side Effect Tester.
-     */
-    public boolean naive_side_effect() {
-        return soot.PhaseOptions.getBoolean(options, "naive-side-effect");
-    }
+  /**
+   * Naive Side Effect Tester -- Use a naive side effect analysis even if interprocedural information is available.
+   *
+   * If Naive Side Effect Tester is set to true, Lazy Code Motion uses the conservative side effect information provided by
+   * the NaiveSideEffectTester class, even if interprocedural information about side effects is available. The naive side
+   * effect analysis is based solely on the information available locally about a statement. It assumes, for example, that
+   * any method call has the potential to write and read all instance and static fields in the program. If Naive Side Effect
+   * Tester is set to false and Soot is in whole program mode, then Lazy Code Motion uses the side effect information
+   * provided by the PASideEffectTester class. PASideEffectTester uses a points-to analysis to determine which fields and
+   * statics may be written or read by a given statement. If whole program analysis is not performed, naive side effect
+   * information is used regardless of the setting of Naive Side Effect Tester.
+   */
+  public boolean naive_side_effect() {
+    return soot.PhaseOptions.getBoolean(options, "naive-side-effect");
+  }
 
-    public static final int safety_safe = 1;
-    public static final int safety_medium = 2;
-    public static final int safety_unsafe = 3;
+  public static final int safety_safe = 1;
+  public static final int safety_medium = 2;
+  public static final int safety_unsafe = 3;
 
-    /**
-     * Safety
-     * This option controls which fields and statements are candidates 
-     * for code motion.
-     */
-    public int safety() {
-        String s = soot.PhaseOptions.getString(options, "safety");
-        if (s == null || s.isEmpty())
-        	return safety_safe;
-	
-        if (s.equalsIgnoreCase("safe"))
-            return safety_safe;
-        if (s.equalsIgnoreCase("medium"))
-            return safety_medium;
-        if (s.equalsIgnoreCase("unsafe"))
-            return safety_unsafe;
+  /**
+   * Safety This option controls which fields and statements are candidates for code motion.
+   */
+  public int safety() {
+    String s = soot.PhaseOptions.getString(options, "safety");
+    if (s == null || s.isEmpty())
+      return safety_safe;
 
-        throw new RuntimeException(String.format("Invalid value %s of phase option safety", s));
-    }
+    if (s.equalsIgnoreCase("safe"))
+      return safety_safe;
+    if (s.equalsIgnoreCase("medium"))
+      return safety_medium;
+    if (s.equalsIgnoreCase("unsafe"))
+      return safety_unsafe;
+
+    throw new RuntimeException(String.format("Invalid value %s of phase option safety", s));
+  }
 
 }

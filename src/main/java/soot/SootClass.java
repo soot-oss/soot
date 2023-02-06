@@ -25,6 +25,7 @@ package soot;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -1302,5 +1303,31 @@ public class SootClass extends AbstractHost implements Numberable {
     }
     SootModuleInfo moduleInfo = this.getModuleInformation();
     return (moduleInfo == null) ? true : moduleInfo.openPackagePublic(this.getJavaPackageName());
+  }
+
+  /**
+   * Returns all methods with exactly the number of parameters specified.
+   * 
+   * @param name
+   *          the name of the method
+   * @param paramCount
+   *          the parameter count
+   * @return the methods
+   */
+  public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
+    List<SootMethod> result = null;
+    for (SootMethod m : getMethods()) {
+      if (m.getParameterCount() == paramCount && m.getName().equals(name)) {
+        if (result == null) {
+          result = new ArrayList<>();
+        }
+        result.add(m);
+      }
+    }
+
+    if (result == null) {
+      return Collections.emptyList();
+    }
+    return result;
   }
 }

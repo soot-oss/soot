@@ -194,16 +194,11 @@ public class JimpleBody extends StmtBody {
    * @return
    */
   public Stmt getFirstNonIdentityStmt() {
-    Unit r = null;
     for (Unit u : getUnits()) {
-      r = u;
-      if (!(r instanceof IdentityStmt)) {
-        break;
+      if (!(u instanceof IdentityStmt)) {
+        return (Stmt) u;
       }
     }
-    if (r == null) {
-      throw new RuntimeException("no non-id statements!");
-    }
-    return (Stmt) r;
+    throw new RuntimeException("no non-id statements!");
   }
 }

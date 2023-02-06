@@ -23,36 +23,33 @@ package soot.options;
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-
-import java.util.*;
+import java.util.Map;
 
 /** Option parser for Profiling Generator. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class ProfilingOptions {
 
-    private Map<String, String> options;
+  private Map<String, String> options;
 
-    public ProfilingOptions(Map<String, String> options) {
-        this.options = options;
-    }
+  public ProfilingOptions(Map<String, String> options) {
+    this.options = options;
+  }
 
-    /**
-     * Enabled
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean(options, "enabled");
-    }
+  /**
+   * Enabled
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
 
-    /**
-     * Not Main Entry --
-     * Instrument runBenchmark() instead of main().
-     *
-     * Insert the calls to the MultiCounter at the beginning and end of 
-     * methods with the signature long runBenchmark(java.lang.String[]) 
-     * instead of the signature void main(java.lang.String[]).
-     */
-    public boolean notmainentry() {
-        return soot.PhaseOptions.getBoolean(options, "notmainentry");
-    }
+  /**
+   * Not Main Entry -- Instrument runBenchmark() instead of main().
+   *
+   * Insert the calls to the MultiCounter at the beginning and end of methods with the signature long
+   * runBenchmark(java.lang.String[]) instead of the signature void main(java.lang.String[]).
+   */
+  public boolean notmainentry() {
+    return soot.PhaseOptions.getBoolean(options, "notmainentry");
+  }
 
 }

@@ -23,43 +23,42 @@ package soot.options;
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-
-import java.util.*;
+import java.util.Map;
 
 /** Option parser for Available Expressions Tagger. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class AETOptions {
 
-    private Map<String, String> options;
+  private Map<String, String> options;
 
-    public AETOptions(Map<String, String> options) {
-        this.options = options;
-    }
+  public AETOptions(Map<String, String> options) {
+    this.options = options;
+  }
 
-    /**
-     * Enabled
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean(options, "enabled");
-    }
+  /**
+   * Enabled
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
 
-    public static final int kind_optimistic = 1;
-    public static final int kind_pessimistic = 2;
+  public static final int kind_optimistic = 1;
+  public static final int kind_pessimistic = 2;
 
-    /**
-     * Kind
-     */
-    public int kind() {
-        String s = soot.PhaseOptions.getString(options, "kind");
-        if (s == null || s.isEmpty())
-        	return kind_optimistic;
-	
-        if (s.equalsIgnoreCase("optimistic"))
-            return kind_optimistic;
-        if (s.equalsIgnoreCase("pessimistic"))
-            return kind_pessimistic;
+  /**
+   * Kind
+   */
+  public int kind() {
+    String s = soot.PhaseOptions.getString(options, "kind");
+    if (s == null || s.isEmpty())
+      return kind_optimistic;
 
-        throw new RuntimeException(String.format("Invalid value %s of phase option kind", s));
-    }
+    if (s.equalsIgnoreCase("optimistic"))
+      return kind_optimistic;
+    if (s.equalsIgnoreCase("pessimistic"))
+      return kind_pessimistic;
+
+    throw new RuntimeException(String.format("Invalid value %s of phase option kind", s));
+  }
 
 }
