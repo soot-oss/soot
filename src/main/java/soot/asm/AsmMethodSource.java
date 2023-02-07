@@ -196,6 +196,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.objectweb.asm.ConstantDynamic;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -1341,6 +1342,13 @@ public class AsmMethodSource implements MethodSource {
         v = MethodHandle.v(toSootMethodRef(h), h.getTag());
       } else {
         v = MethodHandle.v(toSootFieldRef(h), h.getTag());
+      }
+    } else if (val instanceof ConstantDynamic) {
+      ConstantDynamic cd = (ConstantDynamic) val;
+      if (MethodHandle.isMethodRef(cd.getBootstrapMethod().getTag())) {
+        v = MethodHandle.v(toSootMethodRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
+      } else {
+        v = MethodHandle.v(toSootFieldRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
       }
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
