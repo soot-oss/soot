@@ -42,7 +42,7 @@ jobs:
         java-version: ${{ matrix.java_version }}
     - name: Build and test Java ${{ matrix.java_version }}
       run: |
-        mvn -B clean test -PJava${{ matrix.java_version }}
+        mvn -B clean test -PJava${{ matrix.java_version }} -DdisableXmlReport=true
 
         
   DeployArtifacts:
