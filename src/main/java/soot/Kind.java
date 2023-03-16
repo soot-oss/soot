@@ -198,6 +198,10 @@ public final class Kind implements Numberable {
     return isReflInvoke(this);
   }
 
+  public boolean isHandler() {
+    return isHandler(this);
+  }
+
   public static boolean passesParameters(Kind k) {
     return isExplicit(k) || k == THREAD || k == EXECUTOR || k == ASYNCTASK || k == FINALIZE || k == PRIVILEGED
         || k == NEWINSTANCE || k == INVOKE_FINALIZE || k == REFL_INVOKE || k == REFL_CONSTR_NEWINSTANCE
@@ -269,5 +273,9 @@ public final class Kind implements Numberable {
 
   public static boolean isReflInvoke(Kind k) {
     return k == REFL_INVOKE;
+  }
+
+  public static boolean isHandler(Kind k) {
+    return k == HANDLER;
   }
 }
