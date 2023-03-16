@@ -75,6 +75,10 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         }
       });
     }
+
+    public EdgeFilter(EdgePredicate p) {
+      super(p);
+    }
   }
 
   @DontSynchronize("readonly")
@@ -86,7 +90,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
       ArrayList<SootMethod> res = null;
       // only retain callers that are explicit call sites or
       // Thread.start()
-      Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));
+      Iterator<Edge> edgeIter = createEdgeFilter().wrap(cg.edgesOutOf(u));
       while (edgeIter.hasNext()) {
         Edge edge = edgeIter.next();
         SootMethod m = edge.getTgt().method();
@@ -116,6 +120,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         return Collections.emptySet();
       }
     }
+
   };
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
@@ -129,7 +134,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
           ArrayList<Unit> res = new ArrayList<Unit>();
           // only retain callers that are explicit call sites or
           // Thread.start()
-          Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
+          Iterator<Edge> edgeIter = createEdgeFilter().wrap(cg.edgesInto(m));
           while (edgeIter.hasNext()) {
             Edge edge = edgeIter.next();
             res.add(edge.srcUnit());
@@ -197,4 +202,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
     this.fallbackToImmediateCallees = fallbackToImmediateCallees;
   }
 
+  protected EdgeFilter createEdgeFilter() {
+    return new EdgeFilter();
+  }
 }
