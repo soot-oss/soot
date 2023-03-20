@@ -159,6 +159,12 @@ public class SourceLocator {
   public SourceLocator(Singletons.Global g) {
   }
 
+  public void invalidateCaches() {
+    archivePathToZip.invalidateAll();
+    archivePathToEntriesCache.invalidateAll();
+    pathToSourceType.invalidateAll();
+  }
+
   public static SourceLocator v() {
     return ModuleUtil.module_mode() ? G.v().soot_ModulePathSourceLocator() : G.v().soot_SourceLocator();
   }
@@ -897,6 +903,10 @@ public class SourceLocator {
      */
     public SharedCloseable<ZipFile> getRef(String archivePath) throws ExecutionException {
       return cache.get(archivePath);
+    }
+
+    public void invalidateAll() {
+      cache.invalidateAll();
     }
   }
 }
