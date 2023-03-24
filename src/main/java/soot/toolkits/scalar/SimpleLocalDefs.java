@@ -49,10 +49,10 @@ import soot.toolkits.graph.UnitGraph;
  */
 public class SimpleLocalDefs implements LocalDefs {
 
-  private static class StaticSingleAssignment implements LocalDefs {
+  public static class StaticSingleAssignment implements LocalDefs {
     final Map<Local, List<Unit>> result;
 
-    StaticSingleAssignment(Local[] locals, List<Unit>[] unitList) {
+    public StaticSingleAssignment(Local[] locals, List<Unit>[] unitList) {
       final int N = locals.length;
       assert (N == unitList.length);
 
@@ -79,7 +79,7 @@ public class SimpleLocalDefs implements LocalDefs {
     }
   } // end inner class StaticSingleAssignment
 
-  private class FlowAssignment extends ForwardFlowAnalysis<Unit, FlowAssignment.FlowBitSet> implements LocalDefs {
+  public class FlowAssignment extends ForwardFlowAnalysis<Unit, FlowAssignment.FlowBitSet> implements LocalDefs {
 
     class FlowBitSet extends BitSet {
       private static final long serialVersionUID = -8348696077189400377L;
@@ -137,7 +137,7 @@ public class SimpleLocalDefs implements LocalDefs {
 
     private Map<Unit, Integer> indexOfUnit;
 
-    FlowAssignment(DirectedGraph<Unit> graph, Local[] locals, List<Unit>[] unitList, int units, boolean omitSSA) {
+    public FlowAssignment(DirectedGraph<Unit> graph, Local[] locals, List<Unit>[] unitList, int units, boolean omitSSA) {
       super(graph);
       this.unitList = unitList;
       this.universe = new Unit[units];
@@ -148,7 +148,7 @@ public class SimpleLocalDefs implements LocalDefs {
 
       for (int j = 0, i = 0; i < N; this.localRange[++i] = j) {
         List<Unit> currUnitList = unitList[i];
-        if (currUnitList.isEmpty()) {
+        if (currUnitList == null || currUnitList.isEmpty()) {
           continue;
         }
 
@@ -365,7 +365,7 @@ public class SimpleLocalDefs implements LocalDefs {
     return oldNumbers;
   }
 
-  private LocalDefs init(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
+  protected LocalDefs init(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
     @SuppressWarnings("unchecked")
     List<Unit>[] unitList = new List[locals.length];
     Arrays.fill(unitList, Collections.emptyList());

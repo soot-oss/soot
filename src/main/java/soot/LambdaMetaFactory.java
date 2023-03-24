@@ -181,9 +181,12 @@ public class LambdaMetaFactory {
       tclass.addInterface(RefType.v("java.io.Serializable").getSootClass());
     }
     for (int i = 0; i < markerInterfaces.size(); i++) {
-      tclass.addInterface(
-          ((RefType) AsmUtil.toBaseType(markerInterfaces.get(i).getValue(), Optional.fromNullable(tclass.moduleName)))
-              .getSootClass());
+      String internal = markerInterfaces.get(i).getValue();
+      RefType refType = ((RefType) AsmUtil.toBaseType(internal, Optional.fromNullable(tclass.moduleName)));
+      SootClass interfaceClass = refType.getSootClass();
+      if (!interfaceClass.equals(functionalInterfaceToImplement)) {
+        tclass.addInterface(interfaceClass);
+      }
     }
 
     // It contains fields for all the captures in the lambda
@@ -241,7 +244,7 @@ public class LambdaMetaFactory {
 
   /**
    * Invalidates the class hierarchy due to some newly added class.
-   * 
+   *
    * @param tclass
    */
   protected void addClassAndInvalidateHierarchy(SootClass tclass) {

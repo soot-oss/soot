@@ -260,7 +260,7 @@ public class BytecodeHierarchy implements IHierarchy {
   }
 
   public static RefType lcsc(RefType a, RefType b) {
-    return lcsc(a, b, null);
+    return lcsc(a, b, Scene.v().getObjectType());
   }
 
   public static RefType lcsc(RefType a, RefType b, RefType anchor) {

@@ -362,6 +362,9 @@ public class Scene {
         StringBuilder pds = new StringBuilder();
         for (String path : dirs) {
           if (!cp.contains(path)) {
+            // To support paths to jars with ':' in the name, escape the path separator if it was not already escaped.
+            path = path.replaceAll("(?<!\\\\)" + Pattern.quote(File.pathSeparator),
+              "\\\\" + File.pathSeparator);
             pds.append(path).append(File.pathSeparatorChar);
           }
         }

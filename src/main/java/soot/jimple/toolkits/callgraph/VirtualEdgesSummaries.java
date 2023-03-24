@@ -55,6 +55,7 @@ import org.xml.sax.SAXException;
 import soot.Kind;
 import soot.MethodSubSignature;
 import soot.ModuleUtil;
+import soot.RefType;
 import soot.Scene;
 import soot.jimple.Stmt;
 import soot.util.StringNumberer;
@@ -222,6 +223,9 @@ public class VirtualEdgesSummaries {
       InstanceinvokeSource inv = (InstanceinvokeSource) edge.source;
       source.setAttribute("invoketype", "instance");
       source.setAttribute("subsignature", inv.subSignature.toString());
+      if (inv.declaringType != null) {
+        source.setAttribute("declaringclass", inv.declaringType.getClassName());
+      }
 
     } else {
       if (edge.source == null) {
@@ -260,6 +264,10 @@ public class VirtualEdgesSummaries {
       }
     }
 
+    if (e.targetType != null) {
+      target.setAttribute("declaringclass", e.targetType.getClassName());
+    }
+
     target.setAttribute("subsignature", e.targetMethod.toString());
     if (e.isBase()) {
       target.setAttribute("target-position", "base");
@@ -281,12 +289,22 @@ public class VirtualEdgesSummaries {
   private static VirtualEdgeSource parseEdgeSource(Element source) {
     switch (source.getAttribute("invoketype")) {
       case "instance":
-        return new InstanceinvokeSource(source.getAttribute("subsignature"));
+        RefType dClass = getDeclaringClassType(source);
+        return new InstanceinvokeSource(dClass, source.getAttribute("subsignature"));
       case "static":
         return new StaticinvokeSource(source.getAttribute("signature"));
       default:
         return null;
     }
+  }
+
+  private static RefType getDeclaringClassType(Element source) {
+    String declClass = source.getAttribute("declaringclass");
+    RefType dClass = null;
+    if (declClass != null && !declClass.isEmpty()) {
+      dClass = RefType.v(declClass);
+    }
+    return dClass;
   }
 
   private static List<VirtualEdgeTarget> parseEdgeTargets(Element targetsElement) {
@@ -303,13 +321,14 @@ public class VirtualEdgesSummaries {
                 = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
 
             String tpos = targetElement.getAttribute("target-position");
+            RefType type = getDeclaringClassType(targetElement);
             switch (tpos) {
               case "argument":
                 int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
-                targets.add(new DirectTarget(subsignature, argIdx));
+                targets.add(new DirectTarget(type, subsignature, argIdx));
                 break;
               case "base":
-                targets.add(new DirectTarget(subsignature));
+                targets.add(new DirectTarget(type, subsignature));
                 break;
               default:
                 throw new IllegalArgumentException("Unsupported target position " + tpos);
@@ -323,13 +342,14 @@ public class VirtualEdgesSummaries {
             MethodSubSignature subsignature
                 = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
             String tpos = targetElement.getAttribute("target-position");
+            RefType dClass = getDeclaringClassType(targetElement);
             switch (tpos) {
               case "argument":
                 int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
-                target = new IndirectTarget(subsignature, argIdx);
+                target = new IndirectTarget(dClass, subsignature, argIdx);
                 break;
               case "base":
-                target = new IndirectTarget(subsignature);
+                target = new IndirectTarget(dClass, subsignature);
                 break;
               default:
                 throw new IllegalArgumentException("Unsupported target position " + tpos);
@@ -407,15 +427,20 @@ public class VirtualEdgesSummaries {
      */
     MethodSubSignature subSignature;
 
+    RefType declaringType;
+
     /**
      * Creates a new instance of the {@link InstanceinvokeSource} class based on a method that is being invoked on the
      * current object instance
      * 
+     * @param declaringType
+     *          A type where the method with the subsignature is declared.
      * @param subSignature
      *          The subsignature of the method that is invoked
      */
-    public InstanceinvokeSource(String subSignature) {
+    public InstanceinvokeSource(RefType declaringType, String subSignature) {
       this.subSignature = new MethodSubSignature(Scene.v().getSubSigNumberer().findOrAdd(subSignature));
+      this.declaringType = declaringType;
     }
 
     /**
@@ -425,12 +450,17 @@ public class VirtualEdgesSummaries {
      *          The statement at the call site
      */
     public InstanceinvokeSource(Stmt invokeStmt) {
-      this(invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
+      this(invokeStmt.getInvokeExpr().getMethodRef().getDeclaringClass().getType(),
+          invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
     }
 
     @Override
     public String toString() {
-      return subSignature.toString();
+      return (declaringType != null ? (declaringType + ": ") : "") + subSignature.toString();
+    }
+
+    public RefType getDeclaringType() {
+      return declaringType;
     }
 
     public MethodSubSignature getSubSignature() {
@@ -441,6 +471,7 @@ public class VirtualEdgesSummaries {
     public int hashCode() {
       final int prime = 31;
       int result = 1;
+      result = prime * result + ((declaringType == null) ? 0 : declaringType.hashCode());
       result = prime * result + ((subSignature == null) ? 0 : subSignature.hashCode());
       return result;
     }
@@ -450,10 +481,20 @@ public class VirtualEdgesSummaries {
       if (this == obj) {
         return true;
       }
-      if ((obj == null) || (getClass() != obj.getClass())) {
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
         return false;
       }
       InstanceinvokeSource other = (InstanceinvokeSource) obj;
+      if (declaringType == null) {
+        if (other.declaringType != null) {
+          return false;
+        }
+      } else if (!declaringType.equals(other.declaringType)) {
+        return false;
+      }
       if (subSignature == null) {
         if (other.subSignature != null) {
           return false;
@@ -463,25 +504,33 @@ public class VirtualEdgesSummaries {
       }
       return true;
     }
+
   }
 
   public static abstract class VirtualEdgeTarget {
 
     protected int argIndex;
     protected MethodSubSignature targetMethod;
+    protected RefType targetType;
 
     VirtualEdgeTarget() {
       // internal use only
     }
 
-    public VirtualEdgeTarget(MethodSubSignature targetMethod) {
+    public VirtualEdgeTarget(RefType targetType, MethodSubSignature targetMethod) {
       this.argIndex = BASE_INDEX;
       this.targetMethod = targetMethod;
+      this.targetType = targetType;
     }
 
-    public VirtualEdgeTarget(MethodSubSignature targetMethod, int argIndex) {
+    public VirtualEdgeTarget(RefType targetType, MethodSubSignature targetMethod, int argIndex) {
       this.argIndex = argIndex;
       this.targetMethod = targetMethod;
+      this.targetType = targetType;
+    }
+
+    public RefType getTargetType() {
+      return targetType;
     }
 
     @Override
@@ -542,30 +591,35 @@ public class VirtualEdgesSummaries {
     /**
      * Creates a new direct method invocation on an object passed to the original source as an argument. For example,
      * <code>foo.do(x)></code> could invoke <code>x.bar()</code> as a callback.
-     * 
+     *
+     * @param targetType
+     *          The declaring class of the target method
      * @param targetMethod
      *          The target method that is invoked on the argument object
      * @param argIndex
      *          The index of the argument that receives the target object
      */
-    public DirectTarget(MethodSubSignature targetMethod, int argIndex) {
-      super(targetMethod, argIndex);
+    public DirectTarget(RefType targetType, MethodSubSignature targetMethod, int argIndex) {
+      super(targetType, targetMethod, argIndex);
     }
 
     /**
      * Creates a new direct method invocation on the base object of the original source. For example, <code>foo.do()></code>
      * could invoke <code>foo.bar()</code> as a callback.
-     * 
+     *
+     * @param targetType
+     *          The declaring class of the target method
      * @param targetMethod
      *          The target method that is invoked on the base object
      */
-    public DirectTarget(MethodSubSignature targetMethod) {
-      super(targetMethod);
+    public DirectTarget(RefType targetType, MethodSubSignature targetMethod) {
+      super(targetType, targetMethod);
     }
 
     @Override
     public String toString() {
-      return String.format("Direct to %s on %s", targetMethod.toString(), super.toString());
+      return String.format("Direct to %s%s on %s", targetType != null ? targetType.getClassName() + ": " : "",
+          targetMethod.toString(), super.toString());
     }
 
     @Override
@@ -597,14 +651,16 @@ public class VirtualEdgesSummaries {
      * earlier, and which received the object on which the callback is invoked. This constructor assumes that the earlier
      * method has created an object which is passed the current method as an argument.
      * 
+     * @param targetType
+     *          The target type which declares the target method
      * @param targetMethod
      *          The method with which the original callback was registered
      * @param argIndex
      *          The index of the argument that holds the object that holds the callback or next step of the indirect
      *          invocation
      */
-    public IndirectTarget(MethodSubSignature targetMethod, int argIndex) {
-      super(targetMethod, argIndex);
+    public IndirectTarget(RefType targetType, MethodSubSignature targetMethod, int argIndex) {
+      super(targetType, targetMethod, argIndex);
     }
 
     /**
@@ -614,18 +670,20 @@ public class VirtualEdgesSummaries {
      *          The source from which to create the indirect target
      */
     public IndirectTarget(InstanceinvokeSource source) {
-      super(source.subSignature);
+      super(source.declaringType, source.subSignature);
     }
 
     /**
      * Creates a new direct method invocation. The signature of this indirect target references a method that was called
      * earlier, and which received the object on which the callback is invoked.
      * 
+     * @param targetType
+     *          The target type which declares the target method
      * @param targetMethod
      *          The method with which the original callback was registered
      */
-    public IndirectTarget(MethodSubSignature targetMethod) {
-      super(targetMethod);
+    public IndirectTarget(RefType targetType, MethodSubSignature targetMethod) {
+      super(targetType, targetMethod);
     }
 
     public void addTarget(VirtualEdgeTarget target) {
@@ -650,8 +708,8 @@ public class VirtualEdgesSummaries {
       for (VirtualEdgeTarget t : targets) {
         sb.append('(').append(t.toString()).append(") ");
       }
-      return String.format("(Instances passed to <?: %s> on %s => %s)", targetMethod.toString(), super.toString(),
-          sb.toString());
+      return String.format("(Instances passed to <" + (targetType != null ? targetType : "?") + ": %s> on %s => %s)",
+          targetMethod.toString(), super.toString(), sb.toString());
 
     }
 
@@ -733,7 +791,7 @@ public class VirtualEdgesSummaries {
       for (VirtualEdgeTarget t : targets) {
         sb.append(t.toString()).append(' ');
       }
-      return String.format("%s %s => %s", edgeType, source.toString(), sb.toString());
+      return String.format("%s %s => %s\n", edgeType, source.toString(), sb.toString());
     }
 
     @Override

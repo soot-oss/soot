@@ -648,14 +648,31 @@ public class FastHierarchy {
     HashSet<SootClass> resolved = new HashSet<>();
     HashSet<SootMethod> ret = new HashSet<>();
 
-    ArrayDeque<SootClass> worklist = new ArrayDeque<>();
+    ArrayDeque<SootClass> worklist = new ArrayDeque<SootClass>() {
+      @Override
+      public boolean addAll(Collection<? extends SootClass> c) {
+        boolean b = false;
+        for (SootClass e : c) {
+          if (add(e)) {
+            b = true;
+          }
+        }
+        return b;
+      }
+
+      @Override
+      public boolean add(SootClass e) {
+        if (resolved.contains(e) && classToSubclasses.get(e).isEmpty()) {
+          return false;
+        }
+        return super.add(e);
+      }
+    };
     worklist.add(baseType);
     while (true) {
       SootClass concreteType = worklist.poll();
       if (concreteType == null) {
         break;
-      } else if (resolved.contains(concreteType) && classToSubclasses.get(concreteType).isEmpty()) {
-        continue;
       }
 
       if (concreteType.isInterface()) {
@@ -859,10 +876,11 @@ public class FastHierarchy {
 
     // When there is no proper dispatch found, we simply return null to let the caller decide what to do
     SootMethod candidate = null;
+    boolean calleeExist = declaringClass.getMethodUnsafe(subsignature) != null;
     for (SootClass concreteType = baseType; concreteType != null && ignoreList.add(concreteType);) {
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
       if (candidate != null) {
-        if (isVisible(declaringClass, concreteType, candidate.getModifiers())) {
+        if (!calleeExist || isVisible(concreteType, declaringClass, candidate.getModifiers())) {
           if (!allowAbstract && candidate.isAbstract()) {
             candidate = null;
             break;
@@ -891,10 +909,9 @@ public class FastHierarchy {
         while (!worklist.isEmpty()) {
           SootClass iFace = worklist.poll();
 
-          if (interfaceIgnoreList.contains(iFace)) {
+          if (!interfaceIgnoreList.add(iFace)) {
             continue;
           }
-          interfaceIgnoreList.add(iFace);
 
           SootMethod method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
           if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
@@ -962,19 +979,14 @@ public class FastHierarchy {
       throw new RuntimeException("The concreteType cannot not be null!");
     }
     SootMethod candidate = null;
-    List<SootMethod> methods = concreteType.getMethods();
-    int idx = 0;
-    while (idx < methods.size()) {
-      SootMethod method = methods.get(idx);
-      if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
-          && canStoreType(method.getReturnType(), returnType)) {
+    for (SootMethod method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
+      if (method.getParameterTypes().equals(parameterTypes) && canStoreType(method.getReturnType(), returnType)) {
         candidate = method;
         returnType = method.getReturnType();
       }
       // if dotnet structs or generics
       if (Options.v().src_prec() == Options.src_prec_dotnet) {
-        if (method.getName().equals(name) && method.getParameterCount() == parameterTypes.size()
-            && canStoreType(returnType, method.getReturnType())) {
+        if (method.getParameterCount() == parameterTypes.size() && canStoreType(returnType, method.getReturnType())) {
           boolean canStore = true;
           for (int i = 0; i < method.getParameterCount(); i++) {
             Type methodParameter = method.getParameterType(i);

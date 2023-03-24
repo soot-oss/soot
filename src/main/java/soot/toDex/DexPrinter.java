@@ -661,7 +661,13 @@ public class DexPrinter {
 
     ClassDef classDef = new ImmutableClassDef(classType, accessFlags, superClass, interfaces, sourceFile,
         buildClassAnnotations(c), fields, methods);
-    dexBuilder.internClass(classDef);
+    addClassDefinition(classDef);
+  }
+
+  protected void addClassDefinition(ClassDef classDef) {
+    synchronized (dexBuilder) {
+      dexBuilder.internClass(classDef);
+    }
   }
 
   private Set<Annotation> buildClassAnnotations(SootClass c) {

@@ -556,7 +556,13 @@
 				target-position="argument" index="0" />
 		</targets>
 	</edge>
-
+	<edge type="GENERIC_FAKE">
+	    <source declaringclass="okhttp3.Call" invoketype="instance" subsignature="void enqueue(okhttp3.Callback)"/>
+	    <targets>
+	      <direct declaringclass="okhttp3.Callback" index="0" subsignature="void onFailure(okhttp3.Call,java.io.IOException)" target-position="argument"/>
+	      <direct declaringclass="okhttp3.Callback" index="0" subsignature="void onResponse(okhttp3.Call,okhttp3.Response)" target-position="argument"/>
+	    </targets>
+	</edge>
 	<!-- actionbarsherlock -->
 	<edge>
 		<source invoketype="instance"

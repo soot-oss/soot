@@ -426,7 +426,7 @@ public class DexBody {
    */
   public Local getRegisterLocal(int num) throws InvalidDalvikBytecodeException {
     int totalRegisters = registerLocals.length;
-    if (num > totalRegisters) {
+    if (num >= totalRegisters) {
       throw new InvalidDalvikBytecodeException(
           "Trying to access register " + num + " but only " + totalRegisters + " is/are available.");
     }
@@ -685,9 +685,6 @@ public class DexBody {
     // Make sure that we don't have any overlapping uses due to returns
     DexReturnInliner.v().transform(jBody);
 
-    // Shortcut: Reduce array initializations
-    DexArrayInitReducer.v().transform(jBody);
-
     // split first to find undefined uses
     getLocalSplitter().transform(jBody);
 
@@ -774,6 +771,11 @@ public class DexBody {
     }
 
     TypeAssigner.v().transform(jBody);
+
+    // Shortcut: Reduce array initializations
+    // We need to do this after typing, because otherwise we run into problems
+    // when float constants (saved as int in dex code) are saved in the array.
+    DexArrayInitReducer.v().transform(jBody);
 
     final RefType objectType = RefType.v("java.lang.Object");
     if (IDalvikTyper.ENABLE_DVKTYPER) {

@@ -95,7 +95,7 @@ public class SourceLocator {
   // size must be able to contain all paths in the classpath or else
   // methods such as lookupInClassPath(..) that search for a file by
   // traversing each path in the classpath will cause cache thrashing.
-  private static final int PATH_CACHE_CAPACITY = 1000;
+  private static final int PATH_CACHE_CAPACITY = 100000;
 
   final SharedZipFileCacheWrapper archivePathToZip = new SharedZipFileCacheWrapper(5, PATH_CACHE_CAPACITY);
 
@@ -159,6 +159,12 @@ public class SourceLocator {
   public SourceLocator(Singletons.Global g) {
   }
 
+  public void invalidateCaches() {
+    archivePathToZip.invalidateAll();
+    archivePathToEntriesCache.invalidateAll();
+    pathToSourceType.invalidateAll();
+  }
+
   public static SourceLocator v() {
     return ModuleUtil.module_mode() ? G.v().soot_ModulePathSourceLocator() : G.v().soot_SourceLocator();
   }
@@ -189,6 +195,7 @@ public class SourceLocator {
     for (String originalDir : classPath.split(regex)) {
       if (!originalDir.isEmpty()) {
         try {
+          originalDir = originalDir.replaceAll("\\\\" + Pattern.quote(File.pathSeparator), File.pathSeparator);
           String canonicalDir = new File(originalDir).getCanonicalPath();
           if (ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS.equals(originalDir)) {
             SourceLocator.v().java9Mode = true;
@@ -896,6 +903,10 @@ public class SourceLocator {
      */
     public SharedCloseable<ZipFile> getRef(String archivePath) throws ExecutionException {
       return cache.get(archivePath);
+    }
+
+    public void invalidateAll() {
+      cache.invalidateAll();
     }
   }
 }
