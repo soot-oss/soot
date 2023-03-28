@@ -190,7 +190,7 @@ public class ExceptionNode {
       as.remove_CSucc(newCatchTarget);
       newCatchTarget.remove_CPred(as);
     }
-
+    IterableSet<ExceptionNode> toAdd = new IterableSet<ExceptionNode>();
     for (ExceptionNode en : enlist) {
       if (this == en) {
         continue;
@@ -204,10 +204,10 @@ public class ExceptionNode {
           clonedTryBody.add(asg.get_CloneOf(au));
         }
 
-        enlist.addLast(new ExceptionNode(clonedTryBody, en.exception, asg.get_CloneOf(en.handlerAugmentedStmt)));
+        toAdd.addLast(new ExceptionNode(clonedTryBody, en.exception, asg.get_CloneOf(en.handlerAugmentedStmt)));
       }
     }
-
+    enlist.addAll(toAdd);
     enlist.addLast(new ExceptionNode(newTryBody, exception, asg.get_CloneOf(handlerAugmentedStmt)));
 
     for (ExceptionNode en : enlist) {
