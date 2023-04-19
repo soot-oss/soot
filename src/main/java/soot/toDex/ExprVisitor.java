@@ -172,7 +172,8 @@ public class ExprVisitor implements ExprSwitch {
             = Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sie.getMethodRef().getDeclaringClass());
         NumberedString subsig = sie.getMethodRef().getSubSignature();
         for (SootClass i : allInterfaces) {
-          if (i.getMethodUnsafe(subsig) != null) {
+          SootMethod m = i.getMethodUnsafe(subsig);
+          if (m != null && (m.isConcrete() || m.hasActiveBody())) {
             // In that case, it must be a call to an interface implementation.
             // See https://source.android.com/docs/core/runtime/dalvik-bytecode
             // In Dex files version 037 or later, if the method_id refers to an interface method, invoke-super is used to
