@@ -98,6 +98,7 @@ import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
 import soot.toDex.instructions.InsnWithOffset;
+import soot.util.NumberedString;
 import soot.util.Switchable;
 
 /**
@@ -165,14 +166,23 @@ public class ExprVisitor implements ExprSwitch {
       stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
     } else if (isCallToSuper(sie)) {
       stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
-    } else if (Scene.v().getOrMakeFastHierarchy().canStoreClass(stmtV.getBelongingClass(),
-        sie.getMethodRef().getDeclaringClass())) {
-      // In that case, it must be a call to an interface implementation.
-      // See https://source.android.com/docs/core/runtime/dalvik-bytecode
-      // In Dex files version 037 or later, if the method_id refers to an interface method, invoke-super is used to invoke
-      // the most specific, non-overridden version of that method defined on that interface.
-      stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
     } else {
+      if (sie.getMethodRef().getDeclaringClass().isInterface()) {
+        List<SootClass> allInterfaces
+            = Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sie.getMethodRef().getDeclaringClass());
+        NumberedString subsig = sie.getMethodRef().getSubSignature();
+        for (SootClass i : allInterfaces) {
+          if (i.getMethodUnsafe(subsig) != null) {
+            // In that case, it must be a call to an interface implementation.
+            // See https://source.android.com/docs/core/runtime/dalvik-bytecode
+            // In Dex files version 037 or later, if the method_id refers to an interface method, invoke-super is used to
+            // invoke
+            // the most specific, non-overridden version of that method defined on that interface.
+            stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
+            return;
+          }
+        }
+      }
       // This should normally never happen, but if we have such a
       // broken call (happens in malware for instance), we fix it.
       stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, arguments), origStmt);
