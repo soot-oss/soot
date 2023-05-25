@@ -62,7 +62,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
+@jakarta.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -549,7 +549,7 @@ public class Options extends OptionsBase {
 import java.util.*;
 
 /** Option parser for <xsl:value-of select="name|name"/>. */
-@javax.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
+@jakarta.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
 public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <xsl:copy-of select="extends"/></xsl:if> {
 
     private Map&lt;String, String&gt; options;

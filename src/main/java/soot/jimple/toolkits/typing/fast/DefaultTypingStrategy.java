@@ -39,7 +39,7 @@ import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
 /**
- * The defualt typing strategy
+ * The default typing strategy
  */
 public class DefaultTypingStrategy implements ITypingStrategy {
 
@@ -64,17 +64,15 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   }
 
   public static Set<Local> getObjectLikeTypings(List<Typing> tgs) {
-    final Type objectType = Scene.v().getObjectType();
     Set<Type> objectLikeTypeSet = new HashSet<>();
-    objectLikeTypeSet.add(objectType);
+    objectLikeTypeSet.add(Scene.v().getObjectType());
     objectLikeTypeSet.add(RefType.v("java.io.Serializable"));
     objectLikeTypeSet.add(RefType.v("java.lang.Cloneable"));
 
     Set<Local> objectLikeVars = new HashSet<>();
     MultiMap<Local, Type> ft = getFlatTyping(tgs);
     for (Local l : ft.keySet()) {
-      Set<Type> ts = ft.get(l);
-      if (ts.equals(objectLikeTypeSet)) {
+      if (objectLikeTypeSet.equals(ft.get(l))) {
         objectLikeVars.add(l);
       }
     }
@@ -84,7 +82,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   @Override
   public void minimize(List<Typing> tgs, IHierarchy h) {
     Set<Local> objectVars = getObjectLikeTypings(tgs);
-    outer: for (ListIterator<Typing> i = tgs.listIterator(); i.hasNext();) {
+    OUTER: for (ListIterator<Typing> i = tgs.listIterator(); i.hasNext();) {
       Typing tgi = i.next();
 
       // Throw out duplicate typings
@@ -94,11 +92,10 @@ public class DefaultTypingStrategy implements ITypingStrategy {
         // with lots of locals typed to Serializable etc.
         if (tgi != tgj && compare(tgi, tgj, h, objectVars) == 1) {
           i.remove();
-          continue outer;
+          continue OUTER;
         }
       }
     }
-
   }
 
   public int compare(Typing a, Typing b, IHierarchy h, Collection<Local> localsToIgnore) {
@@ -128,4 +125,15 @@ public class DefaultTypingStrategy implements ITypingStrategy {
     }
     return r;
   }
+
+  @Override
+  public void finalizeTypes(Typing tp) {
+    for (Local l : tp.getAllLocals()) {
+      Type t = tp.get(l);
+      if (!t.isAllowedInFinalCode()) {
+        tp.set(l, t.getDefaultFinalType());
+      }
+    }
+  }
+
 }

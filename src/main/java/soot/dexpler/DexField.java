@@ -68,7 +68,7 @@ public class DexField {
     EncodedValue ev = sf.getInitialValue();
 
     if (ev instanceof BooleanEncodedValue) {
-      tag = new IntegerConstantValueTag(((BooleanEncodedValue) ev).getValue() == true ? 1 : 0);
+      tag = new IntegerConstantValueTag(((BooleanEncodedValue) ev).getValue() ? 1 : 0);
     } else if (ev instanceof ByteEncodedValue) {
       tag = new IntegerConstantValueTag(((ByteEncodedValue) ev).getValue());
     } else if (ev instanceof CharEncodedValue) {

@@ -114,7 +114,7 @@ public class TryContentsFinder extends ASTAnalysis {
         Object catchBody = cit.next();
         SootClass exception = (SootClass) tryNode.get_ExceptionMap().get(catchBody);
 
-        if ((catches_Exception(tryExceptionSet, exception) == false) && (catches_RuntimeException(exception) == false)) {
+        if (!catches_Exception(tryExceptionSet, exception) && !catches_RuntimeException(exception)) {
           toRemove.add(catchBody);
         }
       }
@@ -184,7 +184,7 @@ public class TryContentsFinder extends ASTAnalysis {
           return true;
         }
 
-        if (thrownException.hasSuperclass() == false) {
+        if (!thrownException.hasSuperclass()) {
           break;
         }
 
@@ -207,7 +207,7 @@ public class TryContentsFinder extends ASTAnalysis {
         return true;
       }
 
-      if (caughtException.hasSuperclass() == false) {
+      if (!caughtException.hasSuperclass()) {
         return false;
       }
 

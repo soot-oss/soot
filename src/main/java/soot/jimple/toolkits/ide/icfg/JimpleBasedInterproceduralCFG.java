@@ -43,6 +43,7 @@ import soot.MethodOrMethodContext;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
+import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
@@ -61,6 +62,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
   protected boolean includeReflectiveCalls = false;
   protected boolean includePhantomCallees = false;
+  protected boolean fallbackToImmediateCallees = false;
 
   // retains only callers that are explicit call sites or Thread.start()
   public class EdgeFilter extends Filter {
@@ -73,6 +75,10 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         }
       });
     }
+
+    public EdgeFilter(EdgePredicate p) {
+      super(p);
+    }
   }
 
   @DontSynchronize("readonly")
@@ -84,7 +90,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
       ArrayList<SootMethod> res = null;
       // only retain callers that are explicit call sites or
       // Thread.start()
-      Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));
+      Iterator<Edge> edgeIter = createEdgeFilter().wrap(cg.edgesOutOf(u));
       while (edgeIter.hasNext()) {
         Edge edge = edgeIter.next();
         SootMethod m = edge.getTgt().method();
@@ -102,9 +108,19 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         res.trimToSize();
         return res;
       } else {
+        if (fallbackToImmediateCallees && u instanceof Stmt) {
+          Stmt s = (Stmt) u;
+          if (s.containsInvokeExpr()) {
+            SootMethod immediate = s.getInvokeExpr().getMethod();
+            if (includePhantomCallees || immediate.hasActiveBody()) {
+              return Collections.singleton(immediate);
+            }
+          }
+        }
         return Collections.emptySet();
       }
     }
+
   };
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
@@ -118,7 +134,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
           ArrayList<Unit> res = new ArrayList<Unit>();
           // only retain callers that are explicit call sites or
           // Thread.start()
-          Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
+          Iterator<Edge> edgeIter = createEdgeFilter().wrap(cg.edgesInto(m));
           while (edgeIter.hasNext()) {
             Edge edge = edgeIter.next();
             res.add(edge.srcUnit());
@@ -174,4 +190,19 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
     this.includePhantomCallees = includePhantomCallees;
   }
 
+  /**
+   * Sets whether methods that operate on the callgraph shall return the immediate callee of a call site if the callgraph has
+   * no outgoing edges
+   * 
+   * @param fallbackToImmediateCallees
+   *          True to return the immediate callee if the callgraph does not contain any edges for the respective call site,
+   *          false to return an empty set in such cases
+   */
+  public void setFallbackToImmediateCallees(boolean fallbackToImmediateCallees) {
+    this.fallbackToImmediateCallees = fallbackToImmediateCallees;
+  }
+
+  protected EdgeFilter createEdgeFilter() {
+    return new EdgeFilter();
+  }
 }

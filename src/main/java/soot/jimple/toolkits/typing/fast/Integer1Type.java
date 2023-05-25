@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.typing.fast;
 
+import soot.BooleanType;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,8 +29,8 @@ package soot.jimple.toolkits.typing.fast;
 import soot.G;
 import soot.IntegerType;
 import soot.PrimType;
-import soot.RefType;
 import soot.Singletons;
+import soot.Type;
 
 /**
  * @author Ben Bellamy
@@ -42,22 +44,39 @@ public class Integer1Type extends PrimType implements IntegerType {
   public Integer1Type(Singletons.Global g) {
   }
 
+  @Override
   public String toString() {
     return "[0..1]";
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Integer");
+  public boolean isAllowedInFinalCode() {
+    return false;
   }
 
   @Override
-  public boolean isAllowedInFinalCode() {
-    return false;
+  public String getTypeAsString() {
+    return "java.lang.Integer";
+  }
+
+  @Override
+  public Type getDefaultFinalType() {
+    return BooleanType.v();
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Integer.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return int.class;
   }
 
 }

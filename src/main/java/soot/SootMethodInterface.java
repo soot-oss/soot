@@ -31,7 +31,7 @@ import java.util.List;
 public interface SootMethodInterface {
 
   /**
-   *  @return The class which declares the current {@link SootMethod}/{@link SootMethodRef}  
+   * @return The class which declares the current {@link SootMethod}/{@link SootMethodRef}
    */
   public SootClass getDeclaringClass();
 

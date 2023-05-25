@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
+import soot.dotnet.members.DotnetMethod;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
@@ -136,7 +138,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
     this.returnType = returnType;
     this.modifiers = modifiers;
 
-    if (this.exceptions == null && !thrownExceptions.isEmpty()) {
+    if (thrownExceptions != null && !thrownExceptions.isEmpty()) {
       this.exceptions = new ArrayList<SootClass>(thrownExceptions);
     }
     this.subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
@@ -595,7 +597,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   public boolean isMain() {
     return isPublic() && isStatic()
-        && Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])").equals(subsignature);
+        && Scene.v().getSubSigNumberer()
+            .findOrAdd(Options.v().src_prec() != Options.src_prec_dotnet ? "void main(java.lang.String[])"
+                : DotnetMethod.MAIN_METHOD_SIGNATURE)
+            .equals(subsignature);
   }
 
   /**
@@ -663,10 +668,12 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    */
   @Override
   public String getSignature() {
+    String sig = this.sig;
     if (sig == null) {
       synchronized (this) {
+        sig = this.sig;
         if (sig == null) {
-          sig = getSignature(getDeclaringClass(), getSubSignature());
+          this.sig = sig = getSignature(getDeclaringClass(), getSubSignature());
         }
       }
     }
@@ -691,10 +698,12 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * Returns the Soot subsignature of this method. Used to refer to methods unambiguously.
    */
   public String getSubSignature() {
+    String subSig = this.subSig;
     if (subSig == null) {
       synchronized (this) {
+        subSig = this.subSig;
         if (subSig == null) {
-          subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
+          this.subSig = subSig = getSubSignatureImpl(getName(), getParameterTypes(), getReturnType());
         }
       }
     }
@@ -930,6 +939,12 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
   public SootMethodRef makeRef() {
     return Scene.v().makeMethodRef(declaringClass, name, parameterTypes == null ? null : Arrays.asList(parameterTypes),
         returnType, isStatic());
+  }
+
+  public boolean isValidResolve(SootMethodRef ref) {
+    return (this.isStatic() == ref.isStatic()) && Objects.equals(this.getDeclaringClass(), ref.getDeclaringClass())
+        && Objects.equals(this.getName(), ref.getName()) && Objects.equals(this.getReturnType(), ref.getReturnType())
+        && Objects.equals(this.getParameterTypes(), ref.getParameterTypes());
   }
 
   @Override

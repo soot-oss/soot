@@ -53,7 +53,7 @@ public class JavaClassProvider implements ClassProvider {
        */
       boolean checkAgain = className.indexOf('$') >= 0;
 
-      FoundFile file = null;
+      IFoundFile file = null;
       try {
         final SourceLocator loc = SourceLocator.v();
         String javaClassName = loc.getSourceForClass(className);

@@ -137,7 +137,7 @@ public class SynchronizerManager {
       // Add a unique field named [__]class$name
       String n = "class$" + sc.getName().replace('.', '$');
       while (sc.declaresFieldByName(n)) {
-        n = "_" + n;
+        n = '_' + n;
       }
 
       classCacher = Scene.v().makeSootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
@@ -159,7 +159,7 @@ public class SynchronizerManager {
       if (!oops) {
         break;
       }
-      lName = "_" + lName;
+      lName = '_' + lName;
     }
 
     final Jimple jimp = Jimple.v();
@@ -193,7 +193,7 @@ public class SynchronizerManager {
    */
   public SootMethod getClassFetcherFor(final SootClass c, boolean createNewAsShimple) {
     final String prefix = '<' + c.getName().replace('.', '$') + ": java.lang.Class ";
-    for (String methodName = "class$"; true; methodName = "_" + methodName) {
+    for (String methodName = "class$"; true; methodName = '_' + methodName) {
       SootMethod m = c.getMethodByNameUnsafe(methodName);
       if (m == null) {
         return createClassFetcherFor(c, methodName, createNewAsShimple);
@@ -222,14 +222,7 @@ public class SynchronizerManager {
 
       final IdentityStmt is = (IdentityStmt) s;
       final Value ro = is.getRightOp();
-      if (!(ro instanceof ParameterRef)) {
-        continue;
-      }
-      if (((ParameterRef) ro).getIndex() != 0) {
-        continue;
-      }
-
-      if (!unitsIt.hasNext()) {
+      if (!(ro instanceof ParameterRef) || (((ParameterRef) ro).getIndex() != 0) || !unitsIt.hasNext()) {
         continue;
       }
       s = (Stmt) unitsIt.next();
@@ -239,11 +232,7 @@ public class SynchronizerManager {
 
       final AssignStmt as = (AssignStmt) s;
       if (!(".staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(" + is.getLeftOp() + ")")
-          .equals(as.getRightOp().toString())) {
-        continue;
-      }
-
-      if (!unitsIt.hasNext()) {
+          .equals(as.getRightOp().toString()) || !unitsIt.hasNext()) {
         continue;
       }
       s = (Stmt) unitsIt.next();
@@ -305,8 +294,8 @@ public class SynchronizerManager {
     final Scene scene = Scene.v();
 
     // Create the method
-    SootMethod method =
-        scene.makeSootMethod(methodName, Collections.singletonList(refTyString), refTypeClass, Modifier.STATIC);
+    SootMethod method
+        = scene.makeSootMethod(methodName, Collections.singletonList(refTyString), refTypeClass, Modifier.STATIC);
     c.addMethod(method);
 
     // Create the method body
@@ -333,11 +322,9 @@ public class SynchronizerManager {
 
       // add "$r2 = .staticinvoke <java.lang.Class: java.lang.Class
       // forName(java.lang.String)>(r0);
-      AssignStmt asi =
-          jimp.newAssignStmt(l_r2,
-              jimp.newStaticInvokeExpr(
-                  scene.getMethod("<java.lang.Class: java.lang.Class forName(java.lang.String)>").makeRef(),
-                  Collections.singletonList(l_r0)));
+      AssignStmt asi = jimp.newAssignStmt(l_r2,
+          jimp.newStaticInvokeExpr(scene.getMethod("<java.lang.Class: java.lang.Class forName(java.lang.String)>").makeRef(),
+              Collections.singletonList(l_r0)));
       units.add(asi);
 
       // insert "return $r2;"
@@ -417,7 +404,7 @@ public class SynchronizerManager {
       Stmt newGoto = jimp.newGotoStmt(units.getSuccOf(exitMon));
       units.insertAfter(newGoto, exitMon);
 
-      Local eRef = jimp.newLocal("__exception", RefType.v("java.lang.Throwable"));
+      Local eRef = jimp.newLocal("__exception", Scene.v().getBaseExceptionType());
       b.getLocals().add(eRef);
 
       List<Unit> l = new ArrayList<Unit>();
@@ -427,8 +414,8 @@ public class SynchronizerManager {
       l.add(jimp.newThrowStmt(eRef));
       units.insertAfter(l, newGoto);
 
-      b.getTraps()
-          .addFirst(jimp.newTrap(Scene.v().getSootClass("java.lang.Throwable"), stmt, units.getSuccOf(stmt), handlerStmt));
+      b.getTraps().addFirst(jimp.newTrap(Scene.v().getSootClass(Scene.v().getBaseExceptionType().toString()), stmt,
+          units.getSuccOf(stmt), handlerStmt));
     }
   }
 }

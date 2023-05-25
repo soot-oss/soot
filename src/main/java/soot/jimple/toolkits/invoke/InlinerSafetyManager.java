@@ -88,13 +88,9 @@ public class InlinerSafetyManager {
         Value lhs = ((AssignStmt) st).getLeftOp();
         Value rhs = ((AssignStmt) st).getRightOp();
 
-        if (lhs instanceof FieldRef
-            && !AccessManager.ensureAccess(container, ((FieldRef) lhs).getField(), modifierOptions)) {
-          return false;
-        }
-
-        if (rhs instanceof FieldRef
-            && !AccessManager.ensureAccess(container, ((FieldRef) rhs).getField(), modifierOptions)) {
+        if ((lhs instanceof FieldRef && !AccessManager.ensureAccess(container, ((FieldRef) lhs).getField(), modifierOptions))
+            || (rhs instanceof FieldRef
+                && !AccessManager.ensureAccess(container, ((FieldRef) rhs).getField(), modifierOptions))) {
           return false;
         }
       }

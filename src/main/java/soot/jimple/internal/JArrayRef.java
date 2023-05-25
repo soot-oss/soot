@@ -23,7 +23,6 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.ArrayType;
@@ -45,8 +44,9 @@ import soot.tagkit.Tag;
 import soot.util.Switch;
 
 public class JArrayRef implements ArrayRef, ConvertToBaf {
-  protected ValueBox baseBox;
-  protected ValueBox indexBox;
+
+  protected final ValueBox baseBox;
+  protected final ValueBox indexBox;
 
   public JArrayRef(Value base, Value index) {
     this(Jimple.v().newLocalBox(base), Jimple.v().newImmediateBox(index));
@@ -57,26 +57,32 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
     this.indexBox = indexBox;
   }
 
+  @Override
   public Object clone() {
     return new JArrayRef(Jimple.cloneIfNecessary(getBase()), Jimple.cloneIfNecessary(getIndex()));
   }
 
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof ArrayRef) {
-      return (getBase().equivTo(((ArrayRef) o).getBase()) && getIndex().equivTo(((ArrayRef) o).getIndex()));
+      ArrayRef oArrayRef = (ArrayRef) o;
+      return this.getBase().equivTo(oArrayRef.getBase()) && this.getIndex().equivTo(oArrayRef.getIndex());
     }
     return false;
   }
 
   /** Returns a hash code for this object, consistent with structural equality. */
+  @Override
   public int equivHashCode() {
     return getBase().equivHashCode() * 101 + getIndex().equivHashCode() + 17;
   }
 
+  @Override
   public String toString() {
     return baseBox.getValue().toString() + "[" + indexBox.getValue().toString() + "]";
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     baseBox.toString(up);
     up.literal("[");
@@ -84,32 +90,39 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
     up.literal("]");
   }
 
+  @Override
   public Value getBase() {
     return baseBox.getValue();
   }
 
+  @Override
   public void setBase(Local base) {
     baseBox.setValue(base);
   }
 
+  @Override
   public ValueBox getBaseBox() {
     return baseBox;
   }
 
+  @Override
   public Value getIndex() {
     return indexBox.getValue();
   }
 
+  @Override
   public void setIndex(Value index) {
     indexBox.setValue(index);
   }
 
+  @Override
   public ValueBox getIndexBox() {
     return indexBox;
   }
 
-  public List getUseBoxes() {
-    List useBoxes = new ArrayList();
+  @Override
+  public List<ValueBox> getUseBoxes() {
+    List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
     useBoxes.addAll(baseBox.getValue().getUseBoxes());
     useBoxes.add(baseBox);
@@ -120,26 +133,20 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
     return useBoxes;
   }
 
+  @Override
   public Type getType() {
-    Value base = baseBox.getValue();
-    Type type = base.getType();
+    Type type = baseBox.getValue().getType();
 
-    if (type.equals(UnknownType.v())) {
+    if (UnknownType.v().equals(type)) {
       return UnknownType.v();
-    } else if (type.equals(NullType.v())) {
+    } else if (NullType.v().equals(type)) {
       return NullType.v();
     } else {
       // use makeArrayType on non-array type references when they propagate to this point.
       // kludge, most likely not correct.
       // may stop spark from complaining when it gets passed phantoms.
       // ideally I'd want to find out just how they manage to get this far.
-      ArrayType arrayType;
-      if (type instanceof ArrayType) {
-        arrayType = (ArrayType) type;
-      } else {
-        arrayType = (ArrayType) type.makeArrayType();
-      }
-
+      ArrayType arrayType = (type instanceof ArrayType) ? (ArrayType) type : (ArrayType) type.makeArrayType();
       if (arrayType.numDimensions == 1) {
         return arrayType.baseType;
       } else {
@@ -148,24 +155,20 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
     }
   }
 
+  @Override
   public void apply(Switch sw) {
     ((RefSwitch) sw).caseArrayRef(this);
   }
 
+  @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
     ((ConvertToBaf) getBase()).convertToBaf(context, out);
     ((ConvertToBaf) getIndex()).convertToBaf(context, out);
 
-    Unit currentUnit = context.getCurrentUnit();
-
-    Unit x;
-
-    out.add(x = Baf.v().newArrayReadInst(getType()));
-
-    Iterator it = currentUnit.getTags().iterator();
-    while (it.hasNext()) {
-      x.addTag((Tag) it.next());
+    Unit x = Baf.v().newArrayReadInst(getType());
+    out.add(x);
+    for (Tag next : context.getCurrentUnit().getTags()) {
+      x.addTag(next);
     }
-
   }
 }

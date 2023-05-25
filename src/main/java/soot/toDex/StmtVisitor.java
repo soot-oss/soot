@@ -99,6 +99,8 @@ import soot.toDex.instructions.InsnWithOffset;
 import soot.toDex.instructions.PackedSwitchPayload;
 import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 import soot.util.Switchable;
 
 /**
@@ -130,17 +132,14 @@ public class StmtVisitor implements StmtSwitch {
   private List<AbstractPayload> payloads;
 
   // maps used to map Jimple statements to dalvik instructions
-  private Map<Insn, Stmt> insnStmtMap = new HashMap<Insn, Stmt>();
-  private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap
-      = new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
-  private Map<Instruction, Insn> instructionInsnMap = new IdentityHashMap<Instruction, Insn>();
-  private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap
-      = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
-  private Map<Instruction, AbstractPayload> instructionPayloadMap = new IdentityHashMap<Instruction, AbstractPayload>();
-  private List<LocalRegisterAssignmentInformation> parameterInstructionsList
-      = new ArrayList<LocalRegisterAssignmentInformation>();
+  private Map<Insn, Stmt> insnStmtMap = new HashMap<>();
+  private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = new IdentityHashMap<>();
+  private Map<Instruction, Insn> instructionInsnMap = new IdentityHashMap<>();
+  private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<>();
+  private Map<Instruction, AbstractPayload> instructionPayloadMap = new IdentityHashMap<>();
+  private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<>();
 
-  private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
+  private Map<Constant, Register> monitorRegs = new HashMap<>();
 
   private static final Opcode[] OPCODES = Opcode.values();
 
@@ -166,8 +165,8 @@ public class StmtVisitor implements StmtSwitch {
     constantV = new ConstantVisitor(this);
     regAlloc = new RegisterAllocator();
     exprV = new ExprVisitor(this, constantV, regAlloc);
-    insns = new ArrayList<Insn>();
-    payloads = new ArrayList<AbstractPayload>();
+    insns = new ArrayList<>();
+    payloads = new ArrayList<>();
   }
 
   protected void setLastReturnTypeDescriptor(String typeDescriptor) {
@@ -234,13 +233,18 @@ public class StmtVisitor implements StmtSwitch {
    * @param trapReferences
    */
   private void reduceInstructions(Set<Unit> trapReferences) {
+    MultiMap<Stmt, Insn> jumpsToTarget = new HashMultiMap<>();
+    for (Insn insn : this.insns) {
+      if (insn instanceof InsnWithOffset) {
+        Stmt t = ((InsnWithOffset) insn).getTarget();
+        jumpsToTarget.put(t, insn);
+      }
+    }
+
     for (int i = 0; i < this.insns.size() - 1; i++) {
       Insn curInsn = this.insns.get(i);
       // Only consider real instructions
-      if (curInsn instanceof AddressInsn) {
-        continue;
-      }
-      if (!isReducableMoveInstruction(curInsn.getOpcode())) {
+      if ((curInsn instanceof AddressInsn) || !isReducableMoveInstruction(curInsn.getOpcode())) {
         continue;
       }
 
@@ -256,14 +260,10 @@ public class StmtVisitor implements StmtSwitch {
         nextIndex = j;
         break;
       }
-      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode())) {
-        continue;
-      }
-
       // Do not remove the last instruction in the body as we need to
       // remap
       // jump targets to the successor
-      if (nextIndex == this.insns.size() - 1) {
+      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode()) || (nextIndex == this.insns.size() - 1)) {
         continue;
       }
 
@@ -277,8 +277,13 @@ public class StmtVisitor implements StmtSwitch {
         // Remove the second instruction as it does not change any
         // state. We cannot remove the first instruction as other
         // instructions may depend on the register being set.
-        if (nextStmt == null || (!isJumpTarget(nextStmt) && !trapReferences.contains(nextStmt))) {
-          insns.remove(nextIndex);
+        boolean isNotJumpTarget = jumpsToTarget.get(nextStmt).isEmpty();
+        if (nextStmt == null || (isNotJumpTarget && !trapReferences.contains(nextStmt))) {
+          Insn removed = insns.remove(nextIndex);
+          if (removed instanceof InsnWithOffset) {
+            Stmt t = ((InsnWithOffset) removed).getTarget();
+            jumpsToTarget.remove(t, removed);
+          }
 
           if (nextStmt != null) {
             if (nextIndex == this.insns.size() - 1) {
@@ -313,17 +318,6 @@ public class StmtVisitor implements StmtSwitch {
     // return opcode.startsWith("move/") || opcode.startsWith("move-object/") || opcode.startsWith("move-wide/");
   }
 
-  private boolean isJumpTarget(Stmt target) {
-    for (Insn insn : this.insns) {
-      if (insn instanceof InsnWithOffset) {
-        if (((InsnWithOffset) insn).getTarget() == target) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
   private void addPayloads() {
     // add switch payloads to the end of the insns
     for (AbstractPayload payload : payloads) {
@@ -333,7 +327,7 @@ public class StmtVisitor implements StmtSwitch {
   }
 
   public List<BuilderInstruction> getRealInsns(LabelAssigner labelAssigner) {
-    List<BuilderInstruction> finalInsns = new ArrayList<BuilderInstruction>();
+    List<BuilderInstruction> finalInsns = new ArrayList<>();
     for (Insn i : insns) {
       if (i instanceof AddressInsn) {
         continue; // skip non-insns

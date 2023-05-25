@@ -30,7 +30,13 @@ public class TypeException extends Exception {
 
   public TypeException(String message) {
     super(message);
+    if (message == null) {
+      throw new InternalTypingException();
+    }
+  }
 
+  public TypeException(String message, Throwable cause) {
+    super(message, cause);
     if (message == null) {
       throw new InternalTypingException();
     }

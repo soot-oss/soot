@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -29,6 +31,9 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class ShortType extends PrimType implements IntegerType {
+
+  public static final int HASHCODE = 0x8B817DD3;
+
   public ShortType(Singletons.Global g) {
   }
 
@@ -36,24 +41,42 @@ public class ShortType extends PrimType implements IntegerType {
     return G.v().soot_ShortType();
   }
 
+  @Override
   public int hashCode() {
-    return 0x8B817DD3;
+    return HASHCODE;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "short";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseShortType(this);
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Short");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotnetBasicTypes.SYSTEM_INT16;
+    }
+    return JavaBasicTypes.JAVA_LANG_SHORT;
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Short.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return short.class;
+  }
+
 }

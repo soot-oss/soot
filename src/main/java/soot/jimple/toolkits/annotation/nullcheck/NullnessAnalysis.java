@@ -24,7 +24,6 @@ package soot.jimple.toolkits.annotation.nullcheck;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.Immediate;
@@ -137,7 +136,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
 
     Stmt s = (Stmt) u;
 
-    // in case of an if statement, we neet to compute the branch-flow;
+    // in case of an if statement, we need to compute the branch-flow;
     // e.g. for a statement "if(x!=null) goto s" we have x==null for the fallOut and
     // x!=null for the branchOut
     // or for an instanceof expression
@@ -183,7 +182,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
   }
 
   /**
-   * This can be overwritten by sublasses to mark a certain value as constantly non-null.
+   * This can be overwritten by subclasses to mark a certain value as constantly non-null.
    *
    * @param v
    *          any value
@@ -221,7 +220,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
 
     // if we compare a local with null then process further...
-    if (val != null && val instanceof Local) {
+    if (val instanceof Local) {
       if (eqExpr instanceof JEqExpr) {
         // a==null
         handleEquality(val, out, outBranch);

@@ -23,6 +23,7 @@ package soot.jimple.toolkits.invoke;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +51,6 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
-import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
 import soot.jimple.ParameterRef;
 import soot.jimple.ReturnStmt;
@@ -73,7 +73,7 @@ public class SiteInliner {
    * container).
    */
   public static void inlineSites(List<List<Host>> sites) {
-    inlineSites(sites, new HashMap<String, String>());
+    inlineSites(sites, Collections.emptyMap());
   }
 
   /**
@@ -82,6 +82,7 @@ public class SiteInliner {
    */
   public static void inlineSites(List<List<Host>> sites, Map<String, String> options) {
     for (List<Host> l : sites) {
+      assert (l.size() == 3);
       SootMethod inlinee = (SootMethod) l.get(0);
       Stmt toInline = (Stmt) l.get(1);
       SootMethod container = (SootMethod) l.get(2);
@@ -92,8 +93,8 @@ public class SiteInliner {
   /**
    * Inlines the method <code>inlinee</code> into the <code>container</code> at the point <code>toInline</code>.
    */
-  public static void inlineSite(SootMethod inlinee, Stmt toInline, SootMethod container) {
-    inlineSite(inlinee, toInline, container, new HashMap<String, String>());
+  public static List<Unit> inlineSite(SootMethod inlinee, Stmt toInline, SootMethod container) {
+    return inlineSite(inlinee, toInline, container, Collections.emptyMap());
   }
 
   /**
@@ -108,6 +109,7 @@ public class SiteInliner {
 
     final Body containerB = container.getActiveBody();
     final Chain<Unit> containerUnits = containerB.getUnits();
+    assert (containerUnits.contains(toInline)) : toInline + " is not in body " + containerB;
     final InvokeExpr ie = toInline.getInvokeExpr();
     Value thisToAdd = (ie instanceof InstanceInvokeExpr) ? ((InstanceInvokeExpr) ie).getBase() : null;
     if (ie instanceof InstanceInvokeExpr) {
@@ -154,9 +156,8 @@ public class SiteInliner {
     if (inlinee.isSynchronized()) {
       // Need to get the class object if ie is a static invoke.
       if (ie instanceof InstanceInvokeExpr) {
-        final SynchronizerManager mgr = SynchronizerManager.v();
         Local base = (Local) ((InstanceInvokeExpr) ie).getBase();
-        mgr.synchronizeStmtOn(toInline, containerB, base);
+        SynchronizerManager.v().synchronizeStmtOn(toInline, containerB, base);
       } else if (!container.getDeclaringClass().isInterface()) {
         // If we're in an interface, we must be in a <clinit> method,
         // which surely needs no synchronization.
@@ -197,8 +198,8 @@ public class SiteInliner {
     }
 
     // Backpatch the newly-inserted units using newly-constructed maps.
-    for (Iterator<Unit> it =
-        containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it.hasNext();) {
+    for (Iterator<Unit> it
+        = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it.hasNext();) {
       Unit patchee = it.next();
 
       for (ValueBox box : patchee.getUseAndDefBoxes()) {
@@ -246,8 +247,9 @@ public class SiteInliner {
     // Handle identity stmt's and returns.
     {
       ArrayList<Unit> cuCopy = new ArrayList<Unit>();
-      for (Iterator<Unit> it =
-          containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it.hasNext();) {
+      for (Iterator<Unit> it
+          = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); it
+              .hasNext();) {
         cuCopy.add(it.next());
       }
       for (Unit u : cuCopy) {
@@ -284,8 +286,8 @@ public class SiteInliner {
     }
 
     List<Unit> newStmts = new ArrayList<Unit>();
-    for (Iterator<Unit> i =
-        containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
+    for (Iterator<Unit> i
+        = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
       newStmts.add(i.next());
     }
 

@@ -1,3 +1,5 @@
+package soot.asm;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -19,21 +21,21 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.ClassProvider;
 import soot.ClassSource;
 import soot.FoundFile;
+import soot.IFoundFile;
 import soot.ModulePathSourceLocator;
 
 /**
@@ -48,13 +50,13 @@ public class AsmModuleClassProvider implements ClassProvider {
   public ClassSource find(String cls) {
     final int idx = cls.lastIndexOf(':') + 1;
     String clsFile = cls.substring(0, idx) + cls.substring(idx).replace('.', '/') + ".class";
-    FoundFile file = ModulePathSourceLocator.v().lookUpInModulePath(clsFile);
+    IFoundFile file = ModulePathSourceLocator.v().lookUpInModulePath(clsFile);
     return file == null ? null : new AsmClassSource(cls, file);
   }
 
   public String getModuleName(FoundFile file) {
     final String[] moduleName = { null };
-    org.objectweb.asm.ClassVisitor visitor = new org.objectweb.asm.ClassVisitor(Opcodes.ASM8) {
+    ClassVisitor visitor = new ClassVisitor(Opcodes.ASM8) {
 
       @Override
       public ModuleVisitor visitModule(String name, int access, String version) {
@@ -62,26 +64,13 @@ public class AsmModuleClassProvider implements ClassProvider {
         return null;
       }
     };
-    InputStream d = null;
-    try {
-      d = file.inputStream();
+    try (InputStream d = file.inputStream()) {
       new ClassReader(d).accept(visitor, ClassReader.SKIP_FRAMES);
       return moduleName[0];
     } catch (IOException e) {
       logger.debug(e.getMessage(), e);
     } finally {
-      try {
-        if (d != null) {
-          d.close();
-          d = null;
-        }
-      } catch (IOException e) {
-        logger.debug(e.getMessage(), e);
-      }
-      if (file != null) {
-        file.close();
-        file = null;
-      }
+      file.close();
     }
     return null;
   }

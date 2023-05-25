@@ -311,7 +311,7 @@ public class JavaLangClassNative extends NativeMethodClass {
    */
   public void java_lang_Class_getFields0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+    helper.assignObjectTo(returnVar, Environment.v().getArrayFields());
   }
 
   /**
@@ -323,7 +323,7 @@ public class JavaLangClassNative extends NativeMethodClass {
    */
   public void java_lang_Class_getMethods0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+    helper.assignObjectTo(returnVar, Environment.v().getArrayMethods());
   }
 
   /**
@@ -335,7 +335,7 @@ public class JavaLangClassNative extends NativeMethodClass {
    */
   public void java_lang_Class_getConstructors0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+    helper.assignObjectTo(returnVar, Environment.v().getArrayConstructor());
   }
 
   /**
@@ -351,7 +351,7 @@ public class JavaLangClassNative extends NativeMethodClass {
    */
   public void java_lang_Class_getField0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getFieldObject());
+    helper.assignObjectTo(returnVar, Environment.v().getArrayFields());
   }
 
   /**
@@ -381,22 +381,22 @@ public class JavaLangClassNative extends NativeMethodClass {
    * Returns an array of Class objects reflecting all the classes and interfaces declared as members of the class represented
    * by this Class object.
    *
-   * private native java.lang.Class getDeclaredClasses0()[];
+   * private native java.lang.Class[] getDeclaredClasses0();
    */
   public void java_lang_Class_getDeclaredClasses0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+    helper.assignObjectTo(returnVar, Environment.v().getArrayClasses());
   }
 
   /**
    * Returns an array of Constructor objects reflecting all the classes and interfaces declared as members of the class
    * represented by this Class object.
    *
-   * private native java.lang.Class getDeclaredConstructors0(boolean)[];
+   * private native java.lang.reflect.Constructor[] getDeclaredConstructors0(boolean);
    */
   public void java_lang_Class_getDeclaredConstructors0(SootMethod method, ReferenceVariable thisVar,
       ReferenceVariable returnVar, ReferenceVariable params[]) {
-    AbstractObject array = Environment.v().getLeastArrayObject();
+    AbstractObject array = Environment.v().getArrayConstructor();
     AbstractObject cons = Environment.v().getConstructorObject();
     helper.assignObjectTo(returnVar, array);
     helper.assignObjectTo(helper.arrayElementOf(returnVar), cons);

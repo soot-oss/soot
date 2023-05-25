@@ -4,7 +4,7 @@ package soot.jimple.internal;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2022 Fraunhofer SIT
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,38 +22,18 @@ package soot.jimple.internal;
  * #L%
  */
 
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.LongType;
-import soot.ShortType;
 import soot.Type;
-import soot.UnknownType;
-import soot.Value;
+import soot.ValueBox;
 
 @SuppressWarnings("serial")
 public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr {
+
+  protected AbstractFloatBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+    super(op1Box, op2Box);
+  }
+
+  @Override
   public Type getType() {
-    Value op1 = op1Box.getValue();
-    Value op2 = op2Box.getValue();
-    Type op1t = op1.getType();
-    Type op2t = op2.getType();
-    if ((op1t.equals(IntType.v()) || op1t.equals(ByteType.v()) || op1t.equals(ShortType.v()) || op1t.equals(CharType.v())
-        || op1t.equals(BooleanType.v()))
-        && (op2t.equals(IntType.v()) || op2t.equals(ByteType.v()) || op2t.equals(ShortType.v()) || op2t.equals(CharType.v())
-            || op2t.equals(BooleanType.v()))) {
-      return IntType.v();
-    } else if (op1t.equals(LongType.v()) || op2t.equals(LongType.v())) {
-      return LongType.v();
-    } else if (op1t.equals(DoubleType.v()) || op2t.equals(DoubleType.v())) {
-      return DoubleType.v();
-    } else if (op1t.equals(FloatType.v()) || op2t.equals(FloatType.v())) {
-      return FloatType.v();
-    } else {
-      return UnknownType.v();
-    }
+    return getType(AbstractBinopExpr.BinopExprEnum.ABSTRACT_FLOAT_BINOP_EXPR);
   }
 }

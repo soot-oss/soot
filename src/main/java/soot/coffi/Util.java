@@ -631,18 +631,15 @@ public class Util {
   }
 
   public Type jimpleTypeOfFieldDescriptor(String descriptor) {
-    boolean isArray = false;
-    int numDimensions = 0;
-    Type baseType;
-
     // Handle array case
+    int numDimensions = 0;
     while (descriptor.startsWith("[")) {
-      isArray = true;
       numDimensions++;
       descriptor = descriptor.substring(1);
     }
 
     // Determine base type
+    Type baseType;
     if (descriptor.equals("B")) {
       baseType = ByteType.v();
     } else if (descriptor.equals("C")) {
@@ -674,11 +671,7 @@ public class Util {
     }
 
     // Return type
-    if (isArray) {
-      return ArrayType.v(baseType, numDimensions);
-    } else {
-      return baseType;
-    }
+    return (numDimensions > 0) ? ArrayType.v(baseType, numDimensions) : baseType;
   }
 
   int nextEasyNameIndex;
@@ -932,11 +925,8 @@ public class Util {
     }
     for (int i = 0; i < prospectiveName.length(); i++) {
       char c = prospectiveName.charAt(i);
-      if (i == 0 && c >= '0' && c <= '9') {
-        return false;
-      }
-
-      if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_' || c == '$'))) {
+      if ((i == 0 && c >= '0' && c <= '9')
+          || !((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '_' || c == '$'))) {
         return false;
       }
     }

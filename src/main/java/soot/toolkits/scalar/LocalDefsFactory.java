@@ -24,7 +24,7 @@ package soot.toolkits.scalar;
 
 import soot.Body;
 import soot.Singletons;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.SimpleLocalDefs.FlowAnalysisMode;
 
@@ -51,7 +51,7 @@ public class LocalDefsFactory {
   /**
    * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph}
    *
-   * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
+   * @see soot.toolkits.graph.ExceptionalUnitGraphFactory#createExceptionalUnitGraph(Body)
    * @see soot.validation.UsesValidator
    * @param body
    * @return a new LocalDefs instance
@@ -64,14 +64,14 @@ public class LocalDefsFactory {
    * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph} If you don't trust the input you should set
    * {@code expectUndefined} to {@code true}.
    *
-   * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
+   * @see soot.toolkits.graph.ExceptionalUnitGraphFactory#createExceptionalUnitGraph(Body)
    * @param body
    * @param expectUndefined
    *          if you expect uses of locals that are undefined
    * @return a new LocalDefs instance
    */
   public LocalDefs newLocalDefs(Body body, boolean expectUndefined) {
-    return newLocalDefs(new ExceptionalUnitGraph(body), expectUndefined);
+    return newLocalDefs(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body), expectUndefined);
   }
 
   /**

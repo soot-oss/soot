@@ -28,7 +28,6 @@ import java.util.Iterator;
 
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
-
 import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
@@ -41,7 +40,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
 
     body = soot.jimple.Jimple.v().newBody(sootMethod);
 
-    lg = new LocalGenerator(body);
+    lg = Scene.v().createLocalGenerator(body);
 
     AnonClassInitMethodSource acims = (AnonClassInitMethodSource) body.getMethod().getSource();
     ArrayList<SootField> fields = acims.getFinalsList();
@@ -137,7 +136,8 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
       if (isSubType) {
         invokeList.add(0, outerLocal);
       } else {
-        invokeList.add(0, Util.getThisGivenOuter(superOuterType, new HashMap(), body, new LocalGenerator(body), outerLocal));
+        invokeList.add(0,
+            Util.getThisGivenOuter(superOuterType, new HashMap(), body, Scene.v().createLocalGenerator(body), outerLocal));
       }
     }
     soot.jimple.InvokeExpr invoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(specialThisLocal, callMethod, invokeList);

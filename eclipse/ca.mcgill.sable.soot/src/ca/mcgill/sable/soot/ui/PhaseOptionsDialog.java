@@ -86,6 +86,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
 		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
 		Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
+		Composite jbjb_silsChild = jbjb_silsCreate(getPageContainer());
 		Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
 		Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
 		Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
@@ -98,7 +99,9 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
 		Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
 		Composite jbjb_ttChild = jbjb_ttCreate(getPageContainer());
+		Composite jbjb_cbfChild = jbjb_cbfCreate(getPageContainer());
 		Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
+		Composite jjjj_silsChild = jjjj_silsCreate(getPageContainer());
 		Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
 		Composite jjjj_uleChild = jjjj_uleCreate(getPageContainer());
 		Composite jjjj_trChild = jjjj_trCreate(getPageContainer());
@@ -176,6 +179,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite bbbb_phoChild = bbbb_phoCreate(getPageContainer());
 		Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
 		Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
+		Composite bbbb_neChild = bbbb_neCreate(getPageContainer());
 		Composite tagtag_lnChild = tagtag_lnCreate(getPageContainer());
 		Composite tagtag_anChild = tagtag_anCreate(getPageContainer());
 		Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
@@ -249,6 +253,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", "jb.ls", getjbjb_lsenabled_widget(), "enabled");
 		getjbjb_lsenabled_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("jb", "jb.sils");
+		addToEnableGroup("jb", "jb.sils", getjbjb_silsenabled_widget(), "enabled");
+		getjbjb_silsenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("jb", "jb.a");
 		addToEnableGroup("jb", "jb.a", getjbjb_aenabled_widget(), "enabled");
 		addToEnableGroup("jb", "jb.a", getjbjb_aonly_stack_locals_widget(), "only-stack-locals");
@@ -321,6 +329,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", "jb.tt", getjbjb_ttenabled_widget(), "enabled");
 		getjbjb_ttenabled_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("jb", "jb.cbf");
+		addToEnableGroup("jb", "jb.cbf", getjbjb_cbfenabled_widget(), "enabled");
+		getjbjb_cbfenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("jj");
 		addToEnableGroup("jj", getjjenabled_widget(), "enabled");
 		addToEnableGroup("jj", getjjuse_original_names_widget(), "use-original-names");
@@ -330,6 +342,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jj", "jj.ls");
 		addToEnableGroup("jj", "jj.ls", getjjjj_lsenabled_widget(), "enabled");
 		getjjjj_lsenabled_widget().getButton().addSelectionListener(this);
+
+		makeNewEnableGroup("jj", "jj.sils");
+		addToEnableGroup("jj", "jj.sils", getjjjj_silsenabled_widget(), "enabled");
+		getjjjj_silsenabled_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jj", "jj.a");
 		addToEnableGroup("jj", "jj.a", getjjjj_aenabled_widget(), "enabled");
@@ -894,6 +910,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		getbbbb_lpenabled_widget().getButton().addSelectionListener(this);
 		getbbbb_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("bb", "bb.ne");
+		addToEnableGroup("bb", "bb.ne", getbbbb_neenabled_widget(), "enabled");
+		getbbbb_neenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("bop");
 		addToEnableGroup("bop", getbopenabled_widget(), "enabled");
 		getbopenabled_widget().getButton().addSelectionListener(this);
@@ -1132,6 +1152,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsfull_resolver_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getInput_Optionsignore_methodsource_error_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsignore_methodsource_error_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getInput_Optionsresolve_all_dotnet_methods_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsresolve_all_dotnet_methods_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1143,6 +1175,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsallow_phantom_elms_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getInput_Optionsallow_cg_errors_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsallow_cg_errors_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getInput_Optionsno_bodies_for_excluded_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -1186,11 +1224,23 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionssoot_modulepath_widget().getAlias(), stringRes);
 		}
+		stringRes = getInput_Optionsdotnet_nativehost_path_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsdotnet_nativehost_path_widget().getAlias(), stringRes);
+		}
 		stringRes = getInput_Optionsprocess_dir_widget().getText().getText();
 		defStringRes = "";
 
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsprocess_dir_widget().getAlias(), stringRes);
+		}
+		stringRes = getInput_Optionsprocess_jar_dir_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsprocess_jar_dir_widget().getAlias(), stringRes);
 		}
 		stringRes = getInput_Optionsandroid_jars_widget().getText().getText();
 		defStringRes = "";
@@ -1353,6 +1403,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
 		}
+		stringRes = getProcessing_Optionsnum_threads_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getProcessing_Optionsnum_threads_widget().getAlias(), stringRes);
+		}
 		stringRes = getProcessing_Optionswrong_staticness_widget().getSelectedAlias();
 		defStringRes = "fixstrict";
 
@@ -1424,6 +1480,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjbjb_silsenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_silsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjbjb_aenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -1569,6 +1631,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_ttenabled_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getjbjb_cbfenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_cbfenabled_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getjjenabled_widget().getButton().getSelection();
 		defBoolRes = true;
 
@@ -1586,6 +1654,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_lsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjjjj_silsenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_silsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjjjj_aenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -3081,6 +3155,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getbbbb_neenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbbbb_neenabled_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getbopenabled_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -3343,6 +3423,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = jb_jb_ls_branch;
 			
 			
+			SootOption jb_jb_sils_branch = new SootOption("Shared Initialization Local Splitter", "jbjb_sils");
+			subParent.addChild(jb_jb_sils_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_sils_branch;
+			
+			
 			SootOption jb_jb_a_branch = new SootOption("Jimple Local Aggregator", "jbjb_a");
 			subParent.addChild(jb_jb_a_branch);
 
@@ -3463,6 +3553,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = jb_jb_tt_branch;
 			
 			
+			SootOption jb_jb_cbf_branch = new SootOption("Conditional Branch Folder", "jbjb_cbf");
+			subParent.addChild(jb_jb_cbf_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_cbf_branch;
+			
+			
 			//Java To Jimple Body Creation
 			SootOption jj_branch = new SootOption("Java To Jimple Body Creation", "jj");
 			parent.addChild(jj_branch);
@@ -3478,6 +3578,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jj_jj_ls_branch;
+			
+			
+			SootOption jj_jj_sils_branch = new SootOption("Shared Initialization Local Splitter", "jjjj_sils");
+			subParent.addChild(jj_jj_sils_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_sils_branch;
 			
 			
 			SootOption jj_jj_a_branch = new SootOption("Jimple Local Aggregator", "jjjj_a");
@@ -4297,6 +4407,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = bb_bb_lp_branch;
 			
 			
+			SootOption bb_bb_ne_branch = new SootOption("Nop Eliminator", "bbbb_ne");
+			subParent.addChild(bb_bb_ne_branch);
+
+
+			
+
+			
+			subSectParent = bb_bb_ne_branch;
+			
+			
 			//Baf Optimization
 			SootOption bop_branch = new SootOption("Baf Optimization", "bop");
 			parent.addChild(bop_branch);
@@ -4689,6 +4809,26 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return Input_Optionsfull_resolver_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsignore_methodsource_error_widget;
+	
+	private void setInput_Optionsignore_methodsource_error_widget(BooleanOptionWidget widget) {
+		Input_Optionsignore_methodsource_error_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsignore_methodsource_error_widget() {
+		return Input_Optionsignore_methodsource_error_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsresolve_all_dotnet_methods_widget;
+	
+	private void setInput_Optionsresolve_all_dotnet_methods_widget(BooleanOptionWidget widget) {
+		Input_Optionsresolve_all_dotnet_methods_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsresolve_all_dotnet_methods_widget() {
+		return Input_Optionsresolve_all_dotnet_methods_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsallow_phantom_refs_widget;
 	
 	private void setInput_Optionsallow_phantom_refs_widget(BooleanOptionWidget widget) {
@@ -4707,6 +4847,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getInput_Optionsallow_phantom_elms_widget() {
 		return Input_Optionsallow_phantom_elms_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsallow_cg_errors_widget;
+	
+	private void setInput_Optionsallow_cg_errors_widget(BooleanOptionWidget widget) {
+		Input_Optionsallow_cg_errors_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsallow_cg_errors_widget() {
+		return Input_Optionsallow_cg_errors_widget;
 	}	
 	
 	private BooleanOptionWidget Input_Optionsno_bodies_for_excluded_widget;
@@ -4771,6 +4921,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	}	
 	
 	
+
+	private ListOptionWidget Input_Optionsprocess_jar_dir_widget;
+	
+	private void setInput_Optionsprocess_jar_dir_widget(ListOptionWidget widget) {
+		Input_Optionsprocess_jar_dir_widget = widget;
+	}
+	
+	public ListOptionWidget getInput_Optionsprocess_jar_dir_widget() {
+		return Input_Optionsprocess_jar_dir_widget;
+	}	
+	
+	
 	
 	private StringOptionWidget Input_Optionssoot_classpath_widget;
 	
@@ -4792,6 +4954,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public StringOptionWidget getInput_Optionssoot_modulepath_widget() {
 		return Input_Optionssoot_modulepath_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionsdotnet_nativehost_path_widget;
+	
+	private void setInput_Optionsdotnet_nativehost_path_widget(StringOptionWidget widget) {
+		Input_Optionsdotnet_nativehost_path_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsdotnet_nativehost_path_widget() {
+		return Input_Optionsdotnet_nativehost_path_widget;
 	}
 	
 	
@@ -5088,6 +5262,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	
 	
+	private StringOptionWidget Processing_Optionsnum_threads_widget;
+	
+	private void setProcessing_Optionsnum_threads_widget(StringOptionWidget widget) {
+		Processing_Optionsnum_threads_widget = widget;
+	}
+	
+	public StringOptionWidget getProcessing_Optionsnum_threads_widget() {
+		return Processing_Optionsnum_threads_widget;
+	}
+	
+	
+	
 	private MultiOptionWidget Processing_Optionswrong_staticness_widget;
 	
 	private void setProcessing_Optionswrong_staticness_widget(MultiOptionWidget widget) {
@@ -5213,6 +5399,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbjb_lsenabled_widget() {
 		return jbjb_lsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_silsenabled_widget;
+	
+	private void setjbjb_silsenabled_widget(BooleanOptionWidget widget) {
+		jbjb_silsenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_silsenabled_widget() {
+		return jbjb_silsenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_aenabled_widget;
@@ -5455,6 +5651,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return jbjb_ttenabled_widget;
 	}	
 	
+	private BooleanOptionWidget jbjb_cbfenabled_widget;
+	
+	private void setjbjb_cbfenabled_widget(BooleanOptionWidget widget) {
+		jbjb_cbfenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_cbfenabled_widget() {
+		return jbjb_cbfenabled_widget;
+	}	
+	
 	private BooleanOptionWidget jjenabled_widget;
 	
 	private void setjjenabled_widget(BooleanOptionWidget widget) {
@@ -5483,6 +5689,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjjjj_lsenabled_widget() {
 		return jjjj_lsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_silsenabled_widget;
+	
+	private void setjjjj_silsenabled_widget(BooleanOptionWidget widget) {
+		jjjj_silsenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_silsenabled_widget() {
+		return jjjj_silsenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jjjj_aenabled_widget;
@@ -8051,6 +8267,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return bbbb_lpunsplit_original_locals_widget;
 	}	
 	
+	private BooleanOptionWidget bbbb_neenabled_widget;
+	
+	private void setbbbb_neenabled_widget(BooleanOptionWidget widget) {
+		bbbb_neenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getbbbb_neenabled_widget() {
+		return bbbb_neenabled_widget;
+	}	
+	
 	private BooleanOptionWidget bopenabled_widget;
 	
 	private void setbopenabled_widget(BooleanOptionWidget widget) {
@@ -8693,6 +8919,28 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application classes and any \nclasses that they refer to, along with any classes it needs for \nthe Jimple typing, but it does not transitively resolve \nreferences in these additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all classes that are \nresolved, regardless of why they were resolved. In whole-program \nmode, class resolution is always fully transitive. Therefore, in \nwhole-program mode, this switch has no effect, and class \nresolution is always performed as if it were turned on.", defaultBool)));
 
+		defKey = ""+" "+""+" "+"ignore-methodsource-error";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setInput_Optionsignore_methodsource_error_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore MethodSource Error", "", "","ignore-methodsource-error", "\nAllow to ignore thrown exceptions and return an empty jimple \nbody instead.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"resolve-all-dotnet-methods";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setInput_Optionsresolve_all_dotnet_methods_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Resolve all Dotnet Methods", "", "","resolve-all-dotnet-methods", "\nResolve all dotnet methods, such as unsafe methods or methods \nwith pointers as parameter.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"allow-phantom-refs";
 		defKey = defKey.trim();
 
@@ -8714,6 +8962,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionsallow_phantom_elms_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom Elements in Non-Phantom Classes", "", "","allow-phantom-elms", "\nAllow non-phantom classes to contain phantom fields and methods \nwhen allow-phantom-refs is enabled. This can be used to add \nmissing methods and fields to a class that may not exactly match \na similar class used by other classes.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"allow-cg-errors";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setInput_Optionsallow_cg_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Errors during callgraph construction", "", "","allow-cg-errors", "\nAllow the callgraph construction to continue even if there are \nerrors. Errors are logged instead.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"no-bodies-for-excluded";
 		defKey = defKey.trim();
@@ -8796,6 +9055,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"apk-class-jimple apk-c-j",
 						"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk files. Never load \na .java file.",
 						false),
+				new OptionData("Dotnet Assembly",
+						"dotnet",
+						"\nTry to resolve classes from .dll and .exe files found in the \nSoot classpath.",
+						false),
 		};
 
 
@@ -8822,6 +9085,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-path process-dir", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. You can also state JAR files. If subdirectories of \nDIR contain .class or .jimple files, Soot assumes that the \nsubdirectory names correspond to components of the classes' \npackage names. If DIR contains subA/subB/MyClass.class, for \ninstance, then Soot assumes MyClass is in package subA.subB.", defaultString)));
 		
 
+		defKey = ""+" "+""+" "+"process-jar-dir";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getArrayDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setInput_Optionsprocess_jar_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process JAR Directory",  "", "","process-jar-dir", "\nAdd all classes found in JAR files found in DIR to the set of \nargument classes which is analyzed and transformed by Soot. You \ncan specify the option more than once, to add argument classes \nfrom multiple directories.", defaultString)));
+		
+
 		defKey = ""+" "+""+" "+"cp soot-class-path soot-classpath";
 		defKey = defKey.trim();
 
@@ -8844,6 +9119,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionssoot_modulepath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Modulepath",  "", "","soot-modulepath", "\nUse MODULEPATH as the list of directories in which Soot should \nsearch for classes. MODULEPATH should be a series of \ndirectories, separated by the path separator character for your \nsystem. If no modulepath is set on the command line, but the \nsystem property soot.module.path has been set, Soot uses its \nvalue as the modulepath. If neither the command line nor the \nsystem properties specify a Soot classpath, Soot falls back on a \ndefault modulepath jrt:.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"dotnet-nativehost-path";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setInput_Optionsdotnet_nativehost_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Dotnet NativeHost Path",  "", "","dotnet-nativehost-path", "\nUse dotnet-nativehost-path to load the NativeHost library which \nis needed for soot.dotnet.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"android-jars";
@@ -9392,6 +9679,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"dalvik",
 						"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
 						false),
+				new OptionData("Dotnet",
+						"dotnet",
+						"\nSpecialized throw analysis implementation that covers the \nsemantics of .NET and CLR",
+						false),
 				new OptionData("AutoSelect",
 						"auto-select",
 						"\nWhen processing DEX or APK files, choose the Dalvik throw \nanalysis. Otherwise, choose the unit throw analysis.",
@@ -9428,6 +9719,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"dalvik",
 						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. This is the equivalent of Unit \nabove, but targeting the Dalvik VM semantics as opposed to those \nof the JVM.",
 						false),
+				new OptionData("Dotnet",
+						"dotnet",
+						"\nSpecialized throw analysis implementation that covers the \nsemantics of .NET and CLR",
+						false),
 		};
 
 
@@ -9452,6 +9747,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration FILE and registers all plugins. \nMake sure that the option is specified before you try to pass \noptions to the loaded plugins.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"t num-threads";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setProcessing_Optionsnum_threads_widget(new StringOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Class transformation parallelism",  "", "","t num-threads", "\nForce Soot to use NUM threads to transform classes in parallel. \nThe default behavior is to use one thread per processor.", defaultString)));
 		
 
 
@@ -9664,6 +9971,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjbjb_ls;
+	}
+
+
+
+	private Composite jbjb_silsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_sils = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_sils.setLayout(layout);
+	
+	 	editGroupjbjb_sils.setText("Shared Initialization Local Splitter");
+	 	
+		editGroupjbjb_sils.setData("id", "jbjb_sils");
+		
+		String descjbjb_sils = "Splits primitive locals used as different types";	
+		if (descjbjb_sils.length() > 0) {
+			Label descLabeljbjb_sils = new Label(editGroupjbjb_sils, SWT.WRAP);
+			descLabeljbjb_sils.setText(descjbjb_sils);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.sils"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_silsenabled_widget(new BooleanOptionWidget(editGroupjbjb_sils, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.sils","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_sils;
 	}
 
 
@@ -10292,6 +10640,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 
+	private Composite jbjb_cbfCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_cbf = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_cbf.setLayout(layout);
+	
+	 	editGroupjbjb_cbf.setText("Conditional Branch Folder");
+	 	
+		editGroupjbjb_cbf.setData("id", "jbjb_cbf");
+		
+		String descjbjb_cbf = "Conditional branch folder";	
+		if (descjbjb_cbf.length() > 0) {
+			Label descLabeljbjb_cbf = new Label(editGroupjbjb_cbf, SWT.WRAP);
+			descLabeljbjb_cbf.setText(descjbjb_cbf);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.cbf"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_cbfenabled_widget(new BooleanOptionWidget(editGroupjbjb_cbf, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.cbf","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_cbf;
+	}
+
+
+
 	private Composite jjCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -10381,6 +10770,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjjjj_ls;
+	}
+
+
+
+	private Composite jjjj_silsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_sils = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_sils.setLayout(layout);
+	
+	 	editGroupjjjj_sils.setText("Shared Initialization Local Splitter");
+	 	
+		editGroupjjjj_sils.setData("id", "jjjj_sils");
+		
+		String descjjjj_sils = "Splits primitive locals used as different types";	
+		if (descjjjj_sils.length() > 0) {
+			Label descLabeljjjj_sils = new Label(editGroupjjjj_sils, SWT.WRAP);
+			descLabeljjjj_sils.setText(descjjjj_sils);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jj.sils"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjjjj_silsenabled_widget(new BooleanOptionWidget(editGroupjjjj_sils, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.sils","enabled", "\n", defaultBool)));
+
+
+		return editGroupjjjj_sils;
 	}
 
 
@@ -14088,7 +14518,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p phase-option", "shimple","extended", "\nIf enabled, Shimple will created extended SSA (SSI) form.", defaultBool)));
+		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p phase-option", "shimple","extended", "\nIf enabled, Shimple will create extended SSA (SSI) form.", defaultBool)));
 
 		defKey = "p phase-option"+" "+"shimple"+" "+"debug";
 		defKey = defKey.trim();
@@ -16446,6 +16876,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupbbbb_lp;
+	}
+
+
+
+	private Composite bbbb_neCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupbbbb_ne = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupbbbb_ne.setLayout(layout);
+	
+	 	editGroupbbbb_ne.setText("Nop Eliminator");
+	 	
+		editGroupbbbb_ne.setData("id", "bbbb_ne");
+		
+		String descbbbb_ne = "Nop eliminator";	
+		if (descbbbb_ne.length() > 0) {
+			Label descLabelbbbb_ne = new Label(editGroupbbbb_ne, SWT.WRAP);
+			descLabelbbbb_ne.setText(descbbbb_ne);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"bb.ne"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setbbbb_neenabled_widget(new BooleanOptionWidget(editGroupbbbb_ne, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.ne","enabled", "\n", defaultBool)));
+
+
+		return editGroupbbbb_ne;
 	}
 
 

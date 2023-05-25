@@ -51,16 +51,8 @@ public class Timer {
   static void doGarbageCollecting() {
     final G g = G.v();
     // Subtract garbage collection time
-    if (g.Timer_isGarbageCollecting) {
-      return;
-    }
-
-    if (!Options.v().subtract_gc()) {
-      return;
-    }
-
     // garbage collects only every 4 calls to avoid round off errors
-    if ((g.Timer_count++ % 4) != 0) {
+    if (g.Timer_isGarbageCollecting || !Options.v().subtract_gc() || ((g.Timer_count++ % 4) != 0)) {
       return;
     }
 

@@ -35,30 +35,23 @@ class SwitchNodeGraph implements DirectedGraph {
   private final HashMap binding;
 
   public SwitchNodeGraph(List body) {
-    this.body = new LinkedList();
-    this.body.addAll(body);
+    this.body = new LinkedList(body);
+    this.binding = new HashMap();
+    this.heads = new LinkedList();
+    this.tails = new LinkedList();
 
-    binding = new HashMap();
-
-    heads = new LinkedList();
-    tails = new LinkedList();
-
-    Iterator it = body.iterator();
-    while (it.hasNext()) {
-      SwitchNode sn = (SwitchNode) it.next();
-
+    for (Object o : body) {
+      SwitchNode sn = (SwitchNode) o;
       binding.put(sn.get_AugStmt().bsuccs.get(0), sn);
       sn.reset();
     }
 
-    it = body.iterator();
-    while (it.hasNext()) {
-      ((SwitchNode) it.next()).setup_Graph(binding);
+    for (Object o : body) {
+      ((SwitchNode) o).setup_Graph(binding);
     }
 
-    it = body.iterator();
-    while (it.hasNext()) {
-      SwitchNode sn = (SwitchNode) it.next();
+    for (Object o : body) {
+      SwitchNode sn = (SwitchNode) o;
 
       if (sn.get_Preds().isEmpty()) {
         heads.add(sn);
@@ -70,26 +63,32 @@ class SwitchNodeGraph implements DirectedGraph {
     }
   }
 
+  @Override
   public int size() {
     return body.size();
   }
 
+  @Override
   public List getHeads() {
     return heads;
   }
 
+  @Override
   public List getTails() {
     return tails;
   }
 
+  @Override
   public List getPredsOf(Object o) {
     return ((SwitchNode) o).get_Preds();
   }
 
+  @Override
   public List getSuccsOf(Object o) {
     return ((SwitchNode) o).get_Succs();
   }
 
+  @Override
   public Iterator iterator() {
     return body.iterator();
   }

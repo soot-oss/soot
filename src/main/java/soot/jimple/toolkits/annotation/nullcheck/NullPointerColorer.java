@@ -36,11 +36,12 @@ import soot.SootClass;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.toolkits.annotation.tags.NullCheckTag;
 import soot.tagkit.ColorTag;
 import soot.tagkit.KeyTag;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 
 public class NullPointerColorer extends BodyTransformer {
@@ -55,7 +56,8 @@ public class NullPointerColorer extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(new ExceptionalUnitGraph(b));
+    BranchedRefVarsAnalysis analysis
+        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
 
     for (Unit s : b.getUnits()) {
       FlowSet<RefIntPair> beforeSet = analysis.getFlowBefore(s);
@@ -72,15 +74,15 @@ public class NullPointerColorer extends BodyTransformer {
     final SootClass declaringClass = b.getMethod().getDeclaringClass();
     for (Tag next : declaringClass.getTags()) {
       if (next instanceof KeyTag) {
-        if ("NullCheckTag".equals(((KeyTag) next).analysisType())) {
+        if (NullCheckTag.NAME.equals(((KeyTag) next).analysisType())) {
           keysAdded = true;
         }
       }
     }
     if (!keysAdded) {
-      declaringClass.addTag(new KeyTag(ColorTag.RED, "Nullness: Null", "NullCheckTag"));
-      declaringClass.addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null", "NullCheckTag"));
-      declaringClass.addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown", "NullCheckTag"));
+      declaringClass.addTag(new KeyTag(ColorTag.RED, "Nullness: Null", NullCheckTag.NAME));
+      declaringClass.addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null", NullCheckTag.NAME));
+      declaringClass.addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown", NullCheckTag.NAME));
     }
   }
 
@@ -91,23 +93,23 @@ public class NullPointerColorer extends BodyTransformer {
       switch (analysis.anyRefInfo(val, set)) {
         case BranchedRefVarsAnalysis.kNull: {
           // analysis.kNull
-          u.addTag(new StringTag(val + ": Null", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.RED, "NullCheckTag"));
+          u.addTag(new StringTag(val + ": Null", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.RED, NullCheckTag.NAME));
           break;
         }
         case BranchedRefVarsAnalysis.kNonNull: {
-          u.addTag(new StringTag(val + ": NonNull", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.GREEN, "NullCheckTag"));
+          u.addTag(new StringTag(val + ": NonNull", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.GREEN, NullCheckTag.NAME));
           break;
         }
         case BranchedRefVarsAnalysis.kTop: {
-          u.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
+          u.addTag(new StringTag(val + ": Nullness Unknown", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.BLUE, NullCheckTag.NAME));
           break;
         }
         case BranchedRefVarsAnalysis.kBottom: {
-          u.addTag(new StringTag(val + ": Nullness Unknown", "NullCheckTag"));
-          vBox.addTag(new ColorTag(ColorTag.BLUE, "NullCheckTag"));
+          u.addTag(new StringTag(val + ": Nullness Unknown", NullCheckTag.NAME));
+          vBox.addTag(new ColorTag(ColorTag.BLUE, NullCheckTag.NAME));
           break;
         }
       }

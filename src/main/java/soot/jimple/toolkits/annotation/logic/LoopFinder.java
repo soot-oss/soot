@@ -35,7 +35,7 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Unit;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
 
@@ -55,7 +55,7 @@ public class LoopFinder extends BodyTransformer {
     if (loops != null) {
       return loops;
     }
-    return getLoops(new ExceptionalUnitGraph(b));
+    return getLoops(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
   }
 
   public Set<Loop> getLoops(UnitGraph g) {

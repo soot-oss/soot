@@ -22,7 +22,9 @@ package soot.jimple.spark.solver;
  * #L%
  */
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
@@ -62,13 +64,23 @@ public class TopoSorter {
     if (visited.contains(n)) {
       return;
     }
-    visited.add(n);
-    Node[] succs = pag.simpleLookup(n);
-    for (Node element : succs) {
-      if (ignoreTypes || pag.getTypeManager().castNeverFails(n.getType(), element.getType())) {
-        dfsVisit((VarNode) element);
+    List<VarNode> stack = new ArrayList<>();
+    List<VarNode> all = new ArrayList<>();
+    stack.add(n);
+    while (!stack.isEmpty()) {
+      VarNode s = stack.remove(stack.size() - 1);
+      if (visited.add(s)) {
+        all.add(s);
+        Node[] succs = pag.simpleLookup(s);
+        for (Node element : succs) {
+          if (ignoreTypes || pag.getTypeManager().castNeverFails(n.getType(), element.getType())) {
+            stack.add((VarNode) element);
+          }
+        }
       }
     }
-    n.setFinishingNumber(nextFinishNumber++);
+    for (int i = all.size() - 1; i >= 0; i--) {
+      all.get(i).setFinishingNumber(nextFinishNumber++);
+    }
   }
 }

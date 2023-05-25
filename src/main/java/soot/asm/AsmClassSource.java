@@ -24,9 +24,11 @@ package soot.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.objectweb.asm.ClassReader;
+
 import soot.ClassSource;
-import soot.FoundFile;
+import soot.IFoundFile;
 import soot.SootClass;
 import soot.SootResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
@@ -38,7 +40,7 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
  */
 public class AsmClassSource extends ClassSource {
 
-  protected FoundFile foundFile;
+  protected IFoundFile foundFile;
 
   /**
    * Constructs a new ASM class source.
@@ -48,7 +50,7 @@ public class AsmClassSource extends ClassSource {
    * @param foundFile
    *          foundfile pointing to the data for class.
    */
-  protected AsmClassSource(String cls, FoundFile foundFile) {
+  protected AsmClassSource(String cls, IFoundFile foundFile) {
     super(cls);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");
@@ -68,8 +70,8 @@ public class AsmClassSource extends ClassSource {
       deps.typesToSignature.addAll(scb.deps);
       // add the outer class information, could not be called in the builder, since sc needs to be
       // resolved - before calling setOuterClass()
-      String outerClassName = null;
       if (!sc.hasOuterClass() && className.contains("$")) {
+        String outerClassName;
         if (className.contains("$-")) {
           /*
            * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may

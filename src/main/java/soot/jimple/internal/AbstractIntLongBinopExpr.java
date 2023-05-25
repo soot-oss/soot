@@ -21,35 +21,28 @@ package soot.jimple.internal;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
 import soot.IntType;
-import soot.LongType;
 import soot.ShortType;
 import soot.Type;
-import soot.UnknownType;
-import soot.Value;
+import soot.ValueBox;
 
 @SuppressWarnings("serial")
-abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr {
+public abstract class AbstractIntLongBinopExpr extends AbstractBinopExpr {
 
-  public static boolean isIntLikeType(Type t) {
-    return t.equals(IntType.v()) || t.equals(ByteType.v()) || t.equals(ShortType.v()) || t.equals(CharType.v())
-        || t.equals(BooleanType.v());
+  protected AbstractIntLongBinopExpr(ValueBox op1Box, ValueBox op2Box) {
+    super(op1Box, op2Box);
   }
 
-  public Type getType() {
-    Value op1 = op1Box.getValue();
-    Value op2 = op2Box.getValue();
+  public static boolean isIntLikeType(Type t) {
+    return IntType.v().equals(t) || ByteType.v().equals(t) || ShortType.v().equals(t) || CharType.v().equals(t)
+        || BooleanType.v().equals(t);
+  }
 
-    if (isIntLikeType(op1.getType()) && isIntLikeType(op2.getType())) {
-      return IntType.v();
-    } else if (op1.getType().equals(LongType.v()) && op2.getType().equals(LongType.v())) {
-      return LongType.v();
-    } else {
-      return UnknownType.v();
-    }
+  @Override
+  public Type getType() {
+    return getType(AbstractBinopExpr.BinopExprEnum.ABASTRACT_INT_LONG_BINOP_EXPR);
   }
 }

@@ -24,12 +24,26 @@ package soot.tagkit;
 
 /**
  * Represents the deprecated attribute used by fields, methods and classes
+ * 
+ * The two attributes <code>forRemoval</code> and <code>since</code> were introduced with Java 9.
  */
 public class DeprecatedTag implements Tag {
 
   public static final String NAME = "DeprecatedTag";
 
+  private final Boolean forRemoval;
+
+  private final String since;
+
   public DeprecatedTag() {
+    forRemoval = null;
+    since = null;
+  }
+
+  public DeprecatedTag(Boolean forRemoval, String since) {
+    super();
+    this.forRemoval = forRemoval;
+    this.since = since;
   }
 
   @Override
@@ -44,6 +58,14 @@ public class DeprecatedTag implements Tag {
 
   public String getInfo() {
     return "Deprecated";
+  }
+
+  public Boolean getForRemoval() {
+    return forRemoval;
+  }
+
+  public String getSince() {
+    return since;
   }
 
   @Override

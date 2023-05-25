@@ -393,11 +393,7 @@ class WeightedDirectedSparseGraph {
   }
 
   public boolean equals(Object other) {
-    if (other == null) {
-      return false;
-    }
-
-    if (!(other instanceof WeightedDirectedSparseGraph)) {
+    if ((other == null) || !(other instanceof WeightedDirectedSparseGraph)) {
       return false;
     }
 
@@ -424,11 +420,7 @@ class WeightedDirectedSparseGraph {
       Hashtable thistarget = sources.get(src);
       Hashtable othertarget = othersources.get(src);
 
-      if (othertarget == null) {
-        return false;
-      }
-
-      if (thistarget.size() != othertarget.size()) {
+      if ((othertarget == null) || (thistarget.size() != othertarget.size())) {
         return false;
       }
 
@@ -510,11 +502,7 @@ class WeightedDirectedSparseGraph {
 
   private boolean SSSPFinder(Object src) {
     Hashtable<Object, IntContainer> outedges = sources.get(src);
-    if (outedges == null) {
-      return true;
-    }
-
-    if (outedges.size() == 0) {
+    if ((outedges == null) || (outedges.size() == 0)) {
       return true;
     }
 

@@ -158,8 +158,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
         throw new IllegalStateException("No call graph found!");
       }
 
-      ReachableMethods reachableMethods =
-          new ReachableMethods(Scene.v().getCallGraph(), Collections.<MethodOrMethodContext>singletonList(container));
+      ReachableMethods reachableMethods
+          = new ReachableMethods(Scene.v().getCallGraph(), Collections.<MethodOrMethodContext>singletonList(container));
       reachableMethods.update();
       for (Iterator<MethodOrMethodContext> iterator = reachableMethods.listener(); iterator.hasNext();) {
         SootMethod m = (SootMethod) iterator.next();

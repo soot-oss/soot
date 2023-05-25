@@ -64,19 +64,19 @@ public class SequenceFinder implements FactFinder {
 
       while (as.bpreds.size() == 1) {
         AugmentedStmt pas = (AugmentedStmt) as.bpreds.get(0);
-        if ((body.contains(pas) == false) || (childUnion.contains(pas) == true)) {
+        if (!body.contains(pas) || childUnion.contains(pas)) {
           break;
         }
 
         as = pas;
       }
 
-      while ((body.contains(as)) && (childUnion.contains(as) == false)) {
+      while ((body.contains(as)) && !childUnion.contains(as)) {
 
         childUnion.add(as);
         sequenceBody.addLast(as);
 
-        if (as.bsuccs.isEmpty() == false) {
+        if (!as.bsuccs.isEmpty()) {
           as = (AugmentedStmt) as.bsuccs.get(0);
         }
 

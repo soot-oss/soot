@@ -83,8 +83,7 @@ public class PropWorklist extends Propagator {
       if (verbose) {
         logger.debug("Now handling field references");
       }
-      for (Object object : pag.storeSources()) {
-        final VarNode src = (VarNode) object;
+      for (VarNode src : pag.storeSources()) {
         Node[] targets = pag.storeLookup(src);
         for (Node element0 : targets) {
           final FieldRefNode target = (FieldRefNode) element0;
@@ -100,8 +99,8 @@ public class PropWorklist extends Propagator {
         }
       }
       HashSet<Object[]> edgesToPropagate = new HashSet<Object[]>();
-      for (Object object : pag.loadSources()) {
-        handleFieldRefNode((FieldRefNode) object, edgesToPropagate);
+      for (FieldRefNode object : pag.loadSources()) {
+        handleFieldRefNode(object, edgesToPropagate);
       }
       Set<PointsToSetInternal> nodesToFlush = Collections.newSetFromMap(new IdentityHashMap<PointsToSetInternal, Boolean>());
       for (Object[] pair : edgesToPropagate) {

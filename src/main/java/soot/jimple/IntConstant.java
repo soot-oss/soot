@@ -28,13 +28,30 @@ import soot.util.Switch;
 
 public class IntConstant extends ArithmeticConstant {
 
+  private static final long serialVersionUID = 8622167089453261784L;
+
   public final int value;
+
+  private static final int MAX_CACHE = 128;
+  private static final int MIN_CACHE = -127;
+  private static final int ABS_MIN_CACHE = Math.abs(MIN_CACHE);
+  private static final IntConstant[] CACHED = new IntConstant[MAX_CACHE + ABS_MIN_CACHE];
 
   protected IntConstant(int value) {
     this.value = value;
   }
 
   public static IntConstant v(int value) {
+    if (value > MIN_CACHE && value < MAX_CACHE) {
+      int idx = value + ABS_MIN_CACHE;
+      IntConstant c = CACHED[idx];
+      if (c != null) {
+        return c;
+      }
+      c = new IntConstant(value);
+      CACHED[idx] = c;
+      return c;
+    }
     return new IntConstant(value);
   }
 
@@ -103,6 +120,14 @@ public class IntConstant extends ArithmeticConstant {
       throw new IllegalArgumentException("IntConstant expected");
     }
     return IntConstant.v((this.value != ((IntConstant) c).value) ? 1 : 0);
+  }
+
+  @Override
+  public boolean isLessThan(NumericConstant c) {
+    if (!(c instanceof IntConstant)) {
+      throw new IllegalArgumentException("IntConstant expected");
+    }
+    return this.value < ((IntConstant) c).value;
   }
 
   @Override

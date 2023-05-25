@@ -24,13 +24,20 @@ package soot.jimple.internal;
 
 import soot.Type;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.Jimple;
 
 public class JNewArrayExpr extends AbstractNewArrayExpr {
+
   public JNewArrayExpr(Type type, Value size) {
     super(type, Jimple.v().newImmediateBox(size));
   }
 
+  public JNewArrayExpr(Type type, ValueBox box) {
+    super(type, box);
+  }
+
+  @Override
   public Object clone() {
     return new JNewArrayExpr(getBaseType(), Jimple.cloneIfNecessary(getSize()));
   }

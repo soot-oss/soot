@@ -27,12 +27,13 @@ import soot.grimp.Grimp;
 import soot.jimple.internal.JReturnStmt;
 
 public class GReturnStmt extends JReturnStmt {
+
   public GReturnStmt(Value returnValue) {
     super(Grimp.v().newExprBox(returnValue));
   }
 
+  @Override
   public Object clone() {
     return new GReturnStmt(Grimp.cloneIfNecessary(getOp()));
   }
-
 }

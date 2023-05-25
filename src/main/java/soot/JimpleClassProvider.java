@@ -35,7 +35,7 @@ public class JimpleClassProvider implements ClassProvider {
    */
   @Override
   public ClassSource find(String className) {
-    FoundFile file = SourceLocator.v().lookupInClassPath(className + ".jimple");
+    IFoundFile file = SourceLocator.v().lookupInClassPath(className + ".jimple");
     if (file == null) {
       if (Options.v().permissive_resolving()) {
         file = SourceLocator.v().lookupInClassPath(className.replace('.', '/') + ".jimple");

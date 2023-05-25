@@ -30,40 +30,39 @@ import soot.Unit;
 import soot.baf.BafBody;
 
 public class JimpleToBafContext {
-  private Map<Local, Local> jimpleLocalToBafLocal = new HashMap<Local, Local>();
+
+  private final Map<Local, Local> jimpleLocalToBafLocal;
   private BafBody bafBody;
   private Unit mCurrentUnit;
 
   /**
    * An approximation of the local count is required in order to allocate a reasonably sized hash map.
    */
-
   public JimpleToBafContext(int localCount) {
-    jimpleLocalToBafLocal = new HashMap<Local, Local>(localCount * 2 + 1, 0.7f);
+    this.jimpleLocalToBafLocal = new HashMap<Local, Local>(localCount * 2 + 1, 0.7f);
   }
 
   public void setCurrentUnit(Unit u) {
-    mCurrentUnit = u;
+    this.mCurrentUnit = u;
   }
 
   public Unit getCurrentUnit() {
-    return mCurrentUnit;
+    return this.mCurrentUnit;
   }
 
   public Local getBafLocalOfJimpleLocal(Local jimpleLocal) {
-    return jimpleLocalToBafLocal.get(jimpleLocal);
+    return this.jimpleLocalToBafLocal.get(jimpleLocal);
   }
 
   public void setBafLocalOfJimpleLocal(Local jimpleLocal, Local bafLocal) {
-    jimpleLocalToBafLocal.put(jimpleLocal, bafLocal);
+    this.jimpleLocalToBafLocal.put(jimpleLocal, bafLocal);
   }
 
   public BafBody getBafBody() {
-    return bafBody;
+    return this.bafBody;
   }
 
   public void setBafBody(BafBody bafBody) {
     this.bafBody = bafBody;
   }
-
 }

@@ -25,6 +25,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import soot.SootClass;
 import soot.SootMethodRef;
@@ -35,34 +36,36 @@ import soot.options.Options;
 import soot.tagkit.SourceFileTag;
 
 public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr {
+
   public JVirtualInvokeExpr(Value base, SootMethodRef methodRef, List<? extends Value> args) {
     super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);
 
     if (!Options.v().ignore_resolution_errors()) {
+      final SootClass sc = methodRef.declaringClass();
       // Check that the method's class is resolved enough
-      methodRef.declaringClass().checkLevelIgnoreResolving(SootClass.HIERARCHY);
+      sc.checkLevelIgnoreResolving(SootClass.HIERARCHY);
       // now check if the class is valid
-      if (methodRef.declaringClass().isInterface()) {
-        SootClass sc = methodRef.declaringClass();
-        String path = sc.hasTag("SourceFileTag") ? ((SourceFileTag) sc.getTag("SourceFileTag")).getAbsolutePath() : "uknown";
-        throw new RuntimeException("Trying to create virtual invoke expression for interface type ("
-            + methodRef.declaringClass().getName() + " in file " + path + "). Use JInterfaceInvokeExpr instead!");
+      if (sc.isInterface()) {
+        SourceFileTag tag = (SourceFileTag) sc.getTag(SourceFileTag.NAME);
+        throw new RuntimeException("Trying to create virtual invoke expression for interface type (" + sc.getName()
+            + " in file " + (tag != null ? tag.getAbsolutePath() : "unknown") + "). Use JInterfaceInvokeExpr instead!");
       }
     }
 
-    for (int i = 0; i < args.size(); i++) {
-      this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
+    final Jimple jimp = Jimple.v();
+    for (ListIterator<? extends Value> it = args.listIterator(); it.hasNext();) {
+      Value v = it.next();
+      this.argBoxes[it.previousIndex()] = jimp.newImmediateBox(v);
     }
   }
 
+  @Override
   public Object clone() {
-    ArrayList<Value> clonedArgs = new ArrayList<Value>(getArgCount());
-
-    for (int i = 0; i < getArgCount(); i++) {
-      clonedArgs.add(i, getArg(i));
+    final int count = getArgCount();
+    List<Value> clonedArgs = new ArrayList<Value>(count);
+    for (int i = 0; i < count; i++) {
+      clonedArgs.add(Jimple.cloneIfNecessary(getArg(i)));
     }
-
     return new JVirtualInvokeExpr(getBase(), methodRef, clonedArgs);
   }
-
 }

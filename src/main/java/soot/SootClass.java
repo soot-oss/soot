@@ -25,6 +25,7 @@ package soot;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -104,8 +105,8 @@ public class SootClass extends AbstractHost implements Numberable {
    * Lazy initialized array containing some validators in order to validate the SootClass.
    */
   private static class LazyValidatorsSingleton {
-    static final ClassValidator[] V =
-        new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(), ClassFlagsValidator.v() };
+    static final ClassValidator[] V
+        = new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(), ClassFlagsValidator.v() };
 
     private LazyValidatorsSingleton() {
     }
@@ -127,6 +128,9 @@ public class SootClass extends AbstractHost implements Numberable {
   }
 
   public SootClass(String name, int modifiers, String moduleName) {
+    if (name.length() == 0) {
+      throw new RuntimeException("Class must not be empty!");
+    }
     if (name.length() > 0 && name.charAt(0) == '[') {
       throw new RuntimeException("Attempt to make a class whose name starts with [");
     }
@@ -182,10 +186,7 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void checkLevel(int level) {
     // Fast check: e.g. FastHierarchy.canStoreClass calls this method quite often
-    if (resolvingLevel() >= level) {
-      return;
-    }
-    if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
+    if ((resolvingLevel() >= level) || !Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
       return;
     }
     checkLevelIgnoreResolving(level);
@@ -266,9 +267,9 @@ public class SootClass extends AbstractHost implements Numberable {
     if (fields == null) {
       fields = new HashChain<>();
     }
-    fields.add(f);
     f.setDeclared(true);
     f.setDeclaringClass(this);
+    fields.add(f);
   }
 
   /**
@@ -351,6 +352,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Returns the field of this class with the given subsignature. If such a field does not exist, an exception is thrown.
    */
   public SootField getField(String subsignature) {
+    // NOTE: getFieldUnsafe(String) calls checkLevel(SIGNATURES)
     SootField sf = getFieldUnsafe(subsignature);
     if (sf == null) {
       throw new RuntimeException("No field " + subsignature + " in class " + getName());
@@ -377,7 +379,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Does this class declare a field with the given subsignature?
    */
   public boolean declaresField(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getFieldUnsafe(String) calls checkLevel(SIGNATURES)
     return getFieldUnsafe(subsignature) != null;
   }
 
@@ -386,6 +388,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * exception is thrown.
    */
   public SootMethod getMethod(NumberedString subsignature) {
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     SootMethod ret = getMethodUnsafe(subsignature);
     if (ret == null) {
       throw new RuntimeException("No method " + subsignature + " in class " + getName());
@@ -407,7 +410,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Does this class declare a method with the given subsignature?
    */
   public boolean declaresMethod(NumberedString subsignature) {
-    // NOTE: getMethodUnsafe(..) calls checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     return getMethodUnsafe(subsignature) != null;
   }
 
@@ -416,7 +419,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * exception is thrown.
    */
   public SootMethod getMethod(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
     if (numberedString == null) {
       throw new RuntimeException("No method " + subsignature + " in class " + getName());
@@ -429,7 +432,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * null is returned.
    */
   public SootMethod getMethodUnsafe(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
     return numberedString == null ? null : getMethodUnsafe(numberedString);
   }
@@ -438,7 +441,7 @@ public class SootClass extends AbstractHost implements Numberable {
    * Does this class declare a method with the given subsignature?
    */
   public boolean declaresMethod(String subsignature) {
-    checkLevel(SIGNATURES);
+    // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
     return numberedString == null ? false : declaresMethod(numberedString);
   }
@@ -530,8 +533,8 @@ public class SootClass extends AbstractHost implements Numberable {
       return sm;
     }
 
-    throw new RuntimeException(
-        "Class " + getName() + " doesn't have method " + name + "(" + parameterTypes + ") : " + returnType);
+    throw new RuntimeException("Class " + getName() + " doesn't have method \""
+        + SootMethod.getSubSignature(name, parameterTypes, returnType) + "\"");
   }
 
   /**
@@ -724,9 +727,9 @@ public class SootClass extends AbstractHost implements Numberable {
       this.fields = new HashChain<>();
     }
 
-    this.fields.add(f);
     f.setDeclared(true);
     f.setDeclaringClass(this);
+    this.fields.add(f);
     return f;
   }
 
@@ -804,12 +807,20 @@ public class SootClass extends AbstractHost implements Numberable {
    * Add the given class to the list of interfaces which are directly implemented by this class.
    */
   public void addInterface(SootClass interfaceClass) {
-    checkLevel(HIERARCHY);
+    // NOTE: implementsInterface(String) calls checkLevel(HIERARCHY)
     if (implementsInterface(interfaceClass.getName())) {
-      throw new RuntimeException("duplicate interface: " + interfaceClass.getName());
+      throw new RuntimeException("duplicate interface on class " + this.getName() + ": " + interfaceClass.getName());
     }
     if (this.interfaces == null) {
-      this.interfaces = new HashChain<SootClass>();
+      // Use a small initial size to reduce excess memory usage in the HashChain.
+      // The HashChain uses an underlying ConcurrentHashMap whose default table
+      // size is 16. However, classes tend to implement very few interfaces in
+      // practice (often just 1) which can lead to a significant wasted memory
+      // allocation when the default table size is used. Using an initial table
+      // size of 4 allows up to 2 interfaces to be added before the table is
+      // resized (an initial table size smaller than 4 will be resized up to 4
+      // when the first element is added due to the load factor in the map).
+      this.interfaces = new HashChain<>(4);
     }
     this.interfaces.add(interfaceClass);
   }
@@ -818,9 +829,9 @@ public class SootClass extends AbstractHost implements Numberable {
    * Removes the given class from the list of interfaces which are directly implemented by this class.
    */
   public void removeInterface(SootClass interfaceClass) {
-    checkLevel(HIERARCHY);
+    // NOTE: implementsInterface(String) calls checkLevel(HIERARCHY)
     if (!implementsInterface(interfaceClass.getName())) {
-      throw new RuntimeException("no such interface: " + interfaceClass.getName());
+      throw new RuntimeException("no such interface on class " + this.getName() + ": " + interfaceClass.getName());
     }
     interfaces.remove(interfaceClass);
     if (interfaces.isEmpty()) {
@@ -1292,5 +1303,31 @@ public class SootClass extends AbstractHost implements Numberable {
     }
     SootModuleInfo moduleInfo = this.getModuleInformation();
     return (moduleInfo == null) ? true : moduleInfo.openPackagePublic(this.getJavaPackageName());
+  }
+
+  /**
+   * Returns all methods with exactly the number of parameters specified.
+   * 
+   * @param name
+   *          the name of the method
+   * @param paramCount
+   *          the parameter count
+   * @return the methods
+   */
+  public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
+    List<SootMethod> result = null;
+    for (SootMethod m : getMethods()) {
+      if (m.getParameterCount() == paramCount && m.getName().equals(name)) {
+        if (result == null) {
+          result = new ArrayList<>();
+        }
+        result.add(m);
+      }
+    }
+
+    if (result == null) {
+      return Collections.emptyList();
+    }
+    return result;
   }
 }

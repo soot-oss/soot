@@ -31,6 +31,10 @@ public class AnnotationFloatElem extends AnnotationElem {
 
   private final float value;
 
+  public AnnotationFloatElem(float v, String name) {
+    this(v, 'F', name);
+  }
+
   public AnnotationFloatElem(float v, char kind, String name) {
     super(kind, name);
     this.value = v;
@@ -63,10 +67,7 @@ public class AnnotationFloatElem extends AnnotationElem {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (this.getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (this.getClass() != obj.getClass())) {
       return false;
     }
     AnnotationFloatElem other = (AnnotationFloatElem) obj;

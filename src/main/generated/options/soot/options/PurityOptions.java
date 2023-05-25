@@ -23,68 +23,66 @@ package soot.options;
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-
-import java.util.*;
+import java.util.Map;
 
 /** Option parser for Purity Analysis [AM]. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class PurityOptions {
 
-    private Map<String, String> options;
+  private Map<String, String> options;
 
-    public PurityOptions(Map<String, String> options) {
-        this.options = options;
-    }
+  public PurityOptions(Map<String, String> options) {
+    this.options = options;
+  }
 
-    /**
-     * Enabled
-     */
-    public boolean enabled() {
-        return soot.PhaseOptions.getBoolean(options, "enabled");
-    }
+  /**
+   * Enabled
+   */
+  public boolean enabled() {
+    return soot.PhaseOptions.getBoolean(options, "enabled");
+  }
 
-    /**
-     * Dump one .dot files for each method summary
-     */
-    public boolean dump_summaries() {
-        return soot.PhaseOptions.getBoolean(options, "dump-summaries");
-    }
+  /**
+   * Dump one .dot files for each method summary
+   */
+  public boolean dump_summaries() {
+    return soot.PhaseOptions.getBoolean(options, "dump-summaries");
+  }
 
-    /**
-     * Dump .dot call-graph annotated with method summaries (huge)
-     */
-    public boolean dump_cg() {
-        return soot.PhaseOptions.getBoolean(options, "dump-cg");
-    }
+  /**
+   * Dump .dot call-graph annotated with method summaries (huge)
+   */
+  public boolean dump_cg() {
+    return soot.PhaseOptions.getBoolean(options, "dump-cg");
+  }
 
-    /**
-     * Dump one .dot for each intra-procedural method analysis (long)
-     */
-    public boolean dump_intra() {
-        return soot.PhaseOptions.getBoolean(options, "dump-intra");
-    }
+  /**
+   * Dump one .dot for each intra-procedural method analysis (long)
+   */
+  public boolean dump_intra() {
+    return soot.PhaseOptions.getBoolean(options, "dump-intra");
+  }
 
-    /**
-     * Print analysis results
-     */
-    public boolean print() {
-        return soot.PhaseOptions.getBoolean(options, "print");
-    }
+  /**
+   * Print analysis results
+   */
+  public boolean print() {
+    return soot.PhaseOptions.getBoolean(options, "print");
+  }
 
-    /**
-     * Annotate class files --
-     * Marks pure methods with a purity bytecode attribute.
-     *
-     */
-    public boolean annotate() {
-        return soot.PhaseOptions.getBoolean(options, "annotate");
-    }
+  /**
+   * Annotate class files -- Marks pure methods with a purity bytecode attribute.
+   *
+   */
+  public boolean annotate() {
+    return soot.PhaseOptions.getBoolean(options, "annotate");
+  }
 
-    /**
-     * Be (quite) verbose
-     */
-    public boolean verbose() {
-        return soot.PhaseOptions.getBoolean(options, "verbose");
-    }
+  /**
+   * Be (quite) verbose
+   */
+  public boolean verbose() {
+    return soot.PhaseOptions.getBoolean(options, "verbose");
+  }
 
 }

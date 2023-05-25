@@ -27,10 +27,12 @@ import soot.Immediate;
 import soot.Value;
 
 public class ImmediateBox extends AbstractValueBox {
+
   public ImmediateBox(Value value) {
     setValue(value);
   }
 
+  @Override
   public boolean canContainValue(Value value) {
     return value instanceof Immediate;
   }

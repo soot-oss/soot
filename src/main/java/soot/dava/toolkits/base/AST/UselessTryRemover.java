@@ -79,7 +79,7 @@ public class UselessTryRemover extends ASTAnalysis {
         subBody.remove(tryNode);
       }
 
-      if (toRemove.isEmpty() == false) {
+      if (!toRemove.isEmpty()) {
         G.v().ASTAnalysis_modified = true;
       }
     }

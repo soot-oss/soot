@@ -750,10 +750,7 @@ public class CFG {
   }
 
   private void adjustLineNumberTable() {
-    if (!Options.v().keep_line_number()) {
-      return;
-    }
-    if (method.code_attr == null) {
+    if (!Options.v().keep_line_number() || (method.code_attr == null)) {
       return;
     }
 
@@ -1290,10 +1287,7 @@ public class CFG {
         Tag tag = stmtstags.get(stmt);
         while (true) {
           pred = (Stmt) units.getPredOf(pred);
-          if (pred == null) {
-            break;
-          }
-          if (!(pred instanceof IdentityStmt)) {
+          if ((pred == null) || !(pred instanceof IdentityStmt)) {
             break;
           }
           stmtstags.put(pred, tag);
@@ -1504,7 +1498,7 @@ public class CFG {
 
       case ByteCode.WIDE:
         throw new RuntimeException("Wide instruction should not be encountered");
-        // break;
+      // break;
 
       case ByteCode.NEWARRAY: {
         typeStack = popSafe(typeStack, IntType.v());
@@ -2883,7 +2877,7 @@ public class CFG {
 
       case ByteCode.WIDE:
         throw new RuntimeException("WIDE instruction should not be encountered anymore");
-        // break;
+      // break;
 
       case ByteCode.NEWARRAY: {
         Type baseType = jimpleTypeOfAtype(((Instruction_Newarray) ins).atype);

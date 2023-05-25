@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -29,6 +31,9 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class ByteType extends PrimType implements IntegerType {
+
+  public static final int HASHCODE = 0x813D1329;
+
   public ByteType(Singletons.Global g) {
   }
 
@@ -36,24 +41,41 @@ public class ByteType extends PrimType implements IntegerType {
     return G.v().soot_ByteType();
   }
 
+  @Override
   public int hashCode() {
-    return 0x813D1329;
+    return HASHCODE;
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public String toString() {
     return "byte";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseByteType(this);
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Byte");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotnetBasicTypes.SYSTEM_BYTE;
+    }
+    return JavaBasicTypes.JAVA_LANG_BYTE;
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Byte.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return byte.class;
   }
 }

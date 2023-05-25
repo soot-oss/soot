@@ -41,9 +41,9 @@ import soot.options.Options;
 public class JimpleClassSource extends ClassSource {
   private static final Logger logger = LoggerFactory.getLogger(JimpleClassSource.class);
 
-  private FoundFile foundFile;
+  private IFoundFile foundFile;
 
-  public JimpleClassSource(String className, FoundFile foundFile) {
+  public JimpleClassSource(String className, IFoundFile foundFile) {
     super(className);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");

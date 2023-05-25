@@ -29,24 +29,28 @@ import soot.jimple.LeExpr;
 import soot.util.Switch;
 
 public class GLeExpr extends AbstractGrimpIntBinopExpr implements LeExpr {
+
   public GLeExpr(Value op1, Value op2) {
     super(op1, op2);
   }
 
+  @Override
   public final String getSymbol() {
     return " <= ";
   }
 
+  @Override
   public final int getPrecedence() {
     return 600;
   }
 
+  @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseLeExpr(this);
   }
 
+  @Override
   public Object clone() {
     return new GLeExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
   }
-
 }

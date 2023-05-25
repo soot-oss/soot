@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -29,6 +31,9 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class IntType extends PrimType implements IntegerType {
+
+  public static final int HASHCODE = 0xB747239F;
+
   public IntType(Singletons.Global g) {
   }
 
@@ -36,27 +41,42 @@ public class IntType extends PrimType implements IntegerType {
     return G.v().soot_IntType();
   }
 
-  /**
-   * Returns true if the given object is equal to this one. Since IntType is a singleton, object equality is fine.
-   */
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
-    return 0xB747239F;
+    return HASHCODE;
   }
 
+  @Override
   public String toString() {
     return "int";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseIntType(this);
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Integer");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotnetBasicTypes.SYSTEM_INT32;
+    }
+    return JavaBasicTypes.JAVA_LANG_INTEGER;
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Integer.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return int.class;
+  }
+
 }

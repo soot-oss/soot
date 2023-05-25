@@ -141,4 +141,15 @@ public interface FlowSet<T> extends Iterable<T> {
    * Returns an unbacked list of contained objects for this FlowSet.
    */
   public List<T> toList();
+
+  /**
+   * Copies a *fresh* copy of this to dest. The input (this) is not referenced somewhere else. This allows subclasses for a
+   * smarter and faster copying.
+   * 
+   * @param in
+   * @param dest
+   */
+  public default void copyFreshToExisting(FlowSet<T> dest) {
+    copy(dest);
+  }
 }

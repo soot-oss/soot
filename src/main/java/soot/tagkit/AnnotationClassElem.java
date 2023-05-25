@@ -31,6 +31,17 @@ public class AnnotationClassElem extends AnnotationElem {
 
   private final String desc;
 
+  /**
+   *
+   * @param typeName
+   *          type name
+   * @param elementName
+   *          name of element
+   */
+  public AnnotationClassElem(String typeName, String elementName) {
+    this(typeName, 'c', elementName);
+  }
+
   public AnnotationClassElem(String s, char kind, String name) {
     super(kind, name);
     this.desc = s;
@@ -63,10 +74,7 @@ public class AnnotationClassElem extends AnnotationElem {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (this.getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (this.getClass() != obj.getClass())) {
       return false;
     }
     AnnotationClassElem other = (AnnotationClassElem) obj;

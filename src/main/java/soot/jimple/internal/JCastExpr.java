@@ -24,15 +24,21 @@ package soot.jimple.internal;
 
 import soot.Type;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.Jimple;
 
 public class JCastExpr extends AbstractCastExpr {
+
   public JCastExpr(Value op, Type type) {
     super(Jimple.v().newImmediateBox(op), type);
   }
 
+  public JCastExpr(ValueBox op, Type type) {
+    super(op, type);
+  }
+
+  @Override
   public Object clone() {
     return new JCastExpr(Jimple.cloneIfNecessary(getOp()), type);
   }
-
 }

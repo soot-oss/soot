@@ -29,11 +29,21 @@ import java.util.List;
 import soot.tagkit.AbstractHost;
 import soot.util.Switch;
 
-/** Provides default implementations for the methods in Unit. */
+/**
+ * Provides default implementations for the methods in Unit.
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractUnit extends AbstractHost implements Unit {
 
-  /** Returns a deep clone of this object. */
+  /**
+   * List of UnitBoxes pointing to this Unit.
+   */
+  protected List<UnitBox> boxesPointingToThis = null;
+
+  /**
+   * Returns a deep clone of this object.
+   */
+  @Override
   public abstract Object clone();
 
   /**
@@ -63,30 +73,29 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
     return Collections.emptyList();
   }
 
-  /** List of UnitBoxes pointing to this Unit. */
-  protected List<UnitBox> boxesPointingToThis = null;
-
-  /** Returns a list of Boxes pointing to this Unit. */
+  /**
+   * Returns a list of Boxes pointing to this Unit.
+   */
   @Override
   public List<UnitBox> getBoxesPointingToThis() {
-    if (boxesPointingToThis == null) {
-      return Collections.emptyList();
-    }
-    return Collections.unmodifiableList(boxesPointingToThis);
+    List<UnitBox> ref = boxesPointingToThis;
+    return (ref == null) ? Collections.emptyList() : Collections.unmodifiableList(ref);
   }
 
   @Override
   public void addBoxPointingToThis(UnitBox b) {
-    if (boxesPointingToThis == null) {
-      boxesPointingToThis = new ArrayList<UnitBox>();
+    List<UnitBox> ref = boxesPointingToThis;
+    if (ref == null) {
+      boxesPointingToThis = ref = new ArrayList<UnitBox>();
     }
-    boxesPointingToThis.add(b);
+    ref.add(b);
   }
 
   @Override
   public void removeBoxPointingToThis(UnitBox b) {
-    if (boxesPointingToThis != null) {
-      boxesPointingToThis.remove(b);
+    List<UnitBox> ref = boxesPointingToThis;
+    if (ref != null) {
+      ref.remove(b);
     }
   }
 
@@ -97,40 +106,36 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
     }
   }
 
-  /** Returns a list of ValueBoxes, either used or defined in this Unit. */
+  /**
+   * Returns a list of ValueBoxes, either used or defined in this Unit.
+   */
   @Override
   public List<ValueBox> getUseAndDefBoxes() {
     List<ValueBox> useBoxes = getUseBoxes();
     List<ValueBox> defBoxes = getDefBoxes();
     if (useBoxes.isEmpty()) {
       return defBoxes;
+    } else if (defBoxes.isEmpty()) {
+      return useBoxes;
     } else {
-      if (defBoxes.isEmpty()) {
-        return useBoxes;
-      } else {
-        List<ValueBox> valueBoxes = new ArrayList<ValueBox>();
-        valueBoxes.addAll(defBoxes);
-        valueBoxes.addAll(useBoxes);
-        return valueBoxes;
-      }
+      List<ValueBox> valueBoxes = new ArrayList<ValueBox>(defBoxes.size() + useBoxes.size());
+      valueBoxes.addAll(defBoxes);
+      valueBoxes.addAll(useBoxes);
+      return valueBoxes;
     }
   }
 
-  /** Used to implement the Switchable construct. */
+  /**
+   * Used to implement the Switchable construct.
+   */
   @Override
   public void apply(Switch sw) {
   }
 
   @Override
   public void redirectJumpsToThisTo(Unit newLocation) {
-    List<UnitBox> boxesPointing = getBoxesPointingToThis();
-
-    UnitBox[] boxes = boxesPointing.toArray(new UnitBox[boxesPointing.size()]);
-    // important to change this to an array to have a static copy
-
-    for (UnitBox element : boxes) {
-      UnitBox box = element;
-
+    // important to make a copy to prevent concurrent modification
+    for (UnitBox box : new ArrayList<>(getBoxesPointingToThis())) {
       if (box.getUnit() != this) {
         throw new RuntimeException("Something weird's happening");
       }
@@ -139,6 +144,5 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
         box.setUnit(newLocation);
       }
     }
-
   }
 }

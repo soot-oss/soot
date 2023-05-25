@@ -55,7 +55,7 @@ import soot.jimple.ThisRef;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.Pair;
@@ -748,12 +748,12 @@ public class ClassLocalObjectsAnalysis {
       boolean includePrimitiveDataFlowIfAvailable) {
     if (includePrimitiveDataFlowIfAvailable && primitiveDfa != null) {
       Body b = sm.retrieveActiveBody();
-      UnitGraph g = new ExceptionalUnitGraph(b);
+      UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
       return new SmartMethodLocalObjectsAnalysis(g, primitiveDfa);
     } else if (!methodToMethodLocalObjectsAnalysis.containsKey(sm)) {
       // Analyze this method
       Body b = sm.retrieveActiveBody();
-      UnitGraph g = new ExceptionalUnitGraph(b);
+      UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
       SmartMethodLocalObjectsAnalysis smloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
       methodToMethodLocalObjectsAnalysis.put(sm, smloa);
     }

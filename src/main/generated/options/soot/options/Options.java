@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -51,6 +51,7 @@ public class Options extends OptionsBase {
     public static final int src_prec_apk = 5;
     public static final int src_prec_apk_class_jimple = 6;
     public static final int src_prec_apk_c_j = 6;
+    public static final int src_prec_dotnet = 7;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -116,11 +117,13 @@ public class Options extends OptionsBase {
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
-    public static final int throw_analysis_auto_select = 4;
+    public static final int throw_analysis_dotnet = 4;
+    public static final int throw_analysis_auto_select = 5;
     public static final int check_init_throw_analysis_auto = 1;
     public static final int check_init_throw_analysis_pedantic = 2;
     public static final int check_init_throw_analysis_unit = 3;
     public static final int check_init_throw_analysis_dalvik = 4;
+    public static final int check_init_throw_analysis_dotnet = 5;
 
     @SuppressWarnings("unused")
     public boolean parse(String[] argv) {
@@ -266,6 +269,22 @@ public class Options extends OptionsBase {
                 }
             }
             else if (false
+                    || option.equals("dotnet-nativehost-path")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if (dotnet_nativehost_path.isEmpty())
+                    dotnet_nativehost_path = value;
+                else {
+                    G.v().out.println("Duplicate values " + dotnet_nativehost_path + " and " + value + " for option -" + option);
+                    return false;
+                }
+            }
+            else if (false
                     || option.equals("pp")
                     || option.equals("prepend-classpath")
             )
@@ -296,6 +315,19 @@ public class Options extends OptionsBase {
                 if (process_dir == null)
                     process_dir = new LinkedList<>();
                 process_dir.add(value);
+            }
+            else if (false
+                    || option.equals("process-jar-dir")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if (process_jar_dir == null)
+                    process_jar_dir = new LinkedList<>();
+                process_jar_dir.add(value);
             }
             else if (false
                     || option.equals("no-derive-java-version")
@@ -425,6 +457,15 @@ public class Options extends OptionsBase {
                     }
                     src_prec = src_prec_apk_c_j;
                 }
+                else if (false
+                        || value.equals("dotnet")
+                ) {
+                    if (src_prec != 0 && src_prec != src_prec_dotnet) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    src_prec = src_prec_dotnet;
+                }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
                     return false;
@@ -434,6 +475,14 @@ public class Options extends OptionsBase {
                     || option.equals("full-resolver")
             )
                 full_resolver = true;
+            else if (false
+                    || option.equals("ignore-methodsource-error")
+            )
+                ignore_methodsource_error = true;
+            else if (false
+                    || option.equals("no-resolve-all-dotnet-methods")
+            )
+                resolve_all_dotnet_methods = false;
             else if (false
                     || option.equals("allow-phantom-refs")
             )
@@ -1023,6 +1072,23 @@ public class Options extends OptionsBase {
                 phaseOptions.add(phaseOption);
             }
             else if (false
+                || option.equals("t")
+                || option.equals("num-threads")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if(num_threads == -1)
+                    num_threads = Integer.valueOf(value);
+                else {
+                    G.v().out.println("Duplicate values " + num_threads + " and " + value + " for option -" + option);
+                    return false;
+                }
+            }
+            else if (false
                 || option.equals("O")
                 || option.equals("optimize")
             ) {
@@ -1105,6 +1171,15 @@ public class Options extends OptionsBase {
                     throw_analysis = throw_analysis_dalvik;
                 }
                 else if (false
+                        || value.equals("dotnet")
+                ) {
+                    if (throw_analysis != 0 && throw_analysis != throw_analysis_dotnet) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    throw_analysis = throw_analysis_dotnet;
+                }
+                else if (false
                         || value.equals("auto-select")
                 ) {
                     if (throw_analysis != 0 && throw_analysis != throw_analysis_auto_select) {
@@ -1165,6 +1240,15 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     check_init_throw_analysis = check_init_throw_analysis_dalvik;
+                }
+                else if (false
+                        || value.equals("dotnet")
+                ) {
+                    if (check_init_throw_analysis != 0 && check_init_throw_analysis != check_init_throw_analysis_dotnet) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    check_init_throw_analysis = check_init_throw_analysis_dotnet;
                 }
                 else {
                     G.v().out.println(String.format("Invalid value %s given for option -%s", value, option));
@@ -1449,6 +1533,10 @@ public class Options extends OptionsBase {
     public void set_soot_modulepath(String setting) { soot_modulepath = setting; }
     private String soot_modulepath = "";
 
+    public String dotnet_nativehost_path() { return dotnet_nativehost_path; }
+    public void set_dotnet_nativehost_path(String setting) { dotnet_nativehost_path = setting; }
+    private String dotnet_nativehost_path = "";
+
     public boolean prepend_classpath() { return prepend_classpath; }
     private boolean prepend_classpath = false;
     public void set_prepend_classpath(boolean setting) { prepend_classpath = setting; }
@@ -1470,6 +1558,12 @@ public class Options extends OptionsBase {
     }
     public void set_process_dir(List<String> setting) { process_dir = setting; }
     private List<String> process_dir = null;
+
+    public List<String> process_jar_dir() {
+        return process_jar_dir == null ? Collections.emptyList() : process_jar_dir;
+    }
+    public void set_process_jar_dir(List<String> setting) { process_jar_dir = setting; }
+    private List<String> process_jar_dir = null;
 
     public boolean derive_java_version() { return derive_java_version; }
     private boolean derive_java_version = true;
@@ -1505,6 +1599,14 @@ public class Options extends OptionsBase {
     public boolean full_resolver() { return full_resolver; }
     private boolean full_resolver = false;
     public void set_full_resolver(boolean setting) { full_resolver = setting; }
+
+    public boolean ignore_methodsource_error() { return ignore_methodsource_error; }
+    private boolean ignore_methodsource_error = false;
+    public void set_ignore_methodsource_error(boolean setting) { ignore_methodsource_error = setting; }
+
+    public boolean resolve_all_dotnet_methods() { return resolve_all_dotnet_methods; }
+    private boolean resolve_all_dotnet_methods = true;
+    public void set_resolve_all_dotnet_methods(boolean setting) { resolve_all_dotnet_methods = setting; }
 
     public boolean allow_phantom_refs() { return allow_phantom_refs; }
     private boolean allow_phantom_refs = false;
@@ -1627,6 +1729,10 @@ public class Options extends OptionsBase {
     public void set_field_type_mismatches(int setting) { field_type_mismatches = setting; }
     private int field_type_mismatches = 0;
 
+    public int num_threads() { return num_threads; }
+    public void set_num_threads(int setting) { num_threads = setting; }
+    private int num_threads = -1;
+
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
     public void set_via_grimp(boolean setting) { via_grimp = setting; }
@@ -1739,11 +1845,13 @@ public class Options extends OptionsBase {
                 + "\nInput Options:\n"
                 + padOpt("-cp ARG -soot-class-path ARG -soot-classpath ARG", "Use ARG as the classpath for finding classes.")
                 + padOpt("-soot-modulepath ARG", "Use ARG as the modulepath for finding classes.")
+                + padOpt("-dotnet-nativehost-path ARG", "Use  to locate your NativeHost Java JNI library.")
                 + padOpt("-pp, -prepend-classpath", "Prepend the given soot classpath to the default classpath.")
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
                 + padOpt("-process-multiple-dex", "Process all DEX files found in APK.")
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")
-                + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG")
+                + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG (but not classes within JAR files in ARG , use process-jar-dir for that)")
+                + padOpt("-process-jar-dir ARG", "Process all classes found in JAR files found in ARG")
                 + padOpt("-derive-java-version", "Java version for output and internal processing will be derived from the given input classes")
                 + padOpt("-oaat", "From the process-dir, processes one class at a time.")
                 + padOpt("-android-jars ARG", "Use ARG as the path for finding the android.jar file")
@@ -1756,7 +1864,10 @@ public class Options extends OptionsBase {
                     + padVal("java", "Favour Java files as Soot source")
                     + padVal("apk", "Favour APK files as Soot source")
                     + padVal("apk-class-jimple apk-c-j", "Favour APK files as Soot source, disregard Java files")
+                    + padVal("dotnet", "Favour .NET assemblies files as Soot source")
                 + padOpt("-full-resolver", "Force transitive resolving of referenced classes")
+                + padOpt("-ignore-methodsource-error", "Ignore errors from method source and return empty jimple body")
+                + padOpt("-resolve-all-dotnet-methods", "Resolve all dotnet methods, such as unsafe methods")
                 + padOpt("-allow-phantom-refs", "Allow unresolved classes; may cause errors")
                 + padOpt("-allow-phantom-elms", "Allow phantom methods and fields in non-phantom classes")
                 + padOpt("-allow-cg-errors", "Allow Errors during callgraph construction")
@@ -1831,12 +1942,14 @@ public class Options extends OptionsBase {
                     + padVal("pedantic", "Pedantically conservative throw analysis")
                     + padVal("unit", "Unit Throw Analysis")
                     + padVal("dalvik", "Dalvik Throw Analysis")
+                    + padVal("dotnet", "Dotnet Throw Analysis")
                     + padVal("auto-select (default)", "Automatically Select Throw Analysis")
                 + padOpt("-check-init-ta ARG -check-init-throw-analysis ARG", "")
                     + padVal("auto (default)", "Automatically select a throw analysis")
                     + padVal("pedantic", "Pedantically conservative throw analysis")
                     + padVal("unit", "Unit Throw Analysis")
                     + padVal("dalvik", "Dalvik Throw Analysis")
+                    + padVal("dotnet", "Dotnet Throw Analysis")
                 + padOpt("-omit-excepting-unit-edges", "Omit CFG edges to handlers from excepting units which lack side effects")
                 + padOpt("-trim-cfgs", "Trim unrealizable exceptional edges from CFGs")
                 + padOpt("-ire, -ignore-resolution-errors", "Does not throw an exception when a program references an undeclared field or method.")
@@ -1871,6 +1984,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.dtr", "Reduces chains of catch-all traps")
                     + padVal("jb.ese", "Removes empty switch statements")
                     + padVal("jb.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jb.sils", "Splits primitive locals used as different types")
                     + padVal("jb.a", "Aggregator: removes some unnecessary copies")
                     + padVal("jb.ule", "Unused local eliminator")
                     + padVal("jb.tr", "Assigns types to locals")
@@ -1883,8 +1997,10 @@ public class Options extends OptionsBase {
                     + padVal("jb.ne", "Nop eliminator")
                     + padVal("jb.uce", "Unreachable code eliminator")
                     + padVal("jb.tt", "Trap Tightener")
+                    + padVal("jb.cbf", "Conditional branch folder")
                 + padOpt("jj", "Creates a JimpleBody for each method directly from source")
                     + padVal("jj.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jj.sils", "Splits primitive locals used as different types")
                     + padVal("jj.a", "Aggregator: removes some unnecessary copies")
                     + padVal("jj.ule", "Unused local eliminator")
                     + padVal("jj.tr", "Assigns types to locals")
@@ -1967,6 +2083,7 @@ public class Options extends OptionsBase {
                     + padVal("bb.pho", "Peephole optimizer")
                     + padVal("bb.ule", "Unused local eliminator")
                     + padVal("bb.lp", "Local packer: minimizes number of locals")
+                    + padVal("bb.ne", "Nop eliminator")
                 + padOpt("bop", "Baf optimization pack")
                 + padOpt("tag", "Tag aggregator: turns tags into attributes")
                     + padVal("tag.ln", "Line number aggregator")
@@ -2006,6 +2123,12 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jb.ls"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
+        if (phaseName.equals("jb.sils"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "");
 
@@ -2093,6 +2216,12 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
 
+        if (phaseName.equals("jb.cbf"))
+            return "Phase " + phaseName + ":\n"
+                    + "\nThe Conditional Branch Folder statically evaluates the \nconditional expression of Jimple if statements. If the condition \nis identically true or false, the Folder replaces the \nconditional branch statement with an unconditional goto \nstatement."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
         if (phaseName.equals("jj"))
             return "Phase " + phaseName + ":\n"
                     + "\nJimple Body Creation creates a JimpleBody for each input method, \nusing polyglot, to read .java files."
@@ -2105,6 +2234,12 @@ public class Options extends OptionsBase {
                     + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
+
+        if (phaseName.equals("jj.sils"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
 
         if (phaseName.equals("jj.a"))
             return "Phase " + phaseName + ":\n"
@@ -2862,6 +2997,12 @@ public class Options extends OptionsBase {
                     + padOpt("enabled (true)", "")
                     + padOpt("unsplit-original-locals (false)", "");
 
+        if (phaseName.equals("bb.ne"))
+            return "Phase " + phaseName + ":\n"
+                    + "\nThe Nop Eliminator removes nop instructions from the method."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
         if (phaseName.equals("bop"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Baf Optimization pack performs optimizations on BafBodys \n(currently there are no optimizations performed specifically on \nBafBodys, and the pack is empty). It is run only if the output \nformat is baf or b or asm or a, or if class files are being \noutput and the Via Grimp option has not been specified."
@@ -2957,6 +3098,11 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("jb.sils"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("jb.a"))
             return String.join(" ", 
                     "enabled",
@@ -3029,6 +3175,11 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("jb.cbf"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("jj"))
             return String.join(" ", 
                     "enabled",
@@ -3036,6 +3187,11 @@ public class Options extends OptionsBase {
             );
 
         if (phaseName.equals("jj.ls"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
+        if (phaseName.equals("jj.sils"))
             return String.join(" ", 
                     "enabled"
             );
@@ -3617,6 +3773,11 @@ public class Options extends OptionsBase {
                     "unsplit-original-locals"
             );
 
+        if (phaseName.equals("bb.ne"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("bop"))
             return String.join(" ", 
                     "enabled"
@@ -3698,6 +3859,10 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true ";
 
+        if (phaseName.equals("jb.sils"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("jb.a"))
             return ""
                     + "enabled:true "
@@ -3758,6 +3923,10 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:false ";
 
+        if (phaseName.equals("jb.cbf"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("jj"))
             return ""
                     + "enabled:true "
@@ -3766,6 +3935,10 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jj.ls"))
             return ""
                     + "enabled:false ";
+
+        if (phaseName.equals("jj.sils"))
+            return ""
+                    + "enabled:true ";
 
         if (phaseName.equals("jj.a"))
             return ""
@@ -4261,6 +4434,10 @@ public class Options extends OptionsBase {
                     + "enabled:true "
                     + "unsplit-original-locals:false ";
 
+        if (phaseName.equals("bb.ne"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("bop"))
             return ""
                     + "enabled:false ";
@@ -4316,6 +4493,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.dtr")
                 || phaseName.equals("jb.ese")
                 || phaseName.equals("jb.ls")
+                || phaseName.equals("jb.sils")
                 || phaseName.equals("jb.a")
                 || phaseName.equals("jb.ule")
                 || phaseName.equals("jb.tr")
@@ -4328,8 +4506,10 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.ne")
                 || phaseName.equals("jb.uce")
                 || phaseName.equals("jb.tt")
+                || phaseName.equals("jb.cbf")
                 || phaseName.equals("jj")
                 || phaseName.equals("jj.ls")
+                || phaseName.equals("jj.sils")
                 || phaseName.equals("jj.a")
                 || phaseName.equals("jj.ule")
                 || phaseName.equals("jj.tr")
@@ -4412,6 +4592,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("bb.pho")
                 || phaseName.equals("bb.ule")
                 || phaseName.equals("bb.lp")
+                || phaseName.equals("bb.ne")
                 || phaseName.equals("bop")
                 || phaseName.equals("tag")
                 || phaseName.equals("tag.ln")
@@ -4437,6 +4618,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.ese");
         if (!PackManager.v().hasPhase("jb.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.ls");
+        if (!PackManager.v().hasPhase("jb.sils"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.sils");
         if (!PackManager.v().hasPhase("jb.a"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.a");
         if (!PackManager.v().hasPhase("jb.ule"))
@@ -4461,10 +4644,14 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.uce");
         if (!PackManager.v().hasPhase("jb.tt"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.tt");
+        if (!PackManager.v().hasPhase("jb.cbf"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.cbf");
         if (!PackManager.v().hasPhase("jj"))
             G.v().out.println("Warning: Options exist for non-existent phase jj");
         if (!PackManager.v().hasPhase("jj.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jj.ls");
+        if (!PackManager.v().hasPhase("jj.sils"))
+            G.v().out.println("Warning: Options exist for non-existent phase jj.sils");
         if (!PackManager.v().hasPhase("jj.a"))
             G.v().out.println("Warning: Options exist for non-existent phase jj.a");
         if (!PackManager.v().hasPhase("jj.ule"))
@@ -4629,6 +4816,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase bb.ule");
         if (!PackManager.v().hasPhase("bb.lp"))
             G.v().out.println("Warning: Options exist for non-existent phase bb.lp");
+        if (!PackManager.v().hasPhase("bb.ne"))
+            G.v().out.println("Warning: Options exist for non-existent phase bb.ne");
         if (!PackManager.v().hasPhase("bop"))
             G.v().out.println("Warning: Options exist for non-existent phase bop");
         if (!PackManager.v().hasPhase("tag"))

@@ -111,8 +111,8 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
   private SootField checkStatic(SootField ret) {
     if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
-          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict)
-          && ret.isStatic() != isStatic() && !ret.isPhantom()) {
+        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) && ret.isStatic() != isStatic()
+        && !ret.isPhantom()) {
       throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
     }
     return ret;
@@ -250,10 +250,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     AbstractSootFieldRef other = (AbstractSootFieldRef) obj;

@@ -154,14 +154,11 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
           assert g.getHeads().size() == 1;
           D head = g.getHeads().get(0);
 
+          // collect all 'goto' statements to catch the 'goto' from the infinite loop
           Set<D> visitedNodes = new HashSet<D>();
           List<D> workList = new ArrayList<D>();
-          D current = null;
-
-          // collect all 'goto' statements to catch the 'goto'
-          // from the infinite loop
           workList.add(head);
-          while (!workList.isEmpty()) {
+          for (D current; !workList.isEmpty();) {
             current = workList.remove(0);
             visitedNodes.add(current);
 
@@ -182,9 +179,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
           if (entries.isEmpty()) {
             throw new RuntimeException("error: backward analysis on an empty entry set.");
           }
-
         }
-
       }
 
       visitEntry(visited, superEntry, entries);
@@ -236,9 +231,9 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
       }
     }
 
-    @SuppressWarnings("unchecked")
     private <D, F> Entry<D, F>[] visitEntry(Map<D, Entry<D, F>> visited, Entry<D, F> v, List<D> out) {
-      int n = out.size();
+      final int n = out.size();
+      @SuppressWarnings("unchecked")
       Entry<D, F>[] a = new Entry[n];
 
       assert (out instanceof RandomAccess);
@@ -253,19 +248,15 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     private <D, F> Entry<D, F> getEntryOf(Map<D, Entry<D, F>> visited, D d, Entry<D, F> v) {
       // either we reach a new node or a merge node, the latter one is rare
       // so put and restore should be better that a lookup
-      // putIfAbsent would be the ideal strategy
 
       // add and restore if required
       Entry<D, F> newEntry = new Entry<D, F>(d, v);
-      Entry<D, F> oldEntry = visited.put(d, newEntry);
+      Entry<D, F> oldEntry = visited.putIfAbsent(d, newEntry);
 
       // no restore required
       if (oldEntry == null) {
         return newEntry;
       }
-
-      // false prediction, restore the entry
-      visited.put(d, oldEntry);
 
       // adding self ref (real strongly connected with itself)
       if (oldEntry == v) {
@@ -401,16 +392,16 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
   }
 
   /** Maps graph nodes to OUT sets. */
-  protected Map<N, A> unitToAfterFlow;
+  protected final Map<N, A> unitToAfterFlow;
 
   /** Filtered: Maps graph nodes to OUT sets. */
-  protected Map<N, A> filterUnitToAfterFlow = Collections.emptyMap();
+  protected Map<N, A> filterUnitToAfterFlow;
 
   /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
   public FlowAnalysis(DirectedGraph<N> graph) {
     super(graph);
-
-    unitToAfterFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
+    this.unitToAfterFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
+    this.filterUnitToAfterFlow = Collections.emptyMap();
   }
 
   /**
@@ -584,7 +575,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
         return false;
       }
       // copy back the result, as it has changed
-      copy(out, d.outFlow);
+      copyFreshToExisting(out, d.outFlow);
       return true;
     }
 
@@ -593,4 +584,20 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     return true;
   }
 
+  /**
+   * Copies a *fresh* copy of in to dest. The input is not referenced somewhere else. This allows subclasses for a smarter
+   * and faster copying.
+   * 
+   * @param in
+   * @param dest
+   */
+  protected void copyFreshToExisting(A in, A dest) {
+    if (in instanceof FlowSet && dest instanceof FlowSet) {
+      FlowSet<?> fin = (FlowSet<?>) in;
+      FlowSet fdest = (FlowSet) dest;
+      fin.copyFreshToExisting(fdest);
+    } else {
+      copy(in, dest);
+    }
+  }
 }

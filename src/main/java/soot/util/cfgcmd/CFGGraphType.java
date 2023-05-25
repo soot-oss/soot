@@ -39,6 +39,7 @@ import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalBlockGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.toolkits.graph.ZonedBlockGraph;
 import soot.util.dot.DotGraph;
@@ -60,7 +61,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
    *
    * @return The control flow graph corresponding to <code>b</code>
    */
-  public abstract DirectedGraph buildGraph(Body b);
+  public abstract DirectedGraph<?> buildGraph(Body b);
 
   /**
    * Method that will draw a {@link DotGraph} representation of the control flow in this type of graph. This method is
@@ -77,7 +78,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
    *
    * @return a <code>DotGraph</code> visualizing the control flow in <code>g</code>.
    */
-  public abstract DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b);
+  public abstract DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b);
 
   private CFGGraphType(String name) {
     super(name);
@@ -86,7 +87,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   /**
    * Returns the <code>CFGGraphType</code> identified by the passed name.
    *
-   * @param name
+   * @param option
    *          A {@link String} identifying the graph type.
    *
    * @return A {@link CFGGraphType} object whose {@link #buildGraph()} method will create the desired sort of control flow
@@ -115,121 +116,142 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   }
 
   public static final CFGGraphType BRIEF_UNIT_GRAPH = new CFGGraphType("BriefUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new BriefUnitGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType EXCEPTIONAL_UNIT_GRAPH = new CFGGraphType("ExceptionalUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
-      return new ExceptionalUnitGraph(b);
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
+      return ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG((ExceptionalUnitGraph) g);
     }
   };
 
   public static final CFGGraphType COMPLETE_UNIT_GRAPH = new CFGGraphType("CompleteUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new CompleteUnitGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG((CompleteUnitGraph) g);
     }
   };
 
   public static final CFGGraphType TRAP_UNIT_GRAPH = new CFGGraphType("TrapUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new TrapUnitGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType CLASSIC_COMPLETE_UNIT_GRAPH = new CFGGraphType("ClassicCompleteUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new ClassicCompleteUnitGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType BRIEF_BLOCK_GRAPH = new CFGGraphType("BriefBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new BriefBlockGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType EXCEPTIONAL_BLOCK_GRAPH = new CFGGraphType("ExceptionalBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new ExceptionalBlockGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG((ExceptionalBlockGraph) g);
     }
   };
 
   public static final CFGGraphType COMPLETE_BLOCK_GRAPH = new CFGGraphType("CompleteBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new CompleteBlockGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType CLASSIC_COMPLETE_BLOCK_GRAPH = new CFGGraphType("ClassicCompleteBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new ClassicCompleteBlockGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ARRAY_REF_BLOCK_GRAPH = new CFGGraphType("ArrayRefBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new ArrayRefBlockGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ZONED_BLOCK_GRAPH = new CFGGraphType("ZonedBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return new ZonedBlockGraph(b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
-  private static DirectedGraph loadAltGraph(String className, Body b) {
+  private static DirectedGraph<?> loadAltGraph(String className, Body b) {
     try {
       Class<?> graphClass = AltClassLoader.v().loadClass(className);
-      Class<?>[] paramTypes = new Class[] { Body.class };
-      Constructor constructor = graphClass.getConstructor(paramTypes);
-      DirectedGraph result = (DirectedGraph) constructor.newInstance(new Object[] { b });
+      Constructor<?> constructor = graphClass.getConstructor(Body.class);
+      DirectedGraph<?> result = (DirectedGraph<?>) constructor.newInstance(b);
       return result;
     }
     // Turn class loading exceptions into RuntimeExceptions, so callers
@@ -266,71 +288,85 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   }
 
   public static final CFGGraphType ALT_BRIEF_UNIT_GRAPH = new CFGGraphType("AltBriefUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return loadAltGraph("soot.toolkits.graph.BriefUnitGraph", b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ALT_COMPLETE_UNIT_GRAPH = new CFGGraphType("AltCompleteUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return loadAltGraph("soot.toolkits.graph.CompleteUnitGraph", b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ALT_TRAP_UNIT_GRAPH = new CFGGraphType("AltTrapUnitGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return loadAltGraph("soot.toolkits.graph.TrapUnitGraph", b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ALT_ARRAY_REF_BLOCK_GRAPH = new CFGGraphType("AltArrayRefBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return loadAltGraph("soot.toolkits.graph.ArrayRefBlockGraph", b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ALT_BRIEF_BLOCK_GRAPH = new CFGGraphType("AltBriefBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return loadAltGraph("soot.toolkits.graph.BriefBlockGraph", b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ALT_COMPLETE_BLOCK_GRAPH = new CFGGraphType("AltCompleteBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return loadAltGraph("soot.toolkits.graph.CompleteBlockGraph", b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };
 
   public static final CFGGraphType ALT_ZONED_BLOCK_GRAPH = new CFGGraphType("AltZonedBlockGraph") {
-    public DirectedGraph buildGraph(Body b) {
+    @Override
+    public DirectedGraph<?> buildGraph(Body b) {
       return loadAltGraph("soot.toolkits.graph.ZonedBlockGraph", b);
     }
 
-    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
+    @Override
+    public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph<?> g, Body b) {
       return drawer.drawCFG(g, b);
     }
   };

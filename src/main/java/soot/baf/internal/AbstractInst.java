@@ -28,52 +28,63 @@ import soot.baf.Inst;
 
 public abstract class AbstractInst extends AbstractUnit implements Inst {
 
+  public abstract String getName();
+
+  @Override
+  public Object clone() {
+    throw new RuntimeException("undefined clone for: " + this.toString());
+  }
+
+  @Override
   public String toString() {
     return getName() + getParameters();
   }
 
+  @Override
   public void toString(UnitPrinter up) {
     up.literal(getName());
     getParameters(up);
   }
 
+  @Override
   public int getInCount() {
     throw new RuntimeException("undefined " + toString() + "!");
   }
 
+  @Override
   public int getOutCount() {
     throw new RuntimeException("undefined " + toString() + "!");
   }
 
+  @Override
   public int getNetCount() {
     return getOutCount() - getInCount();
   }
 
+  @Override
   public boolean fallsThrough() {
     return true;
   }
 
+  @Override
   public boolean branches() {
     return false;
   }
 
+  @Override
   public int getInMachineCount() {
     throw new RuntimeException("undefined" + toString() + "!");
   }
 
+  @Override
   public int getOutMachineCount() {
     throw new RuntimeException("undefined" + toString() + "!");
   }
 
+  @Override
   public int getNetMachineCount() {
     return getOutMachineCount() - getInMachineCount();
   }
-
-  public Object clone() {
-    throw new RuntimeException("undefined clone for: " + this.toString());
-  }
-
-  public abstract String getName();
 
   String getParameters() {
     return "";
@@ -82,18 +93,22 @@ public abstract class AbstractInst extends AbstractUnit implements Inst {
   protected void getParameters(UnitPrinter up) {
   }
 
+  @Override
   public boolean containsInvokeExpr() {
     return false;
   }
 
+  @Override
   public boolean containsArrayRef() {
     return false;
   }
 
+  @Override
   public boolean containsFieldRef() {
     return false;
   }
 
+  @Override
   public boolean containsNewExpr() {
     return false;
   }

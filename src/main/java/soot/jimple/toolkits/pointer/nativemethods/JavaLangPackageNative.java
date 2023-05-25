@@ -72,7 +72,7 @@ public class JavaLangPackageNative extends NativeMethodClass {
    */
   public void java_lang_Package_getSystemPackages0(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+    helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
 }

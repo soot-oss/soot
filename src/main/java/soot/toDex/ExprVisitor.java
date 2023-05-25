@@ -39,6 +39,7 @@ import soot.LongType;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
@@ -97,6 +98,7 @@ import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
 import soot.toDex.instructions.InsnWithOffset;
+import soot.util.NumberedString;
 import soot.util.Switchable;
 
 /**
@@ -165,9 +167,27 @@ public class ExprVisitor implements ExprSwitch {
     } else if (isCallToSuper(sie)) {
       stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
     } else {
+      if (sie.getMethodRef().getDeclaringClass().isInterface()) {
+        List<SootClass> allInterfaces
+            = Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sie.getMethodRef().getDeclaringClass());
+        NumberedString subsig = sie.getMethodRef().getSubSignature();
+        for (SootClass i : allInterfaces) {
+          SootMethod m = i.getMethodUnsafe(subsig);
+          if (m != null && (m.isConcrete() || m.hasActiveBody())) {
+            // In that case, it must be a call to an interface implementation.
+            // See https://source.android.com/docs/core/runtime/dalvik-bytecode
+            // In Dex files version 037 or later, if the method_id refers to an interface method, invoke-super is used to
+            // invoke
+            // the most specific, non-overridden version of that method defined on that interface.
+            stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
+            return;
+          }
+        }
+      }
       // This should normally never happen, but if we have such a
       // broken call (happens in malware for instance), we fix it.
       stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, arguments), origStmt);
+
     }
   }
 
@@ -206,14 +226,11 @@ public class ExprVisitor implements ExprSwitch {
     while (currentClass != null) {
       currentClass = currentClass.getSuperclassUnsafe();
       if (currentClass != null) {
-        if (currentClass == classWithInvokation) {
-          return true;
-        }
-
         // If we're dealing with phantom classes, we might not actually
         // arrive at java.lang.Object. In this case, we should not fail
         // the check
-        if (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object")) {
+        if ((currentClass == classWithInvokation)
+            || (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object"))) {
           return true;
         }
       }
@@ -730,12 +747,7 @@ public class ExprVisitor implements ExprSwitch {
   }
 
   private boolean isMoveCompatible(PrimitiveType sourceType, PrimitiveType castType) {
-    if (sourceType == castType) {
-      // at this point, the types are "bigger" or equal to int, so no
-      // "should cast from int" is needed
-      return true;
-    }
-    if (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT)) {
+    if ((sourceType == castType) || (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT))) {
       // there is no "upgrade" cast from "smaller than int" to int, so
       // move it
       return true;
@@ -744,11 +756,7 @@ public class ExprVisitor implements ExprSwitch {
   }
 
   private boolean shouldCastFromInt(PrimitiveType sourceType, PrimitiveType castType) {
-    if (isEqualOrBigger(sourceType, PrimitiveType.INT)) {
-      // source is already "big" enough
-      return false;
-    }
-    if (castType == PrimitiveType.INT) {
+    if (isEqualOrBigger(sourceType, PrimitiveType.INT) || (castType == PrimitiveType.INT)) {
       // would lead to an int-to-int cast, so leave it as it is
       return false;
     }

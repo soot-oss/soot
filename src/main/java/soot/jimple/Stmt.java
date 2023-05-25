@@ -23,11 +23,9 @@ package soot.jimple;
  */
 
 import soot.Unit;
-import soot.UnitPrinter;
 import soot.ValueBox;
 
 public interface Stmt extends Unit {
-  public void toString(UnitPrinter up);
 
   public boolean containsInvokeExpr();
 

@@ -213,7 +213,7 @@ import soot.jimple.parser.node.TStringConstant;
 import soot.jimple.parser.node.Token;
 import soot.util.StringTools;
 
-/*Modified By Marc Berndl 17th May */
+/* Modified By Marc Berndl 17th May */
 
 public class Walker extends DepthFirstAdapter {
   private static final Logger logger = LoggerFactory.getLogger(Walker.class);

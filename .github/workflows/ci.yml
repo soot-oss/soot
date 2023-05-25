@@ -43,6 +43,7 @@ jobs:
     - name: Build and test Java ${{ matrix.java_version }}
       run: |
         mvn -B clean test -PJava${{ matrix.java_version }}
+
         
   DeployArtifacts:
     name: Deploy artifacts to Maven Central
@@ -69,70 +70,24 @@ jobs:
       - name: Get Version
         id: version
         run: echo ::set-output name=version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-      
-      - name: Copy JavaDoc to remote
-        uses: appleboy/scp-action@master
-        if: "false"
-        with:
-          host: ${{ secrets.remote_host }}
-          key: ${{ secrets.ssh_proxy_key }}
-          proxy_host: ${{ secrets.ssh_proxy_host }}
-          proxy_key: ${{ secrets.ssh_proxy_key }}
-          source: "./target/sootclasses-trunk-javadoc.jar"
-          target: "${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}-javadoc.jar"
-          
-      - name: Copy Options to remote
-        if: "false"
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.remote_host }}
-          key: ${{ secrets.ssh_proxy_key }}
-          proxy_host: ${{ secrets.ssh_proxy_host }}
-          proxy_key: ${{ secrets.ssh_proxy_key }}
-          source: "./doc/soot_options.htm"
-          target: "${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}-soot_options.htm"
-        
-      - name: Deploy SNAPSHOT documentation
-        if: github.ref == 'refs/heads/develop' && false
-        uses: appleboy/ssh-action@master
+
+      - name: Organize documentation files for upload
+        shell: bash
         env:
-          basedir: ${{ secrets.remote_dir }}/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}
-          file_prefix: ${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}
+          docdir: ./build/docs
+        run: |
+          export releasedir=${docdir}/${{ steps.version.outputs.version }} # env variables cannot contain other env variables
+          mkdir -p ${releasedir}/jdoc
+          unzip ./target/sootclasses-trunk-javadoc.jar -d ${releasedir}/jdoc/
+          mkdir -p ${releasedir}/options
+          cp ./doc/soot_options.html ${releasedir}/options/
+          cp ./doc/soot_options.css ${releasedir}/options/
+          cp ./doc/index.html ${docdir}/
+
+
+      - name: Deploy JavaDoc to GH pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-          host: ${{ secrets.remote_host }}
-          key: ${{ secrets.ssh_proxy_key }}
-          proxy_host: ${{ secrets.ssh_proxy_host }}
-          proxy_key: ${{ secrets.ssh_proxy_key }}
-          script: |
-            rm -r ${basedir}/jdoc || true
-            mkdir -p ${basedir}/jdoc
-            unzip ${file_prefix }-javadoc.jar -d ${basedir}/jdoc/
-            rm ${file_prefix}-javadoc.jar
-            
-            rm -r ${basedir}/options || true
-            mkdir -p ${basedir}/options
-            cp ${file_prefix}-soot_options.htm ${basedir}/options
-            rm ${file_prefix}-soot_options.htm
-            
-      - name: Deploy Release documentation
-        if: github.ref == 'refs/heads/master' && false
-        uses: appleboy/ssh-action@master
-        env:
-          basedir: ${{ secrets.remote_dir }}/origin/${GITHUB_REF##*/}/soot/soot-${GITHUB_REF##*/}/${{ steps.version.outputs.version }}
-          file_prefix: ${{ secrets.remote_dir }}/{{ steps.version.outputs.version }}
-        with:
-          host: ${{ secrets.remote_host }}
-          key: ${{ secrets.ssh_proxy_key }} 
-          proxy_host: ${{ secrets.ssh_proxy_host }}
-          proxy_key: ${{ secrets.ssh_proxy_key }}
-          script: |
-            rm -r ${basedir}/jdoc || true
-            mkdir -p ${basedir}/jdoc
-            unzip ${file_prefix}-javadoc.jar -d ${basedir}/jdoc/
-            rm ${file_prefix}-javadoc.jar
-            
-            rm -r ${basedir}/options || true
-            mkdir -p ${basedir}/options
-            cp ${file_prefix}-soot_options.htm ${basedir}/options
-            rm ${file_prefix}-soot_options.htm
-      
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build/ # The folder the action should deploy.
+          clean: false # Do not remove existing files in gh-pages

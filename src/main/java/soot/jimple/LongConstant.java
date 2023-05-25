@@ -10,12 +10,12 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -28,13 +28,24 @@ import soot.util.Switch;
 
 public class LongConstant extends ArithmeticConstant {
 
+  private static final long serialVersionUID = 1008501511477295944L;
+
   public final long value;
+
+  public static final LongConstant ZERO = new LongConstant(0);
+  public static final LongConstant ONE = new LongConstant(1);
 
   private LongConstant(long value) {
     this.value = value;
   }
 
   public static LongConstant v(long value) {
+    if (value == 0) {
+      return ZERO;
+    }
+    if (value == 1) {
+      return ONE;
+    }
     return new LongConstant(value);
   }
 
@@ -104,6 +115,14 @@ public class LongConstant extends ArithmeticConstant {
       throw new IllegalArgumentException("LongConstant expected");
     }
     return IntConstant.v((this.value != ((LongConstant) c).value) ? 1 : 0);
+  }
+
+  @Override
+  public boolean isLessThan(NumericConstant c) {
+    if (!(c instanceof LongConstant)) {
+      throw new IllegalArgumentException("LongConstant expected");
+    }
+    return this.value < ((LongConstant) c).value;
   }
 
   @Override

@@ -86,7 +86,7 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
     }
 
     // avoid the creation of temp-lists
-    FlowSet<N> head = (FlowSet<N>) nodeToDominators.get(node).clone();
+    FlowSet<N> head = nodeToDominators.get(node).clone();
     head.remove(node);
 
     for (N dominator : head) {
@@ -94,7 +94,6 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
         return dominator;
       }
     }
-
     return null;
   }
 
@@ -130,7 +129,8 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
  * </pre>
  **/
 class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
-  private final FlowSet<N> emptySet;
+
+  private final BoundedFlowSet<N> emptySet;
   private final BoundedFlowSet<N> fullSet;
 
   SimpleDominatorsAnalysis(DirectedGraph<N> graph) {
@@ -154,7 +154,7 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
    **/
   @Override
   protected FlowSet<N> newInitialFlow() {
-    return (FlowSet<N>) fullSet.clone();
+    return fullSet.clone();
   }
 
   /**
@@ -162,7 +162,7 @@ class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>> {
    **/
   @Override
   protected FlowSet<N> entryInitialFlow() {
-    FlowSet<N> initSet = (FlowSet<N>) emptySet.clone();
+    FlowSet<N> initSet = emptySet.clone();
     for (N h : graph.getHeads()) {
       initSet.add(h);
     }

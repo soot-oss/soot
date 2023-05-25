@@ -1,5 +1,11 @@
 package soot;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,13 +28,10 @@ package soot;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-
+import soot.dotnet.members.DotnetMethod;
+import soot.options.Options;
 import soot.util.NumberedString;
+import soot.util.StringNumberer;
 
 /**
  * Returns the various potential entry points of a Java program.
@@ -36,22 +39,40 @@ import soot.util.NumberedString;
  * @author Ondrej Lhotak
  */
 public class EntryPoints {
+
+  final NumberedString sigMain;
+  final NumberedString sigFinalize;
+  final NumberedString sigExit;
+  final NumberedString sigClinit;
+  final NumberedString sigInit;
+  final NumberedString sigStart;
+  final NumberedString sigRun;
+  final NumberedString sigObjRun;
+  final NumberedString sigForName;
+
   public EntryPoints(Singletons.Global g) {
+    final StringNumberer subSigNumberer = Scene.v().getSubSigNumberer();
+
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      sigMain = subSigNumberer.findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE);
+      sigFinalize = subSigNumberer.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
+    } else {
+      sigMain = subSigNumberer.findOrAdd(JavaMethods.SIG_MAIN);
+      sigFinalize = subSigNumberer.findOrAdd(JavaMethods.SIG_FINALIZE);
+    }
+
+    sigExit = subSigNumberer.findOrAdd(JavaMethods.SIG_EXIT);
+    sigClinit = subSigNumberer.findOrAdd(JavaMethods.SIG_CLINIT);
+    sigInit = subSigNumberer.findOrAdd(JavaMethods.SIG_INIT);
+    sigStart = subSigNumberer.findOrAdd(JavaMethods.SIG_START);
+    sigRun = subSigNumberer.findOrAdd(JavaMethods.SIG_RUN);
+    sigObjRun = subSigNumberer.findOrAdd(JavaMethods.SIG_OBJ_RUN);
+    sigForName = subSigNumberer.findOrAdd(JavaMethods.SIG_FOR_NAME);
   }
 
   public static EntryPoints v() {
     return G.v().soot_EntryPoints();
   }
-
-  final NumberedString sigMain = Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])");
-  final NumberedString sigFinalize = Scene.v().getSubSigNumberer().findOrAdd("void finalize()");
-  final NumberedString sigExit = Scene.v().getSubSigNumberer().findOrAdd("void exit()");
-  final NumberedString sigClinit = Scene.v().getSubSigNumberer().findOrAdd("void <clinit>()");
-  final NumberedString sigInit = Scene.v().getSubSigNumberer().findOrAdd("void <init>()");
-  final NumberedString sigStart = Scene.v().getSubSigNumberer().findOrAdd("void start()");
-  final NumberedString sigRun = Scene.v().getSubSigNumberer().findOrAdd("void run()");
-  final NumberedString sigObjRun = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object run()");
-  final NumberedString sigForName = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Class forName(java.lang.String)");
 
   protected void addMethod(List<SootMethod> set, SootClass cls, NumberedString methodSubSig) {
     SootMethod sm = cls.getMethodUnsafe(methodSubSig);
@@ -61,8 +82,9 @@ public class EntryPoints {
   }
 
   protected void addMethod(List<SootMethod> set, String methodSig) {
-    if (Scene.v().containsMethod(methodSig)) {
-      set.add(Scene.v().getMethod(methodSig));
+    final Scene sc = Scene.v();
+    if (sc.containsMethod(methodSig)) {
+      set.add(sc.getMethod(methodSig));
     }
   }
 
@@ -71,9 +93,11 @@ public class EntryPoints {
    */
   public List<SootMethod> application() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
-    if (Scene.v().hasMainClass()) {
-      addMethod(ret, Scene.v().getMainClass(), sigMain);
-      for (SootMethod clinit : clinitsOf(Scene.v().getMainClass())) {
+    final Scene sc = Scene.v();
+    if (sc.hasMainClass()) {
+      SootClass mainClass = sc.getMainClass();
+      addMethod(ret, mainClass, sigMain);
+      for (SootMethod clinit : clinitsOf(mainClass)) {
         ret.add(clinit);
       }
     }
@@ -83,25 +107,30 @@ public class EntryPoints {
   /** Returns only the entry points invoked implicitly by the VM. */
   public List<SootMethod> implicit() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
-    addMethod(ret, "<java.lang.System: void initializeSystemClass()>");
-    addMethod(ret, "<java.lang.ThreadGroup: void <init>()>");
+
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return ret;
+    }
+
+    addMethod(ret, JavaMethods.INITIALIZE_SYSTEM_CLASS);
+    addMethod(ret, JavaMethods.THREAD_GROUP_INIT);
     // addMethod( ret, "<java.lang.ThreadGroup: void
     // remove(java.lang.Thread)>");
-    addMethod(ret, "<java.lang.Thread: void exit()>");
-    addMethod(ret, "<java.lang.ThreadGroup: void uncaughtException(java.lang.Thread,java.lang.Throwable)>");
+    addMethod(ret, JavaMethods.THREAD_EXIT);
+    addMethod(ret, JavaMethods.THREADGROUP_UNCAUGHT_EXCEPTION);
     // addMethod( ret, "<java.lang.System: void
     // loadLibrary(java.lang.String)>");
-    addMethod(ret, "<java.lang.ClassLoader: void <init>()>");
-    addMethod(ret, "<java.lang.ClassLoader: java.lang.Class loadClassInternal(java.lang.String)>");
-    addMethod(ret, "<java.lang.ClassLoader: void checkPackageAccess(java.lang.Class,java.security.ProtectionDomain)>");
-    addMethod(ret, "<java.lang.ClassLoader: void addClass(java.lang.Class)>");
-    addMethod(ret, "<java.lang.ClassLoader: long findNative(java.lang.ClassLoader,java.lang.String)>");
-    addMethod(ret, "<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>");
+    addMethod(ret, JavaMethods.CLASSLOADER_INIT);
+    addMethod(ret, JavaMethods.CLASSLOADER_LOAD_CLASS_INTERNAL);
+    addMethod(ret, JavaMethods.CLASSLOADER_CHECK_PACKAGE_ACC);
+    addMethod(ret, JavaMethods.CLASSLOADER_ADD_CLASS);
+    addMethod(ret, JavaMethods.CLASSLOADER_FIND_NATIVE);
+    addMethod(ret, JavaMethods.PRIV_ACTION_EXC_INIT);
     // addMethod( ret, "<java.lang.ref.Finalizer: void
     // register(java.lang.Object)>");
-    addMethod(ret, "<java.lang.ref.Finalizer: void runFinalizer()>");
-    addMethod(ret, "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.Runnable)>");
-    addMethod(ret, "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>");
+    addMethod(ret, JavaMethods.RUN_FINALIZE);
+    addMethod(ret, JavaMethods.THREAD_INIT_RUNNABLE);
+    addMethod(ret, JavaMethods.THREAD_INIT_STRING);
     return ret;
   }
 
@@ -116,8 +145,7 @@ public class EntryPoints {
   /** Returns a list of all static initializers. */
   public List<SootMethod> clinits() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
-    for (Iterator<SootClass> clIt = Scene.v().getClasses().iterator(); clIt.hasNext();) {
-      final SootClass cl = clIt.next();
+    for (SootClass cl : Scene.v().getClasses()) {
       addMethod(ret, cl, sigClinit);
     }
     return ret;
@@ -126,8 +154,7 @@ public class EntryPoints {
   /** Returns a list of all constructors taking no arguments. */
   public List<SootMethod> inits() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
-    for (Iterator<SootClass> clIt = Scene.v().getClasses().iterator(); clIt.hasNext();) {
-      final SootClass cl = clIt.next();
+    for (SootClass cl : Scene.v().getClasses()) {
       addMethod(ret, cl, sigInit);
     }
     return ret;
@@ -136,10 +163,9 @@ public class EntryPoints {
   /** Returns a list of all constructors. */
   public List<SootMethod> allInits() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
-    for (Iterator<SootClass> clIt = Scene.v().getClasses().iterator(); clIt.hasNext();) {
-      final SootClass cl = clIt.next();
+    for (SootClass cl : Scene.v().getClasses()) {
       for (SootMethod m : cl.getMethods()) {
-        if (m.getName().equals("<init>")) {
+        if ("<init>".equals(m.getName())) {
           ret.add(m);
         }
       }
@@ -150,10 +176,8 @@ public class EntryPoints {
   /** Returns a list of all concrete methods of all application classes. */
   public List<SootMethod> methodsOfApplicationClasses() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
-    for (Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext();) {
-      final SootClass cl = clIt.next();
-      for (Iterator<SootMethod> mIt = cl.getMethods().iterator(); mIt.hasNext();) {
-        final SootMethod m = mIt.next();
+    for (SootClass cl : Scene.v().getApplicationClasses()) {
+      for (SootMethod m : cl.getMethods()) {
         if (m.isConcrete()) {
           ret.add(m);
         }
@@ -167,13 +191,12 @@ public class EntryPoints {
    */
   public List<SootMethod> mainsOfApplicationClasses() {
     List<SootMethod> ret = new ArrayList<SootMethod>();
-    for (Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext();) {
-      final SootClass cl = clIt.next();
-      SootMethod m = cl.getMethodUnsafe("void main(java.lang.String[])");
-      if (m != null) {
-        if (m.isConcrete()) {
-          ret.add(m);
-        }
+    for (SootClass cl : Scene.v().getApplicationClasses()) {
+      SootMethod m
+          = Options.v().src_prec() == Options.src_prec_dotnet ? cl.getMethodUnsafe(DotnetMethod.MAIN_METHOD_SIGNATURE)
+              : cl.getMethodUnsafe("void main(java.lang.String[])");
+      if (m != null && m.isConcrete()) {
+        ret.add(m);
       }
     }
     return ret;
@@ -181,13 +204,19 @@ public class EntryPoints {
 
   /** Returns a list of all clinits of class cl and its superclasses. */
   public Iterable<SootMethod> clinitsOf(SootClass cl) {
-    // Do not create an actual list, since this method gets called quite
-    // often
+    // Do not create an actual list, since this method gets called quite often
     // Instead, callers usually just want to iterate over the result.
-    final SootMethod initStart = cl.getMethodUnsafe(sigClinit);
-    if (initStart == null) {
+    SootMethod init = cl.getMethodUnsafe(sigClinit);
+    SootClass superClass = cl.getSuperclassUnsafe();
+    // check super classes until finds a constructor or no super class there anymore.
+    while (init == null && superClass != null) {
+      init = superClass.getMethodUnsafe(sigClinit);
+      superClass = superClass.getSuperclassUnsafe();
+    }
+    if (init == null) {
       return Collections.emptyList();
     }
+    SootMethod initStart = init;
     return new Iterable<SootMethod>() {
 
       @Override

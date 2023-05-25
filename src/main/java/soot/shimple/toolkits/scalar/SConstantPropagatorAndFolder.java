@@ -55,7 +55,7 @@ import soot.shimple.ShimpleBody;
 import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
@@ -105,7 +105,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer {
     }
 
     // *** FIXME: What happens when Shimple is built with another UnitGraph?
-    SCPFAnalysis scpf = new SCPFAnalysis(new ExceptionalUnitGraph(castBody));
+    SCPFAnalysis scpf = new SCPFAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(castBody));
     propagateResults(scpf.getResults());
     if (PhaseOptions.getBoolean(options, "prune-cfg")) {
       removeStmts(scpf.getDeadStmts());
@@ -395,8 +395,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis<FlowSet<Object>> {
         conservative = false;
 
         int index = ((IntConstant) keyC).value - table.getLowIndex();
-        UnitBox branchBox =
-            (index < 0 || index > table.getHighIndex()) ? table.getDefaultTargetBox() : table.getTargetBox(index);
+        UnitBox branchBox
+            = (index < 0 || index > table.getHighIndex()) ? table.getDefaultTargetBox() : table.getTargetBox(index);
 
         stmtToReplacement.put(table, Jimple.v().newGotoStmt(branchBox));
         oneBranch = branchOuts.get(table.getUnitBoxes().indexOf(branchBox));

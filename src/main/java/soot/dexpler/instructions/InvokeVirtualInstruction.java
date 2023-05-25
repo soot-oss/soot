@@ -46,5 +46,5 @@ public class InvokeVirtualInstruction extends MethodInvocationInstruction {
   public void jimplify(DexBody body) {
     jimplifyVirtual(body);
   }
-  
+
 }

@@ -22,12 +22,12 @@ package soot.plugins.model;
  * #L%
  */
 
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementRefs;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementRefs;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Java representation of the xml root element. It's a simple holder for plugins.

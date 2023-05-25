@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,12 +114,8 @@ public class LoopInvariantFinder extends BodyTransformer {
     }
 
     // ignore goto stmts
-    if (s instanceof GotoStmt) {
-      return;
-    }
-
     // ignore invoke stmts
-    if (s instanceof InvokeStmt) {
+    if ((s instanceof GotoStmt) || (s instanceof InvokeStmt)) {
       return;
     }
 
@@ -209,8 +206,8 @@ public class LoopInvariantFinder extends BodyTransformer {
     } else {
       // if loops are nested it might be invariant in one of them
       // so remove tag
-      // if (s.hasTag("LoopInvariantTag")) {
-      // s.removeTag("LoopInvariantTag");
+      // if (s.hasTag(LoopInvariantTag.NAME)) {
+      // s.removeTag(LoopInvariantTag.NAME);
       // }
     }
   }

@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.tagkit.SourceFileTag;
 
 /**
  * A class source for resolving from .class files through coffi.
@@ -41,12 +42,12 @@ import soot.options.Options;
 public class CoffiClassSource extends ClassSource {
   private static final Logger logger = LoggerFactory.getLogger(CoffiClassSource.class);
 
-  private FoundFile foundFile;
+  private IFoundFile foundFile;
   private InputStream classFile;
   private final String fileName;
   private final String zipFileName;
 
-  public CoffiClassSource(String className, FoundFile foundFile) {
+  public CoffiClassSource(String className, IFoundFile foundFile) {
     super(className);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");
@@ -93,11 +94,9 @@ public class CoffiClassSource extends ClassSource {
       return;
     }
 
-    soot.tagkit.SourceFileTag tag;
-    if (sc.hasTag("SourceFileTag")) {
-      tag = (soot.tagkit.SourceFileTag) sc.getTag("SourceFileTag");
-    } else {
-      tag = new soot.tagkit.SourceFileTag();
+    SourceFileTag tag = (SourceFileTag) sc.getTag(SourceFileTag.NAME);
+    if (tag == null) {
+      tag = new SourceFileTag();
       sc.addTag(tag);
     }
 

@@ -24,7 +24,7 @@ package soot.asm;
 
 import soot.ClassProvider;
 import soot.ClassSource;
-import soot.FoundFile;
+import soot.IFoundFile;
 import soot.SourceLocator;
 
 /**
@@ -37,7 +37,7 @@ public class AsmClassProvider implements ClassProvider {
   @Override
   public ClassSource find(String cls) {
     String clsFile = cls.replace('.', '/') + ".class";
-    FoundFile file = SourceLocator.v().lookupInClassPath(clsFile);
+    IFoundFile file = SourceLocator.v().lookupInClassPath(clsFile);
     return file == null ? null : new AsmClassSource(cls, file);
   }
 }

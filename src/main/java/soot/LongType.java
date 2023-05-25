@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -29,6 +31,9 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class LongType extends PrimType {
+
+  public static final int HASHCODE = 0x023DA077;
+
   public LongType(Singletons.Global g) {
   }
 
@@ -36,24 +41,42 @@ public class LongType extends PrimType {
     return G.v().soot_LongType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
-    return 0x023DA077;
+    return HASHCODE;
   }
 
+  @Override
   public String toString() {
     return "long";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseLongType(this);
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Long");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotnetBasicTypes.SYSTEM_INT64;
+    }
+    return JavaBasicTypes.JAVA_LANG_LONG;
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Long.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return long.class;
+  }
+
 }

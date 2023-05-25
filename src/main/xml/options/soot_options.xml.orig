@@ -5272,7 +5272,7 @@ This locking scheme aims to achieve simple fine-grained locking.
                     <default>false</default>
                     <short_desc>Compute extended SSA (SSI) form.</short_desc>
                     <long_desc>
-                        If enabled, Shimple will created extended SSA (SSI) form.
+                        If enabled, Shimple will create extended SSA (SSI) form.
                     </long_desc>
                 </boolopt>
                 <boolopt>

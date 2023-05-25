@@ -43,7 +43,7 @@ import java.util.*;
  * Soot ant task.
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
+@jakarta.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {

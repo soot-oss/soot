@@ -22,8 +22,6 @@ package soot.baf.internal;
  * #L%
  */
 
-import java.util.Iterator;
-
 import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -31,7 +29,8 @@ import soot.Type;
 import soot.UnitPrinter;
 import soot.VoidType;
 
-abstract class AbstractInvokeInst extends AbstractInst {
+public abstract class AbstractInvokeInst extends AbstractInst {
+
   SootMethodRef methodRef;
 
   public SootMethodRef getMethodRef() {
@@ -43,56 +42,55 @@ abstract class AbstractInvokeInst extends AbstractInst {
   }
 
   public Type getType() {
-    return methodRef.returnType();
+    return methodRef.getReturnType();
   }
 
+  @Override
   public String toString() {
     return getName() + getParameters();
   }
 
+  @Override
   abstract public String getName();
 
+  @Override
   String getParameters() {
     return " " + methodRef.getSignature();
   }
 
+  @Override
   protected void getParameters(UnitPrinter up) {
     up.literal(" ");
     up.methodRef(methodRef);
   }
 
+  @Override
   public int getInCount() {
-    return getMethodRef().parameterTypes().size();
+    return getMethodRef().getParameterTypes().size();
   }
 
+  @Override
   public int getOutCount() {
-    if (getMethodRef().returnType() instanceof VoidType) {
-      return 0;
-    } else {
-      return 1;
-    }
+    return (getMethodRef().getReturnType() instanceof VoidType) ? 0 : 1;
   }
 
+  @Override
   public int getInMachineCount() {
     int count = 0;
-
-    Iterator it = getMethodRef().parameterTypes().iterator();
-    while (it.hasNext()) {
-      count += AbstractJasminClass.sizeOfType((Type) it.next());
+    for (Type t : getMethodRef().getParameterTypes()) {
+      count += AbstractJasminClass.sizeOfType(t);
     }
     return count;
   }
 
+  @Override
   public int getOutMachineCount() {
-    if (getMethodRef().returnType() instanceof VoidType) {
-      return 0;
-    } else {
-      return AbstractJasminClass.sizeOfType(getMethodRef().returnType());
-    }
+    final Type returnType = getMethodRef().getReturnType();
+    return (returnType instanceof VoidType) ? 0 : AbstractJasminClass.sizeOfType(returnType);
   }
 
+  @Override
   public boolean containsInvokeExpr() {
     return true;
   }
-
 }

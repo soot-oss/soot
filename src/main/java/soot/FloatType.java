@@ -22,6 +22,8 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotnetBasicTypes;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
@@ -29,6 +31,9 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class FloatType extends PrimType {
+
+  public static final int HASHCODE = 0xA84373FA;
+
   public FloatType(Singletons.Global g) {
   }
 
@@ -36,24 +41,41 @@ public class FloatType extends PrimType {
     return G.v().soot_FloatType();
   }
 
+  @Override
   public boolean equals(Object t) {
     return this == t;
   }
 
+  @Override
   public int hashCode() {
-    return 0xA84373FA;
+    return HASHCODE;
   }
 
+  @Override
   public String toString() {
     return "float";
   }
 
+  @Override
   public void apply(Switch sw) {
     ((TypeSwitch) sw).caseFloatType(this);
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Float");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotnetBasicTypes.SYSTEM_SINGLE;
+    }
+    return JavaBasicTypes.JAVA_LANG_FLOAT;
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Float.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return float.class;
   }
 }
