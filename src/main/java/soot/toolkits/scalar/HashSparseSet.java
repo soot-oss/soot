@@ -41,9 +41,7 @@ public class HashSparseSet<T> extends AbstractFlowSet<T> {
   }
 
   private HashSparseSet(HashSparseSet<T> other) {
-    LinkedHashSet<T> newElements = new LinkedHashSet<T>();
-    newElements.addAll(other.elements);
-    elements = newElements;
+    elements = new LinkedHashSet<T>(other.elements);
   }
 
   /**
