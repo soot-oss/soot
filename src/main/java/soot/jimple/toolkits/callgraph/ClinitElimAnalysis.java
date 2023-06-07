@@ -28,9 +28,9 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.toolkits.scalar.HashSparseSet;
 
 public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMethod>> {
 
@@ -74,12 +74,12 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
 
   @Override
   protected FlowSet<SootMethod> entryInitialFlow() {
-    return new ArraySparseSet<SootMethod>();
+    return new HashSparseSet<SootMethod>();
   }
 
   @Override
   protected FlowSet<SootMethod> newInitialFlow() {
-    ArraySparseSet<SootMethod> set = new ArraySparseSet<SootMethod>();
+    HashSparseSet<SootMethod> set = new HashSparseSet<SootMethod>();
     for (Iterator<Edge> mIt = cg.edgesOutOf(g.getBody().getMethod()); mIt.hasNext();) {
       Edge edge = mIt.next();
       if (edge.isClinit()) {
