@@ -22,7 +22,9 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import soot.Scene;
 import soot.SootMethod;
@@ -36,6 +38,8 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
 
   private final CallGraph cg = Scene.v().getCallGraph();
   private final UnitGraph g;
+
+  private static final Map<SootMethod, Iterator<Edge>> outEdgesCache = new HashMap<>();
 
   public ClinitElimAnalysis(UnitGraph g) {
     super(g);
@@ -80,7 +84,15 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
   @Override
   protected FlowSet<SootMethod> newInitialFlow() {
     HashSparseSet<SootMethod> set = new HashSparseSet<SootMethod>();
-    for (Iterator<Edge> mIt = cg.edgesOutOf(g.getBody().getMethod()); mIt.hasNext();) {
+    Iterator<Edge> mIt;
+    if (outEdgesCache.containsKey(g.getBody().getMethod())) {
+      mIt = outEdgesCache.get(g.getBody().getMethod());
+    }
+    else {
+      mIt = cg.edgesOutOf(g.getBody().getMethod());
+      outEdgesCache.put(g.getBody().getMethod(), mIt);
+    }
+    while (mIt.hasNext()) {
       Edge edge = mIt.next();
       if (edge.isClinit()) {
         set.add(edge.tgt());
