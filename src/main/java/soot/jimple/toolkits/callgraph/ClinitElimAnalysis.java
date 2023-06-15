@@ -22,9 +22,7 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import soot.Scene;
 import soot.SootMethod;
@@ -39,7 +37,7 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
   private final CallGraph cg = Scene.v().getCallGraph();
   private final UnitGraph g;
 
-  private static final Map<SootMethod, Iterator<Edge>> outEdgesCache = new HashMap<>();
+  private static FlowSet<SootMethod> cachedFlowSet = null;
 
   public ClinitElimAnalysis(UnitGraph g) {
     super(g);
@@ -83,21 +81,22 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
 
   @Override
   protected FlowSet<SootMethod> newInitialFlow() {
-    HashSparseSet<SootMethod> set = new HashSparseSet<SootMethod>();
-    Iterator<Edge> mIt;
-    if (outEdgesCache.containsKey(g.getBody().getMethod())) {
-      mIt = outEdgesCache.get(g.getBody().getMethod());
+    HashSparseSet<SootMethod> returnedFlowSet = new HashSparseSet<>();
+    if (cachedFlowSet == null) {
+      cachedFlowSet = calculateInitialFlow();
     }
-    else {
-      mIt = cg.edgesOutOf(g.getBody().getMethod());
-      outEdgesCache.put(g.getBody().getMethod(), mIt);
-    }
-    while (mIt.hasNext()) {
+    cachedFlowSet.copy(returnedFlowSet);
+    return returnedFlowSet;
+  }
+  protected FlowSet<SootMethod> calculateInitialFlow() {
+    HashSparseSet<SootMethod> newFlowSet = new HashSparseSet<>();
+    for (Iterator<Edge> mIt = cg.edgesOutOf(g.getBody().getMethod()); mIt.hasNext();) {
       Edge edge = mIt.next();
       if (edge.isClinit()) {
-        set.add(edge.tgt());
+        newFlowSet.add(edge.tgt());
       }
     }
-    return set;
+    return newFlowSet;
   }
+
 }
