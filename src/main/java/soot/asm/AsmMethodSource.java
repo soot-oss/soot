@@ -2339,6 +2339,12 @@ public class AsmMethodSource implements MethodSource {
         Collection<LocalVariableNode> lvns = e.getValue();
         if (lvns.size() > 1) {
           final Integer localNum = e.getKey();
+
+          // Skip this index if it has not been referenced by a converted instruction
+          if (!this.locals.containsKey(localNum)) {
+            continue;
+          }
+
           final Local chosen = this.locals.get(localNum);
           final String chosenName = chosen.getName();
           final Type chosenType = chosen.getType();

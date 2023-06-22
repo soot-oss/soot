@@ -99,7 +99,7 @@ public class ContextInsensitiveBuilder {
       cgb.build();
       reachables = cgb.reachables();
     }
-    for (final SootClass c : Scene.v().getClasses()) {
+    for (final SootClass c : new ArrayList<>(Scene.v().getClasses())) {
       handleClass(c);
     }
     while (callEdges.hasNext()) {
