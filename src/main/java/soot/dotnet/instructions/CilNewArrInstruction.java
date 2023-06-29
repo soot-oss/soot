@@ -57,6 +57,7 @@ public class CilNewArrInstruction extends AbstractCilnstruction {
     for (ProtoIlInstructions.IlInstructionMsg index : instruction.getIndicesList()) {
       CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(index, dotnetBody, cilBlock);
       Value value = cilExpr.jimplifyExpr(jb);
+      value = dotnetBody.variableManager.simplifyIfNotPrimitiveWithLocal((value));
       Value val = value instanceof Immediate ? value : DotnetBodyVariableManager.inlineLocals(value, jb);
       sizesOfArr.add(val);
     }
