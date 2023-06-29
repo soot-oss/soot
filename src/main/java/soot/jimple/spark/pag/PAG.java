@@ -40,6 +40,7 @@ import soot.Context;
 import soot.FastHierarchy;
 import soot.Kind;
 import soot.Local;
+import soot.MethodSubSignature;
 import soot.PhaseOptions;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
@@ -77,6 +78,11 @@ import soot.jimple.spark.sets.SharedListSet;
 import soot.jimple.spark.sets.SortedArraySet;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.InstanceinvokeSource;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeSource;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.options.CGOptions;
 import soot.options.SparkOptions;
@@ -1074,7 +1080,30 @@ public class PAG implements PointsToAnalysis {
     MethodPAG tgtmpag = MethodPAG.v(this, e.tgt());
     Pair<Node, Node> pval;
 
-    if (e.isExplicit() || e.kind() == Kind.THREAD) {
+    if (e.kind() == Kind.GENERIC_FAKE) {
+      VirtualEdgesSummaries summaries = getOnFlyCallGraph().ofcgb().getVirtualEdgeSummaries();
+      VirtualEdge edge = summaries.getVirtualEdgesMatchingSubSig(
+          new MethodSubSignature(e.srcStmt().getInvokeExpr().getMethodRef().getSubSignature()));
+
+      VirtualEdgeSource edgeSrc = edge.getSource();
+      if (edgeSrc instanceof InstanceinvokeSource) {
+        for (VirtualEdgeTarget edgeTgt : edge.getTargets()) {
+          // The PAG node for the call argument
+          Node parm = srcmpag.nodeFactory().getNode(e.srcStmt().getInvokeExpr().getArg(edgeTgt.getArgIndex()));
+          parm = srcmpag.parameterize(parm, e.srcCtxt());
+          parm = parm.getReplacement();
+
+          // Get the PAG node for the "this" local in the callback
+          Node thiz = tgtmpag.nodeFactory().caseThis();
+          thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
+          thiz = thiz.getReplacement();
+
+          // Make an edge from caller.argument to callee.this
+          addEdge(parm, thiz);
+          pval = addInterproceduralAssignment(parm, thiz, e);
+        }
+      }
+    } else if (e.isExplicit() || e.kind() == Kind.THREAD) {
       addCallTarget(srcmpag, tgtmpag, (Stmt) e.srcUnit(), e.srcCtxt(), e.tgtCtxt(), e);
     } else if (e.kind() == Kind.ASYNCTASK) {
       addCallTarget(srcmpag, tgtmpag, (Stmt) e.srcUnit(), e.srcCtxt(), e.tgtCtxt(), e, false);

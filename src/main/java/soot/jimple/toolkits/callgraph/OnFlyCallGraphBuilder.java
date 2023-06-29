@@ -1408,4 +1408,9 @@ public class OnFlyCallGraphBuilder {
 
     protected abstract boolean acceptMethod(SootMethod m);
   }
+
+  public VirtualEdgesSummaries getVirtualEdgeSummaries() {
+    return virtualEdgeSummaries;
+  }
+
 }
