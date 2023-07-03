@@ -1082,14 +1082,22 @@ public class PAG implements PointsToAnalysis {
 
     if (e.kind() == Kind.GENERIC_FAKE) {
       VirtualEdgesSummaries summaries = getOnFlyCallGraph().ofcgb().getVirtualEdgeSummaries();
-      VirtualEdge edge = summaries.getVirtualEdgesMatchingSubSig(
-          new MethodSubSignature(e.srcStmt().getInvokeExpr().getMethodRef().getSubSignature()));
+      InvokeExpr ie = e.srcStmt().getInvokeExpr();
+      VirtualEdge ve = summaries.getVirtualEdgesMatchingSubSig(new MethodSubSignature(ie.getMethodRef().getSubSignature()));
+      /*
+       * direct and indirect virtual edges can be handled identically, since getSource() retrieves the original source
+       * defined in virtualedges.xml
+       */
+      VirtualEdgeSource edgeSrc = ve.getSource();
 
-      VirtualEdgeSource edgeSrc = edge.getSource();
       if (edgeSrc instanceof InstanceinvokeSource) {
-        for (VirtualEdgeTarget edgeTgt : edge.getTargets()) {
+        /*
+         * iterate through all targets; since each target knows the argument index of its source (its direct predecessor), no
+         * distinction between indirect and direct virtual edges is necessary
+         */
+        for (VirtualEdgeTarget edgeTgt : ve.getTargets()) {
           // The PAG node for the call argument
-          Node parm = srcmpag.nodeFactory().getNode(e.srcStmt().getInvokeExpr().getArg(edgeTgt.getArgIndex()));
+          Node parm = srcmpag.nodeFactory().getNode(ie.getArg(edgeTgt.getArgIndex()));
           parm = srcmpag.parameterize(parm, e.srcCtxt());
           parm = parm.getReplacement();
 
