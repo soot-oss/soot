@@ -1081,13 +1081,16 @@ public class PAG implements PointsToAnalysis {
     Pair<Node, Node> pval;
 
     if (e.kind() == Kind.GENERIC_FAKE) {
+      if (getOnFlyCallGraph() == null) {
+        return;
+      }
       VirtualEdgesSummaries summaries = getOnFlyCallGraph().ofcgb().getVirtualEdgeSummaries();
       InvokeExpr ie = e.srcStmt().getInvokeExpr();
       VirtualEdge ve = summaries.getVirtualEdgesMatchingSubSig(new MethodSubSignature(ie.getMethodRef().getSubSignature()));
       // if there is no virtual edge there is no point in continuing
-      if (ve == null)
+      if (ve == null) {
         return;
-
+      }
       /*
        * direct and indirect virtual edges can be handled identically, since getSource() retrieves the original source
        * defined in virtualedges.xml
