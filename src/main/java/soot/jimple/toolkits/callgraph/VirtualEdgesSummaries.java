@@ -58,6 +58,7 @@ import soot.ModuleUtil;
 import soot.RefType;
 import soot.Scene;
 import soot.jimple.Stmt;
+import soot.options.Options;
 import soot.util.StringNumberer;
 
 /**
@@ -81,7 +82,19 @@ public class VirtualEdgesSummaries {
    * <code>virtualedges.xml</code> that comes with Soot.
    */
   public VirtualEdgesSummaries() {
-    Path summariesFile = Paths.get(SUMMARIESFILE);
+    final String virtualEdgesPath = Options.v().virtualedges_path();
+    Path summariesFile = null;
+    if (virtualEdgesPath != null && !virtualEdgesPath.isEmpty()) {
+      final Path virtualEdgesFilePath = Paths.get(virtualEdgesPath);
+      if (Files.exists(virtualEdgesFilePath)) {
+        summariesFile = virtualEdgesFilePath;
+      } else {
+        logger.error("The virtual edges path {} does not exist", virtualEdgesPath);
+      }
+    }
+    if (summariesFile == null) {
+      summariesFile = Paths.get(SUMMARIESFILE);
+    }
     try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile)
         : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
       if (in == null) {
