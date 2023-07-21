@@ -43,7 +43,6 @@ import soot.Scene;
 import soot.SootClass;
 import soot.Type;
 import soot.TypeSwitch;
-import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
