@@ -249,6 +249,11 @@ public class AntTask extends MatchingTask {
             return process_jar_dir.createPath();
         }
   
+        public void setvirtualedges_path(String arg) {
+            addArg("-virtualedges-path");
+            addArg(arg);
+        }
+  
         public void setderive_java_version(boolean arg) {
             if(arg) addArg("-derive-java-version");
         }
