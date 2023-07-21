@@ -1242,6 +1242,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsprocess_jar_dir_widget().getAlias(), stringRes);
 		}
+		stringRes = getInput_Optionsvirtualedges_path_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsvirtualedges_path_widget().getAlias(), stringRes);
+		}
 		stringRes = getInput_Optionsandroid_jars_widget().getText().getText();
 		defStringRes = "";
 
@@ -4966,6 +4972,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public StringOptionWidget getInput_Optionsdotnet_nativehost_path_widget() {
 		return Input_Optionsdotnet_nativehost_path_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionsvirtualedges_path_widget;
+	
+	private void setInput_Optionsvirtualedges_path_widget(StringOptionWidget widget) {
+		Input_Optionsvirtualedges_path_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsvirtualedges_path_widget() {
+		return Input_Optionsvirtualedges_path_widget;
 	}
 	
 	
@@ -9131,6 +9149,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionsdotnet_nativehost_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Dotnet NativeHost Path",  "", "","dotnet-nativehost-path", "\nUse dotnet-nativehost-path to load the NativeHost library which \nis needed for soot.dotnet.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"virtualedges-path";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setInput_Optionsvirtualedges_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("VirtualEdges Path",  "", "","virtualedges-path", "\nUse virtual edges configuration file from location used in call \ngraph algorithms.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"android-jars";

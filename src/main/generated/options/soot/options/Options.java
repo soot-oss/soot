@@ -330,6 +330,22 @@ public class Options extends OptionsBase {
                 process_jar_dir.add(value);
             }
             else if (false
+                    || option.equals("virtualedges-path")
+            ) {
+                if (!hasMoreOptions()) {
+                    G.v().out.println("No value given for option -" + option);
+                    return false;
+                }
+
+                String value = nextOption();
+                if (virtualedges_path.isEmpty())
+                    virtualedges_path = value;
+                else {
+                    G.v().out.println("Duplicate values " + virtualedges_path + " and " + value + " for option -" + option);
+                    return false;
+                }
+            }
+            else if (false
                     || option.equals("no-derive-java-version")
             )
                 derive_java_version = false;
@@ -1565,6 +1581,10 @@ public class Options extends OptionsBase {
     public void set_process_jar_dir(List<String> setting) { process_jar_dir = setting; }
     private List<String> process_jar_dir = null;
 
+    public String virtualedges_path() { return virtualedges_path; }
+    public void set_virtualedges_path(String setting) { virtualedges_path = setting; }
+    private String virtualedges_path = "";
+
     public boolean derive_java_version() { return derive_java_version; }
     private boolean derive_java_version = true;
     public void set_derive_java_version(boolean setting) { derive_java_version = setting; }
@@ -1852,6 +1872,7 @@ public class Options extends OptionsBase {
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")
                 + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG (but not classes within JAR files in ARG , use process-jar-dir for that)")
                 + padOpt("-process-jar-dir ARG", "Process all classes found in JAR files found in ARG")
+                + padOpt("-virtualedges-path ARG", "Path to virtual edges configuration used in call graphs")
                 + padOpt("-derive-java-version", "Java version for output and internal processing will be derived from the given input classes")
                 + padOpt("-oaat", "From the process-dir, processes one class at a time.")
                 + padOpt("-android-jars ARG", "Use ARG as the path for finding the android.jar file")
