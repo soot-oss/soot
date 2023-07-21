@@ -158,6 +158,7 @@ public final class TypeManager {
         logger.warn("Type mask not found for type " + type
                 + ". This is casued by a cast operation to a type which is a phantom class " +
                 "and no type mask was found. This may affect the precision of the point-to set.");
+        return new BitVector();
       }
     }
     return ret;
