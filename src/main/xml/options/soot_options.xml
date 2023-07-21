@@ -596,6 +596,16 @@
                 </p>
             </long_desc>
         </listopt>
+        <stropt>
+            <name>VirtualEdges Path</name>
+            <alias>virtualedges-path</alias>
+            <short_desc>Path to virtual edges configuration used in call graphs</short_desc>
+            <long_desc>
+                <p>
+                    Use virtual edges configuration file from location <alias/> used in call graph algorithms.
+                </p>
+            </long_desc>
+        </stropt>
         <boolopt>
             <name>Derive Java version from input</name>
             <alias>derive-java-version</alias>
