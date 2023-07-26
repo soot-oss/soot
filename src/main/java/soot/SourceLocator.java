@@ -273,9 +273,6 @@ public class SourceLocator {
 
   protected void setupClassProviders() {
     final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
-    if (this.java9Mode) {
-      classProviders.add(new AsmJava9ClassProvider());
-    }
     final ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
     switch (Options.v().src_prec()) {
       case Options.src_prec_class:
@@ -313,6 +310,9 @@ public class SourceLocator {
         break;
       default:
         throw new RuntimeException("Other source precedences are not currently supported.");
+    }
+    if (this.java9Mode) {
+      classProviders.add(new AsmJava9ClassProvider());
     }
     this.classProviders = classProviders;
   }
