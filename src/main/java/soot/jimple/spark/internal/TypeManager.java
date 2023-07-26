@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -65,6 +67,8 @@ public final class TypeManager {
 
   private Map<SootClass, List<AllocNode>> class2allocs = new HashMap<SootClass, List<AllocNode>>(1024);
   private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();
+
+  private static final Logger logger = LoggerFactory.getLogger(TypeManager.class);
 
   protected final RefType rtObject;
   protected final RefType rtSerializable;
@@ -151,8 +155,10 @@ public final class TypeManager {
             return new BitVector();
           }
         }
-
-        throw new RuntimeException("Type mask not found for type " + type);
+        logger.warn("Type mask not found for type " + type
+                + ". This is casued by a cast operation to a type which is a phantom class " +
+                "and no type mask was found. This may affect the precision of the point-to set.");
+        return new BitVector();
       }
     }
     return ret;
