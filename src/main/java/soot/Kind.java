@@ -205,7 +205,7 @@ public final class Kind implements Numberable {
   public static boolean passesParameters(Kind k) {
     return isExplicit(k) || k == THREAD || k == EXECUTOR || k == ASYNCTASK || k == FINALIZE || k == PRIVILEGED
         || k == NEWINSTANCE || k == INVOKE_FINALIZE || k == REFL_INVOKE || k == REFL_CONSTR_NEWINSTANCE
-        || k == REFL_CLASS_NEWINSTANCE;
+        || k == REFL_CLASS_NEWINSTANCE || k == GENERIC_FAKE;
   }
 
   public static boolean isFake(Kind k) {

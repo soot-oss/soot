@@ -40,6 +40,7 @@ import soot.Context;
 import soot.FastHierarchy;
 import soot.Kind;
 import soot.Local;
+import soot.MethodSubSignature;
 import soot.PhaseOptions;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
@@ -77,6 +78,11 @@ import soot.jimple.spark.sets.SharedListSet;
 import soot.jimple.spark.sets.SortedArraySet;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.InstanceinvokeSource;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeSource;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.options.CGOptions;
 import soot.options.SparkOptions;
@@ -1074,7 +1080,45 @@ public class PAG implements PointsToAnalysis {
     MethodPAG tgtmpag = MethodPAG.v(this, e.tgt());
     Pair<Node, Node> pval;
 
-    if (e.isExplicit() || e.kind() == Kind.THREAD) {
+    if (e.kind() == Kind.GENERIC_FAKE) {
+      if (getOnFlyCallGraph() == null) {
+        return;
+      }
+      VirtualEdgesSummaries summaries = getOnFlyCallGraph().ofcgb().getVirtualEdgeSummaries();
+      InvokeExpr ie = e.srcStmt().getInvokeExpr();
+      VirtualEdge ve = summaries.getVirtualEdgesMatchingSubSig(new MethodSubSignature(ie.getMethodRef().getSubSignature()));
+      // if there is no virtual edge there is no point in continuing
+      if (ve == null) {
+        return;
+      }
+      /*
+       * direct and indirect virtual edges can be handled identically, since getSource() retrieves the original source
+       * defined in virtualedges.xml
+       */
+      VirtualEdgeSource edgeSrc = ve.getSource();
+
+      if (edgeSrc instanceof InstanceinvokeSource) {
+        /*
+         * iterate through all targets; since each target knows the argument index of its source (its direct predecessor), no
+         * distinction between indirect and direct virtual edges is necessary
+         */
+        for (VirtualEdgeTarget edgeTgt : ve.getTargets()) {
+          // The PAG node for the call argument
+          Node parm = srcmpag.nodeFactory().getNode(ie.getArg(edgeTgt.getArgIndex()));
+          parm = srcmpag.parameterize(parm, e.srcCtxt());
+          parm = parm.getReplacement();
+
+          // Get the PAG node for the "this" local in the callback
+          Node thiz = tgtmpag.nodeFactory().caseThis();
+          thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
+          thiz = thiz.getReplacement();
+
+          // Make an edge from caller.argument to callee.this
+          addEdge(parm, thiz);
+          pval = addInterproceduralAssignment(parm, thiz, e);
+        }
+      }
+    } else if (e.isExplicit() || e.kind() == Kind.THREAD) {
       addCallTarget(srcmpag, tgtmpag, (Stmt) e.srcUnit(), e.srcCtxt(), e.tgtCtxt(), e);
     } else if (e.kind() == Kind.ASYNCTASK) {
       addCallTarget(srcmpag, tgtmpag, (Stmt) e.srcUnit(), e.srcCtxt(), e.tgtCtxt(), e, false);
