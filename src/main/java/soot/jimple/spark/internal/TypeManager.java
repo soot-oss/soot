@@ -160,7 +160,7 @@ public final class TypeManager {
                 "and no type mask was found. This may affect the precision of the point-to set.");
         BitVector soundOverApproxRet = new BitVector();
         for (int i = 0; i <= 63; i++) {
-          soundOverApproxRet.set(i);‚
+          soundOverApproxRet.set(i);
         }
         return soundOverApproxRet;
       }
