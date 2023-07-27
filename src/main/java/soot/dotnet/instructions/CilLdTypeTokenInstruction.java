@@ -24,10 +24,10 @@ package soot.dotnet.instructions;
 
 import soot.Body;
 import soot.Value;
+import soot.dotnet.DotnetClassConstant;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.soot.DotnetClassConstant;
 
 /**
  * ldtoken was split up by ILspy: LdTypeToken for types and LdMemberToken Load a type handle token (e.g. reflection)

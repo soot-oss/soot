@@ -29,10 +29,10 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Value;
+import soot.dotnet.DotnetClassConstant;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.soot.DotnetClassConstant;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.Jimple;
 
