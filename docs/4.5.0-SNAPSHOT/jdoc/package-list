@@ -32,7 +32,6 @@ soot.dotnet.instructions
 soot.dotnet.members
 soot.dotnet.members.method
 soot.dotnet.proto
-soot.dotnet.soot
 soot.dotnet.specifications
 soot.dotnet.types
 soot.grimp
