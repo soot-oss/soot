@@ -1,4 +1,4 @@
-package soot.dotnet.soot;
+package soot.dotnet;
 
 /*-
  * #%L
