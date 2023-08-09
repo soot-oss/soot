@@ -634,4 +634,62 @@
 				target-position="argument" index="0" />
 		</targets>
 	</edge>
+
+	<!-- java.util.Map -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object compute(java.lang.Object,java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object computeIfAbsent(java.lang.Object,java.util.function.Function)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object computeIfPresent(java.lang.Object,java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object merge(java.lang.Object,java.lang.Object,java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void replaceAll(java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- java.util.List -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="void replaceAll(java.util.function.UnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
 </virtualedges>
