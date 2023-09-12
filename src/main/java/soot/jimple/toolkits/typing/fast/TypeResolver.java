@@ -443,7 +443,7 @@ public class TypeResolver {
     public void addTypeDecision(TypeContainer container) {
       for (TypeContainer c : this.containers) {
         if ((typesEqual(container.lType, c.lType) && typesEqual(container.rType, c.rType)
-                || (typesEqual(container.lType, c.rType) && typesEqual(container.rType, c.lType)))) {
+            || (typesEqual(container.lType, c.rType) && typesEqual(container.rType, c.lType)))) {
           return;
         }
       }
@@ -564,7 +564,9 @@ public class TypeResolver {
                 tg_ = typingStrategy.createTyping(tg);
                 wl_ = (BitSet) wl.clone();
                 ds_ = ds.copy();
-                if (addFirstDecision) ds_.removeLast();
+                if (addFirstDecision) {
+                  ds_.removeLast();
+                }
                 WorklistElement e = new WorklistElement(tg_, wl_, ds_);
 
                 sigma.add(e);
