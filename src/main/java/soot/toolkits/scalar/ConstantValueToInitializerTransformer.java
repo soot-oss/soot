@@ -41,10 +41,12 @@ import soot.UnitPatchingChain;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
+import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
+import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
@@ -133,11 +135,16 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
             // It has to be after the constructor call to the super class
             // so that it can be potentially overwritten within the method,
             // without the default value taking precedence.
+            // If the constructor body already has the constant assignment,
+            // e.g. for final instance fields, we do not add another assignment.
             for (SootMethod m : sc.getMethods()) {
               if (m.isConstructor()) {
                 final Body body = m.retrieveActiveBody();
                 final UnitPatchingChain units = body.getUnits();
                 Local thisLocal = null;
+                if (isInstanceFieldAssignedConstantInBody(sf, constant, body)) {
+                  continue;
+                }
                 for (Unit u : units) {
                   if (u instanceof Stmt) {
                     final Stmt s = (Stmt) u;
@@ -171,6 +178,22 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
         units.add(jimp.newReturnVoidStmt());
       }
     }
+  }
+
+  private boolean isInstanceFieldAssignedConstantInBody(SootField sf, Constant constant, Body body) {
+    for (Unit u : body.getUnits()) {
+      if (u instanceof AssignStmt) {
+        final AssignStmt as = ((AssignStmt) u);
+        if (as.containsFieldRef() && as.getFieldRef() instanceof InstanceFieldRef
+            && as.getLeftOpBox().equals(as.getFieldRefBox()) && as.getRightOp().equivTo(constant)) {
+          final InstanceFieldRef ifr = ((InstanceFieldRef) as.getFieldRef());
+          if (ifr.getField().equals(sf) && ifr.getBase().equivTo(body.getThisLocal())) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   private SootMethod getOrCreateInitializer(SootClass sc, Set<SootField> alreadyInitialized) {
