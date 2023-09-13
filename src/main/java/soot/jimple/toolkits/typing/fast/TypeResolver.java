@@ -401,15 +401,80 @@ public class TypeResolver {
   static class WorklistElement {
     Typing typing;
     BitSet worklist;
+    TypeDecision decision;
 
-    public WorklistElement(Typing tg, BitSet wl) {
+    public WorklistElement(Typing tg, BitSet wl, TypeDecision decision) {
       this.typing = tg;
       this.worklist = wl;
+      this.decision = decision;
     }
 
     @Override
     public String toString() {
       return "Left in worklist: " + worklist.size() + ", typing: " + typing;
+    }
+  }
+
+  static class TypeContainer {
+    // First assigned type
+    Type lType;
+    // First assigned type
+    Type rType;
+
+    // The base type decision from lType and rType.
+    Type target;
+
+    TypeContainer(Type l, Type r, Type t) {
+      this.lType = l;
+      this.rType = r;
+      this.target = t;
+    }
+  }
+
+  static class TypeDecision {
+
+    // Record type decision for different type tuples.
+    List<TypeContainer> containers;
+
+    TypeDecision() {
+      containers = new ArrayList<>();
+    }
+
+    public void addTypeDecision(TypeContainer container) {
+      for (TypeContainer c : this.containers) {
+        if ((typesEqual(container.lType, c.lType) && typesEqual(container.rType, c.rType)
+            || (typesEqual(container.lType, c.rType) && typesEqual(container.rType, c.lType)))) {
+          return;
+        }
+      }
+      this.containers.add(container);
+    }
+
+    public Type getTypeDecision(Type l, Type r) {
+      for (TypeContainer container : this.containers) {
+        if (typesEqual(container.lType, l) && typesEqual(container.rType, r)) {
+          return container.target;
+        }
+        if (typesEqual(container.lType, r) && typesEqual(container.rType, l)) {
+          return container.target;
+        }
+      }
+      return BottomType.v();
+    }
+
+    public TypeDecision copy() {
+      TypeDecision decision = new TypeDecision();
+      for (TypeContainer container : this.containers) {
+        decision.containers.add(new TypeContainer(container.lType, container.rType, container.target));
+      }
+      return decision;
+    }
+
+    public void removeLast() {
+      // Remove the last one.
+      if (!this.containers.isEmpty()) {
+        this.containers.remove(this.containers.size() - 1);
+      }
     }
   }
 
@@ -426,7 +491,7 @@ public class TypeResolver {
 
     BitSet wl = new BitSet(numAssignments);
     wl.set(0, numAssignments);
-    sigma.add(new WorklistElement(tg, wl));
+    sigma.add(new WorklistElement(tg, wl, new TypeDecision()));
 
     Set<Type> throwable = null;
 
@@ -434,6 +499,7 @@ public class TypeResolver {
       WorklistElement element = sigma.element();
       tg = element.typing;
       wl = element.worklist;
+      TypeDecision ds = element.decision;
       int defIdx = wl.nextSetBit(0);
       if (defIdx == -1) {
         // worklist is empty
@@ -472,25 +538,51 @@ public class TypeResolver {
             }
             lcas = throwable;
           } else {
-            lcas = h.lcas(told, t_, true);
+            Type featureType = ds.getTypeDecision(told, t_);
+            if (!typesEqual(featureType, BottomType.v())) {
+              // Use feature type.
+              lcas = Collections.singleton(featureType);
+            } else {
+              lcas = h.lcas(told, t_, true);
+            }
           }
+          boolean addFirstDecision = false;
 
           for (Type t : lcas) {
             if (!typesEqual(t, told)) {
               BitSet dependsV = this.depends.get(v);
               Typing tg_;
               BitSet wl_;
+              TypeDecision ds_;
               if (/* (eval.size() == 1 && lcas.size() == 1) || */isFirstType) {
                 // The types agree, we have a type we can directly use
                 tg_ = tg;
                 wl_ = wl;
+                ds_ = ds;
               } else {
                 // The types do not agree, add all supertype candidates
                 tg_ = typingStrategy.createTyping(tg);
                 wl_ = (BitSet) wl.clone();
-                WorklistElement e = new WorklistElement(tg_, wl_);
+                ds_ = ds.copy();
+                if (addFirstDecision) {
+                  ds_.removeLast();
+                }
+                WorklistElement e = new WorklistElement(tg_, wl_, ds_);
+
                 sigma.add(e);
               }
+
+              if (!typesEqual(told, BottomType.v()) && !typesEqual(t_, BottomType.v())) {
+                // 't' is base class of type 'told' & 't_';
+                // It will decide the feature type by target value.
+                TypeContainer container = new TypeContainer(told, t_, t);
+                ds_.addTypeDecision(container);
+
+                // At first type, we will modify the base feature type decisions, and at the next type it will
+                // copy the old feature type decisions and used the dirty data(so mark it and remove).
+                addFirstDecision = isFirstType;
+              }
+
               tg_.set(v, t);
               if (dependsV != null) {
                 wl_.or(dependsV);
