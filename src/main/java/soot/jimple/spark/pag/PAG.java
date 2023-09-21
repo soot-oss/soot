@@ -1091,31 +1091,25 @@ public class PAG implements PointsToAnalysis {
       if (ve == null) {
         return;
       }
-      /*
-       * direct and indirect virtual edges can be handled identically, since getSource() retrieves the original source
-       * defined in virtualedges.xml
-       */
+      // The source is equal for direct and indirect targets
       VirtualEdgeSource edgeSrc = ve.getSource();
 
       if (edgeSrc instanceof InstanceinvokeSource) {
-        /*
-         * iterate through all targets; since each target knows the argument index of its source (its direct predecessor), no
-         * distinction between indirect and direct virtual edges is necessary
-         */
         for (VirtualEdgeTarget edgeTgt : ve.getTargets()) {
-          // The PAG node for the call argument
-          Node parm = srcmpag.nodeFactory().getNode(ie.getArg(edgeTgt.getArgIndex()));
-          parm = srcmpag.parameterize(parm, e.srcCtxt());
-          parm = parm.getReplacement();
+          for (Local local : getOnFlyCallGraph().ofcgb().getReceiversOfVirtualEdge(edgeTgt, ie)) {
+            Node parm = srcmpag.nodeFactory().getNode(local);
+            parm = srcmpag.parameterize(parm, e.srcCtxt());
+            parm = parm.getReplacement();
 
-          // Get the PAG node for the "this" local in the callback
-          Node thiz = tgtmpag.nodeFactory().caseThis();
-          thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
-          thiz = thiz.getReplacement();
+            // Get the PAG node for the "this" local in the callback
+            Node thiz = tgtmpag.nodeFactory().caseThis();
+            thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
+            thiz = thiz.getReplacement();
 
-          // Make an edge from caller.argument to callee.this
-          addEdge(parm, thiz);
-          pval = addInterproceduralAssignment(parm, thiz, e);
+            // Make an edge from caller.argument to callee.this
+            addEdge(parm, thiz);
+            pval = addInterproceduralAssignment(parm, thiz, e);
+          }
         }
       }
     } else if (e.isExplicit() || e.kind() == Kind.THREAD) {
