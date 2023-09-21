@@ -1,10 +1,25 @@
 <?xml version="1.0"?>
 <virtualedges>
 	<!-- Thread.start() -->
-	<edge type="THREAD">
+	<edge>
 		<source invoketype="instance" subsignature="void start()" />
 		<targets>
 			<direct subsignature="void run()" target-position="base" />
+			<indirect subsignature="void &lt;init&gt;(java.lang.Runnable)" target-position="base">
+				<direct subsignature="void run()" target-position="argument" index="0"/>
+			</indirect>
+			<indirect subsignature="void &lt;init&gt;(java.lang.Runnable,java.lang.String)" target-position="base" >
+				<direct subsignature="void run()" target-position="argument" index="0"/>
+			</indirect>
+			<indirect subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.Runnable)" target-position="base">
+				<direct subsignature="void run()" target-position="argument" index="1"/>
+			</indirect>
+			<indirect subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.Runnable,java.lang.String)" target-position="base">
+				<direct subsignature="void run()" target-position="argument" index="1"/>
+			</indirect>
+			<indirect subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.Runnable,java.lang.String,long)" target-position="base">
+				<direct subsignature="void run()" target-position="argument" index="1"/>
+			</indirect>
 		</targets>
 	</edge>
 
