@@ -909,9 +909,15 @@ public class DexBody {
     // before as well, but we didn't know).
     UnreachableCodeEliminator.v().transform(jBody);
 
-    // Not sure whether we need this even though we do it earlier on as
-    // the earlier pass does not have type information
-    // CopyPropagator.v().transform(jBody);
+    // Both, the original type assigner (Efficient Inference of Static
+    // Types for Java Bytecode, 2000) and the fast type assigner
+    // (Efficient local type inference, 2008) do split the local used in
+    // the NewExpr and <init> InvokeExpr in stage 2 to obtain bytecode for
+    // which a valid typing exists. This happens eagerly _for all_ object
+    // creation sites, leading to unnecessary aliases at most of the
+    // object creation sites. Copy Propagation here removes all of these
+    // unnecessary copies from the TypeAssigner.
+    CopyPropagator.v().transform(jBody);
 
     // we might have gotten new dead assignments and unused locals through
     // copy propagation and unreachable code elimination, so we have to do
