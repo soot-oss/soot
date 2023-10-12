@@ -246,10 +246,14 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   public void initializeUnitToOwner(SootMethod m) {
     if (m.hasActiveBody()) {
       Body b = m.getActiveBody();
-      PatchingChain<Unit> units = b.getUnits();
-      for (Unit unit : units) {
-        unitToOwner.put(unit, b);
-      }
+      initializeUnitToOwner(b);
+    }
+  }
+
+  public void initializeUnitToOwner(Body b) {
+    PatchingChain<Unit> units = b.getUnits();
+    for (Unit unit : units) {
+      unitToOwner.put(unit, b);
     }
   }
 
