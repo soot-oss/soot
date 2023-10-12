@@ -25,18 +25,17 @@ package soot.jimple.toolkits.ide.icfg;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import soot.Body;
 import soot.PatchingChain;
@@ -53,7 +52,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
   protected final boolean enableExceptions;
 
-  @DontSynchronize("written by single thread; read afterwards")
+  @SynchronizedBy("thread-safe data structure")
   private final Map<Unit, Body> unitToOwner = createUnitToOwnerMap();
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
@@ -87,8 +86,13 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     this(true);
   }
 
+  /**
+   * Creates a new map used for the unitToOwner map. Must be thread-safe.
+   *
+   * @return a new thread-safe map
+   */
   protected Map<Unit, Body> createUnitToOwnerMap() {
-    return new LinkedHashMap<Unit, Body>();
+    return new ConcurrentHashMap<>();
   }
 
   public AbstractJimpleBasedICFG(boolean enableExceptions) {
@@ -242,10 +246,14 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   public void initializeUnitToOwner(SootMethod m) {
     if (m.hasActiveBody()) {
       Body b = m.getActiveBody();
-      PatchingChain<Unit> units = b.getUnits();
-      for (Unit unit : units) {
-        unitToOwner.put(unit, b);
-      }
+      initializeUnitToOwner(b);
+    }
+  }
+
+  public void initializeUnitToOwner(Body b) {
+    PatchingChain<Unit> units = b.getUnits();
+    for (Unit unit : units) {
+      unitToOwner.put(unit, b);
     }
   }
 

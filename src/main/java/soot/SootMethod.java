@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -415,6 +416,21 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * get retrieve its active body. Please call {@link SootClass#setApplicationClass()} on the relevant class.
    */
   public Body retrieveActiveBody() {
+    return retrieveActiveBody((b) -> { });
+  }
+
+  /**
+   * Returns the active body if present, else constructs an active body, calls the consumer and returns the body afterward.
+   *
+   * If you called Scene.v().loadClassAndSupport() for a class yourself, it will not be an application class, so you cannot
+   * get retrieve its active body. Please call {@link SootClass#setApplicationClass()} on the relevant class.
+   *
+   * @param consumer Consumer that takes in the body of the method. The consumer is only invoked if the current
+   *                 invocation constructs a new body and is guaranteed to terminate before the body is available
+   *                 to other threads.
+   * @return active body of the method
+   */
+  public Body retrieveActiveBody(Consumer<Body> consumer) {
     // Retrieve the active body so thread changes do not affect the
     // synchronization between if the body exists and the returned body.
     // This is a quick check just in case the activeBody exists.
@@ -445,6 +461,11 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
       // Method sources are not expected to be thread safe
       activeBody = ms.getBody(this, "jb");
+
+      // Call the consumer such that clients can update any data structures, caches, etc.
+      // atomically before the body is available to other threads.
+      consumer.accept(activeBody);
+
       setActiveBody(activeBody);
 
       // If configured, we drop the method source to save memory
