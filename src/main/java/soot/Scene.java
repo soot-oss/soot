@@ -2256,4 +2256,13 @@ public class Scene {
   public LocalCreation createLocalCreation(Chain<Local> locals, String prefix) {
     return new DefaultLocalCreation(locals, prefix);
   }
+
+  /**
+   * Resets the sootClassPath to null.
+   * This method allows for subsequent calls to {@link #loadNecessaryClasses()} to recompute and load the classes using
+   * updated configurations if provided.
+   */
+  public void resetSootClassPathCache() {
+    this.sootClassPath = null;
+  }
 }
