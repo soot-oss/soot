@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -112,14 +113,15 @@ public final class TypeManager {
     if (type == null) {
       return null;
     }
+    final Scene sc = Scene.v();
     while (allocNodeListener.hasNext()) {
       AllocNode n = allocNodeListener.next();
       Type nt = n.getType();
       Iterable<Type> types;
       if (nt instanceof NullType || nt instanceof AnySubType) {
-        types = Scene.v().getTypeNumberer();
+        types = sc.getTypeNumberer();
       } else {
-        types = Scene.v().getOrMakeFastHierarchy().canStoreTypeList(nt);
+        types = sc.getOrMakeFastHierarchy().canStoreTypeList(nt);
       }
       for (final Type t : types) {
         if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
@@ -156,8 +158,8 @@ public final class TypeManager {
           }
         }
         logger.warn("Type mask not found for type " + type
-                + ". This is casued by a cast operation to a type which is a phantom class " +
-                "and no type mask was found. This may affect the precision of the point-to set.");
+            + ". This is casued by a cast operation to a type which is a phantom class "
+            + "and no type mask was found. This may affect the precision of the point-to set.");
         BitVector soundOverApproxRet = new BitVector();
         for (int i = 0; i <= 63; i++) {
           soundOverApproxRet.set(i);
