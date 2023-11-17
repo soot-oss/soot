@@ -151,6 +151,6 @@ public class AbstractTrap implements Trap, Serializable {
 
   private void writeObject(ObjectOutputStream out) throws IOException {
     out.defaultWriteObject();
-    out.writeObject(exception.getName());
+    out.writeObject(exception.getPathPlusClassName());
   }
 }

@@ -137,12 +137,13 @@ public class XMLPrinter {
           new String[] { Main.versionString, cmdlineStr.toString().trim(), dateStr });
 
       // add class root node
-      xmlClassNode = xmlRootNode.addChild("class", new String[] { "name" }, new String[] { sc.quotedNameOf(cl.getName()) });
+      xmlClassNode = xmlRootNode.addChild("class", new String[] { "name" }, new String[] {
+              sc.quotedNameOf(cl.getPathPlusClassName()) });
       if (!cl.getPackageName().isEmpty()) {
         xmlClassNode.addAttribute("package", cl.getPackageName());
       }
       if (cl.hasSuperclass()) {
-        xmlClassNode.addAttribute("extends", sc.quotedNameOf(cl.getSuperclass().getName()));
+        xmlClassNode.addAttribute("extends", sc.quotedNameOf(cl.getSuperclass().getPathPlusClassName()));
       }
 
       // add modifiers subnode
@@ -158,7 +159,8 @@ public class XMLPrinter {
       XMLNode xmlTempNode = xmlClassNode.addChild("interfaces", "", new String[] { "count" },
           new String[] { String.valueOf(cl.getInterfaceCount()) });
       for (SootClass next : cl.getInterfaces()) {
-        xmlTempNode.addChild("implements", "", new String[] { "class" }, new String[] { sc.quotedNameOf(next.getName()) });
+        xmlTempNode.addChild("implements", "", new String[] { "class" }, new String[] {
+                sc.quotedNameOf(next.getPathPlusClassName()) });
       }
     }
 
@@ -186,7 +188,8 @@ public class XMLPrinter {
     // Print methods
     {
       XMLNode methodsNode
-          = xmlClassNode.addChild("methods", new String[] { "count" }, new String[] { String.valueOf(cl.getMethodCount()) });
+          = xmlClassNode.addChild("methods", new String[] { "count" }, new String[] {
+                  String.valueOf(cl.getMethodCount()) });
 
       for (Iterator<SootMethod> methodIt = cl.methodIterator(); methodIt.hasNext();) {
         SootMethod method = methodIt.next();
@@ -231,8 +234,9 @@ public class XMLPrinter {
     final String cleanMethodName = cleanMethod(body.getMethod().getName());
 
     // add method node
-    XMLNode methodNode = methodsNode.addChild("method", new String[] { "name", "returntype", "class" }, new String[] {
-        cleanMethodName, body.getMethod().getReturnType().toString(), body.getMethod().getDeclaringClass().getName() });
+    XMLNode methodNode = methodsNode.addChild("method", new String[] { "name", "returntype", "class" },
+            new String[] {cleanMethodName, body.getMethod().getReturnType().toString(),
+                    body.getMethod().getDeclaringClass().getPathPlusClassName() });
     String declarationStr = body.getMethod().getDeclaration().trim();
     methodNode.addChild("declaration", toCDATA(declarationStr), new String[] { "length" },
         new String[] { String.valueOf(declarationStr.length()) });
@@ -587,7 +591,8 @@ public class XMLPrinter {
       for (Trap trap : body.getTraps()) {
         // catch java.io.IOException from label0 to label1 with label2;
         XMLNode catchNode = exceptionsNode.addChild("exception", new String[] { "id", "method", "type" },
-            new String[] { String.valueOf(j++), cleanMethodName, Scene.v().quotedNameOf(trap.getException().getName()) });
+                new String[] { String.valueOf(j++), cleanMethodName,
+                        Scene.v().quotedNameOf(trap.getException().getPathPlusClassName()) });
         catchNode.addChild("begin", new String[] { "label" }, new String[] { stmtToName.get(trap.getBeginUnit()) });
         catchNode.addChild("end", new String[] { "label" }, new String[] { stmtToName.get(trap.getEndUnit()) });
         catchNode.addChild("handler", new String[] { "label" }, new String[] { stmtToName.get(trap.getHandlerUnit()) });

@@ -264,7 +264,7 @@ public abstract class AbstractTestingFramework {
       public Class findClass(String name) {
         return defineClass(name, classBytes, 0, classBytes.length);
       }
-    }.findClass(sc.getName());
+    }.findClass(sc.getPathPlusClassName());
   }
 
   /**

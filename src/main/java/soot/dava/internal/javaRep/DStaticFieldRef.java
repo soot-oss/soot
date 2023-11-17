@@ -40,7 +40,7 @@ public class DStaticFieldRef extends StaticFieldRef {
 
   public DStaticFieldRef(SootFieldRef fieldRef, String myClassName) {
     super(fieldRef);
-    supressDeclaringClass = myClassName.equals(fieldRef.declaringClass().getName());
+    supressDeclaringClass = myClassName.equals(fieldRef.declaringClass().getPathPlusClassName());
   }
 
   public DStaticFieldRef(SootFieldRef fieldRef, boolean supressDeclaringClass) {

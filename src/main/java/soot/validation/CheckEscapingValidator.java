@@ -46,7 +46,7 @@ public enum CheckEscapingValidator implements BodyValidator {
         if (stmt.containsInvokeExpr()) {
           InvokeExpr iexpr = stmt.getInvokeExpr();
           SootMethodRef ref = iexpr.getMethodRef();
-          if (ref.name().contains("'") || ref.declaringClass().getName().contains("'")) {
+          if (ref.name().contains("'") || ref.declaringClass().getPathPlusClassName().contains("'")) {
             exception.add(new ValidationException(stmt, "Escaped name found in signature"));
           }
           for (Type paramType : ref.parameterTypes()) {

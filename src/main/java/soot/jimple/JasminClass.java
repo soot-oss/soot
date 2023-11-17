@@ -164,8 +164,9 @@ public class JasminClass extends AbstractJasminClass {
     // Emit the exceptions
     for (Trap trap : body.getTraps()) {
       if (trap.getBeginUnit() != trap.getEndUnit()) {
-        emit(".catch " + slashify(trap.getException().getName()) + " from " + unitToLabel.get(trap.getBeginUnit()) + " to "
-            + unitToLabel.get(trap.getEndUnit()) + " using " + unitToLabel.get(trap.getHandlerUnit()));
+        emit(".catch " + slashify(trap.getException().getPathPlusClassName()) + " from "
+                + unitToLabel.get(trap.getBeginUnit()) + " to "
+                + unitToLabel.get(trap.getEndUnit()) + " using " + unitToLabel.get(trap.getHandlerUnit()));
       }
     }
 
@@ -569,8 +570,9 @@ public class JasminClass extends AbstractJasminClass {
         emitValue(v.getBase());
         emitValue(rvalue);
 
-        emit("putfield " + slashify(v.getFieldRef().declaringClass().getName()) + '/' + v.getFieldRef().name() + ' '
-            + jasminDescriptorOf(v.getFieldRef().type()), -1 + -sizeOfType(v.getFieldRef().type()));
+        emit("putfield " + slashify(v.getFieldRef().declaringClass().getPathPlusClassName()) + '/'
+                        + v.getFieldRef().name() + ' ' + jasminDescriptorOf(v.getFieldRef().type()),
+                -1 + -sizeOfType(v.getFieldRef().type()));
       }
 
       @Override
@@ -693,7 +695,7 @@ public class JasminClass extends AbstractJasminClass {
         SootFieldRef field = v.getFieldRef();
 
         emitValue(rvalue);
-        emit("putstatic " + slashify(field.declaringClass().getName()) + '/' + field.name() + ' '
+        emit("putstatic " + slashify(field.declaringClass().getPathPlusClassName()) + '/' + field.name() + ' '
             + jasminDescriptorOf(field.type()), -sizeOfType(v.getFieldRef().type()));
       }
     });
@@ -1940,7 +1942,7 @@ public class JasminClass extends AbstractJasminClass {
       public void caseInstanceFieldRef(InstanceFieldRef v) {
         emitValue(v.getBase());
         SootFieldRef field = v.getFieldRef();
-        emit("getfield " + slashify(field.declaringClass().getName()) + '/' + field.name() + ' '
+        emit("getfield " + slashify(field.declaringClass().getPathPlusClassName()) + '/' + field.name() + ' '
             + jasminDescriptorOf(field.type()), -1 + sizeOfType(field.type()));
       }
 
@@ -1981,8 +1983,9 @@ public class JasminClass extends AbstractJasminClass {
           emitValue(v.getArg(i));
         }
 
-        emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m) + " "
-            + (argCountOf(m) + 1), -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
+        emit("invokeinterface " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name()
+                        + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1),
+                -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
       @Override
@@ -2544,7 +2547,7 @@ public class JasminClass extends AbstractJasminClass {
           emitValue(v.getArg(i));
         }
 
-        emit("invokespecial " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m),
+        emit("invokespecial " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name() + jasminDescriptorOf(m),
             -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
@@ -2760,7 +2763,7 @@ public class JasminClass extends AbstractJasminClass {
           emitValue(v.getArg(i));
         }
 
-        emit("invokespecial " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m),
+        emit("invokespecial " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name() + jasminDescriptorOf(m),
             -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 
@@ -2771,14 +2774,14 @@ public class JasminClass extends AbstractJasminClass {
           emitValue(v.getArg(i));
         }
 
-        emit("invokestatic " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m),
+        emit("invokestatic " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name() + jasminDescriptorOf(m),
             -(argCountOf(m)) + sizeOfType(m.returnType()));
       }
 
       @Override
       public void caseStaticFieldRef(StaticFieldRef v) {
         SootFieldRef field = v.getFieldRef();
-        emit("getstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+        emit("getstatic " + slashify(field.declaringClass().getPathPlusClassName()) + "/" + field.name() + " "
             + jasminDescriptorOf(field.type()), sizeOfType(field.type()));
       }
 
@@ -2905,7 +2908,7 @@ public class JasminClass extends AbstractJasminClass {
           emitValue(v.getArg(i));
         }
 
-        emit("invokevirtual " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m),
+        emit("invokevirtual " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name() + jasminDescriptorOf(m),
             -(argCountOf(m) + 1) + sizeOfType(m.returnType()));
       }
 

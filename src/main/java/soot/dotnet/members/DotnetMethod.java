@@ -203,9 +203,10 @@ public class DotnetMethod extends AbstractDotnetMember {
   private MethodSource createMethodSource() {
     return (m, phaseName) -> {
       // Get body of method
-      AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getName());
+      AssemblyFile assemblyFile =
+              (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getPathPlusClassName());
       ProtoIlInstructions.IlFunctionMsg ilFunctionMsg
-          = assemblyFile.getMethodBody(declaringClass.getName(), m.getName(), protoMethod.getPeToken());
+          = assemblyFile.getMethodBody(declaringClass.getPathPlusClassName(), m.getName(), protoMethod.getPeToken());
 
       Body b = this.jimplifyMethodBody(ilFunctionMsg);
       m.setActiveBody(b);
@@ -226,7 +227,7 @@ public class DotnetMethod extends AbstractDotnetMember {
     try {
       if (ilFunctionMsg == null) {
         throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " "
-            + sootMethod.getName() + " declared in class " + declaringClass.getName());
+            + sootMethod.getName() + " declared in class " + declaringClass.getPathPlusClassName());
       }
 
       // add the body of this code item
@@ -234,7 +235,7 @@ public class DotnetMethod extends AbstractDotnetMember {
       methodBody.jimplify(b);
     } catch (Exception e) {
       logger.warn("Error while generating jimple body of " + dotnetMethodType.name() + " " + sootMethod.getName()
-          + " declared in class " + declaringClass.getName() + "!");
+          + " declared in class " + declaringClass.getPathPlusClassName() + "!");
       logger.warn(e.getMessage());
       if (Options.v().ignore_methodsource_error()) {
         logger.warn("Ignore errors in generation due to the set parameter. Generate empty Jimple Body.");

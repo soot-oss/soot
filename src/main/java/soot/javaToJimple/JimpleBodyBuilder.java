@@ -113,7 +113,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     // create outer class this param ref for inner classes except for static
     // inner classes - this is not needed
-    int outerIndex = sootMethod.getDeclaringClass().getName().lastIndexOf("$");
+    int outerIndex = sootMethod.getDeclaringClass().getPathPlusClassName().lastIndexOf("$");
 
     if ((outerIndex != -1) && (sootMethod.getName().equals("<init>"))) {
       SootField this0Field = sootMethod.getDeclaringClass().getFieldByNameUnsafe("this$0");
@@ -523,8 +523,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
       while (!fieldFound) {
         if (!currentClass.declaresFieldByName("this$0")) {
           throw new RuntimeException(
-              "Trying to get field val$" + li.name() + " from some outer class but can't access the outer class of: "
-                  + currentClass.getName() + "!" + " current class contains fields: " + currentClass.getFields());
+                  "Trying to get field val$" + li.name() + " from some outer class but can't access the outer class of: "
+                      + currentClass.getPathPlusClassName() + "!" + " current class contains fields: "
+                      + currentClass.getFields());
         }
         soot.SootClass outerClass = ((soot.RefType) currentClass.getFieldByName("this$0").getType()).getSootClass();
         // look for field of type li.type and name val$li.name in outer

@@ -401,7 +401,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
               .makeRef(), IntConstant.v(callSiteId), recv, methodLocal)));
         } else if (callKind == Kind.FieldSet) {
           SootMethod sootMethod = ie.getMethodRef().resolve();
-          if ("java.lang.reflect.Field".equals(sootMethod.getDeclaringClass().getName())
+          if ("java.lang.reflect.Field".equals(sootMethod.getDeclaringClass().getPathPlusClassName())
               && fieldSets.contains(sootMethod.getName())) {
             found = true;
             // assign type of 2nd parameter (1st is receiver object)
@@ -414,7 +414,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
           }
         } else if (callKind == Kind.FieldGet) {
           SootMethod sootMethod = ie.getMethodRef().resolve();
-          if ("java.lang.reflect.Field".equals(sootMethod.getDeclaringClass().getName())
+          if ("java.lang.reflect.Field".equals(sootMethod.getDeclaringClass().getPathPlusClassName())
               && fieldGets.contains(sootMethod.getName())) {
             found = true;
             // assign return type of get

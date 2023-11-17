@@ -151,14 +151,14 @@ public class DexClassLoader {
 
           // If the tag is already associated with the outer class,
           // we leave it as it is
-          if (outer.equals(sc.getName())) {
+          if (outer.equals(sc.getPathPlusClassName())) {
             continue;
           }
 
           // Check the inner class to make sure that this tag actually
           // refers to the current class as the inner class
           String inner = ict.getInnerClass().replaceAll("/", ".");
-          if (!inner.equals(sc.getName())) {
+          if (!inner.equals(sc.getPathPlusClassName())) {
             innerTagIt.remove();
             continue;
           }

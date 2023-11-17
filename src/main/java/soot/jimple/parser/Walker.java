@@ -293,9 +293,9 @@ public class Walker extends DepthFirstAdapter {
       mSootClass = new SootClass(className);
       mSootClass.setResolvingLevel(SootClass.BODIES);
     } else {
-      if (!mSootClass.getName().equals(className)) {
+      if (!mSootClass.getPathPlusClassName().equals(className)) {
         throw new RuntimeException("Invalid SootClass for this JimpleAST. The SootClass provided is of type: >"
-            + mSootClass.getName() + "< whereas this parse tree is for type: >" + className + "<");
+            + mSootClass.getPathPlusClassName() + "< whereas this parse tree is for type: >" + className + "<");
       }
     }
 

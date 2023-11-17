@@ -206,7 +206,7 @@ public class PropWorklist extends Propagator {
                 // we do this now
                 SootClass targetClass = ((RefType) ccnType).getSootClass();
                 if (targetClass.resolvingLevel() == SootClass.DANGLING) {
-                  Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+                  Scene.v().forceResolve(targetClass.getPathPlusClassName(), SootClass.SIGNATURES);
                 }
 
                 // We can only create alloc nodes for types that

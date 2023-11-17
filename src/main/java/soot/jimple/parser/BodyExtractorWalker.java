@@ -80,8 +80,8 @@ public class BodyExtractorWalker extends Walker {
     }
 
     String className = (String) mProductions.removeLast();
-    if (!className.equals(mSootClass.getName())) {
-      throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getName());
+    if (!className.equals(mSootClass.getPathPlusClassName())) {
+      throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getPathPlusClassName());
     }
 
     if (node.getExtendsClause() != null) {

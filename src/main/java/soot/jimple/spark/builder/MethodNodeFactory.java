@@ -172,7 +172,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
           StaticFieldRef sfr = (StaticFieldRef) r;
           SootFieldRef s = sfr.getFieldRef();
           if (pag.getOpts().empties_as_allocs()) {
-            if (s.declaringClass().getName().equals("java.util.Collections")) {
+            if (s.declaringClass().getPathPlusClassName().equals("java.util.Collections")) {
               if (s.name().equals("EMPTY_SET")) {
                 src = pag.makeAllocNode(rtHashSet, rtHashSet, method);
               } else if (s.name().equals("EMPTY_MAP")) {
@@ -180,7 +180,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
               } else if (s.name().equals("EMPTY_LIST")) {
                 src = pag.makeAllocNode(rtLinkedList, rtLinkedList, method);
               }
-            } else if (s.declaringClass().getName().equals("java.util.Hashtable")) {
+            } else if (s.declaringClass().getPathPlusClassName().equals("java.util.Hashtable")) {
               if (s.name().equals("emptyIterator")) {
                 src = pag.makeAllocNode(rtHashtableEmptyIterator, rtHashtableEmptyIterator, method);
               } else if (s.name().equals("emptyEnumerator")) {
@@ -248,7 +248,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
       VirtualInvokeExpr vie = (VirtualInvokeExpr) iexpr;
       if (vie.getBase().getType() instanceof RefType) {
         RefType rt = (RefType) vie.getBase().getType();
-        if (rt.getSootClass().getName().equals("java.lang.Class")) {
+        if (rt.getSootClass().getPathPlusClassName().equals("java.lang.Class")) {
           SootMethodRef ref = vie.getMethodRef();
           if (ref.getName().equals("newInstance") && ref.getParameterTypes().size() == 0) {
             return true;
@@ -443,7 +443,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   public void caseStaticInvokeExpr(StaticInvokeExpr v) {
     SootMethodRef ref = v.getMethodRef();
     if (v.getArgCount() == 1 && v.getArg(0) instanceof StringConstant && ref.name().equals("forName")
-        && ref.declaringClass().getName().equals("java.lang.Class") && ref.parameterTypes().size() == 1) {
+        && ref.declaringClass().getPathPlusClassName().equals("java.lang.Class") && ref.parameterTypes().size() == 1) {
       // This is a call to Class.forName
       StringConstant classNameConst = (StringConstant) v.getArg(0);
       caseClassConstant(ClassConstant.v("L" + classNameConst.value.replaceAll("\\.", "/") + ";"));

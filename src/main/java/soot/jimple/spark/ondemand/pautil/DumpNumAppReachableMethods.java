@@ -53,7 +53,7 @@ public class DumpNumAppReachableMethods extends SceneTransformer {
   }
 
   private boolean isAppMethod(final SootMethod m) {
-    return !SootUtil.inLibrary(m.getDeclaringClass().getName());
+    return !SootUtil.inLibrary(m.getDeclaringClass().getPathPlusClassName());
   }
 
   /**

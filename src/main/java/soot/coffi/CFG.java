@@ -1056,7 +1056,7 @@ public class CFG {
 
               if (handlerInstructions.contains(s)) {
                 TypeStack exceptionTypeStack
-                    = (TypeStack.v()).push(RefType.v(handlerInstructionToException.get(s).getName()));
+                    = (TypeStack.v()).push(RefType.v(handlerInstructionToException.get(s).getPathPlusClassName()));
 
                 instructionToTypeStack.put(s, exceptionTypeStack);
               } else {
@@ -1077,7 +1077,7 @@ public class CFG {
                 // single object on the stack.
 
                 TypeStack exceptionTypeStack
-                    = (TypeStack.v()).push(RefType.v(handlerInstructionToException.get(s).getName()));
+                    = (TypeStack.v()).push(RefType.v(handlerInstructionToException.get(s).getPathPlusClassName()));
 
                 newTypeStack = exceptionTypeStack;
               } else {
@@ -3990,7 +3990,7 @@ public class CFG {
         SootClass bclass = cm.getSootClass(getClassName(constant_pool, ((Instruction_New) ins).arg_i));
 
         stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()),
-            Jimple.v().newNewExpr(RefType.v(bclass.getName())));
+            Jimple.v().newNewExpr(RefType.v(bclass.getPathPlusClassName())));
         break;
       }
 

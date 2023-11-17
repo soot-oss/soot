@@ -298,7 +298,7 @@ public final class MethodPAG {
     if (isImplicit) {
       SootClass c = method.getDeclaringClass();
       outer: do {
-        while (!c.getName().equals("java.lang.ClassLoader")) {
+        while (!c.getPathPlusClassName().equals("java.lang.ClassLoader")) {
           if (!c.hasSuperclass()) {
             break outer;
           }

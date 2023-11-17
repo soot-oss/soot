@@ -256,7 +256,7 @@ public class PegChain extends HashChain {
             SootClass sc = ((RefType) type).getSootClass();
 
             // sc = ((RefType)type).getSootClass();
-            objName = sc.getName();
+            objName = sc.getPathPlusClassName();
 
           }
         }
@@ -276,7 +276,7 @@ public class PegChain extends HashChain {
         Iterator<SootClass> it = superClasses.iterator();
 
         while (it.hasNext()) {
-          String className = it.next().getName();
+          String className = it.next().getPathPlusClassName();
           if (className.equals("java.lang.Thread")) {
             find = true;
             break;
@@ -286,7 +286,7 @@ public class PegChain extends HashChain {
       if (method.getName().equals("run")) {
         // System.out.println("method name: "+method.getName());
         // System.out.println("DeclaringClass name: "+method.getDeclaringClass().getName());
-        if ((method.getDeclaringClass().getName()).equals("java.lang.Runnable")) {
+        if ((method.getDeclaringClass().getPathPlusClassName()).equals("java.lang.Runnable")) {
           // System.out.println("find: "+find);
 
           find = true;
@@ -372,7 +372,7 @@ public class PegChain extends HashChain {
 
         } // end if (name.equals("start") )
         else {
-          if (name.equals("join") && method.getDeclaringClass().getName().equals("java.lang.Thread")) {
+          if (name.equals("join") && method.getDeclaringClass().getPathPlusClassName().equals("java.lang.Thread")) {
 
             // If the may-alias of "join" has more that one elements, we can NOT kill anything.
             PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local) value);
@@ -448,7 +448,7 @@ public class PegChain extends HashChain {
 
               // add Oct 8, for building pegs with inliner.
               if (name.equals("notify") && paras.size() == 0
-                  && method.getDeclaringClass().getName().equals("java.lang.Thread")) {
+                  && method.getDeclaringClass().getPathPlusClassName().equals("java.lang.Thread")) {
                 objName = makeObjName(value, type, unit);
                 JPegStmt pegStmt = new NotifyStmt(objName, threadName, unit, graph, sm);
                 addAndPutNonCompacted(unit, pegStmt);
@@ -630,7 +630,7 @@ public class PegChain extends HashChain {
     } else {
       String objName = null;
       if (targetMethod.isStatic()) {
-        objName = targetMethod.getDeclaringClass().getName();
+        objName = targetMethod.getDeclaringClass().getPathPlusClassName();
       } else {
         Iterator it = ((Chain) (targetMethod.getActiveBody()).getUnits()).iterator();
 

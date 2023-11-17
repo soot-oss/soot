@@ -356,7 +356,7 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 
     p.print("SootMethodRef methodRef = ");
     p.printNoIndent("Scene.v().makeMethodRef(");
-    String className = m.getDeclaringClass().getName();
+    String className = m.getDeclaringClass().getPathPlusClassName();
     p.printNoIndent("Scene.v().getSootClass(\"" + className + "\"),");
     p.printNoIndent("\"" + m.getName() + "\",");
     p.printNoIndent("parameterTypes,");
@@ -551,7 +551,7 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
     f.getType().apply(ttp);
     p.print("SootFieldRef fieldRef = ");
     p.printNoIndent("Scene.v().makeFieldRef(");
-    String className = f.getDeclaringClass().getName();
+    String className = f.getDeclaringClass().getPathPlusClassName();
     p.printNoIndent("Scene.v().getSootClass(\"" + className + "\"),");
     p.printNoIndent("\"" + f.getName() + "\",");
     p.printNoIndent("type,");

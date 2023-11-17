@@ -104,9 +104,9 @@ public class ConstantFieldValueFinder {
   private void valuesForPrimTypeFields() {
     // go through all the classes
     for (SootClass s : appClasses) {
-      debug("\nvaluesforPrimTypeFields", "Processing class " + s.getName());
+      debug("\nvaluesforPrimTypeFields", "Processing class " + s.getPathPlusClassName());
 
-      String declaringClass = s.getName();
+      String declaringClass = s.getPathPlusClassName();
       // all fields of the class
       for (SootField f : s.getFields()) {
         Type fieldType = f.getType();
@@ -280,7 +280,7 @@ public class ConstantFieldValueFinder {
   private void computeFieldToValuesAssignedList() {
     // go through all the classes
     for (SootClass s : appClasses) {
-      debug("\ncomputeMethodSummaries", "Processing class " + s.getName());
+      debug("\ncomputeMethodSummaries", "Processing class " + s.getPathPlusClassName());
 
       // go though all the methods
       for (Iterator<SootMethod> methodIt = s.methodIterator(); methodIt.hasNext();) {
@@ -323,7 +323,7 @@ public class ConstantFieldValueFinder {
           }
 
           String fieldName = field.getName();
-          String declaringClass = field.getDeclaringClass().getName();
+          String declaringClass = field.getDeclaringClass().getPathPlusClassName();
 
           debug("\tField Name: " + fieldName);
           debug("\tField DeclaringClass: " + declaringClass);

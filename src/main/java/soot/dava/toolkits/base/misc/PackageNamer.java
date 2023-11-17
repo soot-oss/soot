@@ -402,12 +402,12 @@ public class PackageNamer {
 
     Iterator classIt = Scene.v().getLibraryClasses().iterator();
     while (classIt.hasNext()) {
-      add_ClassName(((SootClass) classIt.next()).getName(), otherRoots);
+      add_ClassName(((SootClass) classIt.next()).getPathPlusClassName(), otherRoots);
     }
 
     classIt = Scene.v().getApplicationClasses().iterator();
     while (classIt.hasNext()) {
-      add_ClassName(((SootClass) classIt.next()).getName(), appRoots);
+      add_ClassName(((SootClass) classIt.next()).getPathPlusClassName(), appRoots);
     }
 
     Iterator<NameHolder> arit = appRoots.iterator();

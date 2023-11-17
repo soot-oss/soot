@@ -218,7 +218,7 @@ public class InlinerSafetyManager {
     SootClass containerClass = container.getDeclaringClass();
 
     // Condition 1 above.
-    if (inlinee.isPrivate() && !inlineeClass.getName().equals(containerClass.getName())) {
+    if (inlinee.isPrivate() && !inlineeClass.getPathPlusClassName().equals(containerClass.getPathPlusClassName())) {
       return true;
     }
 

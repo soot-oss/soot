@@ -73,7 +73,7 @@ public class AccessManager {
 
     final SootClass containerClass = container.getDeclaringClass();
     // Condition 1 above.
-    if (target.isPrivate() && !targetClass.getName().equals(containerClass.getName())) {
+    if (target.isPrivate() && !targetClass.getPathPlusClassName().equals(containerClass.getPathPlusClassName())) {
       return false;
     }
 

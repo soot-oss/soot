@@ -411,7 +411,7 @@ public abstract class AbstractJasminClass {
     }
 
     if (Options.v().verbose()) {
-      logger.debug("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
+      logger.debug("[" + sootClass.getPathPlusClassName() + "] Constructing baf.JasminClass...");
     }
 
     code = new LinkedList<String>();
@@ -450,13 +450,13 @@ public abstract class AbstractJasminClass {
       }
       if (Modifier.isInterface(modifiers)) {
         modifiers -= Modifier.INTERFACE;
-        emit(".interface " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
+        emit(".interface " + Modifier.toString(modifiers) + " " + slashify(sootClass.getPathPlusClassName()));
       } else {
-        emit(".class " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
+        emit(".class " + Modifier.toString(modifiers) + " " + slashify(sootClass.getPathPlusClassName()));
       }
 
       if (sootClass.hasSuperclass()) {
-        emit(".super " + slashify(sootClass.getSuperclass().getName()));
+        emit(".super " + slashify(sootClass.getSuperclass().getPathPlusClassName()));
       } else {
         emit(".no_super");
       }
@@ -466,7 +466,7 @@ public abstract class AbstractJasminClass {
 
     // Emit the interfaces
     for (SootClass inter : sootClass.getInterfaces()) {
-      emit(".implements " + slashify(inter.getName()));
+      emit(".implements " + slashify(inter.getPathPlusClassName()));
     }
     /*
      * why do this???? if(sootClass.getInterfaceCount() != 0) emit("");
@@ -663,7 +663,7 @@ public abstract class AbstractJasminClass {
         + jasminDescriptorOf(method.makeRef()));
 
     for (SootClass exceptClass : method.getExceptions()) {
-      emit(".throws " + exceptClass.getName());
+      emit(".throws " + exceptClass.getPathPlusClassName());
     }
     if (method.hasTag(SyntheticTag.NAME) || Modifier.isSynthetic(method.getModifiers())) {
       emit(".synthetic");

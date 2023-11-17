@@ -967,7 +967,7 @@ public class OnFlyCallGraphBuilder {
       if (s.containsInvokeExpr()) {
         InvokeExpr ie = s.getInvokeExpr();
         SootMethodRef methodRef = ie.getMethodRef();
-        switch (methodRef.getDeclaringClass().getName()) {
+        switch (methodRef.getDeclaringClass().getPathPlusClassName()) {
           case "java.lang.reflect.Method":
             if ("java.lang.Object invoke(java.lang.Object,java.lang.Object[])"
                 .equals(methodRef.getSubSignature().getString())) {
@@ -1427,7 +1427,7 @@ public class OnFlyCallGraphBuilder {
             return;
           }
           SootClass superclass = currClass.getSuperclass();
-          if (superclass.isPhantom() || Scene.v().getObjectType().toString().equals(superclass.getName())) {
+          if (superclass.isPhantom() || Scene.v().getObjectType().toString().equals(superclass.getPathPlusClassName())) {
             methodIterator = null;
             return;
           } else {

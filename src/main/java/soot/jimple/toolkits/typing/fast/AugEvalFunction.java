@@ -185,7 +185,7 @@ public class AugEvalFunction implements IEvalFunction {
       } else if (at instanceof WeakObjectType) {
         return at;
       } else if (at instanceof RefType) {
-        String name = ((RefType) at).getSootClass().getName();
+        String name = ((RefType) at).getSootClass().getPathPlusClassName();
         if (name.equals(Scene.v().getObjectType().toString())) {
           return new WeakObjectType(name);
         }

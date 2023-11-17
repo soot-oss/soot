@@ -83,7 +83,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   public static String getSignature(SootClass cl, String subSignature) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append('<').append(Scene.v().quotedNameOf(cl.getName())).append(": ");
+    buffer.append('<').append(Scene.v().quotedNameOf(cl.getPathPlusClassName())).append(": ");
     buffer.append(subSignature).append('>');
     return buffer.toString();
   }

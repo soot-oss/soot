@@ -211,7 +211,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
     for (SootClass applicationClass : Scene.v().getApplicationClasses()) {
 
-      final String fullyQualifiedName = applicationClass.getName();
+      final String fullyQualifiedName = applicationClass.getPathPlusClassName();
 
       if (applicationClass.equals(mainClass) || oldToNewClassNames.containsValue(fullyQualifiedName)
           || soot.jbco.Main.getWeight(phaseName, fullyQualifiedName) == 0) {

@@ -254,7 +254,7 @@ public class Hierarchy {
   public List<SootClass> getSuperclassesOf(SootClass sootClass) {
     sootClass.checkLevel(SootClass.HIERARCHY);
     if (sootClass.isInterface()) {
-      throw new IllegalArgumentException(sootClass.getName() + " is an interface, but class is expected");
+      throw new IllegalArgumentException(sootClass.getPathPlusClassName() + " is an interface, but class is expected");
     }
 
     checkState();
@@ -303,7 +303,7 @@ public class Hierarchy {
   public List<SootClass> getSubinterfacesOf(SootClass sootClass) {
     sootClass.checkLevel(SootClass.HIERARCHY);
     if (!sootClass.isInterface()) {
-      throw new IllegalArgumentException(sootClass.getName() + " is a class, but interface is expected");
+      throw new IllegalArgumentException(sootClass.getPathPlusClassName() + " is a class, but interface is expected");
     }
 
     checkState();

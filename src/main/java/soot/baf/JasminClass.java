@@ -158,8 +158,9 @@ public class JasminClass extends AbstractJasminClass {
     for (Trap trap : body.getTraps()) {
       handlerUnits.add(trap.getHandlerUnit());
       if (trap.getBeginUnit() != trap.getEndUnit()) {
-        emit(".catch " + slashify(trap.getException().getName()) + " from " + unitToLabel.get(trap.getBeginUnit()) + " to "
-            + unitToLabel.get(trap.getEndUnit()) + " using " + unitToLabel.get(trap.getHandlerUnit()));
+        emit(".catch " + slashify(trap.getException().getPathPlusClassName()) + " from "
+                + unitToLabel.get(trap.getBeginUnit()) + " to " + unitToLabel.get(trap.getEndUnit()) + " using "
+                + unitToLabel.get(trap.getHandlerUnit()));
       }
     }
 
@@ -1297,28 +1298,28 @@ public class JasminClass extends AbstractJasminClass {
       @Override
       public void caseStaticGetInst(StaticGetInst i) {
         SootFieldRef field = i.getFieldRef();
-        emit("getstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+        emit("getstatic " + slashify(field.declaringClass().getPathPlusClassName()) + "/" + field.name() + " "
             + jasminDescriptorOf(field.type()));
       }
 
       @Override
       public void caseStaticPutInst(StaticPutInst i) {
         SootFieldRef field = i.getFieldRef();
-        emit("putstatic " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+        emit("putstatic " + slashify(field.declaringClass().getPathPlusClassName()) + "/" + field.name() + " "
             + jasminDescriptorOf(field.type()));
       }
 
       @Override
       public void caseFieldGetInst(FieldGetInst i) {
         SootFieldRef field = i.getFieldRef();
-        emit("getfield " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+        emit("getfield " + slashify(field.declaringClass().getPathPlusClassName()) + "/" + field.name() + " "
             + jasminDescriptorOf(field.type()));
       }
 
       @Override
       public void caseFieldPutInst(FieldPutInst i) {
         SootFieldRef field = i.getFieldRef();
-        emit("putfield " + slashify(field.declaringClass().getName()) + "/" + field.name() + " "
+        emit("putfield " + slashify(field.declaringClass().getPathPlusClassName()) + "/" + field.name() + " "
             + jasminDescriptorOf(field.type()));
       }
 
@@ -1360,7 +1361,8 @@ public class JasminClass extends AbstractJasminClass {
         str.append("invokedynamic \"").append(m.name()).append("\" ").append(jasminDescriptorOf(m)).append(' ');
 
         SootMethodRef bsm = i.getBootstrapMethodRef();
-        str.append(slashify(bsm.declaringClass().getName())).append('/').append(bsm.name()).append(jasminDescriptorOf(bsm));
+        str.append(slashify(bsm.declaringClass().getPathPlusClassName())).append('/').append(bsm.name())
+                .append(jasminDescriptorOf(bsm));
 
         str.append('(');
         for (Iterator<Value> iterator = i.getBootstrapArgs().iterator(); iterator.hasNext();) {
@@ -1378,33 +1380,36 @@ public class JasminClass extends AbstractJasminClass {
       }
 
       private String escape(String bsmArgString) {
-        return bsmArgString.replace(",", "\\comma").replace(" ", "\\blank").replace("\t", "\\tab").replace("\n",
-            "\\newline");
+        return bsmArgString.replace(",", "\\comma").replace(" ", "\\blank")
+                .replace("\t", "\\tab").replace("\n", "\\newline");
       }
 
       @Override
       public void caseStaticInvokeInst(StaticInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        emit("invokestatic " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m));
+        emit("invokestatic " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name()
+                + jasminDescriptorOf(m));
       }
 
       @Override
       public void caseVirtualInvokeInst(VirtualInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        emit("invokevirtual " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m));
+        emit("invokevirtual " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name()
+                + jasminDescriptorOf(m));
       }
 
       @Override
       public void caseInterfaceInvokeInst(InterfaceInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        emit("invokeinterface " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m) + " "
-            + (argCountOf(m) + 1));
+        emit("invokeinterface " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name()
+                + jasminDescriptorOf(m) + " " + (argCountOf(m) + 1));
       }
 
       @Override
       public void caseSpecialInvokeInst(SpecialInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        emit("invokespecial " + slashify(m.declaringClass().getName()) + "/" + m.name() + jasminDescriptorOf(m));
+        emit("invokespecial " + slashify(m.declaringClass().getPathPlusClassName()) + "/" + m.name()
+                + jasminDescriptorOf(m));
       }
 
       @Override

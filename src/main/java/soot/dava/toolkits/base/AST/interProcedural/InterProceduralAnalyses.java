@@ -85,7 +85,7 @@ public class InterProceduralAnalyses {
         boolean deobfuscate = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.deobfuscate"), "enabled");
         if (deobfuscate) {
           if (DEBUG) {
-            System.out.println("\nSTART CP Class:" + s.getName() + " Method: " + m.getName());
+            System.out.println("\nSTART CP Class:" + s.getPathPlusClassName() + " Method: " + m.getName());
           }
           AST.apply(
               new CPApplication((ASTMethodNode) AST, constantValueFields, finder.getClassNameFieldNameToSootFieldMapping()));

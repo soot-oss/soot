@@ -115,7 +115,7 @@ public class DotnetType {
       if (baseType.getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.INTERFACE)) {
         SootClass superClass = SootResolver.v().makeClassRef(baseType.getFullname());
         // Due to Generics, duplicates can occur - no duplicates
-        if (sootClass.getInterfaces().stream().noneMatch(x -> x.getName().equals(baseType.getFullname()))) {
+        if (sootClass.getInterfaces().stream().noneMatch(x -> x.getPathPlusClassName().equals(baseType.getFullname()))) {
           sootClass.addInterface(superClass);
           deps.typesToHierarchy.add(superClass.getType());
         }
@@ -155,7 +155,7 @@ public class DotnetType {
       // ignore unsafe or call-by-ref params methods if parameter is set
       if (!Options.v().resolve_all_dotnet_methods() && (method.getIsUnsafe()
           // getIsUnsafe is not working right, due to the "to do" in the Soot.Dotnet.Decompiler project
-          || method.getName().equals("InternalCopy") && declaringClass.getName().equals("System.String"))) {
+          || method.getName().equals("InternalCopy") && declaringClass.getPathPlusClassName().equals("System.String"))) {
         continue;
       }
 

@@ -125,7 +125,7 @@ public class Util {
 
   public void resolveFromClassFile(SootClass aClass, InputStream is, String filePath, Collection<Type> references) {
     SootClass bclass = aClass;
-    String className = bclass.getName();
+    String className = bclass.getPathPlusClassName();
     ClassFile coffiClass = new ClassFile(className);
 
     // Load up class file, and retrieve
@@ -135,7 +135,7 @@ public class Util {
 
       if (!success) {
         if (!Scene.v().allowsPhantomRefs()) {
-          throw new RuntimeException("Could not load classfile: " + bclass.getName());
+          throw new RuntimeException("Could not load classfile: " + bclass.getPathPlusClassName());
         } else {
           logger.warn("" + className + " is a phantom class!");
           bclass.setPhantomClass();
@@ -149,9 +149,10 @@ public class Util {
       String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
       name = name.replace('/', '.');
 
-      if (!name.equals(bclass.getName())) {
+      if (!name.equals(bclass.getPathPlusClassName())) {
         throw new RuntimeException(
-            "Error: class " + name + " read in from a classfile in which " + bclass.getName() + " was expected.");
+            "Error: class " + name + " read in from a classfile in which " + bclass.getPathPlusClassName()
+                    + " was expected.");
       }
     }
 

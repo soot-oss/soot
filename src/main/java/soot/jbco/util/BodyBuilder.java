@@ -95,7 +95,7 @@ public class BodyBuilder {
     // iterate through application classes, rename fields with junk
 
     for (SootClass c : soot.Scene.v().getApplicationClasses()) {
-      nameList.add(c.getName());
+      nameList.add(c.getPathPlusClassName());
 
       for (SootMethod m : c.getMethods()) {
         nameList.add(m.getName());

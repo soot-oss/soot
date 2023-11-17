@@ -93,14 +93,14 @@ class TypeNode {
       List<TypeNode> plist = new LinkedList<TypeNode>();
 
       SootClass superclass = sClass.getSuperclassUnsafe();
-      if (superclass != null && !sClass.getName().equals(Scene.v().getObjectType().toString())) {
-        TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperclass().getName()));
+      if (superclass != null && !sClass.getPathPlusClassName().equals(Scene.v().getObjectType().toString())) {
+        TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperclass().getPathPlusClassName()));
         plist.add(parent);
         parentClass = parent;
       }
 
       for (Iterator<SootClass> i = sClass.getInterfaces().iterator(); i.hasNext();) {
-        TypeNode parent = hierarchy.typeNode(RefType.v((i.next()).getName()));
+        TypeNode parent = hierarchy.typeNode(RefType.v((i.next()).getPathPlusClassName()));
         plist.add(parent);
       }
 
@@ -146,8 +146,9 @@ class TypeNode {
         RefType baseType = (RefType) type.baseType;
         SootClass sClass = baseType.getSootClass();
         SootClass superClass = sClass.getSuperclassUnsafe();
-        if (superClass != null && !superClass.getName().equals(Scene.v().getObjectType().toString())) {
-          TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v(sClass.getSuperclass().getName()), type.numDimensions));
+        if (superClass != null && !superClass.getPathPlusClassName().equals(Scene.v().getObjectType().toString())) {
+          TypeNode parent = hierarchy.typeNode(
+                  ArrayType.v(RefType.v(sClass.getSuperclass().getPathPlusClassName()), type.numDimensions));
           plist.add(parent);
           parentClass = parent;
         } else if (type.numDimensions == 1) {
@@ -173,7 +174,8 @@ class TypeNode {
         }
 
         for (Iterator<SootClass> i = sClass.getInterfaces().iterator(); i.hasNext();) {
-          TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v((i.next()).getName()), type.numDimensions));
+          TypeNode parent = hierarchy.typeNode(
+                  ArrayType.v(RefType.v((i.next()).getPathPlusClassName()), type.numDimensions));
           plist.add(parent);
         }
       } else if (type.numDimensions == 1) {

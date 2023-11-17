@@ -286,7 +286,7 @@ public class UseChecker extends AbstractStmtSwitch {
         // this could lead to any kind of object, so we have to look at the uses.
         // For some fixed type T, we assume that we can fix the array to T[].
         if (bt instanceof RefType || bt instanceof NullType) {
-          String btName = bt instanceof NullType ? null : ((RefType) bt).getSootClass().getName();
+          String btName = bt instanceof NullType ? null : ((RefType) bt).getSootClass().getPathPlusClassName();
           if (btName == null || Scene.v().getObjectType().toString().equals(btName) || "java.io.Serializable".equals(btName)
               || "java.lang.Cloneable".equals(btName)) {
             if (defs == null) {

@@ -154,7 +154,7 @@ public class LambdaMetaFactory {
     // Our thunk class implements the functional interface
     SootClass functionalInterfaceToImplement = ((RefType) invokedType[invokedType.length - 1]).getSootClass();
 
-    final String enclosingClassname = enclosingClass.getName();
+    final String enclosingClassname = enclosingClass.getPathPlusClassName();
 
     String className;
     final boolean readableClassnames = true;
@@ -201,7 +201,7 @@ public class LambdaMetaFactory {
     // it can be invoked from the thunk class
     if (MethodHandle.Kind.REF_INVOKE_STATIC.getValue() == implMethod.getKind()) {
       SootClass declClass = implMethod.getMethodRef().getDeclaringClass();
-      if (declClass.getName().equals(enclosingClassname)) {
+      if (declClass.getPathPlusClassName().equals(enclosingClassname)) {
         SootMethod method = implMethod.getMethodRef().resolve();
         method.setModifiers((method.getModifiers() & ~Modifier.PRIVATE) | Modifier.PUBLIC);
       }
@@ -268,11 +268,11 @@ public class LambdaMetaFactory {
     Scene scene = Scene.v();
 
     SootMethodRef methodRef = implMethod.getMethodRef();
-    scene.forceResolve(methodRef.getDeclaringClass().getName(), SootClass.HIERARCHY);
+    scene.forceResolve(methodRef.getDeclaringClass().getPathPlusClassName(), SootClass.HIERARCHY);
 
     Stream.concat(Stream.of(methodRef.getReturnType()), methodRef.getParameterTypes().stream())
         .filter(t -> t instanceof RefType)
-        .forEach(t -> scene.forceResolve(((RefType) t).getSootClass().getName(), SootClass.HIERARCHY));
+        .forEach(t -> scene.forceResolve(((RefType) t).getSootClass().getPathPlusClassName(), SootClass.HIERARCHY));
   }
 
   private void addDispatch(String name, SootClass tclass, MethodType implMethodType, MethodType instantiatedMethodType,

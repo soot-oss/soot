@@ -113,7 +113,7 @@ public class BadFields extends SceneTransformer {
       }
       StaticFieldRef sfr = (StaticFieldRef) v;
       SootField f = sfr.getField();
-      if (!f.getDeclaringClass().getName().equals("java.lang.System")) {
+      if (!f.getDeclaringClass().getPathPlusClassName().equals("java.lang.System")) {
         continue;
       }
       if (f.getName().equals("err")) {
@@ -130,7 +130,7 @@ public class BadFields extends SceneTransformer {
       }
       InvokeExpr ie = s.getInvokeExpr();
       SootMethod target = ie.getMethod();
-      if (target.getDeclaringClass().getName().equals("java.lang.System") && target.getName().equals("exit")) {
+      if (target.getDeclaringClass().getPathPlusClassName().equals("java.lang.System") && target.getName().equals("exit")) {
         warn("" + m + " calls System.exit");
       }
     }
@@ -156,23 +156,23 @@ public class BadFields extends SceneTransformer {
 
   private void calls(SootMethod target) {
     if (target.getName().equals("<init>")) {
-      if (target.getDeclaringClass().getName().equals("java.io.PrintStream")
-          || target.getDeclaringClass().getName().equals("java.lang.Boolean")
-          || target.getDeclaringClass().getName().equals("java.lang.Integer")
-          || target.getDeclaringClass().getName().equals("java.lang.String")) {
+      if (target.getDeclaringClass().getPathPlusClassName().equals("java.io.PrintStream")
+          || target.getDeclaringClass().getPathPlusClassName().equals("java.lang.Boolean")
+          || target.getDeclaringClass().getPathPlusClassName().equals("java.lang.Integer")
+          || target.getDeclaringClass().getPathPlusClassName().equals("java.lang.String")) {
         return;
       }
-      if (target.getDeclaringClass().getName().equals(Scene.v().getObjectType().toString())) {
+      if (target.getDeclaringClass().getPathPlusClassName().equals(Scene.v().getObjectType().toString())) {
         return;
       }
     }
     if (target.getName().equals("getProperty")) {
-      if (target.getDeclaringClass().getName().equals("java.lang.System")) {
+      if (target.getDeclaringClass().getPathPlusClassName().equals("java.lang.System")) {
         return;
       }
     }
     if (target.getName().equals("charAt")) {
-      if (target.getDeclaringClass().getName().equals("java.lang.String")) {
+      if (target.getDeclaringClass().getPathPlusClassName().equals("java.lang.String")) {
         return;
       }
     }

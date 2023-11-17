@@ -74,7 +74,7 @@ public class JimpleClassSource extends ClassSource {
       // set outer class if not set (which it should not be) and class name contains outer class indicator
       String outerClassName = null;
       if (!sc.hasOuterClass()) {
-        String className = sc.getName();
+        String className = sc.getPathPlusClassName();
         if (className.contains("$")) {
           if (className.contains("$-")) {
             /*

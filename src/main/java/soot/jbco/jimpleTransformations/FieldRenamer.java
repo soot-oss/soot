@@ -169,7 +169,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
     BodyBuilder.retrieveAllNames();
 
     for (SootClass applicationClass : Scene.v().getApplicationClasses()) {
-      String className = applicationClass.getName();
+      String className = applicationClass.getPathPlusClassName();
       if (className.contains(".")) {
         className = className.substring(className.lastIndexOf(".") + 1);
       }
@@ -178,7 +178,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 
       if (renameFields) {
         if (isVerbose()) {
-          logger.info("Class [{}]", applicationClass.getName());
+          logger.info("Class [{}]", applicationClass.getPathPlusClassName());
         }
         // rename all the fields in the class
         for (SootField field : applicationClass.getFields()) {
@@ -248,7 +248,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
               }
 
               final String oldName = sootFieldRef.name();
-              final String fullyQualifiedName = sootFieldRef.declaringClass().getName() + '.' + oldName;
+              final String fullyQualifiedName = sootFieldRef.declaringClass().getPathPlusClassName() + '.' + oldName;
               if (skipFields.contains(fullyQualifiedName)) {
                 continue;
               }
@@ -272,7 +272,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
                 sootFieldRef.resolve();
               } catch (Exception exception) {
                 logger.error("Cannot rename field \"" + oldName + "\" to \"" + newName + "\" due to error.", exception);
-                logger.info("Fields of {}: {}", sootFieldRef.declaringClass().getName(),
+                logger.info("Fields of {}: {}", sootFieldRef.declaringClass().getPathPlusClassName(),
                     sootFieldRef.declaringClass().getFields());
                 throw new RuntimeException(exception);
               }
@@ -321,7 +321,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
   }
 
   protected void renameField(SootClass sootClass, SootField field) {
-    final String fullyQualifiedName = sootClass.getName() + "." + field.getName();
+    final String fullyQualifiedName = sootClass.getPathPlusClassName() + "." + field.getName();
 
     final String newName = getOrAddNewName(field.getName());
     if (isVerbose()) {

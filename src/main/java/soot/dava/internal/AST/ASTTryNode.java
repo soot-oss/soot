@@ -243,7 +243,7 @@ public class ASTTryNode extends ASTLabeledNode {
       container catchBody = (container) cit.next();
 
       b.append("catch (");
-      b.append(((SootClass) exceptionMap.get(catchBody)).getName());
+      b.append(((SootClass) exceptionMap.get(catchBody)).getPathPlusClassName());
       b.append(" ");
       b.append(((Local) paramMap.get(catchBody)).getName());
       b.append(")");

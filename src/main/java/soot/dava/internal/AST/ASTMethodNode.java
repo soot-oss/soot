@@ -286,7 +286,7 @@ public class ASTMethodNode extends ASTNode {
 
       if (constructorExpr != null) {
         boolean printCloseBrace = true;
-        if (davaBody.getMethod().getDeclaringClass().getName()
+        if (davaBody.getMethod().getDeclaringClass().getPathPlusClassName()
             .equals(constructorExpr.getMethodRef().declaringClass().toString())) {
           dup.printString("        this(");
         } else {
@@ -450,7 +450,7 @@ public class ASTMethodNode extends ASTNode {
       InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
       if (constructorExpr != null) {
 
-        if (davaBody.getMethod().getDeclaringClass().getName()
+        if (davaBody.getMethod().getDeclaringClass().getPathPlusClassName()
             .equals(constructorExpr.getMethodRef().declaringClass().toString())) {
           b.append("        this(");
         } else {

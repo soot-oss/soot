@@ -419,7 +419,7 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     }
     for(Iterator iter = interfacesIterator(); iter.hasNext(); ) {
       TypeDecl typeDecl = (TypeDecl)iter.next();
-      if(!sc.implementsInterface(typeDecl.getSootClassDecl().getName()))
+      if(!sc.implementsInterface(typeDecl.getSootClassDecl().getPathPlusClassName()))
         sc.addInterface(typeDecl.getSootClassDecl());
     }
     if(isNestedType())

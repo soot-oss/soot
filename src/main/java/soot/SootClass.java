@@ -204,7 +204,7 @@ public class SootClass extends AbstractHost implements Numberable {
     int currentLevel = resolvingLevel();
     if (currentLevel < level) {
       String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n"
-          + "Scene.v().addBasicClass(" + getName() + "," + levelToString(level) + ");\n"
+          + "Scene.v().addBasicClass(" + getPathPlusClassName() + "," + levelToString(level) + ");\n"
           + "Otherwise, try whole-program mode (-w).";
       throw new RuntimeException("This operation requires resolving level " + levelToString(level) + " but " + name
           + " is at resolving level " + levelToString(currentLevel) + hint);
@@ -294,7 +294,7 @@ public class SootClass extends AbstractHost implements Numberable {
   public SootField getField(String name, Type type) {
     SootField sf = getFieldUnsafe(name, type);
     if (sf == null) {
-      throw new RuntimeException("No field " + name + " in class " + getName());
+      throw new RuntimeException("No field " + name + " in class " + getPathPlusClassName());
     }
     return sf;
   }
@@ -321,7 +321,7 @@ public class SootClass extends AbstractHost implements Numberable {
   public SootField getFieldByName(String name) {
     SootField foundField = getFieldByNameUnsafe(name);
     if (foundField == null) {
-      throw new RuntimeException("No field " + name + " in class " + getName());
+      throw new RuntimeException("No field " + name + " in class " + getPathPlusClassName());
     }
     return foundField;
   }
@@ -355,7 +355,7 @@ public class SootClass extends AbstractHost implements Numberable {
     // NOTE: getFieldUnsafe(String) calls checkLevel(SIGNATURES)
     SootField sf = getFieldUnsafe(subsignature);
     if (sf == null) {
-      throw new RuntimeException("No field " + subsignature + " in class " + getName());
+      throw new RuntimeException("No field " + subsignature + " in class " + getPathPlusClassName());
     }
     return sf;
   }
@@ -391,7 +391,7 @@ public class SootClass extends AbstractHost implements Numberable {
     // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     SootMethod ret = getMethodUnsafe(subsignature);
     if (ret == null) {
-      throw new RuntimeException("No method " + subsignature + " in class " + getName());
+      throw new RuntimeException("No method " + subsignature + " in class " + getPathPlusClassName());
     } else {
       return ret;
     }
@@ -422,7 +422,7 @@ public class SootClass extends AbstractHost implements Numberable {
     // NOTE: getMethodUnsafe(NumberedString) calls checkLevel(SIGNATURES)
     NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
     if (numberedString == null) {
-      throw new RuntimeException("No method " + subsignature + " in class " + getName());
+      throw new RuntimeException("No method " + subsignature + " in class " + getPathPlusClassName());
     }
     return getMethod(numberedString);
   }
@@ -533,7 +533,7 @@ public class SootClass extends AbstractHost implements Numberable {
       return sm;
     }
 
-    throw new RuntimeException("Class " + getName() + " doesn't have method \""
+    throw new RuntimeException("Class " + getPathPlusClassName() + " doesn't have method \""
         + SootMethod.getSubSignature(name, parameterTypes, returnType) + "\"");
   }
 
@@ -795,7 +795,7 @@ public class SootClass extends AbstractHost implements Numberable {
     checkLevel(HIERARCHY);
     if (interfaces != null) {
       for (SootClass sc : interfaces) {
-        if (name.equals(sc.getName())) {
+        if (name.equals(sc.getPathPlusClassName())) {
           return true;
         }
       }
@@ -808,8 +808,9 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void addInterface(SootClass interfaceClass) {
     // NOTE: implementsInterface(String) calls checkLevel(HIERARCHY)
-    if (implementsInterface(interfaceClass.getName())) {
-      throw new RuntimeException("duplicate interface on class " + this.getName() + ": " + interfaceClass.getName());
+    if (implementsInterface(interfaceClass.getPathPlusClassName())) {
+      throw new RuntimeException("duplicate interface on class " + this.getPathPlusClassName() + ": "
+              + interfaceClass.getPathPlusClassName());
     }
     if (this.interfaces == null) {
       // Use a small initial size to reduce excess memory usage in the HashChain.
@@ -830,8 +831,9 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void removeInterface(SootClass interfaceClass) {
     // NOTE: implementsInterface(String) calls checkLevel(HIERARCHY)
-    if (!implementsInterface(interfaceClass.getName())) {
-      throw new RuntimeException("no such interface on class " + this.getName() + ": " + interfaceClass.getName());
+    if (!implementsInterface(interfaceClass.getPathPlusClassName())) {
+      throw new RuntimeException("no such interface on class " + this.getPathPlusClassName()
+              + ": " + interfaceClass.getPathPlusClassName());
     }
     interfaces.remove(interfaceClass);
     if (interfaces.isEmpty()) {
@@ -855,7 +857,7 @@ public class SootClass extends AbstractHost implements Numberable {
   public SootClass getSuperclass() {
     checkLevel(HIERARCHY);
     if (superClass == null && !isPhantom() && !Options.v().ignore_resolution_errors()) {
-      throw new RuntimeException("no superclass for " + getName());
+      throw new RuntimeException("no superclass for " + getPathPlusClassName());
     } else {
       return superClass;
     }
@@ -914,7 +916,7 @@ public class SootClass extends AbstractHost implements Numberable {
   /**
    * Returns the name of this class.
    */
-  public String getName() {
+  public String getPathPlusClassName() {
     return name;
   }
 
@@ -1056,7 +1058,7 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   @Override
   public String toString() {
-    return getName();
+    return getPathPlusClassName();
   }
 
   /**
@@ -1254,9 +1256,9 @@ public class SootClass extends AbstractHost implements Numberable {
 
   public String getFilePath() {
     if (ModuleUtil.module_mode()) {
-      return moduleName + ':' + this.getName();
+      return moduleName + ':' + this.getPathPlusClassName();
     } else {
-      return this.getName();
+      return this.getPathPlusClassName();
     }
   }
 
@@ -1276,7 +1278,7 @@ public class SootClass extends AbstractHost implements Numberable {
   public boolean isExportedByModule() {
     if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
       // we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
-      Scene.v().forceResolve(this.getName(), SootClass.BODIES);
+      Scene.v().forceResolve(this.getPathPlusClassName(), SootClass.BODIES);
     }
     SootModuleInfo moduleInfo = this.getModuleInformation();
     // for dummy classes moduleInfo could be null
@@ -1291,7 +1293,7 @@ public class SootClass extends AbstractHost implements Numberable {
   public boolean isExportedByModule(String toModule) {
     if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
       // we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
-      ModuleScene.v().forceResolve(this.getName(), SootClass.BODIES, Optional.of(this.moduleName));
+      ModuleScene.v().forceResolve(this.getPathPlusClassName(), SootClass.BODIES, Optional.of(this.moduleName));
     }
     return this.getModuleInformation().exportsPackage(this.getJavaPackageName(), toModule);
   }
@@ -1299,7 +1301,7 @@ public class SootClass extends AbstractHost implements Numberable {
   public boolean isOpenedByModule() {
     if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
       // we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
-      Scene.v().forceResolve(this.getName(), SootClass.BODIES);
+      Scene.v().forceResolve(this.getPathPlusClassName(), SootClass.BODIES);
     }
     SootModuleInfo moduleInfo = this.getModuleInformation();
     return (moduleInfo == null) ? true : moduleInfo.openPackagePublic(this.getJavaPackageName());

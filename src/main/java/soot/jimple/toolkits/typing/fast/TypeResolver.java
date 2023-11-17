@@ -263,7 +263,7 @@ public class TypeResolver {
       if (rt instanceof WeakObjectType) {
         return true;
       } else {
-        final String name = rt.getSootClass().getName();
+        final String name = rt.getSootClass().getPathPlusClassName();
         return "java.lang.Object".equals(name) || "java.io.Serializable".equals(name) || "java.lang.Cloneable".equals(name);
       }
     }

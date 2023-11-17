@@ -203,7 +203,7 @@ public abstract class AbstractBinopExpr implements Expr {
     if (superclass == null) {
       return false;
     }
-    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM)) {
+    if (superclass.getPathPlusClassName().equals(DotnetBasicTypes.SYSTEM_ENUM)) {
       return true;
     }
     return false;

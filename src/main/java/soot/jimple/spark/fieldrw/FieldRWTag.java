@@ -41,7 +41,7 @@ public abstract class FieldRWTag implements Tag {
       } else {
         sb.append('%');
       }
-      sb.append(field.getDeclaringClass().getName());
+      sb.append(field.getDeclaringClass().getPathPlusClassName());
       sb.append(':');
       sb.append(field.getName());
     }

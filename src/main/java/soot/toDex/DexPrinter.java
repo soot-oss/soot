@@ -260,14 +260,16 @@ public class DexPrinter {
   }
 
   protected static FieldReference toFieldReference(SootField f) {
-    FieldReference fieldRef = new ImmutableFieldReference(SootToDexUtils.getDexClassName(f.getDeclaringClass().getName()),
-        f.getName(), SootToDexUtils.getDexTypeDescriptor(f.getType()));
+    FieldReference fieldRef = new ImmutableFieldReference(
+            SootToDexUtils.getDexClassName(f.getDeclaringClass().getPathPlusClassName()),
+            f.getName(), SootToDexUtils.getDexTypeDescriptor(f.getType()));
     return fieldRef;
   }
 
   protected static FieldReference toFieldReference(SootFieldRef ref) {
-    FieldReference fieldRef = new ImmutableFieldReference(SootToDexUtils.getDexClassName(ref.declaringClass().getName()),
-        ref.name(), SootToDexUtils.getDexTypeDescriptor(ref.type()));
+    FieldReference fieldRef = new ImmutableFieldReference(
+            SootToDexUtils.getDexClassName(ref.declaringClass().getPathPlusClassName()),
+            ref.name(), SootToDexUtils.getDexTypeDescriptor(ref.type()));
     return fieldRef;
   }
 
@@ -276,8 +278,9 @@ public class DexPrinter {
     for (Type t : m.getParameterTypes()) {
       parameters.add(SootToDexUtils.getDexTypeDescriptor(t));
     }
-    return new ImmutableMethodReference(SootToDexUtils.getDexClassName(m.getDeclaringClass().getName()), m.getName(),
-        parameters, SootToDexUtils.getDexTypeDescriptor(m.getReturnType()));
+    return new ImmutableMethodReference(SootToDexUtils.getDexClassName(
+            m.getDeclaringClass().getPathPlusClassName()), m.getName(),
+            parameters, SootToDexUtils.getDexTypeDescriptor(m.getReturnType()));
   }
 
   public static TypeReference toTypeReference(Type t) {
@@ -687,7 +690,7 @@ public class DexPrinter {
       if (skipList.add("Ldalvik/annotation/EnclosingClass;")) {
         // EnclosingClass annotation
         ImmutableAnnotationElement enclosingElement = new ImmutableAnnotationElement("value",
-            new ImmutableTypeEncodedValue(SootToDexUtils.getDexClassName(c.getOuterClass().getName())));
+            new ImmutableTypeEncodedValue(SootToDexUtils.getDexClassName(c.getOuterClass().getPathPlusClassName())));
         annotations.add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/EnclosingClass;",
             Collections.singleton(enclosingElement)));
       }
@@ -729,7 +732,7 @@ public class DexPrinter {
       AnnotationTag a = new AnnotationTag("Ldalvik/annotation/AnnotationDefault;");
       defaultAnnotationTag.addAnnotation(a);
 
-      AnnotationTag at = new AnnotationTag(SootToDexUtils.getDexClassName(c.getName()));
+      AnnotationTag at = new AnnotationTag(SootToDexUtils.getDexClassName(c.getPathPlusClassName()));
       AnnotationAnnotationElem ae = new AnnotationAnnotationElem(at, '@', "value");
       a.addElem(ae);
 
@@ -779,7 +782,8 @@ public class DexPrinter {
     if (exceptionList != null && !exceptionList.isEmpty()) {
       List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>(exceptionList.size());
       for (SootClass exceptionClass : exceptionList) {
-        valueList.add(new ImmutableTypeEncodedValue(DexType.toDalvikICAT(exceptionClass.getName()).replace(".", "/")));
+        valueList.add(new ImmutableTypeEncodedValue(
+                DexType.toDalvikICAT(exceptionClass.getPathPlusClassName()).replace(".", "/")));
       }
       ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
       ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement("value", valueValue);
@@ -983,17 +987,17 @@ public class DexPrinter {
       // the other one. If the outer class points to our parent, but
       // this is simply the wrong inner class, we also continue with the
       // next tag.
-      if (!parentClass.hasOuterClass() || !innerClass.equals(parentClass.getName())) {
+      if (!parentClass.hasOuterClass() || !innerClass.equals(parentClass.getPathPlusClassName())) {
         continue;
       }
 
       // If the outer class points to the very same class, we null it
-      if (parentClass.getName().equals(outerClass) && icTag.getOuterClass() == null) {
+      if (parentClass.getPathPlusClassName().equals(outerClass) && icTag.getOuterClass() == null) {
         outerClass = null;
       }
 
       // Do not write garbage. Never.
-      if (parentClass.getName().equals(outerClass)) {
+      if (parentClass.getPathPlusClassName().equals(outerClass)) {
         continue;
       }
 
@@ -1035,7 +1039,7 @@ public class DexPrinter {
       String outerClass = DexInnerClassParser.getOuterClassNameFromTag(icTag);
 
       // Only classes with names are member classes
-      if (icTag.getOuterClass() != null && parentClass.getName().equals(outerClass)) {
+      if (icTag.getOuterClass() != null && parentClass.getPathPlusClassName().equals(outerClass)) {
         if (memberClasses == null) {
           memberClasses = new HashSet<String>();
         }
@@ -1693,7 +1697,7 @@ public class DexPrinter {
     if (dexClassIndex == null) {
       return; // no dex classes were loaded
     }
-    File sourceForClass = dexClassIndex.get(c.getName());
+    File sourceForClass = dexClassIndex.get(c.getPathPlusClassName());
     if (sourceForClass == null || sourceForClass.getName().endsWith(".dex")) {
       return; // a class was written that was not a dex class or the class
       // originates from a .dex file, not an APK

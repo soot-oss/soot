@@ -230,7 +230,7 @@ public class ExprVisitor implements ExprSwitch {
         // arrive at java.lang.Object. In this case, we should not fail
         // the check
         if ((currentClass == classWithInvokation)
-            || (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object"))) {
+            || (currentClass.isPhantom() && !currentClass.getPathPlusClassName().equals("java.lang.Object"))) {
           return true;
         }
       }

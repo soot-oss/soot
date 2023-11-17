@@ -509,19 +509,19 @@ public class SourceLocator {
       case Options.output_format_dava:
         return getDavaFilenameFor(c, b);
       case Options.output_format_class:
-        b.append(c.getName().replace('.', File.separatorChar));
+        b.append(c.getPathPlusClassName().replace('.', File.separatorChar));
         break;
       case Options.output_format_template:
-        b.append(c.getName().replace('.', '_'));
+        b.append(c.getPathPlusClassName().replace('.', '_'));
         b.append("_Maker");
         break;
       default:
         // Generate tree structure for Jimple output or generation
         // fails for deep hierarchies ("file name too long").
         if ((rep == Options.output_format_jimple || rep == Options.output_format_shimple) && Options.v().hierarchy_dirs()) {
-          b.append(c.getName().replace('.', File.separatorChar));
+          b.append(c.getPathPlusClassName().replace('.', File.separatorChar));
         } else {
-          b.append(c.getName());
+          b.append(c.getPathPlusClassName());
         }
         break;
     }

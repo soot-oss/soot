@@ -95,7 +95,7 @@ public class TrapMinimizer extends TrapTransformer {
 
         // If this is the catch-all block and the current unit has an,
         // active monitor, we need to keep the block
-        if (tr.getException().getName().equals("java.lang.Throwable") && unitsWithMonitor.contains(u)) {
+        if (tr.getException().getPathPlusClassName().equals("java.lang.Throwable") && unitsWithMonitor.contains(u)) {
           goesToHandler = true;
         }
 

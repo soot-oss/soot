@@ -61,7 +61,7 @@ public class TemplatePrinter {
 
     // open class
     print("public class ");
-    print(c.getName().replace('.', '_') + "_Maker");
+    print(c.getPathPlusClassName().replace('.', '_') + "_Maker");
     println(" {");
 
     println("private static Local localByName(Body b, String name) {");
@@ -77,7 +77,7 @@ public class TemplatePrinter {
     println("public void create() {");
     indent();
 
-    println("SootClass c = new SootClass(\"" + c.getName() + "\");");
+    println("SootClass c = new SootClass(\"" + c.getPathPlusClassName() + "\");");
     println("c.setApplicationClass();");
     // todo modifiers, extends etc.
     println("Scene.v().addClass(c);");

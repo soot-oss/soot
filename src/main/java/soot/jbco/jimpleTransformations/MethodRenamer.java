@@ -196,7 +196,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
    * @return the map where the key is old method name, the value - new method name. Never {@code null}
    */
   public Map<String, String> getRenamingMap(String className) {
-    return classToRenamingMap.entrySet().stream().filter(entry -> entry.getKey().getName().equals(className))
+    return classToRenamingMap.entrySet().stream().filter(entry -> entry.getKey().getPathPlusClassName().equals(className))
         .flatMap(entry -> entry.getValue().entrySet().stream())
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
@@ -236,7 +236,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
         if (libraryClass.isPresent()) {
           if (isVerbose()) {
             logger.info("Skipping renaming {} method as it overrides library one from {}.", method.getSignature(),
-                libraryClass.get().getName());
+                libraryClass.get().getPathPlusClassName());
           }
 
           continue;
@@ -326,7 +326,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
             if (declaringLibraryClass.isPresent()) {
               if (isVerbose()) {
                 logger.info("Skipping replacing method call \"{}\" in \"{}\" as it is overrides one " + " from library {}.",
-                    methodRef.getSignature(), method.getSignature(), declaringLibraryClass.get().getName());
+                    methodRef.getSignature(), method.getSignature(), declaringLibraryClass.get().getPathPlusClassName());
               }
               continue;
             }
@@ -481,7 +481,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
   private Set<SootClass> getChildrenOfIncluding(Collection<SootClass> classes) {
     return Stream
-        .concat(classes.stream().filter(c -> !c.getName().equals("java.lang.Object"))
+        .concat(classes.stream().filter(c -> !c.getPathPlusClassName().equals("java.lang.Object"))
             .map(c -> c.isInterface() ? Scene.v().getActiveHierarchy().getImplementersOf(c)
                 : Scene.v().getActiveHierarchy().getSubclassesOf(c))
             .flatMap(Collection::stream), classes.stream())

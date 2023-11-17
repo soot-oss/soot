@@ -80,7 +80,8 @@ public class CFGViewer extends BodyTransformer {
     initialize(options);
     SootMethod meth = b.getMethod();
 
-    if ((methodsToPrint == null) || (meth.getDeclaringClass().getName() == methodsToPrint.get(meth.getName()))) {
+    if ((methodsToPrint == null) ||
+            (meth.getDeclaringClass().getPathPlusClassName() == methodsToPrint.get(meth.getName()))) {
       Body body = ir.getBody((JimpleBody) b);
       print_cfg(body);
     }
@@ -225,7 +226,7 @@ public class CFGViewer extends BodyTransformer {
       filename = filename + File.separator;
     }
     String methodname = body.getMethod().getSubSignature();
-    String classname = body.getMethod().getDeclaringClass().getName().replaceAll("\\$", "\\.");
+    String classname = body.getMethod().getDeclaringClass().getPathPlusClassName().replaceAll("\\$", "\\.");
     filename = filename + classname + " " + methodname.replace(File.separatorChar, '.') + DotGraph.DOT_EXTENSION;
     logger.debug("Generate dot file in " + filename);
 

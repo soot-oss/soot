@@ -118,7 +118,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
       if (!sRes.equals(actual)) {
         if (meth.getName().equals("<init>")) {
-          meth.addTag(new StringTag("Constructor: " + meth.getDeclaringClass().getName() + " has " + actual
+          meth.addTag(new StringTag("Constructor: " + meth.getDeclaringClass().getPathPlusClassName() + " has " + actual
               + " level access, can have: " + sRes + " level access.", "Tightest Qualifiers"));
         } else {
           meth.addTag(new StringTag(

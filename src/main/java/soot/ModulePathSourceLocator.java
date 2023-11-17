@@ -92,7 +92,7 @@ public class ModulePathSourceLocator extends SourceLocator {
       if (classesToLoad == null) {
         classesToLoad = new HashSet<String>(ModuleScene.v().getBasicClasses());
         for (SootClass c : ModuleScene.v().getApplicationClasses()) {
-          classesToLoad.add(c.getName());
+          classesToLoad.add(c.getPathPlusClassName());
         }
         this.classesToLoad = classesToLoad;
       }

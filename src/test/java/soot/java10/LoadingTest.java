@@ -56,13 +56,13 @@ public class LoadingTest {
     SootClass klass1
         = SootModuleResolver.v().resolveClass("java.lang.invoke.VarHandle", SootClass.BODIES, Optional.of("java.base"));
 
-    assertTrue(klass1.getName().equals("java.lang.invoke.VarHandle"));
+    assertTrue(klass1.getPathPlusClassName().equals("java.lang.invoke.VarHandle"));
     assertTrue(klass1.moduleName.equals("java.base"));
 
     SootClass klass2 = SootModuleResolver.v().resolveClass("java.lang.invoke.ConstantBootstraps", SootClass.BODIES,
         Optional.of("java.base"));
 
-    assertTrue(klass2.getName().equals("java.lang.invoke.ConstantBootstraps"));
+    assertTrue(klass2.getPathPlusClassName().equals("java.lang.invoke.ConstantBootstraps"));
     assertTrue(klass2.moduleName.equals("java.base"));
 
     Scene.v().loadNecessaryClasses();
@@ -78,7 +78,7 @@ public class LoadingTest {
         "java.lang.invoke.VarHandle" });
 
     SootClass klass = Scene.v().getSootClass("java.lang.invoke.VarHandle");
-    assertTrue(klass.getName().equals("java.lang.invoke.VarHandle"));
+    assertTrue(klass.getPathPlusClassName().equals("java.lang.invoke.VarHandle"));
     assertTrue(klass.moduleName.equals("java.base"));
 
   }
@@ -93,7 +93,7 @@ public class LoadingTest {
         "java.lang.invoke.ConstantBootstraps" });
 
     SootClass klass = Scene.v().getSootClass("java.lang.invoke.ConstantBootstraps");
-    assertTrue(klass.getName().equals("java.lang.invoke.ConstantBootstraps"));
+    assertTrue(klass.getPathPlusClassName().equals("java.lang.invoke.ConstantBootstraps"));
     assertTrue(klass.moduleName.equals("java.base"));
 
   }
