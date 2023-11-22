@@ -1,5 +1,8 @@
 package soot.jimple.spark.ondemand.pautil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,28 +28,35 @@ package soot.jimple.spark.ondemand.pautil;
 import java.util.Set;
 
 import soot.Scene;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.spark.ondemand.genericutil.DisjointSets;
 
 public final class OTFMethodSCCManager {
 
   private DisjointSets disj;
+  private Map<SootMethod, Integer> numbers = new HashMap<>();
 
   public OTFMethodSCCManager() {
-    int size = Scene.v().getMethodNumberer().size();
-    disj = new DisjointSets(size + 1);
+    int num = 0;
+    for (SootClass c : Scene.v().getClasses()) {
+      for (SootMethod m : c.getMethods()) {
+        numbers.put(m, num++);
+      }
+    }
+    disj = new DisjointSets(num + 1);
   }
 
   public boolean inSameSCC(SootMethod m1, SootMethod m2) {
-    return disj.find(m1.getNumber()) == disj.find(m2.getNumber());
+    return disj.find(numbers.get(m1)) == disj.find(numbers.get(m2));
   }
 
   public void makeSameSCC(Set<SootMethod> methods) {
     SootMethod prevMethod = null;
     for (SootMethod method : methods) {
       if (prevMethod != null) {
-        int prevMethodRep = disj.find(prevMethod.getNumber());
-        int methodRep = disj.find(method.getNumber());
+        int prevMethodRep = disj.find(numbers.get(prevMethod));
+        int methodRep = disj.find(numbers.get(method));
         if (prevMethodRep != methodRep) {
           disj.union(prevMethodRep, methodRep);
         }

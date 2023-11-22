@@ -228,7 +228,6 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void setInScene(boolean isInScene) {
     this.isInScene = isInScene;
-    Scene.v().getClassNumberer().add(this);
   }
 
   /**
@@ -750,7 +749,6 @@ public class SootClass extends AbstractHost implements Numberable {
     m.setDeclared(false);
     m.setDeclaringClass(null);
     Scene scene = Scene.v();
-    scene.getMethodNumberer().remove(m);
 
     // We have caches for resolving default methods in the FastHierarchy, which are no longer valid
     scene.modifyHierarchy();
