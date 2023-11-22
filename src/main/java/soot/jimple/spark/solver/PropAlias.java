@@ -22,8 +22,8 @@ package soot.jimple.spark.solver;
  * #L%
  */
 
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
