@@ -92,7 +92,6 @@ import soot.tagkit.Tag;
 import soot.toolkits.scalar.Pair;
 import soot.util.ArrayNumberer;
 import soot.util.HashMultiMap;
-import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
@@ -736,9 +735,6 @@ public class PAG implements PointsToAnalysis {
       method = null;
     } else if (value instanceof Local) {
       Local val = (Local) value;
-      if (val.getNumber() == 0) {
-        Scene.v().getLocalNumberer().add(val);
-      }
       LocalVarNode ret = localToNodeMap.get(val);
       if (ret == null) {
         localToNodeMap.put((Local) value, ret = new LocalVarNode(this, value, type, method));
@@ -1545,7 +1541,7 @@ public class PAG implements PointsToAnalysis {
   private OnFlyCallGraph ofcg;
   private final ArrayList<VarNode> dereferences = new ArrayList<VarNode>();
   protected TypeManager typeManager;
-  private final LargeNumberedMap<Local, LocalVarNode> localToNodeMap = new LargeNumberedMap<>(Scene.v().getLocalNumberer());
+  protected Map<Local, LocalVarNode> localToNodeMap = new HashMap<>();
   private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();
   public int maxFinishNumber = 0;
   private Map<Node, Tag> nodeToTag;
