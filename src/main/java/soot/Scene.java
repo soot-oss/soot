@@ -62,7 +62,6 @@ import soot.dotnet.types.DotnetBasicTypes;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
-import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
@@ -79,10 +78,7 @@ import soot.util.ArrayNumberer;
 import soot.util.Chain;
 import soot.util.HashChain;
 import soot.util.IterableNumberer;
-import soot.util.MapNumberer;
-import soot.util.Numberer;
 import soot.util.StringNumberer;
-import soot.util.WeakMapNumberer;
 
 /**
  * Manages the SootClasses of the application being analyzed.
@@ -95,10 +91,6 @@ public class Scene {
 
   protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<String, RefType>();
 
-  protected final ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>(
-      new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT, Kind.THREAD,
-          Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
-
   protected final Set<String> reservedNames = new HashSet<String>();
   @SuppressWarnings("unchecked")
   protected final Set<String>[] basicclasses = new Set[4];
@@ -109,13 +101,7 @@ public class Scene {
   protected Chain<SootClass> phantomClasses = new HashChain<SootClass>();
 
   protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
-  protected Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
   protected StringNumberer subSigNumberer = new StringNumberer();
-  protected IterableNumberer<SootClass> classNumberer;
-  protected Numberer<SparkField> fieldNumberer;
-  protected IterableNumberer<SootMethod> methodNumberer;
-  protected IterableNumberer<Local> localNumberer;
-  protected Numberer<Context> contextNumberer;
 
   protected Hierarchy activeHierarchy;
   protected FastHierarchy activeFastHierarchy;
@@ -152,18 +138,6 @@ public class Scene {
     String scp = System.getProperty("soot.class.path");
     if (scp != null) {
       setSootClassPath(scp);
-    }
-
-    if (Options.v().weak_map_structures()) {
-      this.classNumberer = new WeakMapNumberer<SootClass>();
-      this.fieldNumberer = new WeakMapNumberer<SparkField>();
-      this.methodNumberer = new WeakMapNumberer<SootMethod>();
-      this.localNumberer = new WeakMapNumberer<Local>();
-    } else {
-      this.classNumberer = new ArrayNumberer<SootClass>();
-      this.fieldNumberer = new ArrayNumberer<SparkField>();
-      this.methodNumberer = new ArrayNumberer<SootMethod>();
-      this.localNumberer = new ArrayNumberer<Local>();
     }
 
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
@@ -331,6 +305,10 @@ public class Scene {
     SourceLocator.v().extendClassPath(newPathElement);
   }
 
+  public void reset() {
+    sootClassPath = null;
+  }
+
   public String getSootClassPath() {
     if (sootClassPath == null) {
       // First, check Options for a classpath
@@ -363,8 +341,7 @@ public class Scene {
         for (String path : dirs) {
           if (!cp.contains(path)) {
             // To support paths to jars with ':' in the name, escape the path separator if it was not already escaped.
-            path = path.replaceAll("(?<!\\\\)" + Pattern.quote(File.pathSeparator),
-              "\\\\" + File.pathSeparator);
+            path = path.replaceAll("(?<!\\\\)" + Pattern.quote(File.pathSeparator), "\\\\" + File.pathSeparator);
             pds.append(path).append(File.pathSeparatorChar);
           }
         }
@@ -1500,47 +1477,12 @@ public class Scene {
     return getPhantomRefs();
   }
 
-  public Numberer<Kind> kindNumberer() {
-    return kindNumberer;
-  }
-
   public IterableNumberer<Type> getTypeNumberer() {
     return typeNumberer;
   }
 
-  public IterableNumberer<SootMethod> getMethodNumberer() {
-    return methodNumberer;
-  }
-
-  public Numberer<Context> getContextNumberer() {
-    return contextNumberer;
-  }
-
-  public Numberer<Unit> getUnitNumberer() {
-    return unitNumberer;
-  }
-
-  public Numberer<SparkField> getFieldNumberer() {
-    return fieldNumberer;
-  }
-
-  public IterableNumberer<SootClass> getClassNumberer() {
-    return classNumberer;
-  }
-
   public StringNumberer getSubSigNumberer() {
     return subSigNumberer;
-  }
-
-  public IterableNumberer<Local> getLocalNumberer() {
-    return localNumberer;
-  }
-
-  public void setContextNumberer(Numberer<Context> n) {
-    if (contextNumberer != null) {
-      throw new RuntimeException("Attempt to set context numberer when it is already set.");
-    }
-    contextNumberer = n;
   }
 
   /**
