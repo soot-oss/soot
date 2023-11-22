@@ -23,6 +23,8 @@ package soot.jimple.spark.solver;
  */
 
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -45,7 +47,6 @@ import soot.jimple.spark.sets.EmptyPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.HashMultiMap;
-import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.queue.QueueReader;
 
@@ -64,7 +65,7 @@ public class PropAlias extends Propagator {
 
   public PropAlias(PAG pag) {
     this.pag = pag;
-    loadSets = new LargeNumberedMap<FieldRefNode, PointsToSetInternal>(pag.getFieldRefNodeNumberer());
+    loadSets = new HashMap<FieldRefNode, PointsToSetInternal>();
   }
 
   /** Actually does the propagation. */
@@ -300,6 +301,6 @@ public class PropAlias extends Propagator {
   protected PAG pag;
   protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<SparkField, VarNode>();
   protected MultiMap<FieldRefNode, FieldRefNode> aliasEdges = new HashMultiMap<FieldRefNode, FieldRefNode>();
-  protected LargeNumberedMap<FieldRefNode, PointsToSetInternal> loadSets;
+  protected Map<FieldRefNode, PointsToSetInternal> loadSets;
   protected OnFlyCallGraph ofcg;
 }
