@@ -50,7 +50,6 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.util.ArrayNumberer;
 import soot.util.BitVector;
-import soot.util.LargeNumberedMap;
 import soot.util.queue.QueueReader;
 
 /**
@@ -176,7 +175,7 @@ public final class TypeManager {
 
   final public void makeTypeMask() {
     RefType.v("java.lang.Class");
-    typeMask = new LargeNumberedMap<Type, BitVector>(Scene.v().getTypeNumberer());
+    typeMask = new HashMap<Type, BitVector>();
     if (fh == null) {
       return;
     }
@@ -186,7 +185,7 @@ public final class TypeManager {
     makeClassTypeMask(Scene.v().getSootClass(Scene.v().getObjectType().getClassName()));
     BitVector visitedTypes = new BitVector();
     {
-      Iterator<Type> it = typeMask.keyIterator();
+      Iterator<Type> it = typeMask.keySet().iterator();
       while (it.hasNext()) {
         Type t = it.next();
         visitedTypes.set(t.getNumber());
@@ -223,7 +222,7 @@ public final class TypeManager {
     allocNodeListener = pag.allocNodeListener();
   }
 
-  private LargeNumberedMap<Type, BitVector> typeMask = null;
+  private Map<Type, BitVector> typeMask = null;
 
   final public boolean castNeverFails(Type src, Type dst) {
     if (dst == null) {

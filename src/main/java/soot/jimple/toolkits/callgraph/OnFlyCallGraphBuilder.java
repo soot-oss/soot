@@ -107,8 +107,6 @@ import soot.options.SparkOptions;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.HashMultiMap;
-import soot.util.IterableNumberer;
-import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.NumberedString;
 import soot.util.StringNumberer;
@@ -165,10 +163,10 @@ public class OnFlyCallGraphBuilder {
 
   // end type based reflection resolution
   protected final Map<Local, List<VirtualCallSite>> receiverToSites;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants;
+  protected final Map<SootMethod, List<Local>> methodToReceivers;
+  protected final Map<SootMethod, List<Local>> methodToInvokeBases;
+  protected final Map<SootMethod, List<Local>> methodToInvokeArgs;
+  protected final Map<SootMethod, List<Local>> methodToStringConstants;
   protected final Map<Local, List<VirtualCallSite>> stringConstToSites;
 
   protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
@@ -210,11 +208,10 @@ public class OnFlyCallGraphBuilder {
     }
     {
       this.receiverToSites = new HashMap<Local, List<VirtualCallSite>>();
-      final IterableNumberer<SootMethod> methodNumberer = sc.getMethodNumberer();
-      this.methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
+      this.methodToReceivers = new HashMap<SootMethod, List<Local>>();
+      this.methodToInvokeBases = new HashMap<SootMethod, List<Local>>();
+      this.methodToInvokeArgs = new HashMap<SootMethod, List<Local>>();
+      this.methodToStringConstants = new HashMap<SootMethod, List<Local>>();
       this.stringConstToSites = new HashMap<Local, List<VirtualCallSite>>();
     }
 
@@ -257,19 +254,19 @@ public class OnFlyCallGraphBuilder {
     return cm;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() {
+  public Map<SootMethod, List<Local>> methodToReceivers() {
     return methodToReceivers;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs() {
+  public Map<SootMethod, List<Local>> methodToInvokeArgs() {
     return methodToInvokeArgs;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases() {
+  public Map<SootMethod, List<Local>> methodToInvokeBases() {
     return methodToInvokeBases;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants() {
+  public Map<SootMethod, List<Local>> methodToStringConstants() {
     return methodToStringConstants;
   }
 
