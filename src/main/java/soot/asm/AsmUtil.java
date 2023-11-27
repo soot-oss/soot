@@ -154,7 +154,7 @@ public class AsmUtil {
    * @return corresponding internal name.
    */
   public static String toInternalName(SootClass cls) {
-    return toInternalName(cls.getName());
+    return toInternalName(cls.getPathPlusClassName());
   }
 
   /**

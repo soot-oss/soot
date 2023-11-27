@@ -116,9 +116,9 @@ public class PagToDotDumper {
     if (base1 instanceof LocalVarNode && base2 instanceof LocalVarNode) {
       LocalVarNode lvn1 = (LocalVarNode) base1;
       LocalVarNode lvn2 = (LocalVarNode) base2;
-      if (lvn1.getMethod().getDeclaringClass().getName().equals("java.util.Hashtable$ValueCollection")
+      if (lvn1.getMethod().getDeclaringClass().getPathPlusClassName().equals("java.util.Hashtable$ValueCollection")
           && lvn1.getMethod().getName().equals("contains")
-          && lvn2.getMethod().getDeclaringClass().getName().equals("java.util.Hashtable$ValueCollection")
+          && lvn2.getMethod().getDeclaringClass().getPathPlusClassName().equals("java.util.Hashtable$ValueCollection")
           && lvn2.getMethod().getName().equals("<init>")) {
         System.err.println("Method: " + lvn1.getMethod().getName());
         System.err.println(makeLabel(frn1));
@@ -197,7 +197,7 @@ public class PagToDotDumper {
    * @return
    */
   private boolean isDefinedIn(LocalVarNode lvNode, String cName, String mName) {
-    return lvNode.getMethod() != null && lvNode.getMethod().getDeclaringClass().getName().equals(cName)
+    return lvNode.getMethod() != null && lvNode.getMethod().getDeclaringClass().getPathPlusClassName().equals(cName)
         && lvNode.getMethod().getName().equals(mName);
   }
 

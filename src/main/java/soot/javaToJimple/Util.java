@@ -132,7 +132,7 @@ public class Util {
   }
 
   public static String getSourceFileOfClass(soot.SootClass sootClass) {
-    String name = sootClass.getName();
+    String name = sootClass.getPathPlusClassName();
     int index = name.indexOf("$");
 
     // inner classes are found in the very outer class

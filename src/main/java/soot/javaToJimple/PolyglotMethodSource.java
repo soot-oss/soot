@@ -126,8 +126,8 @@ public class PolyglotMethodSource implements MethodSource {
       assertStatusClass = innerMap.get(assertStatusClass).getOuterClass();
     }
 
-    String paramName = assertStatusClass.getName();
-    String fieldName = "class$" + assertStatusClass.getName().replaceAll(".", "$");
+    String paramName = assertStatusClass.getPathPlusClassName();
+    String fieldName = "class$" + assertStatusClass.getPathPlusClassName().replaceAll(".", "$");
 
     if (assertStatusClass.isInterface()) {
       assertStatusClass = InitialResolver.v().specialAnonMap().get(assertStatusClass);

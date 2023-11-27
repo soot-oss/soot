@@ -962,7 +962,7 @@ public class DavaBody extends Body {
 
       addToImportList(className);
 
-      vb.setValue(new DStaticFieldRef(fieldRef, getMethod().getDeclaringClass().getName()));
+      vb.setValue(new DStaticFieldRef(fieldRef, getMethod().getDeclaringClass().getPathPlusClassName()));
     } else if (r instanceof ArrayRef) {
       ArrayRef ar = (ArrayRef) r;
 

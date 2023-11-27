@@ -172,7 +172,7 @@ public class SootASMClassWriterTest {
 		SootClass sc = mock(SootClass.class);
 		RefType type = mock(RefType.class);
 
-		when(sc.getName()).thenReturn(name);
+		when(sc.getPathPlusClassName()).thenReturn(name);
 		when(sc.getType()).thenReturn(type);
 		when(sc.hasSuperclass()).thenReturn(true);
 		when(sc.resolvingLevel()).thenReturn(SootClass.HIERARCHY);

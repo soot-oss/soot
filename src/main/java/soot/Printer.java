@@ -265,7 +265,7 @@ public class Printer {
     if (customClassSignaturePrinter != null) {
       return customClassSignaturePrinter.apply(sootClass);
     } else {
-      return Scene.v().quotedNameOf(sootClass.getName());
+      return Scene.v().quotedNameOf(sootClass.getPathPlusClassName());
     }
   }
 

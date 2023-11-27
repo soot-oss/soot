@@ -86,7 +86,7 @@ public class RenameDuplicatedClasses extends SceneTransformer {
     Map<String, String> lowerCaseClassNameToReal = new HashMap<String, String>();
     for (Iterator<SootClass> iter = Scene.v().getClasses().snapshotIterator(); iter.hasNext();) {
       SootClass sootClass = iter.next();
-      String className = sootClass.getName();
+      String className = sootClass.getPathPlusClassName();
 
       if (lowerCaseClassNameToReal.containsKey(className.toLowerCase())) {
         if (fixedClassNames.contains(className)) {

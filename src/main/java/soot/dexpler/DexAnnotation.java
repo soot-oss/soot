@@ -489,7 +489,7 @@ public class DexAnnotation {
 
           // If this APK specifies an invalid outer class, we try to
           // repair it
-          if (outerClass.equals(clazz.getName())) {
+          if (outerClass.equals(clazz.getPathPlusClassName())) {
             if (outerClass.contains("$-")) {
               /*
                * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
@@ -555,7 +555,7 @@ public class DexAnnotation {
           // If we have already set an outer class from some other
           // annotation, we use that
           // one.
-          outerClass = clazz.getOuterClass().getName();
+          outerClass = clazz.getOuterClass().getPathPlusClassName();
         } else if (classType.contains("$-")) {
           /*
            * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may

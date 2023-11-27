@@ -48,7 +48,7 @@ public class OuterClassTag implements Tag {
   @Override
   public byte[] getValue() {
     try {
-      return outerClass.getName().getBytes("UTF8");
+      return outerClass.getPathPlusClassName().getBytes("UTF8");
     } catch (UnsupportedEncodingException e) {
       return new byte[0];
     }
@@ -68,6 +68,6 @@ public class OuterClassTag implements Tag {
 
   @Override
   public String toString() {
-    return "[outer class=" + outerClass.getName() + "]";
+    return "[outer class=" + outerClass.getPathPlusClassName() + "]";
   }
 }

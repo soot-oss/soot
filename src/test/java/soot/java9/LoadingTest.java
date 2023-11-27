@@ -59,7 +59,7 @@ public class LoadingTest {
     SootClass klass
         = SootModuleResolver.v().resolveClass("java.lang.invoke.VarHandle", SootClass.BODIES, Optional.of("java.base"));
 
-    assertTrue(klass.getName().equals("java.lang.invoke.VarHandle"));
+    assertTrue(klass.getPathPlusClassName().equals("java.lang.invoke.VarHandle"));
     assertTrue(klass.moduleName.equals("java.base"));
 
   }
@@ -76,7 +76,7 @@ public class LoadingTest {
         "java.lang.invoke.VarHandle" });
 
     SootClass klass = Scene.v().getSootClass("java.lang.invoke.VarHandle");
-    assertTrue(klass.getName().equals("java.lang.invoke.VarHandle"));
+    assertTrue(klass.getPathPlusClassName().equals("java.lang.invoke.VarHandle"));
     assertTrue(klass.moduleName.equals("java.base"));
 
   }

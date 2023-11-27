@@ -57,7 +57,7 @@ public class DominatorsTagger extends BodyTransformer {
       while (dIt.hasNext()) {
         Stmt ds = (Stmt) dIt.next();
         String info = ds + " dominates " + s;
-        s.addTag(new LinkTag(info, ds, b.getMethod().getDeclaringClass().getName(), "Dominators"));
+        s.addTag(new LinkTag(info, ds, b.getMethod().getDeclaringClass().getPathPlusClassName(), "Dominators"));
       }
     }
   }

@@ -86,7 +86,7 @@ public final class TrapTightener extends TrapTransformer {
 
       for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext();) {
         Trap trap = trapIt.next();
-        boolean isCatchAll = trap.getException().getName().equals(Scene.v().getBaseExceptionType().toString());
+        boolean isCatchAll = trap.getException().getPathPlusClassName().equals(Scene.v().getBaseExceptionType().toString());
         Unit firstTrappedUnit = trap.getBeginUnit();
         Unit firstTrappedThrower = null;
         Unit firstUntrappedUnit = trap.getEndUnit();

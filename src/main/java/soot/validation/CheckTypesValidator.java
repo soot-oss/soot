@@ -128,7 +128,7 @@ public enum CheckTypesValidator implements BodyValidator {
           }
 
           // if lefttype is base class, all right types are legal
-          if (((RefType) leftType).getSootClass().getName().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+          if (((RefType) leftType).getSootClass().getPathPlusClassName().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
             return;
           }
 
@@ -187,7 +187,7 @@ public enum CheckTypesValidator implements BodyValidator {
 
       if (leftClass.isInterface()) {
         if (rightClass.isInterface()) {
-          if (!(leftClass.getName().equals(rightClass.getName())
+          if (!(leftClass.getPathPlusClassName().equals(rightClass.getPathPlusClassName())
               || Scene.v().getActiveHierarchy().isInterfaceSubinterfaceOf(rightClass, leftClass))) {
             exception.add(new ValidationException(stmt, "Warning: Bad use of interface type" + errorSuffix));
           }

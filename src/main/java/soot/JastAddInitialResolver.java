@@ -84,7 +84,7 @@ public class JastAddInitialResolver implements IInitialResolver {
         classNameToCU.put(className, u);
       } else {
         for (SootClass sc : types) {
-          classNameToCU.put(sc.getName(), u);
+          classNameToCU.put(sc.getPathPlusClassName(), u);
         }
       }
     }
@@ -113,10 +113,11 @@ public class JastAddInitialResolver implements IInitialResolver {
   }
 
   public Dependencies resolveFromJavaFile(SootClass sootclass) {
-    CompilationUnit u = classNameToCU.get(sootclass.getName());
+    CompilationUnit u = classNameToCU.get(sootclass.getPathPlusClassName());
 
     if (u == null) {
-      throw new RuntimeException("Error: couldn't find class: " + sootclass.getName() + " are the packages set properly?");
+      throw new RuntimeException("Error: couldn't find class: " + sootclass.getPathPlusClassName()
+              + " are the packages set properly?");
     }
 
     HashSet<SootClass> types = new HashSet<SootClass>();
@@ -132,7 +133,7 @@ public class JastAddInitialResolver implements IInitialResolver {
         m.setSource(new MethodSource() {
           public Body getBody(SootMethod m, String phaseName) {
             SootClass sc = m.getDeclaringClass();
-            CompilationUnit u = classNameToCU.get(sc.getName());
+            CompilationUnit u = classNameToCU.get(sc.getPathPlusClassName());
             for (TypeDecl typeDecl : u.getTypeDecls()) {
               typeDecl = findNestedTypeDecl(typeDecl, sc);
               if (typeDecl != null) {
@@ -159,7 +160,7 @@ public class JastAddInitialResolver implements IInitialResolver {
               }
             }
             throw new RuntimeException(
-                "Could not find body for " + m.getSignature() + " in " + m.getDeclaringClass().getName());
+                "Could not find body for " + m.getSignature() + " in " + m.getDeclaringClass().getPathPlusClassName());
           }
         });
       }

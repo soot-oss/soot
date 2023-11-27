@@ -74,7 +74,7 @@ public class DotnetClassSource extends ClassSource {
   @Override
   public Dependencies resolve(SootClass sc) {
     // If Fake.LdFtn
-    if (sc.getName().equals(DotnetBasicTypes.FAKE_LDFTN)) {
+    if (sc.getPathPlusClassName().equals(DotnetBasicTypes.FAKE_LDFTN)) {
       return DotnetFakeLdFtnType.resolve(sc);
     }
 
@@ -85,7 +85,7 @@ public class DotnetClassSource extends ClassSource {
     // dependencies that might occur
     resolveSignatureDependencies();
 
-    ProtoAssemblyAllTypes.TypeDefinition typeDefinition = assemblyFile.getTypeDefinition(sc.getName());
+    ProtoAssemblyAllTypes.TypeDefinition typeDefinition = assemblyFile.getTypeDefinition(sc.getPathPlusClassName());
     DotnetType dotnetType = new DotnetType(typeDefinition, assemblyFile);
 
     return dotnetType.resolveSootClass(sc);

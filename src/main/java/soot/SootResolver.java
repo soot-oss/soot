@@ -176,7 +176,8 @@ public class SootResolver {
         if (resolveEverything) {
           // Whole program mode
           boolean onlySignatures
-              = sc.isPhantom() || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.isBasicClass(sc.getName()));
+              = sc.isPhantom() || (no_bodies_for_excluded && scene.isExcluded(sc)
+                  && !scene.isBasicClass(sc.getPathPlusClassName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();
@@ -244,7 +245,7 @@ public class SootResolver {
   }
 
   protected void bringToHierarchyUnchecked(SootClass sc) {
-    String className = sc.getName();
+    String className = sc.getPathPlusClassName();
     ClassSource is;
     if (ModuleUtil.module_mode()) {
       is = ModulePathSourceLocator.v().getClassSource(className,

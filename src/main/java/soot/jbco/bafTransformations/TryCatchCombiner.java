@@ -295,12 +295,12 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
 
     // ignore runtime try blocks - these may have weird side-effects do to asynchronous exceptions
     SootClass exc = t.getException();
-    if (exc.getName().equals("java.lang.Throwable")) {
+    if (exc.getPathPlusClassName().equals("java.lang.Throwable")) {
       return false;
     }
 
     do {
-      if (exc.getName().equals("java.lang.RuntimeException")) {
+      if (exc.getPathPlusClassName().equals("java.lang.RuntimeException")) {
         return false;
       }
     } while (exc.hasSuperclass() && (exc = exc.getSuperclass()) != null);

@@ -173,7 +173,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     List<Type> methodParamTypes = new ArrayList<>();
     if (instruction.getArgumentsCount() == 0) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
-          + " of declared type " + method.getDeclaringClass().getName()
+          + " of declared type " + method.getDeclaringClass().getPathPlusClassName()
           + " has no arguments! This means there is no base variable for the virtual invoke!");
     }
 
@@ -232,7 +232,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
   private void checkMethodAvailable() {
     if (method.getName().trim().isEmpty()) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
-          + " of declared type " + method.getDeclaringClass().getName() + " has no method name!");
+          + " of declared type " + method.getDeclaringClass().getPathPlusClassName() + " has no method name!");
     }
   }
 
@@ -243,7 +243,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     if (isBase) {
       err += "(base variable)";
     }
-    err += " of invoked method " + method.getName() + " declared in " + clazz.getName() + " is not a local! "
+    err += " of invoked method " + method.getName() + " declared in " + clazz.getPathPlusClassName() + " is not a local! "
         + "The value is: " + var.toString() + " of type " + var.getType() + "! " + "The resolving method body is: "
         + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature();
 

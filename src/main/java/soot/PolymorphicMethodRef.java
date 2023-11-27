@@ -54,7 +54,7 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
    * @return if the class is allowed according to the JVM Spec
    */
   public static boolean handlesClass(SootClass declaringClass) {
-    return handlesClass(declaringClass.getName());
+    return handlesClass(declaringClass.getPathPlusClassName());
   }
 
   public static boolean handlesClass(String declaringClassName) {

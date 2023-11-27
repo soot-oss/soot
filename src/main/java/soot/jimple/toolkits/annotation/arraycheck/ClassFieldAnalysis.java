@@ -87,7 +87,7 @@ public class ClassFieldAnalysis {
     /* Summerize class information here. */
     Date start = new Date();
     if (Options.v().verbose()) {
-      logger.debug("[] ClassFieldAnalysis started on : " + start + " for " + c.getPackageName() + c.getName());
+      logger.debug("[] ClassFieldAnalysis started on : " + start + " for " + c.getPackageName() + c.getPathPlusClassName());
     }
 
     Hashtable<SootField, IntValueContainer> fieldInfoTable = new Hashtable<SootField, IntValueContainer>();

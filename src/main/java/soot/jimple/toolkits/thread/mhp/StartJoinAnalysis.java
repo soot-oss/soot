@@ -267,7 +267,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
             List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
             Iterator<SootClass> it = superClasses.iterator();
             while (it.hasNext()) {
-              if (it.next().getName().equals("java.lang.Thread")) {
+              if (it.next().getPathPlusClassName().equals("java.lang.Thread")) {
                 // This is a Thread.start()
                 if (!startStatements.contains(stmt)) {
                   startStatements.add(stmt);
@@ -288,7 +288,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis {
             List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
             Iterator<SootClass> it = superClasses.iterator();
             while (it.hasNext()) {
-              if (it.next().getName().equals("java.lang.Thread")) {
+              if (it.next().getPathPlusClassName().equals("java.lang.Thread")) {
                 // This is a Thread.join()
                 if (!joinStatements.contains(stmt)) {
                   joinStatements.add(stmt);

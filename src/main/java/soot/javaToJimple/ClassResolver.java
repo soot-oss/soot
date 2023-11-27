@@ -120,7 +120,7 @@ public class ClassResolver {
         polyglot.types.ClassType superType = (polyglot.types.ClassType) cDecl.superClass().type();
         // add inner clas tag
 
-        Util.addInnerClassTag(sootClass, sootClass.getName(),
+        Util.addInnerClassTag(sootClass, sootClass.getPathPlusClassName(),
             ((soot.RefType) Util.getSootType(superType.outer())).toString(), superType.name(),
             Util.getModifier(superType.flags()));
       }
@@ -227,7 +227,7 @@ public class ClassResolver {
         // this handles inner class tags for immediately enclosed
         // normal nested classes
         Util.addInnerClassTag(sootClass, Util.getSootType(((polyglot.ast.ClassDecl) next).type()).toString(),
-            sootClass.getName(), ((polyglot.ast.ClassDecl) next).name().toString(),
+            sootClass.getPathPlusClassName(), ((polyglot.ast.ClassDecl) next).name().toString(),
             Util.getModifier(((polyglot.ast.ClassDecl) next).flags()));
       } else if (next instanceof polyglot.ast.Initializer) {
         createInitializer((polyglot.ast.Initializer) next);
@@ -376,7 +376,7 @@ public class ClassResolver {
       if (((polyglot.types.ClassType) aNew.objectType().type()).isNested()) {
         polyglot.types.ClassType superType = (polyglot.types.ClassType) aNew.objectType().type();
         // add inner clas tag
-        Util.addInnerClassTag(sootClass, typeClass.getName(),
+        Util.addInnerClassTag(sootClass, typeClass.getPathPlusClassName(),
             ((soot.RefType) Util.getSootType(superType.outer())).toString(), superType.name(),
             Util.getModifier(superType.flags()));
 
@@ -485,15 +485,17 @@ public class ClassResolver {
     if ((InitialResolver.v().specialAnonMap() != null) && (InitialResolver.v().specialAnonMap().containsKey(addToClass))) {
       return InitialResolver.v().specialAnonMap().get(addToClass);
     } else {
-      String specialClassName = addToClass.getName() + "$" + InitialResolver.v().getNextAnonNum();
+      String specialClassName = addToClass.getPathPlusClassName() + "$" + InitialResolver.v().getNextAnonNum();
       // add class to scene and other maps and lists as needed
       soot.SootClass specialClass = new soot.SootClass(specialClassName);
       soot.Scene.v().addClass(specialClass);
       specialClass.setApplicationClass();
       specialClass.addTag(new SyntheticTag());
       specialClass.setSuperclass(soot.Scene.v().getSootClass(Scene.v().getObjectType().toString()));
-      Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
-      Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
+      Util.addInnerClassTag(addToClass, specialClass.getPathPlusClassName(), addToClass.getPathPlusClassName(),
+              null, soot.Modifier.STATIC);
+      Util.addInnerClassTag(specialClass, specialClass.getPathPlusClassName(), addToClass.getPathPlusClassName(),
+              null, soot.Modifier.STATIC);
       InitialResolver.v().addNameToAST(specialClassName);
       references.add(RefType.v(specialClassName));
       if (InitialResolver.v().specialAnonMap() == null) {
@@ -542,9 +544,9 @@ public class ClassResolver {
     // this field is named after the outer class even if the outer
     // class is an interface and will be actually added to the
     // special interface anon class
-    fieldName = "class$" + addToClass.getName().replaceAll(".", "$");
+    fieldName = "class$" + addToClass.getPathPlusClassName().replaceAll(".", "$");
     if ((InitialResolver.v().getInterfacesList() != null)
-        && (InitialResolver.v().getInterfacesList().contains(addToClass.getName()))) {
+        && (InitialResolver.v().getInterfacesList().contains(addToClass.getPathPlusClassName()))) {
       addToClass = getSpecialInterfaceAnonClass(addToClass);
     }
 
@@ -728,7 +730,7 @@ public class ClassResolver {
       sootClass.addTag(t);
     }
 
-    String simpleName = sootClass.getName();
+    String simpleName = sootClass.getPathPlusClassName();
 
     boolean found = false;
 
@@ -803,8 +805,8 @@ public class ClassResolver {
       // hasTag(OuterClassTag.NAME)){
 
       InnerClassInfo tag = InitialResolver.v().getInnerClassInfoMap().get(sootClass);
-      Util.addInnerClassTag(sootClass, sootClass.getName(),
-          tag.getInnerType() == InnerClassInfo.ANON ? null : tag.getOuterClass().getName(),
+      Util.addInnerClassTag(sootClass, sootClass.getPathPlusClassName(),
+          tag.getInnerType() == InnerClassInfo.ANON ? null : tag.getOuterClass().getPathPlusClassName(),
           tag.getInnerType() == InnerClassInfo.ANON ? null : tag.getSimpleName(),
           soot.Modifier.isInterface(tag.getOuterClass().getModifiers()) ? soot.Modifier.STATIC | soot.Modifier.PUBLIC
               : sootClass.getModifiers());
@@ -813,8 +815,8 @@ public class ClassResolver {
       SootClass outerClass = tag.getOuterClass();
       while (InitialResolver.v().getInnerClassInfoMap().containsKey(outerClass)) {
         InnerClassInfo tag2 = InitialResolver.v().getInnerClassInfoMap().get(outerClass);
-        Util.addInnerClassTag(sootClass, outerClass.getName(),
-            tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getOuterClass().getName(),
+        Util.addInnerClassTag(sootClass, outerClass.getPathPlusClassName(),
+            tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getOuterClass().getPathPlusClassName(),
             tag2.getInnerType() == InnerClassInfo.ANON ? null : tag2.getSimpleName(),
             tag2.getInnerType() == InnerClassInfo.ANON && soot.Modifier.isInterface(tag2.getOuterClass().getModifiers())
                 ? soot.Modifier.STATIC | soot.Modifier.PUBLIC

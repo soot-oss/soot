@@ -226,7 +226,7 @@ public class PropAlias extends Propagator {
                 // we do this now
                 SootClass targetClass = ((RefType) ccnType).getSootClass();
                 if (targetClass.resolvingLevel() == SootClass.DANGLING) {
-                  Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+                  Scene.v().forceResolve(targetClass.getPathPlusClassName(), SootClass.SIGNATURES);
                 }
 
                 edgeTgt.makeP2Set().add(pag.makeAllocNode(edgeSrc.getValue(), ccnType, ccn.getMethod()));

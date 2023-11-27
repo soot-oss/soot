@@ -135,7 +135,7 @@ public class SynchronizerManager {
     SootField classCacher = classToClassField.get(sc);
     if (classCacher == null) {
       // Add a unique field named [__]class$name
-      String n = "class$" + sc.getName().replace('.', '$');
+      String n = "class$" + sc.getPathPlusClassName().replace('.', '$');
       while (sc.declaresFieldByName(n)) {
         n = '_' + n;
       }
@@ -172,7 +172,7 @@ public class SynchronizerManager {
     units.insertBefore(jimp.newIfStmt(jimp.newNeExpr(l, NullConstant.v()), target), target);
 
     units.insertBefore(jimp.newAssignStmt(l, jimp.newStaticInvokeExpr(getClassFetcherFor(sc, createNewAsShimple).makeRef(),
-        Collections.singletonList(StringConstant.v(sc.getName())))), target);
+        Collections.singletonList(StringConstant.v(sc.getPathPlusClassName())))), target);
     units.insertBefore(jimp.newAssignStmt(jimp.newStaticFieldRef(classCacher.makeRef()), l), target);
 
     return l;
@@ -192,7 +192,7 @@ public class SynchronizerManager {
    * Uses dumb matching to do search. Not worth doing symbolic analysis for this!
    */
   public SootMethod getClassFetcherFor(final SootClass c, boolean createNewAsShimple) {
-    final String prefix = '<' + c.getName().replace('.', '$') + ": java.lang.Class ";
+    final String prefix = '<' + c.getPathPlusClassName().replace('.', '$') + ": java.lang.Class ";
     for (String methodName = "class$"; true; methodName = '_' + methodName) {
       SootMethod m = c.getMethodByNameUnsafe(methodName);
       if (m == null) {

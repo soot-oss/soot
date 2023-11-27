@@ -74,7 +74,7 @@ public class CilLdMemberTokenInstruction extends AbstractCilnstruction {
 
       if (method.getName().trim().isEmpty()) {
         throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
-            + " of declared type " + method.getDeclaringClass().getName() + " has no method name!");
+            + " of declared type " + method.getDeclaringClass().getPathPlusClassName() + " has no method name!");
       }
       String methodName = method.getUniqueName();
 

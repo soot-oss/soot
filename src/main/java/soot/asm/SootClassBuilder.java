@@ -127,8 +127,8 @@ public class SootClassBuilder extends ClassVisitor {
     }
 
     name = AsmUtil.toQualifiedName(name);
-    if (!name.equals(klass.getName()) && Options.v().verbose()) {
-      System.err.println("Class names not equal! " + name + " != " + klass.getName());
+    if (!name.equals(klass.getPathPlusClassName()) && Options.v().verbose()) {
+      System.err.println("Class names not equal! " + name + " != " + klass.getPathPlusClassName());
     }
     // FIXME: ad -- throw excpetion again
     // throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());

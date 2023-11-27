@@ -114,7 +114,7 @@ public class CP extends StructuredAnalysis {
      * DEBUG = true; DEBUG_IF = true; DEBUG_WHILE = true; DEBUG_STATEMENTS = true;
      */
     this.methodNode = analyze;
-    localClassName = analyze.getDavaBody().getMethod().getDeclaringClass().getName();
+    localClassName = analyze.getDavaBody().getMethod().getDeclaringClass().getPathPlusClassName();
 
     // Create a list of VariableValueTuples for all the constantFields
     createConstantFieldsList(constantFields, classNameFieldNameToSootFieldMapping);
@@ -602,7 +602,7 @@ public class CP extends StructuredAnalysis {
       if (toCheck instanceof Local) {
         toCheckClassName = localClassName;
       } else {
-        toCheckClassName = ((FieldRef) toCheck).getField().getDeclaringClass().getName();
+        toCheckClassName = ((FieldRef) toCheck).getField().getDeclaringClass().getPathPlusClassName();
       }
 
       for (CPTuple tempTuple : set) {

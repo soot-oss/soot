@@ -120,7 +120,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
       final SootClass applicationClass = applicationClassesIterator.next();
 
       if (isVerbose()) {
-        logger.info("\tProcessing class {}", applicationClass.getName());
+        logger.info("\tProcessing class {}", applicationClass.getPathPlusClassName());
       }
 
       // create local copy to prevent java.util.ConcurrentModificationException

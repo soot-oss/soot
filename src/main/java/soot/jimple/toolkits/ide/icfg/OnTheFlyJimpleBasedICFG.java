@@ -172,7 +172,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
   private synchronized void ensureClassHasBodies(SootClass cl) {
     assert Scene.v().hasFastHierarchy();
     if (cl.resolvingLevel() < SootClass.BODIES) {
-      Scene.v().forceResolve(cl.getName(), SootClass.BODIES);
+      Scene.v().forceResolve(cl.getPathPlusClassName(), SootClass.BODIES);
       Scene.v().getOrMakeFastHierarchy();
     }
     assert Scene.v().hasFastHierarchy();

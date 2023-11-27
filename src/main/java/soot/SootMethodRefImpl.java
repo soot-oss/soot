@@ -86,7 +86,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     }
     if (returnType == null) {
       throw new IllegalArgumentException("Attempt to create SootMethodRef with null returnType (Method: " + name
-          + " at declaring class: " + declaringClass.getName() + ")");
+          + " at declaring class: " + declaringClass.getPathPlusClassName() + ")");
     }
 
     this.declaringClass = declaringClass;
@@ -283,7 +283,8 @@ public class SootMethodRefImpl implements SootMethodRef {
     // at runtime. Furthermore, the declaring class of dynamic invocations is
     // not known at compile time, treat as phantom class regardless if phantom
     // classes are enabled or not.
-    if (Options.v().allow_phantom_refs() || SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(declaringClass.getName())) {
+    if (Options.v().allow_phantom_refs() ||
+            SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(declaringClass.getPathPlusClassName())) {
       return createUnresolvedErrorMethod(declaringClass);
     }
 

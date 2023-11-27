@@ -92,7 +92,8 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
       if (u instanceof SpecialInvokeInst) {
         sii = (SpecialInvokeInst) u;
         SootMethodRef smr = sii.getMethodRef();
-        if (c == null || !smr.declaringClass().getName().equals(c.getName()) || !smr.name().equals("<init>")) {
+        if (c == null || !smr.declaringClass().getPathPlusClassName().equals(c.getPathPlusClassName()) ||
+                !smr.name().equals("<init>")) {
           sii = null;
         } else {
           break;
@@ -126,7 +127,8 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
           Map<Local, Local> locals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
           if (locals != null && locals.containsKey(bl)) {
             Type t = ((Local) locals.get(bl)).getType();
-            if (t instanceof RefType && ((RefType) t).getSootClass().getName().equals(origClass.getName())) {
+            if (t instanceof RefType && ((RefType) t).getSootClass().getPathPlusClassName()
+                    .equals(origClass.getPathPlusClassName())) {
               units.insertBefore(Baf.v().newDup1Inst(RefType.v()), sii);
               Unit ifinst = Baf.v().newIfNullInst(sii);
               units.insertBeforeNoRedirect(ifinst, sii);
@@ -162,7 +164,7 @@ public class ConstructorConfuser extends BodyTransformer implements IJbcoTransfo
         if (sii.getMethodRef().parameterTypes().size() == 0
             && !BodyBuilder.isExceptionCaughtAt(units, sii, b.getTraps().iterator())) {
           while (c != null) {
-            if (c.getName().equals("java.lang.Throwable")) {
+            if (c.getPathPlusClassName().equals("java.lang.Throwable")) {
               Unit throwThis = Baf.v().newThrowInst();
               units.insertBefore(throwThis, sii);
               b.getTraps().add(Baf.v().newTrap(origClass, throwThis, sii, sii));

@@ -609,7 +609,7 @@ public class PAG implements PointsToAnalysis {
       if (m == null) {
         tag = new StringTag(node.toString());
       } else {
-        tag = new LinkTag(node.toString(), m, m.getDeclaringClass().getName());
+        tag = new LinkTag(node.toString(), m, m.getDeclaringClass().getPathPlusClassName());
       }
       nodeToTag.put(node, tag);
     }

@@ -882,13 +882,13 @@ public class PackManager {
   private void runBodyPacks(SootClass c) {
     final int format = Options.v().output_format();
     if (format == Options.output_format_dava) {
-      logger.debug("Decompiling {}...", c.getName());
+      logger.debug("Decompiling {}...", c.getPathPlusClassName());
 
       // January 13th, 2006 SootMethodAddedByDava is set to false for
       // SuperFirstStmtHandler
       G.v().SootMethodAddedByDava = false;
     } else {
-      logger.debug("Transforming {}...", c.getName());
+      logger.debug("Transforming {}...", c.getPathPlusClassName());
     }
 
     boolean produceBaf = false, produceGrimp = false, produceDava = false, produceJimple = true, produceShimple = false;

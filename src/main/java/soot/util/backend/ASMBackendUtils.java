@@ -222,7 +222,7 @@ public class ASMBackendUtils {
   public static boolean acceptsStringInitialValue(SootField field) {
     if (field.getType() instanceof RefType) {
       SootClass fieldClass = ((RefType) field.getType()).getSootClass();
-      return fieldClass.getName().equals("java.lang.String");
+      return fieldClass.getPathPlusClassName().equals("java.lang.String");
     }
     return false;
   }

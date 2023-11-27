@@ -163,10 +163,10 @@ public class ModuleScene extends Scene {
   @Override
   protected void addClassSilent(SootClass c) {
     if (c.isInScene()) {
-      throw new RuntimeException("already managed: " + c.getName());
+      throw new RuntimeException("already managed: " + c.getPathPlusClassName());
     }
 
-    final String className = c.getName();
+    final String className = c.getPathPlusClassName();
     if (containsClass(className, Optional.fromNullable(c.moduleName))) {
       throw new RuntimeException("duplicate class: " + className);
     }
@@ -532,7 +532,8 @@ public class ModuleScene extends Scene {
       SootClass c = iterator.next();
       if (!c.isConcrete()) {
         if (opts.verbose()) {
-          logger.warn("dynamic class " + c.getName() + " is abstract or an interface, and it will not be considered.");
+          logger.warn("dynamic class " + c.getPathPlusClassName()
+                  + " is abstract or an interface, and it will not be considered.");
         }
         iterator.remove();
       }
@@ -562,7 +563,7 @@ public class ModuleScene extends Scene {
         if (Options.v().app()) {
           s.setApplicationClass();
         }
-        if (optionsClasses.contains(s.getName())) {
+        if (optionsClasses.contains(s.getPathPlusClassName())) {
           s.setApplicationClass();
           continue;
         }
@@ -574,7 +575,7 @@ public class ModuleScene extends Scene {
         }
         if (s.isApplicationClass()) {
           // make sure we have the support
-          loadClassAndSupport(s.getName(), Optional.fromNullable(s.moduleName));
+          loadClassAndSupport(s.getPathPlusClassName(), Optional.fromNullable(s.moduleName));
         }
       }
     }
@@ -593,7 +594,7 @@ public class ModuleScene extends Scene {
         for (String s : Options.v().classes()) {
           SootClass c = getSootClass(s, null);
           if (c.declaresMethod("main", mainArgs, VoidType.v())) {
-            logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
+            logger.debug("No main class given. Inferred '" + c.getPathPlusClassName() + "' as main class.");
             setMainClass(c);
             return;
           }
@@ -602,7 +603,7 @@ public class ModuleScene extends Scene {
         // try to infer a main class from the usual classpath if none is given
         for (SootClass c : getApplicationClasses()) {
           if (c.declaresMethod("main", mainArgs, VoidType.v())) {
-            logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
+            logger.debug("No main class given. Inferred '" + c.getPathPlusClassName() + "' as main class.");
             setMainClass(c);
             return;
           }

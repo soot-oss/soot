@@ -332,7 +332,7 @@ public class InterfaceDecl extends ReferenceType implements Cloneable {
     sc.setSuperclass(typeObject().getSootClassDecl());
     for(Iterator iter = superinterfacesIterator(); iter.hasNext(); ) {
       TypeDecl typeDecl = (TypeDecl)iter.next();
-      if(typeDecl != typeObject() && !sc.implementsInterface(typeDecl.getSootClassDecl().getName()))
+      if(typeDecl != typeObject() && !sc.implementsInterface(typeDecl.getSootClassDecl().getPathPlusClassName()))
         sc.addInterface(typeDecl.getSootClassDecl());
     }
     if(isNestedType())

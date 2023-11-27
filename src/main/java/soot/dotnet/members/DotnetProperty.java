@@ -88,9 +88,10 @@ public class DotnetProperty extends AbstractDotnetMember {
   private MethodSource createPropertyMethodSource(boolean isSetter) {
     return (m, phaseName) -> {
       // Get body of method
-      AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getName());
+      AssemblyFile assemblyFile =
+              (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getPathPlusClassName());
       ProtoIlInstructions.IlFunctionMsg ilFunctionMsg
-          = assemblyFile.getMethodBodyOfProperty(declaringClass.getName(), protoProperty.getName(), isSetter);
+          = assemblyFile.getMethodBodyOfProperty(declaringClass.getPathPlusClassName(), protoProperty.getName(), isSetter);
 
       // add jimple body and jimplify
       DotnetMethod dotnetMethod = isSetter ? setterMethod : getterMethod;

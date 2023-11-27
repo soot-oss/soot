@@ -218,7 +218,7 @@ public class ThrowFinder {
                   exceptionSet.add(c);
                   changed = true;
                   if (DEBUG) {
-                    System.out.println("Added exception which is explicitly thrown" + c.getName());
+                    System.out.println("Added exception which is explicitly thrown" + c.getPathPlusClassName());
                   }
                 } else {
                   if (DEBUG) {

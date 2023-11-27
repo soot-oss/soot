@@ -195,7 +195,7 @@ public class BafASMBackend extends AbstractASMBackend {
         Label start = branchTargetLabels.get(trap.getBeginUnit());
         Label end = branchTargetLabels.get(trap.getEndUnit());
         Label handler = branchTargetLabels.get(trap.getHandlerUnit());
-        String type = slashify(trap.getException().getName());
+        String type = slashify(trap.getException().getPathPlusClassName());
         mv.visitTryCatchBlock(start, end, handler, type);
       }
     }
@@ -466,12 +466,12 @@ public class BafASMBackend extends AbstractASMBackend {
           Handle handle;
           if (((MethodHandle) c).isMethodRef()) {
             SootMethodRef methodRef = ((MethodHandle) c).getMethodRef();
-            handle = new Handle(((MethodHandle) c).getKind(), slashify(methodRef.declaringClass().getName()),
-                methodRef.name(), toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
+            handle = new Handle(((MethodHandle) c).getKind(), slashify(methodRef.declaringClass().getPathPlusClassName()),
+                    methodRef.name(), toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
           } else {
             SootFieldRef fieldRef = ((MethodHandle) c).getFieldRef();
-            handle = new Handle(((MethodHandle) c).getKind(), slashify(fieldRef.declaringClass().getName()), fieldRef.name(),
-                toTypeDesc(fieldRef.type()), fieldRef.declaringClass().isInterface());
+            handle = new Handle(((MethodHandle) c).getKind(), slashify(fieldRef.declaringClass().getPathPlusClassName()),
+                    fieldRef.name(), toTypeDesc(fieldRef.type()), fieldRef.declaringClass().isInterface());
           }
           mv.visitLdcInsn(handle);
         } else {
@@ -1164,28 +1164,28 @@ public class BafASMBackend extends AbstractASMBackend {
       @Override
       public void caseStaticGetInst(StaticGetInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.GETSTATIC, slashify(field.declaringClass().getName()), field.name(),
+        mv.visitFieldInsn(Opcodes.GETSTATIC, slashify(field.declaringClass().getPathPlusClassName()), field.name(),
             toTypeDesc(field.type()));
       }
 
       @Override
       public void caseStaticPutInst(StaticPutInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.PUTSTATIC, slashify(field.declaringClass().getName()), field.name(),
+        mv.visitFieldInsn(Opcodes.PUTSTATIC, slashify(field.declaringClass().getPathPlusClassName()), field.name(),
             toTypeDesc(field.type()));
       }
 
       @Override
       public void caseFieldGetInst(FieldGetInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.GETFIELD, slashify(field.declaringClass().getName()), field.name(),
+        mv.visitFieldInsn(Opcodes.GETFIELD, slashify(field.declaringClass().getPathPlusClassName()), field.name(),
             toTypeDesc(field.type()));
       }
 
       @Override
       public void caseFieldPutInst(FieldPutInst i) {
         SootFieldRef field = i.getFieldRef();
-        mv.visitFieldInsn(Opcodes.PUTFIELD, slashify(field.declaringClass().getName()), field.name(),
+        mv.visitFieldInsn(Opcodes.PUTFIELD, slashify(field.declaringClass().getPathPlusClassName()), field.name(),
             toTypeDesc(field.type()));
       }
 
@@ -1336,12 +1336,12 @@ public class BafASMBackend extends AbstractASMBackend {
             public void caseMethodHandle(MethodHandle handle) {
               if (handle.isMethodRef()) {
                 SootMethodRef methodRef = handle.getMethodRef();
-                argsArray[j] = new Handle(handle.getKind(), slashify(methodRef.declaringClass().getName()), methodRef.name(),
-                    toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
+                argsArray[j] = new Handle(handle.getKind(), slashify(methodRef.declaringClass().getPathPlusClassName()),
+                        methodRef.name(), toTypeDesc(methodRef), methodRef.declaringClass().isInterface());
               } else {
                 SootFieldRef fieldRef = handle.getFieldRef();
-                argsArray[j] = new Handle(handle.getKind(), slashify(fieldRef.declaringClass().getName()), fieldRef.name(),
-                    toTypeDesc(fieldRef.type()), fieldRef.declaringClass().isInterface());
+                argsArray[j] = new Handle(handle.getKind(), slashify(fieldRef.declaringClass().getPathPlusClassName()),
+                        fieldRef.name(), toTypeDesc(fieldRef.type()), fieldRef.declaringClass().isInterface());
               }
             }
 
@@ -1380,22 +1380,22 @@ public class BafASMBackend extends AbstractASMBackend {
         SootMethodRef m = i.getMethodRef();
         SootMethodRef bsm = i.getBootstrapMethodRef();
         mv.visitInvokeDynamicInsn(m.name(), toTypeDesc(m), new Handle(i.getHandleTag(),
-            slashify(bsm.declaringClass().getName()), bsm.name(), toTypeDesc(bsm), bsm.declaringClass().isInterface()),
-            argsArray);
+            slashify(bsm.declaringClass().getPathPlusClassName()), bsm.name(), toTypeDesc(bsm),
+                        bsm.declaringClass().isInterface()), argsArray);
       }
 
       @Override
       public void caseStaticInvokeInst(StaticInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        mv.visitMethodInsn(Opcodes.INVOKESTATIC, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m),
-            m.declaringClass().isInterface() && !m.isStatic());
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, slashify(m.declaringClass().getPathPlusClassName()), m.name(),
+                toTypeDesc(m), m.declaringClass().isInterface() && !m.isStatic());
       }
 
       @Override
       public void caseVirtualInvokeInst(VirtualInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m),
-            m.declaringClass().isInterface());
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, slashify(m.declaringClass().getPathPlusClassName()), m.name(),
+                toTypeDesc(m), m.declaringClass().isInterface());
       }
 
       @Override
@@ -1411,14 +1411,15 @@ public class BafASMBackend extends AbstractASMBackend {
            */
           isInterface = false;
         }
-        mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, slashify(declaration.getName()), m.name(), toTypeDesc(m), isInterface);
+        mv.visitMethodInsn(Opcodes.INVOKEINTERFACE, slashify(declaration.getPathPlusClassName()), m.name(),
+                toTypeDesc(m), isInterface);
       }
 
       @Override
       public void caseSpecialInvokeInst(SpecialInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m),
-            m.declaringClass().isInterface());
+        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, slashify(m.declaringClass().getPathPlusClassName()), m.name(),
+                toTypeDesc(m), m.declaringClass().isInterface());
       }
 
       @Override

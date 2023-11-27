@@ -560,7 +560,8 @@ public class TypeResolver {
               if (lca == null) {
                 if (DEBUG) {
                   logger.debug(
-                      "==++==" + stmtBody.getMethod().getDeclaringClass().getName() + "." + stmtBody.getMethod().getName());
+                          "==++==" + stmtBody.getMethod().getDeclaringClass().getPathPlusClassName() + "."
+                                  + stmtBody.getMethod().getName());
                 }
 
                 continue multiple_children;

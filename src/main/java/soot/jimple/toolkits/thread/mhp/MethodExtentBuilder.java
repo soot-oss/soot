@@ -107,7 +107,7 @@ public class MethodExtentBuilder {
           if (name.equals("wait") || name.equals("notify") || name.equals("notifyAll")
               || ((name.equals("start") || name.equals("join") || name.equals("suspend") || name.equals("resume")
                   || name.equals("destroy") || name.equals("stop"))
-                  && method.getDeclaringClass().getName().equals("java.lang.Thread"))) {
+                  && method.getDeclaringClass().getPathPlusClassName().equals("java.lang.Thread"))) {
             methodsNeedingInlining.add(targetMethod);
             return;
           } else {

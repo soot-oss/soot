@@ -77,14 +77,14 @@ public class CPApplication extends DepthFirstAdapter {
 
   public CPApplication(ASTMethodNode AST, HashMap<String, Object> constantValueFields,
       HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
-    className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
+    className = AST.getDavaBody().getMethod().getDeclaringClass().getPathPlusClassName();
     cp = new CP(AST, constantValueFields, classNameFieldNameToSootFieldMapping);
   }
 
   public CPApplication(boolean verbose, ASTMethodNode AST, HashMap<String, Object> constantValueFields,
       HashMap<String, SootField> classNameFieldNameToSootFieldMapping) {
     super(verbose);
-    className = AST.getDavaBody().getMethod().getDeclaringClass().getName();
+    className = AST.getDavaBody().getMethod().getDeclaringClass().getPathPlusClassName();
     cp = new CP(AST, constantValueFields, classNameFieldNameToSootFieldMapping);
   }
 
@@ -118,7 +118,8 @@ public class CPApplication extends DepthFirstAdapter {
       FieldRef useField = (FieldRef) key;
       // System.out.println("switch key is a FieldRef which is: "+useField);
       SootField usedSootField = useField.getField();
-      Object value = beforeSet.contains(usedSootField.getDeclaringClass().getName(), usedSootField.getName().toString());
+      Object value = beforeSet.contains(usedSootField.getDeclaringClass().getPathPlusClassName(),
+              usedSootField.getName().toString());
       if (value != null) {
         // System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
         // create constant value for the value and replace this local
@@ -301,7 +302,8 @@ public class CPApplication extends DepthFirstAdapter {
       } else if (val instanceof FieldRef) {
         FieldRef useField = (FieldRef) val;
         SootField usedSootField = useField.getField();
-        Object value = set.contains(usedSootField.getDeclaringClass().getName(), usedSootField.getName().toString());
+        Object value = set.contains(usedSootField.getDeclaringClass().getPathPlusClassName(),
+                usedSootField.getName().toString());
         if (value != null) {
           // System.out.println("if condition FieldRef "+usedSootField+"is present in before set with value"+value);
           // create constant value for the value and replace this
@@ -382,7 +384,8 @@ public class CPApplication extends DepthFirstAdapter {
         FieldRef useField = (FieldRef) use;
         // System.out.println("FieldRef is: "+useField);
         SootField usedSootField = useField.getField();
-        Object value = beforeSet.contains(usedSootField.getDeclaringClass().getName(), usedSootField.getName().toString());
+        Object value = beforeSet.contains(usedSootField.getDeclaringClass().getPathPlusClassName(),
+                usedSootField.getName().toString());
         if (value != null) {
           // System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
           // create constant value for the value and replace this

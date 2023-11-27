@@ -101,7 +101,7 @@ public class TypeBasedReflectionModelTest {
         tc.setApplicationClass();
         Scene.v().setMainClass(tc);
 
-        Scene.v().forceResolve(tc.getName(), BODIES);
+        Scene.v().forceResolve(tc.getPathPlusClassName(), BODIES);
         Scene.v().loadNecessaryClasses();
 
         Options.v().setPhaseOption("cg.spark", "on");

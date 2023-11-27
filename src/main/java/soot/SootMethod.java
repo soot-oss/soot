@@ -499,7 +499,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     if (exceptions == null) {
       exceptions = new ArrayList<SootClass>();
     } else if (exceptions.contains(e)) {
-      throw new RuntimeException("already throws exception " + e.getName());
+      throw new RuntimeException("already throws exception " + e.getPathPlusClassName());
     }
 
     exceptions.add(e);
@@ -512,7 +512,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     logger.trace("Removing exception {}", e);
 
     if (exceptions == null || !exceptions.contains(e)) {
-      throw new RuntimeException("does not throw exception " + e.getName());
+      throw new RuntimeException("does not throw exception " + e.getPathPlusClassName());
     }
 
     exceptions.remove(e);
@@ -667,7 +667,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   public String getBytecodeSignature() {
     StringBuilder buffer = new StringBuilder();
     buffer.append('<');
-    buffer.append(Scene.v().quotedNameOf(getDeclaringClass().getName()));
+    buffer.append(Scene.v().quotedNameOf(getDeclaringClass().getPathPlusClassName()));
     buffer.append(": ");
     buffer.append(getName());
     buffer.append(AbstractJasminClass.jasminDescriptorOf(makeRef()));
@@ -699,7 +699,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   public static String getSignature(SootClass cl, String subSignature) {
     StringBuilder buffer = new StringBuilder();
     buffer.append('<');
-    buffer.append(Scene.v().quotedNameOf(cl.getName()));
+    buffer.append(Scene.v().quotedNameOf(cl.getPathPlusClassName()));
     buffer.append(": ");
     buffer.append(subSignature);
     buffer.append('>');
@@ -868,9 +868,9 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     if (exceptions != null) {
       Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
       if (exceptionIt.hasNext()) {
-        buffer.append(" throws ").append(exceptionIt.next().getName());
+        buffer.append(" throws ").append(exceptionIt.next().getPathPlusClassName());
         while (exceptionIt.hasNext()) {
-          buffer.append(", ").append(exceptionIt.next().getName());
+          buffer.append(", ").append(exceptionIt.next().getPathPlusClassName());
         }
       }
     }
@@ -918,9 +918,9 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     if (exceptions != null) {
       Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
       if (exceptionIt.hasNext()) {
-        buffer.append(" throws ").append(Scene.v().quotedNameOf(exceptionIt.next().getName()));
+        buffer.append(" throws ").append(Scene.v().quotedNameOf(exceptionIt.next().getPathPlusClassName()));
         while (exceptionIt.hasNext()) {
-          buffer.append(", ").append(Scene.v().quotedNameOf(exceptionIt.next().getName()));
+          buffer.append(", ").append(Scene.v().quotedNameOf(exceptionIt.next().getPathPlusClassName()));
         }
       }
     }

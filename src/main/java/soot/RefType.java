@@ -95,9 +95,9 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
    */
   public static RefType v(SootClass c) {
     if (ModuleUtil.module_mode()) {
-      return ModuleRefType.v(c.getName(), Optional.fromNullable(c.moduleName));
+      return ModuleRefType.v(c.getPathPlusClassName(), Optional.fromNullable(c.moduleName));
     } else {
-      return v(c.getName());
+      return v(c.getPathPlusClassName());
     }
   }
 

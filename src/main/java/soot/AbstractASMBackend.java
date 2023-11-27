@@ -325,7 +325,7 @@ public abstract class AbstractASMBackend {
         exceptions = new String[exceptionList.size()];
         int i = 0;
         for (SootClass exc : exceptionList) {
-          exceptions[i] = slashify(exc.getName());
+          exceptions[i] = slashify(exc.getPathPlusClassName());
           ++i;
         }
       } else {
@@ -611,7 +611,7 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for a reference to an outer class if necessary
    */
   protected void generateOuterClassReference() {
-    String outerClassName = slashify(sc.getOuterClass().getName());
+    String outerClassName = slashify(sc.getOuterClass().getPathPlusClassName());
     String enclosingMethod = null;
     String enclosingMethodSig = null;
     EnclosingMethodTag emTag = (EnclosingMethodTag) sc.getTag(EnclosingMethodTag.NAME);
@@ -641,7 +641,7 @@ public abstract class AbstractASMBackend {
     int modifier = getModifiers(sc.getModifiers(), sc);
 
     // Retrieve class-name
-    String className = slashify(sc.getName());
+    String className = slashify(sc.getPathPlusClassName());
     // Retrieve generics
     SignatureTag sigTag = (SignatureTag) sc.getTag(SignatureTag.NAME);
     String sig = sigTag == null ? null : sigTag.getSignature();
@@ -653,14 +653,14 @@ public abstract class AbstractASMBackend {
     String superClass = "java/lang/Object".equals(className) ? null : "java/lang/Object";
     SootClass csuperClass = sc.getSuperclassUnsafe();
     if (csuperClass != null) {
-      superClass = slashify(csuperClass.getName());
+      superClass = slashify(csuperClass.getPathPlusClassName());
     }
 
     // Retrieve directly implemented interfaces
     String[] interfaces = new String[sc.getInterfaceCount()];
     int i = 0;
     for (SootClass interf : sc.getInterfaces()) {
-      interfaces[i] = slashify(interf.getName());
+      interfaces[i] = slashify(interf.getPathPlusClassName());
       ++i;
     }
 

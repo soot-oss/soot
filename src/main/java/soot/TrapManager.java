@@ -140,9 +140,10 @@ public class TrapManager {
       if (trap.getHandlerUnit() == u) {
         RefType type;
         if (module_mode) {
-          type = ModuleRefType.v(trap.getException().getName(), Optional.fromNullable(trap.getException().moduleName));
+          type = ModuleRefType.v(trap.getException().getPathPlusClassName(),
+                  Optional.fromNullable(trap.getException().moduleName));
         } else {
-          type = RefType.v(trap.getException().getName());
+          type = RefType.v(trap.getException().getPathPlusClassName());
         }
         possibleTypes.add(type);
       }

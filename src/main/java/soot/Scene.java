@@ -821,11 +821,11 @@ public class Scene {
   protected void addClassSilent(SootClass c) {
     synchronized (c) {
       if (c.isInScene()) {
-        throw new RuntimeException("already managed: " + c.getName());
+        throw new RuntimeException("already managed: " + c.getPathPlusClassName());
       }
 
-      if (containsClass(c.getName())) {
-        throw new RuntimeException("duplicate class: " + c.getName());
+      if (containsClass(c.getPathPlusClassName())) {
+        throw new RuntimeException("duplicate class: " + c.getPathPlusClassName());
       }
 
       classes.add(c);
@@ -838,7 +838,7 @@ public class Scene {
       if (!c.isPhantom) {
         modifyHierarchy();
       }
-      nameToClass.computeIfAbsent(c.getName(), k -> c.getType());
+      nameToClass.computeIfAbsent(c.getPathPlusClassName(), k -> c.getType());
     }
   }
 
@@ -1943,7 +1943,8 @@ public class Scene {
       SootClass c = iterator.next();
       if (!c.isConcrete()) {
         if (opts.verbose()) {
-          logger.warn("dynamic class " + c.getName() + " is abstract or an interface, and it will not be considered.");
+          logger.warn("dynamic class " + c.getPathPlusClassName()
+                  + " is abstract or an interface, and it will not be considered.");
         }
         iterator.remove();
       }
@@ -1972,7 +1973,7 @@ public class Scene {
         if (Options.v().app()) {
           s.setApplicationClass();
         }
-        if (optionsClasses.contains(s.getName())) {
+        if (optionsClasses.contains(s.getPathPlusClassName())) {
           s.setApplicationClass();
           continue;
         }
@@ -1984,14 +1985,14 @@ public class Scene {
         }
         if (s.isApplicationClass()) {
           // make sure we have the support
-          loadClassAndSupport(s.getName());
+          loadClassAndSupport(s.getPathPlusClassName());
         }
       }
     }
   }
 
   public boolean isExcluded(SootClass sc) {
-    return isExcluded(sc.getName());
+    return isExcluded(sc.getPathPlusClassName());
   }
 
   public boolean isExcluded(String className) {
@@ -2008,7 +2009,7 @@ public class Scene {
   }
 
   public boolean isIncluded(SootClass sc) {
-    return isIncluded(sc.getName());
+    return isIncluded(sc.getPathPlusClassName());
   }
 
   public boolean isIncluded(String className) {
@@ -2088,7 +2089,7 @@ public class Scene {
               = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
                   : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
-            logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
+            logger.debug("No main class given. Inferred '" + c.getPathPlusClassName() + "' as main class.");
             setMainClass(c);
             return;
           }
@@ -2100,7 +2101,7 @@ public class Scene {
               = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
                   : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
-            logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
+            logger.debug("No main class given. Inferred '" + c.getPathPlusClassName() + "' as main class.");
             setMainClass(c);
             return;
           }

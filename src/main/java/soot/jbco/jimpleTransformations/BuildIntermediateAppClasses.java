@@ -110,7 +110,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
       SootClass originalSuperclass = sc.getSuperclass();
 
       if (output) {
-        out.println("Processing " + sc.getName() + " with super " + originalSuperclass.getName());
+        out.println("Processing " + sc.getPathPlusClassName() + " with super " + originalSuperclass.getPathPlusClassName());
       }
 
       Iterator<SootMethod> methodIterator = sc.methodIterator();
@@ -146,7 +146,8 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
       }
 
       if (methodsToAdd.size() > 0) {
-        final String fullName = ClassRenamer.v().getOrAddNewName(ClassRenamer.getPackageName(sc.getName()), null);
+        final String fullName = ClassRenamer.v().getOrAddNewName(
+                ClassRenamer.getPackageName(sc.getPathPlusClassName()), null);
 
         if (output) {
           out.println("\tBuilding " + fullName);
@@ -236,7 +237,8 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
               if (v instanceof SpecialInvokeExpr) {
                 SpecialInvokeExpr sie = (SpecialInvokeExpr) v;
                 SootMethodRef smr = sie.getMethodRef();
-                if (sie.getBase().equivTo(thisLocal) && smr.declaringClass().getName().equals(originalSuperclass.getName())
+                if (sie.getBase().equivTo(thisLocal) &&
+                        smr.declaringClass().getPathPlusClassName().equals(originalSuperclass.getPathPlusClassName())
                     && smr.getSubSignature().getString().startsWith("void " + constructorName)) {
                   SootMethod newSuperInit;
                   if (!mediatingClass.declaresMethod(constructorName, smr.parameterTypes())) {

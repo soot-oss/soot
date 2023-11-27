@@ -234,7 +234,7 @@ public class DavaPrinter {
 
     // Print extension
     if (cl.hasSuperclass()) {
-      String superClassName = cl.getSuperclass().getName();
+      String superClassName = cl.getSuperclass().getPathPlusClassName();
       if (!"java.lang.Object".equals(superClassName)) {
         // Nomair Naeem 8th Feb 2006
         // Also check if the super class name is not a fully qualified name,
@@ -253,9 +253,9 @@ public class DavaPrinter {
           out.print(" implements ");
         }
 
-        out.print(interfaceIt.next().getName());
+        out.print(interfaceIt.next().getPathPlusClassName());
         while (interfaceIt.hasNext()) {
-          out.print(", " + interfaceIt.next().getName());
+          out.print(", " + interfaceIt.next().getPathPlusClassName());
         }
       }
     }

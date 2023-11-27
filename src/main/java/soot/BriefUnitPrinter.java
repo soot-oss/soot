@@ -50,7 +50,7 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
   public void methodRef(SootMethodRef m) {
     handleIndent();
     if (!baf && m.resolve().isStatic()) {
-      output.append(m.getDeclaringClass().getName());
+      output.append(m.getDeclaringClass().getPathPlusClassName());
       literal(".");
     }
     output.append(m.name());
@@ -60,7 +60,7 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
   public void fieldRef(SootFieldRef f) {
     handleIndent();
     if (baf || f.resolve().isStatic()) {
-      output.append(f.declaringClass().getName());
+      output.append(f.declaringClass().getPathPlusClassName());
       literal(".");
     }
     output.append(f.name());

@@ -135,7 +135,7 @@ public class StaticMethodBinder extends SceneTransformer {
 
           if (!instanceToStaticMap.containsKey(target)) {
             List<Type> newParameterTypes = new ArrayList<Type>();
-            newParameterTypes.add(RefType.v(targetDeclClass.getName()));
+            newParameterTypes.add(RefType.v(targetDeclClass.getPathPlusClassName()));
             newParameterTypes.addAll(target.getParameterTypes());
 
             // Check for signature conflicts.

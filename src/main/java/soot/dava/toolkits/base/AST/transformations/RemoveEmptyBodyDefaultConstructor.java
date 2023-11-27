@@ -51,7 +51,7 @@ public class RemoveEmptyBodyDefaultConstructor {
   public static boolean DEBUG = false;
 
   public static void checkAndRemoveDefault(SootClass s) {
-    debug("\n\nRemoveEmptyBodyDefaultConstructor----" + s.getName());
+    debug("\n\nRemoveEmptyBodyDefaultConstructor----" + s.getPathPlusClassName());
     List methods = s.getMethods();
     Iterator it = methods.iterator();
     List<SootMethod> constructors = new ArrayList<SootMethod>();

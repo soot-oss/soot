@@ -144,7 +144,7 @@ public class NativeMethodDriver {
   public boolean process(SootMethod method, ReferenceVariable thisVar, ReferenceVariable returnVar,
       ReferenceVariable params[]) {
 
-    String cname = method.getDeclaringClass().getName();
+    String cname = method.getDeclaringClass().getPathPlusClassName();
     NativeMethodClass clsSim = cnameToSim.get(cname);
 
     // logger.debug(""+method.toString());
