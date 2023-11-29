@@ -1,29 +1,5 @@
 package soot;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -46,7 +22,30 @@ import org.slf4j.LoggerFactory;
  * #L%
  */
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+
 import heros.solver.CountingThreadPoolExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
