@@ -1209,8 +1209,7 @@ public class PackManager {
   }
 
   private void retrieveAllBodies() {
-    // The old coffi front-end is not thread-safe
-    int threadNum = Options.v().coffi() ? 1 : Runtime.getRuntime().availableProcessors();
+    int threadNum = Runtime.getRuntime().availableProcessors();
     CountingThreadPoolExecutor executor
         = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 

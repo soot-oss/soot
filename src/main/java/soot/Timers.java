@@ -167,8 +167,6 @@ public class Timers {
     // logger.debug(" analysis: " + toTimeString(liveAnalysisTimer, totalTime));
     // logger.debug(" post: " + toTimeString(livePostTimer, totalTime));
 
-    logger.debug("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
-
     // Print out time stats.
     {
       float timeInSecs;
