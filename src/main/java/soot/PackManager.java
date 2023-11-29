@@ -1,5 +1,7 @@
 package soot;
 
+import heros.solver.CountingThreadPoolExecutor;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -43,9 +45,9 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 
-import heros.solver.CountingThreadPoolExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
