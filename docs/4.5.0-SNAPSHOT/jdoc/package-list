@@ -5,7 +5,6 @@ soot.asm
 soot.baf
 soot.baf.internal
 soot.baf.toolkits.base
-soot.coffi
 soot.dava
 soot.dava.internal.AST
 soot.dava.internal.SET
