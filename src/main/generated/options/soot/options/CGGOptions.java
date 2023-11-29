@@ -23,30 +23,31 @@ package soot.options;
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
-import java.util.Map;
+
+import java.util.*;
 
 /** Option parser for Call Graph Grapher. */
 @jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class CGGOptions {
 
-  private Map<String, String> options;
+    private Map<String, String> options;
 
-  public CGGOptions(Map<String, String> options) {
-    this.options = options;
-  }
+    public CGGOptions(Map<String, String> options) {
+        this.options = options;
+    }
 
-  /**
-   * Enabled
-   */
-  public boolean enabled() {
-    return soot.PhaseOptions.getBoolean(options, "enabled");
-  }
+    /**
+     * Enabled
+     */
+    public boolean enabled() {
+        return soot.PhaseOptions.getBoolean(options, "enabled");
+    }
 
-  /**
-   * Show Library Methods
-   */
-  public boolean show_lib_meths() {
-    return soot.PhaseOptions.getBoolean(options, "show-lib-meths");
-  }
+    /**
+     * Show Library Methods
+     */
+    public boolean show_lib_meths() {
+        return soot.PhaseOptions.getBoolean(options, "show-lib-meths");
+    }
 
 }

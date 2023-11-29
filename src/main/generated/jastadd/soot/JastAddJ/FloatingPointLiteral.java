@@ -13,11 +13,7 @@ import java.util.Collection;
 import soot.*;
 import soot.util.*;
 import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
 /**
  * Java floating point literal. Can store any value representable as an
  * IEEE 754 32-bit single-precision floating point number.

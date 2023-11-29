@@ -147,10 +147,6 @@ public class Options extends OptionsBase {
 
             if (false);
             else if (false
-                    || option.equals("coffi")
-            )
-                coffi = true;
-            else if (false
                     || option.equals("jasmin-backend")
             )
                 jasmin_backend = true;
@@ -1467,10 +1463,6 @@ public class Options extends OptionsBase {
         return true;
     }
 
-    public boolean coffi() { return coffi; }
-    private boolean coffi = false;
-    public void set_coffi(boolean setting) { coffi = setting; }
-
     public boolean jasmin_backend() { return jasmin_backend; }
     private boolean jasmin_backend = false;
     public void set_jasmin_backend(boolean setting) { jasmin_backend = setting; }
@@ -1844,7 +1836,6 @@ public class Options extends OptionsBase {
     public String getUsage() {
         return ""
                 + "\nGeneral Options:\n"
-                + padOpt("-coffi", "Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).")
                 + padOpt("-jasmin-backend", "Use the Jasmin back end for generating Java bytecode (instead of using ASM).")
                 + padOpt("-h, -help", "Display help and exit")
                 + padOpt("-pl, -phase-list", "Print list of available phases")

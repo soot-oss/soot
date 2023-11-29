@@ -1,29 +1,5 @@
 package soot;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 2003 - 2004 Ondrej Lhotak
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import heros.solver.CountingThreadPoolExecutor;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,6 +24,29 @@ import java.util.zip.ZipEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2003 - 2004 Ondrej Lhotak
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+import heros.solver.CountingThreadPoolExecutor;
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
@@ -512,12 +511,6 @@ public class PackManager {
       }
     }
 
-    // if running coffi cfg metrics, print out results and exit
-    if (soot.jbco.Main.metrics) {
-      coffiMetrics();
-      System.exit(0);
-    }
-
     preProcessDAVA();
     if (Options.v().interactive_mode()) {
       if (InteractionHandler.v().getInteractionListener() == null) {
@@ -529,25 +522,6 @@ public class PackManager {
     }
     runBodyPacks();
     handleInnerClasses();
-  }
-
-  public void coffiMetrics() {
-    int tV = 0, tE = 0, hM = 0;
-    double aM = 0;
-    HashMap<SootMethod, int[]> hashVem = soot.coffi.CFG.methodsToVEM;
-    for (int[] vem : hashVem.values()) {
-      tV += vem[0];
-      tE += vem[1];
-      aM += vem[2];
-      if (vem[2] > hM) {
-        hM = vem[2];
-      }
-    }
-    if (hashVem.size() > 0) {
-      aM /= hashVem.size();
-    }
-
-    logger.debug("Vertices, Edges, Avg Degree, Highest Deg:    " + tV + "  " + tE + "  " + aM + "  " + hM);
   }
 
   public void runBodyPacks() {
