@@ -996,12 +996,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		String nextListToken;
 
 	
-		boolRes = getGeneral_Optionscoffi_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getGeneral_Optionsjasmin_backend_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4553,16 +4547,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		
 		
-	private BooleanOptionWidget General_Optionscoffi_widget;
-	
-	private void setGeneral_Optionscoffi_widget(BooleanOptionWidget widget) {
-		General_Optionscoffi_widget = widget;
-	}
-	
-	public BooleanOptionWidget getGeneral_Optionscoffi_widget() {
-		return General_Optionscoffi_widget;
-	}	
-	
 	private BooleanOptionWidget General_Optionsjasmin_backend_widget;
 	
 	private void setGeneral_Optionsjasmin_backend_widget(BooleanOptionWidget widget) {
@@ -8619,17 +8603,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		
 		
 		
-
-		defKey = ""+" "+""+" "+"coffi";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setGeneral_Optionscoffi_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Coffi Frontend", "", "","coffi", "\n", defaultBool)));
 
 		defKey = ""+" "+""+" "+"jasmin-backend";
 		defKey = defKey.trim();

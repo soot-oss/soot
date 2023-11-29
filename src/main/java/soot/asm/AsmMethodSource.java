@@ -253,7 +253,6 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
-import soot.coffi.Util;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -1511,7 +1510,7 @@ public class AsmMethodSource implements MethodSource {
       // create ref to actual method
 
       // Generate parameters & returnType & parameterTypes
-      Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
+      Type[] types = AsmUtil.jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
       int nrArgs = types.length - 1;
       List<Type> parameterTypes = new ArrayList<Type>(nrArgs);
       List<Value> methodArgs = new ArrayList<Value>(nrArgs);

@@ -1,5 +1,7 @@
 package soot;
 
+import heros.solver.CountingThreadPoolExecutor;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -21,8 +23,6 @@ package soot;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import heros.solver.CountingThreadPoolExecutor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -512,12 +512,6 @@ public class PackManager {
       }
     }
 
-    // if running coffi cfg metrics, print out results and exit
-    if (soot.jbco.Main.metrics) {
-      coffiMetrics();
-      System.exit(0);
-    }
-
     preProcessDAVA();
     if (Options.v().interactive_mode()) {
       if (InteractionHandler.v().getInteractionListener() == null) {
@@ -529,25 +523,6 @@ public class PackManager {
     }
     runBodyPacks();
     handleInnerClasses();
-  }
-
-  public void coffiMetrics() {
-    int tV = 0, tE = 0, hM = 0;
-    double aM = 0;
-    HashMap<SootMethod, int[]> hashVem = soot.coffi.CFG.methodsToVEM;
-    for (int[] vem : hashVem.values()) {
-      tV += vem[0];
-      tE += vem[1];
-      aM += vem[2];
-      if (vem[2] > hM) {
-        hM = vem[2];
-      }
-    }
-    if (hashVem.size() > 0) {
-      aM /= hashVem.size();
-    }
-
-    logger.debug("Vertices, Edges, Avg Degree, Highest Deg:    " + tV + "  " + tE + "  " + aM + "  " + hM);
   }
 
   public void runBodyPacks() {
@@ -1235,8 +1210,7 @@ public class PackManager {
   }
 
   private void retrieveAllBodies() {
-    // The old coffi front-end is not thread-safe
-    int threadNum = Options.v().coffi() ? 1 : Runtime.getRuntime().availableProcessors();
+    int threadNum = Runtime.getRuntime().availableProcessors();
     CountingThreadPoolExecutor executor
         = new CountingThreadPoolExecutor(threadNum, threadNum, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 

@@ -1,5 +1,6 @@
 package soot.tagkit;
 
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,7 +23,7 @@ package soot.tagkit;
  * #L%
  */
 
-import soot.coffi.CONSTANT_Utf8_info;
+import soot.asm.AsmUtil;
 import soot.jimple.StringConstant;
 
 public class StringConstantValueTag extends ConstantValueTag {
@@ -32,7 +33,7 @@ public class StringConstantValueTag extends ConstantValueTag {
   private final String value;
 
   public StringConstantValueTag(String value) {
-    super(CONSTANT_Utf8_info.toUtf8(value));
+    super(AsmUtil.toUtf8(value));
     this.value = value;
   }
 

@@ -24,10 +24,18 @@ package soot.asm;
 
 import com.google.common.base.Optional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -56,6 +64,7 @@ import soot.options.Options;
  */
 /** @author eric */
 public class AsmUtil {
+  private static final Logger logger = LoggerFactory.getLogger(AsmUtil.class);
 
   private static RefType makeRefType(String className, Optional<String> moduleName) {
     if (ModuleUtil.module_mode()) {
@@ -402,5 +411,124 @@ public class AsmUtil {
     }
     return false;
   }
+
+
+  public static Type[] jimpleTypesOfFieldOrMethodDescriptor(String descriptor) {
+    Type[] ret = null;
+    char[] d = descriptor.toCharArray();
+    int p = 0;
+    List<Type> conversionTypes = new ArrayList<Type>();
+
+    outer: while (p < d.length) {
+      boolean isArray = false;
+      int numDimensions = 0;
+      Type baseType = null;
+
+      swtch: while (p < d.length) {
+        switch (d[p]) {
+          // Skip parenthesis
+          case '(':
+          case ')':
+            p++;
+            continue outer;
+
+          case '[':
+            isArray = true;
+            numDimensions++;
+            p++;
+            continue swtch;
+          case 'B':
+            baseType = ByteType.v();
+            p++;
+            break swtch;
+          case 'C':
+            baseType = CharType.v();
+            p++;
+            break swtch;
+          case 'D':
+            baseType = DoubleType.v();
+            p++;
+            break swtch;
+          case 'F':
+            baseType = FloatType.v();
+            p++;
+            break swtch;
+          case 'I':
+            baseType = IntType.v();
+            p++;
+            break swtch;
+          case 'J':
+            baseType = LongType.v();
+            p++;
+            break swtch;
+          case 'L':
+            int index = p + 1;
+            while (index < d.length && d[index] != ';') {
+              if (d[index] == '/') {
+                d[index] = '.';
+              }
+              index++;
+            }
+            if (index >= d.length) {
+              throw new RuntimeException("Class reference has no ending ;");
+            }
+            String className = new String(d, p + 1, index - p - 1);
+            baseType = RefType.v(className);
+            p = index + 1;
+            break swtch;
+          case 'S':
+            baseType = ShortType.v();
+            p++;
+            break swtch;
+          case 'Z':
+            baseType = BooleanType.v();
+            p++;
+            break swtch;
+          case 'V':
+            baseType = VoidType.v();
+            p++;
+            break swtch;
+          default:
+            throw new RuntimeException("Unknown field type!");
+        }
+      }
+      if (baseType == null) {
+        continue;
+      }
+
+      // Determine type
+      Type t;
+      if (isArray) {
+        t = ArrayType.v(baseType, numDimensions);
+      } else {
+        t = baseType;
+      }
+
+      conversionTypes.add(t);
+    }
+
+    ret = conversionTypes.toArray(new Type[0]);
+    return ret;
+  }
+
+  /**
+   * Utility method; converts the given String into a utf8 encoded array of bytes.
+   *
+   * @param s
+   *          String to encode.
+   * @return array of bytes, utf8 encoded version of s.
+   */
+  public static byte[] toUtf8(String s) {
+    try {
+      ByteArrayOutputStream bs = new ByteArrayOutputStream(s.length());
+      DataOutputStream d = new DataOutputStream(bs);
+      d.writeUTF(s);
+      return bs.toByteArray();
+    } catch (IOException e) {
+      logger.debug("Some sort of IO exception in toUtf8 with " + s);
+    }
+    return null;
+  }
+
 
 }
