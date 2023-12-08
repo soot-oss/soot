@@ -142,7 +142,7 @@ public final class TypeManager {
       }
     }
     BitVector ret = (BitVector) typeMask.get(type);
-    if (ret == null && fh != null) {
+    if (ret == null && fh != null && type instanceof RefType) {
       // If we have a phantom class and have no type mask, we assume that
       // it is not cast-compatible to anything
       SootClass curClass = ((RefType) type).getSootClass();
