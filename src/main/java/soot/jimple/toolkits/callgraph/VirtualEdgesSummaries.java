@@ -558,6 +558,10 @@ public class VirtualEdgesSummaries {
     public int getArgIndex() {
       return argIndex;
     }
+    
+    public void setArgIndex(int value) {
+      this.argIndex = value;
+    }
 
     public abstract VirtualEdgeTarget clone();
 
