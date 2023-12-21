@@ -559,6 +559,17 @@ public class VirtualEdgesSummaries {
       return argIndex;
     }
 
+    public abstract VirtualEdgeTarget clone();
+
+    /**
+     * Clones the edge, but with a potentially different arg index
+     * 
+     * @param argIndex
+     *          the arg index to set in the clone
+     * @return the clone
+     */
+    public abstract VirtualEdgeTarget clone(int argIndex);
+
     public MethodSubSignature getTargetMethod() {
       return targetMethod;
     }
@@ -629,6 +640,14 @@ public class VirtualEdgesSummaries {
       super(targetType, targetMethod);
     }
 
+    public DirectTarget clone() {
+      return new DirectTarget(targetType, targetMethod, argIndex);
+    }
+
+    public DirectTarget clone(int argIndex) {
+      return new DirectTarget(targetType, targetMethod, argIndex);
+    }
+
     @Override
     public String toString() {
       return String.format("Direct to %s%s on %s", targetType != null ? targetType.getClassName() + ": " : "",
@@ -697,6 +716,22 @@ public class VirtualEdgesSummaries {
      */
     public IndirectTarget(RefType targetType, MethodSubSignature targetMethod) {
       super(targetType, targetMethod);
+    }
+
+    public IndirectTarget clone() {
+      IndirectTarget d = new IndirectTarget(targetType, targetMethod, argIndex);
+      for (VirtualEdgeTarget i : getTargets()) {
+        d.addTarget(i.clone());
+      }
+      return d;
+    }
+
+    public IndirectTarget clone(int argIndex) {
+      IndirectTarget d = new IndirectTarget(targetType, targetMethod, argIndex);
+      for (VirtualEdgeTarget i : getTargets()) {
+        d.addTarget(i.clone());
+      }
+      return d;
     }
 
     public void addTarget(VirtualEdgeTarget target) {
