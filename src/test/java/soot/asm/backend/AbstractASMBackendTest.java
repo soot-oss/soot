@@ -163,7 +163,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
    * @return The location of the process-dir folder
    */
   protected String getTargetFolder() {
-    File f = new File("./target/test-classes");
+    File f = new File("./test-classes-asm");
     return f.getAbsolutePath();
   }
 
@@ -173,7 +173,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
    * @return The location of the folder containing the test files
    */
   protected String getClassPathFolder() {
-    File f = new File("./target/test-classes");
+    File f = new File("./test-classes-asm");
     return f.getAbsolutePath();
   }
 
