@@ -63,8 +63,9 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
       mv.visitVarInsn(ALOAD, 1);
       mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
       // the eclipse compiler and javac >= version 1.9 produce different bytecode @see https://github.com/soot-oss/soot/pull/1155
-      if (targetCompiler != TargetCompiler.eclipse  && targetCompiler != TargetCompiler.javac9)
-        mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
+      //if (targetCompiler != TargetCompiler.eclipse  && targetCompiler != TargetCompiler.javac9)
+      //  mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
+      // Not applicable now, since we use fixed classes in test-classes-asm, which were compiled by Java 1.8
       mv.visitInsn(ARETURN);
       mv.visitLabel(l0);
       mv.visitInsn(ACONST_NULL);
