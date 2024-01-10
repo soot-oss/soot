@@ -593,7 +593,7 @@ public class VirtualEdgesSummaries {
     public int getArgIndex() {
       return argIndex;
     }
-    
+
     public void setArgIndex(int value) {
       this.argIndex = value;
     }
@@ -647,8 +647,7 @@ public class VirtualEdgesSummaries {
 
   public static class DirectTarget extends VirtualEdgeTarget {
     private List<AbstractParameterMapping> parameterMappings = new ArrayList<>();
-    
-    
+
     DirectTarget() {
       // internal use only
     }
@@ -715,45 +714,46 @@ public class VirtualEdgesSummaries {
       return parameterMappings;
     }
   }
-  
+
   public static abstract class AbstractParameterMapping {
     public abstract Value getMappedSourceArgumentArg(InvokeExpr expr);
+
     public abstract Value getMappedTargetArgumentArg(Body body);
   }
-  
+
   public static class DirectParameterMapping extends AbstractParameterMapping {
-      private int sourceIndex, targetIndex;
-      
-      public DirectParameterMapping(int src, int tgt) {
-        this.sourceIndex = src;
-        this.targetIndex = tgt;
-      }
-      
-      public int getSourceIndex() {
-        return sourceIndex;
-      }
-      
-      public int getTargetIndex() {
-        return targetIndex;
-      }
+    private int sourceIndex, targetIndex;
 
-      @Override
-      public Value getMappedSourceArgumentArg(InvokeExpr expr) {
-        return getValueByIndex(expr, sourceIndex);
-      }
+    public DirectParameterMapping(int src, int tgt) {
+      this.sourceIndex = src;
+      this.targetIndex = tgt;
+    }
 
-      @Override
-      public Value getMappedTargetArgumentArg(Body body) {
-        if (targetIndex == -1) {
-          return body.getThisLocal();
-        }
-        return body.getParameterLocal(targetIndex);
+    public int getSourceIndex() {
+      return sourceIndex;
+    }
+
+    public int getTargetIndex() {
+      return targetIndex;
+    }
+
+    @Override
+    public Value getMappedSourceArgumentArg(InvokeExpr expr) {
+      return getValueByIndex(expr, sourceIndex);
+    }
+
+    @Override
+    public Value getMappedTargetArgumentArg(Body body) {
+      if (targetIndex == -1) {
+        return body.getThisLocal();
       }
+      return body.getParameterLocal(targetIndex);
+    }
   }
 
   private static Value getValueByIndex(InvokeExpr expr, int idx) {
     if (idx == BASE_INDEX) {
-      return ((InstanceInvokeExpr)expr).getBase();
+      return ((InstanceInvokeExpr) expr).getBase();
     }
     return expr.getArg(idx);
   }
