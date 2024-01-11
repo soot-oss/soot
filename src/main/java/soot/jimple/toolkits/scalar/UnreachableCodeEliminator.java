@@ -122,6 +122,9 @@ public class UnreachableCodeEliminator extends BodyTransformer {
       for (Unit u : units) {
         if (!reachable.contains(u)) {
           notReachable.add(u);
+          if (Scene.v().hasCallGraph()) {
+            Scene.v().getCallGraph().removeAllEdgesOutOf(u);
+          }
         }
       }
     }
