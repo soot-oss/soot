@@ -115,6 +115,9 @@ public final class TypeManager {
     final Scene sc = Scene.v();
     while (allocNodeListener.hasNext()) {
       AllocNode n = allocNodeListener.next();
+      if (n == null) {
+        continue;
+      }
       Type nt = n.getType();
       Iterable<Type> types;
       if (nt instanceof NullType || nt instanceof AnySubType) {

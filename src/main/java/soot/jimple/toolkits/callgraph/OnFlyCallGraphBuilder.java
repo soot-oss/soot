@@ -279,6 +279,9 @@ public class OnFlyCallGraphBuilder {
         }
       }
       MethodOrMethodContext momc = worklist.next();
+      if (momc == null) {
+        continue;
+      }
       SootMethod m = momc.method();
       if (appOnly && !m.getDeclaringClass().isApplicationClass()) {
         continue;
