@@ -117,11 +117,16 @@ public class UnreachableCodeEliminator extends BodyTransformer {
     }
 
     Set<Unit> notReachable = null;
-    if (verbose) {
-      notReachable = new HashSet<Unit>();
-      for (Unit u : units) {
-        if (!reachable.contains(u)) {
+    for (Unit u : units) {
+      if (!reachable.contains(u)) {
+    	if (verbose) {
+    	  if (notReachable == null) {
+    	    notReachable = new HashSet<Unit>();
+    	  }
           notReachable.add(u);
+    	}
+        if (Scene.v().hasCallGraph()) {
+          Scene.v().getCallGraph().removeAllEdgesOutOf(u);
         }
       }
     }
