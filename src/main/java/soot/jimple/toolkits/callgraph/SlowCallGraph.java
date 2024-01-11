@@ -134,7 +134,9 @@ public class SlowCallGraph extends CallGraph {
     StringBuilder out = new StringBuilder();
     for (QueueReader<Edge> rdr = listener(); rdr.hasNext();) {
       Edge e = rdr.next();
-      out.append(e.toString()).append('\n');
+      if (e != null) {
+        out.append(e.toString()).append('\n');
+      }
     }
     return out.toString();
   }
