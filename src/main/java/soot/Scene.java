@@ -2126,7 +2126,7 @@ public class Scene {
     doneResolving = true;
   }
 
-  void setResolving(boolean value) {
+  public void setResolving(boolean value) {
     doneResolving = value;
   }
 
