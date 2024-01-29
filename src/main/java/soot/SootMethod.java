@@ -230,7 +230,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
    * Returns true if this method is not phantom, abstract or native, i.e. this method can have a body.
    */
   public boolean isConcrete() {
-    return !isPhantom() && !isAbstract();
+    return !isPhantom() && !isAbstract() && (!isNative() || Options.v().native_code()); 
   }
 
   /**

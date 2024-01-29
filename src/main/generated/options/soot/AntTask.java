@@ -346,6 +346,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-drop-bodies-after-load");
         }
   
+        public void setnative_code(boolean arg) {
+            if(arg) addArg("-native-code");
+        }
+  
         public void setoutput_dir(String arg) {
             addArg("-output-dir");
             addArg(arg);

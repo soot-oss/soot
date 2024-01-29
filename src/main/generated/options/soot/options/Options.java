@@ -548,6 +548,11 @@ public class Options extends OptionsBase {
             )
                 drop_bodies_after_load = false;
             else if (false
+                    || option.equals("nc")
+                    || option.equals("native-code")
+            )
+                native_code = true;
+            else if (false
                     || option.equals("d")
                     || option.equals("output-dir")
             ) {
@@ -1664,6 +1669,10 @@ public class Options extends OptionsBase {
     private boolean drop_bodies_after_load = true;
     public void set_drop_bodies_after_load(boolean setting) { drop_bodies_after_load = setting; }
 
+    public boolean native_code() { return native_code; }
+    private boolean native_code = false;
+    public void set_native_code(boolean setting) { native_code = setting; }
+
     public String output_dir() { return output_dir; }
     public void set_output_dir(String setting) { output_dir = setting; }
     private String output_dir = "";
@@ -1898,6 +1907,7 @@ public class Options extends OptionsBase {
                 + padOpt("-polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd")
                 + padOpt("-permissive-resolving", "Use alternative sources when classes cannot be found using the normal resolving strategy")
                 + padOpt("-drop-bodies-after-load", "Drop the method source after it has served its purpose of loading the method body")
+                + padOpt("-nc, -native-code", "Enables native methods to be concrete. Needed for analyzing the Java Native Interface.")
                 + "\nOutput Options:\n"
                 + padOpt("-d ARG -output-dir ARG", "Store output files in ARG")
                 + padOpt("-f ARG -output-format ARG", "Set output format for Soot")
