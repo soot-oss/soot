@@ -359,7 +359,11 @@ public class GeomPointsTo extends PAG {
     CallGraph soot_callgraph = Scene.v().getCallGraph();
 
     while (smList.hasNext()) {
-      final SootMethod func = smList.next().method();
+      MethodOrMethodContext n = smList.next();
+      if (n == null) {
+        continue;
+      }
+      final SootMethod func = n.method();
       func2int.put(func, id);
       int2func.put(id, func);
 
@@ -385,7 +389,7 @@ public class GeomPointsTo extends PAG {
     QueueReader<Edge> edgeList = Scene.v().getCallGraph().listener();
     while (edgeList.hasNext()) {
       Edge edge = edgeList.next();
-      if (edge.isClinit()) {
+      if (edge == null || edge.isClinit()) {
         continue;
       }
 

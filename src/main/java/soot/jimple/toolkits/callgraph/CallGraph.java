@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import soot.Kind;
@@ -99,7 +100,7 @@ public class CallGraph implements Iterable<Edge> {
     Set<Edge> edgesToRemove = new HashSet<>();
     for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
-      if (e.srcUnit() == u) {
+      if (e != null && e.srcUnit() == u) {
         e.remove();
         removeEdge(e, false);
         edgesToRemove.add(e);
@@ -395,7 +396,9 @@ public class CallGraph implements Iterable<Edge> {
     StringBuilder out = new StringBuilder();
     for (QueueReader<Edge> reader = listener(); reader.hasNext();) {
       Edge e = reader.next();
-      out.append(e.toString()).append('\n');
+      if (e != null) {
+        out.append(e.toString()).append('\n');
+      }
     }
     return out.toString();
   }

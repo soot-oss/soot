@@ -41,7 +41,6 @@ public class ArrayElement implements SparkField {
   }
 
   public ArrayElement() {
-    Scene.v().getFieldNumberer().add(this);
   }
 
   public final int getNumber() {

@@ -114,10 +114,6 @@ public class AntTask extends MatchingTask {
 
 
 
-        public void setcoffi(boolean arg) {
-            if(arg) addArg("-coffi");
-        }
-  
         public void setjasmin_backend(boolean arg) {
             if(arg) addArg("-jasmin-backend");
         }

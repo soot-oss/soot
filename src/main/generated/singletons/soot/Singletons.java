@@ -230,20 +230,6 @@ public class Singletons {
     	instance_soot_jimple_toolkits_pointer_representations_TypeConstants = null;
     }
 
-    private soot.coffi.Util instance_soot_coffi_Util;
-    public soot.coffi.Util soot_coffi_Util() {
-        if (instance_soot_coffi_Util == null) {
-	       	synchronized (this) {
-		        if (instance_soot_coffi_Util == null)
-	        		instance_soot_coffi_Util = new soot.coffi.Util(g);
-	       	}
-       	}
-        return instance_soot_coffi_Util;
-    }
-    protected void release_soot_coffi_Util() {
-    	instance_soot_coffi_Util = null;
-    }
-
     private soot.SourceLocator instance_soot_SourceLocator;
     public soot.SourceLocator soot_SourceLocator() {
         if (instance_soot_SourceLocator == null) {
@@ -270,20 +256,6 @@ public class Singletons {
     }
     protected void release_soot_ModulePathSourceLocator() {
     	instance_soot_ModulePathSourceLocator = null;
-    }
-
-    private soot.coffi.CONSTANT_Utf8_collector instance_soot_coffi_CONSTANT_Utf8_collector;
-    public soot.coffi.CONSTANT_Utf8_collector soot_coffi_CONSTANT_Utf8_collector() {
-        if (instance_soot_coffi_CONSTANT_Utf8_collector == null) {
-	       	synchronized (this) {
-		        if (instance_soot_coffi_CONSTANT_Utf8_collector == null)
-	        		instance_soot_coffi_CONSTANT_Utf8_collector = new soot.coffi.CONSTANT_Utf8_collector(g);
-	       	}
-       	}
-        return instance_soot_coffi_CONSTANT_Utf8_collector;
-    }
-    protected void release_soot_coffi_CONSTANT_Utf8_collector() {
-    	instance_soot_coffi_CONSTANT_Utf8_collector = null;
     }
 
     private soot.dava.toolkits.base.finders.AbruptEdgeFinder instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder;
@@ -650,20 +622,6 @@ public class Singletons {
     	instance_soot_jimple_toolkits_pointer_DependenceTagAggregator = null;
     }
 
-    private soot.coffi.Double2ndHalfType instance_soot_coffi_Double2ndHalfType;
-    public soot.coffi.Double2ndHalfType soot_coffi_Double2ndHalfType() {
-        if (instance_soot_coffi_Double2ndHalfType == null) {
-	       	synchronized (this) {
-		        if (instance_soot_coffi_Double2ndHalfType == null)
-	        		instance_soot_coffi_Double2ndHalfType = new soot.coffi.Double2ndHalfType(g);
-	       	}
-       	}
-        return instance_soot_coffi_Double2ndHalfType;
-    }
-    protected void release_soot_coffi_Double2ndHalfType() {
-    	instance_soot_coffi_Double2ndHalfType = null;
-    }
-
     private soot.DoubleType instance_soot_DoubleType;
     public soot.DoubleType soot_DoubleType() {
         if (instance_soot_DoubleType == null) {
@@ -1012,20 +970,6 @@ public class Singletons {
     }
     protected void release_soot_toolkits_scalar_FlowSensitiveConstantPropagator() {
     	instance_soot_toolkits_scalar_FlowSensitiveConstantPropagator = null;
-    }
-
-    private soot.coffi.Long2ndHalfType instance_soot_coffi_Long2ndHalfType;
-    public soot.coffi.Long2ndHalfType soot_coffi_Long2ndHalfType() {
-        if (instance_soot_coffi_Long2ndHalfType == null) {
-	       	synchronized (this) {
-		        if (instance_soot_coffi_Long2ndHalfType == null)
-	        		instance_soot_coffi_Long2ndHalfType = new soot.coffi.Long2ndHalfType(g);
-	       	}
-       	}
-        return instance_soot_coffi_Long2ndHalfType;
-    }
-    protected void release_soot_coffi_Long2ndHalfType() {
-    	instance_soot_coffi_Long2ndHalfType = null;
     }
 
     private soot.LongType instance_soot_LongType;
@@ -1614,20 +1558,6 @@ public class Singletons {
     }
     protected void release_soot_toolkits_scalar_UnusedLocalEliminator() {
     	instance_soot_toolkits_scalar_UnusedLocalEliminator = null;
-    }
-
-    private soot.coffi.UnusuableType instance_soot_coffi_UnusuableType;
-    public soot.coffi.UnusuableType soot_coffi_UnusuableType() {
-        if (instance_soot_coffi_UnusuableType == null) {
-	       	synchronized (this) {
-		        if (instance_soot_coffi_UnusuableType == null)
-	        		instance_soot_coffi_UnusuableType = new soot.coffi.UnusuableType(g);
-	       	}
-       	}
-        return instance_soot_coffi_UnusuableType;
-    }
-    protected void release_soot_coffi_UnusuableType() {
-    	instance_soot_coffi_UnusuableType = null;
     }
 
     private soot.dava.toolkits.base.AST.UselessTryRemover instance_soot_dava_toolkits_base_AST_UselessTryRemover;

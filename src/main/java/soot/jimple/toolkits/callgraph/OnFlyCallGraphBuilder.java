@@ -22,12 +22,11 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -95,7 +94,6 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.AllocDotField;
-import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DirectTarget;
@@ -109,11 +107,8 @@ import soot.options.SparkOptions;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.HashMultiMap;
-import soot.util.IterableNumberer;
-import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.NumberedString;
-import soot.util.SmallNumberedMap;
 import soot.util.StringNumberer;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
@@ -167,12 +162,12 @@ public class OnFlyCallGraphBuilder {
   private final CallGraph cicg = Scene.v().internalMakeCallGraph();
 
   // end type based reflection resolution
-  protected final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants;
-  protected final SmallNumberedMap<Local, List<VirtualCallSite>> stringConstToSites;
+  protected final Map<Local, List<VirtualCallSite>> receiverToSites;
+  protected final Map<SootMethod, List<Local>> methodToReceivers;
+  protected final Map<SootMethod, List<Local>> methodToInvokeBases;
+  protected final Map<SootMethod, List<Local>> methodToInvokeArgs;
+  protected final Map<SootMethod, List<Local>> methodToStringConstants;
+  protected final Map<Local, List<VirtualCallSite>> stringConstToSites;
 
   protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
   protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
@@ -212,13 +207,12 @@ public class OnFlyCallGraphBuilder {
       this.sigForName = nmbr.findOrAdd(JavaMethods.SIG_INIT);
     }
     {
-      this.receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>(sc.getLocalNumberer());
-      final IterableNumberer<SootMethod> methodNumberer = sc.getMethodNumberer();
-      this.methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.stringConstToSites = new SmallNumberedMap<Local, List<VirtualCallSite>>();
+      this.receiverToSites = new HashMap<Local, List<VirtualCallSite>>();
+      this.methodToReceivers = new HashMap<SootMethod, List<Local>>();
+      this.methodToInvokeBases = new HashMap<SootMethod, List<Local>>();
+      this.methodToInvokeArgs = new HashMap<SootMethod, List<Local>>();
+      this.methodToStringConstants = new HashMap<SootMethod, List<Local>>();
+      this.stringConstToSites = new HashMap<Local, List<VirtualCallSite>>();
     }
 
     this.cm = cm;
@@ -260,19 +254,19 @@ public class OnFlyCallGraphBuilder {
     return cm;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() {
+  public Map<SootMethod, List<Local>> methodToReceivers() {
     return methodToReceivers;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs() {
+  public Map<SootMethod, List<Local>> methodToInvokeArgs() {
     return methodToInvokeArgs;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases() {
+  public Map<SootMethod, List<Local>> methodToInvokeBases() {
     return methodToInvokeBases;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants() {
+  public Map<SootMethod, List<Local>> methodToStringConstants() {
     return methodToStringConstants;
   }
 
@@ -285,6 +279,9 @@ public class OnFlyCallGraphBuilder {
         }
       }
       MethodOrMethodContext momc = worklist.next();
+      if (momc == null) {
+        continue;
+      }
       SootMethod m = momc.method();
       if (appOnly && !m.getDeclaringClass().isApplicationClass()) {
         continue;
@@ -877,7 +874,7 @@ public class OnFlyCallGraphBuilder {
     if (edgeTarget instanceof VirtualEdgesSummaries.IndirectTarget) {
       VirtualEdgesSummaries.IndirectTarget indirectTarget = (VirtualEdgesSummaries.IndirectTarget) edgeTarget;
       // Recursion case: We have an indirect target, which leads us to the statement where the local,
-      //                 that gets $this inside the callee, resides.
+      // that gets $this inside the callee, resides.
 
       // First find the receiver of another call
       Local l = getLocalForTarget(invokeExpr, edgeTarget);
@@ -908,7 +905,7 @@ public class OnFlyCallGraphBuilder {
 
     assert edgeTarget instanceof DirectTarget;
     // Base case: Lookup the value based on the index referenced by the VirtualEdgeTarget.
-    //            That local represents the $this local inside the callee.
+    // That local represents the $this local inside the callee.
     Local l = getLocalForTarget(invokeExpr, edgeTarget);
     return l == null ? Collections.emptySet() : Collections.singleton(l);
   }
