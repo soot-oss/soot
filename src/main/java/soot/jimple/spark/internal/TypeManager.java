@@ -33,6 +33,7 @@ import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -49,7 +50,6 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.util.ArrayNumberer;
 import soot.util.BitVector;
-import soot.util.LargeNumberedMap;
 import soot.util.queue.QueueReader;
 
 /**
@@ -112,14 +112,18 @@ public final class TypeManager {
     if (type == null) {
       return null;
     }
+    final Scene sc = Scene.v();
     while (allocNodeListener.hasNext()) {
       AllocNode n = allocNodeListener.next();
+      if (n == null) {
+        continue;
+      }
       Type nt = n.getType();
       Iterable<Type> types;
       if (nt instanceof NullType || nt instanceof AnySubType) {
-        types = Scene.v().getTypeNumberer();
+        types = sc.getTypeNumberer();
       } else {
-        types = Scene.v().getOrMakeFastHierarchy().canStoreTypeList(nt);
+        types = sc.getOrMakeFastHierarchy().canStoreTypeList(nt);
       }
       for (final Type t : types) {
         if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
@@ -141,7 +145,7 @@ public final class TypeManager {
       }
     }
     BitVector ret = (BitVector) typeMask.get(type);
-    if (ret == null && fh != null) {
+    if (ret == null && fh != null && type instanceof RefType) {
       // If we have a phantom class and have no type mask, we assume that
       // it is not cast-compatible to anything
       SootClass curClass = ((RefType) type).getSootClass();
@@ -156,8 +160,8 @@ public final class TypeManager {
           }
         }
         logger.warn("Type mask not found for type " + type
-                + ". This is casued by a cast operation to a type which is a phantom class " +
-                "and no type mask was found. This may affect the precision of the point-to set.");
+            + ". This is casued by a cast operation to a type which is a phantom class "
+            + "and no type mask was found. This may affect the precision of the point-to set.");
         BitVector soundOverApproxRet = new BitVector();
         for (int i = 0; i <= 63; i++) {
           soundOverApproxRet.set(i);
@@ -174,7 +178,7 @@ public final class TypeManager {
 
   final public void makeTypeMask() {
     RefType.v("java.lang.Class");
-    typeMask = new LargeNumberedMap<Type, BitVector>(Scene.v().getTypeNumberer());
+    typeMask = new HashMap<Type, BitVector>();
     if (fh == null) {
       return;
     }
@@ -184,7 +188,7 @@ public final class TypeManager {
     makeClassTypeMask(Scene.v().getSootClass(Scene.v().getObjectType().getClassName()));
     BitVector visitedTypes = new BitVector();
     {
-      Iterator<Type> it = typeMask.keyIterator();
+      Iterator<Type> it = typeMask.keySet().iterator();
       while (it.hasNext()) {
         Type t = it.next();
         visitedTypes.set(t.getNumber());
@@ -221,7 +225,7 @@ public final class TypeManager {
     allocNodeListener = pag.allocNodeListener();
   }
 
-  private LargeNumberedMap<Type, BitVector> typeMask = null;
+  private Map<Type, BitVector> typeMask = null;
 
   final public boolean castNeverFails(Type src, Type dst) {
     if (dst == null) {

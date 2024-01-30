@@ -1,5 +1,6 @@
 package soot;
 
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -39,7 +40,6 @@ import soot.tagkit.AbstractHost;
 import soot.util.Chain;
 import soot.util.EmptyChain;
 import soot.util.HashChain;
-import soot.util.Numberable;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.validation.ClassFlagsValidator;
@@ -68,7 +68,7 @@ import soot.validation.ValidationException;
  * Soot representation of a Java class. They are usually created by a Scene, but can also be constructed manually through the
  * given constructors.
  */
-public class SootClass extends AbstractHost implements Numberable {
+public class SootClass extends AbstractHost {
   private static final Logger logger = LoggerFactory.getLogger(SootClass.class);
 
   public final static String INVOKEDYNAMIC_DUMMY_CLASS_NAME = "soot.dummy.InvokeDynamic";
@@ -228,7 +228,6 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void setInScene(boolean isInScene) {
     this.isInScene = isInScene;
-    Scene.v().getClassNumberer().add(this);
   }
 
   /**
@@ -750,7 +749,6 @@ public class SootClass extends AbstractHost implements Numberable {
     m.setDeclared(false);
     m.setDeclaringClass(null);
     Scene scene = Scene.v();
-    scene.getMethodNumberer().remove(m);
 
     // We have caches for resolving default methods in the FastHierarchy, which are no longer valid
     scene.modifyHierarchy();
@@ -1202,16 +1200,6 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public boolean isStatic() {
     return Modifier.isStatic(this.getModifiers());
-  }
-
-  @Override
-  public final int getNumber() {
-    return number;
-  }
-
-  @Override
-  public void setNumber(int number) {
-    this.number = number;
   }
 
   public void rename(String newName) {

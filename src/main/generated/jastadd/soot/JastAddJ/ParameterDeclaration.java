@@ -13,11 +13,7 @@ import java.util.Collection;
 import soot.*;
 import soot.util.*;
 import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
 /**
  * A parameter declaration as used in either method parameter lists
  * or as a catch clause parameter.

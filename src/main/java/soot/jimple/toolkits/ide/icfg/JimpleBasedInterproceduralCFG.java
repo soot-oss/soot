@@ -62,7 +62,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
   protected boolean includeReflectiveCalls = false;
   protected boolean includePhantomCallees = false;
-  protected boolean fallbackToImmediateCallees = false;
+  protected boolean fallbackToImmediateCallees = true;
 
   // retains only callers that are explicit call sites or Thread.start()
   public class EdgeFilter extends Filter {

@@ -13,11 +13,7 @@ import java.util.Collection;
 import soot.*;
 import soot.util.*;
 import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
 /**
  * A catch parameter with disjunct exception type.
  * @production CatchParameterDeclaration : {@link ASTNode} ::= <span class="component">{@link Modifiers}</span> <span class="component">TypeAccess:{@link Access}*</span> <span class="component">&lt;ID:String&gt;</span>;

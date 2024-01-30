@@ -25,6 +25,7 @@ package soot.jimple.toolkits.callgraph;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import soot.MethodOrMethodContext;
@@ -89,6 +90,9 @@ public class ReachableMethods {
     }
     while (unprocessedMethods.hasNext()) {
       MethodOrMethodContext m = unprocessedMethods.next();
+      if (m == null) {
+    	continue;
+      }
       Iterator<Edge> targets = cg.edgesOutOf(m);
       if (filter != null) {
         targets = filter.wrap(targets);

@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
+import soot.asm.AsmClassSource;
 import soot.asm.AsmJava9ClassProvider;
 import soot.dexpler.DexFileProvider;
 import soot.dotnet.AssemblyFile;
@@ -241,7 +242,7 @@ public class SourceLocator {
           public ClassSource find(String className) {
             String fileName = className.replace('.', '/') + ".class";
             InputStream stream = cl.getResourceAsStream(fileName);
-            return (stream == null) ? null : new CoffiClassSource(className, stream, fileName);
+            return (stream == null) ? null : new AsmClassSource(className, new ClassLoaderFoundFile(cl, fileName));
           }
         }.find(className);
         if (ret != null) {
@@ -260,7 +261,7 @@ public class SourceLocator {
         String fileName = className.replace('.', '/') + ".class";
         InputStream stream = cl.getResourceAsStream(fileName);
         if (stream != null) {
-          return new CoffiClassSource(className, stream, fileName);
+          return new AsmClassSource(className, new ClassLoaderFoundFile(cl, fileName));
         }
       }
     }
@@ -273,7 +274,7 @@ public class SourceLocator {
 
   protected void setupClassProviders() {
     final List<ClassProvider> classProviders = new LinkedList<ClassProvider>();
-    final ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
+    final ClassProvider classFileClassProvider = new AsmClassProvider();
     switch (Options.v().src_prec()) {
       case Options.src_prec_class:
         classProviders.add(classFileClassProvider);

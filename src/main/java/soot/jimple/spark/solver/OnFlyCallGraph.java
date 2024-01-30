@@ -111,6 +111,9 @@ public class OnFlyCallGraph {
     reachableMethods.update();
     while (reachablesReader.hasNext()) {
       MethodOrMethodContext m = reachablesReader.next();
+      if (m == null) {
+        continue;
+      }
       MethodPAG mpag = MethodPAG.v(pag, m.method());
       try {
         mpag.build();
@@ -129,6 +132,9 @@ public class OnFlyCallGraph {
   private void processCallEdges() {
     while (callEdges.hasNext()) {
       Edge e = callEdges.next();
+      if (e == null) {
+        continue;
+      }
       MethodPAG amp = MethodPAG.v(pag, e.tgt());
       amp.build();
       amp.addToPAG(e.tgtCtxt());

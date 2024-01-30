@@ -50,7 +50,7 @@ public class AsmClassSource extends ClassSource {
    * @param foundFile
    *          foundfile pointing to the data for class.
    */
-  protected AsmClassSource(String cls, IFoundFile foundFile) {
+  public AsmClassSource(String cls, IFoundFile foundFile) {
     super(cls);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");

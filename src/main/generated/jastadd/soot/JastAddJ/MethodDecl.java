@@ -1258,8 +1258,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/SootJastAddJ/EmitJimpleRefinements.jrag:100
 	 */
 	public void jimplify2() {
-		if (!generate() || sootMethod().hasActiveBody() || (sootMethod().getSource() != null
-				&& (sootMethod().getSource() instanceof soot.coffi.CoffiMethodSource)))
+		if (!generate() || sootMethod().hasActiveBody())
 			return;
 		try {
 			if (hasBlock() && !(hostType().isInterfaceDecl())) {

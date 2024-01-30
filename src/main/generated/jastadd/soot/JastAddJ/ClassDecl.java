@@ -13,11 +13,7 @@ import java.util.Collection;
 import soot.*;
 import soot.util.*;
 import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
 
 /**
  * @production ClassDecl : {@link ReferenceType} ::= <span class="component">{@link Modifiers}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">[SuperClassAccess:{@link Access}]</span> <span class="component">Implements:{@link Access}*</span> <span class="component">{@link BodyDecl}*</span>;
@@ -907,17 +903,6 @@ public class ClassDecl extends ReferenceType implements Cloneable {
     SootClass sc = null;
     if(Scene.v().containsClass(jvmName())) {
       SootClass cl = Scene.v().getSootClass(jvmName());
-      //fix for test case 653: if there's a class java.lang.Object etc. on the command line
-      //prefer that class over the Coffi class that may already have been loaded from bytecode
-      try {
-        MethodSource source = cl.getMethodByName("<clinit>").getSource();
-        if(source instanceof CoffiMethodSource) {
-          Scene.v().removeClass(cl);
-          needAddclass = true;
-        }
-      } catch(RuntimeException e) {
-        //method not found
-      }    	
       sc = cl;       
     }
     else {

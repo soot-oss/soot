@@ -14,10 +14,8 @@
   <class>soot.tagkit.TagManager</class>
   <class>soot.jimple.toolkits.pointer.representations.Environment</class>
   <class>soot.jimple.toolkits.pointer.representations.TypeConstants</class>
-  <class>soot.coffi.Util</class>
   <class>soot.SourceLocator</class>
   <class>soot.ModulePathSourceLocator</class>
-  <class>soot.coffi.CONSTANT_Utf8_collector</class>
   <class>soot.dava.toolkits.base.finders.AbruptEdgeFinder</class>
   <class>soot.jimple.toolkits.base.Aggregator</class>
   <class>soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker</class>
@@ -44,7 +42,6 @@
   <class>soot.Printer</class>
   <class>soot.jimple.toolkits.scalar.DeadAssignmentEliminator</class>
   <class>soot.jimple.toolkits.pointer.DependenceTagAggregator</class>
-  <class>soot.coffi.Double2ndHalfType</class>
   <class>soot.DoubleType</class>
   <class>soot.baf.DoubleWordType</class>
   <class>soot.jimple.toolkits.pointer.DumbPointerAnalysis</class>
@@ -70,7 +67,6 @@
   <class>soot.toolkits.scalar.LocalSplitter</class>
   <class>soot.toolkits.scalar.SharedInitializationLocalSplitter</class>
   <class>soot.toolkits.scalar.FlowSensitiveConstantPropagator</class>
-  <class>soot.coffi.Long2ndHalfType</class>
   <class>soot.LongType</class>
   <class>soot.dava.toolkits.base.misc.MonitorConverter</class>
   <class>soot.jimple.toolkits.scalar.NopEliminator</class>
@@ -113,7 +109,6 @@
   <class>soot.UnknownType</class>
   <class>soot.jimple.toolkits.scalar.UnreachableCodeEliminator</class>
   <class>soot.toolkits.scalar.UnusedLocalEliminator</class>
-  <class>soot.coffi.UnusuableType</class>
   <class>soot.dava.toolkits.base.AST.UselessTryRemover</class>
   <class>soot.VoidType</class>
   <class>soot.baf.WordType</class>
