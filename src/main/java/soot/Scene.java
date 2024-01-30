@@ -2259,8 +2259,8 @@ public class Scene {
 
   /**
    * Resets the sootClassPath to null.
-   * This method allows for subsequent calls to {@link #loadNecessaryClasses()} to recompute and load the classes using
-   * updated configurations if provided.
+   * This method allows for subsequent calls to {@link #loadNecessaryClasses()}
+   * to recompute and load the classes using updated configurations if provided.
    */
   public void resetSootClassPathCache() {
     this.sootClassPath = null;

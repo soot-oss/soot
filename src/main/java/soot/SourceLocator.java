@@ -771,8 +771,8 @@ public class SourceLocator {
 
   /**
    * Resets the cached class path, class providers, and source path to null.
-   * This method allows for subsequent calls to {@link soot.Scene#loadNecessaryClasses()} to recompute and load the classes using
-   * updated configurations if provided.
+   * This method allows for subsequent calls to {@link soot.Scene#loadNecessaryClasses()} 
+   * to recompute and load the classes using updated configurations if provided.
    */
   public void resetCaches() {
     this.classPath = null;

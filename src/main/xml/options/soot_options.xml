@@ -936,8 +936,9 @@
             <default>false</default>
             <short_desc>Enables native methods to be concrete. Needed for analyzing the Java Native Interface.</short_desc>
             <long_desc>
-                This option is needed, when analyzing native code. Particularly when using the Java Native Interface (JNI).
-                If this option is enabled (set true), it allows native methods to be concrete. This flag will be checked in the 
+                This option is needed, when analyzing native code. Particularly when using the 
+                Java Native Interface (JNI). If this option is enabled (set true), it allows 
+                native methods to be concrete. This flag will be checked in the 
                 SootMethod.isConcrete() method, allowing native methods to have a body.
             </long_desc>
         </boolopt>
