@@ -136,8 +136,10 @@ public class UnreachableCodeEliminator extends BodyTransformer {
     if (verbose) {
       final String name = body.getMethod().getName();
       logger.debug("[" + name + "]	 Removed " + (origSize - units.size()) + " statements: ");
-      for (Unit u : notReachable) {
-        logger.debug("[" + name + "]	         " + u);
+      if (notReachable != null) {
+        for (Unit u : notReachable) {
+          logger.debug("[" + name + "]	         " + u);
+        }
       }
     }
   }
