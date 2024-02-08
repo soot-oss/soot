@@ -25,8 +25,6 @@ public class RedundantJimpleStatementsTest {
     final String resourcePath = "src/test/resources/ported/PR1834";
 
     public void loadClasses(String first, String... more) {
-        G.reset();
-        // "src", "test", "resources", "SimpleClass"
         Path cp = Paths.get(first, more);
         G.reset();
         Options.v().set_prepend_classpath(true);
@@ -35,7 +33,6 @@ public class RedundantJimpleStatementsTest {
         Options.v().set_output_format(Options.output_format_jimple);
         Options.v().set_allow_phantom_refs(true);
         Options.v().set_ignore_resolving_levels(true);
-//        Options.v().set_ignore_resolution_errors(true);
         Scene.v().loadNecessaryClasses();
     }
 
@@ -57,7 +54,6 @@ public class RedundantJimpleStatementsTest {
 
     @Test
     public void test01() {
-        // After modification: $r0 -> r0
         loadClasses(resourcePath, "java8", "bin");
         SootMethod method = Scene.v().getMethod("<MethodAcceptingLamExpr: void lambdaAsParamMethod()>");
         List<String> expectedBodyStmts = Stream.of(
@@ -78,7 +74,6 @@ public class RedundantJimpleStatementsTest {
     @Test
     public void test02() {
         loadClasses(resourcePath, "java9", "bin");
-        // After modification: $r0 -> r1, $r1 -> $r0
         List<String> expectedBodyStmts = Stream.of(
                 "r1 = dynamicinvoke \"makeConcatWithConstants\" <java.lang.String (java.lang.String)>(\"This test\") <java.lang.invoke.StringConcatFactory: java.lang.invoke.CallSite makeConcatWithConstants(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.String,java.lang.Object[])>(\"\\u0001 is cool\")",
                 "$r0 = <java.lang.System: java.io.PrintStream out>",
@@ -91,7 +86,6 @@ public class RedundantJimpleStatementsTest {
     @Test
     public void test03() {
         loadClasses(resourcePath, "java11", "bin");
-        // After modification: $r0 -> r0; $r1 -> $r2; $r2 -> $r1
         List<String> expectedBodyStmts = Stream.of(
                 "r5 := @this: TypeInferenceLambda",
                 "r0 = staticinvoke <TypeInferenceLambda$lambda_lambda_0__1: java.util.function.BinaryOperator bootstrap$()>()",
@@ -121,7 +115,6 @@ public class RedundantJimpleStatementsTest {
     public void test05() {
         loadClasses(resourcePath, "java6", "bin");
 
-        // After modification: $r5 -> r5, $r8 -> $r10, $r10 -> $r8
         List<String> expectedBodyStmts = Stream.of(
                 "r12 := @this: GenTypeParam",
                 "$r0 = new java.util.ArrayList",
@@ -178,7 +171,6 @@ public class RedundantJimpleStatementsTest {
     @Test
     public void test07() {
         loadClasses(resourcePath, "java6", "bin");
-        // $r5 -> r5
         List<String> expectedBodyStmts = Stream.of(
                 "r7 := @this: UncheckedCast",
                 "$r0 = newarray (java.lang.Integer)[4]",
@@ -201,7 +193,6 @@ public class RedundantJimpleStatementsTest {
     @Test
     public void test08() {
         loadClasses(resourcePath, "java11", "bin");
-        // After modification: $r0 -> r0; $r1 -> $r2; $r2 -> $r1
         List<String> expectedBodyStmts = Stream.of(
                 "r5 := @this: TypeInferenceLambda",
                 "r0 = staticinvoke <TypeInferenceLambda$lambda_lambda_0__1: java.util.function.BinaryOperator bootstrap$()>()",
@@ -220,7 +211,6 @@ public class RedundantJimpleStatementsTest {
     @Test
     public void test09() {
         loadClasses(resourcePath, "java9", "bin");
-        // After modification: $r2 -> $r3; $r3 -> $r2
         List<String> expectedBodyStmts = Stream.of(
                 "r1 := @this: AnonymousDiamondOperator",
                         "$r6 = new AnonymousDiamondOperator$1",
@@ -239,7 +229,6 @@ public class RedundantJimpleStatementsTest {
     @Test
     public void test10() {
         loadClasses(resourcePath, "java6", "bin");
-        // After modification: $r0 -> r0
         List<String> expectedBodyStmts = Stream.of(
                 "r3 := @this: DeclareEnum",
                         "r0 = staticinvoke <DeclareEnum$Type: DeclareEnum$Type[] values()>()",
