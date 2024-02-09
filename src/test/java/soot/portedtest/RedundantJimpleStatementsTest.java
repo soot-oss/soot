@@ -1,5 +1,27 @@
 package soot.portedtest;
 
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 1997 - 2014 Raja Vallee-Rai and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
 import org.junit.Ignore;
 import org.junit.Test;
 import soot.*;
@@ -16,11 +38,14 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Tests for the issue regarding the always-false condition documented in https://github.com/soot-oss/soot/pull/1834
+ * The subsequent test cases have been adapted from SootUp (https://github.com/soot-oss/SootUp/pull/472)
+ *
+ * @author momo
+ */
+
 public class RedundantJimpleStatementsTest {
-    /**
-     * The subsequent test cases have been adapted from SootUp (https://github.com/soot-oss/SootUp/pull/472).
-     * The issue regarding the always-false condition was initially documented in https://github.com/soot-oss/soot/pull/1834.
-     */
 
     final String resourcePath = "src/test/resources/ported/PR1834";
 
