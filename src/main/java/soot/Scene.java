@@ -149,10 +149,11 @@ public class Scene {
   }
 
   public static Scene v() {
-    if (ModuleUtil.module_mode()) {
-      return G.v().soot_ModuleScene();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_ModuleScene();
     } else {
-      return G.v().soot_Scene();
+      return g.soot_Scene();
     }
   }
 

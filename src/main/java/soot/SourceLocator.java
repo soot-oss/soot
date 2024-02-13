@@ -167,7 +167,12 @@ public class SourceLocator {
   }
 
   public static SourceLocator v() {
-    return ModuleUtil.module_mode() ? G.v().soot_ModulePathSourceLocator() : G.v().soot_SourceLocator();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_ModulePathSourceLocator();
+    } else {
+      return g.soot_SourceLocator();
+    }
   }
 
   /**
