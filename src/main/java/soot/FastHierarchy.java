@@ -941,7 +941,7 @@ public class FastHierarchy {
     return candidate;
   }
 
-  private boolean isHandleDefaultMethods() {
+  protected boolean isHandleDefaultMethods() {
     int version = Options.v().java_version();
     return version == 0 || version > 7;
   }
