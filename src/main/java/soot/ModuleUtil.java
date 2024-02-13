@@ -95,6 +95,15 @@ public class ModuleUtil {
    * @return true, if module mode is used
    */
   public static boolean module_mode() {
+    return G.v().soot_ModuleUtil().isInModuleMode();
+  }
+
+  /**
+   * Check if Soot is run with module mode enabled.
+   *
+   * @return true, if module mode is used
+   */
+  public boolean isInModuleMode() {
     return !Options.v().soot_modulepath().isEmpty();
   }
 
