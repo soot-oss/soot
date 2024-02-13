@@ -58,6 +58,7 @@ import soot.util.NumberedString;
 public class FastHierarchy {
 
   protected static final int USE_INTERVALS_BOUNDARY = 100;
+  private final boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
 
   protected Table<SootClass, NumberedString, SootMethod> typeToVtbl = HashBasedTable.create();
 
@@ -978,7 +979,6 @@ public class FastHierarchy {
     if (concreteType == null) {
       throw new RuntimeException("The concreteType cannot not be null!");
     }
-    boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
       if (method.getParameterTypes().equals(parameterTypes) && canStoreType(method.getReturnType(), returnType)) {
