@@ -904,7 +904,7 @@ public class FastHierarchy {
       // determining the most specific super interface
       HashSet<SootClass> interfaceIgnoreList = new HashSet<>();
       for (SootClass concreteType = baseType; concreteType != null;) {
-        Queue<SootClass> worklist = new LinkedList<>(concreteType.getInterfaces());
+        Queue<SootClass> worklist = new ArrayDeque<>(concreteType.getInterfaces());
         // we have to determine the "most specific super interface"
         while (!worklist.isEmpty()) {
           SootClass iFace = worklist.poll();
@@ -978,6 +978,7 @@ public class FastHierarchy {
     if (concreteType == null) {
       throw new RuntimeException("The concreteType cannot not be null!");
     }
+    boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
       if (method.getParameterTypes().equals(parameterTypes) && canStoreType(method.getReturnType(), returnType)) {
@@ -985,7 +986,7 @@ public class FastHierarchy {
         returnType = method.getReturnType();
       }
       // if dotnet structs or generics
-      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      if (isDotNet) {
         if (method.getParameterCount() == parameterTypes.size() && canStoreType(returnType, method.getReturnType())) {
           boolean canStore = true;
           for (int i = 0; i < method.getParameterCount(); i++) {
