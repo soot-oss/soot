@@ -167,7 +167,12 @@ public class SourceLocator {
   }
 
   public static SourceLocator v() {
-    return ModuleUtil.module_mode() ? G.v().soot_ModulePathSourceLocator() : G.v().soot_SourceLocator();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_ModulePathSourceLocator();
+    } else {
+      return g.soot_SourceLocator();
+    }
   }
 
   /**
@@ -768,6 +773,17 @@ public class SourceLocator {
    */
   public void clearDexClassPathExtensions() {
     this.dexClassPathExtensions = null;
+  }
+
+  /**
+   * Resets the cached class path, class providers, and source path to null.
+   * This method allows for subsequent calls to {@link soot.Scene#loadNecessaryClasses()} 
+   * to recompute and load the classes using updated configurations if provided.
+   */
+  public void resetCaches() {
+    this.classPath = null;
+    this.classProviders = null;
+    this.sourcePath = null;
   }
 
   protected enum ClassSourceType {
