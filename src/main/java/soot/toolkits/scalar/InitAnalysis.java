@@ -52,12 +52,12 @@ public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
 
   @Override
   protected FlowSet<Local> entryInitialFlow() {
-    return new ArraySparseSet<Local>();
+    return new HashSparseSet<Local>();
   }
 
   @Override
   protected FlowSet<Local> newInitialFlow() {
-    FlowSet<Local> ret = new ArraySparseSet<Local>();
+    FlowSet<Local> ret = new HashSparseSet<Local>();
     allLocals.copy(ret);
     return ret;
   }
