@@ -878,12 +878,7 @@ public class FastHierarchy {
     // When there is no proper dispatch found, we simply return null to let the caller decide what to do
     SootMethod candidate = null;
     boolean calleeExist = declaringClass.getMethodUnsafe(subsignature) != null;
-    SootClass prevType = null;
     for (SootClass concreteType = baseType; concreteType != null;) {
-      if (concreteType == prevType) {
-        break;
-      }
-      prevType = concreteType;
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
       if (candidate != null) {
         if (!calleeExist || isVisible(concreteType, declaringClass, candidate.getModifiers())) {
