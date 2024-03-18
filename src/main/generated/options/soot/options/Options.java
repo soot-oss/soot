@@ -1381,32 +1381,33 @@ public class Options extends OptionsBase {
                 pushOption("enabled:true");
                 pushOption("wjap.purity");
                 pushOption("-p");
+            }
+            else if (false
+                || option.equals("annot-nullpointer")
+            ) {
                 pushOption("enabled:true");
                 pushOption("cg.spark");
                 pushOption("-p");
                 pushOption("-w");
             }
             else if (false
-                || option.equals("annot-nullpointer")
+                || option.equals("annot-arraybounds")
             ) {
+                pushOption("-w");
+                pushOption("enabled:true");
+                pushOption("wjap.ra");
+                pushOption("-p");
+                pushOption("enabled:true");
+                pushOption("wjap.abc");
+                pushOption("-p");
+                pushOption("enabled:true");
+                pushOption("tag.an");
+                pushOption("-p");
                 pushOption("enabled:true");
                 pushOption("tag.an");
                 pushOption("-p");
                 pushOption("enabled:true");
                 pushOption("jap.npc");
-                pushOption("-p");
-            }
-            else if (false
-                || option.equals("annot-arraybounds")
-            ) {
-                pushOption("enabled:true");
-                pushOption("tag.an");
-                pushOption("-p");
-                pushOption("enabled:true");
-                pushOption("jap.abc");
-                pushOption("-p");
-                pushOption("enabled:true");
-                pushOption("wjap.ra");
                 pushOption("-p");
             }
             else if (false
@@ -1989,8 +1990,8 @@ public class Options extends OptionsBase {
                 + padOpt("-write-local-annotations", "Write out debug annotations on local names")
                 + "\nAnnotation Options:\n"
                 + padOpt("-annot-purity", "Emit purity attributes")
-                + padOpt("-annot-nullpointer", "Emit null pointer attributes")
                 + padOpt("-annot-arraybounds", "Emit array bounds check attributes")
+                + padOpt("-annot-nullpointer", "Emit null pointer attributes")
                 + padOpt("-annot-side-effect", "Emit side-effect attributes")
                 + padOpt("-annot-fieldrw", "Emit field read/write attributes")
                 + "\nMiscellaneous Options:\n"
@@ -2057,6 +2058,7 @@ public class Options extends OptionsBase {
                     + padVal("wjap.tqt", "Tags all qualifiers that could be tighter")
                     + padVal("wjap.cgg", "Creates graphical call graph.")
                     + padVal("wjap.purity", "Emit purity attributes")
+                    + padVal("wjap.abc", "Array bound checker")
                 + padOpt("shimple", "Sets parameters for Shimple SSA form")
                 + padOpt("stp", "Shimple transformation pack")
                 + padOpt("sop", "Shimple optimization pack")
@@ -2079,7 +2081,6 @@ public class Options extends OptionsBase {
                 + padOpt("jap", "Jimple annotation pack: adds intraprocedural tags")
                     + padVal("jap.npc", "Null pointer checker")
                     + padVal("jap.npcolorer", "Null pointer colourer: tags references for eclipse")
-                    + padVal("jap.abc", "Array bound checker")
                     + padVal("jap.profiling", "Instruments null pointer and array checks")
                     + padVal("jap.sea", "Side effect tagger")
                     + padVal("jap.fieldrw", "Field read/write tagger")
@@ -2687,6 +2688,20 @@ public class Options extends OptionsBase {
                     + padOpt("annotate (true)", "Marks pure methods with a purity bytecode attribute")
                     + padOpt("verbose (false)", "");
 
+        if (phaseName.equals("wjap.abc"))
+            return "Phase " + phaseName + ":\n"
+                    + "\nThe Array Bound Checker performs a static analysis to determine \nwhich array bounds checks may safely be eliminated and then \nannotates statements with the results of the analysis. If Soot \nis in whole-program mode, the Array Bound Checker can use the \nresults provided by the Rectangular Array Finder."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (false)", "")
+                    + padOpt("with-all (false)", "")
+                    + padOpt("with-cse (false)", "")
+                    + padOpt("with-arrayref (false)", "")
+                    + padOpt("with-fieldref (false)", "")
+                    + padOpt("with-classfield (false)", "")
+                    + padOpt("with-rectarray (false)", "")
+                    + padOpt("profiling (false)", "Profile the results of array bounds check analysis.")
+                    + padOpt("add-color-tags (false)", "Add color tags to results of array bound check analysis.");
+
         if (phaseName.equals("shimple"))
             return "Phase " + phaseName + ":\n"
                     + "\nShimple Control sets parameters which apply throughout the \ncreation and manipulation of Shimple bodies. Shimple is Soot's \nSSA representation."
@@ -2839,20 +2854,6 @@ public class Options extends OptionsBase {
                     + "\nProduce colour tags that the Soot plug-in for Eclipse can use to \nhighlight null and non-null references."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
-
-        if (phaseName.equals("jap.abc"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Array Bound Checker performs a static analysis to determine \nwhich array bounds checks may safely be eliminated and then \nannotates statements with the results of the analysis. If Soot \nis in whole-program mode, the Array Bound Checker can use the \nresults provided by the Rectangular Array Finder."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "")
-                    + padOpt("with-all (false)", "")
-                    + padOpt("with-cse (false)", "")
-                    + padOpt("with-arrayref (false)", "")
-                    + padOpt("with-fieldref (false)", "")
-                    + padOpt("with-classfield (false)", "")
-                    + padOpt("with-rectarray (false)", "")
-                    + padOpt("profiling (false)", "Profile the results of array bounds check analysis.")
-                    + padOpt("add-color-tags (false)", "Add color tags to results of array bound check analysis.");
 
         if (phaseName.equals("jap.profiling"))
             return "Phase " + phaseName + ":\n"
@@ -3516,6 +3517,19 @@ public class Options extends OptionsBase {
                     "verbose"
             );
 
+        if (phaseName.equals("wjap.abc"))
+            return String.join(" ", 
+                    "enabled",
+                    "with-all",
+                    "with-cse",
+                    "with-arrayref",
+                    "with-fieldref",
+                    "with-classfield",
+                    "with-rectarray",
+                    "profiling",
+                    "add-color-tags"
+            );
+
         if (phaseName.equals("shimple"))
             return String.join(" ", 
                     "enabled",
@@ -3642,19 +3656,6 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npcolorer"))
             return String.join(" ", 
                     "enabled"
-            );
-
-        if (phaseName.equals("jap.abc"))
-            return String.join(" ", 
-                    "enabled",
-                    "with-all",
-                    "with-cse",
-                    "with-arrayref",
-                    "with-fieldref",
-                    "with-classfield",
-                    "with-rectarray",
-                    "profiling",
-                    "add-color-tags"
             );
 
         if (phaseName.equals("jap.profiling"))
@@ -4225,6 +4226,18 @@ public class Options extends OptionsBase {
                     + "annotate:true "
                     + "verbose:false ";
 
+        if (phaseName.equals("wjap.abc"))
+            return ""
+                    + "enabled:false "
+                    + "with-all:false "
+                    + "with-cse:false "
+                    + "with-arrayref:false "
+                    + "with-fieldref:false "
+                    + "with-classfield:false "
+                    + "with-rectarray:false "
+                    + "profiling:false "
+                    + "add-color-tags:false ";
+
         if (phaseName.equals("shimple"))
             return ""
                     + "enabled:true "
@@ -4330,18 +4343,6 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npcolorer"))
             return ""
                     + "enabled:false ";
-
-        if (phaseName.equals("jap.abc"))
-            return ""
-                    + "enabled:false "
-                    + "with-all:false "
-                    + "with-cse:false "
-                    + "with-arrayref:false "
-                    + "with-fieldref:false "
-                    + "with-classfield:false "
-                    + "with-rectarray:false "
-                    + "profiling:false "
-                    + "add-color-tags:false ";
 
         if (phaseName.equals("jap.profiling"))
             return ""
@@ -4566,6 +4567,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("wjap.tqt")
                 || phaseName.equals("wjap.cgg")
                 || phaseName.equals("wjap.purity")
+                || phaseName.equals("wjap.abc")
                 || phaseName.equals("shimple")
                 || phaseName.equals("stp")
                 || phaseName.equals("sop")
@@ -4588,7 +4590,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jap")
                 || phaseName.equals("jap.npc")
                 || phaseName.equals("jap.npcolorer")
-                || phaseName.equals("jap.abc")
                 || phaseName.equals("jap.profiling")
                 || phaseName.equals("jap.sea")
                 || phaseName.equals("jap.fieldrw")
@@ -4742,6 +4743,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase wjap.cgg");
         if (!PackManager.v().hasPhase("wjap.purity"))
             G.v().out.println("Warning: Options exist for non-existent phase wjap.purity");
+        if (!PackManager.v().hasPhase("wjap.abc"))
+            G.v().out.println("Warning: Options exist for non-existent phase wjap.abc");
         if (!PackManager.v().hasPhase("shimple"))
             G.v().out.println("Warning: Options exist for non-existent phase shimple");
         if (!PackManager.v().hasPhase("stp"))
@@ -4786,8 +4789,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jap.npc");
         if (!PackManager.v().hasPhase("jap.npcolorer"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.npcolorer");
-        if (!PackManager.v().hasPhase("jap.abc"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.abc");
         if (!PackManager.v().hasPhase("jap.profiling"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.profiling");
         if (!PackManager.v().hasPhase("jap.sea"))
