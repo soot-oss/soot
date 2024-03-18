@@ -38,21 +38,26 @@ public class ExceptionalUnitGraphFactory {
   }
 
   public static ExceptionalUnitGraph createExceptionalUnitGraph(Body body) {
-    return v().newExceptionalUnitGraph(body, Scene.v().getDefaultThrowAnalysis(), Options.v().omit_excepting_unit_edges());
+    return v().newExceptionalUnitGraph(body, Scene.v().getDefaultThrowAnalysis(), Options.v().omit_excepting_unit_edges(), false);
   }
 
   public static ExceptionalUnitGraph createExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis) {
-    return v().newExceptionalUnitGraph(body, throwAnalysis, Options.v().omit_excepting_unit_edges());
+    return v().newExceptionalUnitGraph(body, throwAnalysis, Options.v().omit_excepting_unit_edges(), false);
   }
 
   public static ExceptionalUnitGraph createExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis,
       boolean omitExceptingUnitEdges) {
-    return v().newExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    return v().newExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges, false);
+  }
+
+  public static ExceptionalUnitGraph createExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis,
+								boolean omitExceptingUnitEdges, boolean supportVerifier) {
+    return v().newExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges, supportVerifier);
   }
 
   protected ExceptionalUnitGraph newExceptionalUnitGraph(Body body, ThrowAnalysis throwAnalysis,
-      boolean omitExceptingUnitEdges) {
-    return new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+							 boolean omitExceptingUnitEdges, boolean supportVerifier) {
+    return new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges, supportVerifier);
   }
 
 }
