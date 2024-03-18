@@ -44,6 +44,7 @@ import soot.dotnet.types.DotnetTypeFactory;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.Constant;
 import soot.jimple.Jimple;
 import soot.jimple.NullConstant;
 import soot.jimple.internal.JAssignStmt;
@@ -231,5 +232,37 @@ public class DotnetBodyVariableManager {
 
   public boolean localsToCastContains(String local) {
     return localsToCast.contains(local);
+  }
+  /**
+   * Assign expression only to new local variable to use the value in complex operations, when val is not a local or constant
+   *
+   * @param val : assign to local
+   */
+  public Value simplifyIfNotPrimitiveWithLocal(Value val) {
+	 if(!(val instanceof Local || val instanceof Constant))
+		 return (Value) generateLocalAndAssign(val);
+	 return val;
+  }
+  
+  /**
+   * Assign expression only to new local variable to use the value in complex operations, when val is not a local
+   *
+   * @param val : assign to local
+   */
+
+  public Local simplifyWithLocal(Value val) {
+		 if(!(val instanceof Local)) 
+			 return generateLocalAndAssign(val);
+		 return (Local) val;
+	  }
+  /**
+   * Assign expression to new local variable to use the value in complex operations
+   *
+   * @param val : assign to local
+   */
+  private Local generateLocalAndAssign(Value val) {
+	  Local local = localGenerator.generateLocal(val.getType());
+	  mainJb.getUnits().add(Jimple.v().newAssignStmt(local, val));
+      return local;
   }
 }

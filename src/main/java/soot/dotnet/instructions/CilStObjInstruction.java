@@ -31,7 +31,10 @@ import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.Constant;
+import soot.jimple.Expr;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JStaticInvokeExpr;
 
 /**
  * AssignStmt - Store ValueTypes to a local
@@ -57,27 +60,28 @@ public class CilStObjInstruction extends AbstractCilnstruction {
       }
     }
 
-    // if rvalue is not single value and lvalue is static-ref, rewrite with a local variable to meet three address
-    // requirement
-    if (value instanceof CastExpr && !(target instanceof Local)) {
-      Local generatedLocal = dotnetBody.variableManager.localGenerator.generateLocal(target.getType());
-      AssignStmt assignStmt = Jimple.v().newAssignStmt(generatedLocal, value);
-      jb.getUnits().add(assignStmt);
-      value = generatedLocal;
-    }
-
-    AssignStmt astm = Jimple.v().newAssignStmt(target, value);
-    jb.getUnits().add(astm);
-
     // if new Obj also add call of constructor - relevant for structs (System.ValueType)
-    if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
-      if (!(target instanceof Local)) {
-        throw new RuntimeException("STOBJ: The given target is not a local! " + "The value is: " + target.toString()
-            + " of type " + target.getType() + "! " + "The resolving method body is: "
-            + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
-      }
-      ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) target);
+    if (cilExpr instanceof AbstractNewObjInstanceInstruction) {      
+      if (target instanceof Local) {
+    	  jb.getUnits().add(Jimple.v().newAssignStmt(target, value));
+       	  ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) target);
+      } else {   
+    	  Local local = dotnetBody.variableManager.localGenerator.generateLocal(target.getType());
+    	  jb.getUnits().add(Jimple.v().newAssignStmt(local, value));
+    	  ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, local);
+    	  jb.getUnits().add(Jimple.v().newAssignStmt(target, local));  
+  	  }
+      return;
     }
+    
+    // if rvalue is not single value and lvalue is also no local you need made a temp war
+    if (!(target instanceof Local)) {
+      value = dotnetBody.variableManager.simplifyIfNotPrimitiveWithLocal(value);
+    }
+
+    jb.getUnits().add(Jimple.v().newAssignStmt(target, value));
+
+   
   }
 
   @Override

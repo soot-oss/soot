@@ -2,6 +2,8 @@ package soot.dotnet.members;
 
 import static soot.dotnet.specifications.DotnetModifier.toSootModifier;
 
+import soot.Scene;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -44,6 +46,6 @@ public class DotnetField extends AbstractDotnetMember {
     int modifier = toSootModifier(protoField);
     Type type = DotnetTypeFactory.toSootType(protoField.getType());
     String name = protoField.getName();
-    return new SootField(name, type, modifier);
+    return Scene.v().makeSootField(name, type, modifier);
   }
 }

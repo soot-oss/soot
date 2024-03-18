@@ -14,6 +14,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1673,9 +1674,9 @@ public class Scene {
   }
 
   private void addSootBasicDotnetClasses() {
-    basicclasses[SootClass.HIERARCHY] = new HashSet<>();
-    basicclasses[SootClass.SIGNATURES] = new HashSet<>();
-    basicclasses[SootClass.BODIES] = new HashSet<>();
+    basicclasses[SootClass.HIERARCHY] = new LinkedHashSet<>();
+    basicclasses[SootClass.SIGNATURES] = new LinkedHashSet<>();
+    basicclasses[SootClass.BODIES] = new LinkedHashSet<>();
 
     addBasicClass(DotnetBasicTypes.SYSTEM_OBJECT, SootClass.SIGNATURES);
     addBasicClass(DotnetBasicTypes.SYSTEM_VOID, SootClass.SIGNATURES);

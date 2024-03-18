@@ -92,7 +92,6 @@ public class CilConvInstruction extends AbstractCilnstruction {
         convType = UnknownType.v();
         break;
     }
-
-    return Jimple.v().newCastExpr(argument, convType);
+    return Jimple.v().newCastExpr(dotnetBody.variableManager.simplifyIfNotPrimitiveWithLocal(argument), convType);
   }
 }

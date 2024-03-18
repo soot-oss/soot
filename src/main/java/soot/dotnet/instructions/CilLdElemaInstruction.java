@@ -68,7 +68,7 @@ public class CilLdElemaInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
     baseArrayLocal = cilExpr.jimplifyExpr(jb);
-
+    baseArrayLocal = dotnetBody.variableManager.simplifyIfNotPrimitiveWithLocal(baseArrayLocal);
     if (instruction.getIndicesCount() == 1) {
       Value ind
           = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
