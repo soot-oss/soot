@@ -265,7 +265,7 @@ public class DexBody {
     instructions = new ArrayList<DexlibAbstractInstruction>();
 
     // Use descending order
-    instructionAtAddress = new TreeMap<Integer, DexlibAbstractInstruction>((o1, o2) -> o2 - o1);
+    instructionAtAddress = new TreeMap<Integer, DexlibAbstractInstruction>();
     localDebugs = ArrayListMultimap.create();
     takenLocalNames = new HashSet<String>();
 
@@ -448,29 +448,27 @@ public class DexBody {
    *           if address is not part of this body.
    */
   public DexlibAbstractInstruction instructionAtAddress(int address) {
-    AtomicReference<DexlibAbstractInstruction> i = new AtomicReference<>(null);
 
-    instructionAtAddress.forEach((key, value) -> {
-      if (i.get() == null && key <= address) {
-        // catch addresses can be in the middlde of last instruction. Ex. in
-        // com.letang.ldzja.en.apk:
-        //
-        // 042c46: 7020 2a15 0100 |008f: invoke-direct {v1, v0},
-        // Ljavax/mi...
-        // 042c4c: 2701 |0092: throw v1
-        // catches : 4
-        // <any> -> 0x0065
-        // 0x0069 - 0x0093
-        //
-        // SA, 14.05.2014: We originally scanned only two code units back.
-        // This is not sufficient
-        // if we e.g., have a wide constant and the line number in the debug
-        // sections points to
-        // some address the middle.
-        i.set(value);
-      }
-    });
-    return i.get();
+    // catch addresses can be in the middlde of last instruction. Ex. in
+    // com.letang.ldzja.en.apk:
+    //
+    // 042c46: 7020 2a15 0100 |008f: invoke-direct {v1, v0},
+    // Ljavax/mi...
+    // 042c4c: 2701 |0092: throw v1
+    // catches : 4
+    // <any> -> 0x0065
+    // 0x0069 - 0x0093
+    //
+    // SA, 14.05.2014: We originally scanned only two code units back.
+    // This is not sufficient
+    // if we e.g., have a wide constant and the line number in the debug
+    // sections points to
+    // some address the middle.
+    Integer key = instructionAtAddress.floorKey(address);
+    if (key == null) {
+      return null;
+    }
+    return instructionAtAddress.get(key);
   }
 
   /**
