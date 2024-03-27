@@ -32,6 +32,7 @@ import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.writer.io.FileDataStore;
 import org.jf.dexlib2.writer.pool.DexPool;
+import soot.options.Options;
 
 /**
  * @author Manuel Benz created on 26.09.17
@@ -93,7 +94,9 @@ public class MultiDexBuilder {
     // (https://developer.android.com/studio/build/multidex.html,
     // http://www.fasteque.com/deep-dive-into-android-multidex/)
     if (!opcodes.isArt()) {
-      throw new RuntimeException("Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
+      if (!Options.v().ignore_dex_overflow()) {
+        throw new RuntimeException("Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
+      }
     }
 
     return true;
