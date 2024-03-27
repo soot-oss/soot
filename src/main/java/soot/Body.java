@@ -35,7 +35,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.options.Options;
@@ -363,7 +362,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public Unit getThisUnit() {
     for (Unit u : getUnits()) {
-      if (u instanceof IdentityStmt && ((IdentityStmt) u).getRightOp() instanceof ThisRef) {
+      if (u instanceof IdentityUnit && ((IdentityUnit) u).getRightOp() instanceof ThisRef) {
         return u;
       }
     }
@@ -377,7 +376,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @return
    */
   public Local getThisLocal() {
-    return (Local) (((IdentityStmt) getThisUnit()).getLeftOp());
+    return (Local) (((IdentityUnit) getThisUnit()).getLeftOp());
   }
 
   /**
@@ -389,8 +388,8 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public Local getParameterLocal(int i) {
     for (Unit s : getUnits()) {
-      if (s instanceof IdentityStmt) {
-        IdentityStmt is = (IdentityStmt) s;
+      if (s instanceof IdentityUnit) {
+        IdentityUnit is = (IdentityUnit) s;
         Value rightOp = is.getRightOp();
         if (rightOp instanceof ParameterRef) {
           ParameterRef pr = (ParameterRef) rightOp;
@@ -417,8 +416,8 @@ public abstract class Body extends AbstractHost implements Serializable {
     Local[] res = new Local[numParams];
     int numFound = 0;
     for (Unit u : getUnits()) {
-      if (u instanceof IdentityStmt) {
-        IdentityStmt is = (IdentityStmt) u;
+      if (u instanceof IdentityUnit) {
+        IdentityUnit is = (IdentityUnit) u;
         Value rightOp = is.getRightOp();
         if (rightOp instanceof ParameterRef) {
           int idx = ((ParameterRef) rightOp).getIndex();
@@ -456,8 +455,8 @@ public abstract class Body extends AbstractHost implements Serializable {
     Value[] res = new Value[numParams];
     int numFound = 0;
     for (Unit u : getUnits()) {
-      if (u instanceof IdentityStmt) {
-        Value rightOp = ((IdentityStmt) u).getRightOp();
+      if (u instanceof IdentityUnit) {
+        Value rightOp = ((IdentityUnit) u).getRightOp();
         if (rightOp instanceof ParameterRef) {
           ParameterRef pr = (ParameterRef) rightOp;
           int idx = pr.getIndex();
