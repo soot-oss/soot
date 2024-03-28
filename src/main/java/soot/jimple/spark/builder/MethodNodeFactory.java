@@ -469,4 +469,13 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   protected final MethodPAG mpag;
   protected SootMethod method;
   protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
+
+  /**
+   * Returns the method
+   * 
+   * @return the method
+   */
+  public SootMethod getMethod() {
+    return method;
+  }
 }

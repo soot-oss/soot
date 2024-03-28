@@ -1,5 +1,16 @@
 package soot.jimple.spark.pag;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,17 +36,6 @@ package soot.jimple.spark.pag;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.Context;
 import soot.FastHierarchy;
 import soot.Kind;
@@ -52,6 +52,7 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
+import soot.VoidType;
 import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
 import soot.jimple.InstanceInvokeExpr;
@@ -1462,20 +1463,25 @@ public class PAG implements PointsToAnalysis {
     if (propagateReturn && s instanceof AssignStmt) {
       Value dest = ((AssignStmt) s).getLeftOp();
       if (dest.getType() instanceof RefLikeType && !(dest instanceof NullConstant)) {
+        if (tgtnf.getMethod().getReturnType() instanceof VoidType) {
+          logger.warn(
+              tgtnf.getMethod() + " has a void return type, but we found a statement which uses its return value: " + s);
+        } else {
 
-        Node destNode = srcnf.getNode(dest);
-        destNode = srcmpag.parameterize(destNode, srcContext);
-        destNode = destNode.getReplacement();
+          Node destNode = srcnf.getNode(dest);
+          destNode = srcmpag.parameterize(destNode, srcContext);
+          destNode = destNode.getReplacement();
 
-        Node retNode = tgtnf.caseRet();
-        retNode = tgtmpag.parameterize(retNode, tgtContext);
-        retNode = retNode.getReplacement();
+          Node retNode = tgtnf.caseRet();
+          retNode = tgtmpag.parameterize(retNode, tgtContext);
+          retNode = retNode.getReplacement();
 
-        addEdge(retNode, destNode);
-        Pair<Node, Node> pval = addInterproceduralAssignment(retNode, destNode, e);
-        if (callAssigns != null) {
-          callAssigns.put(ie, pval);
-          callToMethod.put(ie, srcmpag.getMethod());
+          addEdge(retNode, destNode);
+          Pair<Node, Node> pval = addInterproceduralAssignment(retNode, destNode, e);
+          if (callAssigns != null) {
+            callAssigns.put(ie, pval);
+            callToMethod.put(ie, srcmpag.getMethod());
+          }
         }
       }
     }
