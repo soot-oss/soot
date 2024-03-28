@@ -22,9 +22,9 @@ package soot.jimple.toolkits.typing;
  * #L%
  */
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,20 +44,18 @@ import soot.Type;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.typing.fast.BytecodeHierarchy;
 import soot.jimple.toolkits.typing.fast.DefaultTypingStrategy;
-import soot.jimple.toolkits.typing.fast.ITypingStrategy;
 import soot.jimple.toolkits.typing.fast.Typing;
 import soot.options.Options;
 
 /**
- * JUnit-Tests for the {@link Typing#minimize(List, soot.jimple.toolkits.typing.fast.IHierarchy)} method.
+ * JUnit-Tests for the {@link DefaultTypingStrategy#minimize(List, soot.jimple.toolkits.typing.fast.IHierarchy)} method.
  * 
  * For each test we generate a simple synthetic class hierarchy and some {@link Typing}s we minimize afterwards and check the
  * result.
  * 
  * @author Fabian Brenner, Jan Peter Stotz
  */
-
-public class TypingMinimizeTest {
+public class DefaultTypingStrategyMinimizeSequentialTest {
 
   /******************************************************
    * Analysis of 29 Android apps with multiple typings:
@@ -122,7 +120,7 @@ public class TypingMinimizeTest {
    *
    */
 
-  private static final Logger logger = LoggerFactory.getLogger(TypingMinimizeTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(DefaultTypingStrategyMinimizeSequentialTest.class);
 
   Type stringType;
   Type integerType;
@@ -155,7 +153,6 @@ public class TypingMinimizeTest {
 
   @Before
   public void init() {
-
     G.reset();
     Options o = Options.v();
     o.prepend_classpath();
@@ -166,11 +163,9 @@ public class TypingMinimizeTest {
     Scene.v().loadClassAndSupport("java.lang.Object");
 
     generateClasses();
-
   }
 
   private void generateClasses() {
-
     SootClass sClass = new SootClass("Interface", Modifier.INTERFACE);
     Scene.v().addClass(sClass);
 
@@ -238,12 +233,10 @@ public class TypingMinimizeTest {
     class_AbstractType = Scene.v().getType("Class_Abstract");
     fatherClassType = Scene.v().getType("FatherClass");
     childClassType = Scene.v().getType("ChildClass");
-
   }
 
   @Test
   public void testMostCommonTypingPairs_1() {
-
     logger.debug("Starting Object Random Minimize");
 
     List<Typing> typingList = new ArrayList<>();
@@ -261,19 +254,14 @@ public class TypingMinimizeTest {
     typing2.set(x1, Type2);
     typingList.add(typing2);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(2, typingList.size());
     assertEquals(resultTyping, typingList.get(0));
   }
 
-  private ITypingStrategy getTypingStrategy() {
-    return new DefaultTypingStrategy();
-  }
-
   @Test
   public void testMostCommonTypingPairs_2() {
-
     logger.debug("Starting Object Random Minimize");
 
     List<Typing> typingList = new ArrayList<>();
@@ -295,7 +283,7 @@ public class TypingMinimizeTest {
     typing3.set(x1, Type3);
     typingList.add(typing3);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(2, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing2, typing3));
@@ -327,7 +315,7 @@ public class TypingMinimizeTest {
     typing4.set(x1, Type4);
     typingList.add(typing4);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(2, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing1, typing3));
@@ -335,7 +323,6 @@ public class TypingMinimizeTest {
 
   @Test
   public void testMostCommonTypingPairs_4() {
-
     List<Typing> typingList = new ArrayList<>();
 
     Type Type1 = cloneableType;
@@ -356,7 +343,7 @@ public class TypingMinimizeTest {
     typing3.set(x1, Type3);
     typingList.add(typing3);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(3, typingList.size());
 
@@ -369,7 +356,6 @@ public class TypingMinimizeTest {
    */
   @Test
   public void testHugeCommonTypingPair() {
-
     List<Typing> typingList = new ArrayList<>();
 
     Type Type1 = serializableType;
@@ -426,7 +412,7 @@ public class TypingMinimizeTest {
     typing8.set(x3, Type2);
     typingList.add(typing8);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(8, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing1, typing2, typing3, typing4, typing5, typing6, typing7, typing8));
@@ -434,7 +420,6 @@ public class TypingMinimizeTest {
 
   @Test
   public void testAbstractInterfaceTyping() {
-
     List<Typing> typingList = new ArrayList<>();
 
     Local x1 = new JimpleLocal("$x1", null);
@@ -451,7 +436,7 @@ public class TypingMinimizeTest {
     typing3.set(x1, class_AbstractInterfaceClassType);
     typingList.add(typing3);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(1, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing3));
@@ -459,7 +444,6 @@ public class TypingMinimizeTest {
 
   @Test
   public void testAbstractAbstractTyping() {
-
     logger.debug("Starting Object Random Minimize");
 
     List<Typing> typingList = new ArrayList<>();
@@ -477,7 +461,7 @@ public class TypingMinimizeTest {
     typing3.set(x1, abstractClass_Interface2Type);
     typingList.add(typing3);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(1, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing3));
@@ -485,7 +469,6 @@ public class TypingMinimizeTest {
 
   @Test
   public void testJavaInterfaceTyping() {
-
     List<Typing> typingList = new ArrayList<>();
 
     Local x1 = new JimpleLocal("$x1", null);
@@ -502,7 +485,7 @@ public class TypingMinimizeTest {
     typing3.set(x1, numberType);
     typingList.add(typing3);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(2, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing2, typing1));
@@ -510,7 +493,6 @@ public class TypingMinimizeTest {
 
   @Test
   public void testInterfaceInterfaceTyping() {
-
     List<Typing> typingList = new ArrayList<>();
 
     Local x1 = new JimpleLocal("$x1", null);
@@ -527,7 +509,7 @@ public class TypingMinimizeTest {
     typing3.set(x1, numberType);
     typingList.add(typing3);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(2, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing2, typing3));
@@ -541,7 +523,6 @@ public class TypingMinimizeTest {
    */
   @Test
   public void testAllRelatedClassesTyping() {
-
     List<Typing> typingList = new ArrayList<>();
     Local x1 = new JimpleLocal("$x1", null);
 
@@ -589,7 +570,7 @@ public class TypingMinimizeTest {
     typing11.set(x1, childClassType);
     typingList.add(typing11);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(5, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing2, typing5, typing7, typing9, typing11));
@@ -600,7 +581,6 @@ public class TypingMinimizeTest {
    */
   @Test
   public void testAllNonRelatedClassesTyping() {
-
     List<Typing> typingList = new ArrayList<>();
     Local x1 = new JimpleLocal("$x1", null);
 
@@ -636,10 +616,14 @@ public class TypingMinimizeTest {
     typing8.set(x1, fatherClassType);
     typingList.add(typing8);
 
-    getTypingStrategy().minimize(typingList, new BytecodeHierarchy());
+    executeMinimize(typingList);
 
     assertEquals(7, typingList.size());
     assertThat(typingList, containsInAnyOrder(typing2, typing3, typing4, typing5, typing6, typing7, typing8));
+  }
+
+  protected void executeMinimize(List<Typing> typingList) {
+    new DefaultTypingStrategy().minimizeSequential(typingList, new BytecodeHierarchy());
   }
 
 }
