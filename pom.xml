@@ -6,7 +6,7 @@
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-    <version>4.5.0</version>
+    <version>4.6.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
     <url>https://soot-oss.github.io/soot</url>
     <organization>
@@ -576,12 +576,12 @@
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>3.21.7</version>
+            <version>3.25.3</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
-            <version>3.21.2</version>
+            <version>3.25.3</version>
         </dependency>
     </dependencies>
 
@@ -657,6 +657,7 @@
                                 <configuration>
                                     <!-- This is necessary for gpg to not try to use the pinentry programs -->
                                     <gpgArguments>
+                                        <arg>--batch</arg>
                                         <arg>--pinentry-mode</arg>
                                         <arg>loopback</arg>
                                     </gpgArguments>
