@@ -245,9 +245,9 @@ public class DexAnnotation {
               }
             }
           }
-          if (vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE)
+          if (vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE) {
             clazz.addTag(vt);
-          else {
+          } else {
             // filter out the tags we handle explicitly
             VisibilityAnnotationTag vbCopy = new VisibilityAnnotationTag(vt.getVisibility());
             for (AnnotationTag tf : vt.getAnnotations()) {
@@ -255,8 +255,9 @@ public class DexAnnotation {
                 vbCopy.addAnnotation(tf);
               }
             }
-            if (vbCopy.getAnnotations() != null && !vbCopy.getAnnotations().isEmpty())
+            if (vbCopy.getAnnotations() != null && !vbCopy.getAnnotations().isEmpty()) {
               clazz.addTag(vbCopy);
+            }
           }
         } else {
           clazz.addTag(t);
