@@ -496,9 +496,9 @@ public class DexPrinter {
         Collection<AnnotationElem> elems = e.getValue().getElems();
         if (!elems.isEmpty()) {
           elements = new ArrayList<AnnotationElement>();
-          Set<String> alreadyWritten = new HashSet<String>();
+          Set<AnnotationElem> alreadyWritten = new HashSet<AnnotationElem>();
           for (AnnotationElem ae : elems) {
-            if (!alreadyWritten.add(ae.getName())) {
+            if (!alreadyWritten.add(ae)) {
               throw new DexPrinterException("Duplicate annotation attribute: " + ae.getName());
             }
             elements.add(new ImmutableAnnotationElement(ae.getName(), buildEncodedValueForAnnotation(ae)));
@@ -670,7 +670,7 @@ public class DexPrinter {
     }
   }
 
-  private Set<Annotation> buildClassAnnotations(SootClass c) {
+  protected Set<Annotation> buildClassAnnotations(SootClass c) {
     Set<String> skipList = new HashSet<String>();
     Set<Annotation> annotations = buildCommonAnnotations(c, skipList);
 
@@ -855,7 +855,7 @@ public class DexPrinter {
     return annotations;
   }
 
-  private List<ImmutableAnnotation> buildVisibilityAnnotationTag(VisibilityAnnotationTag t, Set<String> skipList) {
+  protected List<ImmutableAnnotation> buildVisibilityAnnotationTag(VisibilityAnnotationTag t, Set<String> skipList) {
     if (t.getAnnotations() == null) {
       return Collections.emptyList();
     }
