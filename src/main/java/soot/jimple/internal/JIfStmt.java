@@ -34,6 +34,7 @@ import soot.ValueBox;
 import soot.baf.Baf;
 import soot.jimple.AbstractJimpleValueSwitch;
 import soot.jimple.BinopExpr;
+import soot.jimple.BranchableStmt;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.EqExpr;
 import soot.jimple.GeExpr;
@@ -50,7 +51,7 @@ import soot.jimple.Stmt;
 import soot.jimple.StmtSwitch;
 import soot.util.Switch;
 
-public class JIfStmt extends AbstractStmt implements IfStmt {
+public class JIfStmt extends AbstractStmt implements IfStmt, BranchableStmt {
 
   protected final ValueBox conditionBox;
   protected final UnitBox targetBox;
