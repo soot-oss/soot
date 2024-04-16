@@ -155,6 +155,7 @@ import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.ConstantValueTag;
 import soot.tagkit.DeprecatedTag;
+import soot.tagkit.DexInnerClassTag;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.FloatConstantValueTag;
@@ -1006,11 +1007,19 @@ public class DexPrinter {
             = new ImmutableAnnotationElement("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
         elements.add(flagsElement);
 
-        ImmutableEncodedValue nameValue;
-        if (icTag.getShortName() != null && !icTag.getShortName().isEmpty()) {
-          nameValue = new ImmutableStringEncodedValue(icTag.getShortName());
-        } else {
-          nameValue = ImmutableNullEncodedValue.INSTANCE;
+        ImmutableEncodedValue nameValue = null;
+        if (icTag instanceof DexInnerClassTag) {
+          DexInnerClassTag dx = (DexInnerClassTag) icTag;
+          if (dx.getOriginalName() != null) {
+            nameValue = new ImmutableStringEncodedValue(dx.getOriginalName());
+          }
+        }
+        if (nameValue == null) {
+          if (icTag.getShortName() != null && !icTag.getShortName().isEmpty()) {
+            nameValue = new ImmutableStringEncodedValue(icTag.getShortName());
+          } else {
+            nameValue = ImmutableNullEncodedValue.INSTANCE;
+          }
         }
 
         elements.add(new ImmutableAnnotationElement("name", nameValue));

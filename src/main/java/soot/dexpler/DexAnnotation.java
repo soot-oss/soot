@@ -82,6 +82,7 @@ import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.DeprecatedTag;
+import soot.tagkit.DexInnerClassTag;
 import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
@@ -611,8 +612,8 @@ public class DexAnnotation {
           // annotation is broken and does not end in $nn.
           outerClass = null;
         }
-        Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
-            outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
+        Tag innerTag = new DexInnerClassTag(DexType.toSootICAT(classType),
+            outerClass == null ? null : DexType.toSootICAT(outerClass), name, name, accessFlags);
         tags.add(innerTag);
         if (outerClass != null && !clazz.hasOuterClass()) {
           String sootOuterClass = Util.dottedClassName(outerClass);
