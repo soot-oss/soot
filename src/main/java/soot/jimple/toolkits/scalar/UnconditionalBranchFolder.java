@@ -39,6 +39,7 @@ import soot.Singletons;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
+import soot.jimple.BranchableStmt;
 import soot.jimple.ConditionExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
@@ -213,6 +214,37 @@ public class UnconditionalBranchFolder extends BodyTransformer {
                   succAsGoto.setTarget(ifTarget);
                   stmtAsIfStmt.setTarget(gotoTarget);
                   ifTarget = gotoTarget;
+                  // We need to check whether anyone has a goto to the "goto X", because this no has to also go
+                  // to Y
+
+                  // If we wouldn't do that, we would e.g. go from
+                  // if $i0 == 6 goto label04;
+                  // label03:
+                  // goto label21;
+                  // ...
+                  // goto label3;
+
+                  // to
+                  // if $i0 != 6 goto label21;
+                  // label03:
+                  // goto label04;
+                  // label04:
+                  // ...
+                  // goto label03;
+                  // this would alter the semantics, since the previous go-tos now go to the other branch!
+                  if (!succAsGoto.getBoxesPointingToThis().isEmpty()) {
+                    // we cannot simply use getBoxesPointingToThis, because we do not want to update
+                    // trap references
+                    for (Unit i : units) {
+                      if (i instanceof BranchableStmt) {
+                        BranchableStmt b = (BranchableStmt) i;
+                        if (b.getTarget() == succAsGoto) {
+                          b.setTarget(gotoTarget);
+                        }
+                      }
+                    }
+                  }
+
                   // NOTE: No need to remove the goto [successor] because it
                   // is processed by the next iteration of the main loop.
                   // NOTE: Nothing is removed here, it is a simple refactoring.
