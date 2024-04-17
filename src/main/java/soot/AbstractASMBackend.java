@@ -344,10 +344,12 @@ public abstract class AbstractASMBackend {
                 if (va == null) {
                   continue;
                 }
-                for (AnnotationTag at : va.getAnnotations()) {
-                  AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
-                      (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
-                  generateAnnotationElems(av, at.getElems(), true);
+                if (va.hasAnnotations()) {
+                  for (AnnotationTag at : va.getAnnotations()) {
+                    AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
+                        (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
+                    generateAnnotationElems(av, at.getElems(), true);
+                  }
                 }
               }
             }
