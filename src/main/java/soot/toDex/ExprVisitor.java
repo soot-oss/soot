@@ -44,6 +44,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
+import soot.dexpler.tags.SpecialInvokeTypeTag;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.CastExpr;
@@ -99,7 +100,6 @@ import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
 import soot.toDex.instructions.InsnWithOffset;
 import soot.util.NumberedString;
-import soot.util.Switchable;
 
 /**
  * A visitor that builds a list of instructions from the Jimple expressions it visits.<br>
@@ -162,6 +162,24 @@ public class ExprVisitor implements ExprSwitch {
     MethodReference method = DexPrinter.toMethodReference(sie.getMethodRef());
     List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
     lastInvokeInstructionPosition = stmtV.getInstructionCount();
+    SpecialInvokeTypeTag tg = (SpecialInvokeTypeTag) origStmt.getTag(SpecialInvokeTypeTag.NAME);
+    if (tg != null) {
+      // eliminate the guesswork...
+      switch (tg.getType()) {
+        case DIRECT:
+          stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
+          return;
+        case SUPER:
+          stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
+          return;
+        case UNKNOWN:
+          // well... revert to original algorithm
+          break;
+        default:
+          throw new RuntimeException("Unsupported special invoke type: " + tg.getType());
+
+      }
+    }
     if (isCallToConstructor(sie) || isCallToPrivate(sie)) {
       stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
     } else if (isCallToSuper(sie)) {

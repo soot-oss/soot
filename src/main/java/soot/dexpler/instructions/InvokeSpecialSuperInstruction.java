@@ -30,20 +30,18 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
-import soot.jimple.InvokeExpr;
+import soot.dexpler.tags.SpecialInvokeTypeTag;
+import soot.dexpler.tags.SpecialInvokeTypeTag.Type;
 
-public class InvokeSpecialInstruction extends MethodInvocationInstruction {
+public class InvokeSpecialSuperInstruction extends InvokeSpecialInstruction {
 
-  public InvokeSpecialInstruction(Instruction instruction, int codeAdress) {
+  public InvokeSpecialSuperInstruction(Instruction instruction, int codeAdress) {
     super(instruction, codeAdress);
   }
 
-  public void jimplify(DexBody body) {
-    jimplifySpecial(body);
+  @Override
+  public void finalize(DexBody body, DexlibAbstractInstruction successor) {
+    super.finalize(body, successor);
+    getUnit().addTag(new SpecialInvokeTypeTag(Type.SUPER));
   }
-
-  public InvokeExpr getJimplifiedInvoke() {
-    return invocation;
-  }
-
 }

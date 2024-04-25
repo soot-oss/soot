@@ -176,6 +176,9 @@ public class DexAnnotation {
           // to methods through the creation of new
           // AnnotationDefaultTag.
           VisibilityAnnotationTag vt = (VisibilityAnnotationTag) t;
+          if (!vt.hasAnnotations()) {
+            continue;
+          }
           Iterator<AnnotationTag> it = vt.getAnnotations().iterator();
           while (it.hasNext()) {
             AnnotationTag a = it.next();
