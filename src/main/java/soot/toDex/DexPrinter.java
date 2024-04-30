@@ -10,12 +10,12 @@ package soot.toDex;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -313,7 +313,7 @@ public class DexPrinter {
       }
 
       if (Options.v().output_jar()) {
-        // if we create JAR file, MANIFEST.MF is preferred
+        // if we create JAR file, MANIFEST.MF is preferred.
         addManifest(outputZip, files);
       }
 
@@ -404,8 +404,8 @@ public class DexPrinter {
     try (BufferedOutputStream bufOut = new BufferedOutputStream(destination)) {
       manifest.write(bufOut);
       bufOut.flush();
+      destination.closeEntry();
     }
-    destination.closeEntry();
   }
 
   /**
@@ -1116,7 +1116,7 @@ public class DexPrinter {
 
   /**
    * Checks whether the given method shall be ignored, i.e., not written out to dex
-   * 
+   *
    * @param sm
    *          The method to check
    * @return True to ignore the method while writing the dex file, false to write it out as normal
@@ -1127,7 +1127,7 @@ public class DexPrinter {
 
   /**
    * Checks whether the given field shall be ignored, i.e., not written out to dex
-   * 
+   *
    * @param sf
    *          The field to check
    * @return True to ignore the field while writing the dex file, false to write it out as normal
@@ -1293,9 +1293,9 @@ public class DexPrinter {
 
   /**
    * Creates a statement visitor to build code for each statement.
-   * 
+   *
    * Allows subclasses to use own implementations
-   * 
+   *
    * @param belongingMethod
    *          the method
    * @param arrayInitDetector
@@ -1308,7 +1308,7 @@ public class DexPrinter {
 
   /**
    * Writes out the information stored in the tags associated with the given statement
-   * 
+   *
    * @param builder
    *          The builder used to generate the Dalvik method implementation
    * @param stmt
@@ -1397,7 +1397,7 @@ public class DexPrinter {
                 /*
                  * Assuming every instruction between this instruction and the jump target is a CONST_STRING instruction, how
                  * much could the distance increase?
-                 * 
+                 *
                  * Because we only spend the effort to count the number of CONST_STRING instructions if there is a real
                  * chance that it changes the distance to overflow the allowed maximum.
                  */
