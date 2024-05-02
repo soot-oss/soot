@@ -9,6 +9,8 @@ Originally, Soot started off as a Java optimization framework. By now, researche
 # IMPORTANT: Soot is now succeeded by SootUp!
 **In December 2022, we have officially released [SootUp](https://soot-oss.github.io/SootUp/announce/), a version of Soot with a completely overhauled, more modular, testable, maintainable and usable architecture. Please check this out in case you wish to start a new program-analysis project.**
 
+Since there has been some confusion: SootUp is not yet feature-complete. Therefore, the "old" Soot needs to live on for the time being, especially for projects that require instrumentation capabilities or robust Android support. The "old" Soot is still being maintained until it can safely be dropped for a feature-complete successor.
+
 # What input formats does Soot provide?
 
 Currently, Soot can process code from the following sources:
@@ -79,7 +81,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 <repositories>
@@ -108,7 +110,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <version>4.1.0</version>
+    <version>4.5.0</version>
   </dependency>
 </dependencies>
 ```
