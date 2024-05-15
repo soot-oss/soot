@@ -22,9 +22,9 @@ package soot.jimple.spark.solver;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Set;
+import java.util.Stack;
 
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
@@ -61,26 +61,31 @@ public class TopoSorter {
   protected HashSet<VarNode> visited;
 
   protected void dfsVisit(VarNode n) {
-    if (visited.contains(n)) {
+    if (!visited.add(n)) {
       return;
     }
-    List<VarNode> stack = new ArrayList<>();
-    List<VarNode> all = new ArrayList<>();
+
+    Stack<VarNode> stack = new Stack<>();
+    Set<VarNode> visitedSuccessors = new HashSet<>();
     stack.add(n);
+
     while (!stack.isEmpty()) {
-      VarNode s = stack.remove(stack.size() - 1);
-      if (visited.add(s)) {
-        all.add(s);
+      VarNode s = stack.peek();
+
+      if (visitedSuccessors.add(s)) {
         Node[] succs = pag.simpleLookup(s);
         for (Node element : succs) {
           if (ignoreTypes || pag.getTypeManager().castNeverFails(n.getType(), element.getType())) {
-            stack.add((VarNode) element);
+            if (visited.add((VarNode) element)) {
+              stack.push((VarNode) element);
+            }
           }
         }
+
+      } else {
+        stack.pop();
+        s.setFinishingNumber(nextFinishNumber++);
       }
-    }
-    for (int i = all.size() - 1; i >= 0; i--) {
-      all.get(i).setFinishingNumber(nextFinishNumber++);
     }
   }
 }
