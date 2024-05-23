@@ -70,6 +70,13 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
     return IntConstant.v(value);
   }
 
+  public IntConstant toBooleanConstant() {
+    if (value != 0) {
+      return IntConstant.v(1);
+    }
+    return IntConstant.v(value);
+  }
+
   @Override
   public Value defineType(Type t) {
     if (t instanceof FloatType) {
@@ -77,6 +84,8 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
     } else if (t instanceof IntType || t instanceof CharType || t instanceof BooleanType || t instanceof ByteType
         || t instanceof ShortType) {
       return this.toIntConstant();
+    } else if (t instanceof BooleanType) {
+      return toBooleanConstant();
     } else {
       if (value == 0 && t instanceof RefLikeType) {
         return NullConstant.v();

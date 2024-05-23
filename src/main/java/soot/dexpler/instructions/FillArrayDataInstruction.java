@@ -27,41 +27,35 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
-import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction31t;
-import org.jf.dexlib2.iface.reference.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.ArrayType;
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
 import soot.Local;
-import soot.LongType;
-import soot.ShortType;
-import soot.Type;
 import soot.dexpler.DexBody;
-import soot.dexpler.DexType;
+import soot.dexpler.DexFillArrayDataTransformer;
+import soot.dexpler.typing.UntypedConstant;
+import soot.dexpler.typing.UntypedIntOrFloatConstant;
+import soot.dexpler.typing.UntypedLongOrDoubleConstant;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
-import soot.jimple.DoubleConstant;
-import soot.jimple.FloatConstant;
+import soot.jimple.Constant;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
-import soot.jimple.LongConstant;
-import soot.jimple.NumericConstant;
 import soot.jimple.Stmt;
 
+/**
+ * Converts <code>fill-array-data</code> instructions and associated data blocks into a series of assignment instructions
+ * (one for each array index the data block contains a value).
+ * 
+ * As the data block contains untyped data, only the number of bytes per element is known. Recovering the array type at the
+ * stage this class is used on would require a detailed analysis on the dex code. Therefore we save the data elements as
+ * {@link UntypedConstant} and later use {@link DexFillArrayDataTransformer} to convert the values to their final type.
+ */
 public class FillArrayDataInstruction extends PseudoInstruction {
   private static final Logger logger = LoggerFactory.getLogger(FillArrayDataInstruction.class);
 
@@ -95,13 +89,11 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     List<Number> elements = arrayTable.getArrayElements();
     int numElements = elements.size();
 
+    int elementsWidth = arrayTable.getElementWidth();
     Stmt firstAssign = null;
     for (int i = 0; i < numElements; i++) {
       ArrayRef arrayRef = Jimple.v().newArrayRef(arrayReference, IntConstant.v(i));
-      NumericConstant element = getArrayElement(elements.get(i), body, destRegister);
-      if (element == null) {
-        break;
-      }
+      Constant element = getArrayElement(elements.get(i), elementsWidth);
       AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
       addTags(assign);
       body.add(assign);
@@ -110,6 +102,8 @@ public class FillArrayDataInstruction extends PseudoInstruction {
       }
     }
     if (firstAssign == null) { // if numElements == 0. Is it possible?
+      logger.warn("No assign statements created for array at address 0x{} - empty array data section?",
+          Integer.toHexString(targetAddress));
       firstAssign = Jimple.v().newNopStmt();
       body.add(firstAssign);
     }
@@ -122,80 +116,19 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 
   }
 
-  private NumericConstant getArrayElement(Number element, DexBody body, int arrayRegister) {
-
-    List<DexlibAbstractInstruction> instructions = body.instructionsBefore(this);
-    Set<Integer> usedRegisters = new HashSet<Integer>();
-    usedRegisters.add(arrayRegister);
-
-    Type elementType = null;
-    Outer: for (DexlibAbstractInstruction i : instructions) {
-      if (usedRegisters.isEmpty()) {
-        break;
-      }
-
-      for (int reg : usedRegisters) {
-        if (i instanceof NewArrayInstruction) {
-          NewArrayInstruction newArrayInstruction = (NewArrayInstruction) i;
-          Instruction22c instruction22c = (Instruction22c) newArrayInstruction.instruction;
-          if (instruction22c.getRegisterA() == reg) {
-            ArrayType arrayType = (ArrayType) DexType.toSoot((TypeReference) instruction22c.getReference());
-            elementType = arrayType.getElementType();
-            break Outer;
-          }
-        }
-      }
-
-      // // look for obsolete registers
-      // for (int reg : usedRegisters) {
-      // if (i.overridesRegister(reg)) {
-      // usedRegisters.remove(reg);
-      // break; // there can't be more than one obsolete
-      // }
-      // }
-
-      // look for new registers
-      for (int reg : usedRegisters) {
-        int newRegister = i.movesToRegister(reg);
-        if (newRegister != -1) {
-          usedRegisters.add(newRegister);
-          usedRegisters.remove(reg);
-          break; // there can't be more than one new
-        }
-      }
+  private Constant getArrayElement(Number element, int elementsWidth) {
+    if (elementsWidth == 2) {
+      // For size = 2 the only possible array type is short[]
+      return IntConstant.v(element.shortValue());
     }
 
-    if (elementType == null) {
-      // throw new InternalError("Unable to find array type to type array elements!");
-      logger.warn("Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
-      return null;
+    if (elementsWidth <= 4) {
+      // can be array of int, char, boolean, float
+      return UntypedIntOrFloatConstant.v(element.intValue());
     }
 
-    NumericConstant value;
-
-    if (elementType instanceof BooleanType) {
-      value = IntConstant.v(element.intValue());
-      IntConstant ic = (IntConstant) value;
-      if (ic.value != 0) {
-        value = IntConstant.v(1);
-      }
-    } else if (elementType instanceof ByteType) {
-      value = IntConstant.v(element.byteValue());
-    } else if (elementType instanceof CharType || elementType instanceof ShortType) {
-      value = IntConstant.v(element.shortValue());
-    } else if (elementType instanceof DoubleType) {
-      value = DoubleConstant.v(Double.longBitsToDouble(element.longValue()));
-    } else if (elementType instanceof FloatType) {
-      value = FloatConstant.v(Float.intBitsToFloat(element.intValue()));
-    } else if (elementType instanceof IntType) {
-      value = IntConstant.v(element.intValue());
-    } else if (elementType instanceof LongType) {
-      value = LongConstant.v(element.longValue());
-    } else {
-      throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: " + elementType);
-    }
-    return value;
-
+    // can be array of long or double
+    return UntypedLongOrDoubleConstant.v(element.longValue());
   }
 
   @Override
