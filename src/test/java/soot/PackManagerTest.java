@@ -20,22 +20,31 @@ package soot;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+import com.google.common.io.Files;
 import org.junit.Test;
 import soot.options.Options;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
  * Some tests to disable jb transformers.
+ *
  * @author Linghui Luo
  */
 public class PackManagerTest {
@@ -120,6 +129,30 @@ public class PackManagerTest {
                     "virtualinvoke $r0.<java.io.PrintStream: void println(int)>(i2)",
                     "return");
         }
+    }
+
+    @Test
+    public void testWritingToJar() throws Exception {
+        setup();
+        File tempDir = Files.createTempDir();
+        Options.v().set_output_jar(true);
+        Options.v().set_output_dir(tempDir.getAbsolutePath());
+        Options.v().set_output_format(Options.output_format_dex);
+        Scene.v().loadNecessaryClasses();
+        PackManager.v().runBodyPacks();
+        PackManager.v().writeOutput();
+        assertEquals(1, tempDir.listFiles().length);
+        File targetJar = tempDir.listFiles()[0];
+        ZipFile jarRead = new ZipFile(targetJar.getAbsolutePath());
+        Enumeration<? extends ZipEntry> entries = jarRead.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = entries.nextElement();
+            if (entry.getName().toLowerCase().endsWith("manifest.mf")) {
+                assertTrue(entry.getSize() > 0);
+                return;
+            }
+        }
+        fail("No Manifest entry found in " + targetJar.getAbsolutePath());
     }
 
     public static List<String> expectedBody(String... jimpleLines) {
