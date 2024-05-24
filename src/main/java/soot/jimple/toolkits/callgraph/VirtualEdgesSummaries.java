@@ -596,12 +596,15 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (obj == null)
+      }
+      if (obj == null) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
       return Objects.equals(targetType, other.targetType);
     }
@@ -712,12 +715,15 @@ public class VirtualEdgesSummaries {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (!super.equals(obj))
+      }
+      if (!super.equals(obj)) {
         return false;
-      if (getClass() != obj.getClass())
+      }
+      if (getClass() != obj.getClass()) {
         return false;
+      }
       InvocationVirtualEdgeTarget other = (InvocationVirtualEdgeTarget) obj;
       return argIndex == other.argIndex && Objects.equals(targetMethod, other.targetMethod);
     }

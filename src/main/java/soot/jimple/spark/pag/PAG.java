@@ -1123,8 +1123,9 @@ public class PAG implements PointsToAnalysis {
             ln = ln.getReplacement();
 
             RefType rt = de.getTargetType();
-            if (rt == null)
+            if (rt == null) {
               rt = (RefType) ie.getMethodRef().getReturnType();
+            }
 
             // Fake an allocation node
             AllocNode alloc
