@@ -32,7 +32,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -307,8 +306,16 @@ public class FastHierarchy {
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
         return base == rtObject || base == rtSerializable || base == rtCloneable;
       } else {
+        // We can story any_subtype_of(x) in a variable of type x
+        RefType childBase = ((AnySubType) child).getBase();
+        if (childBase == parent) {
+          return true;
+        }
+
+        // If the child is any_subtype_of(x) and the parent is not x, this only works if all known subclasses of x
+        // cast-compatible to the parent
         Deque<SootClass> worklist = new ArrayDeque<SootClass>();
-        SootClass base = ((AnySubType) child).getBase().getSootClass();
+        SootClass base = childBase.getSootClass();
         if (base.isInterface()) {
           worklist.addAll(getAllImplementersOfInterface(base));
         } else {
