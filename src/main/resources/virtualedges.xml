@@ -719,4 +719,22 @@
 				target-position="argument" index="0" />
 		</targets>
 	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.Spliterator spliterator()" />
+		<targets>
+			<deferred position="return" />
+		</targets>
+	</edge>
+	
+	<!--  java.util.Spliterator -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachRemaining(java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
 </virtualedges>

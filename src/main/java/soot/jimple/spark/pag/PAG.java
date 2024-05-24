@@ -36,6 +36,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.AnySubType;
 import soot.Context;
 import soot.FastHierarchy;
 import soot.Kind;
@@ -80,7 +81,9 @@ import soot.jimple.spark.sets.SortedArraySet;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DeferredVirtualEdgeTarget;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.InstanceinvokeSource;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.InvocationVirtualEdgeTarget;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeSource;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
@@ -1093,19 +1096,47 @@ public class PAG implements PointsToAnalysis {
 
       if (edgeSrc instanceof InstanceinvokeSource) {
         for (VirtualEdgeTarget edgeTgt : ve.getTargets()) {
-          for (Local local : getOnFlyCallGraph().ofcgb().getReceiversOfVirtualEdge(edgeTgt, ie)) {
-            Node parm = srcmpag.nodeFactory().getNode(local);
-            parm = srcmpag.parameterize(parm, e.srcCtxt());
-            parm = parm.getReplacement();
+          if (edgeTgt instanceof InvocationVirtualEdgeTarget) {
+            for (Local local : getOnFlyCallGraph().ofcgb().getReceiversOfVirtualEdge((InvocationVirtualEdgeTarget) edgeTgt,
+                ie)) {
+              Node parm = srcmpag.nodeFactory().getNode(local);
+              parm = srcmpag.parameterize(parm, e.srcCtxt());
+              parm = parm.getReplacement();
 
-            // Get the PAG node for the "this" local in the callback
-            Node thiz = tgtmpag.nodeFactory().caseThis();
-            thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
-            thiz = thiz.getReplacement();
+              // Get the PAG node for the "this" local in the callback
+              Node thiz = tgtmpag.nodeFactory().caseThis();
+              thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
+              thiz = thiz.getReplacement();
 
-            // Make an edge from caller.argument to callee.this
-            addEdge(parm, thiz);
-            pval = addInterproceduralAssignment(parm, thiz, e);
+              // Make an edge from caller.argument to callee.this
+              addEdge(parm, thiz);
+              pval = addInterproceduralAssignment(parm, thiz, e);
+            }
+          } else if (edgeTgt instanceof DeferredVirtualEdgeTarget && e.srcStmt() instanceof AssignStmt
+              && ie.getMethodRef().getReturnType() instanceof RefType) {
+            DeferredVirtualEdgeTarget de = (DeferredVirtualEdgeTarget) edgeTgt;
+
+            // We need to fake an edge to the return value of the call
+            Local lop = (Local) ((AssignStmt) e.srcStmt()).getLeftOp();
+            Node ln = srcmpag.nodeFactory().getNode(lop);
+            ln = srcmpag.parameterize(ln, e.srcCtxt());
+            ln = ln.getReplacement();
+
+            RefType rt = de.getTargetType();
+            if (rt == null)
+              rt = (RefType) ie.getMethodRef().getReturnType();
+
+            // Fake an allocation node
+            AllocNode alloc
+                = makeAllocNode(new Pair<VarNode, SootClass>((VarNode) ln, rt.getSootClass()), AnySubType.v(rt), e.src());
+
+            // temporary variable
+            VarNode tmp = makeLocalVarNode(alloc, rt, e.src());
+
+            // tmp = new T();
+            addAllocEdge(alloc, tmp);
+            addEdge(tmp, ln);
+            // ofcg.updatedNode((VarNode) ln);
           }
         }
       }

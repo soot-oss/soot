@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -272,7 +273,8 @@ public class VirtualEdgesSummaries {
       for (VirtualEdgeTarget i : id.targets) {
         target.appendChild(edgeTargetToXML(doc, i));
       }
-
+    } else if (e instanceof DeferredVirtualEdgeTarget) {
+      target = doc.createElement("deferred");
     } else {
       if (e == null) {
         throw new IllegalArgumentException("Unsupported null edge type");
@@ -285,13 +287,17 @@ public class VirtualEdgesSummaries {
       target.setAttribute("declaringclass", e.targetType.getClassName());
     }
 
-    target.setAttribute("subsignature", e.targetMethod.toString());
-    if (e.isBase()) {
-      target.setAttribute("target-position", "base");
-    } else {
-      target.setAttribute("index", String.valueOf(e.argIndex));
-      target.setAttribute("target-position", "argument");
+    if (e instanceof InvocationVirtualEdgeTarget) {
+      InvocationVirtualEdgeTarget it = (InvocationVirtualEdgeTarget) e;
+      target.setAttribute("subsignature", it.targetMethod.toString());
+      if (it.isBase()) {
+        target.setAttribute("target-position", "base");
+      } else {
+        target.setAttribute("index", String.valueOf(it.argIndex));
+        target.setAttribute("target-position", "argument");
+      }
     }
+
     return target;
   }
 
@@ -331,6 +337,7 @@ public class VirtualEdgesSummaries {
     for (int i = 0, e = children.getLength(); i < e; i++) {
       if (children.item(i).getNodeType() == Node.ELEMENT_NODE) {
         Element targetElement = (Element) children.item(i);
+        RefType type = getDeclaringClassType(targetElement);
 
         switch (targetElement.getTagName()) {
           case "direct": {
@@ -338,7 +345,6 @@ public class VirtualEdgesSummaries {
                 = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
 
             String tpos = targetElement.getAttribute("target-position");
-            RefType type = getDeclaringClassType(targetElement);
             DirectTarget dt;
             switch (tpos) {
               case "argument":
@@ -371,14 +377,13 @@ public class VirtualEdgesSummaries {
             MethodSubSignature subsignature
                 = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
             String tpos = targetElement.getAttribute("target-position");
-            RefType dClass = getDeclaringClassType(targetElement);
             switch (tpos) {
               case "argument":
                 int argIdx = Integer.valueOf(targetElement.getAttribute("index"));
-                target = new IndirectTarget(dClass, subsignature, argIdx);
+                target = new IndirectTarget(type, subsignature, argIdx);
                 break;
               case "base":
-                target = new IndirectTarget(dClass, subsignature);
+                target = new IndirectTarget(type, subsignature);
                 break;
               default:
                 throw new IllegalArgumentException("Unsupported target position " + tpos);
@@ -391,6 +396,11 @@ public class VirtualEdgesSummaries {
             // was originally registered
             target.addTargets(parseEdgeTargets(targetElement));
 
+            targets.add(target);
+            break;
+          }
+          case "deferred": {
+            DeferredVirtualEdgeTarget target = new DeferredVirtualEdgeTarget(type);
             targets.add(target);
             break;
           }
@@ -555,30 +565,111 @@ public class VirtualEdgesSummaries {
 
   }
 
+  /**
+   * Abstract base class for all virtual edge targets.
+   * 
+   * @author Steven Arzt
+   *
+   */
   public static abstract class VirtualEdgeTarget {
 
-    protected int argIndex;
-    protected MethodSubSignature targetMethod;
     protected RefType targetType;
 
     VirtualEdgeTarget() {
       // internal use only
     }
 
-    public VirtualEdgeTarget(RefType targetType, MethodSubSignature targetMethod) {
-      this.argIndex = BASE_INDEX;
-      this.targetMethod = targetMethod;
-      this.targetType = targetType;
-    }
+    public abstract VirtualEdgeTarget clone();
 
-    public VirtualEdgeTarget(RefType targetType, MethodSubSignature targetMethod, int argIndex) {
-      this.argIndex = argIndex;
-      this.targetMethod = targetMethod;
+    public VirtualEdgeTarget(RefType targetType) {
       this.targetType = targetType;
     }
 
     public RefType getTargetType() {
       return targetType;
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(targetType);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
+      return Objects.equals(targetType, other.targetType);
+    }
+
+  }
+
+  /**
+   * <p>
+   * A deferred edge target models cases in which a call does not immediately invoke the callback, but instead returns an
+   * object on which a callback an be invoked later.
+   * </p>
+   * 
+   * <pre>
+   * List<String> l = ...
+   * Spliterator<String> split = l.spliterator();
+   * split.forEachRemaining(callback);
+   * </pre>
+   *
+   * @author arzt
+   *
+   */
+  public static class DeferredVirtualEdgeTarget extends VirtualEdgeTarget {
+
+    DeferredVirtualEdgeTarget() {
+      // internal use only
+    }
+
+    public DeferredVirtualEdgeTarget(RefType targetType) {
+      super(targetType);
+    }
+
+    @Override
+    public DeferredVirtualEdgeTarget clone() {
+      return new DeferredVirtualEdgeTarget(targetType);
+    }
+
+  }
+
+  /**
+   * <p>
+   * The target of a PAG or callgraph edge that corresponds to the immediate execution of a method.
+   * </p>
+   * 
+   * <p>
+   * The method can either be specified directly, or indirectly by following a chain obf subsequent calls, which is modeled
+   * by the respective derived classes of this abstract base class.
+   * </p>
+   * 
+   */
+  public static abstract class InvocationVirtualEdgeTarget extends VirtualEdgeTarget {
+
+    protected int argIndex;
+    protected MethodSubSignature targetMethod;
+
+    InvocationVirtualEdgeTarget() {
+      // internal use only
+    }
+
+    public InvocationVirtualEdgeTarget(RefType targetType, MethodSubSignature targetMethod) {
+      super(targetType);
+      this.argIndex = BASE_INDEX;
+      this.targetMethod = targetMethod;
+    }
+
+    public InvocationVirtualEdgeTarget(RefType targetType, MethodSubSignature targetMethod, int argIndex) {
+      super(targetType);
+      this.argIndex = argIndex;
+      this.targetMethod = targetMethod;
     }
 
     @Override
@@ -598,8 +689,6 @@ public class VirtualEdgesSummaries {
       this.argIndex = value;
     }
 
-    public abstract VirtualEdgeTarget clone();
-
     /**
      * Clones the edge, but with a potentially different arg index
      * 
@@ -616,36 +705,25 @@ public class VirtualEdgesSummaries {
     @Override
     public int hashCode() {
       final int prime = 31;
-      int result = 1;
-      result = prime * result + argIndex;
-      result = prime * result + ((targetMethod == null) ? 0 : targetMethod.hashCode());
+      int result = super.hashCode();
+      result = prime * result + Objects.hash(argIndex, targetMethod);
       return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj) {
+      if (this == obj)
         return true;
-      }
-      if ((obj == null) || (getClass() != obj.getClass())) {
+      if (!super.equals(obj))
         return false;
-      }
-      VirtualEdgeTarget other = (VirtualEdgeTarget) obj;
-      if (argIndex != other.argIndex) {
+      if (getClass() != obj.getClass())
         return false;
-      }
-      if (targetMethod == null) {
-        if (other.targetMethod != null) {
-          return false;
-        }
-      } else if (!targetMethod.equals(other.targetMethod)) {
-        return false;
-      }
-      return true;
+      InvocationVirtualEdgeTarget other = (InvocationVirtualEdgeTarget) obj;
+      return argIndex == other.argIndex && Objects.equals(targetMethod, other.targetMethod);
     }
   }
 
-  public static class DirectTarget extends VirtualEdgeTarget {
+  public static class DirectTarget extends InvocationVirtualEdgeTarget {
     private List<AbstractParameterMapping> parameterMappings = new ArrayList<>();
 
     DirectTarget() {
@@ -758,7 +836,7 @@ public class VirtualEdgesSummaries {
     return expr.getArg(idx);
   }
 
-  public static class IndirectTarget extends VirtualEdgeTarget {
+  public static class IndirectTarget extends InvocationVirtualEdgeTarget {
     List<VirtualEdgeTarget> targets = new ArrayList<>();
 
     IndirectTarget() {
