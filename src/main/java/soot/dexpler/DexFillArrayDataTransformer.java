@@ -70,6 +70,8 @@ import soot.toolkits.scalar.LocalDefs;
 public class DexFillArrayDataTransformer extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(DexFillArrayDataTransformer.class);
 
+  private static final int MAX_RECURSION_DEPTH = 5;
+
   public static DexFillArrayDataTransformer v() {
     return new DexFillArrayDataTransformer();
   }
@@ -92,7 +94,7 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
 
           Local l = (Local) leftArray.getBase();
           List<Type> arrayTypes = new LinkedList<>();
-          checkArrayDefinitions(l, ass, defs, arrayTypes);
+          checkArrayDefinitions(l, ass, defs, arrayTypes, MAX_RECURSION_DEPTH);
           if (arrayTypes.isEmpty()) {
             throw new InternalError("Failed to determine the array type ");
           }
@@ -124,8 +126,14 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
    * @param defs
    * @param arrayTypes
    *          result list containing the discovered array type(s)
+   * @param maxDepth
    */
-  private void checkArrayDefinitions(Local l, Unit u, LocalDefs defs, List<Type> arrayTypes) {
+  private void checkArrayDefinitions(Local l, Unit u, LocalDefs defs, List<Type> arrayTypes, int maxDepth) {
+    if (maxDepth <= 0) {
+      // Avoid infinite recursion
+      logger.warn("Recursion depth limit reached - aborting");
+      return;
+    }
     List<Unit> assDefs = defs.getDefsOfAt(l, u);
     for (Unit d : assDefs) {
       if (d instanceof AssignStmt) {
@@ -135,9 +143,7 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
           // array is assigned from a newly created array
           NewArrayExpr newArray = (NewArrayExpr) source;
           arrayTypes.add(newArray.getBaseType());
-          continue;
-        }
-        if (source instanceof InvokeExpr) {
+        } else if (source instanceof InvokeExpr) {
           // array is assigned from the return value of a function
           InvokeExpr invExpr = (InvokeExpr) source;
           Type aType = invExpr.getMethodRef().getReturnType();
@@ -146,15 +152,13 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
                 + "does not return an array type. Invocation: " + invExpr.getMethodRef());
           }
           arrayTypes.add(((ArrayType) aType).getArrayElementType());
-          continue;
-        }
-        if (source instanceof Local) {
+        } else if (source instanceof Local) {
           // our array is defined by an assignment from another array => check the definition of that other array.
           Local newLocal = (Local) source; // local of the "other array"
-          checkArrayDefinitions(newLocal, d, defs, arrayTypes);
-          continue;
+          checkArrayDefinitions(newLocal, d, defs, arrayTypes, maxDepth - 1);
+        } else {
+          throw new InternalError("Unsupported array definition statement: " + d);
         }
-        throw new InternalError("Unsupported array definition statement: " + d);
       }
     }
 
