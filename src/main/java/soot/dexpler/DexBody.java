@@ -40,7 +40,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;
@@ -771,6 +770,7 @@ public class DexBody {
       DeadAssignmentEliminator.v().transform(jBody);
       UnconditionalBranchFolder.v().transform(jBody);
     }
+    DexFillArrayDataTransformer.v().transform(jBody);
 
     TypeAssigner.v().transform(jBody);
 
