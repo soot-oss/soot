@@ -71,8 +71,10 @@ public class CilBinaryNumericInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     Value left = CilInstructionFactory.fromInstructionMsg(instruction.getLeft(), dotnetBody, cilBlock).jimplifyExpr(jb);
     left = inlineCastExpr(left);
+    left = simplifyComplexExpression(jb, left);
     Value right = CilInstructionFactory.fromInstructionMsg(instruction.getRight(), dotnetBody, cilBlock).jimplifyExpr(jb);
     right = inlineCastExpr(right);
+    right = simplifyComplexExpression(jb, right);
     switch (instruction.getOperator()) {
       case Add:
         return Jimple.v().newAddExpr(left, right);

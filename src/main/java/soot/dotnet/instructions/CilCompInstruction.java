@@ -58,8 +58,10 @@ public class CilCompInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     Value left = CilInstructionFactory.fromInstructionMsg(instruction.getLeft(), dotnetBody, cilBlock).jimplifyExpr(jb);
     left = inlineCastExpr(left);
+    left = simplifyComplexExpression(jb, left);
     Value right = CilInstructionFactory.fromInstructionMsg(instruction.getRight(), dotnetBody, cilBlock).jimplifyExpr(jb);
     right = inlineCastExpr(right);
+    right = simplifyComplexExpression(jb, right);
     IlComparisonKind comparisonKind = instruction.getComparisonKind();
     if (right instanceof BinopExpr && left instanceof Constant) {
       if (comparisonKind == IlComparisonKind.Equality || comparisonKind == IlComparisonKind.Inequality) {

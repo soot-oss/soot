@@ -182,7 +182,10 @@ public class DotnetBodyVariableManager {
         ? DotnetTypeFactory.toSootType(v.getType())
         : DotnetTypeFactory.toSootType(type); // deprecated JimpleToDotnetType(type)
 
-    Local newLocal = Jimple.v().newLocal(v.getName(), localType);
+    String n = v.getName();
+    if (n.isEmpty())
+      n = "noname";
+    Local newLocal = Jimple.v().newLocal(n, localType);
     this.mainJb.getLocals().add(newLocal);
     if (jbTmp != null && jbTmp != this.mainJb) {
       jbTmp.getLocals().add(newLocal); // dummy due to clone method

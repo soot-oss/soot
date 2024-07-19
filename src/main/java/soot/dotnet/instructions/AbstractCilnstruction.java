@@ -1,5 +1,11 @@
 package soot.dotnet.instructions;
 
+import soot.Body;
+import soot.Immediate;
+import soot.Local;
+import soot.Value;
+import soot.ValueBox;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,6 +30,11 @@ package soot.dotnet.instructions;
 
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Jimple;
+import soot.jimple.StaticFieldRef;
 
 public abstract class AbstractCilnstruction implements CilInstruction {
 
@@ -36,4 +47,48 @@ public abstract class AbstractCilnstruction implements CilInstruction {
     this.dotnetBody = dotnetBody;
     this.cilBlock = cilBlock;
   }
+
+  protected Value simplifyComplexExpression(Body jb, Value var) {
+    if (var instanceof Immediate) {
+      return var;
+    }
+    final Jimple jimple = Jimple.v();
+    if (var instanceof InvokeExpr) {
+      InvokeExpr inv = (InvokeExpr) var;
+      for (int arg = 0; arg < inv.getArgCount(); arg++) {
+        ValueBox argBox = inv.getArgBox(arg);
+        argBox.setValue(simplifyComplexExpression(jb, argBox.getValue()));
+      }
+      if (var instanceof InstanceInvokeExpr) {
+        Value base = ((InstanceInvokeExpr) var).getBase();
+        if (!(base instanceof Local)) {
+          // we have to see how the order plays out: Does a complex argument or base object get evaluated first?
+          throw new RuntimeException("Non-local base value currently not supported");
+        }
+      }
+      return createTempVar(jb, jimple, inv);
+    } else if (var instanceof StaticFieldRef) {
+      return createTempVar(jb, jimple, var);
+    } else if (var instanceof InstanceFieldRef) {
+      Value base = ((InstanceFieldRef) var).getBase();
+      if (!(base instanceof Local)) {
+        base = simplifyComplexExpression(jb, base);
+        ((InstanceFieldRef) var).setBase(base);
+      }
+      return createTempVar(jb, jimple, var);
+    } else {
+      for (ValueBox i : var.getUseBoxes()) {
+        i.setValue(simplifyComplexExpression(jb, i.getValue()));
+      }
+      return createTempVar(jb, jimple, var);
+    }
+  }
+
+  private Value createTempVar(Body jb, final Jimple jimple, Value inv) {
+    Local interimLocal = jimple.newLocal("tmp" + jb.getLocalCount(), inv.getType());
+    jb.getLocals().add(interimLocal);
+    jb.getUnits().add(jimple.newAssignStmt(interimLocal, inv));
+    return interimLocal;
+  }
+
 }

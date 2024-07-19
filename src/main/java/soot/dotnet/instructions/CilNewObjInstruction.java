@@ -24,16 +24,26 @@ import java.util.ArrayList;
  * #L%
  */
 import soot.Body;
-import soot.Local;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Type;
 import soot.Value;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.LongConstant;
 import soot.jimple.NewExpr;
+import soot.jimple.StringConstant;
 
 /**
  * Combi instruction with instantiating a new object and calling the constructor (no structs often) Call
@@ -56,11 +66,10 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
     SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
     NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
 
-    ArrayList<Local> argsVariables = new ArrayList<>();
+    ArrayList<Value> argsVariables = new ArrayList<>();
     ArrayList<Type> argsTypes = new ArrayList<>();
     for (ProtoIlInstructions.IlInstructionMsg a : instruction.getArgumentsList()) {
-      argsVariables.add(dotnetBody.variableManager.addOrGetVariable(a.getVariable(), jb));
-      argsTypes.add(DotnetTypeFactory.toSootType(a.getVariable().getType().getFullname()));
+      addArguments(jb, argsVariables, argsTypes, a);
     }
 
     // Constructor call expression
@@ -68,5 +77,46 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
     listOfArgs = argsVariables;
 
     return newExpr;
+  }
+
+  public void addArguments(Body jb, ArrayList<Value> argsVariables, ArrayList<Type> argsTypes,
+      ProtoIlInstructions.IlInstructionMsg a) {
+    if (a.hasVariable()) {
+      argsVariables.add(dotnetBody.variableManager.addOrGetVariable(a.getVariable(), jb));
+      argsTypes.add(DotnetTypeFactory.toSootType(a.getVariable().getType().getFullname()));
+    } else {
+      IlType t = a.getConstantType();
+      if (t == null) {
+        throw new RuntimeException("Not a local or constant: " + a);
+      }
+      switch (t) {
+        case type_unknown:
+        case UNRECOGNIZED:
+          throw new RuntimeException("Not a local or constant: " + a);
+        case type_double:
+          argsVariables.add(DoubleConstant.v(a.getValueConstantDouble()));
+          argsTypes.add(DoubleType.v());
+          break;
+        case type_float:
+          argsVariables.add(FloatConstant.v(a.getValueConstantFloat()));
+          argsTypes.add(FloatType.v());
+          break;
+        case type_int32:
+          argsVariables.add(IntConstant.v(a.getValueConstantInt32()));
+          argsTypes.add(IntType.v());
+          break;
+        case type_int64:
+          argsVariables.add(LongConstant.v(a.getValueConstantInt64()));
+          argsTypes.add(LongType.v());
+          break;
+        case type_string:
+          argsVariables.add(StringConstant.v(a.getValueConstantString()));
+          argsTypes.add(RefType.v("java.lang.String"));
+          break;
+        default:
+          throw new RuntimeException("Unsupported: " + t);
+
+      }
+    }
   }
 }

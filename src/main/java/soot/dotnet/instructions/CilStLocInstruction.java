@@ -65,6 +65,13 @@ public class CilStLocInstruction extends AbstractCilnstruction {
     }
 
     Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), value.getType(), jb);
+    if (cilExpr instanceof CilNewObjInstruction) {
+      CilNewObjInstruction n = (CilNewObjInstruction) cilExpr;
+      jb.getUnits().add(Jimple.v().newAssignStmt(variable, value));
+      jb.getUnits()
+          .add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(variable, n.getMethodRef(), n.getListOfArgs())));
+      return;
+    }
 
     // cast for validation
     if (cilExpr instanceof CilCallVirtInstruction) {

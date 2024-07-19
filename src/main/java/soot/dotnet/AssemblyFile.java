@@ -1,7 +1,5 @@
 package soot.dotnet;
 
-import com.google.common.base.Strings;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -33,6 +31,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
@@ -98,9 +98,11 @@ public class AssemblyFile extends File {
       ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder
           = createAnalyzerParamsBuilder("", ProtoDotnetNativeHost.AnalyzerMethodCall.GET_ALL_TYPES);
       ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
+      debugLog("get all types");
 
       byte[] protobufMessageBytes = nativeGetAllTypesMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       ProtoAssemblyAllTypes.AssemblyAllTypes a = ProtoAssemblyAllTypes.AssemblyAllTypes.parseFrom(protobufMessageBytes);
+      debugLog("Finished - get all type");
       protoAllTypes = a;
       return a;
     } catch (Exception e) {
@@ -129,8 +131,10 @@ public class AssemblyFile extends File {
     analyzerParamsBuilder.setMethodPeToken(peToken);
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
+    debugLog("get method body " + className + ": " + method + ", " + peToken);
     try {
       byte[] protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      debugLog("Finished - get method body " + className + ": " + method + ", " + peToken);
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -164,16 +168,17 @@ public class AssemblyFile extends File {
    *          request setter or getter
    * @return proto message with method body
    */
-  public ProtoIlInstructions.IlFunctionMsg getMethodBodyOfProperty(String className, String propertyName,
-      boolean isSetter) {
+  public ProtoIlInstructions.IlFunctionMsg getMethodBodyOfProperty(String className, String propertyName, boolean isSetter) {
     ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder
         = createAnalyzerParamsBuilder(className, ProtoDotnetNativeHost.AnalyzerMethodCall.GET_METHOD_BODY_OF_PROPERTY);
     analyzerParamsBuilder.setPropertyName(propertyName);
     analyzerParamsBuilder.setPropertyIsSetter(isSetter);
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
+    debugLog("get method body of property " + className + ": " + propertyName + ", " + isSetter);
     try {
       byte[] protoMsgBytes = nativeGetMethodBodyOfPropertyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      debugLog("Finished - get method body of property " + className + ": " + propertyName + ", " + isSetter);
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -218,9 +223,11 @@ public class AssemblyFile extends File {
     }
     analyzerParamsBuilder.setEventAccessorType(accessorType);
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
+    debugLog("get method body of event " + className + ": " + eventName + ", " + eventDirective);
 
     try {
       byte[] protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      debugLog("Finished get method body of event " + className + ": " + eventName + ", " + eventDirective);
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -236,7 +243,17 @@ public class AssemblyFile extends File {
    * @return true if this object referenced to a file is an assembly
    */
   public boolean isAssembly() {
-    return nativeIsAssembly(pathNativeHost, fullyQualifiedAssemblyPathFilename);
+    debugLog("check assembly " + fullyQualifiedAssemblyPathFilename);
+    try {
+      return nativeIsAssembly(pathNativeHost, fullyQualifiedAssemblyPathFilename);
+    } finally {
+      debugLog("Finished check assembly " + fullyQualifiedAssemblyPathFilename);
+
+    }
+  }
+
+  private void debugLog(String s) {
+    System.err.println(s);
   }
 
   /**

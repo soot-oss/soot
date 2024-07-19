@@ -1,5 +1,15 @@
 package soot.dotnet;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,16 +33,6 @@ package soot.dotnet;
  */
 
 import com.google.common.base.Strings;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import soot.ClassProvider;
 import soot.ClassSource;
@@ -71,7 +71,7 @@ public class DotnetClassProvider implements ClassProvider {
   /**
    * Generate index of all assembly files with their types. An assembly file contains several types in one file
    */
-  private void ensureAssemblyIndex() {
+  public static void ensureAssemblyIndex() {
     Map<String, File> index = SourceLocator.v().dexClassIndex();
     if (index == null) {
       if (Options.v().verbose()) {
@@ -103,7 +103,7 @@ public class DotnetClassProvider implements ClassProvider {
    * @param classPath
    *          paths to index
    */
-  private void buildAssemblyIndex(Map<String, File> index, List<String> classPath) {
+  private static void buildAssemblyIndex(Map<String, File> index, List<String> classPath) {
     if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path())) {
       throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
     }

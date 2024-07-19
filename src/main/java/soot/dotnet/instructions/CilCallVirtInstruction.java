@@ -74,8 +74,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
   private SootClass clazz;
   private DotnetMethod method;
 
-  public CilCallVirtInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
-      CilBlock cilBlock) {
+  public CilCallVirtInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
     localsToCastForCall = new ArrayList<>();
   }
@@ -115,7 +114,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     // STATIC
     if (method.isStatic()) {
       checkMethodAvailable();
-      List<Local> argsVariables = new ArrayList<>();
+      List<Value> argsVariables = new ArrayList<>();
       List<Type> argsTypes = new ArrayList<>();
 
       // If System.Array.Empty
@@ -125,12 +124,10 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
       }
 
       // arguments which are passed to this function
-      for (int z = 0; z < instruction.getArgumentsCount(); z++) {
-        Value variableValue
-            = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
-        checkVariabelIsLocal(variableValue, z, false);
-        Local variable = (Local) variableValue;
-        argsVariables.add(variable);
+      for (ProtoIlInstructions.IlInstructionMsg a : instruction.getArgumentsList()) {
+        Value argValue = CilInstructionFactory.fromInstructionMsg(a, dotnetBody, cilBlock).jimplifyExpr(jb);
+        argValue = simplifyComplexExpression(jb, argValue);
+        argsVariables.add(argValue);
       }
       // method-parameters (signature)
       for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions()) {
@@ -179,15 +176,15 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
 
     Value baseValue
         = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(0), dotnetBody, cilBlock).jimplifyExpr(jb);
-    checkVariabelIsLocal(baseValue, 0, true);
+    baseValue = simplifyComplexExpression(jb, baseValue);
     Local base = (Local) baseValue;
 
     if (instruction.getArgumentsCount() > 1) {
       for (int z = 1; z < instruction.getArgumentsCount(); z++) {
-        Value variableValue
+        Value argValue
             = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
-        checkVariabelIsLocal(variableValue, z, false);
-        Local variable = (Local) variableValue;
+        argValue = simplifyComplexExpression(jb, argValue);
+        Local variable = (Local) argValue;
         argsVariables.add(variable);
       }
       for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : instruction.getMethod().getParameterList()) {
@@ -233,22 +230,6 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     if (method.getName().trim().isEmpty()) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
           + " of declared type " + method.getDeclaringClass().getName() + " has no method name!");
-    }
-  }
-
-  private void checkVariabelIsLocal(Value var, int argPos, boolean isBase) {
-    String err = "CALL: The given argument ";
-    err += argPos;
-    err += " ";
-    if (isBase) {
-      err += "(base variable)";
-    }
-    err += " of invoked method " + method.getName() + " declared in " + clazz.getName() + " is not a local! "
-        + "The value is: " + var.toString() + " of type " + var.getType() + "! " + "The resolving method body is: "
-        + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature();
-
-    if (!(var instanceof Local)) {
-      throw new RuntimeException(err);
     }
   }
 

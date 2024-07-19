@@ -92,6 +92,7 @@ public class CilConvInstruction extends AbstractCilnstruction {
         convType = UnknownType.v();
         break;
     }
+    argument = simplifyComplexExpression(jb, argument);
 
     return Jimple.v().newCastExpr(argument, convType);
   }

@@ -49,6 +49,7 @@ import java.util.List;
 import soot.Body;
 import soot.Local;
 import soot.SootMethodRef;
+import soot.Value;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.jimple.InvokeStmt;
@@ -62,13 +63,13 @@ public abstract class AbstractNewObjInstanceInstruction extends AbstractCilnstru
   }
 
   protected SootMethodRef methodRef;
-  protected List<Local> listOfArgs;
+  protected List<Value> listOfArgs;
 
   public SootMethodRef getMethodRef() {
     return methodRef;
   }
 
-  public List<Local> getListOfArgs() {
+  public List<Value> getListOfArgs() {
     return listOfArgs;
   }
 
