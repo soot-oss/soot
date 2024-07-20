@@ -84,7 +84,7 @@ public abstract class AbstractCilnstruction implements CilInstruction {
     }
   }
 
-  private Value createTempVar(Body jb, final Jimple jimple, Value inv) {
+  protected Value createTempVar(Body jb, final Jimple jimple, Value inv) {
     Local interimLocal = jimple.newLocal("tmp" + jb.getLocalCount(), inv.getType());
     jb.getLocals().add(interimLocal);
     jb.getUnits().add(jimple.newAssignStmt(interimLocal, inv));

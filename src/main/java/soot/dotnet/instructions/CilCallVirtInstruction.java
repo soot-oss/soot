@@ -166,7 +166,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
 
   private MethodParams getMethodCallParams(Body jb) {
     checkMethodAvailable();
-    List<Local> argsVariables = new ArrayList<>();
+    List<Value> argsVariables = new ArrayList<>();
     List<Type> methodParamTypes = new ArrayList<>();
     if (instruction.getArgumentsCount() == 0) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
@@ -184,8 +184,7 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
         Value argValue
             = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
         argValue = simplifyComplexExpression(jb, argValue);
-        Local variable = (Local) argValue;
-        argsVariables.add(variable);
+        argsVariables.add(argValue);
       }
       for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : instruction.getMethod().getParameterList()) {
         methodParamTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
@@ -198,13 +197,15 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
     // GetConstructor(System.Reflection.ParameterModifier[])>(modifiers);
     // FastHierarchy is not available at this point, check hierarchy would be easier
     for (int i = 0; i < argsVariables.size(); i++) {
-      Local arg = argsVariables.get(i);
+      Value arg = argsVariables.get(i);
       Type methodParam = methodParamTypes.get(i);
-      if (arg.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-          && !methodParam.toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
-        Local castLocal = dotnetBody.variableManager.localGenerator.generateLocal(methodParam);
-        localsToCastForCall.add(new Pair<>(arg, castLocal));
-        argsVariables.set(i, castLocal);
+      if (arg instanceof Local) {
+        if (arg.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
+            && !methodParam.toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+          Local castLocal = dotnetBody.variableManager.localGenerator.generateLocal(methodParam);
+          localsToCastForCall.add(new Pair<>((Local) arg, castLocal));
+          argsVariables.set(i, castLocal);
+        }
       }
     }
 
@@ -234,14 +235,14 @@ public class CilCallVirtInstruction extends AbstractCilnstruction {
   }
 
   private static class MethodParams {
-    public MethodParams(Local base, SootMethodRef methodRef, List<Local> argumentVariables) {
+    public MethodParams(Local base, SootMethodRef methodRef, List<Value> argsVariables) {
       Base = base;
       MethodRef = methodRef;
-      ArgumentVariables = argumentVariables;
+      ArgumentVariables = argsVariables;
     }
 
     public Local Base;
     public SootMethodRef MethodRef;
-    public List<Local> ArgumentVariables;
+    public List<Value> ArgumentVariables;
   }
 }

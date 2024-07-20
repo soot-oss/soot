@@ -92,7 +92,9 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
       switch (t) {
         case type_unknown:
         case UNRECOGNIZED:
-          throw new RuntimeException("Not a local or constant: " + a);
+          Value v = CilInstructionFactory.fromInstructionMsg(a, dotnetBody, cilBlock).jimplifyExpr(jb);
+          Value p = createTempVar(jb, Jimple.v(), v);
+          argsVariables.add(p);
         case type_double:
           argsVariables.add(DoubleConstant.v(a.getValueConstantDouble()));
           argsTypes.add(DoubleType.v());
