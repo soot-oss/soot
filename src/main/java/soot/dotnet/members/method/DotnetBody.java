@@ -84,10 +84,12 @@ public class DotnetBody {
     // Resolve .NET Method Body -> BlockContainer -> Block -> IL Instruction
     CilBlockContainer blockContainer = new CilBlockContainer(ilFunctionMsg.getBody(), this);
     Body b = blockContainer.jimplify();
-    this.jb.getLocals().addAll(b.getLocals());
-    this.jb.getUnits().addAll(b.getUnits());
-    this.jb.getTraps().addAll(b.getTraps());
-    blockEntryPointsManager.swapGotoEntriesInJBody(this.jb);
+    for (Local l : b.getLocals())
+      if (!jb.getLocals().contains(l))
+        jb.getLocals().add(l);
+    jb.getUnits().addAll(b.getUnits());
+    jb.getTraps().addAll(b.getTraps());
+    blockEntryPointsManager.swapGotoEntriesInJBody(jb);
   }
 
   private void addThisStmt() {

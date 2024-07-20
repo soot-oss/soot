@@ -49,6 +49,9 @@ import soot.toolkits.scalar.Pair;
 public class AssemblyFile extends File {
   private static final Logger logger = LoggerFactory.getLogger(AssemblyFile.class);
 
+  private boolean loaded;
+  private static final Object lockobj = new Object();
+
   /**
    * Constructs a new AssemblyFile with the path to the file
    *
@@ -60,8 +63,16 @@ public class AssemblyFile extends File {
     this.fullyQualifiedAssemblyPathFilename = fullyQualifiedAssemblyPathFilename;
     this.pathNativeHost = Options.v().dotnet_nativehost_path();
 
-    // load JNI library
-    System.load(this.pathNativeHost);
+    if (!loaded) {
+      // load JNI library
+      synchronized (lockobj) {
+        if (loaded) {
+          return;
+        }
+        System.load(this.pathNativeHost);
+        loaded = true;
+      }
+    }
   }
 
   /**
