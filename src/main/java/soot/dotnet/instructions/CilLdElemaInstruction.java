@@ -25,21 +25,19 @@ import java.util.List;
  * #L%
  */
 import soot.Body;
-import soot.Immediate;
 import soot.Local;
 import soot.Type;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
-import soot.dotnet.members.method.DotnetBodyVariableManager;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 /**
- * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g.
- * elem[1,5]); unfolding it
+ * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g. elem[1,5]);
+ * unfolding it
  */
 public class CilLdElemaInstruction extends AbstractCilnstruction {
   public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
@@ -68,18 +66,18 @@ public class CilLdElemaInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
     baseArrayLocal = cilExpr.jimplifyExpr(jb);
+    baseArrayLocal = simplifyComplexExpression(jb, baseArrayLocal);
 
     if (instruction.getIndicesCount() == 1) {
-      Value ind
-          = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
-      Value index = ind instanceof Immediate ? ind : DotnetBodyVariableManager.inlineLocals(ind, jb);
+      Value ind = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
+      Value index = simplifyComplexExpression(jb, ind);
       return Jimple.v().newArrayRef(baseArrayLocal, index);
     }
 
     // if is multiArrayRef
     for (ProtoIlInstructions.IlInstructionMsg ind : instruction.getIndicesList()) {
       Value indExpr = CilInstructionFactory.fromInstructionMsg(ind, dotnetBody, cilBlock).jimplifyExpr(jb);
-      Value index = indExpr instanceof Immediate ? indExpr : DotnetBodyVariableManager.inlineLocals(indExpr, jb);
+      Value index = simplifyComplexExpression(jb, indExpr);
       indices.add(index);
     }
     // only temporary - MultiArrayRef is rewritten later in in StLoc with the resolveRewriteMultiArrAccess instruction

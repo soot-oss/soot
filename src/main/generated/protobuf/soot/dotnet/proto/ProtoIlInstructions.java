@@ -3543,15 +3543,15 @@ public final class ProtoIlInstructions {
         int index);
 
     /**
-     * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+     * <code>.IlType constant_type = 44;</code>
      * @return The enum numeric value on the wire for constantType.
      */
     int getConstantTypeValue();
     /**
-     * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+     * <code>.IlType constant_type = 44;</code>
      * @return The constantType.
      */
-    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType getConstantType();
+    soot.dotnet.proto.ProtoAssemblyAllTypes.IlType getConstantType();
   }
   /**
    * Protobuf type {@code IlInstructionMsg}
@@ -3893,6 +3893,10 @@ public final class ProtoIlInstructions {
        * <code>CALL_INDIRECT = 72;</code>
        */
       CALL_INDIRECT(72),
+      /**
+       * <code>MATCH_INSTRUCTION = 73;</code>
+       */
+      MATCH_INSTRUCTION(73),
       UNRECOGNIZED(-1),
       ;
 
@@ -4176,6 +4180,10 @@ public final class ProtoIlInstructions {
        * <code>CALL_INDIRECT = 72;</code>
        */
       public static final int CALL_INDIRECT_VALUE = 72;
+      /**
+       * <code>MATCH_INSTRUCTION = 73;</code>
+       */
+      public static final int MATCH_INSTRUCTION_VALUE = 73;
 
 
       public final int getNumber() {
@@ -4272,6 +4280,7 @@ public final class ProtoIlInstructions {
           case 70: return LD_TYPE_TOKEN;
           case 71: return INVALID_BRANCH;
           case 72: return CALL_INDIRECT;
+          case 73: return MATCH_INSTRUCTION;
           default: return null;
         }
       }
@@ -5424,154 +5433,6 @@ public final class ProtoIlInstructions {
       // @@protoc_insertion_point(enum_scope:IlInstructionMsg.IlPrimitiveType)
     }
 
-    /**
-     * <pre>
-     * TYPE
-     * </pre>
-     *
-     * Protobuf enum {@code IlInstructionMsg.IlType}
-     */
-    public enum IlType
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>type_unknown = 0;</code>
-       */
-      type_unknown(0),
-      /**
-       * <code>type_string = 1;</code>
-       */
-      type_string(1),
-      /**
-       * <code>type_int32 = 2;</code>
-       */
-      type_int32(2),
-      /**
-       * <code>type_int64 = 3;</code>
-       */
-      type_int64(3),
-      /**
-       * <code>type_float = 4;</code>
-       */
-      type_float(4),
-      /**
-       * <code>type_double = 5;</code>
-       */
-      type_double(5),
-      UNRECOGNIZED(-1),
-      ;
-
-      /**
-       * <code>type_unknown = 0;</code>
-       */
-      public static final int type_unknown_VALUE = 0;
-      /**
-       * <code>type_string = 1;</code>
-       */
-      public static final int type_string_VALUE = 1;
-      /**
-       * <code>type_int32 = 2;</code>
-       */
-      public static final int type_int32_VALUE = 2;
-      /**
-       * <code>type_int64 = 3;</code>
-       */
-      public static final int type_int64_VALUE = 3;
-      /**
-       * <code>type_float = 4;</code>
-       */
-      public static final int type_float_VALUE = 4;
-      /**
-       * <code>type_double = 5;</code>
-       */
-      public static final int type_double_VALUE = 5;
-
-
-      public final int getNumber() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalArgumentException(
-              "Can't get the number of an unknown enum value.");
-        }
-        return value;
-      }
-
-      /**
-       * @param value The numeric wire value of the corresponding enum entry.
-       * @return The enum associated with the given numeric wire value.
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
-      public static IlType valueOf(int value) {
-        return forNumber(value);
-      }
-
-      /**
-       * @param value The numeric wire value of the corresponding enum entry.
-       * @return The enum associated with the given numeric wire value.
-       */
-      public static IlType forNumber(int value) {
-        switch (value) {
-          case 0: return type_unknown;
-          case 1: return type_string;
-          case 2: return type_int32;
-          case 3: return type_int64;
-          case 4: return type_float;
-          case 5: return type_double;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<IlType>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          IlType> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<IlType>() {
-              public IlType findValueByNumber(int number) {
-                return IlType.forNumber(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        if (this == UNRECOGNIZED) {
-          throw new java.lang.IllegalStateException(
-              "Can't get the descriptor of an unrecognized enum value.");
-        }
-        return getDescriptor().getValues().get(ordinal());
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDescriptor().getEnumTypes().get(7);
-      }
-
-      private static final IlType[] VALUES = values();
-
-      public static IlType valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        if (desc.getIndex() == -1) {
-          return UNRECOGNIZED;
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int value;
-
-      private IlType(int value) {
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:IlInstructionMsg.IlType)
-    }
-
     public static final int OP_CODE_FIELD_NUMBER = 1;
     private int opCode_ = 0;
     /**
@@ -6695,19 +6556,19 @@ public final class ProtoIlInstructions {
     public static final int CONSTANT_TYPE_FIELD_NUMBER = 44;
     private int constantType_ = 0;
     /**
-     * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+     * <code>.IlType constant_type = 44;</code>
      * @return The enum numeric value on the wire for constantType.
      */
     @java.lang.Override public int getConstantTypeValue() {
       return constantType_;
     }
     /**
-     * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+     * <code>.IlType constant_type = 44;</code>
      * @return The constantType.
      */
-    @java.lang.Override public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType getConstantType() {
-      soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType.forNumber(constantType_);
-      return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType.UNRECOGNIZED : result;
+    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.IlType getConstantType() {
+      soot.dotnet.proto.ProtoAssemblyAllTypes.IlType result = soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.forNumber(constantType_);
+      return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.UNRECOGNIZED : result;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -6835,7 +6696,7 @@ public final class ProtoIlInstructions {
       for (int i = 0; i < switchSections_.size(); i++) {
         output.writeMessage(43, switchSections_.get(i));
       }
-      if (constantType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType.type_unknown.getNumber()) {
+      if (constantType_ != soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.type_unknown.getNumber()) {
         output.writeEnum(44, constantType_);
       }
       getUnknownFields().writeTo(output);
@@ -6993,7 +6854,7 @@ public final class ProtoIlInstructions {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(43, switchSections_.get(i));
       }
-      if (constantType_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType.type_unknown.getNumber()) {
+      if (constantType_ != soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.type_unknown.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(44, constantType_);
       }
@@ -12823,14 +12684,14 @@ public final class ProtoIlInstructions {
 
       private int constantType_ = 0;
       /**
-       * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+       * <code>.IlType constant_type = 44;</code>
        * @return The enum numeric value on the wire for constantType.
        */
       @java.lang.Override public int getConstantTypeValue() {
         return constantType_;
       }
       /**
-       * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+       * <code>.IlType constant_type = 44;</code>
        * @param value The enum numeric value on the wire for constantType to set.
        * @return This builder for chaining.
        */
@@ -12841,20 +12702,20 @@ public final class ProtoIlInstructions {
         return this;
       }
       /**
-       * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+       * <code>.IlType constant_type = 44;</code>
        * @return The constantType.
        */
       @java.lang.Override
-      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType getConstantType() {
-        soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType result = soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType.forNumber(constantType_);
-        return result == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType.UNRECOGNIZED : result;
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.IlType getConstantType() {
+        soot.dotnet.proto.ProtoAssemblyAllTypes.IlType result = soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.forNumber(constantType_);
+        return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.UNRECOGNIZED : result;
       }
       /**
-       * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+       * <code>.IlType constant_type = 44;</code>
        * @param value The constantType to set.
        * @return This builder for chaining.
        */
-      public Builder setConstantType(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType value) {
+      public Builder setConstantType(soot.dotnet.proto.ProtoAssemblyAllTypes.IlType value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -12864,7 +12725,7 @@ public final class ProtoIlInstructions {
         return this;
       }
       /**
-       * <code>.IlInstructionMsg.IlType constant_type = 44;</code>
+       * <code>.IlType constant_type = 44;</code>
        * @return This builder for chaining.
        */
       public Builder clearConstantType() {
@@ -15885,7 +15746,7 @@ public final class ProtoIlInstructions {
       ".IlVariableMsg\"/\n\023IlBlockContainerMsg\022\030\n" +
       "\006blocks\030\001 \003(\0132\010.IlBlock\"Q\n\007IlBlock\0222\n\027li" +
       "st_of_il_instructions\030\001 \003(\0132\021.IlInstruct" +
-      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\305\033\n\020IlInstruc" +
+      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\335\032\n\020IlInstruc" +
       "tionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstruction" +
       "Msg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.MethodDef" +
       "inition\022$\n\targuments\030\005 \003(\0132\021.IlInstructi" +
@@ -15923,77 +15784,74 @@ public final class ProtoIlInstructions {
       "ey_instr\030) \001(\0132\021.IlInstructionMsg\022\'\n\014def" +
       "ault_inst\030* \001(\0132\021.IlInstructionMsg\022,\n\017sw" +
       "itch_sections\030+ \003(\0132\023.IlSwitchSectionMsg" +
-      "\022/\n\rconstant_type\030, \001(\0162\030.IlInstructionM" +
-      "sg.IlType\"\313\007\n\010IlOpCode\022\013\n\007NONE_OP\020\000\022\007\n\003N" +
-      "OP\020\001\022\010\n\004CALL\020\004\022\t\n\005LEAVE\020\005\022\t\n\005LDSTR\020\006\022\t\n\005" +
-      "STOBJ\020\007\022\n\n\006LDFLDA\020\010\022\n\n\006LDC_I4\020\t\022\t\n\005LDLOC" +
-      "\020\n\022\t\n\005LDOBJ\020\013\022\t\n\005STLOC\020\014\022\n\n\006NEWOBJ\020\r\022\014\n\010" +
-      "CALLVIRT\020\016\022\036\n\032BINARY_NUMERIC_INSTRUCTION" +
-      "\020\017\022\n\n\006BRANCH\020\020\022\010\n\004COMP\020\021\022\022\n\016IF_INSTRUCTI" +
-      "ON\020\022\022\013\n\007LDSFLDA\020\023\022\n\n\006LDNULL\020\024\022\t\n\005LDLEN\020\025" +
-      "\022\010\n\004CONV\020\026\022\n\n\006NEWARR\020\027\022\013\n\007LDELEMA\020\030\022\r\n\tC" +
-      "ASTCLASS\020\031\022\n\n\006ISINST\020\032\022\007\n\003BOX\020\033\022\014\n\010UNBOX" +
-      "ANY\020\034\022\t\n\005UNBOX\020\035\022\r\n\tTRY_CATCH\020\036\022\n\n\006LDLOC" +
-      "A\020\037\022\021\n\rDEFAULT_VALUE\020 \022\007\n\003NOT\020!\022\017\n\013TRY_F" +
-      "INALLY\020\"\022\r\n\tTRY_FAULT\020#\022\023\n\017BLOCK_CONTAIN" +
-      "ER\020$\022\t\n\005BLOCK\020%\022\025\n\021TRY_CATCH_HANDLER\020&\022\013" +
-      "\n\007RETHROW\020\'\022\t\n\005THROW\020(\022\017\n\013DEBUG_BREAK\020)\022" +
-      "\r\n\tCK_FINITE\020*\022\n\n\006CP_BLK\020,\022\n\n\006CP_OBJ\020-\022\007" +
-      "\n\003DUP\020.\022\014\n\010INIT_BLK\020/\022\014\n\010INIT_OBJ\0200\022\n\n\006L" +
-      "DC_I8\0201\022\n\n\006LDC_R4\0202\022\n\n\006LDC_R8\0203\022\n\n\006LD_FL" +
-      "D\0204\022\n\n\006LD_FTN\0205\022\013\n\007LD_SFLD\0206\022\014\n\010LD_TOKEN" +
-      "\0207\022\017\n\013LD_VIRT_FTN\0208\022\r\n\tLOC_ALLOC\0209\022\016\n\nMK" +
-      "_REF_ANY\020:\022\006\n\002NO\020;\022\014\n\010READONLY\020<\022\020\n\014REF_" +
-      "ANY_TYPE\020=\022\017\n\013REF_ANY_VAL\020>\022\013\n\007SIZE_OF\020?" +
-      "\022\013\n\007ST_SFLD\020@\022\n\n\006SWITCH\020A\022\010\n\004TAIL\020B\022\r\n\tU" +
-      "NALIGNED\020C\022\014\n\010VOLATILE\020D\022\023\n\017LD_MEMBER_TO" +
-      "KEN\020E\022\021\n\rLD_TYPE_TOKEN\020F\022\022\n\016INVALID_BRAN" +
-      "CH\020G\022\021\n\rCALL_INDIRECT\020H\"\231\001\n\027IlBinaryNume" +
-      "ricOperator\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022\007\n" +
-      "\003Sub\020\002\022\007\n\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006Bit" +
-      "And\020\006\022\t\n\005BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftLef" +
-      "t\020\t\022\016\n\nShiftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_SI" +
-      "GN\020\000\022\n\n\006Signed\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlCom" +
-      "parisonKind\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality\020\001" +
-      "\022\016\n\nInequality\020\002\022\014\n\010LessThan\020\003\022\023\n\017LessTh" +
-      "anOrEqual\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022GreaterT" +
-      "hanOrEqual\020\006\"\342\001\n\020IlConversionKind\022\023\n\017NON" +
-      "E_CONVERSION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016\n\n" +
-      "IntToFloat\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatPre" +
-      "cisionChange\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZeroEx" +
-      "tend\020\007\022\014\n\010Truncate\020\010\022\022\n\016StopGCTracking\020\t" +
-      "\022\023\n\017StartGCTracking\020\n\022\022\n\016ObjectInterior\020" +
-      "\013\"\216\001\n\013IlStackType\022\023\n\017NONE_STACK_TYPE\020\000\022\021" +
-      "\n\rUnknown_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_STA" +
-      "CK\020\003\022\014\n\010I8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001O\020" +
-      "\007\022\r\n\tRef_STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimiti" +
-      "veType\022\027\n\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004None\020" +
-      "\001\022\006\n\002I1\020\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R4\020" +
-      "\006\022\006\n\002R8\020\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U8\020" +
-      "\013\022\005\n\001I\020\014\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unkno" +
-      "wn\020\020\"l\n\006IlType\022\020\n\014type_unknown\020\000\022\017\n\013type" +
-      "_string\020\001\022\016\n\ntype_int32\020\002\022\016\n\ntype_int64\020" +
-      "\003\022\016\n\ntype_float\020\004\022\017\n\013type_double\020\005\"\314\003\n\rI" +
-      "lVariableMsg\022\035\n\004type\030\001 \001(\0132\017.TypeDefinit" +
-      "ion\022\014\n\004name\030\002 \001(\t\022\031\n\021has_initial_value\030\003" +
-      " \001(\010\0224\n\rvariable_kind\030\004 \001(\0162\035.IlVariable" +
-      "Msg.IlVariableKind\"\274\002\n\016IlVariableKind\022\010\n" +
-      "\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED_LOCAL\020\002\022\027\n\023" +
-      "PINNED_REGION_LOCAL\020\003\022\017\n\013USING_LOCAL\020\004\022\021" +
-      "\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIALIZER_TARGET\020" +
-      "\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTION_STACK_SLOT" +
-      "\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tSTACKSLOT\020\n\022\022" +
-      "\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLAY_CLASS_LOCA" +
-      "L\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DECONSTRUCTION" +
-      "_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryCatchHandlerM" +
-      "sg\022\"\n\004body\030\001 \001(\0132\024.IlBlockContainerMsg\022 " +
-      "\n\010variable\030\002 \001(\0132\016.IlVariableMsg\022$\n\006filt" +
-      "er\030\003 \001(\0132\024.IlBlockContainerMsg\022\022\n\nhas_fi" +
-      "lter\030\004 \001(\010\"L\n\022IlSwitchSectionMsg\022\r\n\005labe" +
-      "l\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(\0132\021.IlInstru" +
-      "ctionMsgBQ\n\021soot.dotnet.protoB\023ProtoIlIn" +
-      "structions\252\002&Soot.Dotnet.Decompiler.Mode" +
-      "ls.Protobufb\006proto3"
+      "\022\036\n\rconstant_type\030, \001(\0162\007.IlType\"\342\007\n\010IlO" +
+      "pCode\022\013\n\007NONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004CALL\020\004\022\t\n" +
+      "\005LEAVE\020\005\022\t\n\005LDSTR\020\006\022\t\n\005STOBJ\020\007\022\n\n\006LDFLDA" +
+      "\020\010\022\n\n\006LDC_I4\020\t\022\t\n\005LDLOC\020\n\022\t\n\005LDOBJ\020\013\022\t\n\005" +
+      "STLOC\020\014\022\n\n\006NEWOBJ\020\r\022\014\n\010CALLVIRT\020\016\022\036\n\032BIN" +
+      "ARY_NUMERIC_INSTRUCTION\020\017\022\n\n\006BRANCH\020\020\022\010\n" +
+      "\004COMP\020\021\022\022\n\016IF_INSTRUCTION\020\022\022\013\n\007LDSFLDA\020\023" +
+      "\022\n\n\006LDNULL\020\024\022\t\n\005LDLEN\020\025\022\010\n\004CONV\020\026\022\n\n\006NEW" +
+      "ARR\020\027\022\013\n\007LDELEMA\020\030\022\r\n\tCASTCLASS\020\031\022\n\n\006ISI" +
+      "NST\020\032\022\007\n\003BOX\020\033\022\014\n\010UNBOXANY\020\034\022\t\n\005UNBOX\020\035\022" +
+      "\r\n\tTRY_CATCH\020\036\022\n\n\006LDLOCA\020\037\022\021\n\rDEFAULT_VA" +
+      "LUE\020 \022\007\n\003NOT\020!\022\017\n\013TRY_FINALLY\020\"\022\r\n\tTRY_F" +
+      "AULT\020#\022\023\n\017BLOCK_CONTAINER\020$\022\t\n\005BLOCK\020%\022\025" +
+      "\n\021TRY_CATCH_HANDLER\020&\022\013\n\007RETHROW\020\'\022\t\n\005TH" +
+      "ROW\020(\022\017\n\013DEBUG_BREAK\020)\022\r\n\tCK_FINITE\020*\022\n\n" +
+      "\006CP_BLK\020,\022\n\n\006CP_OBJ\020-\022\007\n\003DUP\020.\022\014\n\010INIT_B" +
+      "LK\020/\022\014\n\010INIT_OBJ\0200\022\n\n\006LDC_I8\0201\022\n\n\006LDC_R4" +
+      "\0202\022\n\n\006LDC_R8\0203\022\n\n\006LD_FLD\0204\022\n\n\006LD_FTN\0205\022\013" +
+      "\n\007LD_SFLD\0206\022\014\n\010LD_TOKEN\0207\022\017\n\013LD_VIRT_FTN" +
+      "\0208\022\r\n\tLOC_ALLOC\0209\022\016\n\nMK_REF_ANY\020:\022\006\n\002NO\020" +
+      ";\022\014\n\010READONLY\020<\022\020\n\014REF_ANY_TYPE\020=\022\017\n\013REF" +
+      "_ANY_VAL\020>\022\013\n\007SIZE_OF\020?\022\013\n\007ST_SFLD\020@\022\n\n\006" +
+      "SWITCH\020A\022\010\n\004TAIL\020B\022\r\n\tUNALIGNED\020C\022\014\n\010VOL" +
+      "ATILE\020D\022\023\n\017LD_MEMBER_TOKEN\020E\022\021\n\rLD_TYPE_" +
+      "TOKEN\020F\022\022\n\016INVALID_BRANCH\020G\022\021\n\rCALL_INDI" +
+      "RECT\020H\022\025\n\021MATCH_INSTRUCTION\020I\"\231\001\n\027IlBina" +
+      "ryNumericOperator\022\017\n\013NONE_BINARY\020\000\022\007\n\003Ad" +
+      "d\020\001\022\007\n\003Sub\020\002\022\007\n\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022" +
+      "\n\n\006BitAnd\020\006\022\t\n\005BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tSh" +
+      "iftLeft\020\t\022\016\n\nShiftRight\020\n\"1\n\006IlSign\022\r\n\tN" +
+      "ONE_SIGN\020\000\022\n\n\006Signed\020\001\022\014\n\010Unsigned\020\002\"\213\001\n" +
+      "\020IlComparisonKind\022\r\n\tNONE_KIND\020\000\022\014\n\010Equa" +
+      "lity\020\001\022\016\n\nInequality\020\002\022\014\n\010LessThan\020\003\022\023\n\017" +
+      "LessThanOrEqual\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022Gr" +
+      "eaterThanOrEqual\020\006\"\342\001\n\020IlConversionKind\022" +
+      "\023\n\017NONE_CONVERSION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop" +
+      "\020\002\022\016\n\nIntToFloat\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024Fl" +
+      "oatPrecisionChange\020\005\022\016\n\nSignExtend\020\006\022\016\n\n" +
+      "ZeroExtend\020\007\022\014\n\010Truncate\020\010\022\022\n\016StopGCTrac" +
+      "king\020\t\022\023\n\017StartGCTracking\020\n\022\022\n\016ObjectInt" +
+      "erior\020\013\"\216\001\n\013IlStackType\022\023\n\017NONE_STACK_TY" +
+      "PE\020\000\022\021\n\rUnknown_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n" +
+      "\007I_STACK\020\003\022\014\n\010I8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006" +
+      "\022\005\n\001O\020\007\022\r\n\tRef_STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlP" +
+      "rimitiveType\022\027\n\023NONE_PRIMITIVE_TYPE\020\000\022\010\n" +
+      "\004None\020\001\022\006\n\002I1\020\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022" +
+      "\006\n\002R4\020\006\022\006\n\002R8\020\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022" +
+      "\006\n\002U8\020\013\022\005\n\001I\020\014\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n" +
+      "\007Unknown\020\020\"\314\003\n\rIlVariableMsg\022\035\n\004type\030\001 \001" +
+      "(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(\t\022\031\n\021has" +
+      "_initial_value\030\003 \001(\010\0224\n\rvariable_kind\030\004 " +
+      "\001(\0162\035.IlVariableMsg.IlVariableKind\"\274\002\n\016I" +
+      "lVariableKind\022\010\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PI" +
+      "NNED_LOCAL\020\002\022\027\n\023PINNED_REGION_LOCAL\020\003\022\017\n" +
+      "\013USING_LOCAL\020\004\022\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INI" +
+      "TIALIZER_TARGET\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCE" +
+      "PTION_STACK_SLOT\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022" +
+      "\r\n\tSTACKSLOT\020\n\022\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DI" +
+      "SPLAY_CLASS_LOCAL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!" +
+      "\n\035DECONSTRUCTION_INIT_TEMPORARY\020\016\"\226\001\n\024Il" +
+      "TryCatchHandlerMsg\022\"\n\004body\030\001 \001(\0132\024.IlBlo" +
+      "ckContainerMsg\022 \n\010variable\030\002 \001(\0132\016.IlVar" +
+      "iableMsg\022$\n\006filter\030\003 \001(\0132\024.IlBlockContai" +
+      "nerMsg\022\022\n\nhas_filter\030\004 \001(\010\"L\n\022IlSwitchSe" +
+      "ctionMsg\022\r\n\005label\030\001 \001(\003\022\'\n\014target_instr\030" +
+      "\002 \001(\0132\021.IlInstructionMsgBQ\n\021soot.dotnet." +
+      "protoB\023ProtoIlInstructions\252\002&Soot.Dotnet" +
+      ".Decompiler.Models.Protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

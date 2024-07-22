@@ -24,18 +24,16 @@ import java.util.ArrayList;
  * #L%
  */
 import soot.Body;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.LongType;
+import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Type;
 import soot.Value;
 import soot.dotnet.members.method.DotnetBody;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.IlType;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlType;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -66,10 +64,55 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
     SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
     NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
 
-    ArrayList<Value> argsVariables = new ArrayList<>();
-    ArrayList<Type> argsTypes = new ArrayList<>();
+    ArrayList<Type> argsTypes = new ArrayList<>(instruction.getMethod().getParameterCount());
+    for (ParameterDefinition p : instruction.getMethod().getParameterList()) {
+      argsTypes.add(DotnetTypeFactory.toSootType(p.getType()));
+    }
+    ArrayList<Value> argsVariables = new ArrayList<>(instruction.getArgumentsList().size());
+    int i = 0;
     for (ProtoIlInstructions.IlInstructionMsg a : instruction.getArgumentsList()) {
-      addArguments(jb, argsVariables, argsTypes, a);
+
+      if (a.hasVariable()) {
+        argsVariables.add(dotnetBody.variableManager.addOrGetVariable(a.getVariable(), jb));
+      } else {
+        IlType t = a.getConstantType();
+        if (t == null) {
+          throw new RuntimeException("Not a local or constant: " + a);
+        }
+        Value argValue;
+        switch (t) {
+          case type_unknown:
+          case UNRECOGNIZED:
+            Value v = CilInstructionFactory.fromInstructionMsg(a, dotnetBody, cilBlock).jimplifyExpr(jb);
+            argValue = createTempVar(jb, Jimple.v(), v);
+            break;
+          case type_double:
+            argValue = DoubleConstant.v(a.getValueConstantDouble());
+            break;
+          case type_float:
+            argValue = FloatConstant.v(a.getValueConstantFloat());
+            break;
+          case type_int32:
+            argValue = IntConstant.v(a.getValueConstantInt32());
+            break;
+          case type_int64:
+            argValue = LongConstant.v(a.getValueConstantInt64());
+            break;
+          case type_string:
+            argValue = StringConstant.v(a.getValueConstantString());
+            break;
+          default:
+            throw new RuntimeException("Unsupported: " + t);
+
+        }
+        Type argDestType = argsTypes.get(i);
+        if (argDestType instanceof RefType && argValue.getType() instanceof PrimType) {
+          // can happen when enums are expected
+          argValue = createTempVar(jb, Jimple.v(), Jimple.v().newCastExpr(argValue, argDestType));
+        }
+        argsVariables.add(argValue);
+        i++;
+      }
     }
 
     // Constructor call expression
@@ -79,46 +122,4 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
     return newExpr;
   }
 
-  public void addArguments(Body jb, ArrayList<Value> argsVariables, ArrayList<Type> argsTypes,
-      ProtoIlInstructions.IlInstructionMsg a) {
-    if (a.hasVariable()) {
-      argsVariables.add(dotnetBody.variableManager.addOrGetVariable(a.getVariable(), jb));
-      argsTypes.add(DotnetTypeFactory.toSootType(a.getVariable().getType().getFullname()));
-    } else {
-      IlType t = a.getConstantType();
-      if (t == null) {
-        throw new RuntimeException("Not a local or constant: " + a);
-      }
-      switch (t) {
-        case type_unknown:
-        case UNRECOGNIZED:
-          Value v = CilInstructionFactory.fromInstructionMsg(a, dotnetBody, cilBlock).jimplifyExpr(jb);
-          Value p = createTempVar(jb, Jimple.v(), v);
-          argsVariables.add(p);
-        case type_double:
-          argsVariables.add(DoubleConstant.v(a.getValueConstantDouble()));
-          argsTypes.add(DoubleType.v());
-          break;
-        case type_float:
-          argsVariables.add(FloatConstant.v(a.getValueConstantFloat()));
-          argsTypes.add(FloatType.v());
-          break;
-        case type_int32:
-          argsVariables.add(IntConstant.v(a.getValueConstantInt32()));
-          argsTypes.add(IntType.v());
-          break;
-        case type_int64:
-          argsVariables.add(LongConstant.v(a.getValueConstantInt64()));
-          argsTypes.add(LongType.v());
-          break;
-        case type_string:
-          argsVariables.add(StringConstant.v(a.getValueConstantString()));
-          argsTypes.add(RefType.v("java.lang.String"));
-          break;
-        default:
-          throw new RuntimeException("Unsupported: " + t);
-
-      }
-    }
-  }
 }

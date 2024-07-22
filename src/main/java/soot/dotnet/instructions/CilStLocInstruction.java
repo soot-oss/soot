@@ -74,8 +74,8 @@ public class CilStLocInstruction extends AbstractCilnstruction {
     }
 
     // cast for validation
-    if (cilExpr instanceof CilCallVirtInstruction) {
-      List<Pair<Local, Local>> locals = ((CilCallVirtInstruction) cilExpr).getLocalsToCastForCall();
+    if (cilExpr instanceof CilCallInstruction) {
+      List<Pair<Local, Local>> locals = ((CilCallInstruction) cilExpr).getLocalsToCastForCall();
       if (locals.size() != 0) {
         for (Pair<Local, Local> pair : locals) {
           CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());

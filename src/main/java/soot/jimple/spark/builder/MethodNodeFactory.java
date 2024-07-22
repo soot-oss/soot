@@ -155,8 +155,10 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         if (!(l.getType() instanceof RefLikeType)) {
           return;
         }
-        assert r.getType() instanceof RefLikeType : "Type mismatch in assignment " + as + " in method "
-            + method.getSignature();
+        if (!(r.getType() instanceof RefLikeType)) {
+          // sadly, this can happen in .NET Jimple code, where primitives can be used without boxing
+          return;
+        }
         l.apply(MethodNodeFactory.this);
         Node dest = getNode();
         r.apply(MethodNodeFactory.this);

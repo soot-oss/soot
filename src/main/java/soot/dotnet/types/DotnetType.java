@@ -1,5 +1,12 @@
 package soot.dotnet.types;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,13 +31,6 @@ package soot.dotnet.types;
 
 import com.google.common.base.Strings;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -41,6 +41,7 @@ import soot.dotnet.members.DotnetField;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.DotnetProperty;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition;
 import soot.dotnet.specifications.DotnetAttributeArgument;
 import soot.dotnet.specifications.DotnetModifier;
 import soot.javaToJimple.IInitialResolver.Dependencies;
@@ -134,13 +135,17 @@ public class DotnetType {
 
   private void resolveFields(SootClass declaringClass) {
     for (ProtoAssemblyAllTypes.FieldDefinition field : typeDefinition.getFieldsList()) {
-      DotnetField dotnetField = new DotnetField(field);
+      DotnetField dotnetField = createDotnetField(field);
       SootField sootField = dotnetField.makeSootField();
       if (declaringClass.declaresField(sootField.getSubSignature())) {
         continue;
       }
       declaringClass.addField(sootField);
     }
+  }
+
+  protected DotnetField createDotnetField(FieldDefinition field) {
+    return new DotnetField(field);
   }
 
   /**

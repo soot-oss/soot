@@ -23,6 +23,7 @@ package soot.dotnet.instructions;
  */
 
 import soot.Body;
+import soot.Local;
 import soot.Type;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
@@ -51,6 +52,9 @@ public class CilCastClassUnBoxInstruction extends AbstractCilnstruction {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
     Value argument = cilExpr.jimplifyExpr(jb);
     argument = simplifyComplexExpression(jb, argument);
+    if (cilExpr instanceof CilNewObjInstruction) {
+      ((CilNewObjInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) argument);
+    }
     return Jimple.v().newCastExpr(argument, type);
   }
 }

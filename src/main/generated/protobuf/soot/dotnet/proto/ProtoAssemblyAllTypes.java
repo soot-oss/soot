@@ -168,6 +168,163 @@ public final class ProtoAssemblyAllTypes {
   }
 
   /**
+   * <pre>
+   * TYPE
+   * </pre>
+   *
+   * Protobuf enum {@code IlType}
+   */
+  public enum IlType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>type_unknown = 0;</code>
+     */
+    type_unknown(0),
+    /**
+     * <code>type_string = 1;</code>
+     */
+    type_string(1),
+    /**
+     * <code>type_int32 = 2;</code>
+     */
+    type_int32(2),
+    /**
+     * <code>type_int64 = 3;</code>
+     */
+    type_int64(3),
+    /**
+     * <code>type_float = 4;</code>
+     */
+    type_float(4),
+    /**
+     * <code>type_double = 5;</code>
+     */
+    type_double(5),
+    /**
+     * <code>type_bool = 6;</code>
+     */
+    type_bool(6),
+    UNRECOGNIZED(-1),
+    ;
+
+    /**
+     * <code>type_unknown = 0;</code>
+     */
+    public static final int type_unknown_VALUE = 0;
+    /**
+     * <code>type_string = 1;</code>
+     */
+    public static final int type_string_VALUE = 1;
+    /**
+     * <code>type_int32 = 2;</code>
+     */
+    public static final int type_int32_VALUE = 2;
+    /**
+     * <code>type_int64 = 3;</code>
+     */
+    public static final int type_int64_VALUE = 3;
+    /**
+     * <code>type_float = 4;</code>
+     */
+    public static final int type_float_VALUE = 4;
+    /**
+     * <code>type_double = 5;</code>
+     */
+    public static final int type_double_VALUE = 5;
+    /**
+     * <code>type_bool = 6;</code>
+     */
+    public static final int type_bool_VALUE = 6;
+
+
+    public final int getNumber() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalArgumentException(
+            "Can't get the number of an unknown enum value.");
+      }
+      return value;
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static IlType valueOf(int value) {
+      return forNumber(value);
+    }
+
+    /**
+     * @param value The numeric wire value of the corresponding enum entry.
+     * @return The enum associated with the given numeric wire value.
+     */
+    public static IlType forNumber(int value) {
+      switch (value) {
+        case 0: return type_unknown;
+        case 1: return type_string;
+        case 2: return type_int32;
+        case 3: return type_int64;
+        case 4: return type_float;
+        case 5: return type_double;
+        case 6: return type_bool;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<IlType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        IlType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<IlType>() {
+            public IlType findValueByNumber(int number) {
+              return IlType.forNumber(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      if (this == UNRECOGNIZED) {
+        throw new java.lang.IllegalStateException(
+            "Can't get the descriptor of an unrecognized enum value.");
+      }
+      return getDescriptor().getValues().get(ordinal());
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor().getEnumTypes().get(1);
+    }
+
+    private static final IlType[] VALUES = values();
+
+    public static IlType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      if (desc.getIndex() == -1) {
+        return UNRECOGNIZED;
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int value;
+
+    private IlType(int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:IlType)
+  }
+
+  /**
    * Protobuf enum {@code TypeKindDef}
    */
   public enum TypeKindDef
@@ -465,7 +622,7 @@ public final class ProtoAssemblyAllTypes {
     }
     public static final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptor() {
-      return soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor().getEnumTypes().get(1);
+      return soot.dotnet.proto.ProtoAssemblyAllTypes.getDescriptor().getEnumTypes().get(2);
     }
 
     private static final TypeKindDef[] VALUES = values();
@@ -10137,6 +10294,59 @@ public final class ProtoAssemblyAllTypes {
      * @return The peToken.
      */
     int getPeToken();
+
+    /**
+     * <code>string value_constant_string = 17;</code>
+     * @return The valueConstantString.
+     */
+    java.lang.String getValueConstantString();
+    /**
+     * <code>string value_constant_string = 17;</code>
+     * @return The bytes for valueConstantString.
+     */
+    com.google.protobuf.ByteString
+        getValueConstantStringBytes();
+
+    /**
+     * <code>int32 value_constant_int32 = 18;</code>
+     * @return The valueConstantInt32.
+     */
+    int getValueConstantInt32();
+
+    /**
+     * <code>int64 value_constant_int64 = 19;</code>
+     * @return The valueConstantInt64.
+     */
+    long getValueConstantInt64();
+
+    /**
+     * <code>float value_constant_float = 20;</code>
+     * @return The valueConstantFloat.
+     */
+    float getValueConstantFloat();
+
+    /**
+     * <code>double value_constant_double = 21;</code>
+     * @return The valueConstantDouble.
+     */
+    double getValueConstantDouble();
+
+    /**
+     * <code>bool value_constant_bool = 22;</code>
+     * @return The valueConstantBool.
+     */
+    boolean getValueConstantBool();
+
+    /**
+     * <code>.IlType constant_type = 23;</code>
+     * @return The enum numeric value on the wire for constantType.
+     */
+    int getConstantTypeValue();
+    /**
+     * <code>.IlType constant_type = 23;</code>
+     * @return The constantType.
+     */
+    soot.dotnet.proto.ProtoAssemblyAllTypes.IlType getConstantType();
   }
   /**
    * Protobuf type {@code FieldDefinition}
@@ -10156,6 +10366,8 @@ public final class ProtoAssemblyAllTypes {
       name_ = "";
       fullName_ = "";
       attributes_ = java.util.Collections.emptyList();
+      valueConstantString_ = "";
+      constantType_ = 0;
     }
 
     @java.lang.Override
@@ -10493,6 +10705,118 @@ public final class ProtoAssemblyAllTypes {
       return peToken_;
     }
 
+    public static final int VALUE_CONSTANT_STRING_FIELD_NUMBER = 17;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object valueConstantString_ = "";
+    /**
+     * <code>string value_constant_string = 17;</code>
+     * @return The valueConstantString.
+     */
+    @java.lang.Override
+    public java.lang.String getValueConstantString() {
+      java.lang.Object ref = valueConstantString_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        valueConstantString_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string value_constant_string = 17;</code>
+     * @return The bytes for valueConstantString.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValueConstantStringBytes() {
+      java.lang.Object ref = valueConstantString_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        valueConstantString_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALUE_CONSTANT_INT32_FIELD_NUMBER = 18;
+    private int valueConstantInt32_ = 0;
+    /**
+     * <code>int32 value_constant_int32 = 18;</code>
+     * @return The valueConstantInt32.
+     */
+    @java.lang.Override
+    public int getValueConstantInt32() {
+      return valueConstantInt32_;
+    }
+
+    public static final int VALUE_CONSTANT_INT64_FIELD_NUMBER = 19;
+    private long valueConstantInt64_ = 0L;
+    /**
+     * <code>int64 value_constant_int64 = 19;</code>
+     * @return The valueConstantInt64.
+     */
+    @java.lang.Override
+    public long getValueConstantInt64() {
+      return valueConstantInt64_;
+    }
+
+    public static final int VALUE_CONSTANT_FLOAT_FIELD_NUMBER = 20;
+    private float valueConstantFloat_ = 0F;
+    /**
+     * <code>float value_constant_float = 20;</code>
+     * @return The valueConstantFloat.
+     */
+    @java.lang.Override
+    public float getValueConstantFloat() {
+      return valueConstantFloat_;
+    }
+
+    public static final int VALUE_CONSTANT_DOUBLE_FIELD_NUMBER = 21;
+    private double valueConstantDouble_ = 0D;
+    /**
+     * <code>double value_constant_double = 21;</code>
+     * @return The valueConstantDouble.
+     */
+    @java.lang.Override
+    public double getValueConstantDouble() {
+      return valueConstantDouble_;
+    }
+
+    public static final int VALUE_CONSTANT_BOOL_FIELD_NUMBER = 22;
+    private boolean valueConstantBool_ = false;
+    /**
+     * <code>bool value_constant_bool = 22;</code>
+     * @return The valueConstantBool.
+     */
+    @java.lang.Override
+    public boolean getValueConstantBool() {
+      return valueConstantBool_;
+    }
+
+    public static final int CONSTANT_TYPE_FIELD_NUMBER = 23;
+    private int constantType_ = 0;
+    /**
+     * <code>.IlType constant_type = 23;</code>
+     * @return The enum numeric value on the wire for constantType.
+     */
+    @java.lang.Override public int getConstantTypeValue() {
+      return constantType_;
+    }
+    /**
+     * <code>.IlType constant_type = 23;</code>
+     * @return The constantType.
+     */
+    @java.lang.Override public soot.dotnet.proto.ProtoAssemblyAllTypes.IlType getConstantType() {
+      soot.dotnet.proto.ProtoAssemblyAllTypes.IlType result = soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.forNumber(constantType_);
+      return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.UNRECOGNIZED : result;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10554,6 +10878,27 @@ public final class ProtoAssemblyAllTypes {
       }
       if (peToken_ != 0) {
         output.writeInt32(16, peToken_);
+      }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(valueConstantString_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 17, valueConstantString_);
+      }
+      if (valueConstantInt32_ != 0) {
+        output.writeInt32(18, valueConstantInt32_);
+      }
+      if (valueConstantInt64_ != 0L) {
+        output.writeInt64(19, valueConstantInt64_);
+      }
+      if (java.lang.Float.floatToRawIntBits(valueConstantFloat_) != 0) {
+        output.writeFloat(20, valueConstantFloat_);
+      }
+      if (java.lang.Double.doubleToRawLongBits(valueConstantDouble_) != 0) {
+        output.writeDouble(21, valueConstantDouble_);
+      }
+      if (valueConstantBool_ != false) {
+        output.writeBool(22, valueConstantBool_);
+      }
+      if (constantType_ != soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.type_unknown.getNumber()) {
+        output.writeEnum(23, constantType_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10626,6 +10971,33 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(16, peToken_);
       }
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(valueConstantString_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, valueConstantString_);
+      }
+      if (valueConstantInt32_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(18, valueConstantInt32_);
+      }
+      if (valueConstantInt64_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(19, valueConstantInt64_);
+      }
+      if (java.lang.Float.floatToRawIntBits(valueConstantFloat_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeFloatSize(20, valueConstantFloat_);
+      }
+      if (java.lang.Double.doubleToRawLongBits(valueConstantDouble_) != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(21, valueConstantDouble_);
+      }
+      if (valueConstantBool_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(22, valueConstantBool_);
+      }
+      if (constantType_ != soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.type_unknown.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(23, constantType_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -10677,6 +11049,21 @@ public final class ProtoAssemblyAllTypes {
           .equals(other.getAttributesList())) return false;
       if (getPeToken()
           != other.getPeToken()) return false;
+      if (!getValueConstantString()
+          .equals(other.getValueConstantString())) return false;
+      if (getValueConstantInt32()
+          != other.getValueConstantInt32()) return false;
+      if (getValueConstantInt64()
+          != other.getValueConstantInt64()) return false;
+      if (java.lang.Float.floatToIntBits(getValueConstantFloat())
+          != java.lang.Float.floatToIntBits(
+              other.getValueConstantFloat())) return false;
+      if (java.lang.Double.doubleToLongBits(getValueConstantDouble())
+          != java.lang.Double.doubleToLongBits(
+              other.getValueConstantDouble())) return false;
+      if (getValueConstantBool()
+          != other.getValueConstantBool()) return false;
+      if (constantType_ != other.constantType_) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -10734,6 +11121,24 @@ public final class ProtoAssemblyAllTypes {
       }
       hash = (37 * hash) + PE_TOKEN_FIELD_NUMBER;
       hash = (53 * hash) + getPeToken();
+      hash = (37 * hash) + VALUE_CONSTANT_STRING_FIELD_NUMBER;
+      hash = (53 * hash) + getValueConstantString().hashCode();
+      hash = (37 * hash) + VALUE_CONSTANT_INT32_FIELD_NUMBER;
+      hash = (53 * hash) + getValueConstantInt32();
+      hash = (37 * hash) + VALUE_CONSTANT_INT64_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getValueConstantInt64());
+      hash = (37 * hash) + VALUE_CONSTANT_FLOAT_FIELD_NUMBER;
+      hash = (53 * hash) + java.lang.Float.floatToIntBits(
+          getValueConstantFloat());
+      hash = (37 * hash) + VALUE_CONSTANT_DOUBLE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getValueConstantDouble()));
+      hash = (37 * hash) + VALUE_CONSTANT_BOOL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getValueConstantBool());
+      hash = (37 * hash) + CONSTANT_TYPE_FIELD_NUMBER;
+      hash = (53 * hash) + constantType_;
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -10893,6 +11298,13 @@ public final class ProtoAssemblyAllTypes {
         }
         bitField0_ = (bitField0_ & ~0x00004000);
         peToken_ = 0;
+        valueConstantString_ = "";
+        valueConstantInt32_ = 0;
+        valueConstantInt64_ = 0L;
+        valueConstantFloat_ = 0F;
+        valueConstantDouble_ = 0D;
+        valueConstantBool_ = false;
+        constantType_ = 0;
         return this;
       }
 
@@ -10987,6 +11399,27 @@ public final class ProtoAssemblyAllTypes {
         }
         if (((from_bitField0_ & 0x00008000) != 0)) {
           result.peToken_ = peToken_;
+        }
+        if (((from_bitField0_ & 0x00010000) != 0)) {
+          result.valueConstantString_ = valueConstantString_;
+        }
+        if (((from_bitField0_ & 0x00020000) != 0)) {
+          result.valueConstantInt32_ = valueConstantInt32_;
+        }
+        if (((from_bitField0_ & 0x00040000) != 0)) {
+          result.valueConstantInt64_ = valueConstantInt64_;
+        }
+        if (((from_bitField0_ & 0x00080000) != 0)) {
+          result.valueConstantFloat_ = valueConstantFloat_;
+        }
+        if (((from_bitField0_ & 0x00100000) != 0)) {
+          result.valueConstantDouble_ = valueConstantDouble_;
+        }
+        if (((from_bitField0_ & 0x00200000) != 0)) {
+          result.valueConstantBool_ = valueConstantBool_;
+        }
+        if (((from_bitField0_ & 0x00400000) != 0)) {
+          result.constantType_ = constantType_;
         }
       }
 
@@ -11109,6 +11542,29 @@ public final class ProtoAssemblyAllTypes {
         if (other.getPeToken() != 0) {
           setPeToken(other.getPeToken());
         }
+        if (!other.getValueConstantString().isEmpty()) {
+          valueConstantString_ = other.valueConstantString_;
+          bitField0_ |= 0x00010000;
+          onChanged();
+        }
+        if (other.getValueConstantInt32() != 0) {
+          setValueConstantInt32(other.getValueConstantInt32());
+        }
+        if (other.getValueConstantInt64() != 0L) {
+          setValueConstantInt64(other.getValueConstantInt64());
+        }
+        if (other.getValueConstantFloat() != 0F) {
+          setValueConstantFloat(other.getValueConstantFloat());
+        }
+        if (other.getValueConstantDouble() != 0D) {
+          setValueConstantDouble(other.getValueConstantDouble());
+        }
+        if (other.getValueConstantBool() != false) {
+          setValueConstantBool(other.getValueConstantBool());
+        }
+        if (other.constantType_ != 0) {
+          setConstantTypeValue(other.getConstantTypeValue());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -11227,6 +11683,41 @@ public final class ProtoAssemblyAllTypes {
                 bitField0_ |= 0x00008000;
                 break;
               } // case 128
+              case 138: {
+                valueConstantString_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00010000;
+                break;
+              } // case 138
+              case 144: {
+                valueConstantInt32_ = input.readInt32();
+                bitField0_ |= 0x00020000;
+                break;
+              } // case 144
+              case 152: {
+                valueConstantInt64_ = input.readInt64();
+                bitField0_ |= 0x00040000;
+                break;
+              } // case 152
+              case 165: {
+                valueConstantFloat_ = input.readFloat();
+                bitField0_ |= 0x00080000;
+                break;
+              } // case 165
+              case 169: {
+                valueConstantDouble_ = input.readDouble();
+                bitField0_ |= 0x00100000;
+                break;
+              } // case 169
+              case 176: {
+                valueConstantBool_ = input.readBool();
+                bitField0_ |= 0x00200000;
+                break;
+              } // case 176
+              case 184: {
+                constantType_ = input.readEnum();
+                bitField0_ |= 0x00400000;
+                break;
+              } // case 184
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -12268,6 +12759,291 @@ public final class ProtoAssemblyAllTypes {
       public Builder clearPeToken() {
         bitField0_ = (bitField0_ & ~0x00008000);
         peToken_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object valueConstantString_ = "";
+      /**
+       * <code>string value_constant_string = 17;</code>
+       * @return The valueConstantString.
+       */
+      public java.lang.String getValueConstantString() {
+        java.lang.Object ref = valueConstantString_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          valueConstantString_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string value_constant_string = 17;</code>
+       * @return The bytes for valueConstantString.
+       */
+      public com.google.protobuf.ByteString
+          getValueConstantStringBytes() {
+        java.lang.Object ref = valueConstantString_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          valueConstantString_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string value_constant_string = 17;</code>
+       * @param value The valueConstantString to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantString(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        valueConstantString_ = value;
+        bitField0_ |= 0x00010000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string value_constant_string = 17;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValueConstantString() {
+        valueConstantString_ = getDefaultInstance().getValueConstantString();
+        bitField0_ = (bitField0_ & ~0x00010000);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string value_constant_string = 17;</code>
+       * @param value The bytes for valueConstantString to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantStringBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        valueConstantString_ = value;
+        bitField0_ |= 0x00010000;
+        onChanged();
+        return this;
+      }
+
+      private int valueConstantInt32_ ;
+      /**
+       * <code>int32 value_constant_int32 = 18;</code>
+       * @return The valueConstantInt32.
+       */
+      @java.lang.Override
+      public int getValueConstantInt32() {
+        return valueConstantInt32_;
+      }
+      /**
+       * <code>int32 value_constant_int32 = 18;</code>
+       * @param value The valueConstantInt32 to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantInt32(int value) {
+        
+        valueConstantInt32_ = value;
+        bitField0_ |= 0x00020000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 value_constant_int32 = 18;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValueConstantInt32() {
+        bitField0_ = (bitField0_ & ~0x00020000);
+        valueConstantInt32_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long valueConstantInt64_ ;
+      /**
+       * <code>int64 value_constant_int64 = 19;</code>
+       * @return The valueConstantInt64.
+       */
+      @java.lang.Override
+      public long getValueConstantInt64() {
+        return valueConstantInt64_;
+      }
+      /**
+       * <code>int64 value_constant_int64 = 19;</code>
+       * @param value The valueConstantInt64 to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantInt64(long value) {
+        
+        valueConstantInt64_ = value;
+        bitField0_ |= 0x00040000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 value_constant_int64 = 19;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValueConstantInt64() {
+        bitField0_ = (bitField0_ & ~0x00040000);
+        valueConstantInt64_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private float valueConstantFloat_ ;
+      /**
+       * <code>float value_constant_float = 20;</code>
+       * @return The valueConstantFloat.
+       */
+      @java.lang.Override
+      public float getValueConstantFloat() {
+        return valueConstantFloat_;
+      }
+      /**
+       * <code>float value_constant_float = 20;</code>
+       * @param value The valueConstantFloat to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantFloat(float value) {
+        
+        valueConstantFloat_ = value;
+        bitField0_ |= 0x00080000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>float value_constant_float = 20;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValueConstantFloat() {
+        bitField0_ = (bitField0_ & ~0x00080000);
+        valueConstantFloat_ = 0F;
+        onChanged();
+        return this;
+      }
+
+      private double valueConstantDouble_ ;
+      /**
+       * <code>double value_constant_double = 21;</code>
+       * @return The valueConstantDouble.
+       */
+      @java.lang.Override
+      public double getValueConstantDouble() {
+        return valueConstantDouble_;
+      }
+      /**
+       * <code>double value_constant_double = 21;</code>
+       * @param value The valueConstantDouble to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantDouble(double value) {
+        
+        valueConstantDouble_ = value;
+        bitField0_ |= 0x00100000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>double value_constant_double = 21;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValueConstantDouble() {
+        bitField0_ = (bitField0_ & ~0x00100000);
+        valueConstantDouble_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private boolean valueConstantBool_ ;
+      /**
+       * <code>bool value_constant_bool = 22;</code>
+       * @return The valueConstantBool.
+       */
+      @java.lang.Override
+      public boolean getValueConstantBool() {
+        return valueConstantBool_;
+      }
+      /**
+       * <code>bool value_constant_bool = 22;</code>
+       * @param value The valueConstantBool to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueConstantBool(boolean value) {
+        
+        valueConstantBool_ = value;
+        bitField0_ |= 0x00200000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool value_constant_bool = 22;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValueConstantBool() {
+        bitField0_ = (bitField0_ & ~0x00200000);
+        valueConstantBool_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int constantType_ = 0;
+      /**
+       * <code>.IlType constant_type = 23;</code>
+       * @return The enum numeric value on the wire for constantType.
+       */
+      @java.lang.Override public int getConstantTypeValue() {
+        return constantType_;
+      }
+      /**
+       * <code>.IlType constant_type = 23;</code>
+       * @param value The enum numeric value on the wire for constantType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConstantTypeValue(int value) {
+        constantType_ = value;
+        bitField0_ |= 0x00400000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlType constant_type = 23;</code>
+       * @return The constantType.
+       */
+      @java.lang.Override
+      public soot.dotnet.proto.ProtoAssemblyAllTypes.IlType getConstantType() {
+        soot.dotnet.proto.ProtoAssemblyAllTypes.IlType result = soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.forNumber(constantType_);
+        return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>.IlType constant_type = 23;</code>
+       * @param value The constantType to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConstantType(soot.dotnet.proto.ProtoAssemblyAllTypes.IlType value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00400000;
+        constantType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlType constant_type = 23;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearConstantType() {
+        bitField0_ = (bitField0_ & ~0x00400000);
+        constantType_ = 0;
         onChanged();
         return this;
       }
@@ -19938,7 +20714,7 @@ public final class ProtoAssemblyAllTypes {
       "rDefinition\022\035\n\004type\030\001 \001(\0132\017.TypeDefiniti" +
       "on\022\026\n\016parameter_name\030\002 \001(\t\022\016\n\006is_ref\030\003 \001" +
       "(\010\022\016\n\006is_out\030\004 \001(\010\022\r\n\005is_in\030\005 \001(\010\022\023\n\013is_" +
-      "optional\030\006 \001(\010\"\270\003\n\017FieldDefinition\022%\n\rac" +
+      "optional\030\006 \001(\010\"\215\005\n\017FieldDefinition\022%\n\rac" +
       "cessibility\030\001 \001(\0162\016.Accessibility\022\023\n\013is_" +
       "abstract\030\002 \001(\010\022\021\n\tis_sealed\030\003 \001(\010\022,\n$is_" +
       "explicit_interface_implementation\030\004 \001(\010\022" +
@@ -19949,51 +20725,60 @@ public final class ProtoAssemblyAllTypes {
       "Def\022\014\n\004name\030\013 \001(\t\022\021\n\tfull_name\030\014 \001(\t\022\'\n\016" +
       "declaring_type\030\r \001(\0132\017.TypeDefinition\022(\n" +
       "\nattributes\030\017 \003(\0132\024.AttributeDefinition\022" +
-      "\020\n\010pe_token\030\020 \001(\005\"\322\003\n\022PropertyDefinition" +
-      "\022%\n\raccessibility\030\001 \001(\0162\016.Accessibility\022" +
-      "\017\n\007can_get\030\002 \001(\010\022\017\n\007can_set\030\003 \001(\010\022\023\n\013is_" +
-      "abstract\030\004 \001(\010\022\021\n\tis_sealed\030\005 \001(\010\022,\n$is_" +
-      "explicit_interface_implementation\030\006 \001(\010\022" +
-      "\023\n\013is_override\030\007 \001(\010\022\022\n\nis_virtual\030\010 \001(\010" +
-      "\022\021\n\tis_static\030\t \001(\010\022\021\n\tis_extern\030\017 \001(\010\022!" +
-      "\n\006getter\030\n \001(\0132\021.MethodDefinition\022!\n\006set" +
-      "ter\030\013 \001(\0132\021.MethodDefinition\022\035\n\004type\030\014 \001" +
-      "(\0132\017.TypeDefinition\022\037\n\ttype_kind\030\016 \001(\0162\014" +
-      ".TypeKindDef\022\014\n\004name\030\r \001(\t\022(\n\nattributes" +
-      "\030\020 \003(\0132\024.AttributeDefinition\022\020\n\010pe_token" +
-      "\030\021 \001(\005\"\301\001\n\023AttributeDefinition\022\'\n\016attrib" +
-      "ute_type\030\001 \001(\0132\017.TypeDefinition\022\023\n\013const" +
-      "ructor\030\002 \001(\t\0225\n\017fixed_arguments\030\003 \003(\0132\034." +
-      "AttributeArgumentDefinition\0225\n\017named_arg" +
-      "uments\030\004 \003(\0132\034.AttributeArgumentDefiniti" +
-      "on\"\265\001\n\033AttributeArgumentDefinition\022\035\n\004ty" +
-      "pe\030\001 \001(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(\t\022" +
-      "\024\n\014value_string\030\003 \003(\t\022\023\n\013value_int32\030\004 \003" +
-      "(\005\022\023\n\013value_int64\030\005 \003(\003\022\024\n\014value_double\030" +
-      "\006 \003(\001\022\023\n\013value_float\030\007 \003(\002\"\272\002\n\017EventDefi" +
-      "nition\022%\n\raccessibility\030\001 \001(\0162\016.Accessib" +
-      "ility\022.\n\023add_accessor_method\030\002 \001(\0132\021.Met" +
-      "hodDefinition\022\017\n\007can_add\030\003 \001(\010\022\022\n\ncan_in" +
-      "voke\030\004 \001(\010\022\022\n\ncan_remove\030\005 \001(\010\022\021\n\tfull_n" +
-      "ame\030\006 \001(\t\0221\n\026invoke_accessor_method\030\007 \001(" +
-      "\0132\021.MethodDefinition\022\014\n\004name\030\010 \001(\t\0221\n\026re" +
-      "move_accessor_method\030\t \001(\0132\021.MethodDefin" +
-      "ition\022\020\n\010pe_token\030\n \001(\005*\206\001\n\rAccessibilit" +
-      "y\022\010\n\004NONE\020\000\022\013\n\007PRIVATE\020\001\022\n\n\006PUBLIC\020\002\022\014\n\010" +
-      "INTERNAL\020\003\022\r\n\tPROTECTED\020\004\022\032\n\026PROTECTED_A" +
-      "ND_INTERNAL\020\005\022\031\n\025PROTECTED_OR_INTERNAL\020\006" +
-      "*\366\002\n\013TypeKindDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001" +
-      "\022\t\n\005CLASS\020\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014" +
-      "\n\010DELEGATE\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKN" +
-      "OWN\020\010\022\010\n\004NULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMI" +
-      "C\020\013\022\024\n\020UNBOUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAME" +
-      "TER\020\r\022\t\n\005ARRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020" +
-      "\020\022\020\n\014INTERSECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUP" +
-      "LE\020\023\022\013\n\007MOD_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020" +
-      "\026\022\n\n\006N_UINT\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020B" +
-      "Y_REF_AND_ARRAY\020\031BS\n\021soot.dotnet.protoB\025" +
-      "ProtoAssemblyAllTypes\252\002&Soot.Dotnet.Deco" +
-      "mpiler.Models.Protobufb\006proto3"
+      "\020\n\010pe_token\030\020 \001(\005\022\035\n\025value_constant_stri" +
+      "ng\030\021 \001(\t\022\034\n\024value_constant_int32\030\022 \001(\005\022\034" +
+      "\n\024value_constant_int64\030\023 \001(\003\022\034\n\024value_co" +
+      "nstant_float\030\024 \001(\002\022\035\n\025value_constant_dou" +
+      "ble\030\025 \001(\001\022\033\n\023value_constant_bool\030\026 \001(\010\022\036" +
+      "\n\rconstant_type\030\027 \001(\0162\007.IlType\"\322\003\n\022Prope" +
+      "rtyDefinition\022%\n\raccessibility\030\001 \001(\0162\016.A" +
+      "ccessibility\022\017\n\007can_get\030\002 \001(\010\022\017\n\007can_set" +
+      "\030\003 \001(\010\022\023\n\013is_abstract\030\004 \001(\010\022\021\n\tis_sealed" +
+      "\030\005 \001(\010\022,\n$is_explicit_interface_implemen" +
+      "tation\030\006 \001(\010\022\023\n\013is_override\030\007 \001(\010\022\022\n\nis_" +
+      "virtual\030\010 \001(\010\022\021\n\tis_static\030\t \001(\010\022\021\n\tis_e" +
+      "xtern\030\017 \001(\010\022!\n\006getter\030\n \001(\0132\021.MethodDefi" +
+      "nition\022!\n\006setter\030\013 \001(\0132\021.MethodDefinitio" +
+      "n\022\035\n\004type\030\014 \001(\0132\017.TypeDefinition\022\037\n\ttype" +
+      "_kind\030\016 \001(\0162\014.TypeKindDef\022\014\n\004name\030\r \001(\t\022" +
+      "(\n\nattributes\030\020 \003(\0132\024.AttributeDefinitio" +
+      "n\022\020\n\010pe_token\030\021 \001(\005\"\301\001\n\023AttributeDefinit" +
+      "ion\022\'\n\016attribute_type\030\001 \001(\0132\017.TypeDefini" +
+      "tion\022\023\n\013constructor\030\002 \001(\t\0225\n\017fixed_argum" +
+      "ents\030\003 \003(\0132\034.AttributeArgumentDefinition" +
+      "\0225\n\017named_arguments\030\004 \003(\0132\034.AttributeArg" +
+      "umentDefinition\"\265\001\n\033AttributeArgumentDef" +
+      "inition\022\035\n\004type\030\001 \001(\0132\017.TypeDefinition\022\014" +
+      "\n\004name\030\002 \001(\t\022\024\n\014value_string\030\003 \003(\t\022\023\n\013va" +
+      "lue_int32\030\004 \003(\005\022\023\n\013value_int64\030\005 \003(\003\022\024\n\014" +
+      "value_double\030\006 \003(\001\022\023\n\013value_float\030\007 \003(\002\"" +
+      "\272\002\n\017EventDefinition\022%\n\raccessibility\030\001 \001" +
+      "(\0162\016.Accessibility\022.\n\023add_accessor_metho" +
+      "d\030\002 \001(\0132\021.MethodDefinition\022\017\n\007can_add\030\003 " +
+      "\001(\010\022\022\n\ncan_invoke\030\004 \001(\010\022\022\n\ncan_remove\030\005 " +
+      "\001(\010\022\021\n\tfull_name\030\006 \001(\t\0221\n\026invoke_accesso" +
+      "r_method\030\007 \001(\0132\021.MethodDefinition\022\014\n\004nam" +
+      "e\030\010 \001(\t\0221\n\026remove_accessor_method\030\t \001(\0132" +
+      "\021.MethodDefinition\022\020\n\010pe_token\030\n \001(\005*\206\001\n" +
+      "\rAccessibility\022\010\n\004NONE\020\000\022\013\n\007PRIVATE\020\001\022\n\n" +
+      "\006PUBLIC\020\002\022\014\n\010INTERNAL\020\003\022\r\n\tPROTECTED\020\004\022\032" +
+      "\n\026PROTECTED_AND_INTERNAL\020\005\022\031\n\025PROTECTED_" +
+      "OR_INTERNAL\020\006*{\n\006IlType\022\020\n\014type_unknown\020" +
+      "\000\022\017\n\013type_string\020\001\022\016\n\ntype_int32\020\002\022\016\n\nty" +
+      "pe_int64\020\003\022\016\n\ntype_float\020\004\022\017\n\013type_doubl" +
+      "e\020\005\022\r\n\ttype_bool\020\006*\366\002\n\013TypeKindDef\022\013\n\007NO" +
+      "_TYPE\020\000\022\t\n\005OTHER\020\001\022\t\n\005CLASS\020\002\022\r\n\tINTERFA" +
+      "CE\020\003\022\n\n\006STRUCT\020\004\022\014\n\010DELEGATE\020\005\022\010\n\004ENUM\020\006" +
+      "\022\010\n\004VOID\020\007\022\013\n\007UNKNOWN\020\010\022\010\n\004NULL\020\t\022\r\n\tNON" +
+      "E_TYPE\020\n\022\013\n\007DYNAMIC\020\013\022\024\n\020UNBOUND_TYPE_AR" +
+      "G\020\014\022\022\n\016TYPE_PARAMETER\020\r\022\t\n\005ARRAY\020\016\022\013\n\007PO" +
+      "INTER\020\017\022\n\n\006BY_REF\020\020\022\020\n\014INTERSECTION\020\021\022\014\n" +
+      "\010ARG_LIST\020\022\022\t\n\005TUPLE\020\023\022\013\n\007MOD_OPT\020\024\022\013\n\007M" +
+      "OD_REQ\020\025\022\t\n\005N_INT\020\026\022\n\n\006N_UINT\020\027\022\024\n\020FUNCT" +
+      "ION_POINTER\020\030\022\024\n\020BY_REF_AND_ARRAY\020\031BS\n\021s" +
+      "oot.dotnet.protoB\025ProtoAssemblyAllTypes\252" +
+      "\002&Soot.Dotnet.Decompiler.Models.Protobuf" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -20028,7 +20813,7 @@ public final class ProtoAssemblyAllTypes {
     internal_static_FieldDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_FieldDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName", "DeclaringType", "Attributes", "PeToken", });
+        new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName", "DeclaringType", "Attributes", "PeToken", "ValueConstantString", "ValueConstantInt32", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "ValueConstantBool", "ConstantType", });
     internal_static_PropertyDefinition_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_PropertyDefinition_fieldAccessorTable = new

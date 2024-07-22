@@ -30,6 +30,7 @@ import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
+import soot.jimple.AddExpr;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
@@ -74,6 +75,10 @@ public class CilStObjInstruction extends AbstractCilnstruction {
     // if new Obj also add call of constructor - relevant for structs (System.ValueType)
     if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
       ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) value);
+    }
+    if (target instanceof AddExpr) {
+      // Oh... this might be an array offset.
+      System.out.println();
     }
     AssignStmt astm = Jimple.v().newAssignStmt(target, value);
     jb.getUnits().add(astm);

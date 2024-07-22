@@ -39,7 +39,8 @@ public class CilThrowInstruction extends AbstractCilnstruction {
   public void jimplify(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
     Value argument = cilExpr.jimplifyExpr(jb);
-    ThrowStmt throwStmt = Jimple.v().newThrowStmt(argument);
+    Value v = simplifyComplexExpression(jb, argument);
+    ThrowStmt throwStmt = Jimple.v().newThrowStmt(v);
     jb.getUnits().add(throwStmt);
   }
 

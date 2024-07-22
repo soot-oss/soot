@@ -742,6 +742,10 @@ public class Jimple {
     return new JimpleBody();
   }
 
+  public IntConstant newBooleanConstant(boolean b) {
+    return IntConstant.v(b ? 1 : 0);
+  }
+
   /*
    * Uncomment these stubs to make it compile with old code using Soot that does not know about SootField/MethodRefs.
    */

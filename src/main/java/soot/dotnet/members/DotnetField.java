@@ -30,6 +30,11 @@ import soot.SootField;
 import soot.Type;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.tagkit.DoubleConstantValueTag;
+import soot.tagkit.FloatConstantValueTag;
+import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.StringConstantValueTag;
 
 /**
  * Represents a .NET Field
@@ -46,6 +51,35 @@ public class DotnetField extends AbstractDotnetMember {
     int modifier = toSootModifier(protoField);
     Type type = DotnetTypeFactory.toSootType(protoField.getType());
     String name = protoField.getName();
-    return Scene.v().makeSootField(name, type, modifier);
+
+    SootField mf = Scene.v().makeSootField(name, type, modifier);
+    switch (protoField.getConstantType()) {
+      case type_unknown:
+        break;
+      case UNRECOGNIZED:
+        throw new RuntimeException("Unsupported: " + protoField.getConstantType());
+      case type_double:
+        mf.addTag(new DoubleConstantValueTag(protoField.getValueConstantDouble()));
+        break;
+      case type_float:
+        mf.addTag(new FloatConstantValueTag(protoField.getValueConstantFloat()));
+        break;
+      case type_int32:
+        mf.addTag(new IntegerConstantValueTag(protoField.getValueConstantInt32()));
+        break;
+      case type_int64:
+        mf.addTag(new LongConstantValueTag(protoField.getValueConstantInt64()));
+        break;
+      case type_string:
+        mf.addTag(new StringConstantValueTag(protoField.getValueConstantString()));
+        break;
+      case type_bool:
+        mf.addTag(new IntegerConstantValueTag(protoField.getValueConstantBool() ? 1 : 0));
+        break;
+      default:
+        break;
+
+    }
+    return mf;
   }
 }

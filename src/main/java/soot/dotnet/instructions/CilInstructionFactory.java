@@ -44,7 +44,7 @@ public class CilInstructionFactory {
       case CALL:
       case CALLVIRT:
         // e.g. System.Object..ctor call
-        return new CilCallVirtInstruction(instruction, dotnetBody, cilBlock);
+        return new CilCallInstruction(instruction, dotnetBody, cilBlock);
       case LEAVE:
         // return (void)
         return new CilLeaveInstruction(instruction, dotnetBody, cilBlock);
@@ -137,6 +137,11 @@ public class CilInstructionFactory {
         return new CilRefTypeInstruction(instruction, dotnetBody, cilBlock);
       case SIZE_OF:
         return new CilSizeOfInstruction(instruction, dotnetBody, cilBlock);
+      case NONE_OP:
+        throw new IllegalArgumentException("Check the native wrapper; some instruction is not handled");
+      case MATCH_INSTRUCTION:
+        return new CilMatchInstruction(instruction, dotnetBody, cilBlock);
+
       default:
         throw new IllegalArgumentException("Opcode " + instruction.getOpCode().name() + " is not implemented!");
     }

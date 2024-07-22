@@ -1,5 +1,9 @@
 package soot.dotnet.members.method;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -31,17 +35,36 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
+import soot.UnitPatchingChain;
 import soot.Value;
 import soot.VoidType;
+import soot.dexpler.TrapMinimizer;
 import soot.dotnet.instructions.CilBlockContainer;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.ConditionExpr;
 import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
+import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.ConstantCastEliminator;
+import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.IdentityCastEliminator;
+import soot.jimple.toolkits.scalar.IdentityOperationEliminator;
+import soot.jimple.toolkits.scalar.NopEliminator;
+import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
+import soot.toolkits.exceptions.TrapTightener;
+import soot.toolkits.scalar.LocalPacker;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
  * Represents a .NET Method Body A method body starts with a BlockContainer, which contains Blocks, which have IL
@@ -75,7 +98,6 @@ public class DotnetBody {
   public void jimplify(JimpleBody jb) {
     this.jb = jb;
     variableManager = new DotnetBodyVariableManager(this, this.jb);
-
     // resolve initial variable assignments
     addThisStmt();
     variableManager.fillMethodParameter();
@@ -84,12 +106,93 @@ public class DotnetBody {
     // Resolve .NET Method Body -> BlockContainer -> Block -> IL Instruction
     CilBlockContainer blockContainer = new CilBlockContainer(ilFunctionMsg.getBody(), this);
     Body b = blockContainer.jimplify();
-    for (Local l : b.getLocals())
-      if (!jb.getLocals().contains(l))
+    for (Local l : b.getLocals()) {
+      if (!jb.getLocals().contains(l)) {
         jb.getLocals().add(l);
+      }
+    }
     jb.getUnits().addAll(b.getUnits());
     jb.getTraps().addAll(b.getTraps());
     blockEntryPointsManager.swapGotoEntriesInJBody(jb);
+
+    // We now do similar kind of optimizations than for dex code, since
+    // the code we generate is not really efficient...
+
+    UnconditionalBranchFolder.v().transform(jb);
+
+    LocalPacker.v().transform(jb);
+    UnusedLocalEliminator.v().transform(jb);
+    // PackManager.v().getTransform("jb.lns").apply(jb);
+
+    TrapTightener.v().transform(jb);
+    TrapMinimizer.v().transform(jb);
+    Aggregator.v().transform(jb);
+
+    ConditionalBranchFolder.v().transform(jb);
+
+    // Remove unnecessary typecasts
+    ConstantCastEliminator.v().transform(jb);
+    IdentityCastEliminator.v().transform(jb);
+
+    // Remove unnecessary logic operations
+    IdentityOperationEliminator.v().transform(jb);
+
+    // We need to run this transformer since the conditional branch folder
+    // might have rendered some code unreachable (well, it was unreachable
+    // before as well, but we didn't know).
+    UnreachableCodeEliminator.v().transform(jb);
+
+    TransformIntsToBooleans.v().transform(jb);
+    CopyPropagator.v().transform(jb);
+    TransformIntsToBooleans.v().transform(jb);
+    CopyPropagator.v().transform(jb);
+    UnitPatchingChain up = jb.getUnits();
+    Unit u = up.getFirst();
+    Jimple j = Jimple.v();
+    while (u != null) {
+      Unit next = up.getSuccOf(u);
+      if (u instanceof AssignStmt) {
+        AssignStmt assign = (AssignStmt) u;
+        if (assign.getRightOp() instanceof ConditionExpr) {
+          // e.g. foo = a == b;
+          // this is not valid in Jimple...
+          AssignStmt assignTrue = j.newAssignStmt(assign.getLeftOp(), j.newBooleanConstant(true));
+          AssignStmt assignFalse = j.newAssignStmt(assign.getLeftOp(), j.newBooleanConstant(false));
+          IfStmt ifs = j.newIfStmt(assign.getRightOp(), assignTrue);
+          up.insertBefore(Arrays.asList(ifs, assignFalse, j.newGotoStmt(next), assignTrue), assign);
+          up.remove(assign);
+
+        }
+      }
+      u = next;
+    }
+
+    DeadAssignmentEliminator.v().transform(jb);
+    UnusedLocalEliminator.v().transform(jb);
+
+    ConditionalBranchFolder.v().transform(jb);
+
+    UnconditionalBranchFolder.v().transform(jb);
+
+    NopEliminator.v().transform(jb);
+
+    // Sadly, the original contributer made everything relying on the names, so
+    // we rename that mess now...
+    Set<String> names = new HashSet<>();
+    int id = 0;
+    for (Local l : jb.getLocals()) {
+      if (!names.add(l.getName())) {
+        l.setName(l.getName() + "_" + id++);
+      }
+    }
+
+  }
+
+  protected Value createTempVar(Body jb, final Jimple jimple, Value inv) {
+    Local interimLocal = variableManager.localGenerator.generateLocal(inv.getType());
+    jb.getLocals().add(interimLocal);
+    jb.getUnits().add(jimple.newAssignStmt(interimLocal, inv));
+    return interimLocal;
   }
 
   private void addThisStmt() {
