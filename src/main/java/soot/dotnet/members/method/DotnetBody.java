@@ -2,6 +2,7 @@ package soot.dotnet.members.method;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /*-
@@ -51,6 +52,7 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
+import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
@@ -63,7 +65,10 @@ import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.exceptions.TrapTightener;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalPacker;
+import soot.toolkits.scalar.SimpleLocalDefs;
+import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
@@ -144,8 +149,53 @@ public class DotnetBody {
 
     TransformIntsToBooleans.v().transform(jb);
     CopyPropagator.v().transform(jb);
+
     TransformIntsToBooleans.v().transform(jb);
     CopyPropagator.v().transform(jb);
+    rewriteConditionsToIfs(jb);
+
+    removeDeadNewExpr(jb);
+    DeadAssignmentEliminator.v().transform(jb);
+    UnusedLocalEliminator.v().transform(jb);
+
+    ConditionalBranchFolder.v().transform(jb);
+
+    UnconditionalBranchFolder.v().transform(jb);
+
+    NopEliminator.v().transform(jb);
+
+    // Sadly, the original contributer made everything relying on the names, so
+    // we rename that mess now...
+    Set<String> names = new HashSet<>();
+    int id = 0;
+    for (Local l : jb.getLocals()) {
+      if (!names.add(l.getName())) {
+        l.setName(l.getName() + "_" + id++);
+      }
+    }
+
+  }
+
+  protected void removeDeadNewExpr(JimpleBody jb) {
+    UnitPatchingChain up = jb.getUnits();
+    Iterator<Unit> it = up.iterator();
+    ExceptionalUnitGraph g = new ExceptionalUnitGraph(jb);
+    SimpleLocalUses ld = new SimpleLocalUses(g, new SimpleLocalDefs(g));
+    while (it.hasNext()) {
+      Unit u = it.next();
+      if (u instanceof AssignStmt) {
+        AssignStmt assign = (AssignStmt) u;
+        if (assign.getRightOp() instanceof NewExpr) {
+          if (ld.getUsesOf(assign).isEmpty()) {
+            up.remove(assign);
+          }
+
+        }
+      }
+    }
+  }
+
+  protected void rewriteConditionsToIfs(JimpleBody jb) {
     UnitPatchingChain up = jb.getUnits();
     Unit u = up.getFirst();
     Jimple j = Jimple.v();
@@ -166,26 +216,6 @@ public class DotnetBody {
       }
       u = next;
     }
-
-    DeadAssignmentEliminator.v().transform(jb);
-    UnusedLocalEliminator.v().transform(jb);
-
-    ConditionalBranchFolder.v().transform(jb);
-
-    UnconditionalBranchFolder.v().transform(jb);
-
-    NopEliminator.v().transform(jb);
-
-    // Sadly, the original contributer made everything relying on the names, so
-    // we rename that mess now...
-    Set<String> names = new HashSet<>();
-    int id = 0;
-    for (Local l : jb.getLocals()) {
-      if (!names.add(l.getName())) {
-        l.setName(l.getName() + "_" + id++);
-      }
-    }
-
   }
 
   protected Value createTempVar(Body jb, final Jimple jimple, Value inv) {

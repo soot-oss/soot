@@ -225,8 +225,8 @@ public class DotnetMethod extends AbstractDotnetMember {
     JimpleBody b = Jimple.v().newBody(sootMethod);
     try {
       if (ilFunctionMsg == null) {
-        throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " "
-            + sootMethod.getName() + " declared in class " + declaringClass.getName());
+        throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " " + sootMethod.getName()
+            + " declared in class " + declaringClass.getName());
       }
 
       // add the body of this code item
@@ -357,11 +357,14 @@ public class DotnetMethod extends AbstractDotnetMember {
    * @return unique name
    */
   public String getUniqueName() {
-    if (!(hasGenericParameters() || hasCallByRefParameters() || hasCilPrimitiveParameters()) || isConstructor()) {
-      return getName();
-    }
-
-    return getName() + "[[" + protoMethod.getPeToken() + "]]";
+    // For now, use the actual name. Having random name portions e.g. in library code isn't a good idea.
+    return getName();
+    /*
+     * if (!(hasGenericParameters() || hasCallByRefParameters() || hasCilPrimitiveParameters()) || isConstructor()) { return
+     * getName(); }
+     * 
+     * return getName() + "[[" + protoMethod.getPeToken() + "]]";
+     */
   }
 
   // --- static methods ---
