@@ -2,7 +2,10 @@ package soot.dotnet.members;
 
 import static soot.dotnet.specifications.DotnetModifier.toSootModifier;
 
+import soot.BooleanConstant;
+import soot.ByteConstant;
 import soot.Scene;
+import soot.ShortConstant;
 
 /*-
  * #%L
@@ -28,8 +31,11 @@ import soot.Scene;
 
 import soot.SootField;
 import soot.Type;
+import soot.UByteConstant;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.jimple.UIntConstant;
+import soot.jimple.ULongConstant;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
@@ -56,6 +62,7 @@ public class DotnetField extends AbstractDotnetMember {
     switch (protoField.getConstantType()) {
       case type_unknown:
         break;
+      default:
       case UNRECOGNIZED:
         throw new RuntimeException("Unsupported: " + protoField.getConstantType());
       case type_double:
@@ -65,7 +72,7 @@ public class DotnetField extends AbstractDotnetMember {
         mf.addTag(new FloatConstantValueTag(protoField.getValueConstantFloat()));
         break;
       case type_int32:
-        mf.addTag(new IntegerConstantValueTag(protoField.getValueConstantInt32()));
+        mf.addTag(new IntegerConstantValueTag((int) protoField.getValueConstantInt64()));
         break;
       case type_int64:
         mf.addTag(new LongConstantValueTag(protoField.getValueConstantInt64()));
@@ -74,9 +81,22 @@ public class DotnetField extends AbstractDotnetMember {
         mf.addTag(new StringConstantValueTag(protoField.getValueConstantString()));
         break;
       case type_bool:
-        mf.addTag(new IntegerConstantValueTag(protoField.getValueConstantBool() ? 1 : 0));
+        mf.addTag(new IntegerConstantValueTag(BooleanConstant.v(protoField.getValueConstantBool() ? 1 : 0)));
         break;
-      default:
+      case type_sbyte:
+        mf.addTag(new IntegerConstantValueTag(ByteConstant.v((byte) protoField.getValueConstantInt64())));
+        break;
+      case type_byte:
+        mf.addTag(new IntegerConstantValueTag(UByteConstant.v((int) protoField.getValueConstantInt64())));
+        break;
+      case type_uint16:
+        mf.addTag(new IntegerConstantValueTag(ShortConstant.v((short) protoField.getValueConstantInt64())));
+        break;
+      case type_uint32:
+        mf.addTag(new IntegerConstantValueTag(UIntConstant.v((int) protoField.getValueConstantInt64())));
+        break;
+      case type_uint64:
+        mf.addTag(new LongConstantValueTag(ULongConstant.v(protoField.getValueConstantUint64())));
         break;
 
     }

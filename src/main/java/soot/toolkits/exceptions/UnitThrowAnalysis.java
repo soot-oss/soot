@@ -1,5 +1,13 @@
 package soot.toolkits.exceptions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,16 +34,8 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import heros.solver.IDESolver;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
+import soot.DecimalConstant;
 import soot.FastHierarchy;
 import soot.G;
 import soot.IntegerType;
@@ -46,11 +46,13 @@ import soot.PatchingChain;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
+import soot.ShortConstant;
 import soot.Singletons;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Trap;
 import soot.Type;
+import soot.UByteConstant;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
@@ -192,6 +194,9 @@ import soot.jimple.SubExpr;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThisRef;
 import soot.jimple.ThrowStmt;
+import soot.jimple.UIntConstant;
+import soot.jimple.ULongConstant;
+import soot.jimple.UShortConstant;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
@@ -886,6 +891,30 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseClassConstant(ClassConstant c) {
+    }
+
+    @Override
+    public void caseDecimalConstant(DecimalConstant v) {
+    }
+
+    @Override
+    public void caseUIntConstant(UIntConstant v) {
+    }
+
+    @Override
+    public void caseShortConstant(ShortConstant v) {
+    }
+
+    @Override
+    public void caseUByteConstant(UByteConstant v) {
+    }
+
+    @Override
+    public void caseULongConstant(ULongConstant v) {
+    }
+
+    @Override
+    public void caseUShortConstant(UShortConstant v) {
     }
 
     @Override

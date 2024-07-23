@@ -26,7 +26,7 @@
   <class>soot.BooleanType</class>
   <class>soot.jimple.toolkits.scalar.pre.BusyCodeMotion</class>
   <class>soot.ByteType</class>
-  <class>soot.SByteType</class>
+  <class>soot.UByteType</class>
   <class>soot.jimple.toolkits.pointer.CastCheckEliminatorDumper</class>
   <class>soot.CharType</class>
   <class>soot.jimple.toolkits.annotation.arraycheck.ClassFieldAnalysis</class>
@@ -72,7 +72,6 @@
   <class>soot.toolkits.scalar.FlowSensitiveConstantPropagator</class>
   <class>soot.LongType</class>
   <class>soot.ULongType</class>
-  <class>soot.DecimalType</class>
   <class>soot.dava.toolkits.base.misc.MonitorConverter</class>
   <class>soot.jimple.toolkits.scalar.NopEliminator</class>
   <class>soot.jimple.NullConstant</class>
@@ -93,6 +92,8 @@
   <class>soot.shimple.ShimpleTransformer</class>
   <class>soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder</class>
   <class>soot.ShortType</class>
+  <class>soot.UShortType</class>
+  <class>soot.DecimalType</class>
   <class>soot.jimple.toolkits.pointer.SideEffectTagger</class>
   <class>soot.jimple.spark.SparkTransformer</class>
   <class>soot.jimple.toolkits.invoke.StaticInliner</class>

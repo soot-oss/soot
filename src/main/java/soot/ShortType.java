@@ -1,5 +1,7 @@
 package soot;
 
+import soot.dotnet.types.DotNetINumber;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -30,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'short'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class ShortType extends PrimType implements IntegerType {
+public class ShortType extends PrimType implements IntegerType, DotNetINumber {
 
   public static final int HASHCODE = 0x8B817DD3;
 

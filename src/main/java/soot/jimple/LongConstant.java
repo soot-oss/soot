@@ -35,7 +35,7 @@ public class LongConstant extends ArithmeticConstant {
   public static final LongConstant ZERO = new LongConstant(0);
   public static final LongConstant ONE = new LongConstant(1);
 
-  private LongConstant(long value) {
+  protected LongConstant(long value) {
     this.value = value;
   }
 

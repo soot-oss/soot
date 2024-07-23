@@ -398,6 +398,20 @@ public class Singletons {
     	instance_soot_ByteType = null;
     }
 
+    private soot.UByteType instance_soot_UByteType;
+    public soot.UByteType soot_UByteType() {
+        if (instance_soot_UByteType == null) {
+	       	synchronized (this) {
+		        if (instance_soot_UByteType == null)
+	        		instance_soot_UByteType = new soot.UByteType(g);
+	       	}
+       	}
+        return instance_soot_UByteType;
+    }
+    protected void release_soot_UByteType() {
+    	instance_soot_UByteType = null;
+    }
+
     private soot.jimple.toolkits.pointer.CastCheckEliminatorDumper instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper;
     public soot.jimple.toolkits.pointer.CastCheckEliminatorDumper soot_jimple_toolkits_pointer_CastCheckEliminatorDumper() {
         if (instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper == null) {
@@ -508,6 +522,20 @@ public class Singletons {
     }
     protected void release_soot_jimple_toolkits_scalar_CopyPropagator() {
     	instance_soot_jimple_toolkits_scalar_CopyPropagator = null;
+    }
+
+    private soot.dotnet.members.method.TransformIntsToBooleans instance_soot_dotnet_members_method_TransformIntsToBooleans;
+    public soot.dotnet.members.method.TransformIntsToBooleans soot_dotnet_members_method_TransformIntsToBooleans() {
+        if (instance_soot_dotnet_members_method_TransformIntsToBooleans == null) {
+	       	synchronized (this) {
+		        if (instance_soot_dotnet_members_method_TransformIntsToBooleans == null)
+	        		instance_soot_dotnet_members_method_TransformIntsToBooleans = new soot.dotnet.members.method.TransformIntsToBooleans(g);
+	       	}
+       	}
+        return instance_soot_dotnet_members_method_TransformIntsToBooleans;
+    }
+    protected void release_soot_dotnet_members_method_TransformIntsToBooleans() {
+    	instance_soot_dotnet_members_method_TransformIntsToBooleans = null;
     }
 
     private soot.jimple.toolkits.graph.CriticalEdgeRemover instance_soot_jimple_toolkits_graph_CriticalEdgeRemover;
@@ -790,6 +818,20 @@ public class Singletons {
     	instance_soot_IntType = null;
     }
 
+    private soot.UIntType instance_soot_UIntType;
+    public soot.UIntType soot_UIntType() {
+        if (instance_soot_UIntType == null) {
+	       	synchronized (this) {
+		        if (instance_soot_UIntType == null)
+	        		instance_soot_UIntType = new soot.UIntType(g);
+	       	}
+       	}
+        return instance_soot_UIntType;
+    }
+    protected void release_soot_UIntType() {
+    	instance_soot_UIntType = null;
+    }
+
     private soot.jimple.Jimple instance_soot_jimple_Jimple;
     public soot.jimple.Jimple soot_jimple_Jimple() {
         if (instance_soot_jimple_Jimple == null) {
@@ -984,6 +1026,20 @@ public class Singletons {
     }
     protected void release_soot_LongType() {
     	instance_soot_LongType = null;
+    }
+
+    private soot.ULongType instance_soot_ULongType;
+    public soot.ULongType soot_ULongType() {
+        if (instance_soot_ULongType == null) {
+	       	synchronized (this) {
+		        if (instance_soot_ULongType == null)
+	        		instance_soot_ULongType = new soot.ULongType(g);
+	       	}
+       	}
+        return instance_soot_ULongType;
+    }
+    protected void release_soot_ULongType() {
+    	instance_soot_ULongType = null;
     }
 
     private soot.dava.toolkits.base.misc.MonitorConverter instance_soot_dava_toolkits_base_misc_MonitorConverter;
@@ -1264,6 +1320,34 @@ public class Singletons {
     }
     protected void release_soot_ShortType() {
     	instance_soot_ShortType = null;
+    }
+
+    private soot.UShortType instance_soot_UShortType;
+    public soot.UShortType soot_UShortType() {
+        if (instance_soot_UShortType == null) {
+	       	synchronized (this) {
+		        if (instance_soot_UShortType == null)
+	        		instance_soot_UShortType = new soot.UShortType(g);
+	       	}
+       	}
+        return instance_soot_UShortType;
+    }
+    protected void release_soot_UShortType() {
+    	instance_soot_UShortType = null;
+    }
+
+    private soot.DecimalType instance_soot_DecimalType;
+    public soot.DecimalType soot_DecimalType() {
+        if (instance_soot_DecimalType == null) {
+	       	synchronized (this) {
+		        if (instance_soot_DecimalType == null)
+	        		instance_soot_DecimalType = new soot.DecimalType(g);
+	       	}
+       	}
+        return instance_soot_DecimalType;
+    }
+    protected void release_soot_DecimalType() {
+    	instance_soot_DecimalType = null;
     }
 
     private soot.jimple.toolkits.pointer.SideEffectTagger instance_soot_jimple_toolkits_pointer_SideEffectTagger;

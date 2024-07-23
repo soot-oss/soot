@@ -61,7 +61,7 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
     if (!instruction.hasMethod()) {
       throw new RuntimeException("NewObj: There is no method information in the method definiton!");
     }
-    SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
+    SootClass clazz = RefType.v(instruction.getMethod().getDeclaringType().getFullname()).getSootClass();
     NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
 
     ArrayList<Type> argsTypes = new ArrayList<>(instruction.getMethod().getParameterCount());
@@ -93,7 +93,7 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
             argValue = FloatConstant.v(a.getValueConstantFloat());
             break;
           case type_int32:
-            argValue = IntConstant.v(a.getValueConstantInt32());
+            argValue = IntConstant.v((int) a.getValueConstantInt64());
             break;
           case type_int64:
             argValue = LongConstant.v(a.getValueConstantInt64());

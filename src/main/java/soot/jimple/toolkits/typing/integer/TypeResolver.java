@@ -417,7 +417,7 @@ public class TypeResolver {
   }
 
   private void assign_types_2() throws TypeException {
-    for (Local local : stmtBody.getLocals(-)) {
+    for (Local local : stmtBody.getLocals()) {
       if (local.getType() instanceof IntegerType) {
         TypeVariable var = typeVariable(local);
         TypeNode inv_approx = var.inv_approx();

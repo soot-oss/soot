@@ -28,6 +28,7 @@ import java.util.Set;
  */
 
 import soot.Body;
+import soot.BooleanConstant;
 import soot.Immediate;
 import soot.Local;
 import soot.LocalGenerator;
@@ -102,6 +103,8 @@ public class DotnetBody {
 
   public void jimplify(JimpleBody jb) {
     this.jb = jb;
+    if (dotnetMethodSig.getSootMethodSignature().getSignature().contains("<clinit>"))
+      System.out.println();
     variableManager = new DotnetBodyVariableManager(this, this.jb);
     // resolve initial variable assignments
     addThisStmt();
@@ -206,8 +209,8 @@ public class DotnetBody {
         if (assign.getRightOp() instanceof ConditionExpr) {
           // e.g. foo = a == b;
           // this is not valid in Jimple...
-          AssignStmt assignTrue = j.newAssignStmt(assign.getLeftOp(), j.newBooleanConstant(true));
-          AssignStmt assignFalse = j.newAssignStmt(assign.getLeftOp(), j.newBooleanConstant(false));
+          AssignStmt assignTrue = j.newAssignStmt(assign.getLeftOp(), BooleanConstant.v(true));
+          AssignStmt assignFalse = j.newAssignStmt(assign.getLeftOp(), BooleanConstant.v(false));
           IfStmt ifs = j.newIfStmt(assign.getRightOp(), assignTrue);
           up.insertBefore(Arrays.asList(ifs, assignFalse, j.newGotoStmt(next), assignTrue), assign);
           up.remove(assign);

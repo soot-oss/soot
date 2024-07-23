@@ -1,5 +1,7 @@
 package soot;
 
+import soot.dotnet.types.DotNetINumber;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -30,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'float'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class FloatType extends PrimType {
+public class FloatType extends PrimType implements DotNetINumber {
 
   public static final int HASHCODE = 0xA84373FA;
 

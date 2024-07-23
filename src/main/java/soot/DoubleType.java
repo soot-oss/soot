@@ -1,5 +1,7 @@
 package soot;
 
+import soot.dotnet.types.DotNetINumber;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -30,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'double'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class DoubleType extends PrimType {
+public class DoubleType extends PrimType implements DotNetINumber {
 
   public static final int HASHCODE = 0x4B9D7242;
 
