@@ -26,6 +26,7 @@ import java.util.List;
  */
 
 import soot.Type;
+import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 
@@ -44,6 +45,9 @@ public class DotnetMethodParameter {
     List<Type> types = new ArrayList<>();
     for (ProtoAssemblyAllTypes.ParameterDefinition parameter : parameterList) {
       Type type = DotnetTypeFactory.toSootType(parameter.getType());
+      if (ByReferenceWrapperGenerator.needsWrapper(parameter)) {
+        type = ByReferenceWrapperGenerator.getWrapperClass(type).getType();
+      }
       types.add(type);
     }
     return types;

@@ -56,7 +56,7 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.SpecialInvokeExpr;
 
-public abstract class AbstractNewObjInstanceInstruction extends AbstractCilnstruction {
+public abstract class AbstractNewObjInstanceInstruction extends CilCallInstruction {
   public AbstractNewObjInstanceInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
       CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);

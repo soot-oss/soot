@@ -23,7 +23,9 @@ package soot.dotnet.instructions;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*-
  * #%L
@@ -54,8 +56,10 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.dotnet.members.AbstractDotnetMember;
+import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
@@ -111,61 +115,36 @@ public class CilCallInstruction extends AbstractCilnstruction {
    */
   @Override
   public Value jimplifyExpr(Body jb) {
-    clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
-    method = new DotnetMethod(instruction.getMethod(), clazz);
 
+    SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
+    DotnetMethod method = new DotnetMethod(instruction.getMethod(), clazz);
     // STATIC
     if (method.isStatic()) {
-      checkMethodAvailable();
-      List<Value> argsVariables = new ArrayList<>(instruction.getArgumentsCount());
-      List<Type> argsTypes = new ArrayList<>(method.getParameterDefinitions().size());
-
+      checkMethodAvailable(method);
       // If System.Array.Empty
       Value rewriteField = AbstractDotnetMember.checkRewriteCilSpecificMember(clazz, method.getName());
       if (rewriteField != null) {
         return rewriteField;
       }
+      MethodParams methodParams = getMethodCallParams(method, false, jb);
 
-      // method-parameters (signature)
-      for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : method.getParameterDefinitions()) {
-        argsTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
-      }
-
-      int i = 0;
-      // arguments which are passed to this function
-      for (ProtoIlInstructions.IlInstructionMsg a : instruction.getArgumentsList()) {
-        Value argValue = CilInstructionFactory.fromInstructionMsg(a, dotnetBody, cilBlock).jimplifyExpr(jb);
-        argValue = simplifyComplexExpression(jb, argValue);
-        Type argDestType = argsTypes.get(i);
-        if (argDestType instanceof RefType && argValue.getType() instanceof PrimType) {
-          // can happen when enums are expected
-          argValue = createTempVar(jb, Jimple.v(), Jimple.v().newCastExpr(argValue, argDestType));
-        }
-        argsVariables.add(argValue);
-        i++;
-      }
-
-      String methodName = method.getUniqueName();
-
-      SootMethodRef methodRef = Scene.v().makeMethodRef(clazz, DotnetMethod.convertCtorName(methodName), argsTypes,
-          DotnetTypeFactory.toSootType(method.getReturnType()), true);
-      return Jimple.v().newStaticInvokeExpr(methodRef, argsVariables);
+      return Jimple.v().newStaticInvokeExpr(methodParams.methodRef, methodParams.argumentVariables);
     }
     // INTERFACE
     else if (clazz.isInterface()) {
-      MethodParams methodParams = getMethodCallParams(jb);
-      return Jimple.v().newInterfaceInvokeExpr(methodParams.Base, methodParams.MethodRef, methodParams.ArgumentVariables);
+      MethodParams methodParams = getMethodCallParams(method, true, jb);
+      return Jimple.v().newInterfaceInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
     // CONSTRUCTOR and PRIVATE METHOD CALLS
     else if (instruction.getMethod().getIsConstructor()
         || instruction.getMethod().getAccessibility().equals(ProtoAssemblyAllTypes.Accessibility.PRIVATE)) {
-      MethodParams methodParams = getMethodCallParams(jb);
-      return Jimple.v().newSpecialInvokeExpr(methodParams.Base, methodParams.MethodRef, methodParams.ArgumentVariables);
+      MethodParams methodParams = getMethodCallParams(method, true, jb);
+      return Jimple.v().newSpecialInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
     // DYNAMIC OBJECT METHOD
     else {
-      MethodParams methodParams = getMethodCallParams(jb);
-      return Jimple.v().newVirtualInvokeExpr(methodParams.Base, methodParams.MethodRef, methodParams.ArgumentVariables);
+      MethodParams methodParams = getMethodCallParams(method, true, jb);
+      return Jimple.v().newVirtualInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
   }
 
@@ -175,35 +154,56 @@ public class CilCallInstruction extends AbstractCilnstruction {
 
   private final List<Pair<Local, Local>> localsToCastForCall;
 
-  private MethodParams getMethodCallParams(Body jb) {
-    checkMethodAvailable();
+  protected MethodParams getMethodCallParams(boolean hasBase, Body jb) {
+    SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
+    DotnetMethod method = new DotnetMethod(instruction.getMethod(), clazz);
+    return getMethodCallParams(method, hasBase, jb);
+  }
+
+  protected MethodParams getMethodCallParams(DotnetMethod method, boolean hasBase, Body jb) {
+    checkMethodAvailable(method);
     List<Value> argsVariables = new ArrayList<>();
     List<Type> methodParamTypes = new ArrayList<>();
-    if (instruction.getArgumentsCount() == 0) {
+    if (hasBase && instruction.getArgumentsCount() == 0) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
           + " of declared type " + method.getDeclaringClass().getName()
           + " has no arguments! This means there is no base variable for the virtual invoke!");
     }
 
-    Value baseValue
-        = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(0), dotnetBody, cilBlock).jimplifyExpr(jb);
-    baseValue = simplifyComplexExpression(jb, baseValue);
-    if (baseValue instanceof Constant) {
-      baseValue = createTempVar(jb, Jimple.v(), baseValue);
+    int startIdx = 0;
+    Local base = null;
+    if (hasBase) {
+      Value baseValue
+          = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(0), dotnetBody, cilBlock).jimplifyExpr(jb);
+      baseValue = simplifyComplexExpression(jb, baseValue);
+      if (baseValue instanceof Constant) {
+        baseValue = createTempVar(jb, Jimple.v(), baseValue);
+      }
+      base = (Local) baseValue;
+      startIdx = 1;
     }
-    Local base = (Local) baseValue;
 
-    if (instruction.getArgumentsCount() > 1) {
-      for (int z = 1; z < instruction.getArgumentsCount(); z++) {
+    Map<Integer, SootClass> byRefWrappers = new HashMap<>();
+    if (instruction.getArgumentsCount() > startIdx) {
+      for (int z = startIdx; z < instruction.getArgumentsCount(); z++) {
         Value argValue
             = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
         argValue = simplifyComplexExpression(jb, argValue);
         argsVariables.add(argValue);
       }
+      int p = 0;
       for (ProtoAssemblyAllTypes.ParameterDefinition parameterDefinition : instruction.getMethod().getParameterList()) {
-        methodParamTypes.add(DotnetTypeFactory.toSootType(parameterDefinition.getType()));
+        Type t = DotnetTypeFactory.toSootType(parameterDefinition.getType());
+        if (ByReferenceWrapperGenerator.needsWrapper(parameterDefinition)) {
+          SootClass sc = ByReferenceWrapperGenerator.getWrapperClass(t);
+          t = sc.getType();
+          byRefWrappers.put(p, sc);
+        }
+        methodParamTypes.add(t);
+        p++;
       }
     }
+    List<Unit> afterCallUnits = null;
 
     // Check if cast is needed for correct validation, e.g.:
     // System.Object modifiers = null;
@@ -211,16 +211,31 @@ public class CilCallInstruction extends AbstractCilnstruction {
     // GetConstructor(System.Reflection.ParameterModifier[])>(modifiers);
     // FastHierarchy is not available at this point, check hierarchy would be easier
     for (int i = 0; i < argsVariables.size(); i++) {
-      Value arg = argsVariables.get(i);
+      final Value originalArg = argsVariables.get(i);
+      Value modifiedArg = originalArg;
       Type methodParam = methodParamTypes.get(i);
-      if (arg instanceof Local) {
-        if (arg.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
+      Type argType = modifiedArg.getType();
+      if (modifiedArg instanceof Local) {
+        if (argType.toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
             && !methodParam.toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
           Local castLocal = dotnetBody.variableManager.localGenerator.generateLocal(methodParam);
-          localsToCastForCall.add(new Pair<>((Local) arg, castLocal));
-          argsVariables.set(i, castLocal);
+          localsToCastForCall.add(new Pair<>((Local) modifiedArg, castLocal));
+          modifiedArg = castLocal;
         }
       }
+      if (methodParam instanceof RefType && argType instanceof PrimType) {
+        // can happen when enums are expected
+        modifiedArg = createTempVar(jb, Jimple.v(), Jimple.v().newCastExpr(modifiedArg, methodParam));
+      }
+      SootClass wrapped = byRefWrappers.get(i);
+      if (wrapped != null) {
+        modifiedArg = ByReferenceWrapperGenerator.insertWrapperCall(jb, wrapped, modifiedArg);
+        if (afterCallUnits == null) {
+          afterCallUnits = new ArrayList<>();
+        }
+        afterCallUnits.add(ByReferenceWrapperGenerator.getUnwrapCall(wrapped, modifiedArg, originalArg));
+      }
+      argsVariables.set(i, modifiedArg);
     }
 
     String methodName = method.getUniqueName();
@@ -235,28 +250,30 @@ public class CilCallInstruction extends AbstractCilnstruction {
       return_type = DotnetTypeFactory.toSootType(method.getProtoMessage().getReturnType());
     }
 
-    SootMethodRef methodRef
-        = Scene.v().makeMethodRef(clazz, DotnetMethod.convertCtorName(methodName), methodParamTypes, return_type, false);
+    SootMethodRef methodRef = Scene.v().makeMethodRef(method.getDeclaringClass(), DotnetMethod.convertCtorName(methodName),
+        methodParamTypes, return_type, !hasBase);
 
-    return new MethodParams(base, methodRef, argsVariables);
+    return new MethodParams(base, methodRef, argsVariables, afterCallUnits);
   }
 
-  private void checkMethodAvailable() {
+  private void checkMethodAvailable(DotnetMethod method) {
     if (method.getName().trim().isEmpty()) {
       throw new RuntimeException("Opcode: " + instruction.getOpCode() + ": Given method " + method.getName()
           + " of declared type " + method.getDeclaringClass().getName() + " has no method name!");
     }
   }
 
-  private static class MethodParams {
-    public MethodParams(Local base, SootMethodRef methodRef, List<Value> argsVariables) {
-      Base = base;
-      MethodRef = methodRef;
-      ArgumentVariables = argsVariables;
+  static class MethodParams {
+    public MethodParams(Local base, SootMethodRef methodRef, List<Value> argsVariables, List<Unit> afterCallUnits) {
+      this.base = base;
+      this.methodRef = methodRef;
+      this.argumentVariables = argsVariables;
+      this.afterCallUnits = afterCallUnits;
     }
 
-    public Local Base;
-    public SootMethodRef MethodRef;
-    public List<Value> ArgumentVariables;
+    public Local base;
+    public SootMethodRef methodRef;
+    public List<Value> argumentVariables;
+    private List<Unit> afterCallUnits;
   }
 }

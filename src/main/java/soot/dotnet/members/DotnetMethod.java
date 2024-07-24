@@ -377,16 +377,20 @@ public class DotnetMethod extends AbstractDotnetMember {
    * @return java constructor name
    */
   public static String convertCtorName(String methodName) {
-    methodName = methodName.replace(CONSTRUCTOR_NAME, JAVA_CONSTRUCTOR_NAME);
-    methodName = methodName.replace(STATIC_CONSTRUCTOR_NAME, JAVA_STATIC_CONSTRUCTOR_NAME);
+    if (methodName.equals(CONSTRUCTOR_NAME)) {
+      return JAVA_CONSTRUCTOR_NAME;
+    }
+    if (methodName.equals(STATIC_CONSTRUCTOR_NAME)) {
+      return JAVA_STATIC_CONSTRUCTOR_NAME;
+    }
+    if (methodName.endsWith(CONSTRUCTOR_NAME)) {
+      methodName = methodName.substring(0, methodName.length() - CONSTRUCTOR_NAME.length()) + JAVA_CONSTRUCTOR_NAME;
+    }
+    if (methodName.endsWith(STATIC_CONSTRUCTOR_NAME)) {
+      methodName
+          = methodName.substring(0, methodName.length() - STATIC_CONSTRUCTOR_NAME.length()) + JAVA_STATIC_CONSTRUCTOR_NAME;
+    }
     methodName = methodName.replace("+", "$");
-    return methodName;
-  }
-
-  public static String convertCilToJvmNaming(String methodName) {
-    methodName = methodName.replace("+", "$");
-    methodName = methodName.replace(JAVA_CONSTRUCTOR_NAME, CONSTRUCTOR_NAME);
-    methodName = methodName.replace(JAVA_STATIC_CONSTRUCTOR_NAME, STATIC_CONSTRUCTOR_NAME);
     return methodName;
   }
 

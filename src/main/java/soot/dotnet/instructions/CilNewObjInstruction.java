@@ -1,7 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.ArrayList;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,24 +22,14 @@ import java.util.ArrayList;
  * #L%
  */
 import soot.Body;
-import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
-import soot.Type;
 import soot.Value;
 import soot.dotnet.members.method.DotnetBody;
-import soot.dotnet.proto.ProtoAssemblyAllTypes.IlType;
-import soot.dotnet.proto.ProtoAssemblyAllTypes.ParameterDefinition;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetTypeFactory;
-import soot.jimple.DoubleConstant;
-import soot.jimple.FloatConstant;
-import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
-import soot.jimple.LongConstant;
 import soot.jimple.NewExpr;
-import soot.jimple.StringConstant;
 
 /**
  * Combi instruction with instantiating a new object and calling the constructor (no structs often) Call
@@ -64,60 +52,11 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
     SootClass clazz = RefType.v(instruction.getMethod().getDeclaringType().getFullname()).getSootClass();
     NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
 
-    ArrayList<Type> argsTypes = new ArrayList<>(instruction.getMethod().getParameterCount());
-    for (ParameterDefinition p : instruction.getMethod().getParameterList()) {
-      argsTypes.add(DotnetTypeFactory.toSootType(p.getType()));
-    }
-    ArrayList<Value> argsVariables = new ArrayList<>(instruction.getArgumentsList().size());
-    int i = 0;
-    for (ProtoIlInstructions.IlInstructionMsg a : instruction.getArgumentsList()) {
-
-      if (a.hasVariable()) {
-        argsVariables.add(dotnetBody.variableManager.addOrGetVariable(a.getVariable(), jb));
-      } else {
-        IlType t = a.getConstantType();
-        if (t == null) {
-          throw new RuntimeException("Not a local or constant: " + a);
-        }
-        Value argValue;
-        switch (t) {
-          case type_unknown:
-          case UNRECOGNIZED:
-            Value v = CilInstructionFactory.fromInstructionMsg(a, dotnetBody, cilBlock).jimplifyExpr(jb);
-            argValue = createTempVar(jb, Jimple.v(), v);
-            break;
-          case type_double:
-            argValue = DoubleConstant.v(a.getValueConstantDouble());
-            break;
-          case type_float:
-            argValue = FloatConstant.v(a.getValueConstantFloat());
-            break;
-          case type_int32:
-            argValue = IntConstant.v((int) a.getValueConstantInt64());
-            break;
-          case type_int64:
-            argValue = LongConstant.v(a.getValueConstantInt64());
-            break;
-          case type_string:
-            argValue = StringConstant.v(a.getValueConstantString());
-            break;
-          default:
-            throw new RuntimeException("Unsupported: " + t);
-
-        }
-        Type argDestType = argsTypes.get(i);
-        if (argDestType instanceof RefType && argValue.getType() instanceof PrimType) {
-          // can happen when enums are expected
-          argValue = createTempVar(jb, Jimple.v(), Jimple.v().newCastExpr(argValue, argDestType));
-        }
-        argsVariables.add(argValue);
-        i++;
-      }
-    }
+    MethodParams t = getMethodCallParams(false, jb);
 
     // Constructor call expression
-    methodRef = Scene.v().makeConstructorRef(clazz, argsTypes);
-    listOfArgs = argsVariables;
+    methodRef = Scene.v().makeConstructorRef(clazz, t.methodRef.getParameterTypes());
+    listOfArgs = t.argumentVariables;
 
     return newExpr;
   }
