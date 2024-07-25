@@ -137,7 +137,8 @@ public class CilCallInstruction extends AbstractCilnstruction {
     }
     // CONSTRUCTOR and PRIVATE METHOD CALLS
     else if (instruction.getMethod().getIsConstructor()
-        || instruction.getMethod().getAccessibility().equals(ProtoAssemblyAllTypes.Accessibility.PRIVATE)) {
+        || instruction.getMethod().getAccessibility().equals(ProtoAssemblyAllTypes.Accessibility.PRIVATE)
+        || !method.getProtoMessage().getIsVirtual()) {
       MethodParams methodParams = getMethodCallParams(method, true, jb);
       return Jimple.v().newSpecialInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
@@ -161,6 +162,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
   }
 
   protected MethodParams getMethodCallParams(DotnetMethod method, boolean hasBase, Body jb) {
+
     checkMethodAvailable(method);
     List<Value> argsVariables = new ArrayList<>();
     List<Type> methodParamTypes = new ArrayList<>();
