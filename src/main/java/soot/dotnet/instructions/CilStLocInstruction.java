@@ -1,5 +1,7 @@
 package soot.dotnet.instructions;
 
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -29,6 +31,7 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
@@ -39,6 +42,9 @@ import soot.dotnet.types.DotnetType;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.Jimple;
+import soot.jimple.NewExpr;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.SimpleLocalDefs;
 
 /**
  * AssignStmt - Store a expression to a local Make additional tasks for rewriting .NET opcodes to Jimple
@@ -90,10 +96,28 @@ public class CilStLocInstruction extends AbstractCilnstruction {
       SootMethod cm = DotnetType.getCopyMethod(rt.getSootClass());
       if (cm != null) {
         Jimple j = Jimple.v();
+        boolean doCopy = true;
         if (!(value instanceof Local)) {
           value = simplifyComplexExpression(jb, value);
+        } else {
+          SimpleLocalDefs ld = new SimpleLocalDefs(new ExceptionalUnitGraph(jb));
+          List<Unit> df = ld.getDefsOfAt(variable, jb.getUnits().getLast());
+          boolean hasOnlyNewExpr = true;
+          for (Unit i : df) {
+            if (i instanceof AssignStmt) {
+              if (!(((AssignStmt) i).getRightOp() instanceof NewExpr)) {
+                hasOnlyNewExpr = false;
+              }
+            }
+          }
+          if (hasOnlyNewExpr) {
+            // we have hte case were we only store the uninitizalized struct
+            doCopy = false;
+          }
         }
-        value = createTempVar(jb, j, j.newSpecialInvokeExpr((Local) value, cm.makeRef()));
+        if (doCopy) {
+          value = createTempVar(jb, j, j.newSpecialInvokeExpr((Local) value, cm.makeRef()));
+        }
       }
     }
     AssignStmt astm = Jimple.v().newAssignStmt(variable, value);

@@ -144,18 +144,20 @@ public class DotnetType {
     uchain.add(j.newAssignStmt(copy, j.newNewExpr(sootClass.getType())));
     uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(copy, createOrGetEmptyConstructor(sootClass, sc, j).makeRef())));
     for (SootField f : sootClass.getFields()) {
-      SootFieldRef fr = f.makeRef();
-      if (structFields != null && structFields.contains(f)) {
-        Local linst = j.newLocal("instance", f.getType());
-        body.getLocals().add(linst);
-        uchain.add(j.newAssignStmt(linst, j.newInstanceFieldRef(thisO, fr)));
-        SootClass sct = ((RefType) f.getType()).getSootClass();
-        SootMethod copyM = createOrGetCopyMethod(sct, sc);
-        uchain.add(j.newAssignStmt(tmp, j.newSpecialInvokeExpr(linst, copyM.makeRef())));
-      } else {
-        uchain.add(j.newAssignStmt(tmp, j.newInstanceFieldRef(thisO, fr)));
+      if (!f.isStatic()) {
+        SootFieldRef fr = f.makeRef();
+        if (structFields != null && structFields.contains(f)) {
+          Local linst = j.newLocal("instance", f.getType());
+          body.getLocals().add(linst);
+          uchain.add(j.newAssignStmt(linst, j.newInstanceFieldRef(thisO, fr)));
+          SootClass sct = ((RefType) f.getType()).getSootClass();
+          SootMethod copyM = createOrGetCopyMethod(sct, sc);
+          uchain.add(j.newAssignStmt(tmp, j.newSpecialInvokeExpr(linst, copyM.makeRef())));
+        } else {
+          uchain.add(j.newAssignStmt(tmp, j.newInstanceFieldRef(thisO, fr)));
+        }
+        uchain.add(j.newAssignStmt(j.newInstanceFieldRef(copy, fr), tmp));
       }
-      uchain.add(j.newAssignStmt(j.newInstanceFieldRef(copy, fr), tmp));
     }
 
     uchain.add(j.newReturnStmt(copy));

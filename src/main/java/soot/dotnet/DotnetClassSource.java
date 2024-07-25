@@ -36,7 +36,6 @@ import soot.SootResolver;
 import soot.Type;
 import soot.VoidType;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.javaToJimple.IInitialResolver.Dependencies;
@@ -53,10 +52,6 @@ public class DotnetClassSource extends ClassSource {
 
   public DotnetClassSource(String className, File path) {
     super(className);
-    // if LdFtn fake, is ok
-    if (className.equals(DotnetBasicTypes.FAKE_LDFTN)) {
-      return;
-    }
     if (!(path instanceof AssemblyFile)) {
       throw new RuntimeException("Given File object is no assembly file!");
     }

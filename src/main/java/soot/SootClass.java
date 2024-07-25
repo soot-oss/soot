@@ -1153,6 +1153,8 @@ public class SootClass extends AbstractHost {
 
   /** Makes this class a phantom class. */
   public void setPhantomClass() {
+    if (name.equals("ByReferenceWrappers.Wrapper"))
+      System.out.println();
     Chain<SootClass> c = Scene.v().getContainingChain(this);
     if (c != null) {
       c.remove(this);

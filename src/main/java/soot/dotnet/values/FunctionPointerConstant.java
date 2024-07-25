@@ -3,6 +3,7 @@ package soot.dotnet.values;
 import java.util.ArrayList;
 import java.util.List;
 
+import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethodRef;
@@ -66,7 +67,7 @@ public class FunctionPointerConstant extends Constant {
 
   @Override
   public Type getType() {
-    return null;
+    return RefType.v("System.Delegate");
   }
 
   @Override

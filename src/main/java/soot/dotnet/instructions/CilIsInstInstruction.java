@@ -57,6 +57,7 @@ public class CilIsInstInstruction extends AbstractCilnstruction {
     String type = instruction.getType().getFullname();
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
     Value argument = cilExpr.jimplifyExpr(jb);
+    argument = simplifyComplexExpression(jb, argument);
     return Jimple.v().newInstanceOfExpr(argument, DotnetTypeFactory.toSootType(type));
   }
 

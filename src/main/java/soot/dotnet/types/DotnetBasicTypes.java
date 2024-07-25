@@ -113,5 +113,4 @@ public class DotnetBasicTypes {
   public static final String SYSTEM_RUNTIMEFIELDHANDLE = "System.RuntimeFieldHandle";
   public static final String SYSTEM_RUNTIMETYPEHANDLE = "System.RuntimeTypeHandle";
 
-  public static final String FAKE_LDFTN = "Fake.LdFtn";
 }

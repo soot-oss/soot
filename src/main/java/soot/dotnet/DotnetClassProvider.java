@@ -38,7 +38,6 @@ import soot.ClassProvider;
 import soot.ClassSource;
 import soot.SourceLocator;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
-import soot.dotnet.types.DotnetBasicTypes;
 import soot.options.Options;
 
 /**
@@ -58,11 +57,6 @@ public class DotnetClassProvider implements ClassProvider {
   @Override
   public ClassSource find(String className) {
     ensureAssemblyIndex();
-
-    // if fake LdFtn instruction
-    if (className.equals(DotnetBasicTypes.FAKE_LDFTN)) {
-      return new DotnetClassSource(className, null);
-    }
 
     File assemblyFile = SourceLocator.v().dexClassIndex().get(className);
     return assemblyFile == null ? null : new DotnetClassSource(className, assemblyFile);

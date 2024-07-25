@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,6 +106,7 @@ public class DotnetBody {
   }
 
   public void jimplify(JimpleBody jb) {
+
     this.jb = jb;
     variableManager = new DotnetBodyVariableManager(this, this.jb);
     // resolve initial variable assignments
@@ -134,6 +134,8 @@ public class DotnetBody {
 
     // We now do similar kind of optimizations than for dex code, since
     // the code we generate is not really efficient...
+
+    DelegateHandler.replaceDelegates(jb);
 
     UnconditionalBranchFolder.v().transform(jb);
 
@@ -198,9 +200,9 @@ public class DotnetBody {
    */
   private void replaceWrappedRefWrites(JimpleBody jb, List<Unit> unwrapCalls, Map<Local, Local> unwrappedToWrapped) {
     UnitPatchingChain unitchain = jb.getUnits();
-    Iterator<Unit> it = unitchain.iterator();
-    while (it.hasNext()) {
-      Unit u = it.next();
+    Unit u = unitchain.getFirst();
+    while (u != null) {
+      Unit next = unitchain.getSuccOf(u);
       if (!unwrapCalls.contains(u) && u instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u;
         Value lop = assign.getLeftOp();
@@ -213,16 +215,17 @@ public class DotnetBody {
         }
 
       }
+      u = next;
     }
   }
 
   protected void removeDeadNewExpr(JimpleBody jb) {
     UnitPatchingChain up = jb.getUnits();
-    Iterator<Unit> it = up.iterator();
     ExceptionalUnitGraph g = new ExceptionalUnitGraph(jb);
     SimpleLocalUses ld = new SimpleLocalUses(g, new SimpleLocalDefs(g));
-    while (it.hasNext()) {
-      Unit u = it.next();
+    Unit u = up.getFirst();
+    while (u != null) {
+      Unit next = up.getSuccOf(u);
       if (u instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u;
         if (assign.getRightOp() instanceof NewExpr) {
@@ -232,6 +235,7 @@ public class DotnetBody {
 
         }
       }
+      u = next;
     }
   }
 

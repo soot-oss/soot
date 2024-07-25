@@ -1755,8 +1755,6 @@ public class Scene {
     addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMEFIELDHANDLE, SootClass.SIGNATURES);
     addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMEMETHODHANDLE, SootClass.SIGNATURES);
     addBasicClass(DotnetBasicTypes.SYSTEM_RUNTIMETYPEHANDLE, SootClass.SIGNATURES);
-
-    addBasicClass(DotnetBasicTypes.FAKE_LDFTN, SootClass.SIGNATURES);
   }
 
   public void addBasicClass(String name) {
@@ -2205,9 +2203,8 @@ public class Scene {
   }
 
   /**
-   * Resets the sootClassPath to null.
-   * This method allows for subsequent calls to {@link #loadNecessaryClasses()}
-   * to recompute and load the classes using updated configurations if provided.
+   * Resets the sootClassPath to null. This method allows for subsequent calls to {@link #loadNecessaryClasses()} to
+   * recompute and load the classes using updated configurations if provided.
    */
   public void resetSootClassPathCache() {
     this.sootClassPath = null;

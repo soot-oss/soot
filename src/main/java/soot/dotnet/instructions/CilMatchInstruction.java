@@ -27,7 +27,6 @@ import soot.Type;
 import soot.Value;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition;
-import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.Jimple;
@@ -50,8 +49,6 @@ public class CilMatchInstruction extends AbstractCilnstruction {
     Value c = simplifyComplexExpression(jb, value);
 
     TypeDefinition dt = instruction.getVariable().getType();
-    if (dt.getTypeKind() != TypeKindDef.CLASS)
-      throw new RuntimeException("Expected class");
     Type t = DotnetTypeFactory.toSootType(dt);
     return simplifyComplexExpression(jb, Jimple.v().newInstanceOfExpr(c, t));
   }

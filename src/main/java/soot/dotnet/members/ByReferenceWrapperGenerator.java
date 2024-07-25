@@ -33,11 +33,11 @@ public class ByReferenceWrapperGenerator {
   public synchronized static SootClass getWrapperClass(Type t) {
     Scene scene = Scene.v();
     String name = WRAPPER_CLASS_NAME;
-    SootClass sc = scene.getSootClassUnsafe(name);
-    if (sc != null) {
-      return sc;
+    RefType rt = RefType.v(name);
+    if (rt.hasSootClass()) {
+      return rt.getSootClass();
     }
-    sc = scene.makeSootClass(name, Modifier.FINAL | Modifier.STATIC);
+    SootClass sc = scene.makeSootClass(name, Modifier.FINAL | Modifier.STATIC);
     sc.setApplicationClass();
     SootField r = scene.makeSootField("r", RefType.v("System.Object"));
     r.setModifiers(Modifier.PUBLIC);
@@ -52,7 +52,6 @@ public class ByReferenceWrapperGenerator {
     b.getUnits().add(j.newAssignStmt(j.newInstanceFieldRef(b.getThisLocal(), r.makeRef()), b.getParameterLocal(0)));
     b.getUnits().add(j.newReturnVoidStmt());
 
-    sc.addMethod(ctor);
     return sc;
   }
 
