@@ -35,9 +35,10 @@ import soot.dotnet.values.FunctionPointerConstant;
 /**
  * Create Fake stub for LdFtn (load function), cannot be represented in Jimple
  */
-public class CilLdFtnInstruction extends AbstractCilnstruction {
+public class CilLdVirtualFtnInstruction extends AbstractCilnstruction {
 
-  public CilLdFtnInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  public CilLdVirtualFtnInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
+      CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
   }
 
@@ -56,7 +57,7 @@ public class CilLdFtnInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
     DotnetMethod method = new DotnetMethod(instruction.getMethod(), clazz);
-    return new FunctionPointerConstant(method, false);
+    return new FunctionPointerConstant(method, true);
   }
 
 }

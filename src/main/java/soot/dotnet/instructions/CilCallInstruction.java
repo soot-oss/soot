@@ -60,6 +60,7 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.VoidType;
 import soot.dotnet.members.AbstractDotnetMember;
 import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
@@ -72,7 +73,7 @@ import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Constant;
-import soot.jimple.InvokeStmt;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.toolkits.scalar.Pair;
 
@@ -89,22 +90,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
   @Override
   public void jimplify(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction, dotnetBody, cilBlock);
-    Value value = cilExpr.jimplifyExpr(jb);
-    InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(value);
-
-    // cast for validation
-    if (cilExpr instanceof CilCallInstruction) {
-      List<Pair<Local, Local>> locals = ((CilCallInstruction) cilExpr).getLocalsToCastForCall();
-      if (locals.size() != 0) {
-        for (Pair<Local, Local> pair : locals) {
-          CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());
-          AssignStmt assignStmt = Jimple.v().newAssignStmt(pair.getO2(), castExpr);
-          jb.getUnits().add(assignStmt);
-        }
-      }
-    }
-
-    jb.getUnits().add(invokeStmt);
+    cilExpr.jimplifyExpr(jb);
   }
 
   /**
@@ -115,9 +101,14 @@ public class CilCallInstruction extends AbstractCilnstruction {
    */
   @Override
   public Value jimplifyExpr(Body jb) {
-
-    SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
+    String clzname = instruction.getMethod().getDeclaringType().getFullname();
+    SootClass clazz = Scene.v().getSootClassUnsafe(clzname);
+    if (clazz == null) {
+      clazz = Scene.v().forceResolve(clzname, SootClass.SIGNATURES);
+    }
     DotnetMethod method = new DotnetMethod(instruction.getMethod(), clazz);
+    InvokeExpr invokeEx;
+    MethodParams methodParams;
     // STATIC
     if (method.isStatic()) {
       checkMethodAvailable(method);
@@ -126,25 +117,60 @@ public class CilCallInstruction extends AbstractCilnstruction {
       if (rewriteField != null) {
         return rewriteField;
       }
-      MethodParams methodParams = getMethodCallParams(method, false, jb);
+      methodParams = getMethodCallParams(method, false, jb);
 
-      return Jimple.v().newStaticInvokeExpr(methodParams.methodRef, methodParams.argumentVariables);
+      invokeEx = Jimple.v().newStaticInvokeExpr(methodParams.methodRef, methodParams.argumentVariables);
+    } else {
+
+      methodParams = getMethodCallParams(method, hasBaseObj(), jb);
+
+      invokeEx = createInvokeExpr(jb, clazz, method, methodParams);
     }
+
+    // cast for validation
+    List<Pair<Local, Local>> locals = getLocalsToCastForCall();
+    if (locals.size() != 0) {
+      for (Pair<Local, Local> pair : locals) {
+        CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());
+        AssignStmt assignStmt = Jimple.v().newAssignStmt(pair.getO2(), castExpr);
+        jb.getUnits().add(assignStmt);
+      }
+    }
+
+    Jimple j = Jimple.v();
+    Value ret = null;
+    if (methodParams.methodRef.getReturnType() instanceof VoidType) {
+      jb.getUnits().add(j.newInvokeStmt(invokeEx));
+    } else {
+      ret = createTempVar(jb, j, invokeEx);
+    }
+    if (afterCallUnits != null) {
+      for (Unit i : afterCallUnits) {
+        jb.getUnits().add(i);
+      }
+    }
+
+    return ret;
+
+  }
+
+  protected boolean hasBaseObj() {
+    return true;
+  }
+
+  protected InvokeExpr createInvokeExpr(Body jb, SootClass clazz, DotnetMethod method, MethodParams methodParams) {
     // INTERFACE
-    else if (clazz.isInterface()) {
-      MethodParams methodParams = getMethodCallParams(method, true, jb);
+    if (clazz.isInterface()) {
       return Jimple.v().newInterfaceInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
     // CONSTRUCTOR and PRIVATE METHOD CALLS
     else if (instruction.getMethod().getIsConstructor()
         || instruction.getMethod().getAccessibility().equals(ProtoAssemblyAllTypes.Accessibility.PRIVATE)
         || !method.getProtoMessage().getIsVirtual()) {
-      MethodParams methodParams = getMethodCallParams(method, true, jb);
       return Jimple.v().newSpecialInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
     // DYNAMIC OBJECT METHOD
     else {
-      MethodParams methodParams = getMethodCallParams(method, true, jb);
       return Jimple.v().newVirtualInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
   }
@@ -188,8 +214,8 @@ public class CilCallInstruction extends AbstractCilnstruction {
     Map<Integer, SootClass> byRefWrappers = new HashMap<>();
     if (instruction.getArgumentsCount() > startIdx) {
       for (int z = startIdx; z < instruction.getArgumentsCount(); z++) {
-        Value argValue
-            = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock).jimplifyExpr(jb);
+        CilInstruction inst = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock);
+        Value argValue = inst.jimplifyExpr(jb);
         argValue = simplifyComplexExpression(jb, argValue);
         argsVariables.add(argValue);
       }
@@ -289,12 +315,6 @@ public class CilCallInstruction extends AbstractCilnstruction {
     public Local base;
     public SootMethodRef methodRef;
     public List<Value> argumentVariables;
-  }
-
-  public void afterCall(Body jb, Local variableObject) {
-    if (afterCallUnits != null) {
-      jb.getUnits().addAll(afterCallUnits);
-    }
   }
 
 }

@@ -3,6 +3,7 @@ package soot.dotnet.instructions;
 import soot.Body;
 import soot.Immediate;
 import soot.Local;
+import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 
@@ -84,10 +85,16 @@ public abstract class AbstractCilnstruction implements CilInstruction {
     }
   }
 
-  protected Value createTempVar(Body jb, final Jimple jimple, Value inv) {
+  protected Local createTempVar(Body jb, final Jimple jimple, Value inv) {
     Local interimLocal = dotnetBody.variableManager.localGenerator.generateLocal(inv.getType());
     jb.getLocals().add(interimLocal);
     jb.getUnits().add(jimple.newAssignStmt(interimLocal, inv));
+    return interimLocal;
+  }
+
+  protected Local createTempVar(Body jb, Type type) {
+    Local interimLocal = dotnetBody.variableManager.localGenerator.generateLocal(type);
+    jb.getLocals().add(interimLocal);
     return interimLocal;
   }
 

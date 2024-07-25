@@ -47,12 +47,13 @@ import java.util.List;
  */
 
 import soot.Body;
-import soot.Local;
+import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Value;
+import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.jimple.InvokeStmt;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.SpecialInvokeExpr;
 
@@ -73,17 +74,10 @@ public abstract class AbstractNewObjInstanceInstruction extends CilCallInstructi
     return listOfArgs;
   }
 
-  /**
-   * Call the constructor of the instantiated object
-   *
-   * @param jb
-   * @param variableObject
-   */
-  public void afterCall(Body jb, Local variableObject) {
-    // if new Obj also add call of constructor
-    SpecialInvokeExpr specialInvokeExpr = Jimple.v().newSpecialInvokeExpr(variableObject, getMethodRef(), getListOfArgs());
-    InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(specialInvokeExpr);
-    jb.getUnits().add(invokeStmt);
-    super.afterCall(jb, variableObject);
+  @Override
+  protected InvokeExpr createInvokeExpr(Body jb, SootClass clazz, DotnetMethod method, MethodParams methodParams) {
+    SpecialInvokeExpr specialInvokeExpr
+        = Jimple.v().newSpecialInvokeExpr(methodParams.base, getMethodRef(), getListOfArgs());
+    return specialInvokeExpr;
   }
 }

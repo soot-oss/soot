@@ -37,7 +37,6 @@ import soot.Type;
 import soot.VoidType;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetBasicTypes;
-import soot.dotnet.types.DotnetFakeLdFtnType;
 import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.javaToJimple.IInitialResolver.Dependencies;
@@ -73,10 +72,6 @@ public class DotnetClassSource extends ClassSource {
    */
   @Override
   public Dependencies resolve(SootClass sc) {
-    // If Fake.LdFtn
-    if (sc.getName().equals(DotnetBasicTypes.FAKE_LDFTN)) {
-      return DotnetFakeLdFtnType.resolve(sc);
-    }
 
     if (Options.v().verbose()) {
       logger.info("resolving " + className + " type definition from file " + assemblyFile.getPath());

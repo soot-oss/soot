@@ -22,12 +22,15 @@ package soot.dotnet.instructions;
  * #L%
  */
 import soot.Body;
-import soot.RefType;
+import soot.Local;
+import soot.NullType;
 import soot.Scene;
 import soot.SootClass;
 import soot.Value;
+import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
 
@@ -36,8 +39,15 @@ import soot.jimple.NewExpr;
  * resolveCallConstructorBody() afterwards in StLoc
  */
 public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
+  private Local lhs;
+
   public CilNewObjInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
+  }
+
+  @Override
+  protected boolean hasBaseObj() {
+    return false;
   }
 
   @Override
@@ -46,19 +56,22 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
 
   @Override
   public Value jimplifyExpr(Body jb) {
-    if (!instruction.hasMethod()) {
-      throw new RuntimeException("NewObj: There is no method information in the method definiton!");
-    }
-    SootClass clazz = RefType.v(instruction.getMethod().getDeclaringType().getFullname()).getSootClass();
-    NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
+    this.lhs = createTempVar(jb, NullType.v());
+    Value j = super.jimplifyExpr(jb);
+    if (j != null)
+      throw new RuntimeException("Should never happen.");
+    return lhs;
 
-    MethodParams t = getMethodCallParams(false, jb);
+  }
 
-    // Constructor call expression
-    methodRef = Scene.v().makeConstructorRef(clazz, t.methodRef.getParameterTypes());
-    listOfArgs = t.argumentVariables;
-
-    return newExpr;
+  @Override
+  protected InvokeExpr createInvokeExpr(Body jb, SootClass clazz, DotnetMethod method, MethodParams methodParams) {
+    Jimple j = Jimple.v();
+    NewExpr newExpr = j.newNewExpr(clazz.getType());
+    lhs.setType(clazz.getType());
+    jb.getUnits().add(j.newAssignStmt(lhs, newExpr));
+    methodRef = Scene.v().makeConstructorRef(clazz, methodParams.methodRef.getParameterTypes());
+    return j.newSpecialInvokeExpr(lhs, methodRef, methodParams.argumentVariables);
   }
 
 }

@@ -60,14 +60,9 @@ public class CilLeaveInstruction extends AbstractCilnstruction {
         AssignStmt assignStmt = Jimple.v().newAssignStmt(tmpVariable, value);
         jb.getUnits().add(assignStmt);
 
-        ((AbstractNewObjInstanceInstruction) cilValueExpr).afterCall(jb, tmpVariable);
-
         ReturnStmt ret = Jimple.v().newReturnStmt(tmpVariable);
         jb.getUnits().add(ret);
         return;
-      }
-      if (cilValueExpr instanceof CilCallInstruction) {
-        ((CilCallInstruction) cilValueExpr).afterCall(jb, null);
       }
       // Jimple grammar does not allow returning static, instead assign to tmp variable
       // if System.Array.Empty of CilCallVirtInstruction (newExpr), rewrite

@@ -128,8 +128,9 @@ public class CilInstructionFactory {
       case LOC_ALLOC:
         return new CilLocAllocInstruction(instruction, dotnetBody, cilBlock);
       case LD_FTN:
-      case LD_VIRT_FTN:
         return new CilLdFtnInstruction(instruction, dotnetBody, cilBlock);
+      case LD_VIRT_FTN:
+        return new CilLdVirtualFtnInstruction(instruction, dotnetBody, cilBlock);
       case MK_REF_ANY:
       case REF_ANY_VAL:
         return new CilRefAnyInstruction(instruction, dotnetBody, cilBlock);

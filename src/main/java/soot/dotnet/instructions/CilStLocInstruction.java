@@ -1,7 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,16 +23,22 @@ import java.util.List;
  */
 
 import soot.Body;
+import soot.FastHierarchy;
 import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Type;
 import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotnetType;
 import soot.jimple.AssignStmt;
-import soot.jimple.CastExpr;
+import soot.jimple.Constant;
 import soot.jimple.Jimple;
-import soot.toolkits.scalar.Pair;
 
 /**
  * AssignStmt - Store a expression to a local Make additional tasks for rewriting .NET opcodes to Jimple
@@ -48,12 +52,12 @@ public class CilStLocInstruction extends AbstractCilnstruction {
   public void jimplify(Body jb) {
     CilInstruction cilExpr
         = CilInstructionFactory.fromInstructionMsg(instruction.getValueInstruction(), dotnetBody, cilBlock);
+    Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), jb);
     Value value = cilExpr.jimplifyExpr(jb);
 
     // if rvalue is isinst, change to instanceof semantic, see description of opcode
     if (cilExpr instanceof CilIsInstInstruction) {
       CilIsInstInstruction isInst = (CilIsInstInstruction) cilExpr;
-      Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), jb);
       isInst.resolveRewritingIsInst(jb, variable, value);
       return;
     }
@@ -64,26 +68,6 @@ public class CilStLocInstruction extends AbstractCilnstruction {
       value = newArrInstruction.resolveRewriteMultiArrAccess(jb);
     }
 
-    Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), value.getType(), jb);
-    if (cilExpr instanceof CilNewObjInstruction) {
-      CilNewObjInstruction n = (CilNewObjInstruction) cilExpr;
-      jb.getUnits().add(Jimple.v().newAssignStmt(variable, value));
-      jb.getUnits()
-          .add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(variable, n.getMethodRef(), n.getListOfArgs())));
-      return;
-    }
-
-    // cast for validation
-    if (cilExpr instanceof CilCallInstruction) {
-      List<Pair<Local, Local>> locals = ((CilCallInstruction) cilExpr).getLocalsToCastForCall();
-      if (locals.size() != 0) {
-        for (Pair<Local, Local> pair : locals) {
-          CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());
-          AssignStmt assignStmt = Jimple.v().newAssignStmt(pair.getO2(), castExpr);
-          jb.getUnits().add(assignStmt);
-        }
-      }
-    }
     // create this cast, to validate successfully
     if (value instanceof Local && !variable.getType().toString().equals(value.getType().toString())
         && dotnetBody.variableManager.localsToCastContains(((Local) value).getName())) {
@@ -95,13 +79,25 @@ public class CilStLocInstruction extends AbstractCilnstruction {
       value = Jimple.v().newCastExpr(value, variable.getType());
     }
 
+    final FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+    final RefType valueType = RefType.v("System.ValueType");
+
+    Type modType = variable.getType();
+    TypeKindDef varkind = instruction.getVariable().getType().getTypeKind();
+    if (varkind != TypeKindDef.BY_REF && fh.canStoreType(modType, valueType) && !(value instanceof Constant)) {
+      // we need to copy structs!
+      RefType rt = (RefType) modType;
+      SootMethod cm = DotnetType.getCopyMethod(rt.getSootClass());
+      if (cm != null) {
+        Jimple j = Jimple.v();
+        if (!(value instanceof Local)) {
+          value = simplifyComplexExpression(jb, value);
+        }
+        value = createTempVar(jb, j, j.newSpecialInvokeExpr((Local) value, cm.makeRef()));
+      }
+    }
     AssignStmt astm = Jimple.v().newAssignStmt(variable, value);
     jb.getUnits().add(astm);
-
-    // if new Obj also add call of constructor, see description of opcode
-    if (cilExpr instanceof CilCallInstruction) {
-      ((CilCallInstruction) cilExpr).afterCall(jb, variable);
-    }
   }
 
   @Override

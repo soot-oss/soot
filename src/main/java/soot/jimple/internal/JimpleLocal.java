@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import soot.Local;
-import soot.RefType;
 import soot.Type;
 import soot.Unit;
 import soot.UnitPrinter;
@@ -98,8 +97,6 @@ public class JimpleLocal implements Local, ConvertToBaf {
   @Override
   public void setType(Type t) {
     this.type = t;
-    if (t instanceof RefType && t.toString().isEmpty())
-      System.out.println();
   }
 
   @Override

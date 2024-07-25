@@ -71,11 +71,6 @@ public class CilStObjInstruction extends AbstractCilnstruction {
       value = simplifyComplexExpression(jb, value);
     }
 
-    // if new Obj also add call of constructor - relevant for structs (System.ValueType)
-    if (cilExpr instanceof CilCallInstruction) {
-      ((CilCallInstruction) cilExpr).afterCall(jb, (Local) value);
-    }
-
     AssignStmt astm = Jimple.v().newAssignStmt(target, value);
     jb.getUnits().add(astm);
 
