@@ -3,6 +3,7 @@ package soot.dotnet.members.method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /*-
  * #%L
@@ -32,10 +33,12 @@ import soot.LocalGenerator;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+import soot.SootClass;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
+import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
@@ -68,9 +71,9 @@ public class DotnetBodyVariableManager {
   /**
    * Add parameters of the .NET method to the Jimple Body
    */
-  public void fillMethodParameter() {
+  public void fillMethodParameter(List<Unit> unwrapCalls, Map<Local, Local> unwrappedToWrapped) {
     DotnetMethod dotnetMethodSig = dotnetBody.getDotnetMethodSig();
-    fillMethodParameter(mainJb, dotnetMethodSig.getParameterDefinitions());
+    fillMethodParameter(mainJb, dotnetMethodSig.getParameterDefinitions(), unwrapCalls, unwrappedToWrapped);
   }
 
   /**
@@ -79,15 +82,29 @@ public class DotnetBodyVariableManager {
    * @param jb
    * @param parameters
    */
-  public void fillMethodParameter(Body jb, List<ProtoAssemblyAllTypes.ParameterDefinition> parameters) {
+  public void fillMethodParameter(Body jb, List<ProtoAssemblyAllTypes.ParameterDefinition> parameters,
+      List<Unit> unwrapCalls, Map<Local, Local> unwrappedToWrapped) {
     // parameters
     for (int i = 0; i < parameters.size(); i++) {
       ProtoAssemblyAllTypes.ParameterDefinition parameter = parameters.get(i);
-      Local paramLocal
-          = Jimple.v().newLocal(parameter.getParameterName(), DotnetTypeFactory.toSootType(parameter.getType()));
-      jb.getLocals().add(paramLocal);
-      jb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal,
-          Jimple.v().newParameterRef(DotnetTypeFactory.toSootType(parameter.getType()), i)));
+      Type type = DotnetTypeFactory.toSootType(parameter.getType());
+      if (ByReferenceWrapperGenerator.needsWrapper(parameter)) {
+        SootClass wrapperClass = ByReferenceWrapperGenerator.getWrapperClass(type);
+        RefType wrappedType = wrapperClass.getType();
+        Local paramLocal = Jimple.v().newLocal(parameter.getParameterName() + "wrapped", wrappedType);
+        jb.getLocals().add(paramLocal);
+        jb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(wrappedType, i)));
+
+        Local unwrappedParamLocal = Jimple.v().newLocal(parameter.getParameterName(), type);
+        jb.getLocals().add(unwrappedParamLocal);
+        unwrapCalls.add(ByReferenceWrapperGenerator.getUnwrapCall(wrapperClass, paramLocal, unwrappedParamLocal));
+        unwrappedToWrapped.put(unwrappedParamLocal, paramLocal);
+      } else {
+        Local paramLocal = Jimple.v().newLocal(parameter.getParameterName(), type);
+        jb.getLocals().add(paramLocal);
+        jb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(type, i)));
+
+      }
     }
   }
 

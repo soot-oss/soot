@@ -10,7 +10,7 @@ import soot.util.Switch;
 
 public class DecimalConstant extends RealConstant {
   private static final long serialVersionUID = 0L;
-  private BigDecimal value;
+  public BigDecimal value;
 
   public DecimalConstant(BigDecimal value) {
     this.value = value;
@@ -20,9 +20,13 @@ public class DecimalConstant extends RealConstant {
     return new DecimalConstant(b);
   }
 
+  public BigDecimal getValue() {
+    return value;
+  }
+
   @Override
   public String toString() {
-    return value.toPlainString() + "M";
+    return value.toPlainString();
   }
 
   @Override

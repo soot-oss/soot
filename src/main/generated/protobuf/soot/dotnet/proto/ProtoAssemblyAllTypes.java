@@ -224,6 +224,18 @@ public final class ProtoAssemblyAllTypes {
      * <code>type_uint16 = 11;</code>
      */
     type_uint16(11),
+    /**
+     * <code>type_int16 = 12;</code>
+     */
+    type_int16(12),
+    /**
+     * <code>type_char = 13;</code>
+     */
+    type_char(13),
+    /**
+     * <code>type_decimal = 14;</code>
+     */
+    type_decimal(14),
     UNRECOGNIZED(-1),
     ;
 
@@ -275,6 +287,18 @@ public final class ProtoAssemblyAllTypes {
      * <code>type_uint16 = 11;</code>
      */
     public static final int type_uint16_VALUE = 11;
+    /**
+     * <code>type_int16 = 12;</code>
+     */
+    public static final int type_int16_VALUE = 12;
+    /**
+     * <code>type_char = 13;</code>
+     */
+    public static final int type_char_VALUE = 13;
+    /**
+     * <code>type_decimal = 14;</code>
+     */
+    public static final int type_decimal_VALUE = 14;
 
 
     public final int getNumber() {
@@ -313,6 +337,9 @@ public final class ProtoAssemblyAllTypes {
         case 9: return type_byte;
         case 10: return type_sbyte;
         case 11: return type_uint16;
+        case 12: return type_int16;
+        case 13: return type_char;
+        case 14: return type_decimal;
         default: return null;
       }
     }
@@ -20809,24 +20836,25 @@ public final class ProtoAssemblyAllTypes {
       "\n\rAccessibility\022\010\n\004NONE\020\000\022\013\n\007PRIVATE\020\001\022\n" +
       "\n\006PUBLIC\020\002\022\014\n\010INTERNAL\020\003\022\r\n\tPROTECTED\020\004\022" +
       "\032\n\026PROTECTED_AND_INTERNAL\020\005\022\031\n\025PROTECTED" +
-      "_OR_INTERNAL\020\006*\315\001\n\006IlType\022\020\n\014type_unknow" +
+      "_OR_INTERNAL\020\006*\376\001\n\006IlType\022\020\n\014type_unknow" +
       "n\020\000\022\017\n\013type_string\020\001\022\016\n\ntype_int32\020\002\022\016\n\n" +
       "type_int64\020\003\022\017\n\013type_uint32\020\004\022\017\n\013type_ui" +
       "nt64\020\005\022\016\n\ntype_float\020\006\022\017\n\013type_double\020\007\022" +
       "\r\n\ttype_bool\020\010\022\r\n\ttype_byte\020\t\022\016\n\ntype_sb" +
-      "yte\020\n\022\017\n\013type_uint16\020\013*\366\002\n\013TypeKindDef\022\013" +
-      "\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001\022\t\n\005CLASS\020\002\022\r\n\tINT" +
-      "ERFACE\020\003\022\n\n\006STRUCT\020\004\022\014\n\010DELEGATE\020\005\022\010\n\004EN" +
-      "UM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKNOWN\020\010\022\010\n\004NULL\020\t\022\r\n" +
-      "\tNONE_TYPE\020\n\022\013\n\007DYNAMIC\020\013\022\024\n\020UNBOUND_TYP" +
-      "E_ARG\020\014\022\022\n\016TYPE_PARAMETER\020\r\022\t\n\005ARRAY\020\016\022\013" +
-      "\n\007POINTER\020\017\022\n\n\006BY_REF\020\020\022\020\n\014INTERSECTION\020" +
-      "\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUPLE\020\023\022\013\n\007MOD_OPT\020\024\022" +
-      "\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020\026\022\n\n\006N_UINT\020\027\022\024\n\020F" +
-      "UNCTION_POINTER\020\030\022\024\n\020BY_REF_AND_ARRAY\020\031B" +
-      "S\n\021soot.dotnet.protoB\025ProtoAssemblyAllTy" +
-      "pes\252\002&Soot.Dotnet.Decompiler.Models.Prot" +
-      "obufb\006proto3"
+      "yte\020\n\022\017\n\013type_uint16\020\013\022\016\n\ntype_int16\020\014\022\r" +
+      "\n\ttype_char\020\r\022\020\n\014type_decimal\020\016*\366\002\n\013Type" +
+      "KindDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001\022\t\n\005CLASS" +
+      "\020\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014\n\010DELEGAT" +
+      "E\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKNOWN\020\010\022\010\n\004" +
+      "NULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMIC\020\013\022\024\n\020UN" +
+      "BOUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAMETER\020\r\022\t\n\005" +
+      "ARRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020\020\022\020\n\014INTE" +
+      "RSECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUPLE\020\023\022\013\n\007M" +
+      "OD_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020\026\022\n\n\006N_UI" +
+      "NT\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020BY_REF_AND" +
+      "_ARRAY\020\031BS\n\021soot.dotnet.protoB\025ProtoAsse" +
+      "mblyAllTypes\252\002&Soot.Dotnet.Decompiler.Mo" +
+      "dels.Protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

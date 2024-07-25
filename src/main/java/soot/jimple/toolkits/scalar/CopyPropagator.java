@@ -36,7 +36,6 @@ import soot.G;
 import soot.Local;
 import soot.NullType;
 import soot.RefLikeType;
-import soot.RefType;
 import soot.Scene;
 import soot.Singletons;
 import soot.Timers;
@@ -205,8 +204,8 @@ public class CopyPropagator extends BodyTransformer {
                       || (op instanceof LongConstant && ((LongConstant) op).value == 0)) {
                     if (useBox.canContainValue(NullConstant.v())) {
                       // for .NET, we cannot eliminate casts to enums, since we might lose information otherwise
-                      if (!isDotNet
-                          || !Scene.v().getOrMakeFastHierarchy().canStoreType(ce.getCastType(), RefType.v("System.Enum"))) {
+                      // But even for non-casts, using 0 as a ref-like type is legal here
+                      if (!isDotNet) {
                         useBox.setValue(NullConstant.v());
                         copyLineTags(useBox, def);
                       }

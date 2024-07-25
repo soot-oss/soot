@@ -79,10 +79,11 @@ public abstract class AbstractNewObjInstanceInstruction extends CilCallInstructi
    * @param jb
    * @param variableObject
    */
-  public void resolveCallConstructorBody(Body jb, Local variableObject) {
+  public void afterCall(Body jb, Local variableObject) {
     // if new Obj also add call of constructor
     SpecialInvokeExpr specialInvokeExpr = Jimple.v().newSpecialInvokeExpr(variableObject, getMethodRef(), getListOfArgs());
     InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(specialInvokeExpr);
     jb.getUnits().add(invokeStmt);
+    super.afterCall(jb, variableObject);
   }
 }

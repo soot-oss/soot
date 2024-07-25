@@ -1,8 +1,12 @@
 package soot.dotnet.members.method;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /*-
@@ -43,6 +47,7 @@ import soot.Value;
 import soot.VoidType;
 import soot.dexpler.TrapMinimizer;
 import soot.dotnet.instructions.CilBlockContainer;
+import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
@@ -103,12 +108,14 @@ public class DotnetBody {
 
   public void jimplify(JimpleBody jb) {
     this.jb = jb;
-    if (dotnetMethodSig.getSootMethodSignature().getSignature().contains("<clinit>"))
-      System.out.println();
     variableManager = new DotnetBodyVariableManager(this, this.jb);
     // resolve initial variable assignments
     addThisStmt();
-    variableManager.fillMethodParameter();
+
+    List<Unit> unwrapCalls = new ArrayList<>();
+    Map<Local, Local> unwrappedToWrapped = new HashMap<>();
+    variableManager.fillMethodParameter(unwrapCalls, unwrappedToWrapped);
+    jb.getUnits().addAll(unwrapCalls);
     variableManager.addInitLocalVariables(ilFunctionMsg.getVariablesList());
 
     // Resolve .NET Method Body -> BlockContainer -> Block -> IL Instruction
@@ -122,6 +129,8 @@ public class DotnetBody {
     jb.getUnits().addAll(b.getUnits());
     jb.getTraps().addAll(b.getTraps());
     blockEntryPointsManager.swapGotoEntriesInJBody(jb);
+
+    replaceWrappedRefWrites(jb, unwrapCalls, unwrappedToWrapped);
 
     // We now do similar kind of optimizations than for dex code, since
     // the code we generate is not really efficient...
@@ -177,6 +186,34 @@ public class DotnetBody {
       }
     }
 
+  }
+
+  /**
+   * This pass checks for writes to all unwrapped by-reference variable, and updates the reference.
+   * 
+   * @param jb
+   *          the body
+   * @param unwrappedToWrapped
+   *          map from unwrapped to wrapped variable
+   */
+  private void replaceWrappedRefWrites(JimpleBody jb, List<Unit> unwrapCalls, Map<Local, Local> unwrappedToWrapped) {
+    UnitPatchingChain unitchain = jb.getUnits();
+    Iterator<Unit> it = unitchain.iterator();
+    while (it.hasNext()) {
+      Unit u = it.next();
+      if (!unwrapCalls.contains(u) && u instanceof AssignStmt) {
+        AssignStmt assign = (AssignStmt) u;
+        Value lop = assign.getLeftOp();
+        if (lop instanceof Local) {
+          Local unwrapped = (Local) lop;
+          Local wrapped = unwrappedToWrapped.get(unwrapped);
+          if (wrapped != null) {
+            unitchain.insertAfter(ByReferenceWrapperGenerator.getUpdateWrappedValueCall(wrapped, unwrapped), u);
+          }
+        }
+
+      }
+    }
   }
 
   protected void removeDeadNewExpr(JimpleBody jb) {

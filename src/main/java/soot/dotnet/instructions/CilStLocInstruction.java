@@ -99,8 +99,8 @@ public class CilStLocInstruction extends AbstractCilnstruction {
     jb.getUnits().add(astm);
 
     // if new Obj also add call of constructor, see description of opcode
-    if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
-      ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, variable);
+    if (cilExpr instanceof CilCallInstruction) {
+      ((CilCallInstruction) cilExpr).afterCall(jb, variable);
     }
   }
 

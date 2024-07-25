@@ -2,6 +2,8 @@ package soot.dotnet.members;
 
 import static soot.dotnet.specifications.DotnetModifier.toSootModifier;
 
+import java.math.BigDecimal;
+
 import soot.BooleanConstant;
 import soot.ByteConstant;
 import soot.Scene;
@@ -36,6 +38,7 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.UIntConstant;
 import soot.jimple.ULongConstant;
+import soot.tagkit.DecimalConstantValueTag;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
@@ -92,11 +95,20 @@ public class DotnetField extends AbstractDotnetMember {
       case type_uint16:
         mf.addTag(new IntegerConstantValueTag(ShortConstant.v((short) protoField.getValueConstantInt64())));
         break;
+      case type_int16:
+        mf.addTag(new IntegerConstantValueTag(ShortConstant.v((short) protoField.getValueConstantInt64())));
+        break;
+      case type_char:
+        mf.addTag(new IntegerConstantValueTag(ShortConstant.v((char) protoField.getValueConstantInt64())));
+        break;
       case type_uint32:
         mf.addTag(new IntegerConstantValueTag(UIntConstant.v((int) protoField.getValueConstantInt64())));
         break;
       case type_uint64:
         mf.addTag(new LongConstantValueTag(ULongConstant.v(protoField.getValueConstantUint64())));
+        break;
+      case type_decimal:
+        mf.addTag(new DecimalConstantValueTag(new BigDecimal(protoField.getValueConstantString())));
         break;
 
     }

@@ -2,7 +2,10 @@ package soot.dotnet.types;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +34,18 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
+import soot.Local;
+import soot.Modifier;
+import soot.PrimType;
+import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
+import soot.SootFieldRef;
 import soot.SootMethod;
 import soot.SootResolver;
+import soot.UnitPatchingChain;
+import soot.VoidType;
 import soot.dotnet.AssemblyFile;
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.members.DotnetField;
@@ -42,9 +53,12 @@ import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.DotnetProperty;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef;
 import soot.dotnet.specifications.DotnetAttributeArgument;
 import soot.dotnet.specifications.DotnetModifier;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
 import soot.options.Options;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
@@ -54,8 +68,10 @@ import soot.tagkit.DeprecatedTag;
  * Represents a .NET Type SourceLocator -> ClassProvider -> ClassSource (DotnetType) -> MethodSource
  */
 public class DotnetType {
+  public static final String COPY_STRUCT = "CreateDeepStructCopy";
   private static final Logger logger = LoggerFactory.getLogger(DotnetType.class);
   private final ProtoAssemblyAllTypes.TypeDefinition typeDefinition;
+  private Set<SootField> structFields;
 
   public DotnetType(ProtoAssemblyAllTypes.TypeDefinition typeDefinition, File assemblyFile) {
     if (typeDefinition == null) {
@@ -91,7 +107,12 @@ public class DotnetType {
 
     // members
     resolveFields(sootClass);
+
     resolveMethods(sootClass);
+    if (typeDefinition.getTypeKind() == TypeKindDef.STRUCT) {
+      // create copy methods
+      createStructCopyMethod(sootClass);
+    }
     resolveProperties(sootClass);
     resolveEvents(sootClass);
 
@@ -99,6 +120,71 @@ public class DotnetType {
     resolveAttributes(sootClass);
 
     return dependencies;
+  }
+
+  private void createStructCopyMethod(SootClass sootClass) {
+    // we do not create a constructor method, since there might already be a method
+    // as such, we create a custom method
+    Scene sc = Scene.v();
+    Jimple j = Jimple.v();
+
+    SootMethod m = createOrGetCopyMethod(sootClass, sc);
+    JimpleBody body = j.newBody(m);
+    m.setActiveBody(body);
+    body.insertIdentityStmts();
+
+    Local copy = j.newLocal("copy", sootClass.getType());
+    body.getLocals().add(copy);
+
+    // In .NET, everything is an object
+    Local tmp = j.newLocal("tmp", RefType.v("System.Object"));
+    body.getLocals().add(tmp);
+    UnitPatchingChain uchain = body.getUnits();
+    Local thisO = body.getThisLocal();
+    uchain.add(j.newAssignStmt(copy, j.newNewExpr(sootClass.getType())));
+    uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(copy, createOrGetEmptyConstructor(sootClass, sc, j).makeRef())));
+    for (SootField f : sootClass.getFields()) {
+      SootFieldRef fr = f.makeRef();
+      if (structFields != null && structFields.contains(f)) {
+        Local linst = j.newLocal("instance", f.getType());
+        body.getLocals().add(linst);
+        uchain.add(j.newAssignStmt(linst, j.newInstanceFieldRef(thisO, fr)));
+        SootClass sct = ((RefType) f.getType()).getSootClass();
+        SootMethod copyM = createOrGetCopyMethod(sct, sc);
+        uchain.add(j.newAssignStmt(tmp, j.newSpecialInvokeExpr(linst, copyM.makeRef())));
+      } else {
+        uchain.add(j.newAssignStmt(tmp, j.newInstanceFieldRef(thisO, fr)));
+      }
+      uchain.add(j.newAssignStmt(j.newInstanceFieldRef(copy, fr), tmp));
+    }
+
+    uchain.add(j.newReturnStmt(copy));
+  }
+
+  /**
+   * Creates an empty constructor which does nothing. Useful for structs, since these cannot have parameterless constructors
+   * in usercode.
+   */
+  private SootMethod createOrGetEmptyConstructor(SootClass sootClass, Scene sc, Jimple j) {
+    SootMethod m = sc.makeSootMethod("<init>", Collections.emptyList(), VoidType.v(), Modifier.PUBLIC);
+    SootMethod m2 = sootClass.getOrAddMethod(m);
+    if (m == m2 || m2 == null) {
+      // we won
+      JimpleBody bd = j.newBody(m2);
+      m.setActiveBody(bd);
+      bd.insertIdentityStmts();
+      bd.getUnits().add(j.newReturnVoidStmt());
+    }
+    return m2;
+  }
+
+  private SootMethod createOrGetCopyMethod(SootClass sootClass, Scene sc) {
+    SootMethod m = sc.makeSootMethod(COPY_STRUCT, Collections.emptyList(), sootClass.getType(), Modifier.PUBLIC);
+    return sootClass.getOrAddMethod(m);
+  }
+
+  public static SootMethod getCopyMethod(SootClass sootClass) {
+    return sootClass.getMethodUnsafe(COPY_STRUCT, Collections.emptyList(), sootClass.getType());
   }
 
   private void resolveModifier(SootClass sootClass) {
@@ -141,6 +227,12 @@ public class DotnetType {
         continue;
       }
       declaringClass.addField(sootField);
+      if (field.getTypeKind() == TypeKindDef.STRUCT && !(sootField.getType() instanceof PrimType)) {
+        if (structFields == null) {
+          structFields = new HashSet<>();
+        }
+        structFields.add(sootField);
+      }
     }
   }
 
