@@ -223,7 +223,7 @@ public abstract class AbstractBinopExpr implements Expr {
     if (sootClass == null) {
       return false;
     }
-    SootClass superclass = sootClass.getSuperclass();
+    SootClass superclass = sootClass.getSuperclassUnsafe();
     if (superclass == null) {
       return false;
     }

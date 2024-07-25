@@ -47,6 +47,7 @@ public class CilNotInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
     Value argument = cilExpr.jimplifyExpr(jb);
+    argument = simplifyComplexExpression(jb, argument);
 
     return Jimple.v().newXorExpr(argument, IntConstant.v(-1));
   }

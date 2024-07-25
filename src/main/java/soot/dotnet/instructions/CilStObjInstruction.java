@@ -70,6 +70,10 @@ public class CilStObjInstruction extends AbstractCilnstruction {
     if (!(value instanceof Immediate) && !(target instanceof Local)) {
       value = simplifyComplexExpression(jb, value);
     }
+    if (target instanceof CastExpr) {
+      // weird but ok
+      target = ((CastExpr) target).getOp();
+    }
 
     AssignStmt astm = Jimple.v().newAssignStmt(target, value);
     jb.getUnits().add(astm);
