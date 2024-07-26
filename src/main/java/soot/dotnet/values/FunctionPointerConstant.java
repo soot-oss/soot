@@ -39,6 +39,39 @@ public class FunctionPointerConstant extends Constant {
         DotnetTypeFactory.toSootType(method.getReturnType()), method.isStatic());
   }
 
+  @Override
+  public int hashCode() {
+    SootMethodRef mr = methodRef;
+    int hash = mr.getName().hashCode();
+    hash = hash * 31 + mr.getParameterTypes().size();
+    hash = hash * 31 + mr.getReturnType().hashCode();
+    hash = hash * 31 + mr.getDeclaringClass().hashCode();
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof FunctionPointerConstant) {
+      FunctionPointerConstant other = (FunctionPointerConstant) obj;
+      SootMethodRef omr = other.methodRef;
+      SootMethodRef mr = methodRef;
+      if (virtual != other.virtual) {
+        return false;
+      }
+      if (virtual) {
+        return mr.resolve() == omr.resolve();
+      }
+      if (!mr.getName().equals(omr.getName()) || !mr.getParameterTypes().equals(omr.getParameterTypes())
+          || !mr.getReturnType().equals(omr.getReturnType())) {
+        return false;
+      }
+      if (mr.getDeclaringClass() != omr.getDeclaringClass()) {
+        return false;
+      }
+    }
+    return super.equals(obj);
+  }
+
   public DotnetMethod getDotnetMethod() {
     return method;
   }

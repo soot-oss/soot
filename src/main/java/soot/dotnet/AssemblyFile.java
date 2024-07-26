@@ -109,11 +109,11 @@ public class AssemblyFile extends File {
       ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder
           = createAnalyzerParamsBuilder("", ProtoDotnetNativeHost.AnalyzerMethodCall.GET_ALL_TYPES);
       ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
-      debugLog("get all types");
+      logger.info("Getting all .NET types");
 
       byte[] protobufMessageBytes = nativeGetAllTypesMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       ProtoAssemblyAllTypes.AssemblyAllTypes a = ProtoAssemblyAllTypes.AssemblyAllTypes.parseFrom(protobufMessageBytes);
-      debugLog("Finished - get all type");
+      logger.info("Finished: Getting all .NET types");
       protoAllTypes = a;
       return a;
     } catch (Exception e) {
@@ -142,10 +142,8 @@ public class AssemblyFile extends File {
     analyzerParamsBuilder.setMethodPeToken(peToken);
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
-    debugLog("get method body " + className + ": " + method + ", " + peToken);
     try {
       byte[] protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
-      debugLog("Finished - get method body " + className + ": " + method + ", " + peToken);
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -186,10 +184,8 @@ public class AssemblyFile extends File {
     analyzerParamsBuilder.setPropertyIsSetter(isSetter);
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
-    debugLog("get method body of property " + className + ": " + propertyName + ", " + isSetter);
     try {
       byte[] protoMsgBytes = nativeGetMethodBodyOfPropertyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
-      debugLog("Finished - get method body of property " + className + ": " + propertyName + ", " + isSetter);
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -234,11 +230,9 @@ public class AssemblyFile extends File {
     }
     analyzerParamsBuilder.setEventAccessorType(accessorType);
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
-    debugLog("get method body of event " + className + ": " + eventName + ", " + eventDirective);
 
     try {
       byte[] protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
-      debugLog("Finished get method body of event " + className + ": " + eventName + ", " + eventDirective);
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -254,17 +248,11 @@ public class AssemblyFile extends File {
    * @return true if this object referenced to a file is an assembly
    */
   public boolean isAssembly() {
-    debugLog("check assembly " + fullyQualifiedAssemblyPathFilename);
     try {
       return nativeIsAssembly(pathNativeHost, fullyQualifiedAssemblyPathFilename);
     } finally {
-      debugLog("Finished check assembly " + fullyQualifiedAssemblyPathFilename);
 
     }
-  }
-
-  private void debugLog(String s) {
-    System.err.println(s);
   }
 
   /**

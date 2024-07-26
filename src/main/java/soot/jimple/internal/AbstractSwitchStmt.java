@@ -39,19 +39,22 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
 
   protected final ValueBox keyBox;
   protected final UnitBox defaultTargetBox;
-  protected final UnitBox[] targetBoxes;
+  protected final List<UnitBox> targetBoxes;
   protected final List<UnitBox> stmtBoxes;
 
   protected AbstractSwitchStmt(ValueBox keyBox, UnitBox defaultTargetBox, UnitBox... targetBoxes) {
     this.keyBox = keyBox;
     this.defaultTargetBox = defaultTargetBox;
-    this.targetBoxes = targetBoxes;
+    this.targetBoxes = new ArrayList<>(targetBoxes.length);
+    for (UnitBox t : targetBoxes) {
+      this.targetBoxes.add(t);
+    }
 
     // Build up stmtBoxes
-    List<UnitBox> list = new ArrayList<UnitBox>();
+    List<UnitBox> list = new ArrayList<UnitBox>(targetBoxes.length + 1);
     Collections.addAll(list, targetBoxes);
     list.add(defaultTargetBox);
-    this.stmtBoxes = Collections.unmodifiableList(list);
+    this.stmtBoxes = list;
   }
 
   // This method is necessary to deal with constructor-must-be-first-ism.
@@ -102,28 +105,28 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
   }
 
   final public int getTargetCount() {
-    return targetBoxes.length;
+    return targetBoxes.size();
   }
 
   @Override
   final public Unit getTarget(int index) {
-    return targetBoxes[index].getUnit();
+    return targetBoxes.get(index).getUnit();
   }
 
   @Override
   final public UnitBox getTargetBox(int index) {
-    return targetBoxes[index];
+    return targetBoxes.get(index);
   }
 
   @Override
   final public void setTarget(int index, Unit target) {
-    targetBoxes[index].setUnit(target);
+    targetBoxes.get(index).setUnit(target);
   }
 
   @Override
   final public List<Unit> getTargets() {
-    final UnitBox[] boxes = this.targetBoxes;
-    List<Unit> targets = new ArrayList<Unit>(boxes.length);
+    final List<UnitBox> boxes = this.targetBoxes;
+    List<Unit> targets = new ArrayList<Unit>(boxes.size());
     for (UnitBox element : boxes) {
       targets.add(element.getUnit());
     }
@@ -133,13 +136,13 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
   final public void setTargets(List<? extends Unit> targets) {
     for (ListIterator<? extends Unit> it = targets.listIterator(); it.hasNext();) {
       Unit u = it.next();
-      targetBoxes[it.previousIndex()].setUnit(u);
+      targetBoxes.get(it.previousIndex()).setUnit(u);
     }
   }
 
   final public void setTargets(Unit[] targets) {
     for (int i = 0, e = targets.length; i < e; i++) {
-      targetBoxes[i].setUnit(targets[i]);
+      targetBoxes.get(i).setUnit(targets[i]);
     }
   }
 

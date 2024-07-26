@@ -112,7 +112,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
       up.literal("    " + Jimple.CASE + " ");
       up.constant(c);
       up.literal(": " + Jimple.GOTO + " ");
-      targetBoxes[it.previousIndex()].toString(up);
+      targetBoxes.get(it.previousIndex()).toString(up);
       up.literal(";");
       up.newline();
     }

@@ -43,6 +43,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
+import soot.ValueBox;
 import soot.VoidType;
 import soot.dexpler.TrapMinimizer;
 import soot.dotnet.instructions.CilBlockContainer;
@@ -50,6 +51,7 @@ import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.dotnet.values.FunctionPointerConstant;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
@@ -188,6 +190,19 @@ public class DotnetBody {
       }
     }
 
+    for (Unit u : jb.getUnits()) {
+      for (ValueBox d : u.getUseBoxes()) {
+        if (d.getValue() instanceof FunctionPointerConstant) {
+          if (dotnetMethodSig.getProtoMessage().getIsUnsafe()) {
+            // this is somewhat expected. We resolve unsafe methods on a best effort basis
+            throw new RuntimeException("Function pointer left in unsafe method; this is expected.");
+          } else {
+            // this is more concerning...
+            throw new RuntimeException("Function pointer left in normal method.");
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -303,29 +318,30 @@ public class DotnetBody {
   }
 
   public static void resolveEmptyJimpleBody(JimpleBody b, SootMethod m) {
+    Jimple j = Jimple.v();
     // if not static add this stmt
     if (!m.isStatic()) {
       RefType thisType = m.getDeclaringClass().getType();
-      Local l = Jimple.v().newLocal("this", thisType);
-      IdentityStmt identityStmt = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(thisType));
+      Local l = j.newLocal("this", thisType);
+      IdentityStmt identityStmt = j.newIdentityStmt(l, j.newThisRef(thisType));
       b.getLocals().add(l);
       b.getUnits().add(identityStmt);
     }
     // parameters
     for (int i = 0; i < m.getParameterCount(); i++) {
       Type parameterType = m.getParameterType(i);
-      Local paramLocal = Jimple.v().newLocal("arg" + i, parameterType);
+      Local paramLocal = j.newLocal("arg" + i, parameterType);
       b.getLocals().add(paramLocal);
-      b.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(parameterType, i)));
+      b.getUnits().add(j.newIdentityStmt(paramLocal, j.newParameterRef(parameterType, i)));
     }
     LocalGenerator lg = Scene.v().createLocalGenerator(b);
-    b.getUnits().add(Jimple.v().newThrowStmt(lg.generateLocal(soot.RefType.v("java.lang.Throwable"))));
+    b.getUnits().add(j.newThrowStmt(lg.generateLocal(soot.RefType.v("java.lang.Throwable"))));
     if (m.getReturnType() instanceof VoidType) {
-      b.getUnits().add(Jimple.v().newReturnVoidStmt());
+      b.getUnits().add(j.newReturnVoidStmt());
     } else if (m.getReturnType() instanceof PrimType) {
-      b.getUnits().add(Jimple.v().newReturnStmt(DotnetTypeFactory.initType(m.getReturnType())));
+      b.getUnits().add(j.newReturnStmt(DotnetTypeFactory.initType(m.getReturnType())));
     } else {
-      b.getUnits().add(Jimple.v().newReturnStmt(NullConstant.v()));
+      b.getUnits().add(j.newReturnStmt(NullConstant.v()));
     }
   }
 

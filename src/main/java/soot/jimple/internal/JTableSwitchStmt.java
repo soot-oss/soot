@@ -128,9 +128,13 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
     up.literal("    " + Jimple.CASE + " ");
     up.literal(Integer.toString(targetIndex));
     up.literal(": " + Jimple.GOTO + " ");
-    targetBoxes[targetIndex - lowIndex].toString(up);
+    targetBoxes.get(targetIndex - lowIndex).toString(up);
     up.literal(";");
     up.newline();
+  }
+
+  public List<UnitBox> getTargetBoxes() {
+    return targetBoxes;
   }
 
   @Override
