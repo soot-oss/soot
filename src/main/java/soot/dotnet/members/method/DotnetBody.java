@@ -137,6 +137,7 @@ public class DotnetBody {
     // We now do similar kind of optimizations than for dex code, since
     // the code we generate is not really efficient...
 
+    rewriteConditionsToIfs(jb);
     DelegateHandler.replaceDelegates(jb);
 
     UnconditionalBranchFolder.v().transform(jb);

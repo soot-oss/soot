@@ -2,9 +2,12 @@ package soot.dotnet.types;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -34,6 +37,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
+import soot.ArrayType;
+import soot.BooleanConstant;
+import soot.BooleanType;
+import soot.IntType;
 import soot.Local;
 import soot.Modifier;
 import soot.PrimType;
@@ -43,7 +50,9 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootFieldRef;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.SootResolver;
+import soot.Type;
 import soot.UnitPatchingChain;
 import soot.VoidType;
 import soot.dotnet.AssemblyFile;
@@ -57,8 +66,13 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef;
 import soot.dotnet.specifications.DotnetAttributeArgument;
 import soot.dotnet.specifications.DotnetModifier;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.jimple.IfStmt;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
+import soot.jimple.NopStmt;
+import soot.jimple.NullConstant;
+import soot.jimple.ReturnStmt;
 import soot.options.Options;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
@@ -110,8 +124,10 @@ public class DotnetType {
 
     resolveMethods(sootClass);
     if (typeDefinition.getTypeKind() == TypeKindDef.STRUCT) {
-      // create copy methods
+      createStructConstructorMethod(sootClass);
       createStructCopyMethod(sootClass);
+
+      createStructDefaultHashCodeEquals(sootClass);
     }
     resolveProperties(sootClass);
     resolveEvents(sootClass);
@@ -120,6 +136,173 @@ public class DotnetType {
     resolveAttributes(sootClass);
 
     return dependencies;
+  }
+
+  public static void createStructDefaultHashCodeEquals(SootClass sootClass) {
+
+    Scene sc = Scene.v();
+    Jimple j = Jimple.v();
+    RefType sysObject = RefType.v("System.Object");
+
+    SootMethod equalsMethod = sootClass.getMethodUnsafe("boolean Equals(System.Object)");
+    if (equalsMethod == null) {
+      equalsMethod = sc.makeSootMethod("Equals", Arrays.asList(sc.getObjectType()), BooleanType.v());
+
+      SootMethodRef objEquals
+          = sc.makeMethodRef(sysObject.getSootClass(), "Equals", Arrays.asList(sc.getObjectType()), BooleanType.v(), false);
+
+      JimpleBody body = j.newBody(equalsMethod);
+      equalsMethod.setActiveBody(body);
+      sootClass.addMethod(equalsMethod);
+      body.insertIdentityStmts();
+      //Note that inheritance is not allowed for structs, so we can just
+      //compare the fields of the struct classes
+      Map<Type, Local> tmpCompareLocalsMine = new HashMap<>();
+      Map<Type, Local> tmpCompareLocalsOther = new HashMap<>();
+      ReturnStmt retFalse = j.newReturnStmt(BooleanConstant.v(false));
+      ReturnStmt retTrue = j.newReturnStmt(BooleanConstant.v(true));
+
+      for (SootField field : sootClass.getFields()) {
+        if (field.isStatic()) {
+          continue;
+        }
+        Local result = j.newLocal("result", BooleanType.v());
+        body.getLocals().add(result);
+
+        Type type = field.getType();
+        if (type instanceof ArrayType) {
+          //Apparently, it is not as easy as to use some API call to calculate
+          //a hash function of an array
+          //As such, we ignore it for now
+          continue;
+        } else if (type instanceof RefType) {
+          //just use an object typed variable, we can reuse that
+          type = sysObject;
+        }
+        Local lclMine = createTempVar("mine", j, body, tmpCompareLocalsMine, type);
+        Local lclOther = createTempVar("other", j, body, tmpCompareLocalsOther, type);
+
+        body.getUnits().add(j.newAssignStmt(lclMine, j.newInstanceFieldRef(body.getThisLocal(), field.makeRef())));
+        body.getUnits().add(j.newAssignStmt(lclOther, j.newInstanceFieldRef(body.getParameterLocal(0), field.makeRef())));
+
+        if (type instanceof RefType) {
+          //body.getUnits().add(j.newIfStmt(lclMine, j.newEqExpr(lclMine, lclOther)));
+          IfStmt s = j.newIfStmt(j.newEqExpr(lclOther, NullConstant.v()), retTrue);
+          body.getUnits().add(j.newIfStmt(j.newEqExpr(lclMine, NullConstant.v()), s));
+
+          body.getUnits().add(j.newAssignStmt(result, j.newVirtualInvokeExpr(lclMine, objEquals, lclOther)));
+          body.getUnits().add(j.newIfStmt(j.newEqExpr(result, BooleanConstant.v(false)), retFalse));
+
+          NopStmt nop = j.newNopStmt();
+          body.getUnits().add(j.newGotoStmt(nop));
+
+          body.getUnits().add(s);
+          body.getUnits().add(j.newReturnStmt(BooleanConstant.v(false)));
+          body.getUnits().add(nop);
+        } else if (type instanceof PrimType) {
+          body.getUnits().add(j.newIfStmt(j.newNeExpr(lclMine, lclOther), retFalse));
+        } else {
+          throw new RuntimeException("Unsupported type: " + type);
+        }
+
+      }
+
+      body.getUnits().add(retTrue);
+      body.getUnits().add(retFalse);
+
+    }
+    SootMethod getHashCodeMethod = sootClass.getMethodUnsafe("int GetHashCode()");
+    if (getHashCodeMethod == null) {
+      getHashCodeMethod = sc.makeSootMethod("GetHashCode", Collections.emptyList(), IntType.v());
+      SootMethodRef objEquals
+          = sc.makeMethodRef(sysObject.getSootClass(), "GetHashCode", Collections.emptyList(), IntType.v(), false);
+      JimpleBody body = j.newBody(getHashCodeMethod);
+      getHashCodeMethod.setActiveBody(body);
+      sootClass.addMethod(getHashCodeMethod);
+      body.insertIdentityStmts();
+
+      Local hashCode = j.newLocal("hashcode", IntType.v());
+      body.getLocals().add(hashCode);
+      Local hcsingle = j.newLocal("hcsingle", IntType.v());
+      body.getLocals().add(hcsingle);
+
+      body.getUnits().add(j.newAssignStmt(hashCode, IntConstant.v(17)));
+      Map<Type, Local> tmpCompareLocalsMine = new HashMap<>();
+      for (SootField field : sootClass.getFields()) {
+        if (field.isStatic()) {
+          continue;
+        }
+
+        Type type = field.getType();
+        if (type instanceof ArrayType) {
+          //Apparently, it is not as easy as to use some API call to calculate
+          //a hash function of an array
+          //As such, we ignore it for now
+          continue;
+        } else if (type instanceof RefType) {
+          //just use an object typed variable, we can reuse that
+          type = sysObject;
+        }
+        Local lclMine = createTempVar("", j, body, tmpCompareLocalsMine, type);
+        body.getUnits().add(j.newAssignStmt(lclMine, j.newInstanceFieldRef(body.getThisLocal(), field.makeRef())));
+        if (type instanceof RefType) {
+          body.getUnits().add(j.newAssignStmt(hcsingle, j.newVirtualInvokeExpr(hcsingle, objEquals)));
+        } else if (type instanceof PrimType) {
+          body.getUnits().add(j.newAssignStmt(hcsingle, j.newCastExpr(lclMine, IntType.v())));
+        } else {
+          throw new RuntimeException("Unsupported type: " + type);
+        }
+        body.getUnits().add(j.newAssignStmt(hashCode, j.newMulExpr(hashCode, IntConstant.v(23))));
+        body.getUnits().add(j.newAssignStmt(hashCode, j.newAddExpr(hashCode, hcsingle)));
+
+      }
+      body.getUnits().add(j.newReturnStmt(hashCode));
+
+    }
+  }
+
+  private static Local createTempVar(String prefix, Jimple j, JimpleBody body, Map<Type, Local> tmpCompareLocalsMine,
+      Type type) {
+    Local lclMine = tmpCompareLocalsMine.get(type);
+    if (lclMine == null) {
+      lclMine = j.newLocal("tmp" + prefix + type, type);
+      body.getLocals().add(lclMine);
+      tmpCompareLocalsMine.put(type, lclMine);
+    }
+    return lclMine;
+  }
+
+  private void createStructConstructorMethod(SootClass sootClass) {
+    Scene sc = Scene.v();
+    Jimple j = Jimple.v();
+    SootMethod m = sc.makeSootMethod("<init>", Collections.emptyList(), VoidType.v(), Modifier.PUBLIC);
+    m = sootClass.getOrAddMethod(m);
+
+    JimpleBody body = j.newBody(m);
+    m.setModifiers(Modifier.PUBLIC);
+    m.setActiveBody(body);
+    body.insertIdentityStmts();
+    UnitPatchingChain uchain = body.getUnits();
+    Map<Type, Local> mapLocals = new HashMap<>();
+    for (SootField f : sootClass.getFields()) {
+      if (!f.isStatic()) {
+        if (structFields != null && structFields.contains(f)) {
+          RefType rt = (RefType) f.getType();
+          Local l = mapLocals.get(rt);
+          if (l == null) {
+            l = j.newLocal("instance", rt);
+            body.getLocals().add(l);
+            mapLocals.put(f.getType(), l);
+          }
+          uchain.add(j.newAssignStmt(l, j.newNewExpr(rt)));
+          uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(l,
+              sc.makeMethodRef(rt.getSootClass(), "<init>", Collections.<Type>emptyList(), VoidType.v(), false))));
+          uchain.add(j.newAssignStmt(j.newInstanceFieldRef(body.getThisLocal(), f.makeRef()), l));
+        }
+      }
+    }
+
+    uchain.add(j.newReturnVoidStmt());
   }
 
   private void createStructCopyMethod(SootClass sootClass) {

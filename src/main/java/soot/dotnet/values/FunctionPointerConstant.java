@@ -45,7 +45,7 @@ public class FunctionPointerConstant extends Constant {
     int hash = mr.getName().hashCode();
     hash = hash * 31 + mr.getParameterTypes().size();
     hash = hash * 31 + mr.getReturnType().hashCode();
-    hash = hash * 31 + mr.getDeclaringClass().hashCode();
+    hash = hash * 31 + (virtual ? 1 : 0);
     return hash;
   }
 
@@ -68,6 +68,7 @@ public class FunctionPointerConstant extends Constant {
       if (mr.getDeclaringClass() != omr.getDeclaringClass()) {
         return false;
       }
+      return true;
     }
     return super.equals(obj);
   }
