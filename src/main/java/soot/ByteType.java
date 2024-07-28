@@ -32,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'byte' and .NETs built-in type 'sbyte'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class ByteType extends PrimType implements IntegerType, DotNetINumber {
+public class ByteType extends PrimType implements IntegerType, IJavaType, DotNetINumber {
 
   public static final int HASHCODE = 0x813D1329;
 

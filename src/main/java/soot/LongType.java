@@ -32,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'long'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class LongType extends PrimType implements DotNetINumber {
+public class LongType extends PrimType implements IJavaType, DotNetINumber {
 
   public static final int HASHCODE = 0x023DA077;
 

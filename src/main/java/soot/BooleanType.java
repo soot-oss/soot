@@ -32,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'boolean'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class BooleanType extends PrimType implements IntegerType, DotNetINumber {
+public class BooleanType extends PrimType implements IntegerType, IJavaType, DotNetINumber {
 
   public static final int HASHCODE = 0x1C4585DA;
 

@@ -32,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'double'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class DoubleType extends PrimType implements DotNetINumber {
+public class DoubleType extends PrimType implements DotNetINumber, IJavaType {
 
   public static final int HASHCODE = 0x4B9D7242;
 

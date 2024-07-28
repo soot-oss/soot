@@ -2,6 +2,7 @@ package soot.dotnet.members.method;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -51,16 +52,21 @@ import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.dotnet.types.StructTag;
 import soot.dotnet.values.FunctionPointerConstant;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
 import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.Stmt;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.ConstantCastEliminator;
@@ -76,6 +82,7 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
@@ -178,6 +185,7 @@ public class DotnetBody {
     ConditionalBranchFolder.v().transform(jb);
 
     UnconditionalBranchFolder.v().transform(jb);
+    introduceStructConstructorCalls(jb);
 
     NopEliminator.v().transform(jb);
 
@@ -203,6 +211,49 @@ public class DotnetBody {
           }
         }
       }
+    }
+  }
+
+  private void introduceStructConstructorCalls(JimpleBody jb) {
+    //in some cases, we do not generate <init> calls for structs (when default values are used)
+
+    SimpleLocalUses uses = null;
+    UnitPatchingChain uchain = jb.getUnits();
+    Unit crt = uchain.getFirst();
+    Jimple j = Jimple.v();
+    nextUnit: while (crt != null) {
+      Unit next = uchain.getSuccOf(crt);
+      if (crt instanceof AssignStmt) {
+        AssignStmt assign = (AssignStmt) crt;
+        Value rop = assign.getRightOp();
+        if (rop instanceof NewExpr) {
+          RefType rt = (RefType) rop.getType();
+          if (rt.hasSootClass() && rt.getSootClass().hasTag(StructTag.NAME)) {
+            if (uses == null) {
+              uses = new SimpleLocalUses(jb, new SimpleLocalDefs(new ExceptionalUnitGraph(jb)));
+            }
+            Local base = (Local) assign.getLeftOp();
+            for (UnitValueBoxPair u : uses.getUsesOf(assign)) {
+              Stmt c = (Stmt) u.getUnit();
+              if (c.containsInvokeExpr()) {
+                InvokeExpr expr = c.getInvokeExpr();
+                if (expr instanceof SpecialInvokeExpr && expr.getMethodRef().getName().equals("<init>")) {
+                  SpecialInvokeExpr si = (SpecialInvokeExpr) expr;
+                  if (si.getBase() == base) {
+                    crt = next;
+                    continue nextUnit;
+                  }
+                }
+              }
+            }
+
+            SootMethod ctor = rt.getSootClass().getMethod("<init>", Collections.emptyList());
+            InvokeStmt ctorcall = j.newInvokeStmt(j.newSpecialInvokeExpr(base, ctor.makeRef()));
+            uchain.insertAfter(ctorcall, crt);
+          }
+        }
+      }
+      crt = next;
     }
   }
 

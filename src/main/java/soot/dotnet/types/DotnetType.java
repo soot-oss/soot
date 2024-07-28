@@ -124,8 +124,9 @@ public class DotnetType {
 
     resolveMethods(sootClass);
     if (typeDefinition.getTypeKind() == TypeKindDef.STRUCT) {
-      createStructConstructorMethod(sootClass);
-      createStructCopyMethod(sootClass);
+      sootClass.addTag(new StructTag());
+      SootMethod ctor = createStructConstructorMethod(sootClass);
+      createStructCopyMethod(sootClass, ctor);
 
       createStructDefaultHashCodeEquals(sootClass);
     }
@@ -272,7 +273,7 @@ public class DotnetType {
     return lclMine;
   }
 
-  private void createStructConstructorMethod(SootClass sootClass) {
+  private SootMethod createStructConstructorMethod(SootClass sootClass) {
     Scene sc = Scene.v();
     Jimple j = Jimple.v();
     SootMethod m = sc.makeSootMethod("<init>", Collections.emptyList(), VoidType.v(), Modifier.PUBLIC);
@@ -303,9 +304,10 @@ public class DotnetType {
     }
 
     uchain.add(j.newReturnVoidStmt());
+    return m;
   }
 
-  private void createStructCopyMethod(SootClass sootClass) {
+  private void createStructCopyMethod(SootClass sootClass, SootMethod ctor) {
     // we do not create a constructor method, since there might already be a method
     // as such, we create a custom method
     Scene sc = Scene.v();
@@ -325,7 +327,7 @@ public class DotnetType {
     UnitPatchingChain uchain = body.getUnits();
     Local thisO = body.getThisLocal();
     uchain.add(j.newAssignStmt(copy, j.newNewExpr(sootClass.getType())));
-    uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(copy, createOrGetEmptyConstructor(sootClass, sc, j).makeRef())));
+    uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(copy, ctor.makeRef())));
     for (SootField f : sootClass.getFields()) {
       if (!f.isStatic()) {
         SootFieldRef fr = f.makeRef();
@@ -344,23 +346,6 @@ public class DotnetType {
     }
 
     uchain.add(j.newReturnStmt(copy));
-  }
-
-  /**
-   * Creates an empty constructor which does nothing. Useful for structs, since these cannot have parameterless constructors
-   * in usercode.
-   */
-  private SootMethod createOrGetEmptyConstructor(SootClass sootClass, Scene sc, Jimple j) {
-    SootMethod m = sc.makeSootMethod("<init>", Collections.emptyList(), VoidType.v(), Modifier.PUBLIC);
-    SootMethod m2 = sootClass.getOrAddMethod(m);
-    if (m == m2 || m2 == null) {
-      // we won
-      JimpleBody bd = j.newBody(m2);
-      m.setActiveBody(bd);
-      bd.insertIdentityStmts();
-      bd.getUnits().add(j.newReturnVoidStmt());
-    }
-    return m2;
   }
 
   private SootMethod createOrGetCopyMethod(SootClass sootClass, Scene sc) {

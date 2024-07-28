@@ -32,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'int'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class IntType extends PrimType implements IntegerType, DotNetINumber {
+public class IntType extends PrimType implements IntegerType, IJavaType, DotNetINumber {
 
   public static final int HASHCODE = 0xB747239F;
 
