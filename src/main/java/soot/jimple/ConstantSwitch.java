@@ -56,7 +56,7 @@ public interface ConstantSwitch extends soot.util.Switch {
   }
 
   public default void caseShortConstant(ShortConstant v) {
-    throw new RuntimeException("Unsupported");
+    caseIntConstant(v);
   }
 
   public default void caseUByteConstant(UByteConstant v) {
