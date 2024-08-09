@@ -10419,6 +10419,17 @@ public final class ProtoAssemblyAllTypes {
      * @return The constantType.
      */
     soot.dotnet.proto.ProtoAssemblyAllTypes.IlType getConstantType();
+
+    /**
+     * <code>optional bytes initial_value = 60;</code>
+     * @return Whether the initialValue field is set.
+     */
+    boolean hasInitialValue();
+    /**
+     * <code>optional bytes initial_value = 60;</code>
+     * @return The initialValue.
+     */
+    com.google.protobuf.ByteString getInitialValue();
   }
   /**
    * Protobuf type {@code FieldDefinition}
@@ -10440,6 +10451,7 @@ public final class ProtoAssemblyAllTypes {
       attributes_ = java.util.Collections.emptyList();
       valueConstantString_ = "";
       constantType_ = 0;
+      initialValue_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -10467,6 +10479,7 @@ public final class ProtoAssemblyAllTypes {
               soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.class, soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder.class);
     }
 
+    private int bitField0_;
     public static final int ACCESSIBILITY_FIELD_NUMBER = 1;
     private int accessibility_ = 0;
     /**
@@ -10889,6 +10902,25 @@ public final class ProtoAssemblyAllTypes {
       return result == null ? soot.dotnet.proto.ProtoAssemblyAllTypes.IlType.UNRECOGNIZED : result;
     }
 
+    public static final int INITIAL_VALUE_FIELD_NUMBER = 60;
+    private com.google.protobuf.ByteString initialValue_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>optional bytes initial_value = 60;</code>
+     * @return Whether the initialValue field is set.
+     */
+    @java.lang.Override
+    public boolean hasInitialValue() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>optional bytes initial_value = 60;</code>
+     * @return The initialValue.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getInitialValue() {
+      return initialValue_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10971,6 +11003,9 @@ public final class ProtoAssemblyAllTypes {
       }
       if (valueConstantUint64_ != 0L) {
         output.writeUInt64(59, valueConstantUint64_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeBytes(60, initialValue_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -11070,6 +11105,10 @@ public final class ProtoAssemblyAllTypes {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(59, valueConstantUint64_);
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(60, initialValue_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -11136,6 +11175,11 @@ public final class ProtoAssemblyAllTypes {
       if (getValueConstantUint64()
           != other.getValueConstantUint64()) return false;
       if (constantType_ != other.constantType_) return false;
+      if (hasInitialValue() != other.hasInitialValue()) return false;
+      if (hasInitialValue()) {
+        if (!getInitialValue()
+            .equals(other.getInitialValue())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -11212,6 +11256,10 @@ public final class ProtoAssemblyAllTypes {
           getValueConstantUint64());
       hash = (37 * hash) + CONSTANT_TYPE_FIELD_NUMBER;
       hash = (53 * hash) + constantType_;
+      if (hasInitialValue()) {
+        hash = (37 * hash) + INITIAL_VALUE_FIELD_NUMBER;
+        hash = (53 * hash) + getInitialValue().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -11378,6 +11426,7 @@ public final class ProtoAssemblyAllTypes {
         valueConstantBool_ = false;
         valueConstantUint64_ = 0L;
         constantType_ = 0;
+        initialValue_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -11494,6 +11543,12 @@ public final class ProtoAssemblyAllTypes {
         if (((from_bitField0_ & 0x00400000) != 0)) {
           result.constantType_ = constantType_;
         }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00800000) != 0)) {
+          result.initialValue_ = initialValue_;
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -11637,6 +11692,9 @@ public final class ProtoAssemblyAllTypes {
         }
         if (other.constantType_ != 0) {
           setConstantTypeValue(other.getConstantTypeValue());
+        }
+        if (other.hasInitialValue()) {
+          setInitialValue(other.getInitialValue());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -11791,6 +11849,11 @@ public final class ProtoAssemblyAllTypes {
                 bitField0_ |= 0x00200000;
                 break;
               } // case 472
+              case 482: {
+                initialValue_ = input.readBytes();
+                bitField0_ |= 0x00800000;
+                break;
+              } // case 482
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -13117,6 +13180,46 @@ public final class ProtoAssemblyAllTypes {
       public Builder clearConstantType() {
         bitField0_ = (bitField0_ & ~0x00400000);
         constantType_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString initialValue_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>optional bytes initial_value = 60;</code>
+       * @return Whether the initialValue field is set.
+       */
+      @java.lang.Override
+      public boolean hasInitialValue() {
+        return ((bitField0_ & 0x00800000) != 0);
+      }
+      /**
+       * <code>optional bytes initial_value = 60;</code>
+       * @return The initialValue.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getInitialValue() {
+        return initialValue_;
+      }
+      /**
+       * <code>optional bytes initial_value = 60;</code>
+       * @param value The initialValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInitialValue(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        initialValue_ = value;
+        bitField0_ |= 0x00800000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bytes initial_value = 60;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearInitialValue() {
+        bitField0_ = (bitField0_ & ~0x00800000);
+        initialValue_ = getDefaultInstance().getInitialValue();
         onChanged();
         return this;
       }
@@ -20787,7 +20890,7 @@ public final class ProtoAssemblyAllTypes {
       "rDefinition\022\035\n\004type\030\001 \001(\0132\017.TypeDefiniti" +
       "on\022\026\n\016parameter_name\030\002 \001(\t\022\016\n\006is_ref\030\003 \001" +
       "(\010\022\016\n\006is_out\030\004 \001(\010\022\r\n\005is_in\030\005 \001(\010\022\023\n\013is_" +
-      "optional\030\006 \001(\010\"\216\005\n\017FieldDefinition\022%\n\rac" +
+      "optional\030\006 \001(\010\"\274\005\n\017FieldDefinition\022%\n\rac" +
       "cessibility\030\001 \001(\0162\016.Accessibility\022\023\n\013is_" +
       "abstract\030\002 \001(\010\022\021\n\tis_sealed\030\003 \001(\010\022,\n$is_" +
       "explicit_interface_implementation\030\004 \001(\010\022" +
@@ -20803,58 +20906,59 @@ public final class ProtoAssemblyAllTypes {
       "\n\024value_constant_float\030\024 \001(\002\022\035\n\025value_co" +
       "nstant_double\030\025 \001(\001\022\033\n\023value_constant_bo" +
       "ol\0307 \001(\010\022\035\n\025value_constant_uint64\030; \001(\004\022" +
-      "\036\n\rconstant_type\030\035 \001(\0162\007.IlType\"\322\003\n\022Prop" +
-      "ertyDefinition\022%\n\raccessibility\030\001 \001(\0162\016." +
-      "Accessibility\022\017\n\007can_get\030\002 \001(\010\022\017\n\007can_se" +
-      "t\030\003 \001(\010\022\023\n\013is_abstract\030\004 \001(\010\022\021\n\tis_seale" +
-      "d\030\005 \001(\010\022,\n$is_explicit_interface_impleme" +
-      "ntation\030\006 \001(\010\022\023\n\013is_override\030\007 \001(\010\022\022\n\nis" +
-      "_virtual\030\010 \001(\010\022\021\n\tis_static\030\t \001(\010\022\021\n\tis_" +
-      "extern\030\017 \001(\010\022!\n\006getter\030\n \001(\0132\021.MethodDef" +
-      "inition\022!\n\006setter\030\013 \001(\0132\021.MethodDefiniti" +
-      "on\022\035\n\004type\030\014 \001(\0132\017.TypeDefinition\022\037\n\ttyp" +
-      "e_kind\030\016 \001(\0162\014.TypeKindDef\022\014\n\004name\030\r \001(\t" +
-      "\022(\n\nattributes\030\020 \003(\0132\024.AttributeDefiniti" +
-      "on\022\020\n\010pe_token\030\021 \001(\005\"\301\001\n\023AttributeDefini" +
-      "tion\022\'\n\016attribute_type\030\001 \001(\0132\017.TypeDefin" +
-      "ition\022\023\n\013constructor\030\002 \001(\t\0225\n\017fixed_argu" +
-      "ments\030\003 \003(\0132\034.AttributeArgumentDefinitio" +
-      "n\0225\n\017named_arguments\030\004 \003(\0132\034.AttributeAr" +
-      "gumentDefinition\"\265\001\n\033AttributeArgumentDe" +
-      "finition\022\035\n\004type\030\001 \001(\0132\017.TypeDefinition\022" +
-      "\014\n\004name\030\002 \001(\t\022\024\n\014value_string\030\003 \003(\t\022\023\n\013v" +
-      "alue_int32\030\004 \003(\005\022\023\n\013value_int64\030\005 \003(\003\022\024\n" +
-      "\014value_double\030\006 \003(\001\022\023\n\013value_float\030\007 \003(\002" +
-      "\"\272\002\n\017EventDefinition\022%\n\raccessibility\030\001 " +
-      "\001(\0162\016.Accessibility\022.\n\023add_accessor_meth" +
-      "od\030\002 \001(\0132\021.MethodDefinition\022\017\n\007can_add\030\003" +
-      " \001(\010\022\022\n\ncan_invoke\030\004 \001(\010\022\022\n\ncan_remove\030\005" +
-      " \001(\010\022\021\n\tfull_name\030\006 \001(\t\0221\n\026invoke_access" +
-      "or_method\030\007 \001(\0132\021.MethodDefinition\022\014\n\004na" +
-      "me\030\010 \001(\t\0221\n\026remove_accessor_method\030\t \001(\013" +
-      "2\021.MethodDefinition\022\020\n\010pe_token\030\n \001(\005*\206\001" +
-      "\n\rAccessibility\022\010\n\004NONE\020\000\022\013\n\007PRIVATE\020\001\022\n" +
-      "\n\006PUBLIC\020\002\022\014\n\010INTERNAL\020\003\022\r\n\tPROTECTED\020\004\022" +
-      "\032\n\026PROTECTED_AND_INTERNAL\020\005\022\031\n\025PROTECTED" +
-      "_OR_INTERNAL\020\006*\376\001\n\006IlType\022\020\n\014type_unknow" +
-      "n\020\000\022\017\n\013type_string\020\001\022\016\n\ntype_int32\020\002\022\016\n\n" +
-      "type_int64\020\003\022\017\n\013type_uint32\020\004\022\017\n\013type_ui" +
-      "nt64\020\005\022\016\n\ntype_float\020\006\022\017\n\013type_double\020\007\022" +
-      "\r\n\ttype_bool\020\010\022\r\n\ttype_byte\020\t\022\016\n\ntype_sb" +
-      "yte\020\n\022\017\n\013type_uint16\020\013\022\016\n\ntype_int16\020\014\022\r" +
-      "\n\ttype_char\020\r\022\020\n\014type_decimal\020\016*\366\002\n\013Type" +
-      "KindDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001\022\t\n\005CLASS" +
-      "\020\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014\n\010DELEGAT" +
-      "E\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKNOWN\020\010\022\010\n\004" +
-      "NULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMIC\020\013\022\024\n\020UN" +
-      "BOUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAMETER\020\r\022\t\n\005" +
-      "ARRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020\020\022\020\n\014INTE" +
-      "RSECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUPLE\020\023\022\013\n\007M" +
-      "OD_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020\026\022\n\n\006N_UI" +
-      "NT\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020BY_REF_AND" +
-      "_ARRAY\020\031BS\n\021soot.dotnet.protoB\025ProtoAsse" +
-      "mblyAllTypes\252\002&Soot.Dotnet.Decompiler.Mo" +
-      "dels.Protobufb\006proto3"
+      "\036\n\rconstant_type\030\035 \001(\0162\007.IlType\022\032\n\riniti" +
+      "al_value\030< \001(\014H\000\210\001\001B\020\n\016_initial_value\"\322\003" +
+      "\n\022PropertyDefinition\022%\n\raccessibility\030\001 " +
+      "\001(\0162\016.Accessibility\022\017\n\007can_get\030\002 \001(\010\022\017\n\007" +
+      "can_set\030\003 \001(\010\022\023\n\013is_abstract\030\004 \001(\010\022\021\n\tis" +
+      "_sealed\030\005 \001(\010\022,\n$is_explicit_interface_i" +
+      "mplementation\030\006 \001(\010\022\023\n\013is_override\030\007 \001(\010" +
+      "\022\022\n\nis_virtual\030\010 \001(\010\022\021\n\tis_static\030\t \001(\010\022" +
+      "\021\n\tis_extern\030\017 \001(\010\022!\n\006getter\030\n \001(\0132\021.Met" +
+      "hodDefinition\022!\n\006setter\030\013 \001(\0132\021.MethodDe" +
+      "finition\022\035\n\004type\030\014 \001(\0132\017.TypeDefinition\022" +
+      "\037\n\ttype_kind\030\016 \001(\0162\014.TypeKindDef\022\014\n\004name" +
+      "\030\r \001(\t\022(\n\nattributes\030\020 \003(\0132\024.AttributeDe" +
+      "finition\022\020\n\010pe_token\030\021 \001(\005\"\301\001\n\023Attribute" +
+      "Definition\022\'\n\016attribute_type\030\001 \001(\0132\017.Typ" +
+      "eDefinition\022\023\n\013constructor\030\002 \001(\t\0225\n\017fixe" +
+      "d_arguments\030\003 \003(\0132\034.AttributeArgumentDef" +
+      "inition\0225\n\017named_arguments\030\004 \003(\0132\034.Attri" +
+      "buteArgumentDefinition\"\265\001\n\033AttributeArgu" +
+      "mentDefinition\022\035\n\004type\030\001 \001(\0132\017.TypeDefin" +
+      "ition\022\014\n\004name\030\002 \001(\t\022\024\n\014value_string\030\003 \003(" +
+      "\t\022\023\n\013value_int32\030\004 \003(\005\022\023\n\013value_int64\030\005 " +
+      "\003(\003\022\024\n\014value_double\030\006 \003(\001\022\023\n\013value_float" +
+      "\030\007 \003(\002\"\272\002\n\017EventDefinition\022%\n\raccessibil" +
+      "ity\030\001 \001(\0162\016.Accessibility\022.\n\023add_accesso" +
+      "r_method\030\002 \001(\0132\021.MethodDefinition\022\017\n\007can" +
+      "_add\030\003 \001(\010\022\022\n\ncan_invoke\030\004 \001(\010\022\022\n\ncan_re" +
+      "move\030\005 \001(\010\022\021\n\tfull_name\030\006 \001(\t\0221\n\026invoke_" +
+      "accessor_method\030\007 \001(\0132\021.MethodDefinition" +
+      "\022\014\n\004name\030\010 \001(\t\0221\n\026remove_accessor_method" +
+      "\030\t \001(\0132\021.MethodDefinition\022\020\n\010pe_token\030\n " +
+      "\001(\005*\206\001\n\rAccessibility\022\010\n\004NONE\020\000\022\013\n\007PRIVA" +
+      "TE\020\001\022\n\n\006PUBLIC\020\002\022\014\n\010INTERNAL\020\003\022\r\n\tPROTEC" +
+      "TED\020\004\022\032\n\026PROTECTED_AND_INTERNAL\020\005\022\031\n\025PRO" +
+      "TECTED_OR_INTERNAL\020\006*\376\001\n\006IlType\022\020\n\014type_" +
+      "unknown\020\000\022\017\n\013type_string\020\001\022\016\n\ntype_int32" +
+      "\020\002\022\016\n\ntype_int64\020\003\022\017\n\013type_uint32\020\004\022\017\n\013t" +
+      "ype_uint64\020\005\022\016\n\ntype_float\020\006\022\017\n\013type_dou" +
+      "ble\020\007\022\r\n\ttype_bool\020\010\022\r\n\ttype_byte\020\t\022\016\n\nt" +
+      "ype_sbyte\020\n\022\017\n\013type_uint16\020\013\022\016\n\ntype_int" +
+      "16\020\014\022\r\n\ttype_char\020\r\022\020\n\014type_decimal\020\016*\366\002" +
+      "\n\013TypeKindDef\022\013\n\007NO_TYPE\020\000\022\t\n\005OTHER\020\001\022\t\n" +
+      "\005CLASS\020\002\022\r\n\tINTERFACE\020\003\022\n\n\006STRUCT\020\004\022\014\n\010D" +
+      "ELEGATE\020\005\022\010\n\004ENUM\020\006\022\010\n\004VOID\020\007\022\013\n\007UNKNOWN" +
+      "\020\010\022\010\n\004NULL\020\t\022\r\n\tNONE_TYPE\020\n\022\013\n\007DYNAMIC\020\013" +
+      "\022\024\n\020UNBOUND_TYPE_ARG\020\014\022\022\n\016TYPE_PARAMETER" +
+      "\020\r\022\t\n\005ARRAY\020\016\022\013\n\007POINTER\020\017\022\n\n\006BY_REF\020\020\022\020" +
+      "\n\014INTERSECTION\020\021\022\014\n\010ARG_LIST\020\022\022\t\n\005TUPLE\020" +
+      "\023\022\013\n\007MOD_OPT\020\024\022\013\n\007MOD_REQ\020\025\022\t\n\005N_INT\020\026\022\n" +
+      "\n\006N_UINT\020\027\022\024\n\020FUNCTION_POINTER\020\030\022\024\n\020BY_R" +
+      "EF_AND_ARRAY\020\031BS\n\021soot.dotnet.protoB\025Pro" +
+      "toAssemblyAllTypes\252\002&Soot.Dotnet.Decompi" +
+      "ler.Models.Protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -20889,7 +20993,7 @@ public final class ProtoAssemblyAllTypes {
     internal_static_FieldDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_FieldDefinition_descriptor,
-        new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName", "DeclaringType", "Attributes", "PeToken", "ValueConstantString", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "ValueConstantBool", "ValueConstantUint64", "ConstantType", });
+        new java.lang.String[] { "Accessibility", "IsAbstract", "IsSealed", "IsExplicitInterfaceImplementation", "IsOverride", "IsVirtual", "IsConst", "IsReadOnly", "IsStatic", "Type", "TypeKind", "Name", "FullName", "DeclaringType", "Attributes", "PeToken", "ValueConstantString", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "ValueConstantBool", "ValueConstantUint64", "ConstantType", "InitialValue", "InitialValue", });
     internal_static_PropertyDefinition_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_PropertyDefinition_fieldAccessorTable = new

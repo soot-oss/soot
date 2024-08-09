@@ -2919,6 +2919,21 @@ public final class ProtoIlInstructions {
     soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getValueInstructionOrBuilder();
 
     /**
+     * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+     * @return Whether the lambdaFunction field is set.
+     */
+    boolean hasLambdaFunction();
+    /**
+     * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+     * @return The lambdaFunction.
+     */
+    soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg getLambdaFunction();
+    /**
+     * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+     */
+    soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsgOrBuilder getLambdaFunctionOrBuilder();
+
+    /**
      * <pre>
      * LDSTR LDC_I4
      * </pre>
@@ -3903,6 +3918,18 @@ public final class ProtoIlInstructions {
        * <code>MATCH_INSTRUCTION = 73;</code>
        */
       MATCH_INSTRUCTION(73),
+      /**
+       * <code>LDC_DECIMAL = 74;</code>
+       */
+      LDC_DECIMAL(74),
+      /**
+       * <code>STRING_TO_INT = 75;</code>
+       */
+      STRING_TO_INT(75),
+      /**
+       * <code>ILFUNCTION = 76;</code>
+       */
+      ILFUNCTION(76),
       UNRECOGNIZED(-1),
       ;
 
@@ -4190,6 +4217,18 @@ public final class ProtoIlInstructions {
        * <code>MATCH_INSTRUCTION = 73;</code>
        */
       public static final int MATCH_INSTRUCTION_VALUE = 73;
+      /**
+       * <code>LDC_DECIMAL = 74;</code>
+       */
+      public static final int LDC_DECIMAL_VALUE = 74;
+      /**
+       * <code>STRING_TO_INT = 75;</code>
+       */
+      public static final int STRING_TO_INT_VALUE = 75;
+      /**
+       * <code>ILFUNCTION = 76;</code>
+       */
+      public static final int ILFUNCTION_VALUE = 76;
 
 
       public final int getNumber() {
@@ -4287,6 +4326,9 @@ public final class ProtoIlInstructions {
           case 71: return INVALID_BRANCH;
           case 72: return CALL_INDIRECT;
           case 73: return MATCH_INSTRUCTION;
+          case 74: return LDC_DECIMAL;
+          case 75: return STRING_TO_INT;
+          case 76: return ILFUNCTION;
           default: return null;
         }
       }
@@ -5574,6 +5616,32 @@ public final class ProtoIlInstructions {
       return valueInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : valueInstruction_;
     }
 
+    public static final int LAMBDAFUNCTION_FIELD_NUMBER = 86;
+    private soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg lambdaFunction_;
+    /**
+     * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+     * @return Whether the lambdaFunction field is set.
+     */
+    @java.lang.Override
+    public boolean hasLambdaFunction() {
+      return lambdaFunction_ != null;
+    }
+    /**
+     * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+     * @return The lambdaFunction.
+     */
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg getLambdaFunction() {
+      return lambdaFunction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance() : lambdaFunction_;
+    }
+    /**
+     * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+     */
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsgOrBuilder getLambdaFunctionOrBuilder() {
+      return lambdaFunction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance() : lambdaFunction_;
+    }
+
     public static final int VALUE_CONSTANT_STRING_FIELD_NUMBER = 7;
     @SuppressWarnings("serial")
     private volatile java.lang.Object valueConstantString_ = "";
@@ -6719,6 +6787,9 @@ public final class ProtoIlInstructions {
       if (falseInst_ != null) {
         output.writeMessage(84, getFalseInst());
       }
+      if (lambdaFunction_ != null) {
+        output.writeMessage(86, getLambdaFunction());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6882,6 +6953,10 @@ public final class ProtoIlInstructions {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(84, getFalseInst());
       }
+      if (lambdaFunction_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(86, getLambdaFunction());
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -6909,6 +6984,11 @@ public final class ProtoIlInstructions {
       if (hasValueInstruction()) {
         if (!getValueInstruction()
             .equals(other.getValueInstruction())) return false;
+      }
+      if (hasLambdaFunction() != other.hasLambdaFunction()) return false;
+      if (hasLambdaFunction()) {
+        if (!getLambdaFunction()
+            .equals(other.getLambdaFunction())) return false;
       }
       if (!getValueConstantString()
           .equals(other.getValueConstantString())) return false;
@@ -7049,6 +7129,10 @@ public final class ProtoIlInstructions {
       if (hasValueInstruction()) {
         hash = (37 * hash) + VALUE_INSTRUCTION_FIELD_NUMBER;
         hash = (53 * hash) + getValueInstruction().hashCode();
+      }
+      if (hasLambdaFunction()) {
+        hash = (37 * hash) + LAMBDAFUNCTION_FIELD_NUMBER;
+        hash = (53 * hash) + getLambdaFunction().hashCode();
       }
       hash = (37 * hash) + VALUE_CONSTANT_STRING_FIELD_NUMBER;
       hash = (53 * hash) + getValueConstantString().hashCode();
@@ -7313,6 +7397,11 @@ public final class ProtoIlInstructions {
           valueInstructionBuilder_.dispose();
           valueInstructionBuilder_ = null;
         }
+        lambdaFunction_ = null;
+        if (lambdaFunctionBuilder_ != null) {
+          lambdaFunctionBuilder_.dispose();
+          lambdaFunctionBuilder_ = null;
+        }
         valueConstantString_ = "";
         valueConstantInt64_ = 0L;
         valueConstantFloat_ = 0F;
@@ -7389,7 +7478,7 @@ public final class ProtoIlInstructions {
           indices_ = null;
           indicesBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x40000000);
+        bitField0_ = (bitField0_ & ~0x80000000);
         tryBlock_ = null;
         if (tryBlockBuilder_ != null) {
           tryBlockBuilder_.dispose();
@@ -7401,7 +7490,7 @@ public final class ProtoIlInstructions {
           handlers_ = null;
           handlersBuilder_.clear();
         }
-        bitField1_ = (bitField1_ & ~0x00000001);
+        bitField1_ = (bitField1_ & ~0x00000002);
         finallyBlock_ = null;
         if (finallyBlockBuilder_ != null) {
           finallyBlockBuilder_.dispose();
@@ -7433,7 +7522,7 @@ public final class ProtoIlInstructions {
           switchSections_ = null;
           switchSectionsBuilder_.clear();
         }
-        bitField1_ = (bitField1_ & ~0x00000040);
+        bitField1_ = (bitField1_ & ~0x00000080);
         return this;
       }
 
@@ -7478,27 +7567,27 @@ public final class ProtoIlInstructions {
           result.arguments_ = argumentsBuilder_.build();
         }
         if (indicesBuilder_ == null) {
-          if (((bitField0_ & 0x40000000) != 0)) {
+          if (((bitField0_ & 0x80000000) != 0)) {
             indices_ = java.util.Collections.unmodifiableList(indices_);
-            bitField0_ = (bitField0_ & ~0x40000000);
+            bitField0_ = (bitField0_ & ~0x80000000);
           }
           result.indices_ = indices_;
         } else {
           result.indices_ = indicesBuilder_.build();
         }
         if (handlersBuilder_ == null) {
-          if (((bitField1_ & 0x00000001) != 0)) {
+          if (((bitField1_ & 0x00000002) != 0)) {
             handlers_ = java.util.Collections.unmodifiableList(handlers_);
-            bitField1_ = (bitField1_ & ~0x00000001);
+            bitField1_ = (bitField1_ & ~0x00000002);
           }
           result.handlers_ = handlers_;
         } else {
           result.handlers_ = handlersBuilder_.build();
         }
         if (switchSectionsBuilder_ == null) {
-          if (((bitField1_ & 0x00000040) != 0)) {
+          if (((bitField1_ & 0x00000080) != 0)) {
             switchSections_ = java.util.Collections.unmodifiableList(switchSections_);
-            bitField1_ = (bitField1_ & ~0x00000040);
+            bitField1_ = (bitField1_ & ~0x00000080);
           }
           result.switchSections_ = switchSections_;
         } else {
@@ -7522,135 +7611,140 @@ public final class ProtoIlInstructions {
               : valueInstructionBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
-          result.valueConstantString_ = valueConstantString_;
+          result.lambdaFunction_ = lambdaFunctionBuilder_ == null
+              ? lambdaFunction_
+              : lambdaFunctionBuilder_.build();
         }
         if (((from_bitField0_ & 0x00000020) != 0)) {
-          result.valueConstantInt64_ = valueConstantInt64_;
+          result.valueConstantString_ = valueConstantString_;
         }
         if (((from_bitField0_ & 0x00000040) != 0)) {
-          result.valueConstantFloat_ = valueConstantFloat_;
+          result.valueConstantInt64_ = valueConstantInt64_;
         }
         if (((from_bitField0_ & 0x00000080) != 0)) {
-          result.valueConstantDouble_ = valueConstantDouble_;
+          result.valueConstantFloat_ = valueConstantFloat_;
         }
         if (((from_bitField0_ & 0x00000100) != 0)) {
-          result.valueConstantBool_ = valueConstantBool_;
+          result.valueConstantDouble_ = valueConstantDouble_;
         }
         if (((from_bitField0_ & 0x00000200) != 0)) {
-          result.valueConstantUint64_ = valueConstantUint64_;
+          result.valueConstantBool_ = valueConstantBool_;
         }
         if (((from_bitField0_ & 0x00000400) != 0)) {
-          result.constantType_ = constantType_;
+          result.valueConstantUint64_ = valueConstantUint64_;
         }
         if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.constantType_ = constantType_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
           result.target_ = targetBuilder_ == null
               ? target_
               : targetBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00001000) != 0)) {
+        if (((from_bitField0_ & 0x00002000) != 0)) {
           result.type_ = typeBuilder_ == null
               ? type_
               : typeBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00002000) != 0)) {
+        if (((from_bitField0_ & 0x00004000) != 0)) {
           result.field_ = fieldBuilder_ == null
               ? field_
               : fieldBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00004000) != 0)) {
+        if (((from_bitField0_ & 0x00008000) != 0)) {
           result.variable_ = variableBuilder_ == null
               ? variable_
               : variableBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00008000) != 0)) {
+        if (((from_bitField0_ & 0x00010000) != 0)) {
           result.operator_ = operator_;
         }
-        if (((from_bitField0_ & 0x00010000) != 0)) {
+        if (((from_bitField0_ & 0x00020000) != 0)) {
           result.sign_ = sign_;
         }
-        if (((from_bitField0_ & 0x00020000) != 0)) {
+        if (((from_bitField0_ & 0x00040000) != 0)) {
           result.left_ = leftBuilder_ == null
               ? left_
               : leftBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00040000) != 0)) {
+        if (((from_bitField0_ & 0x00080000) != 0)) {
           result.right_ = rightBuilder_ == null
               ? right_
               : rightBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00080000) != 0)) {
+        if (((from_bitField0_ & 0x00100000) != 0)) {
           result.targetLabel_ = targetLabel_;
         }
-        if (((from_bitField0_ & 0x00100000) != 0)) {
+        if (((from_bitField0_ & 0x00200000) != 0)) {
           result.comparisonKind_ = comparisonKind_;
         }
-        if (((from_bitField0_ & 0x00200000) != 0)) {
+        if (((from_bitField0_ & 0x00400000) != 0)) {
           result.condition_ = conditionBuilder_ == null
               ? condition_
               : conditionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00400000) != 0)) {
+        if (((from_bitField0_ & 0x00800000) != 0)) {
           result.trueInst_ = trueInstBuilder_ == null
               ? trueInst_
               : trueInstBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00800000) != 0)) {
+        if (((from_bitField0_ & 0x01000000) != 0)) {
           result.falseInst_ = falseInstBuilder_ == null
               ? falseInst_
               : falseInstBuilder_.build();
         }
-        if (((from_bitField0_ & 0x01000000) != 0)) {
+        if (((from_bitField0_ & 0x02000000) != 0)) {
           result.array_ = arrayBuilder_ == null
               ? array_
               : arrayBuilder_.build();
         }
-        if (((from_bitField0_ & 0x02000000) != 0)) {
+        if (((from_bitField0_ & 0x04000000) != 0)) {
           result.conversionKind_ = conversionKind_;
         }
-        if (((from_bitField0_ & 0x04000000) != 0)) {
+        if (((from_bitField0_ & 0x08000000) != 0)) {
           result.inputType_ = inputType_;
         }
-        if (((from_bitField0_ & 0x08000000) != 0)) {
+        if (((from_bitField0_ & 0x10000000) != 0)) {
           result.targetType_ = targetType_;
         }
-        if (((from_bitField0_ & 0x10000000) != 0)) {
+        if (((from_bitField0_ & 0x20000000) != 0)) {
           result.argument_ = argumentBuilder_ == null
               ? argument_
               : argumentBuilder_.build();
         }
-        if (((from_bitField0_ & 0x20000000) != 0)) {
+        if (((from_bitField0_ & 0x40000000) != 0)) {
           result.resultType_ = resultType_;
-        }
-        if (((from_bitField0_ & 0x80000000) != 0)) {
-          result.tryBlock_ = tryBlockBuilder_ == null
-              ? tryBlock_
-              : tryBlockBuilder_.build();
         }
       }
 
       private void buildPartial1(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg result) {
         int from_bitField1_ = bitField1_;
-        if (((from_bitField1_ & 0x00000002) != 0)) {
+        if (((from_bitField1_ & 0x00000001) != 0)) {
+          result.tryBlock_ = tryBlockBuilder_ == null
+              ? tryBlock_
+              : tryBlockBuilder_.build();
+        }
+        if (((from_bitField1_ & 0x00000004) != 0)) {
           result.finallyBlock_ = finallyBlockBuilder_ == null
               ? finallyBlock_
               : finallyBlockBuilder_.build();
         }
-        if (((from_bitField1_ & 0x00000004) != 0)) {
+        if (((from_bitField1_ & 0x00000008) != 0)) {
           result.faultBlock_ = faultBlockBuilder_ == null
               ? faultBlock_
               : faultBlockBuilder_.build();
         }
-        if (((from_bitField1_ & 0x00000008) != 0)) {
+        if (((from_bitField1_ & 0x00000010) != 0)) {
           result.body_ = bodyBuilder_ == null
               ? body_
               : bodyBuilder_.build();
         }
-        if (((from_bitField1_ & 0x00000010) != 0)) {
+        if (((from_bitField1_ & 0x00000020) != 0)) {
           result.keyInstr_ = keyInstrBuilder_ == null
               ? keyInstr_
               : keyInstrBuilder_.build();
         }
-        if (((from_bitField1_ & 0x00000020) != 0)) {
+        if (((from_bitField1_ & 0x00000040) != 0)) {
           result.defaultInst_ = defaultInstBuilder_ == null
               ? defaultInst_
               : defaultInstBuilder_.build();
@@ -7736,9 +7830,12 @@ public final class ProtoIlInstructions {
         if (other.hasValueInstruction()) {
           mergeValueInstruction(other.getValueInstruction());
         }
+        if (other.hasLambdaFunction()) {
+          mergeLambdaFunction(other.getLambdaFunction());
+        }
         if (!other.getValueConstantString().isEmpty()) {
           valueConstantString_ = other.valueConstantString_;
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000020;
           onChanged();
         }
         if (other.getValueConstantInt64() != 0L) {
@@ -7785,7 +7882,7 @@ public final class ProtoIlInstructions {
         }
         if (!other.getTargetLabel().isEmpty()) {
           targetLabel_ = other.targetLabel_;
-          bitField0_ |= 0x00080000;
+          bitField0_ |= 0x00100000;
           onChanged();
         }
         if (other.comparisonKind_ != 0) {
@@ -7822,7 +7919,7 @@ public final class ProtoIlInstructions {
           if (!other.indices_.isEmpty()) {
             if (indices_.isEmpty()) {
               indices_ = other.indices_;
-              bitField0_ = (bitField0_ & ~0x40000000);
+              bitField0_ = (bitField0_ & ~0x80000000);
             } else {
               ensureIndicesIsMutable();
               indices_.addAll(other.indices_);
@@ -7835,7 +7932,7 @@ public final class ProtoIlInstructions {
               indicesBuilder_.dispose();
               indicesBuilder_ = null;
               indices_ = other.indices_;
-              bitField0_ = (bitField0_ & ~0x40000000);
+              bitField0_ = (bitField0_ & ~0x80000000);
               indicesBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getIndicesFieldBuilder() : null;
@@ -7851,7 +7948,7 @@ public final class ProtoIlInstructions {
           if (!other.handlers_.isEmpty()) {
             if (handlers_.isEmpty()) {
               handlers_ = other.handlers_;
-              bitField1_ = (bitField1_ & ~0x00000001);
+              bitField1_ = (bitField1_ & ~0x00000002);
             } else {
               ensureHandlersIsMutable();
               handlers_.addAll(other.handlers_);
@@ -7864,7 +7961,7 @@ public final class ProtoIlInstructions {
               handlersBuilder_.dispose();
               handlersBuilder_ = null;
               handlers_ = other.handlers_;
-              bitField1_ = (bitField1_ & ~0x00000001);
+              bitField1_ = (bitField1_ & ~0x00000002);
               handlersBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getHandlersFieldBuilder() : null;
@@ -7892,7 +7989,7 @@ public final class ProtoIlInstructions {
           if (!other.switchSections_.isEmpty()) {
             if (switchSections_.isEmpty()) {
               switchSections_ = other.switchSections_;
-              bitField1_ = (bitField1_ & ~0x00000040);
+              bitField1_ = (bitField1_ & ~0x00000080);
             } else {
               ensureSwitchSectionsIsMutable();
               switchSections_.addAll(other.switchSections_);
@@ -7905,7 +8002,7 @@ public final class ProtoIlInstructions {
               switchSectionsBuilder_.dispose();
               switchSectionsBuilder_ = null;
               switchSections_ = other.switchSections_;
-              bitField1_ = (bitField1_ & ~0x00000040);
+              bitField1_ = (bitField1_ & ~0x00000080);
               switchSectionsBuilder_ = 
                 com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getSwitchSectionsFieldBuilder() : null;
@@ -7974,115 +8071,115 @@ public final class ProtoIlInstructions {
               } // case 50
               case 58: {
                 valueConstantString_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000010;
+                bitField0_ |= 0x00000020;
                 break;
               } // case 58
               case 66: {
                 input.readMessage(
                     getTargetFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000800;
+                bitField0_ |= 0x00001000;
                 break;
               } // case 66
               case 74: {
                 input.readMessage(
                     getTypeFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00001000;
+                bitField0_ |= 0x00002000;
                 break;
               } // case 74
               case 82: {
                 input.readMessage(
                     getFieldFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00002000;
+                bitField0_ |= 0x00004000;
                 break;
               } // case 82
               case 90: {
                 input.readMessage(
                     getVariableFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00004000;
+                bitField0_ |= 0x00008000;
                 break;
               } // case 90
               case 96: {
                 operator_ = input.readEnum();
-                bitField0_ |= 0x00008000;
+                bitField0_ |= 0x00010000;
                 break;
               } // case 96
               case 114: {
                 input.readMessage(
                     getLeftFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00020000;
+                bitField0_ |= 0x00040000;
                 break;
               } // case 114
               case 122: {
                 input.readMessage(
                     getRightFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00040000;
+                bitField0_ |= 0x00080000;
                 break;
               } // case 122
               case 146: {
                 targetLabel_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00080000;
+                bitField0_ |= 0x00100000;
                 break;
               } // case 146
               case 160: {
                 sign_ = input.readEnum();
-                bitField0_ |= 0x00010000;
+                bitField0_ |= 0x00020000;
                 break;
               } // case 160
               case 168: {
                 comparisonKind_ = input.readEnum();
-                bitField0_ |= 0x00100000;
+                bitField0_ |= 0x00200000;
                 break;
               } // case 168
               case 178: {
                 input.readMessage(
                     getConditionFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00200000;
+                bitField0_ |= 0x00400000;
                 break;
               } // case 178
               case 184: {
                 constantType_ = input.readEnum();
-                bitField0_ |= 0x00000400;
+                bitField0_ |= 0x00000800;
                 break;
               } // case 184
               case 200: {
                 conversionKind_ = input.readEnum();
-                bitField0_ |= 0x02000000;
+                bitField0_ |= 0x04000000;
                 break;
               } // case 200
               case 208: {
                 inputType_ = input.readEnum();
-                bitField0_ |= 0x04000000;
+                bitField0_ |= 0x08000000;
                 break;
               } // case 208
               case 216: {
                 resultType_ = input.readEnum();
-                bitField0_ |= 0x20000000;
+                bitField0_ |= 0x40000000;
                 break;
               } // case 216
               case 224: {
                 targetType_ = input.readEnum();
-                bitField0_ |= 0x08000000;
+                bitField0_ |= 0x10000000;
                 break;
               } // case 224
               case 234: {
                 input.readMessage(
                     getArgumentFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x10000000;
+                bitField0_ |= 0x20000000;
                 break;
               } // case 234
               case 242: {
                 input.readMessage(
                     getArrayFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x01000000;
+                bitField0_ |= 0x02000000;
                 break;
               } // case 242
               case 250: {
@@ -8102,7 +8199,7 @@ public final class ProtoIlInstructions {
                 input.readMessage(
                     getTryBlockFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x80000000;
+                bitField1_ |= 0x00000001;
                 break;
               } // case 258
               case 266: {
@@ -8122,50 +8219,50 @@ public final class ProtoIlInstructions {
                 input.readMessage(
                     getFinallyBlockFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField1_ |= 0x00000002;
+                bitField1_ |= 0x00000004;
                 break;
               } // case 274
               case 282: {
                 input.readMessage(
                     getFaultBlockFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField1_ |= 0x00000004;
+                bitField1_ |= 0x00000008;
                 break;
               } // case 282
               case 298: {
                 input.readMessage(
                     getBodyFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField1_ |= 0x00000008;
+                bitField1_ |= 0x00000010;
                 break;
               } // case 298
               case 304: {
                 valueConstantInt64_ = input.readInt64();
-                bitField0_ |= 0x00000020;
+                bitField0_ |= 0x00000040;
                 break;
               } // case 304
               case 317: {
                 valueConstantFloat_ = input.readFloat();
-                bitField0_ |= 0x00000040;
+                bitField0_ |= 0x00000080;
                 break;
               } // case 317
               case 321: {
                 valueConstantDouble_ = input.readDouble();
-                bitField0_ |= 0x00000080;
+                bitField0_ |= 0x00000100;
                 break;
               } // case 321
               case 330: {
                 input.readMessage(
                     getKeyInstrFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField1_ |= 0x00000010;
+                bitField1_ |= 0x00000020;
                 break;
               } // case 330
               case 338: {
                 input.readMessage(
                     getDefaultInstFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField1_ |= 0x00000020;
+                bitField1_ |= 0x00000040;
                 break;
               } // case 338
               case 346: {
@@ -8183,28 +8280,35 @@ public final class ProtoIlInstructions {
               } // case 346
               case 488: {
                 valueConstantBool_ = input.readBool();
-                bitField0_ |= 0x00000100;
+                bitField0_ |= 0x00000200;
                 break;
               } // case 488
               case 520: {
                 valueConstantUint64_ = input.readUInt64();
-                bitField0_ |= 0x00000200;
+                bitField0_ |= 0x00000400;
                 break;
               } // case 520
               case 666: {
                 input.readMessage(
                     getTrueInstFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00400000;
+                bitField0_ |= 0x00800000;
                 break;
               } // case 666
               case 674: {
                 input.readMessage(
                     getFalseInstFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00800000;
+                bitField0_ |= 0x01000000;
                 break;
               } // case 674
+              case 690: {
+                input.readMessage(
+                    getLambdaFunctionFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 690
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -8826,6 +8930,125 @@ public final class ProtoIlInstructions {
         return valueInstructionBuilder_;
       }
 
+      private soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg lambdaFunction_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsgOrBuilder> lambdaFunctionBuilder_;
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       * @return Whether the lambdaFunction field is set.
+       */
+      public boolean hasLambdaFunction() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       * @return The lambdaFunction.
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg getLambdaFunction() {
+        if (lambdaFunctionBuilder_ == null) {
+          return lambdaFunction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance() : lambdaFunction_;
+        } else {
+          return lambdaFunctionBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       */
+      public Builder setLambdaFunction(soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg value) {
+        if (lambdaFunctionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          lambdaFunction_ = value;
+        } else {
+          lambdaFunctionBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       */
+      public Builder setLambdaFunction(
+          soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder builderForValue) {
+        if (lambdaFunctionBuilder_ == null) {
+          lambdaFunction_ = builderForValue.build();
+        } else {
+          lambdaFunctionBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       */
+      public Builder mergeLambdaFunction(soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg value) {
+        if (lambdaFunctionBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0) &&
+            lambdaFunction_ != null &&
+            lambdaFunction_ != soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance()) {
+            getLambdaFunctionBuilder().mergeFrom(value);
+          } else {
+            lambdaFunction_ = value;
+          }
+        } else {
+          lambdaFunctionBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       */
+      public Builder clearLambdaFunction() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        lambdaFunction_ = null;
+        if (lambdaFunctionBuilder_ != null) {
+          lambdaFunctionBuilder_.dispose();
+          lambdaFunctionBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder getLambdaFunctionBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return getLambdaFunctionFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsgOrBuilder getLambdaFunctionOrBuilder() {
+        if (lambdaFunctionBuilder_ != null) {
+          return lambdaFunctionBuilder_.getMessageOrBuilder();
+        } else {
+          return lambdaFunction_ == null ?
+              soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.getDefaultInstance() : lambdaFunction_;
+        }
+      }
+      /**
+       * <code>.IlFunctionMsg lambdaFunction = 86;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsgOrBuilder> 
+          getLambdaFunctionFieldBuilder() {
+        if (lambdaFunctionBuilder_ == null) {
+          lambdaFunctionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsgOrBuilder>(
+                  getLambdaFunction(),
+                  getParentForChildren(),
+                  isClean());
+          lambdaFunction_ = null;
+        }
+        return lambdaFunctionBuilder_;
+      }
+
       private java.lang.Object valueConstantString_ = "";
       /**
        * <pre>
@@ -8881,7 +9104,7 @@ public final class ProtoIlInstructions {
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         valueConstantString_ = value;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -8895,7 +9118,7 @@ public final class ProtoIlInstructions {
        */
       public Builder clearValueConstantString() {
         valueConstantString_ = getDefaultInstance().getValueConstantString();
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         onChanged();
         return this;
       }
@@ -8913,7 +9136,7 @@ public final class ProtoIlInstructions {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         valueConstantString_ = value;
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -8935,7 +9158,7 @@ public final class ProtoIlInstructions {
       public Builder setValueConstantInt64(long value) {
         
         valueConstantInt64_ = value;
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         onChanged();
         return this;
       }
@@ -8944,7 +9167,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearValueConstantInt64() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         valueConstantInt64_ = 0L;
         onChanged();
         return this;
@@ -8967,7 +9190,7 @@ public final class ProtoIlInstructions {
       public Builder setValueConstantFloat(float value) {
         
         valueConstantFloat_ = value;
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
         return this;
       }
@@ -8976,7 +9199,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearValueConstantFloat() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         valueConstantFloat_ = 0F;
         onChanged();
         return this;
@@ -8999,7 +9222,7 @@ public final class ProtoIlInstructions {
       public Builder setValueConstantDouble(double value) {
         
         valueConstantDouble_ = value;
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
         onChanged();
         return this;
       }
@@ -9008,7 +9231,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearValueConstantDouble() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000100);
         valueConstantDouble_ = 0D;
         onChanged();
         return this;
@@ -9031,7 +9254,7 @@ public final class ProtoIlInstructions {
       public Builder setValueConstantBool(boolean value) {
         
         valueConstantBool_ = value;
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
         onChanged();
         return this;
       }
@@ -9040,7 +9263,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearValueConstantBool() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000200);
         valueConstantBool_ = false;
         onChanged();
         return this;
@@ -9063,7 +9286,7 @@ public final class ProtoIlInstructions {
       public Builder setValueConstantUint64(long value) {
         
         valueConstantUint64_ = value;
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         onChanged();
         return this;
       }
@@ -9072,7 +9295,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearValueConstantUint64() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000400);
         valueConstantUint64_ = 0L;
         onChanged();
         return this;
@@ -9093,7 +9316,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setConstantTypeValue(int value) {
         constantType_ = value;
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
         return this;
       }
@@ -9115,7 +9338,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         constantType_ = value.getNumber();
         onChanged();
         return this;
@@ -9125,7 +9348,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearConstantType() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000800);
         constantType_ = 0;
         onChanged();
         return this;
@@ -9143,7 +9366,7 @@ public final class ProtoIlInstructions {
        * @return Whether the target field is set.
        */
       public boolean hasTarget() {
-        return ((bitField0_ & 0x00000800) != 0);
+        return ((bitField0_ & 0x00001000) != 0);
       }
       /**
        * <pre>
@@ -9176,7 +9399,7 @@ public final class ProtoIlInstructions {
         } else {
           targetBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
@@ -9194,7 +9417,7 @@ public final class ProtoIlInstructions {
         } else {
           targetBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
@@ -9207,7 +9430,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeTarget(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (targetBuilder_ == null) {
-          if (((bitField0_ & 0x00000800) != 0) &&
+          if (((bitField0_ & 0x00001000) != 0) &&
             target_ != null &&
             target_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getTargetBuilder().mergeFrom(value);
@@ -9217,7 +9440,7 @@ public final class ProtoIlInstructions {
         } else {
           targetBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
@@ -9229,7 +9452,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg target = 8;</code>
        */
       public Builder clearTarget() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+        bitField0_ = (bitField0_ & ~0x00001000);
         target_ = null;
         if (targetBuilder_ != null) {
           targetBuilder_.dispose();
@@ -9246,7 +9469,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg target = 8;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getTargetBuilder() {
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
         return getTargetFieldBuilder().getBuilder();
       }
@@ -9298,7 +9521,7 @@ public final class ProtoIlInstructions {
        * @return Whether the type field is set.
        */
       public boolean hasType() {
-        return ((bitField0_ & 0x00001000) != 0);
+        return ((bitField0_ & 0x00002000) != 0);
       }
       /**
        * <pre>
@@ -9331,7 +9554,7 @@ public final class ProtoIlInstructions {
         } else {
           typeBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         onChanged();
         return this;
       }
@@ -9349,7 +9572,7 @@ public final class ProtoIlInstructions {
         } else {
           typeBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         onChanged();
         return this;
       }
@@ -9362,7 +9585,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeType(soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition value) {
         if (typeBuilder_ == null) {
-          if (((bitField0_ & 0x00001000) != 0) &&
+          if (((bitField0_ & 0x00002000) != 0) &&
             type_ != null &&
             type_ != soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.getDefaultInstance()) {
             getTypeBuilder().mergeFrom(value);
@@ -9372,7 +9595,7 @@ public final class ProtoIlInstructions {
         } else {
           typeBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         onChanged();
         return this;
       }
@@ -9384,7 +9607,7 @@ public final class ProtoIlInstructions {
        * <code>.TypeDefinition type = 9;</code>
        */
       public Builder clearType() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        bitField0_ = (bitField0_ & ~0x00002000);
         type_ = null;
         if (typeBuilder_ != null) {
           typeBuilder_.dispose();
@@ -9401,7 +9624,7 @@ public final class ProtoIlInstructions {
        * <code>.TypeDefinition type = 9;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition.Builder getTypeBuilder() {
-        bitField0_ |= 0x00001000;
+        bitField0_ |= 0x00002000;
         onChanged();
         return getTypeFieldBuilder().getBuilder();
       }
@@ -9453,7 +9676,7 @@ public final class ProtoIlInstructions {
        * @return Whether the field field is set.
        */
       public boolean hasField() {
-        return ((bitField0_ & 0x00002000) != 0);
+        return ((bitField0_ & 0x00004000) != 0);
       }
       /**
        * <pre>
@@ -9486,7 +9709,7 @@ public final class ProtoIlInstructions {
         } else {
           fieldBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return this;
       }
@@ -9504,7 +9727,7 @@ public final class ProtoIlInstructions {
         } else {
           fieldBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return this;
       }
@@ -9517,7 +9740,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeField(soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition value) {
         if (fieldBuilder_ == null) {
-          if (((bitField0_ & 0x00002000) != 0) &&
+          if (((bitField0_ & 0x00004000) != 0) &&
             field_ != null &&
             field_ != soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.getDefaultInstance()) {
             getFieldBuilder().mergeFrom(value);
@@ -9527,7 +9750,7 @@ public final class ProtoIlInstructions {
         } else {
           fieldBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return this;
       }
@@ -9539,7 +9762,7 @@ public final class ProtoIlInstructions {
        * <code>.FieldDefinition field = 10;</code>
        */
       public Builder clearField() {
-        bitField0_ = (bitField0_ & ~0x00002000);
+        bitField0_ = (bitField0_ & ~0x00004000);
         field_ = null;
         if (fieldBuilder_ != null) {
           fieldBuilder_.dispose();
@@ -9556,7 +9779,7 @@ public final class ProtoIlInstructions {
        * <code>.FieldDefinition field = 10;</code>
        */
       public soot.dotnet.proto.ProtoAssemblyAllTypes.FieldDefinition.Builder getFieldBuilder() {
-        bitField0_ |= 0x00002000;
+        bitField0_ |= 0x00004000;
         onChanged();
         return getFieldFieldBuilder().getBuilder();
       }
@@ -9608,7 +9831,7 @@ public final class ProtoIlInstructions {
        * @return Whether the variable field is set.
        */
       public boolean hasVariable() {
-        return ((bitField0_ & 0x00004000) != 0);
+        return ((bitField0_ & 0x00008000) != 0);
       }
       /**
        * <pre>
@@ -9641,7 +9864,7 @@ public final class ProtoIlInstructions {
         } else {
           variableBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return this;
       }
@@ -9659,7 +9882,7 @@ public final class ProtoIlInstructions {
         } else {
           variableBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return this;
       }
@@ -9672,7 +9895,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeVariable(soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg value) {
         if (variableBuilder_ == null) {
-          if (((bitField0_ & 0x00004000) != 0) &&
+          if (((bitField0_ & 0x00008000) != 0) &&
             variable_ != null &&
             variable_ != soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.getDefaultInstance()) {
             getVariableBuilder().mergeFrom(value);
@@ -9682,7 +9905,7 @@ public final class ProtoIlInstructions {
         } else {
           variableBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return this;
       }
@@ -9694,7 +9917,7 @@ public final class ProtoIlInstructions {
        * <code>.IlVariableMsg variable = 11;</code>
        */
       public Builder clearVariable() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        bitField0_ = (bitField0_ & ~0x00008000);
         variable_ = null;
         if (variableBuilder_ != null) {
           variableBuilder_.dispose();
@@ -9711,7 +9934,7 @@ public final class ProtoIlInstructions {
        * <code>.IlVariableMsg variable = 11;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlVariableMsg.Builder getVariableBuilder() {
-        bitField0_ |= 0x00004000;
+        bitField0_ |= 0x00008000;
         onChanged();
         return getVariableFieldBuilder().getBuilder();
       }
@@ -9774,7 +9997,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setOperatorValue(int value) {
         operator_ = value;
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00010000;
         onChanged();
         return this;
       }
@@ -9804,7 +10027,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00008000;
+        bitField0_ |= 0x00010000;
         operator_ = value.getNumber();
         onChanged();
         return this;
@@ -9818,7 +10041,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearOperator() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        bitField0_ = (bitField0_ & ~0x00010000);
         operator_ = 0;
         onChanged();
         return this;
@@ -9839,7 +10062,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setSignValue(int value) {
         sign_ = value;
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00020000;
         onChanged();
         return this;
       }
@@ -9861,7 +10084,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00010000;
+        bitField0_ |= 0x00020000;
         sign_ = value.getNumber();
         onChanged();
         return this;
@@ -9871,7 +10094,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearSign() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        bitField0_ = (bitField0_ & ~0x00020000);
         sign_ = 0;
         onChanged();
         return this;
@@ -9885,7 +10108,7 @@ public final class ProtoIlInstructions {
        * @return Whether the left field is set.
        */
       public boolean hasLeft() {
-        return ((bitField0_ & 0x00020000) != 0);
+        return ((bitField0_ & 0x00040000) != 0);
       }
       /**
        * <code>.IlInstructionMsg left = 14;</code>
@@ -9910,7 +10133,7 @@ public final class ProtoIlInstructions {
         } else {
           leftBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         onChanged();
         return this;
       }
@@ -9924,7 +10147,7 @@ public final class ProtoIlInstructions {
         } else {
           leftBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         onChanged();
         return this;
       }
@@ -9933,7 +10156,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeLeft(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (leftBuilder_ == null) {
-          if (((bitField0_ & 0x00020000) != 0) &&
+          if (((bitField0_ & 0x00040000) != 0) &&
             left_ != null &&
             left_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getLeftBuilder().mergeFrom(value);
@@ -9943,7 +10166,7 @@ public final class ProtoIlInstructions {
         } else {
           leftBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         onChanged();
         return this;
       }
@@ -9951,7 +10174,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg left = 14;</code>
        */
       public Builder clearLeft() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        bitField0_ = (bitField0_ & ~0x00040000);
         left_ = null;
         if (leftBuilder_ != null) {
           leftBuilder_.dispose();
@@ -9964,7 +10187,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg left = 14;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getLeftBuilder() {
-        bitField0_ |= 0x00020000;
+        bitField0_ |= 0x00040000;
         onChanged();
         return getLeftFieldBuilder().getBuilder();
       }
@@ -10004,7 +10227,7 @@ public final class ProtoIlInstructions {
        * @return Whether the right field is set.
        */
       public boolean hasRight() {
-        return ((bitField0_ & 0x00040000) != 0);
+        return ((bitField0_ & 0x00080000) != 0);
       }
       /**
        * <code>.IlInstructionMsg right = 15;</code>
@@ -10029,7 +10252,7 @@ public final class ProtoIlInstructions {
         } else {
           rightBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         onChanged();
         return this;
       }
@@ -10043,7 +10266,7 @@ public final class ProtoIlInstructions {
         } else {
           rightBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         onChanged();
         return this;
       }
@@ -10052,7 +10275,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeRight(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (rightBuilder_ == null) {
-          if (((bitField0_ & 0x00040000) != 0) &&
+          if (((bitField0_ & 0x00080000) != 0) &&
             right_ != null &&
             right_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getRightBuilder().mergeFrom(value);
@@ -10062,7 +10285,7 @@ public final class ProtoIlInstructions {
         } else {
           rightBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         onChanged();
         return this;
       }
@@ -10070,7 +10293,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg right = 15;</code>
        */
       public Builder clearRight() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        bitField0_ = (bitField0_ & ~0x00080000);
         right_ = null;
         if (rightBuilder_ != null) {
           rightBuilder_.dispose();
@@ -10083,7 +10306,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg right = 15;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getRightBuilder() {
-        bitField0_ |= 0x00040000;
+        bitField0_ |= 0x00080000;
         onChanged();
         return getRightFieldBuilder().getBuilder();
       }
@@ -10170,7 +10393,7 @@ public final class ProtoIlInstructions {
           java.lang.String value) {
         if (value == null) { throw new NullPointerException(); }
         targetLabel_ = value;
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00100000;
         onChanged();
         return this;
       }
@@ -10184,7 +10407,7 @@ public final class ProtoIlInstructions {
        */
       public Builder clearTargetLabel() {
         targetLabel_ = getDefaultInstance().getTargetLabel();
-        bitField0_ = (bitField0_ & ~0x00080000);
+        bitField0_ = (bitField0_ & ~0x00100000);
         onChanged();
         return this;
       }
@@ -10202,7 +10425,7 @@ public final class ProtoIlInstructions {
         if (value == null) { throw new NullPointerException(); }
         checkByteStringIsUtf8(value);
         targetLabel_ = value;
-        bitField0_ |= 0x00080000;
+        bitField0_ |= 0x00100000;
         onChanged();
         return this;
       }
@@ -10222,7 +10445,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setComparisonKindValue(int value) {
         comparisonKind_ = value;
-        bitField0_ |= 0x00100000;
+        bitField0_ |= 0x00200000;
         onChanged();
         return this;
       }
@@ -10244,7 +10467,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00100000;
+        bitField0_ |= 0x00200000;
         comparisonKind_ = value.getNumber();
         onChanged();
         return this;
@@ -10254,7 +10477,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearComparisonKind() {
-        bitField0_ = (bitField0_ & ~0x00100000);
+        bitField0_ = (bitField0_ & ~0x00200000);
         comparisonKind_ = 0;
         onChanged();
         return this;
@@ -10272,7 +10495,7 @@ public final class ProtoIlInstructions {
        * @return Whether the condition field is set.
        */
       public boolean hasCondition() {
-        return ((bitField0_ & 0x00200000) != 0);
+        return ((bitField0_ & 0x00400000) != 0);
       }
       /**
        * <pre>
@@ -10305,7 +10528,7 @@ public final class ProtoIlInstructions {
         } else {
           conditionBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00400000;
         onChanged();
         return this;
       }
@@ -10323,7 +10546,7 @@ public final class ProtoIlInstructions {
         } else {
           conditionBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00400000;
         onChanged();
         return this;
       }
@@ -10336,7 +10559,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeCondition(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (conditionBuilder_ == null) {
-          if (((bitField0_ & 0x00200000) != 0) &&
+          if (((bitField0_ & 0x00400000) != 0) &&
             condition_ != null &&
             condition_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getConditionBuilder().mergeFrom(value);
@@ -10346,7 +10569,7 @@ public final class ProtoIlInstructions {
         } else {
           conditionBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00400000;
         onChanged();
         return this;
       }
@@ -10358,7 +10581,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg condition = 22;</code>
        */
       public Builder clearCondition() {
-        bitField0_ = (bitField0_ & ~0x00200000);
+        bitField0_ = (bitField0_ & ~0x00400000);
         condition_ = null;
         if (conditionBuilder_ != null) {
           conditionBuilder_.dispose();
@@ -10375,7 +10598,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg condition = 22;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getConditionBuilder() {
-        bitField0_ |= 0x00200000;
+        bitField0_ |= 0x00400000;
         onChanged();
         return getConditionFieldBuilder().getBuilder();
       }
@@ -10423,7 +10646,7 @@ public final class ProtoIlInstructions {
        * @return Whether the trueInst field is set.
        */
       public boolean hasTrueInst() {
-        return ((bitField0_ & 0x00400000) != 0);
+        return ((bitField0_ & 0x00800000) != 0);
       }
       /**
        * <code>.IlInstructionMsg true_inst = 83;</code>
@@ -10448,7 +10671,7 @@ public final class ProtoIlInstructions {
         } else {
           trueInstBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x00800000;
         onChanged();
         return this;
       }
@@ -10462,7 +10685,7 @@ public final class ProtoIlInstructions {
         } else {
           trueInstBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x00800000;
         onChanged();
         return this;
       }
@@ -10471,7 +10694,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeTrueInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (trueInstBuilder_ == null) {
-          if (((bitField0_ & 0x00400000) != 0) &&
+          if (((bitField0_ & 0x00800000) != 0) &&
             trueInst_ != null &&
             trueInst_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getTrueInstBuilder().mergeFrom(value);
@@ -10481,7 +10704,7 @@ public final class ProtoIlInstructions {
         } else {
           trueInstBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x00800000;
         onChanged();
         return this;
       }
@@ -10489,7 +10712,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg true_inst = 83;</code>
        */
       public Builder clearTrueInst() {
-        bitField0_ = (bitField0_ & ~0x00400000);
+        bitField0_ = (bitField0_ & ~0x00800000);
         trueInst_ = null;
         if (trueInstBuilder_ != null) {
           trueInstBuilder_.dispose();
@@ -10502,7 +10725,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg true_inst = 83;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getTrueInstBuilder() {
-        bitField0_ |= 0x00400000;
+        bitField0_ |= 0x00800000;
         onChanged();
         return getTrueInstFieldBuilder().getBuilder();
       }
@@ -10542,7 +10765,7 @@ public final class ProtoIlInstructions {
        * @return Whether the falseInst field is set.
        */
       public boolean hasFalseInst() {
-        return ((bitField0_ & 0x00800000) != 0);
+        return ((bitField0_ & 0x01000000) != 0);
       }
       /**
        * <code>.IlInstructionMsg false_inst = 84;</code>
@@ -10567,7 +10790,7 @@ public final class ProtoIlInstructions {
         } else {
           falseInstBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x01000000;
         onChanged();
         return this;
       }
@@ -10581,7 +10804,7 @@ public final class ProtoIlInstructions {
         } else {
           falseInstBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x01000000;
         onChanged();
         return this;
       }
@@ -10590,7 +10813,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeFalseInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (falseInstBuilder_ == null) {
-          if (((bitField0_ & 0x00800000) != 0) &&
+          if (((bitField0_ & 0x01000000) != 0) &&
             falseInst_ != null &&
             falseInst_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getFalseInstBuilder().mergeFrom(value);
@@ -10600,7 +10823,7 @@ public final class ProtoIlInstructions {
         } else {
           falseInstBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x01000000;
         onChanged();
         return this;
       }
@@ -10608,7 +10831,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg false_inst = 84;</code>
        */
       public Builder clearFalseInst() {
-        bitField0_ = (bitField0_ & ~0x00800000);
+        bitField0_ = (bitField0_ & ~0x01000000);
         falseInst_ = null;
         if (falseInstBuilder_ != null) {
           falseInstBuilder_.dispose();
@@ -10621,7 +10844,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg false_inst = 84;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getFalseInstBuilder() {
-        bitField0_ |= 0x00800000;
+        bitField0_ |= 0x01000000;
         onChanged();
         return getFalseInstFieldBuilder().getBuilder();
       }
@@ -10665,7 +10888,7 @@ public final class ProtoIlInstructions {
        * @return Whether the array field is set.
        */
       public boolean hasArray() {
-        return ((bitField0_ & 0x01000000) != 0);
+        return ((bitField0_ & 0x02000000) != 0);
       }
       /**
        * <pre>
@@ -10698,7 +10921,7 @@ public final class ProtoIlInstructions {
         } else {
           arrayBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x02000000;
         onChanged();
         return this;
       }
@@ -10716,7 +10939,7 @@ public final class ProtoIlInstructions {
         } else {
           arrayBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x02000000;
         onChanged();
         return this;
       }
@@ -10729,7 +10952,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeArray(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (arrayBuilder_ == null) {
-          if (((bitField0_ & 0x01000000) != 0) &&
+          if (((bitField0_ & 0x02000000) != 0) &&
             array_ != null &&
             array_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getArrayBuilder().mergeFrom(value);
@@ -10739,7 +10962,7 @@ public final class ProtoIlInstructions {
         } else {
           arrayBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x02000000;
         onChanged();
         return this;
       }
@@ -10751,7 +10974,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg array = 30;</code>
        */
       public Builder clearArray() {
-        bitField0_ = (bitField0_ & ~0x01000000);
+        bitField0_ = (bitField0_ & ~0x02000000);
         array_ = null;
         if (arrayBuilder_ != null) {
           arrayBuilder_.dispose();
@@ -10768,7 +10991,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg array = 30;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getArrayBuilder() {
-        bitField0_ |= 0x01000000;
+        bitField0_ |= 0x02000000;
         onChanged();
         return getArrayFieldBuilder().getBuilder();
       }
@@ -10823,7 +11046,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setConversionKindValue(int value) {
         conversionKind_ = value;
-        bitField0_ |= 0x02000000;
+        bitField0_ |= 0x04000000;
         onChanged();
         return this;
       }
@@ -10845,7 +11068,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x02000000;
+        bitField0_ |= 0x04000000;
         conversionKind_ = value.getNumber();
         onChanged();
         return this;
@@ -10855,7 +11078,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearConversionKind() {
-        bitField0_ = (bitField0_ & ~0x02000000);
+        bitField0_ = (bitField0_ & ~0x04000000);
         conversionKind_ = 0;
         onChanged();
         return this;
@@ -10876,7 +11099,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setInputTypeValue(int value) {
         inputType_ = value;
-        bitField0_ |= 0x04000000;
+        bitField0_ |= 0x08000000;
         onChanged();
         return this;
       }
@@ -10898,7 +11121,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x04000000;
+        bitField0_ |= 0x08000000;
         inputType_ = value.getNumber();
         onChanged();
         return this;
@@ -10908,7 +11131,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearInputType() {
-        bitField0_ = (bitField0_ & ~0x04000000);
+        bitField0_ = (bitField0_ & ~0x08000000);
         inputType_ = 0;
         onChanged();
         return this;
@@ -10929,7 +11152,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setTargetTypeValue(int value) {
         targetType_ = value;
-        bitField0_ |= 0x08000000;
+        bitField0_ |= 0x10000000;
         onChanged();
         return this;
       }
@@ -10951,7 +11174,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x08000000;
+        bitField0_ |= 0x10000000;
         targetType_ = value.getNumber();
         onChanged();
         return this;
@@ -10961,7 +11184,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearTargetType() {
-        bitField0_ = (bitField0_ & ~0x08000000);
+        bitField0_ = (bitField0_ & ~0x10000000);
         targetType_ = 0;
         onChanged();
         return this;
@@ -10979,7 +11202,7 @@ public final class ProtoIlInstructions {
        * @return Whether the argument field is set.
        */
       public boolean hasArgument() {
-        return ((bitField0_ & 0x10000000) != 0);
+        return ((bitField0_ & 0x20000000) != 0);
       }
       /**
        * <pre>
@@ -11012,7 +11235,7 @@ public final class ProtoIlInstructions {
         } else {
           argumentBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x20000000;
         onChanged();
         return this;
       }
@@ -11030,7 +11253,7 @@ public final class ProtoIlInstructions {
         } else {
           argumentBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x20000000;
         onChanged();
         return this;
       }
@@ -11043,7 +11266,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeArgument(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (argumentBuilder_ == null) {
-          if (((bitField0_ & 0x10000000) != 0) &&
+          if (((bitField0_ & 0x20000000) != 0) &&
             argument_ != null &&
             argument_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getArgumentBuilder().mergeFrom(value);
@@ -11053,7 +11276,7 @@ public final class ProtoIlInstructions {
         } else {
           argumentBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x20000000;
         onChanged();
         return this;
       }
@@ -11065,7 +11288,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg argument = 29;</code>
        */
       public Builder clearArgument() {
-        bitField0_ = (bitField0_ & ~0x10000000);
+        bitField0_ = (bitField0_ & ~0x20000000);
         argument_ = null;
         if (argumentBuilder_ != null) {
           argumentBuilder_.dispose();
@@ -11082,7 +11305,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg argument = 29;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getArgumentBuilder() {
-        bitField0_ |= 0x10000000;
+        bitField0_ |= 0x20000000;
         onChanged();
         return getArgumentFieldBuilder().getBuilder();
       }
@@ -11145,7 +11368,7 @@ public final class ProtoIlInstructions {
        */
       public Builder setResultTypeValue(int value) {
         resultType_ = value;
-        bitField0_ |= 0x20000000;
+        bitField0_ |= 0x40000000;
         onChanged();
         return this;
       }
@@ -11175,7 +11398,7 @@ public final class ProtoIlInstructions {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x20000000;
+        bitField0_ |= 0x40000000;
         resultType_ = value.getNumber();
         onChanged();
         return this;
@@ -11189,7 +11412,7 @@ public final class ProtoIlInstructions {
        * @return This builder for chaining.
        */
       public Builder clearResultType() {
-        bitField0_ = (bitField0_ & ~0x20000000);
+        bitField0_ = (bitField0_ & ~0x40000000);
         resultType_ = 0;
         onChanged();
         return this;
@@ -11198,9 +11421,9 @@ public final class ProtoIlInstructions {
       private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg> indices_ =
         java.util.Collections.emptyList();
       private void ensureIndicesIsMutable() {
-        if (!((bitField0_ & 0x40000000) != 0)) {
+        if (!((bitField0_ & 0x80000000) != 0)) {
           indices_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg>(indices_);
-          bitField0_ |= 0x40000000;
+          bitField0_ |= 0x80000000;
          }
       }
 
@@ -11394,7 +11617,7 @@ public final class ProtoIlInstructions {
       public Builder clearIndices() {
         if (indicesBuilder_ == null) {
           indices_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x40000000);
+          bitField0_ = (bitField0_ & ~0x80000000);
           onChanged();
         } else {
           indicesBuilder_.clear();
@@ -11499,7 +11722,7 @@ public final class ProtoIlInstructions {
           indicesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
                   indices_,
-                  ((bitField0_ & 0x40000000) != 0),
+                  ((bitField0_ & 0x80000000) != 0),
                   getParentForChildren(),
                   isClean());
           indices_ = null;
@@ -11519,7 +11742,7 @@ public final class ProtoIlInstructions {
        * @return Whether the tryBlock field is set.
        */
       public boolean hasTryBlock() {
-        return ((bitField0_ & 0x80000000) != 0);
+        return ((bitField1_ & 0x00000001) != 0);
       }
       /**
        * <pre>
@@ -11552,7 +11775,7 @@ public final class ProtoIlInstructions {
         } else {
           tryBlockBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -11570,7 +11793,7 @@ public final class ProtoIlInstructions {
         } else {
           tryBlockBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -11583,7 +11806,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeTryBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (tryBlockBuilder_ == null) {
-          if (((bitField0_ & 0x80000000) != 0) &&
+          if (((bitField1_ & 0x00000001) != 0) &&
             tryBlock_ != null &&
             tryBlock_ != soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()) {
             getTryBlockBuilder().mergeFrom(value);
@@ -11593,7 +11816,7 @@ public final class ProtoIlInstructions {
         } else {
           tryBlockBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -11605,7 +11828,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg try_block = 32;</code>
        */
       public Builder clearTryBlock() {
-        bitField0_ = (bitField0_ & ~0x80000000);
+        bitField1_ = (bitField1_ & ~0x00000001);
         tryBlock_ = null;
         if (tryBlockBuilder_ != null) {
           tryBlockBuilder_.dispose();
@@ -11622,7 +11845,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg try_block = 32;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getTryBlockBuilder() {
-        bitField0_ |= 0x80000000;
+        bitField1_ |= 0x00000001;
         onChanged();
         return getTryBlockFieldBuilder().getBuilder();
       }
@@ -11665,9 +11888,9 @@ public final class ProtoIlInstructions {
       private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg> handlers_ =
         java.util.Collections.emptyList();
       private void ensureHandlersIsMutable() {
-        if (!((bitField1_ & 0x00000001) != 0)) {
+        if (!((bitField1_ & 0x00000002) != 0)) {
           handlers_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg>(handlers_);
-          bitField1_ |= 0x00000001;
+          bitField1_ |= 0x00000002;
          }
       }
 
@@ -11817,7 +12040,7 @@ public final class ProtoIlInstructions {
       public Builder clearHandlers() {
         if (handlersBuilder_ == null) {
           handlers_ = java.util.Collections.emptyList();
-          bitField1_ = (bitField1_ & ~0x00000001);
+          bitField1_ = (bitField1_ & ~0x00000002);
           onChanged();
         } else {
           handlersBuilder_.clear();
@@ -11894,7 +12117,7 @@ public final class ProtoIlInstructions {
           handlersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlTryCatchHandlerMsgOrBuilder>(
                   handlers_,
-                  ((bitField1_ & 0x00000001) != 0),
+                  ((bitField1_ & 0x00000002) != 0),
                   getParentForChildren(),
                   isClean());
           handlers_ = null;
@@ -11910,7 +12133,7 @@ public final class ProtoIlInstructions {
        * @return Whether the finallyBlock field is set.
        */
       public boolean hasFinallyBlock() {
-        return ((bitField1_ & 0x00000002) != 0);
+        return ((bitField1_ & 0x00000004) != 0);
       }
       /**
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
@@ -11935,7 +12158,7 @@ public final class ProtoIlInstructions {
         } else {
           finallyBlockBuilder_.setMessage(value);
         }
-        bitField1_ |= 0x00000002;
+        bitField1_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -11949,7 +12172,7 @@ public final class ProtoIlInstructions {
         } else {
           finallyBlockBuilder_.setMessage(builderForValue.build());
         }
-        bitField1_ |= 0x00000002;
+        bitField1_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -11958,7 +12181,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeFinallyBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (finallyBlockBuilder_ == null) {
-          if (((bitField1_ & 0x00000002) != 0) &&
+          if (((bitField1_ & 0x00000004) != 0) &&
             finallyBlock_ != null &&
             finallyBlock_ != soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()) {
             getFinallyBlockBuilder().mergeFrom(value);
@@ -11968,7 +12191,7 @@ public final class ProtoIlInstructions {
         } else {
           finallyBlockBuilder_.mergeFrom(value);
         }
-        bitField1_ |= 0x00000002;
+        bitField1_ |= 0x00000004;
         onChanged();
         return this;
       }
@@ -11976,7 +12199,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
       public Builder clearFinallyBlock() {
-        bitField1_ = (bitField1_ & ~0x00000002);
+        bitField1_ = (bitField1_ & ~0x00000004);
         finallyBlock_ = null;
         if (finallyBlockBuilder_ != null) {
           finallyBlockBuilder_.dispose();
@@ -11989,7 +12212,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg finally_block = 34;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getFinallyBlockBuilder() {
-        bitField1_ |= 0x00000002;
+        bitField1_ |= 0x00000004;
         onChanged();
         return getFinallyBlockFieldBuilder().getBuilder();
       }
@@ -12029,7 +12252,7 @@ public final class ProtoIlInstructions {
        * @return Whether the faultBlock field is set.
        */
       public boolean hasFaultBlock() {
-        return ((bitField1_ & 0x00000004) != 0);
+        return ((bitField1_ & 0x00000008) != 0);
       }
       /**
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
@@ -12054,7 +12277,7 @@ public final class ProtoIlInstructions {
         } else {
           faultBlockBuilder_.setMessage(value);
         }
-        bitField1_ |= 0x00000004;
+        bitField1_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -12068,7 +12291,7 @@ public final class ProtoIlInstructions {
         } else {
           faultBlockBuilder_.setMessage(builderForValue.build());
         }
-        bitField1_ |= 0x00000004;
+        bitField1_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -12077,7 +12300,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeFaultBlock(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (faultBlockBuilder_ == null) {
-          if (((bitField1_ & 0x00000004) != 0) &&
+          if (((bitField1_ & 0x00000008) != 0) &&
             faultBlock_ != null &&
             faultBlock_ != soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()) {
             getFaultBlockBuilder().mergeFrom(value);
@@ -12087,7 +12310,7 @@ public final class ProtoIlInstructions {
         } else {
           faultBlockBuilder_.mergeFrom(value);
         }
-        bitField1_ |= 0x00000004;
+        bitField1_ |= 0x00000008;
         onChanged();
         return this;
       }
@@ -12095,7 +12318,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
       public Builder clearFaultBlock() {
-        bitField1_ = (bitField1_ & ~0x00000004);
+        bitField1_ = (bitField1_ & ~0x00000008);
         faultBlock_ = null;
         if (faultBlockBuilder_ != null) {
           faultBlockBuilder_.dispose();
@@ -12108,7 +12331,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg fault_block = 35;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getFaultBlockBuilder() {
-        bitField1_ |= 0x00000004;
+        bitField1_ |= 0x00000008;
         onChanged();
         return getFaultBlockFieldBuilder().getBuilder();
       }
@@ -12152,7 +12375,7 @@ public final class ProtoIlInstructions {
        * @return Whether the body field is set.
        */
       public boolean hasBody() {
-        return ((bitField1_ & 0x00000008) != 0);
+        return ((bitField1_ & 0x00000010) != 0);
       }
       /**
        * <pre>
@@ -12185,7 +12408,7 @@ public final class ProtoIlInstructions {
         } else {
           bodyBuilder_.setMessage(value);
         }
-        bitField1_ |= 0x00000008;
+        bitField1_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -12203,7 +12426,7 @@ public final class ProtoIlInstructions {
         } else {
           bodyBuilder_.setMessage(builderForValue.build());
         }
-        bitField1_ |= 0x00000008;
+        bitField1_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -12216,7 +12439,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeBody(soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg value) {
         if (bodyBuilder_ == null) {
-          if (((bitField1_ & 0x00000008) != 0) &&
+          if (((bitField1_ & 0x00000010) != 0) &&
             body_ != null &&
             body_ != soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.getDefaultInstance()) {
             getBodyBuilder().mergeFrom(value);
@@ -12226,7 +12449,7 @@ public final class ProtoIlInstructions {
         } else {
           bodyBuilder_.mergeFrom(value);
         }
-        bitField1_ |= 0x00000008;
+        bitField1_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -12238,7 +12461,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg body = 37;</code>
        */
       public Builder clearBody() {
-        bitField1_ = (bitField1_ & ~0x00000008);
+        bitField1_ = (bitField1_ & ~0x00000010);
         body_ = null;
         if (bodyBuilder_ != null) {
           bodyBuilder_.dispose();
@@ -12255,7 +12478,7 @@ public final class ProtoIlInstructions {
        * <code>.IlBlockContainerMsg body = 37;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlBlockContainerMsg.Builder getBodyBuilder() {
-        bitField1_ |= 0x00000008;
+        bitField1_ |= 0x00000010;
         onChanged();
         return getBodyFieldBuilder().getBuilder();
       }
@@ -12307,7 +12530,7 @@ public final class ProtoIlInstructions {
        * @return Whether the keyInstr field is set.
        */
       public boolean hasKeyInstr() {
-        return ((bitField1_ & 0x00000010) != 0);
+        return ((bitField1_ & 0x00000020) != 0);
       }
       /**
        * <pre>
@@ -12340,7 +12563,7 @@ public final class ProtoIlInstructions {
         } else {
           keyInstrBuilder_.setMessage(value);
         }
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -12358,7 +12581,7 @@ public final class ProtoIlInstructions {
         } else {
           keyInstrBuilder_.setMessage(builderForValue.build());
         }
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -12371,7 +12594,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeKeyInstr(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (keyInstrBuilder_ == null) {
-          if (((bitField1_ & 0x00000010) != 0) &&
+          if (((bitField1_ & 0x00000020) != 0) &&
             keyInstr_ != null &&
             keyInstr_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getKeyInstrBuilder().mergeFrom(value);
@@ -12381,7 +12604,7 @@ public final class ProtoIlInstructions {
         } else {
           keyInstrBuilder_.mergeFrom(value);
         }
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -12393,7 +12616,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg key_instr = 41;</code>
        */
       public Builder clearKeyInstr() {
-        bitField1_ = (bitField1_ & ~0x00000010);
+        bitField1_ = (bitField1_ & ~0x00000020);
         keyInstr_ = null;
         if (keyInstrBuilder_ != null) {
           keyInstrBuilder_.dispose();
@@ -12410,7 +12633,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg key_instr = 41;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getKeyInstrBuilder() {
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000020;
         onChanged();
         return getKeyInstrFieldBuilder().getBuilder();
       }
@@ -12458,7 +12681,7 @@ public final class ProtoIlInstructions {
        * @return Whether the defaultInst field is set.
        */
       public boolean hasDefaultInst() {
-        return ((bitField1_ & 0x00000020) != 0);
+        return ((bitField1_ & 0x00000040) != 0);
       }
       /**
        * <code>.IlInstructionMsg default_inst = 42;</code>
@@ -12483,7 +12706,7 @@ public final class ProtoIlInstructions {
         } else {
           defaultInstBuilder_.setMessage(value);
         }
-        bitField1_ |= 0x00000020;
+        bitField1_ |= 0x00000040;
         onChanged();
         return this;
       }
@@ -12497,7 +12720,7 @@ public final class ProtoIlInstructions {
         } else {
           defaultInstBuilder_.setMessage(builderForValue.build());
         }
-        bitField1_ |= 0x00000020;
+        bitField1_ |= 0x00000040;
         onChanged();
         return this;
       }
@@ -12506,7 +12729,7 @@ public final class ProtoIlInstructions {
        */
       public Builder mergeDefaultInst(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
         if (defaultInstBuilder_ == null) {
-          if (((bitField1_ & 0x00000020) != 0) &&
+          if (((bitField1_ & 0x00000040) != 0) &&
             defaultInst_ != null &&
             defaultInst_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
             getDefaultInstBuilder().mergeFrom(value);
@@ -12516,7 +12739,7 @@ public final class ProtoIlInstructions {
         } else {
           defaultInstBuilder_.mergeFrom(value);
         }
-        bitField1_ |= 0x00000020;
+        bitField1_ |= 0x00000040;
         onChanged();
         return this;
       }
@@ -12524,7 +12747,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
       public Builder clearDefaultInst() {
-        bitField1_ = (bitField1_ & ~0x00000020);
+        bitField1_ = (bitField1_ & ~0x00000040);
         defaultInst_ = null;
         if (defaultInstBuilder_ != null) {
           defaultInstBuilder_.dispose();
@@ -12537,7 +12760,7 @@ public final class ProtoIlInstructions {
        * <code>.IlInstructionMsg default_inst = 42;</code>
        */
       public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getDefaultInstBuilder() {
-        bitField1_ |= 0x00000020;
+        bitField1_ |= 0x00000040;
         onChanged();
         return getDefaultInstFieldBuilder().getBuilder();
       }
@@ -12572,9 +12795,9 @@ public final class ProtoIlInstructions {
       private java.util.List<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg> switchSections_ =
         java.util.Collections.emptyList();
       private void ensureSwitchSectionsIsMutable() {
-        if (!((bitField1_ & 0x00000040) != 0)) {
+        if (!((bitField1_ & 0x00000080) != 0)) {
           switchSections_ = new java.util.ArrayList<soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg>(switchSections_);
-          bitField1_ |= 0x00000040;
+          bitField1_ |= 0x00000080;
          }
       }
 
@@ -12724,7 +12947,7 @@ public final class ProtoIlInstructions {
       public Builder clearSwitchSections() {
         if (switchSectionsBuilder_ == null) {
           switchSections_ = java.util.Collections.emptyList();
-          bitField1_ = (bitField1_ & ~0x00000040);
+          bitField1_ = (bitField1_ & ~0x00000080);
           onChanged();
         } else {
           switchSectionsBuilder_.clear();
@@ -12801,7 +13024,7 @@ public final class ProtoIlInstructions {
           switchSectionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlSwitchSectionMsgOrBuilder>(
                   switchSections_,
-                  ((bitField1_ & 0x00000040) != 0),
+                  ((bitField1_ & 0x00000080) != 0),
                   getParentForChildren(),
                   isClean());
           switchSections_ = null;
@@ -15820,12 +16043,13 @@ public final class ProtoIlInstructions {
       ".IlVariableMsg\"/\n\023IlBlockContainerMsg\022\030\n" +
       "\006blocks\030\001 \003(\0132\010.IlBlock\"Q\n\007IlBlock\0222\n\027li" +
       "st_of_il_instructions\030\001 \003(\0132\021.IlInstruct" +
-      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\373\032\n\020IlInstruc" +
+      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\327\033\n\020IlInstruc" +
       "tionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstruction" +
       "Msg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.MethodDef" +
       "inition\022$\n\targuments\030\005 \003(\0132\021.IlInstructi" +
       "onMsg\022,\n\021value_instruction\030\006 \001(\0132\021.IlIns" +
-      "tructionMsg\022\035\n\025value_constant_string\030\007 \001" +
+      "tructionMsg\022&\n\016lambdaFunction\030V \001(\0132\016.Il" +
+      "FunctionMsg\022\035\n\025value_constant_string\030\007 \001" +
       "(\t\022\034\n\024value_constant_int64\030& \001(\003\022\034\n\024valu" +
       "e_constant_float\030\' \001(\002\022\035\n\025value_constant" +
       "_double\030( \001(\001\022\033\n\023value_constant_bool\030= \001" +
@@ -15859,7 +16083,7 @@ public final class ProtoIlInstructions {
       "BlockContainerMsg\022$\n\tkey_instr\030) \001(\0132\021.I" +
       "lInstructionMsg\022\'\n\014default_inst\030* \001(\0132\021." +
       "IlInstructionMsg\022,\n\017switch_sections\030+ \003(" +
-      "\0132\023.IlSwitchSectionMsg\"\342\007\n\010IlOpCode\022\013\n\007N" +
+      "\0132\023.IlSwitchSectionMsg\"\226\010\n\010IlOpCode\022\013\n\007N" +
       "ONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004CALL\020\004\022\t\n\005LEAVE\020\005\022\t" +
       "\n\005LDSTR\020\006\022\t\n\005STOBJ\020\007\022\n\n\006LDFLDA\020\010\022\n\n\006LDC_" +
       "I4\020\t\022\t\n\005LDLOC\020\n\022\t\n\005LDOBJ\020\013\022\t\n\005STLOC\020\014\022\n\n" +
@@ -15884,49 +16108,50 @@ public final class ProtoIlInstructions {
       "\n\004TAIL\020B\022\r\n\tUNALIGNED\020C\022\014\n\010VOLATILE\020D\022\023\n" +
       "\017LD_MEMBER_TOKEN\020E\022\021\n\rLD_TYPE_TOKEN\020F\022\022\n" +
       "\016INVALID_BRANCH\020G\022\021\n\rCALL_INDIRECT\020H\022\025\n\021" +
-      "MATCH_INSTRUCTION\020I\"\231\001\n\027IlBinaryNumericO" +
-      "perator\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022\007\n\003Sub" +
-      "\020\002\022\007\n\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006BitAnd\020" +
-      "\006\022\t\n\005BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftLeft\020\t\022" +
-      "\016\n\nShiftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_SIGN\020\000" +
-      "\022\n\n\006Signed\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlCompari" +
-      "sonKind\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality\020\001\022\016\n\n" +
-      "Inequality\020\002\022\014\n\010LessThan\020\003\022\023\n\017LessThanOr" +
-      "Equal\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022GreaterThanO" +
-      "rEqual\020\006\"\342\001\n\020IlConversionKind\022\023\n\017NONE_CO" +
-      "NVERSION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016\n\nIntT" +
-      "oFloat\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatPrecisi" +
-      "onChange\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZeroExtend" +
-      "\020\007\022\014\n\010Truncate\020\010\022\022\n\016StopGCTracking\020\t\022\023\n\017" +
-      "StartGCTracking\020\n\022\022\n\016ObjectInterior\020\013\"\216\001" +
-      "\n\013IlStackType\022\023\n\017NONE_STACK_TYPE\020\000\022\021\n\rUn" +
-      "known_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_STACK\020\003" +
-      "\022\014\n\010I8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001O\020\007\022\r\n" +
-      "\tRef_STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimitiveTy" +
-      "pe\022\027\n\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004None\020\001\022\006\n" +
-      "\002I1\020\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R4\020\006\022\006\n" +
-      "\002R8\020\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U8\020\013\022\005\n" +
-      "\001I\020\014\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unknown\020\020" +
-      "\"\314\003\n\rIlVariableMsg\022\035\n\004type\030\001 \001(\0132\017.TypeD" +
-      "efinition\022\014\n\004name\030\002 \001(\t\022\031\n\021has_initial_v" +
-      "alue\030\003 \001(\010\0224\n\rvariable_kind\030\004 \001(\0162\035.IlVa" +
-      "riableMsg.IlVariableKind\"\274\002\n\016IlVariableK" +
-      "ind\022\010\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED_LOCAL" +
-      "\020\002\022\027\n\023PINNED_REGION_LOCAL\020\003\022\017\n\013USING_LOC" +
-      "AL\020\004\022\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIALIZER_T" +
-      "ARGET\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTION_STAC" +
-      "K_SLOT\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tSTACKSL" +
-      "OT\020\n\022\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLAY_CLAS" +
-      "S_LOCAL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DECONSTR" +
-      "UCTION_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryCatchHa" +
-      "ndlerMsg\022\"\n\004body\030\001 \001(\0132\024.IlBlockContaine" +
-      "rMsg\022 \n\010variable\030\002 \001(\0132\016.IlVariableMsg\022$" +
-      "\n\006filter\030\003 \001(\0132\024.IlBlockContainerMsg\022\022\n\n" +
-      "has_filter\030\004 \001(\010\"L\n\022IlSwitchSectionMsg\022\r" +
-      "\n\005label\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(\0132\021.Il" +
-      "InstructionMsgBQ\n\021soot.dotnet.protoB\023Pro" +
-      "toIlInstructions\252\002&Soot.Dotnet.Decompile" +
-      "r.Models.Protobufb\006proto3"
+      "MATCH_INSTRUCTION\020I\022\017\n\013LDC_DECIMAL\020J\022\021\n\r" +
+      "STRING_TO_INT\020K\022\016\n\nILFUNCTION\020L\"\231\001\n\027IlBi" +
+      "naryNumericOperator\022\017\n\013NONE_BINARY\020\000\022\007\n\003" +
+      "Add\020\001\022\007\n\003Sub\020\002\022\007\n\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020" +
+      "\005\022\n\n\006BitAnd\020\006\022\t\n\005BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\t" +
+      "ShiftLeft\020\t\022\016\n\nShiftRight\020\n\"1\n\006IlSign\022\r\n" +
+      "\tNONE_SIGN\020\000\022\n\n\006Signed\020\001\022\014\n\010Unsigned\020\002\"\213" +
+      "\001\n\020IlComparisonKind\022\r\n\tNONE_KIND\020\000\022\014\n\010Eq" +
+      "uality\020\001\022\016\n\nInequality\020\002\022\014\n\010LessThan\020\003\022\023" +
+      "\n\017LessThanOrEqual\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022" +
+      "GreaterThanOrEqual\020\006\"\342\001\n\020IlConversionKin" +
+      "d\022\023\n\017NONE_CONVERSION\020\000\022\013\n\007Invalid\020\001\022\007\n\003N" +
+      "op\020\002\022\016\n\nIntToFloat\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024" +
+      "FloatPrecisionChange\020\005\022\016\n\nSignExtend\020\006\022\016" +
+      "\n\nZeroExtend\020\007\022\014\n\010Truncate\020\010\022\022\n\016StopGCTr" +
+      "acking\020\t\022\023\n\017StartGCTracking\020\n\022\022\n\016ObjectI" +
+      "nterior\020\013\"\216\001\n\013IlStackType\022\023\n\017NONE_STACK_" +
+      "TYPE\020\000\022\021\n\rUnknown_STACK\020\001\022\014\n\010I4_STACK\020\002\022" +
+      "\013\n\007I_STACK\020\003\022\014\n\010I8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8" +
+      "\020\006\022\005\n\001O\020\007\022\r\n\tRef_STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017I" +
+      "lPrimitiveType\022\027\n\023NONE_PRIMITIVE_TYPE\020\000\022" +
+      "\010\n\004None\020\001\022\006\n\002I1\020\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020" +
+      "\005\022\006\n\002R4\020\006\022\006\n\002R8\020\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020" +
+      "\n\022\006\n\002U8\020\013\022\005\n\001I\020\014\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022" +
+      "\013\n\007Unknown\020\020\"\314\003\n\rIlVariableMsg\022\035\n\004type\030\001" +
+      " \001(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(\t\022\031\n\021h" +
+      "as_initial_value\030\003 \001(\010\0224\n\rvariable_kind\030" +
+      "\004 \001(\0162\035.IlVariableMsg.IlVariableKind\"\274\002\n" +
+      "\016IlVariableKind\022\010\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014" +
+      "PINNED_LOCAL\020\002\022\027\n\023PINNED_REGION_LOCAL\020\003\022" +
+      "\017\n\013USING_LOCAL\020\004\022\021\n\rFOREACH_LOCAL\020\005\022\026\n\022I" +
+      "NITIALIZER_TARGET\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EX" +
+      "CEPTION_STACK_SLOT\020\010\022\023\n\017EXCEPTION_LOCAL\020" +
+      "\t\022\r\n\tSTACKSLOT\020\n\022\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023" +
+      "DISPLAY_CLASS_LOCAL\020\014\022\021\n\rPATTERN_LOCAL\020\r" +
+      "\022!\n\035DECONSTRUCTION_INIT_TEMPORARY\020\016\"\226\001\n\024" +
+      "IlTryCatchHandlerMsg\022\"\n\004body\030\001 \001(\0132\024.IlB" +
+      "lockContainerMsg\022 \n\010variable\030\002 \001(\0132\016.IlV" +
+      "ariableMsg\022$\n\006filter\030\003 \001(\0132\024.IlBlockCont" +
+      "ainerMsg\022\022\n\nhas_filter\030\004 \001(\010\"L\n\022IlSwitch" +
+      "SectionMsg\022\r\n\005label\030\001 \001(\003\022\'\n\014target_inst" +
+      "r\030\002 \001(\0132\021.IlInstructionMsgBQ\n\021soot.dotne" +
+      "t.protoB\023ProtoIlInstructions\252\002&Soot.Dotn" +
+      "et.Decompiler.Models.Protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -15956,7 +16181,7 @@ public final class ProtoIlInstructions {
     internal_static_IlInstructionMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_IlInstructionMsg_descriptor,
-        new java.lang.String[] { "OpCode", "Method", "Arguments", "ValueInstruction", "ValueConstantString", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "ValueConstantBool", "ValueConstantUint64", "ConstantType", "Target", "Type", "Field", "Variable", "Operator", "Sign", "Left", "Right", "TargetLabel", "ComparisonKind", "Condition", "TrueInst", "FalseInst", "Array", "ConversionKind", "InputType", "TargetType", "Argument", "ResultType", "Indices", "TryBlock", "Handlers", "FinallyBlock", "FaultBlock", "Body", "KeyInstr", "DefaultInst", "SwitchSections", });
+        new java.lang.String[] { "OpCode", "Method", "Arguments", "ValueInstruction", "LambdaFunction", "ValueConstantString", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "ValueConstantBool", "ValueConstantUint64", "ConstantType", "Target", "Type", "Field", "Variable", "Operator", "Sign", "Left", "Right", "TargetLabel", "ComparisonKind", "Condition", "TrueInst", "FalseInst", "Array", "ConversionKind", "InputType", "TargetType", "Argument", "ResultType", "Indices", "TryBlock", "Handlers", "FinallyBlock", "FaultBlock", "Body", "KeyInstr", "DefaultInst", "SwitchSections", });
     internal_static_IlVariableMsg_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_IlVariableMsg_fieldAccessorTable = new

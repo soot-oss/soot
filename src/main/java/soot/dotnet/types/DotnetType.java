@@ -38,10 +38,12 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
 
 import soot.ArrayType;
+import soot.Body;
 import soot.BooleanConstant;
 import soot.BooleanType;
 import soot.IntType;
 import soot.Local;
+import soot.MethodSource;
 import soot.Modifier;
 import soot.PrimType;
 import soot.RefType;
@@ -203,7 +205,7 @@ public class DotnetType {
         } else if (type instanceof PrimType) {
           body.getUnits().add(j.newIfStmt(j.newNeExpr(lclMine, lclOther), retFalse));
         } else {
-          throw new RuntimeException("Unsupported type: " + type);
+          logger.error(sootClass.getName() + ": Unsupported type for struct default hashcode/equals: " + type);
         }
 
       }
@@ -251,7 +253,8 @@ public class DotnetType {
         } else if (type instanceof PrimType) {
           body.getUnits().add(j.newAssignStmt(hcsingle, j.newCastExpr(lclMine, IntType.v())));
         } else {
-          throw new RuntimeException("Unsupported type: " + type);
+          logger.error(sootClass.getName() + ": Unsupported type for struct default hashcode/equals: " + type);
+          continue;
         }
         body.getUnits().add(j.newAssignStmt(hashCode, j.newMulExpr(hashCode, IntConstant.v(23))));
         body.getUnits().add(j.newAssignStmt(hashCode, j.newAddExpr(hashCode, hcsingle)));
@@ -279,31 +282,39 @@ public class DotnetType {
     SootMethod m = sc.makeSootMethod("<init>", Collections.emptyList(), VoidType.v(), Modifier.PUBLIC);
     m = sootClass.getOrAddMethod(m);
 
-    JimpleBody body = j.newBody(m);
-    m.setModifiers(Modifier.PUBLIC);
-    m.setActiveBody(body);
-    body.insertIdentityStmts();
-    UnitPatchingChain uchain = body.getUnits();
-    Map<Type, Local> mapLocals = new HashMap<>();
-    for (SootField f : sootClass.getFields()) {
-      if (!f.isStatic()) {
-        if (structFields != null && structFields.contains(f)) {
-          RefType rt = (RefType) f.getType();
-          Local l = mapLocals.get(rt);
-          if (l == null) {
-            l = j.newLocal("instance", rt);
-            body.getLocals().add(l);
-            mapLocals.put(f.getType(), l);
-          }
-          uchain.add(j.newAssignStmt(l, j.newNewExpr(rt)));
-          uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(l,
-              sc.makeMethodRef(rt.getSootClass(), "<init>", Collections.<Type>emptyList(), VoidType.v(), false))));
-          uchain.add(j.newAssignStmt(j.newInstanceFieldRef(body.getThisLocal(), f.makeRef()), l));
-        }
-      }
-    }
+    m.setSource(new MethodSource() {
 
-    uchain.add(j.newReturnVoidStmt());
+      @Override
+      public Body getBody(SootMethod m, String phaseName) {
+
+        JimpleBody body = j.newBody(m);
+        m.setModifiers(Modifier.PUBLIC);
+        m.setActiveBody(body);
+        body.insertIdentityStmts();
+        UnitPatchingChain uchain = body.getUnits();
+        Map<Type, Local> mapLocals = new HashMap<>();
+        for (SootField f : sootClass.getFields()) {
+          if (!f.isStatic()) {
+            if (structFields != null && structFields.contains(f)) {
+              RefType rt = (RefType) f.getType();
+              Local l = mapLocals.get(rt);
+              if (l == null) {
+                l = j.newLocal("instance", rt);
+                body.getLocals().add(l);
+                mapLocals.put(f.getType(), l);
+              }
+              uchain.add(j.newAssignStmt(l, j.newNewExpr(rt)));
+              uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(l,
+                  sc.makeMethodRef(rt.getSootClass(), "<init>", Collections.<Type>emptyList(), VoidType.v(), false))));
+              uchain.add(j.newAssignStmt(j.newInstanceFieldRef(body.getThisLocal(), f.makeRef()), l));
+            }
+          }
+        }
+
+        uchain.add(j.newReturnVoidStmt());
+        return body;
+      }
+    });
     return m;
   }
 
@@ -314,38 +325,46 @@ public class DotnetType {
     Jimple j = Jimple.v();
 
     SootMethod m = createOrGetCopyMethod(sootClass, sc);
-    JimpleBody body = j.newBody(m);
-    m.setActiveBody(body);
-    body.insertIdentityStmts();
 
-    Local copy = j.newLocal("copy", sootClass.getType());
-    body.getLocals().add(copy);
+    m.setSource(new MethodSource() {
 
-    // In .NET, everything is an object
-    Local tmp = j.newLocal("tmp", RefType.v("System.Object"));
-    body.getLocals().add(tmp);
-    UnitPatchingChain uchain = body.getUnits();
-    Local thisO = body.getThisLocal();
-    uchain.add(j.newAssignStmt(copy, j.newNewExpr(sootClass.getType())));
-    uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(copy, ctor.makeRef())));
-    for (SootField f : sootClass.getFields()) {
-      if (!f.isStatic()) {
-        SootFieldRef fr = f.makeRef();
-        if (structFields != null && structFields.contains(f)) {
-          Local linst = j.newLocal("instance", f.getType());
-          body.getLocals().add(linst);
-          uchain.add(j.newAssignStmt(linst, j.newInstanceFieldRef(thisO, fr)));
-          SootClass sct = ((RefType) f.getType()).getSootClass();
-          SootMethod copyM = createOrGetCopyMethod(sct, sc);
-          uchain.add(j.newAssignStmt(tmp, j.newSpecialInvokeExpr(linst, copyM.makeRef())));
-        } else {
-          uchain.add(j.newAssignStmt(tmp, j.newInstanceFieldRef(thisO, fr)));
+      @Override
+      public Body getBody(SootMethod m, String phaseName) {
+        JimpleBody body = j.newBody(m);
+        m.setActiveBody(body);
+        body.insertIdentityStmts();
+
+        Local copy = j.newLocal("copy", sootClass.getType());
+        body.getLocals().add(copy);
+
+        // In .NET, everything is an object
+        Local tmp = j.newLocal("tmp", RefType.v("System.Object"));
+        body.getLocals().add(tmp);
+        UnitPatchingChain uchain = body.getUnits();
+        Local thisO = body.getThisLocal();
+        uchain.add(j.newAssignStmt(copy, j.newNewExpr(sootClass.getType())));
+        uchain.add(j.newInvokeStmt(j.newSpecialInvokeExpr(copy, ctor.makeRef())));
+        for (SootField f : sootClass.getFields()) {
+          if (!f.isStatic()) {
+            SootFieldRef fr = f.makeRef();
+            if (structFields != null && structFields.contains(f)) {
+              Local linst = j.newLocal("instance", f.getType());
+              body.getLocals().add(linst);
+              uchain.add(j.newAssignStmt(linst, j.newInstanceFieldRef(thisO, fr)));
+              SootClass sct = ((RefType) f.getType()).getSootClass();
+              SootMethod copyM = createOrGetCopyMethod(sct, sc);
+              uchain.add(j.newAssignStmt(tmp, j.newSpecialInvokeExpr(linst, copyM.makeRef())));
+            } else {
+              uchain.add(j.newAssignStmt(tmp, j.newInstanceFieldRef(thisO, fr)));
+            }
+            uchain.add(j.newAssignStmt(j.newInstanceFieldRef(copy, fr), tmp));
+          }
         }
-        uchain.add(j.newAssignStmt(j.newInstanceFieldRef(copy, fr), tmp));
-      }
-    }
 
-    uchain.add(j.newReturnStmt(copy));
+        uchain.add(j.newReturnStmt(copy));
+        return body;
+      }
+    });
   }
 
   private SootMethod createOrGetCopyMethod(SootClass sootClass, Scene sc) {

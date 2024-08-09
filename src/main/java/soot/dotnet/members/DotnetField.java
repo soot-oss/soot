@@ -62,6 +62,9 @@ public class DotnetField extends AbstractDotnetMember {
     String name = protoField.getName();
 
     SootField mf = Scene.v().makeSootField(name, type, modifier);
+    if (protoField.getInitialValue() != null && !protoField.getInitialValue().isEmpty()) {
+      mf.addTag(new InitialFieldTagValue(protoField.getInitialValue().toByteArray()));
+    }
     switch (protoField.getConstantType()) {
       case type_unknown:
         break;

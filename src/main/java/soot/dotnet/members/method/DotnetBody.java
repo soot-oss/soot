@@ -33,12 +33,14 @@ import java.util.Set;
 
 import soot.Body;
 import soot.BooleanConstant;
+import soot.ByteConstant;
 import soot.Immediate;
 import soot.Local;
 import soot.LocalGenerator;
 import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
+import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
@@ -50,6 +52,7 @@ import soot.dexpler.TrapMinimizer;
 import soot.dotnet.instructions.CilBlockContainer;
 import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
+import soot.dotnet.members.InitialFieldTagValue;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.dotnet.types.StructTag;
@@ -59,6 +62,7 @@ import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
 import soot.jimple.IdentityStmt;
 import soot.jimple.IfStmt;
+import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -188,6 +192,7 @@ public class DotnetBody {
     introduceStructConstructorCalls(jb);
 
     NopEliminator.v().transform(jb);
+    replaceInitArray(jb);
 
     // Sadly, the original contributer made everything relying on the names, so
     // we rename that mess now...
@@ -207,10 +212,47 @@ public class DotnetBody {
             throw new RuntimeException("Function pointer left in unsafe method; this is expected.");
           } else {
             // this is more concerning...
-            throw new RuntimeException("Function pointer left in normal method.");
+            System.err.println("Function pointer left in normal method.");
           }
         }
       }
+    }
+  }
+
+  private void replaceInitArray(JimpleBody jb2) {
+
+    UnitPatchingChain uchain = jb.getUnits();
+    Unit crt = uchain.getFirst();
+    Jimple j = Jimple.v();
+    while (crt != null) {
+      Unit next = uchain.getSuccOf(crt);
+      Stmt c = (Stmt) crt;
+      if (c.containsInvokeExpr()) {
+        InvokeExpr invExpr = c.getInvokeExpr();
+        if (invExpr.getMethodRef().getName().equals("InitializeArray")) {
+          if (invExpr.getMethodRef().getSignature().equals(
+              "<System.Runtime.CompilerServices.RuntimeHelpers: void InitializeArray(System.Array,System.RuntimeFieldHandle)>")) {
+            Value ref = invExpr.getArg(1);
+            if (ref instanceof soot.jimple.MethodHandle) {
+              soot.jimple.MethodHandle mh = (soot.jimple.MethodHandle) ref;
+              SootField f = mh.getFieldRef().resolve();
+              InitialFieldTagValue t = (InitialFieldTagValue) f.getTag(InitialFieldTagValue.NAME);
+              Value arg = invExpr.getArg(0);
+              if (t != null) {
+                byte[] val = t.getValue();
+                List<Unit> toInsert = new ArrayList<>(val.length);
+                for (int i = 0; i < val.length; i++) {
+                  toInsert.add(j.newAssignStmt(j.newArrayRef(arg, IntConstant.v(i)), ByteConstant.v(val[i])));
+                }
+                uchain.insertAfter(toInsert, c);
+                uchain.remove(c);
+              }
+            }
+          }
+        }
+
+      }
+      crt = next;
     }
   }
 

@@ -46,7 +46,7 @@ public class CilInstructionFactory {
         // e.g. System.Object..ctor call
         return new CilCallInstruction(instruction, dotnetBody, cilBlock);
       case LEAVE:
-        // return (void)
+        // return
         return new CilLeaveInstruction(instruction, dotnetBody, cilBlock);
       case STLOC:
         return new CilStLocInstruction(instruction, dotnetBody, cilBlock);
@@ -77,6 +77,8 @@ public class CilInstructionFactory {
       case LDLOCA:
       case LDLOC:
         return new CilLdLocInstruction(instruction, dotnetBody, cilBlock);
+      case LDC_DECIMAL:
+        return new CilLdcDecimalInstruction(instruction, dotnetBody, cilBlock);
       case LDC_I4:
         return new CilLdcI4Instruction(instruction, dotnetBody, cilBlock);
       case LDC_I8:
@@ -139,7 +141,8 @@ public class CilInstructionFactory {
       case SIZE_OF:
         return new CilSizeOfInstruction(instruction, dotnetBody, cilBlock);
       case NONE_OP:
-        throw new IllegalArgumentException("Check the native wrapper; some instruction is not handled");
+        throw new IllegalArgumentException("Check the native wrapper; some instruction is not handled in "
+            + dotnetBody.getDotnetMethodSig().getSootMethodSignature());
       case MATCH_INSTRUCTION:
         return new CilMatchInstruction(instruction, dotnetBody, cilBlock);
 
