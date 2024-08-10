@@ -119,7 +119,6 @@ public class DotnetBody {
   }
 
   public void jimplify(JimpleBody jb) {
-
     this.jb = jb;
     variableManager = new DotnetBodyVariableManager(this, this.jb);
     // resolve initial variable assignments
@@ -212,7 +211,7 @@ public class DotnetBody {
             throw new RuntimeException("Function pointer left in unsafe method; this is expected.");
           } else {
             // this is more concerning...
-            System.err.println("Function pointer left in normal method.");
+            throw new RuntimeException("Function pointer left in normal method.");
           }
         }
       }

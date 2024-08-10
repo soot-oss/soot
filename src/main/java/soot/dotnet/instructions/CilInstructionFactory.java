@@ -43,6 +43,12 @@ public class CilInstructionFactory {
 
     switch (instruction.getOpCode()) {
       case CALL:
+        return new CilCallInstruction(instruction, dotnetBody, cilBlock) {
+          @Override
+          protected boolean isNonVirtualCall() {
+            return true;
+          }
+        };
       case CALLVIRT:
         // e.g. System.Object..ctor call
         return new CilCallInstruction(instruction, dotnetBody, cilBlock);

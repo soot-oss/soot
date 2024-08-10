@@ -159,20 +159,29 @@ public class CilCallInstruction extends AbstractCilnstruction {
   }
 
   protected InvokeExpr createInvokeExpr(Body jb, SootClass clazz, DotnetMethod method, MethodParams methodParams) {
+    Jimple j = Jimple.v();
+    // CONSTRUCTOR and PRIVATE METHOD CALLS
+    if (instruction.getMethod().getIsConstructor()
+        || instruction.getMethod().getAccessibility().equals(ProtoAssemblyAllTypes.Accessibility.PRIVATE)) {
+      return j.newSpecialInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
+    }
+
+    if (isNonVirtualCall()) {
+      return j.newSpecialInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
+    }
+
     // INTERFACE
     if (clazz.isInterface()) {
-      return Jimple.v().newInterfaceInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
-    }
-    // CONSTRUCTOR and PRIVATE METHOD CALLS
-    else if (instruction.getMethod().getIsConstructor()
-        || instruction.getMethod().getAccessibility().equals(ProtoAssemblyAllTypes.Accessibility.PRIVATE)
-        || !method.getProtoMessage().getIsVirtual()) {
-      return Jimple.v().newSpecialInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
+      return j.newInterfaceInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
     // DYNAMIC OBJECT METHOD
     else {
-      return Jimple.v().newVirtualInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
+      return j.newVirtualInvokeExpr(methodParams.base, methodParams.methodRef, methodParams.argumentVariables);
     }
+  }
+
+  protected boolean isNonVirtualCall() {
+    return false;
   }
 
   public List<Pair<Local, Local>> getLocalsToCastForCall() {
