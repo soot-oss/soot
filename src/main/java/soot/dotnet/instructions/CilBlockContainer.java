@@ -64,11 +64,11 @@ import soot.jimple.ThrowStmt;
  */
 public class CilBlockContainer implements CilInstruction {
 
-  private final ProtoIlInstructions.IlBlockContainerMsg blockContainer;
-  private final DotnetBody dotnetBody;
+  protected final ProtoIlInstructions.IlBlockContainerMsg blockContainer;
+  protected final DotnetBody dotnetBody;
   public final BlockEntryPointsManager blockEntryPointsManager;
-  private final Stmt skipBlockContainerStmt;
-  private final BlockContainerKind blockContainerKind;
+  protected final Stmt skipBlockContainerStmt;
+  protected final BlockContainerKind blockContainerKind;
 
   public CilBlockContainer(ProtoIlInstructions.IlBlockContainerMsg blockContainer, DotnetBody dotnetBody) {
     this(blockContainer, dotnetBody, BlockContainerKind.NORMAL);
@@ -93,16 +93,26 @@ public class CilBlockContainer implements CilInstruction {
     }
 
     for (ProtoIlInstructions.IlBlock block : blockContainer.getBlocksList()) {
-      CilBlock cilBlock = new CilBlock(block, dotnetBody, this);
-      cilBlock.jimplify(jb);
+      jimplifyBlock(jb, block);
     }
 
     if (isChildBlockContainer()) {
       jb.getUnits().add(skipBlockContainerStmt);
     }
 
+    afterJimplification();
+
     // swap labels with nop stmt to the real target
     blockEntryPointsManager.swapGotoEntriesInJBody(jb);
+  }
+
+  protected void jimplifyBlock(Body jb, ProtoIlInstructions.IlBlock block) {
+    CilBlock cilBlock = new CilBlock(block, dotnetBody, this);
+    cilBlock.jimplify(jb);
+  }
+
+  protected void afterJimplification() {
+
   }
 
   public Body jimplify() {
@@ -143,7 +153,7 @@ public class CilBlockContainer implements CilInstruction {
     CATCH_FILTER, // filter block of a catch handler
     FAULT, // fault block
     FINALLY, // finally block
-    CHILD
+    CHILD, INSTR_BLOCK
   }
 
   public DotnetBody getDeclaringDotnetBody() {

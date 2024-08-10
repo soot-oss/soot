@@ -25,6 +25,7 @@ package soot.dotnet.instructions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.dotnet.instructions.CilBlockContainer.BlockContainerKind;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 
@@ -145,6 +146,8 @@ public class CilInstructionFactory {
             + dotnetBody.getDotnetMethodSig().getSootMethodSignature());
       case MATCH_INSTRUCTION:
         return new CilMatchInstruction(instruction, dotnetBody, cilBlock);
+      case BLOCK:
+        return new CILBlockContainerInstr(instruction.getTryBlock(), dotnetBody, BlockContainerKind.INSTR_BLOCK);
 
       default:
         throw new IllegalArgumentException("Opcode " + instruction.getOpCode().name() + " is not implemented!");

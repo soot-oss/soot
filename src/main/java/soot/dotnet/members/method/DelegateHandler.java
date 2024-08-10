@@ -48,15 +48,16 @@ import soot.tagkit.Tag;
 
 public class DelegateHandler {
 
-  private static final String DELEGATE_HOLDER_CLASSNAME = "DelegateHolder";
+  public static final String DELEGATE_HOLDER_CLASSNAME = "DelegateHolder";
   private static final String DELEGATE_INTERFACE_CLASSNAME = "IDelegate";
   private static final String FUNCTION_ID_FIELDNAME = "functionID";
   private static final String INSTANCE_FIELDNAME = "instance";
   private static final String GET_LIST = "getList";
 
-  private static final String REMOVE_METHOD_NAME = "remove";
-  private static final String COMBINE_WITH_METHOD_NAME = "combineWith";
-  private static final String INVOKE_METHOD_NAME = "doInvoke";
+  public static final String REMOVE_METHOD_NAME = "remove";
+  public static final String COMBINE_WITH_METHOD_NAME = "combineWith";
+  public static final String INVOKE_METHOD_NAME = "doInvoke";
+  public static final String DELEGATE_LIST_NAME = "DelegateList";
 
   public static class DelegateInfo implements Tag {
 
@@ -108,7 +109,7 @@ public class DelegateHandler {
       callSinglePTypes.addAll(delegateParameters);
 
       Jimple j = Jimple.v();
-      listField = sc.makeSootField("DelegateList", listType);
+      listField = sc.makeSootField(DELEGATE_LIST_NAME, listType);
       actualDelegateClass.addField(listField);
       createDelegateInterface(sc);
       createListConstructor(sc, actualDelegateClass);

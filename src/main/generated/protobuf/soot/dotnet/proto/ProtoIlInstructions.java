@@ -1931,6 +1931,21 @@ public final class ProtoIlInstructions {
      */
     com.google.protobuf.ByteString
         getBlockNameBytes();
+
+    /**
+     * <code>.IlInstructionMsg final_instruction = 3;</code>
+     * @return Whether the finalInstruction field is set.
+     */
+    boolean hasFinalInstruction();
+    /**
+     * <code>.IlInstructionMsg final_instruction = 3;</code>
+     * @return The finalInstruction.
+     */
+    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFinalInstruction();
+    /**
+     * <code>.IlInstructionMsg final_instruction = 3;</code>
+     */
+    soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getFinalInstructionOrBuilder();
   }
   /**
    * Protobuf type {@code IlBlock}
@@ -2054,6 +2069,32 @@ public final class ProtoIlInstructions {
       }
     }
 
+    public static final int FINAL_INSTRUCTION_FIELD_NUMBER = 3;
+    private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg finalInstruction_;
+    /**
+     * <code>.IlInstructionMsg final_instruction = 3;</code>
+     * @return Whether the finalInstruction field is set.
+     */
+    @java.lang.Override
+    public boolean hasFinalInstruction() {
+      return finalInstruction_ != null;
+    }
+    /**
+     * <code>.IlInstructionMsg final_instruction = 3;</code>
+     * @return The finalInstruction.
+     */
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFinalInstruction() {
+      return finalInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : finalInstruction_;
+    }
+    /**
+     * <code>.IlInstructionMsg final_instruction = 3;</code>
+     */
+    @java.lang.Override
+    public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getFinalInstructionOrBuilder() {
+      return finalInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : finalInstruction_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2074,6 +2115,9 @@ public final class ProtoIlInstructions {
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(blockName_)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, blockName_);
       }
+      if (finalInstruction_ != null) {
+        output.writeMessage(3, getFinalInstruction());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2089,6 +2133,10 @@ public final class ProtoIlInstructions {
       }
       if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(blockName_)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, blockName_);
+      }
+      if (finalInstruction_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getFinalInstruction());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -2109,6 +2157,11 @@ public final class ProtoIlInstructions {
           .equals(other.getListOfIlInstructionsList())) return false;
       if (!getBlockName()
           .equals(other.getBlockName())) return false;
+      if (hasFinalInstruction() != other.hasFinalInstruction()) return false;
+      if (hasFinalInstruction()) {
+        if (!getFinalInstruction()
+            .equals(other.getFinalInstruction())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2126,6 +2179,10 @@ public final class ProtoIlInstructions {
       }
       hash = (37 * hash) + BLOCK_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getBlockName().hashCode();
+      if (hasFinalInstruction()) {
+        hash = (37 * hash) + FINAL_INSTRUCTION_FIELD_NUMBER;
+        hash = (53 * hash) + getFinalInstruction().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2263,6 +2320,11 @@ public final class ProtoIlInstructions {
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         blockName_ = "";
+        finalInstruction_ = null;
+        if (finalInstructionBuilder_ != null) {
+          finalInstructionBuilder_.dispose();
+          finalInstructionBuilder_ = null;
+        }
         return this;
       }
 
@@ -2311,6 +2373,11 @@ public final class ProtoIlInstructions {
         int from_bitField0_ = bitField0_;
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.blockName_ = blockName_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.finalInstruction_ = finalInstructionBuilder_ == null
+              ? finalInstruction_
+              : finalInstructionBuilder_.build();
         }
       }
 
@@ -2389,6 +2456,9 @@ public final class ProtoIlInstructions {
           bitField0_ |= 0x00000002;
           onChanged();
         }
+        if (other.hasFinalInstruction()) {
+          mergeFinalInstruction(other.getFinalInstruction());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -2433,6 +2503,13 @@ public final class ProtoIlInstructions {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 26: {
+                input.readMessage(
+                    getFinalInstructionFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2760,6 +2837,125 @@ public final class ProtoIlInstructions {
         bitField0_ |= 0x00000002;
         onChanged();
         return this;
+      }
+
+      private soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg finalInstruction_;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> finalInstructionBuilder_;
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       * @return Whether the finalInstruction field is set.
+       */
+      public boolean hasFinalInstruction() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       * @return The finalInstruction.
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg getFinalInstruction() {
+        if (finalInstructionBuilder_ == null) {
+          return finalInstruction_ == null ? soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : finalInstruction_;
+        } else {
+          return finalInstructionBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       */
+      public Builder setFinalInstruction(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+        if (finalInstructionBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          finalInstruction_ = value;
+        } else {
+          finalInstructionBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       */
+      public Builder setFinalInstruction(
+          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder builderForValue) {
+        if (finalInstructionBuilder_ == null) {
+          finalInstruction_ = builderForValue.build();
+        } else {
+          finalInstructionBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       */
+      public Builder mergeFinalInstruction(soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg value) {
+        if (finalInstructionBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            finalInstruction_ != null &&
+            finalInstruction_ != soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance()) {
+            getFinalInstructionBuilder().mergeFrom(value);
+          } else {
+            finalInstruction_ = value;
+          }
+        } else {
+          finalInstructionBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       */
+      public Builder clearFinalInstruction() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        finalInstruction_ = null;
+        if (finalInstructionBuilder_ != null) {
+          finalInstructionBuilder_.dispose();
+          finalInstructionBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder getFinalInstructionBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getFinalInstructionFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       */
+      public soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder getFinalInstructionOrBuilder() {
+        if (finalInstructionBuilder_ != null) {
+          return finalInstructionBuilder_.getMessageOrBuilder();
+        } else {
+          return finalInstruction_ == null ?
+              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.getDefaultInstance() : finalInstruction_;
+        }
+      }
+      /**
+       * <code>.IlInstructionMsg final_instruction = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder> 
+          getFinalInstructionFieldBuilder() {
+        if (finalInstructionBuilder_ == null) {
+          finalInstructionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.Builder, soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsgOrBuilder>(
+                  getFinalInstruction(),
+                  getParentForChildren(),
+                  isClean());
+          finalInstruction_ = null;
+        }
+        return finalInstructionBuilder_;
       }
       @java.lang.Override
       public final Builder setUnknownFields(
@@ -16041,117 +16237,119 @@ public final class ProtoIlInstructions {
       ".proto\"V\n\rIlFunctionMsg\022\"\n\004body\030\001 \001(\0132\024." +
       "IlBlockContainerMsg\022!\n\tvariables\030\002 \003(\0132\016" +
       ".IlVariableMsg\"/\n\023IlBlockContainerMsg\022\030\n" +
-      "\006blocks\030\001 \003(\0132\010.IlBlock\"Q\n\007IlBlock\0222\n\027li" +
+      "\006blocks\030\001 \003(\0132\010.IlBlock\"\177\n\007IlBlock\0222\n\027li" +
       "st_of_il_instructions\030\001 \003(\0132\021.IlInstruct" +
-      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\"\327\033\n\020IlInstruc" +
-      "tionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstruction" +
-      "Msg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.MethodDef" +
-      "inition\022$\n\targuments\030\005 \003(\0132\021.IlInstructi" +
-      "onMsg\022,\n\021value_instruction\030\006 \001(\0132\021.IlIns" +
-      "tructionMsg\022&\n\016lambdaFunction\030V \001(\0132\016.Il" +
-      "FunctionMsg\022\035\n\025value_constant_string\030\007 \001" +
-      "(\t\022\034\n\024value_constant_int64\030& \001(\003\022\034\n\024valu" +
-      "e_constant_float\030\' \001(\002\022\035\n\025value_constant" +
-      "_double\030( \001(\001\022\033\n\023value_constant_bool\030= \001" +
-      "(\010\022\035\n\025value_constant_uint64\030A \001(\004\022\036\n\rcon" +
-      "stant_type\030\027 \001(\0162\007.IlType\022!\n\006target\030\010 \001(" +
-      "\0132\021.IlInstructionMsg\022\035\n\004type\030\t \001(\0132\017.Typ" +
-      "eDefinition\022\037\n\005field\030\n \001(\0132\020.FieldDefini" +
-      "tion\022 \n\010variable\030\013 \001(\0132\016.IlVariableMsg\022;" +
-      "\n\010operator\030\014 \001(\0162).IlInstructionMsg.IlBi" +
-      "naryNumericOperator\022&\n\004sign\030\024 \001(\0162\030.IlIn" +
-      "structionMsg.IlSign\022\037\n\004left\030\016 \001(\0132\021.IlIn" +
-      "structionMsg\022 \n\005right\030\017 \001(\0132\021.IlInstruct" +
-      "ionMsg\022\024\n\014target_label\030\022 \001(\t\022;\n\017comparis" +
-      "on_kind\030\025 \001(\0162\".IlInstructionMsg.IlCompa" +
-      "risonKind\022$\n\tcondition\030\026 \001(\0132\021.IlInstruc" +
-      "tionMsg\022$\n\ttrue_inst\030S \001(\0132\021.IlInstructi" +
-      "onMsg\022%\n\nfalse_inst\030T \001(\0132\021.IlInstructio" +
-      "nMsg\022 \n\005array\030\036 \001(\0132\021.IlInstructionMsg\022;" +
-      "\n\017conversion_kind\030\031 \001(\0162\".IlInstructionM" +
-      "sg.IlConversionKind\0221\n\ninput_type\030\032 \001(\0162" +
-      "\035.IlInstructionMsg.IlStackType\0226\n\013target" +
-      "_type\030\034 \001(\0162!.IlInstructionMsg.IlPrimiti" +
-      "veType\022#\n\010argument\030\035 \001(\0132\021.IlInstruction" +
-      "Msg\0222\n\013result_type\030\033 \001(\0162\035.IlInstruction" +
-      "Msg.IlStackType\022\"\n\007indices\030\037 \003(\0132\021.IlIns" +
-      "tructionMsg\022\'\n\ttry_block\030  \001(\0132\024.IlBlock" +
-      "ContainerMsg\022\'\n\010handlers\030! \003(\0132\025.IlTryCa" +
-      "tchHandlerMsg\022+\n\rfinally_block\030\" \001(\0132\024.I" +
-      "lBlockContainerMsg\022)\n\013fault_block\030# \001(\0132" +
-      "\024.IlBlockContainerMsg\022\"\n\004body\030% \001(\0132\024.Il" +
-      "BlockContainerMsg\022$\n\tkey_instr\030) \001(\0132\021.I" +
-      "lInstructionMsg\022\'\n\014default_inst\030* \001(\0132\021." +
-      "IlInstructionMsg\022,\n\017switch_sections\030+ \003(" +
-      "\0132\023.IlSwitchSectionMsg\"\226\010\n\010IlOpCode\022\013\n\007N" +
-      "ONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004CALL\020\004\022\t\n\005LEAVE\020\005\022\t" +
-      "\n\005LDSTR\020\006\022\t\n\005STOBJ\020\007\022\n\n\006LDFLDA\020\010\022\n\n\006LDC_" +
-      "I4\020\t\022\t\n\005LDLOC\020\n\022\t\n\005LDOBJ\020\013\022\t\n\005STLOC\020\014\022\n\n" +
-      "\006NEWOBJ\020\r\022\014\n\010CALLVIRT\020\016\022\036\n\032BINARY_NUMERI" +
-      "C_INSTRUCTION\020\017\022\n\n\006BRANCH\020\020\022\010\n\004COMP\020\021\022\022\n" +
-      "\016IF_INSTRUCTION\020\022\022\013\n\007LDSFLDA\020\023\022\n\n\006LDNULL" +
-      "\020\024\022\t\n\005LDLEN\020\025\022\010\n\004CONV\020\026\022\n\n\006NEWARR\020\027\022\013\n\007L" +
-      "DELEMA\020\030\022\r\n\tCASTCLASS\020\031\022\n\n\006ISINST\020\032\022\007\n\003B" +
-      "OX\020\033\022\014\n\010UNBOXANY\020\034\022\t\n\005UNBOX\020\035\022\r\n\tTRY_CAT" +
-      "CH\020\036\022\n\n\006LDLOCA\020\037\022\021\n\rDEFAULT_VALUE\020 \022\007\n\003N" +
-      "OT\020!\022\017\n\013TRY_FINALLY\020\"\022\r\n\tTRY_FAULT\020#\022\023\n\017" +
-      "BLOCK_CONTAINER\020$\022\t\n\005BLOCK\020%\022\025\n\021TRY_CATC" +
-      "H_HANDLER\020&\022\013\n\007RETHROW\020\'\022\t\n\005THROW\020(\022\017\n\013D" +
-      "EBUG_BREAK\020)\022\r\n\tCK_FINITE\020*\022\n\n\006CP_BLK\020,\022" +
-      "\n\n\006CP_OBJ\020-\022\007\n\003DUP\020.\022\014\n\010INIT_BLK\020/\022\014\n\010IN" +
-      "IT_OBJ\0200\022\n\n\006LDC_I8\0201\022\n\n\006LDC_R4\0202\022\n\n\006LDC_" +
-      "R8\0203\022\n\n\006LD_FLD\0204\022\n\n\006LD_FTN\0205\022\013\n\007LD_SFLD\020" +
-      "6\022\014\n\010LD_TOKEN\0207\022\017\n\013LD_VIRT_FTN\0208\022\r\n\tLOC_" +
-      "ALLOC\0209\022\016\n\nMK_REF_ANY\020:\022\006\n\002NO\020;\022\014\n\010READO" +
-      "NLY\020<\022\020\n\014REF_ANY_TYPE\020=\022\017\n\013REF_ANY_VAL\020>" +
-      "\022\013\n\007SIZE_OF\020?\022\013\n\007ST_SFLD\020@\022\n\n\006SWITCH\020A\022\010" +
-      "\n\004TAIL\020B\022\r\n\tUNALIGNED\020C\022\014\n\010VOLATILE\020D\022\023\n" +
-      "\017LD_MEMBER_TOKEN\020E\022\021\n\rLD_TYPE_TOKEN\020F\022\022\n" +
-      "\016INVALID_BRANCH\020G\022\021\n\rCALL_INDIRECT\020H\022\025\n\021" +
-      "MATCH_INSTRUCTION\020I\022\017\n\013LDC_DECIMAL\020J\022\021\n\r" +
-      "STRING_TO_INT\020K\022\016\n\nILFUNCTION\020L\"\231\001\n\027IlBi" +
-      "naryNumericOperator\022\017\n\013NONE_BINARY\020\000\022\007\n\003" +
-      "Add\020\001\022\007\n\003Sub\020\002\022\007\n\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020" +
-      "\005\022\n\n\006BitAnd\020\006\022\t\n\005BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\t" +
-      "ShiftLeft\020\t\022\016\n\nShiftRight\020\n\"1\n\006IlSign\022\r\n" +
-      "\tNONE_SIGN\020\000\022\n\n\006Signed\020\001\022\014\n\010Unsigned\020\002\"\213" +
-      "\001\n\020IlComparisonKind\022\r\n\tNONE_KIND\020\000\022\014\n\010Eq" +
-      "uality\020\001\022\016\n\nInequality\020\002\022\014\n\010LessThan\020\003\022\023" +
-      "\n\017LessThanOrEqual\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022" +
-      "GreaterThanOrEqual\020\006\"\342\001\n\020IlConversionKin" +
-      "d\022\023\n\017NONE_CONVERSION\020\000\022\013\n\007Invalid\020\001\022\007\n\003N" +
-      "op\020\002\022\016\n\nIntToFloat\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024" +
-      "FloatPrecisionChange\020\005\022\016\n\nSignExtend\020\006\022\016" +
-      "\n\nZeroExtend\020\007\022\014\n\010Truncate\020\010\022\022\n\016StopGCTr" +
-      "acking\020\t\022\023\n\017StartGCTracking\020\n\022\022\n\016ObjectI" +
-      "nterior\020\013\"\216\001\n\013IlStackType\022\023\n\017NONE_STACK_" +
-      "TYPE\020\000\022\021\n\rUnknown_STACK\020\001\022\014\n\010I4_STACK\020\002\022" +
-      "\013\n\007I_STACK\020\003\022\014\n\010I8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8" +
-      "\020\006\022\005\n\001O\020\007\022\r\n\tRef_STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017I" +
-      "lPrimitiveType\022\027\n\023NONE_PRIMITIVE_TYPE\020\000\022" +
-      "\010\n\004None\020\001\022\006\n\002I1\020\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020" +
-      "\005\022\006\n\002R4\020\006\022\006\n\002R8\020\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020" +
-      "\n\022\006\n\002U8\020\013\022\005\n\001I\020\014\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022" +
-      "\013\n\007Unknown\020\020\"\314\003\n\rIlVariableMsg\022\035\n\004type\030\001" +
-      " \001(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(\t\022\031\n\021h" +
-      "as_initial_value\030\003 \001(\010\0224\n\rvariable_kind\030" +
-      "\004 \001(\0162\035.IlVariableMsg.IlVariableKind\"\274\002\n" +
-      "\016IlVariableKind\022\010\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014" +
-      "PINNED_LOCAL\020\002\022\027\n\023PINNED_REGION_LOCAL\020\003\022" +
-      "\017\n\013USING_LOCAL\020\004\022\021\n\rFOREACH_LOCAL\020\005\022\026\n\022I" +
-      "NITIALIZER_TARGET\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EX" +
-      "CEPTION_STACK_SLOT\020\010\022\023\n\017EXCEPTION_LOCAL\020" +
-      "\t\022\r\n\tSTACKSLOT\020\n\022\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023" +
-      "DISPLAY_CLASS_LOCAL\020\014\022\021\n\rPATTERN_LOCAL\020\r" +
-      "\022!\n\035DECONSTRUCTION_INIT_TEMPORARY\020\016\"\226\001\n\024" +
-      "IlTryCatchHandlerMsg\022\"\n\004body\030\001 \001(\0132\024.IlB" +
-      "lockContainerMsg\022 \n\010variable\030\002 \001(\0132\016.IlV" +
-      "ariableMsg\022$\n\006filter\030\003 \001(\0132\024.IlBlockCont" +
-      "ainerMsg\022\022\n\nhas_filter\030\004 \001(\010\"L\n\022IlSwitch" +
-      "SectionMsg\022\r\n\005label\030\001 \001(\003\022\'\n\014target_inst" +
-      "r\030\002 \001(\0132\021.IlInstructionMsgBQ\n\021soot.dotne" +
-      "t.protoB\023ProtoIlInstructions\252\002&Soot.Dotn" +
-      "et.Decompiler.Models.Protobufb\006proto3"
+      "ionMsg\022\022\n\nblock_name\030\002 \001(\t\022,\n\021final_inst" +
+      "ruction\030\003 \001(\0132\021.IlInstructionMsg\"\327\033\n\020IlI" +
+      "nstructionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstr" +
+      "uctionMsg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.Met" +
+      "hodDefinition\022$\n\targuments\030\005 \003(\0132\021.IlIns" +
+      "tructionMsg\022,\n\021value_instruction\030\006 \001(\0132\021" +
+      ".IlInstructionMsg\022&\n\016lambdaFunction\030V \001(" +
+      "\0132\016.IlFunctionMsg\022\035\n\025value_constant_stri" +
+      "ng\030\007 \001(\t\022\034\n\024value_constant_int64\030& \001(\003\022\034" +
+      "\n\024value_constant_float\030\' \001(\002\022\035\n\025value_co" +
+      "nstant_double\030( \001(\001\022\033\n\023value_constant_bo" +
+      "ol\030= \001(\010\022\035\n\025value_constant_uint64\030A \001(\004\022" +
+      "\036\n\rconstant_type\030\027 \001(\0162\007.IlType\022!\n\006targe" +
+      "t\030\010 \001(\0132\021.IlInstructionMsg\022\035\n\004type\030\t \001(\013" +
+      "2\017.TypeDefinition\022\037\n\005field\030\n \001(\0132\020.Field" +
+      "Definition\022 \n\010variable\030\013 \001(\0132\016.IlVariabl" +
+      "eMsg\022;\n\010operator\030\014 \001(\0162).IlInstructionMs" +
+      "g.IlBinaryNumericOperator\022&\n\004sign\030\024 \001(\0162" +
+      "\030.IlInstructionMsg.IlSign\022\037\n\004left\030\016 \001(\0132" +
+      "\021.IlInstructionMsg\022 \n\005right\030\017 \001(\0132\021.IlIn" +
+      "structionMsg\022\024\n\014target_label\030\022 \001(\t\022;\n\017co" +
+      "mparison_kind\030\025 \001(\0162\".IlInstructionMsg.I" +
+      "lComparisonKind\022$\n\tcondition\030\026 \001(\0132\021.IlI" +
+      "nstructionMsg\022$\n\ttrue_inst\030S \001(\0132\021.IlIns" +
+      "tructionMsg\022%\n\nfalse_inst\030T \001(\0132\021.IlInst" +
+      "ructionMsg\022 \n\005array\030\036 \001(\0132\021.IlInstructio" +
+      "nMsg\022;\n\017conversion_kind\030\031 \001(\0162\".IlInstru" +
+      "ctionMsg.IlConversionKind\0221\n\ninput_type\030" +
+      "\032 \001(\0162\035.IlInstructionMsg.IlStackType\0226\n\013" +
+      "target_type\030\034 \001(\0162!.IlInstructionMsg.IlP" +
+      "rimitiveType\022#\n\010argument\030\035 \001(\0132\021.IlInstr" +
+      "uctionMsg\0222\n\013result_type\030\033 \001(\0162\035.IlInstr" +
+      "uctionMsg.IlStackType\022\"\n\007indices\030\037 \003(\0132\021" +
+      ".IlInstructionMsg\022\'\n\ttry_block\030  \001(\0132\024.I" +
+      "lBlockContainerMsg\022\'\n\010handlers\030! \003(\0132\025.I" +
+      "lTryCatchHandlerMsg\022+\n\rfinally_block\030\" \001" +
+      "(\0132\024.IlBlockContainerMsg\022)\n\013fault_block\030" +
+      "# \001(\0132\024.IlBlockContainerMsg\022\"\n\004body\030% \001(" +
+      "\0132\024.IlBlockContainerMsg\022$\n\tkey_instr\030) \001" +
+      "(\0132\021.IlInstructionMsg\022\'\n\014default_inst\030* " +
+      "\001(\0132\021.IlInstructionMsg\022,\n\017switch_section" +
+      "s\030+ \003(\0132\023.IlSwitchSectionMsg\"\226\010\n\010IlOpCod" +
+      "e\022\013\n\007NONE_OP\020\000\022\007\n\003NOP\020\001\022\010\n\004CALL\020\004\022\t\n\005LEA" +
+      "VE\020\005\022\t\n\005LDSTR\020\006\022\t\n\005STOBJ\020\007\022\n\n\006LDFLDA\020\010\022\n" +
+      "\n\006LDC_I4\020\t\022\t\n\005LDLOC\020\n\022\t\n\005LDOBJ\020\013\022\t\n\005STLO" +
+      "C\020\014\022\n\n\006NEWOBJ\020\r\022\014\n\010CALLVIRT\020\016\022\036\n\032BINARY_" +
+      "NUMERIC_INSTRUCTION\020\017\022\n\n\006BRANCH\020\020\022\010\n\004COM" +
+      "P\020\021\022\022\n\016IF_INSTRUCTION\020\022\022\013\n\007LDSFLDA\020\023\022\n\n\006" +
+      "LDNULL\020\024\022\t\n\005LDLEN\020\025\022\010\n\004CONV\020\026\022\n\n\006NEWARR\020" +
+      "\027\022\013\n\007LDELEMA\020\030\022\r\n\tCASTCLASS\020\031\022\n\n\006ISINST\020" +
+      "\032\022\007\n\003BOX\020\033\022\014\n\010UNBOXANY\020\034\022\t\n\005UNBOX\020\035\022\r\n\tT" +
+      "RY_CATCH\020\036\022\n\n\006LDLOCA\020\037\022\021\n\rDEFAULT_VALUE\020" +
+      " \022\007\n\003NOT\020!\022\017\n\013TRY_FINALLY\020\"\022\r\n\tTRY_FAULT" +
+      "\020#\022\023\n\017BLOCK_CONTAINER\020$\022\t\n\005BLOCK\020%\022\025\n\021TR" +
+      "Y_CATCH_HANDLER\020&\022\013\n\007RETHROW\020\'\022\t\n\005THROW\020" +
+      "(\022\017\n\013DEBUG_BREAK\020)\022\r\n\tCK_FINITE\020*\022\n\n\006CP_" +
+      "BLK\020,\022\n\n\006CP_OBJ\020-\022\007\n\003DUP\020.\022\014\n\010INIT_BLK\020/" +
+      "\022\014\n\010INIT_OBJ\0200\022\n\n\006LDC_I8\0201\022\n\n\006LDC_R4\0202\022\n" +
+      "\n\006LDC_R8\0203\022\n\n\006LD_FLD\0204\022\n\n\006LD_FTN\0205\022\013\n\007LD" +
+      "_SFLD\0206\022\014\n\010LD_TOKEN\0207\022\017\n\013LD_VIRT_FTN\0208\022\r" +
+      "\n\tLOC_ALLOC\0209\022\016\n\nMK_REF_ANY\020:\022\006\n\002NO\020;\022\014\n" +
+      "\010READONLY\020<\022\020\n\014REF_ANY_TYPE\020=\022\017\n\013REF_ANY" +
+      "_VAL\020>\022\013\n\007SIZE_OF\020?\022\013\n\007ST_SFLD\020@\022\n\n\006SWIT" +
+      "CH\020A\022\010\n\004TAIL\020B\022\r\n\tUNALIGNED\020C\022\014\n\010VOLATIL" +
+      "E\020D\022\023\n\017LD_MEMBER_TOKEN\020E\022\021\n\rLD_TYPE_TOKE" +
+      "N\020F\022\022\n\016INVALID_BRANCH\020G\022\021\n\rCALL_INDIRECT" +
+      "\020H\022\025\n\021MATCH_INSTRUCTION\020I\022\017\n\013LDC_DECIMAL" +
+      "\020J\022\021\n\rSTRING_TO_INT\020K\022\016\n\nILFUNCTION\020L\"\231\001" +
+      "\n\027IlBinaryNumericOperator\022\017\n\013NONE_BINARY" +
+      "\020\000\022\007\n\003Add\020\001\022\007\n\003Sub\020\002\022\007\n\003Mul\020\003\022\007\n\003Div\020\004\022\007" +
+      "\n\003Rem\020\005\022\n\n\006BitAnd\020\006\022\t\n\005BitOr\020\007\022\n\n\006BitXor" +
+      "\020\010\022\r\n\tShiftLeft\020\t\022\016\n\nShiftRight\020\n\"1\n\006IlS" +
+      "ign\022\r\n\tNONE_SIGN\020\000\022\n\n\006Signed\020\001\022\014\n\010Unsign" +
+      "ed\020\002\"\213\001\n\020IlComparisonKind\022\r\n\tNONE_KIND\020\000" +
+      "\022\014\n\010Equality\020\001\022\016\n\nInequality\020\002\022\014\n\010LessTh" +
+      "an\020\003\022\023\n\017LessThanOrEqual\020\004\022\017\n\013GreaterThan" +
+      "\020\005\022\026\n\022GreaterThanOrEqual\020\006\"\342\001\n\020IlConvers" +
+      "ionKind\022\023\n\017NONE_CONVERSION\020\000\022\013\n\007Invalid\020" +
+      "\001\022\007\n\003Nop\020\002\022\016\n\nIntToFloat\020\003\022\016\n\nFloatToInt" +
+      "\020\004\022\030\n\024FloatPrecisionChange\020\005\022\016\n\nSignExte" +
+      "nd\020\006\022\016\n\nZeroExtend\020\007\022\014\n\010Truncate\020\010\022\022\n\016St" +
+      "opGCTracking\020\t\022\023\n\017StartGCTracking\020\n\022\022\n\016O" +
+      "bjectInterior\020\013\"\216\001\n\013IlStackType\022\023\n\017NONE_" +
+      "STACK_TYPE\020\000\022\021\n\rUnknown_STACK\020\001\022\014\n\010I4_ST" +
+      "ACK\020\002\022\013\n\007I_STACK\020\003\022\014\n\010I8_STACK\020\004\022\006\n\002F4\020\005" +
+      "\022\006\n\002F8\020\006\022\005\n\001O\020\007\022\r\n\tRef_STACK\020\010\022\010\n\004Void\020\t" +
+      "\"\257\001\n\017IlPrimitiveType\022\027\n\023NONE_PRIMITIVE_T" +
+      "YPE\020\000\022\010\n\004None\020\001\022\006\n\002I1\020\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022" +
+      "\006\n\002I8\020\005\022\006\n\002R4\020\006\022\006\n\002R8\020\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022" +
+      "\006\n\002U4\020\n\022\006\n\002U8\020\013\022\005\n\001I\020\014\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005" +
+      "\n\001R\020\017\022\013\n\007Unknown\020\020\"\314\003\n\rIlVariableMsg\022\035\n\004" +
+      "type\030\001 \001(\0132\017.TypeDefinition\022\014\n\004name\030\002 \001(" +
+      "\t\022\031\n\021has_initial_value\030\003 \001(\010\0224\n\rvariable" +
+      "_kind\030\004 \001(\0162\035.IlVariableMsg.IlVariableKi" +
+      "nd\"\274\002\n\016IlVariableKind\022\010\n\004NONE\020\000\022\t\n\005LOCAL" +
+      "\020\001\022\020\n\014PINNED_LOCAL\020\002\022\027\n\023PINNED_REGION_LO" +
+      "CAL\020\003\022\017\n\013USING_LOCAL\020\004\022\021\n\rFOREACH_LOCAL\020" +
+      "\005\022\026\n\022INITIALIZER_TARGET\020\006\022\r\n\tPARAMETER\020\007" +
+      "\022\030\n\024EXCEPTION_STACK_SLOT\020\010\022\023\n\017EXCEPTION_" +
+      "LOCAL\020\t\022\r\n\tSTACKSLOT\020\n\022\022\n\016NAMED_ARGUMENT" +
+      "\020\013\022\027\n\023DISPLAY_CLASS_LOCAL\020\014\022\021\n\rPATTERN_L" +
+      "OCAL\020\r\022!\n\035DECONSTRUCTION_INIT_TEMPORARY\020" +
+      "\016\"\226\001\n\024IlTryCatchHandlerMsg\022\"\n\004body\030\001 \001(\013" +
+      "2\024.IlBlockContainerMsg\022 \n\010variable\030\002 \001(\013" +
+      "2\016.IlVariableMsg\022$\n\006filter\030\003 \001(\0132\024.IlBlo" +
+      "ckContainerMsg\022\022\n\nhas_filter\030\004 \001(\010\"L\n\022Il" +
+      "SwitchSectionMsg\022\r\n\005label\030\001 \001(\003\022\'\n\014targe" +
+      "t_instr\030\002 \001(\0132\021.IlInstructionMsgBQ\n\021soot" +
+      ".dotnet.protoB\023ProtoIlInstructions\252\002&Soo" +
+      "t.Dotnet.Decompiler.Models.Protobufb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16175,7 +16373,7 @@ public final class ProtoIlInstructions {
     internal_static_IlBlock_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_IlBlock_descriptor,
-        new java.lang.String[] { "ListOfIlInstructions", "BlockName", });
+        new java.lang.String[] { "ListOfIlInstructions", "BlockName", "FinalInstruction", });
     internal_static_IlInstructionMsg_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_IlInstructionMsg_fieldAccessorTable = new
