@@ -48,7 +48,6 @@ import soot.UnitPatchingChain;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
-import soot.dexpler.TrapMinimizer;
 import soot.dotnet.instructions.CilBlockContainer;
 import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
@@ -157,7 +156,6 @@ public class DotnetBody {
     // PackManager.v().getTransform("jb.lns").apply(jb);
 
     TrapTightener.v().transform(jb);
-    TrapMinimizer.v().transform(jb);
     Aggregator.v().transform(jb);
 
     ConditionalBranchFolder.v().transform(jb);

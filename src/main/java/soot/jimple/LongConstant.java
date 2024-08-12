@@ -237,4 +237,9 @@ public class LongConstant extends ArithmeticConstant {
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseLongConstant(this);
   }
+
+  @Override
+  public Number getNumericValue() {
+    return value;
+  }
 }

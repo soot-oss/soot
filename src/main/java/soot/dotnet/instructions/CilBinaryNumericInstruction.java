@@ -75,30 +75,43 @@ public class CilBinaryNumericInstruction extends AbstractCilnstruction {
     Value right = CilInstructionFactory.fromInstructionMsg(instruction.getRight(), dotnetBody, cilBlock).jimplifyExpr(jb);
     right = inlineCastExpr(right);
     right = simplifyComplexExpression(jb, right);
+    Jimple jimple = Jimple.v();
     switch (instruction.getOperator()) {
       case Add:
-        return Jimple.v().newAddExpr(left, right);
+        if (instruction.getCheckForOverflow()) {
+          return jimple.newCheckedAddExpr(left, right);
+        } else {
+          return jimple.newAddExpr(left, right);
+        }
       case Sub:
-        return Jimple.v().newSubExpr(left, right);
+        if (instruction.getCheckForOverflow()) {
+          return jimple.newCheckedSubExpr(left, right);
+        } else {
+          return jimple.newSubExpr(left, right);
+        }
       case Mul:
-        return Jimple.v().newMulExpr(left, right);
+        if (instruction.getCheckForOverflow()) {
+          return jimple.newCheckedMulExpr(left, right);
+        } else {
+          return jimple.newMulExpr(left, right);
+        }
       case Div:
-        return Jimple.v().newDivExpr(left, right);
+        return jimple.newDivExpr(left, right);
       case Rem:
-        return Jimple.v().newRemExpr(left, right);
+        return jimple.newRemExpr(left, right);
       case BitAnd:
-        return Jimple.v().newAndExpr(left, right);
+        return jimple.newAndExpr(left, right);
       case BitOr:
-        return Jimple.v().newOrExpr(left, right);
+        return jimple.newOrExpr(left, right);
       case BitXor:
-        return Jimple.v().newXorExpr(left, right);
+        return jimple.newXorExpr(left, right);
       case ShiftLeft:
-        return Jimple.v().newShlExpr(left, right);
+        return jimple.newShlExpr(left, right);
       case ShiftRight:
         if (instruction.getSign().equals(ProtoIlInstructions.IlInstructionMsg.IlSign.Signed)) {
-          return Jimple.v().newShrExpr(left, right);
+          return jimple.newShrExpr(left, right);
         }
-        return Jimple.v().newUshrExpr(left, right);
+        return jimple.newUshrExpr(left, right);
       default:
         return null;
     }

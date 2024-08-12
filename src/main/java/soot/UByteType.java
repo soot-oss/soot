@@ -35,6 +35,8 @@ import soot.util.Switch;
 public class UByteType extends PrimType implements DotNetINumber {
 
   public static final int HASHCODE = 0x213D1329;
+  public static final int MIN_VALUE = 0;
+  public static final int MAX_VALUE = 255;
 
   public UByteType(Singletons.Global g) {
   }

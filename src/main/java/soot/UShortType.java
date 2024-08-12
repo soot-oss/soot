@@ -29,12 +29,14 @@ import soot.options.Options;
 import soot.util.Switch;
 
 /**
- * Soot representation of the .NET built-in type 'short'. Implemented as a singleton.
+ * Soot representation of the .NET built-in type 'ushort'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
 public class UShortType extends PrimType implements DotNetINumber {
 
   public static final int HASHCODE = 0x5B817DD3;
+  public static final int MAX_VALUE = 65535;
+  public static final int MIN_VALUE = 0;
 
   public UShortType(Singletons.Global g) {
   }

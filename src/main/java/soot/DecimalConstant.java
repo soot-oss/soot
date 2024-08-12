@@ -143,4 +143,9 @@ public class DecimalConstant extends RealConstant {
   public NumericConstant negate() {
     return DecimalConstant.v(this.value.negate());
   }
+
+  @Override
+  public Number getNumericValue() {
+    return value;
+  }
 }

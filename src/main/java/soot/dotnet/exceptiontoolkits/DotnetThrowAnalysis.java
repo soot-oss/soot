@@ -108,6 +108,10 @@ import soot.jimple.StaticInvokeExpr;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.internal.JCheckedAddExpr;
+import soot.jimple.internal.JCheckedCastExpr;
+import soot.jimple.internal.JCheckedMulExpr;
+import soot.jimple.internal.JCheckedSubExpr;
 import soot.toolkits.exceptions.ThrowableSet;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
 
@@ -427,6 +431,26 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
     return new UnitThrowAnalysis.ValueSwitch() {
 
       @Override
+      public void caseCheckedAddExpr(JCheckedAddExpr v) {
+        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+      }
+
+      @Override
+      public void caseCheckedMulExpr(JCheckedMulExpr v) {
+        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+      }
+
+      @Override
+      public void caseCheckedSubExpr(JCheckedSubExpr v) {
+        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+      }
+
+      @Override
+      public void caseCheckedCastExpr(JCheckedCastExpr v) {
+        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+      }
+
+      @Override
       public void caseClassConstant(ClassConstant c) {
         result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
         // ignore, only refanyval
@@ -506,8 +530,7 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
       public void caseNewArrayExpr(NewArrayExpr expr) {
         result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
         Value count = expr.getSize();
-        if (!(count instanceof IntConstant)
-            || ((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO)) {
+        if (!(count instanceof IntConstant) || ((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO)) {
           result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
         }
         result = result.add(mightThrow(count));

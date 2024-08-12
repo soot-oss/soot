@@ -35,6 +35,8 @@ import soot.util.Switch;
 public class UIntType extends PrimType implements DotNetINumber {
 
   public static final int HASHCODE = 0xB347239F;
+  public static final long MAX_VALUE = 4294967295L;
+  public static final int MIN_VALUE = 0;
 
   public UIntType(Singletons.Global g) {
   }

@@ -54,7 +54,7 @@ public class DelegateHandler {
   private static final String INSTANCE_FIELDNAME = "instance";
   private static final String GET_LIST = "getList";
 
-  public static final String REMOVE_METHOD_NAME = "remove";
+  public static final String REMOVE_METHOD_NAME = "removeDelegate";
   public static final String COMBINE_WITH_METHOD_NAME = "combineWith";
   public static final String INVOKE_METHOD_NAME = "doInvoke";
   public static final String DELEGATE_LIST_NAME = "DelegateList";

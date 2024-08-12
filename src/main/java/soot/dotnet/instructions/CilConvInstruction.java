@@ -105,6 +105,10 @@ public class CilConvInstruction extends AbstractCilnstruction {
     }
     argument = simplifyComplexExpression(jb, argument);
 
-    return Jimple.v().newCastExpr(argument, convType);
+    if (instruction.getCheckForOverflow()) {
+      return Jimple.v().newCheckedCastExpr(argument, convType);
+    } else {
+      return Jimple.v().newCastExpr(argument, convType);
+    }
   }
 }
