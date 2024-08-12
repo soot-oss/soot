@@ -23,10 +23,12 @@ package soot.dotnet;
  */
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ import com.google.common.base.Strings;
 
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition;
 import soot.dotnet.proto.ProtoDotnetNativeHost;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.options.Options;
@@ -49,7 +52,7 @@ import soot.toolkits.scalar.Pair;
 public class AssemblyFile extends File {
   private static final Logger logger = LoggerFactory.getLogger(AssemblyFile.class);
 
-  private boolean loaded;
+  private static boolean loaded;
   private static final Object lockobj = new Object();
 
   /**
@@ -86,6 +89,11 @@ public class AssemblyFile extends File {
   private ProtoAssemblyAllTypes.AssemblyAllTypes protoAllTypes;
 
   /**
+   * All types of the assembly file indexed by the full class name
+   */
+  private Map<String, TypeDefinition> allTypeMap;
+
+  /**
    * e.g. "/Users/user/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib"
    */
   private final String pathNativeHost;
@@ -111,15 +119,21 @@ public class AssemblyFile extends File {
       ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
       logger.info("Getting all .NET types");
 
-      byte[] protobufMessageBytes = nativeGetAllTypesMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protobufMessageBytes;
+      synchronized (lockobj) {
+        protobufMessageBytes = nativeGetAllTypesMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       ProtoAssemblyAllTypes.AssemblyAllTypes a = ProtoAssemblyAllTypes.AssemblyAllTypes.parseFrom(protobufMessageBytes);
       logger.info("Finished: Getting all .NET types");
+      List<ProtoAssemblyAllTypes.TypeDefinition> allTypesList = a.getListOfTypesList();
+      allTypeMap = new HashMap<>();
+      for (TypeDefinition p : allTypesList) {
+        allTypeMap.put(p.getFullname(), p);
+      }
       protoAllTypes = a;
       return a;
     } catch (Exception e) {
-      if (Options.v().verbose()) {
-        logger.warn(getAssemblyFileName() + " has no types. Error of protobuf message: " + e.getMessage());
-      }
+      logger.error(MessageFormat.format("Could not read in {0}", getAssemblyFileName()), e);
       return null;
     }
   }
@@ -143,7 +157,10 @@ public class AssemblyFile extends File {
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
     try {
-      byte[] protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protoMsgBytes;
+      synchronized (lockobj) {
+        protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -185,7 +202,10 @@ public class AssemblyFile extends File {
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
     try {
-      byte[] protoMsgBytes = nativeGetMethodBodyOfPropertyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protoMsgBytes;
+      synchronized (lockobj) {
+        protoMsgBytes = nativeGetMethodBodyOfPropertyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -232,7 +252,10 @@ public class AssemblyFile extends File {
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
     try {
-      byte[] protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protoMsgBytes;
+      synchronized (lockobj) {
+        protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -248,10 +271,8 @@ public class AssemblyFile extends File {
    * @return true if this object referenced to a file is an assembly
    */
   public boolean isAssembly() {
-    try {
+    synchronized (lockobj) {
       return nativeIsAssembly(pathNativeHost, fullyQualifiedAssemblyPathFilename);
-    } finally {
-
     }
   }
 
@@ -266,14 +287,10 @@ public class AssemblyFile extends File {
     if (Strings.isNullOrEmpty(className)) {
       return null;
     }
-    ProtoAssemblyAllTypes.AssemblyAllTypes allTypes = getAllTypes();
-    if (allTypes == null) {
-      return null;
+    if (allTypeMap == null) {
+      getAllTypes();
     }
-    List<ProtoAssemblyAllTypes.TypeDefinition> allTypesList = allTypes.getListOfTypesList();
-    Optional<ProtoAssemblyAllTypes.TypeDefinition> c
-        = allTypesList.stream().filter(x -> x.getFullname().equals(className)).findFirst();
-    return c.orElse(null);
+    return allTypeMap.get(className);
   }
 
   /**
@@ -281,13 +298,11 @@ public class AssemblyFile extends File {
    *
    * @return list of strings with all types
    */
-  public List<String> getAllTypeNames() {
-    ProtoAssemblyAllTypes.AssemblyAllTypes allTypes = getAllTypes();
-    if (allTypes == null) {
-      return null;
+  public Collection<String> getAllTypeNames() {
+    if (allTypeMap == null) {
+      getAllTypes();
     }
-    List<ProtoAssemblyAllTypes.TypeDefinition> listOfTypesList = allTypes.getListOfTypesList();
-    return listOfTypesList.stream().map(ProtoAssemblyAllTypes.TypeDefinition::getFullname).collect(Collectors.toList());
+    return allTypeMap.keySet();
   }
 
   /**

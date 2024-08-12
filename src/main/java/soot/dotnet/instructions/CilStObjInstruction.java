@@ -23,8 +23,11 @@ package soot.dotnet.instructions;
  */
 
 import soot.Body;
+import soot.ByteConstant;
 import soot.Immediate;
 import soot.Local;
+import soot.ShortConstant;
+import soot.UByteConstant;
 import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
@@ -32,7 +35,9 @@ import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.UShortConstant;
 
 /**
  * AssignStmt - Store ValueTypes to a local
@@ -50,10 +55,27 @@ public class CilStObjInstruction extends AbstractCilnstruction {
         = CilInstructionFactory.fromInstructionMsg(instruction.getValueInstruction(), dotnetBody, cilBlock);
     Value value = cilExpr.jimplifyExpr(jb);
 
+    if (value instanceof IntConstant) {
+      IntConstant ii = (IntConstant) value;
+      switch (instruction.getTarget().getType().getFullname()) {
+        case "System.Byte":
+          value = UByteConstant.v((byte) ii.value);
+          break;
+        case "System.SByte":
+          value = ByteConstant.v((byte) ii.value);
+          break;
+        case "System.Int16":
+          value = ShortConstant.v((short) ii.value);
+          break;
+        case "System.UInt16":
+          value = UShortConstant.v((short) ii.value);
+          break;
+      }
+    }
+
     // create this cast, to validate successfully
     if (value instanceof Local && !target.getType().toString().equals(value.getType().toString())) {
-      if (value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-          && !target.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+      if (value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
         value = Jimple.v().newCastExpr(value, target.getType());
       }
     }

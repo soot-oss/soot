@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -450,7 +451,7 @@ public class SourceLocator {
                   continue;
                 }
               }
-              List<String> allClassNames = assemblyFile.getAllTypeNames();
+              Collection<String> allClassNames = assemblyFile.getAllTypeNames();
               if (allClassNames != null) {
                 classes.addAll(allClassNames);
               }

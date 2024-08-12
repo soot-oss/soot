@@ -34,6 +34,10 @@ public class UByteConstant extends IntConstant {
     return c;
   }
 
+  public static UByteConstant v(byte value) {
+    return new UByteConstant(value);
+  }
+
   @Override
   public Type getType() {
     return UByteType.v();
