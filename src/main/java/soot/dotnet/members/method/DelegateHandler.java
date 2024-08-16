@@ -314,7 +314,13 @@ public class DelegateHandler {
         bodylist.getUnits().add(j.newReturnStmt(lclList));
       }
       {
-        SootMethod doInvoke = sc.makeSootMethod(INVOKE_METHOD_NAME, delegateParameters, sc.getObjectType(), Modifier.PUBLIC);
+        Type retType;
+        if (delegateReturn instanceof VoidType) {
+          retType = VoidType.v();
+        } else {
+          retType = sc.getObjectType();
+        }
+        SootMethod doInvoke = sc.makeSootMethod(INVOKE_METHOD_NAME, delegateParameters, retType, Modifier.PUBLIC);
         SootMethod m = actualDelegateClass.getMethodByName("callSingle");
         actualDelegateClass.addMethod(doInvoke);
         JimpleBody bodyInvoke = j.newBody(doInvoke);
@@ -345,7 +351,7 @@ public class DelegateHandler {
         if (lclRet != null)
           retS = j.newReturnStmt(lclRet);
         else
-          retS = j.newReturnStmt(NullConstant.v());
+          retS = j.newReturnVoidStmt();
 
         Stmt backedge = j.newIfStmt(j.newEqExpr(lclIndex, lclCount), retS);
         bodyInvoke.getUnits().add(backedge);
@@ -448,7 +454,7 @@ public class DelegateHandler {
       return l;
     }
 
-    protected static synchronized SootClass createDelegateInterface(Scene sc) {
+    public static synchronized SootClass createDelegateInterface(Scene sc) {
       SootClass delegateInterface = sc.getSootClassUnsafe(DELEGATE_INTERFACE_CLASSNAME);
       if (delegateInterface != null)
         return delegateInterface;
@@ -603,7 +609,8 @@ public class DelegateHandler {
           }
           if (fh.canStoreClass(decl, delegateClass) || fh.canStoreClass(decl, multidelegateClass)) {
             InstanceInvokeExpr istinv = (InstanceInvokeExpr) inv;
-            SootMethodRef invoke = decl.getMethodByName(INVOKE_METHOD_NAME).makeRef();
+            SootMethodRef invoke = sc.makeMethodRef(decl, INVOKE_METHOD_NAME, inv.getMethodRef().getParameterTypes(),
+                inv.getMethodRef().getReturnType(), false);
             c.getInvokeExprBox().setValue(j.newSpecialInvokeExpr((Local) istinv.getBase(), invoke, inv.getArgs()));
           }
         }
@@ -630,12 +637,12 @@ public class DelegateHandler {
           AssignStmt assign = (AssignStmt) c;
           switch (inv.getMethod().getSignature()) {
             case "<System.Delegate: System.Delegate Combine(System.Delegate,System.Delegate)>":
-              SootClass delegateInterface = sc.getSootClass(DELEGATE_INTERFACE_CLASSNAME);
+              SootClass delegateInterface = getOrCreateCommonDelegateInterface(sc);
               SootMethodRef combineMRef = delegateInterface.getMethodByName(COMBINE_WITH_METHOD_NAME).makeRef();
               assign.setRightOp(j.newInterfaceInvokeExpr((Local) inv.getArg(0), combineMRef, inv.getArg(1)));
               break;
             case "<System.Delegate: System.Delegate Remove(System.Delegate,System.Delegate)>":
-              delegateInterface = sc.getSootClass(DELEGATE_INTERFACE_CLASSNAME);
+              delegateInterface = getOrCreateCommonDelegateInterface(sc);
               SootMethodRef removeMRef = delegateInterface.getMethodByName(REMOVE_METHOD_NAME).makeRef();
               assign.setRightOp(j.newInterfaceInvokeExpr((Local) inv.getArg(0), removeMRef, inv.getArg(1)));
               break;
@@ -644,6 +651,13 @@ public class DelegateHandler {
       }
       c = next;
     }
+  }
+
+  public static SootClass getOrCreateCommonDelegateInterface(Scene scene) {
+    SootClass delegateInterface = scene.getSootClassUnsafe(DELEGATE_INTERFACE_CLASSNAME);
+    if (delegateInterface == null)
+      delegateInterface = DelegateInfo.createDelegateInterface(scene);
+    return delegateInterface;
   }
 
 }
