@@ -56,13 +56,6 @@ public class CilStLocInstruction extends AbstractCilnstruction {
     Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), jb);
     Value value = cilExpr.jimplifyExpr(jb);
 
-    // if rvalue is isinst, change to instanceof semantic, see description of opcode
-    if (cilExpr instanceof CilIsInstInstruction) {
-      CilIsInstInstruction isInst = (CilIsInstInstruction) cilExpr;
-      isInst.resolveRewritingIsInst(jb, variable, value);
-      return;
-    }
-
     // rewrite multi array to Jimple semantic, see description of opcode
     if (cilExpr instanceof CilLdElemaInstruction && ((CilLdElemaInstruction) cilExpr).isMultiArrayRef()) {
       CilLdElemaInstruction newArrInstruction = (CilLdElemaInstruction) cilExpr;

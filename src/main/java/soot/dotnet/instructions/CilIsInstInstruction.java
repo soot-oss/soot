@@ -58,19 +58,23 @@ public class CilIsInstInstruction extends AbstractCilnstruction {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
     Value argument = cilExpr.jimplifyExpr(jb);
     argument = simplifyComplexExpression(jb, argument);
-    return Jimple.v().newInstanceOfExpr(argument, DotnetTypeFactory.toSootType(type));
+    return resolveRewritingIsInst(jb, createTempVar(jb, argument.getType()),
+        Jimple.v().newInstanceOfExpr(argument, DotnetTypeFactory.toSootType(type)));
   }
 
-  public void resolveRewritingIsInst(Body jb, Local variable, Value instanceOfExpr) {
-
+  //https://learn.microsoft.com/de-de/dotnet/api/system.reflection.emit.opcodes.isinst?view=net-8.0
+  //The semantics of isInst is different: it casts the variable or returns null
+  public Local resolveRewritingIsInst(Body jb, Local variable, InstanceOfExpr instanceOfExpr) {
+    Jimple j = Jimple.v();
     Local local = dotnetBody.variableManager.localGenerator
         .generateLocal(DotnetTypeFactory.toSootType(DotnetBasicTypes.SYSTEM_BOOLEAN));
-    AssignStmt assignInstanceOfStmt = Jimple.v().newAssignStmt(local, instanceOfExpr);
-    NopStmt nopStmt = Jimple.v().newNopStmt();
-    AssignStmt assignIfTrueStmt = Jimple.v().newAssignStmt(variable, ((InstanceOfExpr) instanceOfExpr).getOp());
-    AssignStmt assignIfFalseStmt = Jimple.v().newAssignStmt(variable, NullConstant.v());
-    IfStmt ifStmt = Jimple.v().newIfStmt(Jimple.v().newEqExpr(local, IntConstant.v(1)), assignIfTrueStmt);
-    GotoStmt gotoStmt = Jimple.v().newGotoStmt(nopStmt);
+    AssignStmt assignInstanceOfStmt = j.newAssignStmt(local, instanceOfExpr);
+    NopStmt nopStmt = j.newNopStmt();
+
+    AssignStmt assignIfTrueStmt = j.newAssignStmt(variable, j.newCastExpr(instanceOfExpr.getOp(), instanceOfExpr.getType()));
+    AssignStmt assignIfFalseStmt = j.newAssignStmt(variable, NullConstant.v());
+    IfStmt ifStmt = j.newIfStmt(j.newEqExpr(local, IntConstant.v(1)), assignIfTrueStmt);
+    GotoStmt gotoStmt = j.newGotoStmt(nopStmt);
 
     jb.getUnits().add(assignInstanceOfStmt);
     jb.getUnits().add(ifStmt);
@@ -80,5 +84,6 @@ public class CilIsInstInstruction extends AbstractCilnstruction {
     jb.getUnits().add(nopStmt);
 
     dotnetBody.variableManager.addLocalsToCast(variable.getName());
+    return variable;
   }
 }
