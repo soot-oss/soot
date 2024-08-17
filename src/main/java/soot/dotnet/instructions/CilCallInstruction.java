@@ -67,12 +67,15 @@ import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
 import soot.dotnet.types.DotnetBasicTypes;
 import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Constant;
+import soot.jimple.FieldRef;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.toolkits.scalar.Pair;
@@ -221,10 +224,23 @@ public class CilCallInstruction extends AbstractCilnstruction {
     }
 
     Map<Integer, SootClass> byRefWrappers = new HashMap<>();
+    FieldRef[] byRefField = new FieldRef[instruction.getArgumentsCount()];
     if (instruction.getArgumentsCount() > startIdx) {
       for (int z = startIdx; z < instruction.getArgumentsCount(); z++) {
-        CilInstruction inst = CilInstructionFactory.fromInstructionMsg(instruction.getArguments(z), dotnetBody, cilBlock);
+        IlInstructionMsg arg = instruction.getArguments(z);
+        CilInstruction inst = CilInstructionFactory.fromInstructionMsg(arg, dotnetBody, cilBlock);
         Value argValue = inst.jimplifyExpr(jb);
+        if (arg.getOpCode() == IlOpCode.LDFLDA || arg.getOpCode() == IlOpCode.LDSFLDA) {
+          //by reference a field
+          if (!ByReferenceWrapperGenerator.needsWrapper(instruction.getMethod().getParameterList().get(z))) {
+            throw new IllegalStateException(
+                "We load an address of a field, but apparently this is not a by-reference paramter?");
+          }
+          if (!(argValue instanceof FieldRef)) {
+            throw new IllegalStateException("Expected a field reference");
+          }
+          byRefField[z - startIdx] = (FieldRef) argValue;
+        }
         argValue = simplifyComplexExpression(jb, argValue);
         argsVariables.add(argValue);
       }
@@ -260,6 +276,11 @@ public class CilCallInstruction extends AbstractCilnstruction {
           afterCallUnits = new ArrayList<>();
         }
         afterCallUnits.add(ByReferenceWrapperGenerator.getUnwrapCall(wrapped, modifiedArg, originalArg));
+        FieldRef fieldRef = byRefField[i];
+        if (fieldRef != null) {
+          //by field reference
+          afterCallUnits.add(Jimple.v().newAssignStmt(fieldRef, originalArg));
+        }
       } else {
         if (modifiedArg instanceof Local) {
           if (argType.toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)

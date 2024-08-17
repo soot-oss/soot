@@ -82,7 +82,6 @@ import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
@@ -132,8 +131,10 @@ public class DotnetBody {
     // Resolve .NET Method Body -> BlockContainer -> Block -> IL Instruction
     CilBlockContainer blockContainer = new CilBlockContainer(ilFunctionMsg.getBody(), this);
     Body b = blockContainer.jimplify();
+    Set<Local> allLocals = Collections.newSetFromMap(new java.util.IdentityHashMap<Local, Boolean>());
+    allLocals.addAll(jb.getLocals());
     for (Local l : b.getLocals()) {
-      if (!jb.getLocals().contains(l)) {
+      if (allLocals.add(l)) {
         jb.getLocals().add(l);
       }
     }
@@ -151,9 +152,8 @@ public class DotnetBody {
 
     UnconditionalBranchFolder.v().transform(jb);
 
-    LocalPacker.v().transform(jb);
-    UnusedLocalEliminator.v().transform(jb);
-    // PackManager.v().getTransform("jb.lns").apply(jb);
+    //LocalPacker.v().transform(jb);
+    // UnusedLocalEliminator.v().transform(jb);
 
     TrapTightener.v().transform(jb);
     Aggregator.v().transform(jb);
@@ -191,15 +191,7 @@ public class DotnetBody {
     NopEliminator.v().transform(jb);
     replaceInitArray(jb);
 
-    // Sadly, the original contributer made everything relying on the names, so
-    // we rename that mess now...
-    Set<String> names = new HashSet<>();
-    int id = 0;
-    for (Local l : jb.getLocals()) {
-      if (!names.add(l.getName())) {
-        l.setName(l.getName() + "_" + id++);
-      }
-    }
+    renameLocals(jb);
 
     for (Unit u : jb.getUnits()) {
       for (ValueBox d : u.getUseBoxes()) {
@@ -212,6 +204,18 @@ public class DotnetBody {
             throw new RuntimeException("Function pointer left in normal method.");
           }
         }
+      }
+    }
+  }
+
+  protected void renameLocals(JimpleBody jb) {
+    // Sadly, the original contributer made everything relying on the names, so
+    // we rename that mess now...
+    Set<String> names = new HashSet<>();
+    int id = 0;
+    for (Local l : jb.getLocals()) {
+      if (!names.add(l.getName())) {
+        l.setName(l.getName() + "_" + id++);
       }
     }
   }
