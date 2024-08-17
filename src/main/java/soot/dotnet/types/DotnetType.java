@@ -281,6 +281,8 @@ public class DotnetType {
     Jimple j = Jimple.v();
     SootMethod m = sc.makeSootMethod("<init>", Collections.emptyList(), VoidType.v(), Modifier.PUBLIC);
     m = sootClass.getOrAddMethod(m);
+    m.setModifiers(Modifier.PUBLIC);
+    m.setPhantom(false);
 
     m.setSource(new MethodSource() {
 
@@ -288,7 +290,6 @@ public class DotnetType {
       public Body getBody(SootMethod m, String phaseName) {
 
         JimpleBody body = j.newBody(m);
-        m.setModifiers(Modifier.PUBLIC);
         m.setActiveBody(body);
         body.insertIdentityStmts();
         UnitPatchingChain uchain = body.getUnits();
