@@ -71,7 +71,8 @@ public class CilIsInstInstruction extends AbstractCilnstruction {
     AssignStmt assignInstanceOfStmt = j.newAssignStmt(local, instanceOfExpr);
     NopStmt nopStmt = j.newNopStmt();
 
-    AssignStmt assignIfTrueStmt = j.newAssignStmt(variable, j.newCastExpr(instanceOfExpr.getOp(), instanceOfExpr.getType()));
+    AssignStmt assignIfTrueStmt
+        = j.newAssignStmt(variable, j.newCastExpr(instanceOfExpr.getOp(), instanceOfExpr.getCheckType()));
     AssignStmt assignIfFalseStmt = j.newAssignStmt(variable, NullConstant.v());
     IfStmt ifStmt = j.newIfStmt(j.newEqExpr(local, IntConstant.v(1)), assignIfTrueStmt);
     GotoStmt gotoStmt = j.newGotoStmt(nopStmt);
