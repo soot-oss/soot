@@ -1,9 +1,11 @@
 package soot.dotnet.members.method;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /*-
  * #%L
@@ -60,7 +62,8 @@ public class DotnetBodyVariableManager {
   private final DotnetBody dotnetBody;
   private final Body mainJb;
   public final LocalGenerator localGenerator;
-  private final HashSet<String> localsToCast = new HashSet<>();
+  private final Set<String> localsToCast = new HashSet<>();
+  private final Map<Local, Local> localsToReference = new HashMap<>();
 
   public DotnetBodyVariableManager(DotnetBody dotnetBody, Body mainJb) {
     this.dotnetBody = dotnetBody;
@@ -251,5 +254,13 @@ public class DotnetBodyVariableManager {
 
   public boolean localsToCastContains(String local) {
     return localsToCast.contains(local);
+  }
+
+  public void addReferenceLocal(Local element, Local referenceHolder) {
+    localsToReference.put(element, referenceHolder);
+  }
+
+  public Local getReferenceLocal(Local element) {
+    return localsToReference.get(element);
   }
 }

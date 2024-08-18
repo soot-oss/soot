@@ -53,6 +53,7 @@ import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.InitialFieldTagValue;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.dotnet.proto.ProtoIlInstructions.IlFunctionMsg;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.dotnet.types.StructTag;
 import soot.dotnet.values.FunctionPointerConstant;
@@ -106,6 +107,10 @@ public class DotnetBody {
    */
   public DotnetMethod getDotnetMethodSig() {
     return dotnetMethodSig;
+  }
+
+  public IlFunctionMsg getFunctionMsg() {
+    return ilFunctionMsg;
   }
 
   private final DotnetMethod dotnetMethodSig;

@@ -3775,6 +3775,12 @@ public final class ProtoIlInstructions {
      * @return The checkForOverflow.
      */
     boolean getCheckForOverflow();
+
+    /**
+     * <code>bool is_leaving_function = 45;</code>
+     * @return The isLeavingFunction.
+     */
+    boolean getIsLeavingFunction();
   }
   /**
    * Protobuf type {@code IlInstructionMsg}
@@ -6869,6 +6875,17 @@ public final class ProtoIlInstructions {
       return checkForOverflow_;
     }
 
+    public static final int IS_LEAVING_FUNCTION_FIELD_NUMBER = 45;
+    private boolean isLeavingFunction_ = false;
+    /**
+     * <code>bool is_leaving_function = 45;</code>
+     * @return The isLeavingFunction.
+     */
+    @java.lang.Override
+    public boolean getIsLeavingFunction() {
+      return isLeavingFunction_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6990,6 +7007,9 @@ public final class ProtoIlInstructions {
       }
       if (checkForOverflow_ != false) {
         output.writeBool(44, checkForOverflow_);
+      }
+      if (isLeavingFunction_ != false) {
+        output.writeBool(45, isLeavingFunction_);
       }
       if (valueConstantBool_ != false) {
         output.writeBool(61, valueConstantBool_);
@@ -7156,6 +7176,10 @@ public final class ProtoIlInstructions {
       if (checkForOverflow_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(44, checkForOverflow_);
+      }
+      if (isLeavingFunction_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(45, isLeavingFunction_);
       }
       if (valueConstantBool_ != false) {
         size += com.google.protobuf.CodedOutputStream
@@ -7327,6 +7351,8 @@ public final class ProtoIlInstructions {
           .equals(other.getSwitchSectionsList())) return false;
       if (getCheckForOverflow()
           != other.getCheckForOverflow()) return false;
+      if (getIsLeavingFunction()
+          != other.getIsLeavingFunction()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7474,6 +7500,9 @@ public final class ProtoIlInstructions {
       hash = (37 * hash) + CHECK_FOR_OVERFLOW_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getCheckForOverflow());
+      hash = (37 * hash) + IS_LEAVING_FUNCTION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsLeavingFunction());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7749,6 +7778,7 @@ public final class ProtoIlInstructions {
         }
         bitField1_ = (bitField1_ & ~0x00000080);
         checkForOverflow_ = false;
+        isLeavingFunction_ = false;
         return this;
       }
 
@@ -7977,6 +8007,9 @@ public final class ProtoIlInstructions {
         }
         if (((from_bitField1_ & 0x00000100) != 0)) {
           result.checkForOverflow_ = checkForOverflow_;
+        }
+        if (((from_bitField1_ & 0x00000200) != 0)) {
+          result.isLeavingFunction_ = isLeavingFunction_;
         }
       }
 
@@ -8242,6 +8275,9 @@ public final class ProtoIlInstructions {
         }
         if (other.getCheckForOverflow() != false) {
           setCheckForOverflow(other.getCheckForOverflow());
+        }
+        if (other.getIsLeavingFunction() != false) {
+          setIsLeavingFunction(other.getIsLeavingFunction());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -8515,6 +8551,11 @@ public final class ProtoIlInstructions {
                 bitField1_ |= 0x00000100;
                 break;
               } // case 352
+              case 360: {
+                isLeavingFunction_ = input.readBool();
+                bitField1_ |= 0x00000200;
+                break;
+              } // case 360
               case 488: {
                 valueConstantBool_ = input.readBool();
                 bitField0_ |= 0x00000200;
@@ -13300,6 +13341,38 @@ public final class ProtoIlInstructions {
         onChanged();
         return this;
       }
+
+      private boolean isLeavingFunction_ ;
+      /**
+       * <code>bool is_leaving_function = 45;</code>
+       * @return The isLeavingFunction.
+       */
+      @java.lang.Override
+      public boolean getIsLeavingFunction() {
+        return isLeavingFunction_;
+      }
+      /**
+       * <code>bool is_leaving_function = 45;</code>
+       * @param value The isLeavingFunction to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIsLeavingFunction(boolean value) {
+        
+        isLeavingFunction_ = value;
+        bitField1_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool is_leaving_function = 45;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIsLeavingFunction() {
+        bitField1_ = (bitField1_ & ~0x00000200);
+        isLeavingFunction_ = false;
+        onChanged();
+        return this;
+      }
       @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -16313,7 +16386,7 @@ public final class ProtoIlInstructions {
       "\006blocks\030\001 \003(\0132\010.IlBlock\"\177\n\007IlBlock\0222\n\027li" +
       "st_of_il_instructions\030\001 \003(\0132\021.IlInstruct" +
       "ionMsg\022\022\n\nblock_name\030\002 \001(\t\022,\n\021final_inst" +
-      "ruction\030\003 \001(\0132\021.IlInstructionMsg\"\363\033\n\020IlI" +
+      "ruction\030\003 \001(\0132\021.IlInstructionMsg\"\220\034\n\020IlI" +
       "nstructionMsg\022+\n\007op_code\030\001 \001(\0162\032.IlInstr" +
       "uctionMsg.IlOpCode\022!\n\006method\030\004 \001(\0132\021.Met" +
       "hodDefinition\022$\n\targuments\030\005 \003(\0132\021.IlIns" +
@@ -16354,75 +16427,76 @@ public final class ProtoIlInstructions {
       "(\0132\021.IlInstructionMsg\022\'\n\014default_inst\030* " +
       "\001(\0132\021.IlInstructionMsg\022,\n\017switch_section" +
       "s\030+ \003(\0132\023.IlSwitchSectionMsg\022\032\n\022check_fo" +
-      "r_overflow\030, \001(\010\"\226\010\n\010IlOpCode\022\013\n\007NONE_OP" +
-      "\020\000\022\007\n\003NOP\020\001\022\010\n\004CALL\020\004\022\t\n\005LEAVE\020\005\022\t\n\005LDST" +
-      "R\020\006\022\t\n\005STOBJ\020\007\022\n\n\006LDFLDA\020\010\022\n\n\006LDC_I4\020\t\022\t" +
-      "\n\005LDLOC\020\n\022\t\n\005LDOBJ\020\013\022\t\n\005STLOC\020\014\022\n\n\006NEWOB" +
-      "J\020\r\022\014\n\010CALLVIRT\020\016\022\036\n\032BINARY_NUMERIC_INST" +
-      "RUCTION\020\017\022\n\n\006BRANCH\020\020\022\010\n\004COMP\020\021\022\022\n\016IF_IN" +
-      "STRUCTION\020\022\022\013\n\007LDSFLDA\020\023\022\n\n\006LDNULL\020\024\022\t\n\005" +
-      "LDLEN\020\025\022\010\n\004CONV\020\026\022\n\n\006NEWARR\020\027\022\013\n\007LDELEMA" +
-      "\020\030\022\r\n\tCASTCLASS\020\031\022\n\n\006ISINST\020\032\022\007\n\003BOX\020\033\022\014" +
-      "\n\010UNBOXANY\020\034\022\t\n\005UNBOX\020\035\022\r\n\tTRY_CATCH\020\036\022\n" +
-      "\n\006LDLOCA\020\037\022\021\n\rDEFAULT_VALUE\020 \022\007\n\003NOT\020!\022\017" +
-      "\n\013TRY_FINALLY\020\"\022\r\n\tTRY_FAULT\020#\022\023\n\017BLOCK_" +
-      "CONTAINER\020$\022\t\n\005BLOCK\020%\022\025\n\021TRY_CATCH_HAND" +
-      "LER\020&\022\013\n\007RETHROW\020\'\022\t\n\005THROW\020(\022\017\n\013DEBUG_B" +
-      "REAK\020)\022\r\n\tCK_FINITE\020*\022\n\n\006CP_BLK\020,\022\n\n\006CP_" +
-      "OBJ\020-\022\007\n\003DUP\020.\022\014\n\010INIT_BLK\020/\022\014\n\010INIT_OBJ" +
-      "\0200\022\n\n\006LDC_I8\0201\022\n\n\006LDC_R4\0202\022\n\n\006LDC_R8\0203\022\n" +
-      "\n\006LD_FLD\0204\022\n\n\006LD_FTN\0205\022\013\n\007LD_SFLD\0206\022\014\n\010L" +
-      "D_TOKEN\0207\022\017\n\013LD_VIRT_FTN\0208\022\r\n\tLOC_ALLOC\020" +
-      "9\022\016\n\nMK_REF_ANY\020:\022\006\n\002NO\020;\022\014\n\010READONLY\020<\022" +
-      "\020\n\014REF_ANY_TYPE\020=\022\017\n\013REF_ANY_VAL\020>\022\013\n\007SI" +
-      "ZE_OF\020?\022\013\n\007ST_SFLD\020@\022\n\n\006SWITCH\020A\022\010\n\004TAIL" +
-      "\020B\022\r\n\tUNALIGNED\020C\022\014\n\010VOLATILE\020D\022\023\n\017LD_ME" +
-      "MBER_TOKEN\020E\022\021\n\rLD_TYPE_TOKEN\020F\022\022\n\016INVAL" +
-      "ID_BRANCH\020G\022\021\n\rCALL_INDIRECT\020H\022\025\n\021MATCH_" +
-      "INSTRUCTION\020I\022\017\n\013LDC_DECIMAL\020J\022\021\n\rSTRING" +
-      "_TO_INT\020K\022\016\n\nILFUNCTION\020L\"\231\001\n\027IlBinaryNu" +
-      "mericOperator\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022" +
-      "\007\n\003Sub\020\002\022\007\n\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006B" +
-      "itAnd\020\006\022\t\n\005BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftL" +
-      "eft\020\t\022\016\n\nShiftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_" +
-      "SIGN\020\000\022\n\n\006Signed\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlC" +
-      "omparisonKind\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality" +
-      "\020\001\022\016\n\nInequality\020\002\022\014\n\010LessThan\020\003\022\023\n\017Less" +
-      "ThanOrEqual\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022Greate" +
-      "rThanOrEqual\020\006\"\342\001\n\020IlConversionKind\022\023\n\017N" +
-      "ONE_CONVERSION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016" +
-      "\n\nIntToFloat\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatP" +
-      "recisionChange\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZero" +
-      "Extend\020\007\022\014\n\010Truncate\020\010\022\022\n\016StopGCTracking" +
-      "\020\t\022\023\n\017StartGCTracking\020\n\022\022\n\016ObjectInterio" +
-      "r\020\013\"\216\001\n\013IlStackType\022\023\n\017NONE_STACK_TYPE\020\000" +
-      "\022\021\n\rUnknown_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_S" +
-      "TACK\020\003\022\014\n\010I8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001" +
-      "O\020\007\022\r\n\tRef_STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimi" +
-      "tiveType\022\027\n\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004Non" +
-      "e\020\001\022\006\n\002I1\020\002\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R" +
-      "4\020\006\022\006\n\002R8\020\007\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U" +
-      "8\020\013\022\005\n\001I\020\014\022\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unk" +
-      "nown\020\020\"\314\003\n\rIlVariableMsg\022\035\n\004type\030\001 \001(\0132\017" +
-      ".TypeDefinition\022\014\n\004name\030\002 \001(\t\022\031\n\021has_ini" +
-      "tial_value\030\003 \001(\010\0224\n\rvariable_kind\030\004 \001(\0162" +
-      "\035.IlVariableMsg.IlVariableKind\"\274\002\n\016IlVar" +
-      "iableKind\022\010\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED" +
-      "_LOCAL\020\002\022\027\n\023PINNED_REGION_LOCAL\020\003\022\017\n\013USI" +
-      "NG_LOCAL\020\004\022\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIAL" +
-      "IZER_TARGET\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTIO" +
-      "N_STACK_SLOT\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tS" +
-      "TACKSLOT\020\n\022\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLA" +
-      "Y_CLASS_LOCAL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DE" +
-      "CONSTRUCTION_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryC" +
-      "atchHandlerMsg\022\"\n\004body\030\001 \001(\0132\024.IlBlockCo" +
-      "ntainerMsg\022 \n\010variable\030\002 \001(\0132\016.IlVariabl" +
-      "eMsg\022$\n\006filter\030\003 \001(\0132\024.IlBlockContainerM" +
-      "sg\022\022\n\nhas_filter\030\004 \001(\010\"L\n\022IlSwitchSectio" +
-      "nMsg\022\r\n\005label\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(" +
-      "\0132\021.IlInstructionMsgBQ\n\021soot.dotnet.prot" +
-      "oB\023ProtoIlInstructions\252\002&Soot.Dotnet.Dec" +
-      "ompiler.Models.Protobufb\006proto3"
+      "r_overflow\030, \001(\010\022\033\n\023is_leaving_function\030" +
+      "- \001(\010\"\226\010\n\010IlOpCode\022\013\n\007NONE_OP\020\000\022\007\n\003NOP\020\001" +
+      "\022\010\n\004CALL\020\004\022\t\n\005LEAVE\020\005\022\t\n\005LDSTR\020\006\022\t\n\005STOB" +
+      "J\020\007\022\n\n\006LDFLDA\020\010\022\n\n\006LDC_I4\020\t\022\t\n\005LDLOC\020\n\022\t" +
+      "\n\005LDOBJ\020\013\022\t\n\005STLOC\020\014\022\n\n\006NEWOBJ\020\r\022\014\n\010CALL" +
+      "VIRT\020\016\022\036\n\032BINARY_NUMERIC_INSTRUCTION\020\017\022\n" +
+      "\n\006BRANCH\020\020\022\010\n\004COMP\020\021\022\022\n\016IF_INSTRUCTION\020\022" +
+      "\022\013\n\007LDSFLDA\020\023\022\n\n\006LDNULL\020\024\022\t\n\005LDLEN\020\025\022\010\n\004" +
+      "CONV\020\026\022\n\n\006NEWARR\020\027\022\013\n\007LDELEMA\020\030\022\r\n\tCASTC" +
+      "LASS\020\031\022\n\n\006ISINST\020\032\022\007\n\003BOX\020\033\022\014\n\010UNBOXANY\020" +
+      "\034\022\t\n\005UNBOX\020\035\022\r\n\tTRY_CATCH\020\036\022\n\n\006LDLOCA\020\037\022" +
+      "\021\n\rDEFAULT_VALUE\020 \022\007\n\003NOT\020!\022\017\n\013TRY_FINAL" +
+      "LY\020\"\022\r\n\tTRY_FAULT\020#\022\023\n\017BLOCK_CONTAINER\020$" +
+      "\022\t\n\005BLOCK\020%\022\025\n\021TRY_CATCH_HANDLER\020&\022\013\n\007RE" +
+      "THROW\020\'\022\t\n\005THROW\020(\022\017\n\013DEBUG_BREAK\020)\022\r\n\tC" +
+      "K_FINITE\020*\022\n\n\006CP_BLK\020,\022\n\n\006CP_OBJ\020-\022\007\n\003DU" +
+      "P\020.\022\014\n\010INIT_BLK\020/\022\014\n\010INIT_OBJ\0200\022\n\n\006LDC_I" +
+      "8\0201\022\n\n\006LDC_R4\0202\022\n\n\006LDC_R8\0203\022\n\n\006LD_FLD\0204\022" +
+      "\n\n\006LD_FTN\0205\022\013\n\007LD_SFLD\0206\022\014\n\010LD_TOKEN\0207\022\017" +
+      "\n\013LD_VIRT_FTN\0208\022\r\n\tLOC_ALLOC\0209\022\016\n\nMK_REF" +
+      "_ANY\020:\022\006\n\002NO\020;\022\014\n\010READONLY\020<\022\020\n\014REF_ANY_" +
+      "TYPE\020=\022\017\n\013REF_ANY_VAL\020>\022\013\n\007SIZE_OF\020?\022\013\n\007" +
+      "ST_SFLD\020@\022\n\n\006SWITCH\020A\022\010\n\004TAIL\020B\022\r\n\tUNALI" +
+      "GNED\020C\022\014\n\010VOLATILE\020D\022\023\n\017LD_MEMBER_TOKEN\020" +
+      "E\022\021\n\rLD_TYPE_TOKEN\020F\022\022\n\016INVALID_BRANCH\020G" +
+      "\022\021\n\rCALL_INDIRECT\020H\022\025\n\021MATCH_INSTRUCTION" +
+      "\020I\022\017\n\013LDC_DECIMAL\020J\022\021\n\rSTRING_TO_INT\020K\022\016" +
+      "\n\nILFUNCTION\020L\"\231\001\n\027IlBinaryNumericOperat" +
+      "or\022\017\n\013NONE_BINARY\020\000\022\007\n\003Add\020\001\022\007\n\003Sub\020\002\022\007\n" +
+      "\003Mul\020\003\022\007\n\003Div\020\004\022\007\n\003Rem\020\005\022\n\n\006BitAnd\020\006\022\t\n\005" +
+      "BitOr\020\007\022\n\n\006BitXor\020\010\022\r\n\tShiftLeft\020\t\022\016\n\nSh" +
+      "iftRight\020\n\"1\n\006IlSign\022\r\n\tNONE_SIGN\020\000\022\n\n\006S" +
+      "igned\020\001\022\014\n\010Unsigned\020\002\"\213\001\n\020IlComparisonKi" +
+      "nd\022\r\n\tNONE_KIND\020\000\022\014\n\010Equality\020\001\022\016\n\nInequ" +
+      "ality\020\002\022\014\n\010LessThan\020\003\022\023\n\017LessThanOrEqual" +
+      "\020\004\022\017\n\013GreaterThan\020\005\022\026\n\022GreaterThanOrEqua" +
+      "l\020\006\"\342\001\n\020IlConversionKind\022\023\n\017NONE_CONVERS" +
+      "ION\020\000\022\013\n\007Invalid\020\001\022\007\n\003Nop\020\002\022\016\n\nIntToFloa" +
+      "t\020\003\022\016\n\nFloatToInt\020\004\022\030\n\024FloatPrecisionCha" +
+      "nge\020\005\022\016\n\nSignExtend\020\006\022\016\n\nZeroExtend\020\007\022\014\n" +
+      "\010Truncate\020\010\022\022\n\016StopGCTracking\020\t\022\023\n\017Start" +
+      "GCTracking\020\n\022\022\n\016ObjectInterior\020\013\"\216\001\n\013IlS" +
+      "tackType\022\023\n\017NONE_STACK_TYPE\020\000\022\021\n\rUnknown" +
+      "_STACK\020\001\022\014\n\010I4_STACK\020\002\022\013\n\007I_STACK\020\003\022\014\n\010I" +
+      "8_STACK\020\004\022\006\n\002F4\020\005\022\006\n\002F8\020\006\022\005\n\001O\020\007\022\r\n\tRef_" +
+      "STACK\020\010\022\010\n\004Void\020\t\"\257\001\n\017IlPrimitiveType\022\027\n" +
+      "\023NONE_PRIMITIVE_TYPE\020\000\022\010\n\004None\020\001\022\006\n\002I1\020\002" +
+      "\022\006\n\002I2\020\003\022\006\n\002I4\020\004\022\006\n\002I8\020\005\022\006\n\002R4\020\006\022\006\n\002R8\020\007" +
+      "\022\006\n\002U1\020\010\022\006\n\002U2\020\t\022\006\n\002U4\020\n\022\006\n\002U8\020\013\022\005\n\001I\020\014\022" +
+      "\005\n\001U\020\r\022\007\n\003Ref\020\016\022\005\n\001R\020\017\022\013\n\007Unknown\020\020\"\314\003\n\r" +
+      "IlVariableMsg\022\035\n\004type\030\001 \001(\0132\017.TypeDefini" +
+      "tion\022\014\n\004name\030\002 \001(\t\022\031\n\021has_initial_value\030" +
+      "\003 \001(\010\0224\n\rvariable_kind\030\004 \001(\0162\035.IlVariabl" +
+      "eMsg.IlVariableKind\"\274\002\n\016IlVariableKind\022\010" +
+      "\n\004NONE\020\000\022\t\n\005LOCAL\020\001\022\020\n\014PINNED_LOCAL\020\002\022\027\n" +
+      "\023PINNED_REGION_LOCAL\020\003\022\017\n\013USING_LOCAL\020\004\022" +
+      "\021\n\rFOREACH_LOCAL\020\005\022\026\n\022INITIALIZER_TARGET" +
+      "\020\006\022\r\n\tPARAMETER\020\007\022\030\n\024EXCEPTION_STACK_SLO" +
+      "T\020\010\022\023\n\017EXCEPTION_LOCAL\020\t\022\r\n\tSTACKSLOT\020\n\022" +
+      "\022\n\016NAMED_ARGUMENT\020\013\022\027\n\023DISPLAY_CLASS_LOC" +
+      "AL\020\014\022\021\n\rPATTERN_LOCAL\020\r\022!\n\035DECONSTRUCTIO" +
+      "N_INIT_TEMPORARY\020\016\"\226\001\n\024IlTryCatchHandler" +
+      "Msg\022\"\n\004body\030\001 \001(\0132\024.IlBlockContainerMsg\022" +
+      " \n\010variable\030\002 \001(\0132\016.IlVariableMsg\022$\n\006fil" +
+      "ter\030\003 \001(\0132\024.IlBlockContainerMsg\022\022\n\nhas_f" +
+      "ilter\030\004 \001(\010\"L\n\022IlSwitchSectionMsg\022\r\n\005lab" +
+      "el\030\001 \001(\003\022\'\n\014target_instr\030\002 \001(\0132\021.IlInstr" +
+      "uctionMsgBQ\n\021soot.dotnet.protoB\023ProtoIlI" +
+      "nstructions\252\002&Soot.Dotnet.Decompiler.Mod" +
+      "els.Protobufb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -16452,7 +16526,7 @@ public final class ProtoIlInstructions {
     internal_static_IlInstructionMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_IlInstructionMsg_descriptor,
-        new java.lang.String[] { "OpCode", "Method", "Arguments", "ValueInstruction", "LambdaFunction", "ValueConstantString", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "ValueConstantBool", "ValueConstantUint64", "ConstantType", "Target", "Type", "Field", "Variable", "Operator", "Sign", "Left", "Right", "TargetLabel", "ComparisonKind", "Condition", "TrueInst", "FalseInst", "Array", "ConversionKind", "InputType", "TargetType", "Argument", "ResultType", "Indices", "TryBlock", "Handlers", "FinallyBlock", "FaultBlock", "Body", "KeyInstr", "DefaultInst", "SwitchSections", "CheckForOverflow", });
+        new java.lang.String[] { "OpCode", "Method", "Arguments", "ValueInstruction", "LambdaFunction", "ValueConstantString", "ValueConstantInt64", "ValueConstantFloat", "ValueConstantDouble", "ValueConstantBool", "ValueConstantUint64", "ConstantType", "Target", "Type", "Field", "Variable", "Operator", "Sign", "Left", "Right", "TargetLabel", "ComparisonKind", "Condition", "TrueInst", "FalseInst", "Array", "ConversionKind", "InputType", "TargetType", "Argument", "ResultType", "Indices", "TryBlock", "Handlers", "FinallyBlock", "FaultBlock", "Body", "KeyInstr", "DefaultInst", "SwitchSections", "CheckForOverflow", "IsLeavingFunction", });
     internal_static_IlVariableMsg_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_IlVariableMsg_fieldAccessorTable = new

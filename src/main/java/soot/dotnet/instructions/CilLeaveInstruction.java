@@ -25,11 +25,13 @@ package soot.dotnet.instructions;
 import soot.Body;
 import soot.Immediate;
 import soot.Local;
+import soot.Unit;
 import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.jimple.AssignStmt;
+import soot.jimple.GotoStmt;
 import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
 
@@ -43,8 +45,19 @@ public class CilLeaveInstruction extends AbstractCilnstruction {
 
   @Override
   public void jimplify(Body jb) {
-    // void
-    if (instruction.getValueInstruction().getOpCode().equals(ProtoIlInstructions.IlInstructionMsg.IlOpCode.NOP)) {
+    boolean isNop = instruction.getValueInstruction().getOpCode().equals(ProtoIlInstructions.IlInstructionMsg.IlOpCode.NOP);
+    if (isNop && !instruction.getIsLeavingFunction() && instruction.getTargetLabel() != null) {
+      Unit target = Jimple.v().newNopStmt();
+      GotoStmt gotoStmt = Jimple.v().newGotoStmt(target);
+
+      jb.getUnits().add(gotoStmt);
+      // goto target will be changed later
+      dotnetBody.blockEntryPointsManager.gotoTargetsInBody.put(target, instruction.getTargetLabel());
+      cilBlock.getDeclaredBlockContainer().blockEntryPointsManager.gotoTargetsInBody.put(target, "RETURNLEAVE");
+      return;
+
+    }
+    if (isNop) {
       jb.getUnits().add(Jimple.v().newReturnVoidStmt());
     } else {
       CilInstruction cilValueExpr

@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import soot.dotnet.instructions.CilBlockContainer.BlockContainerKind;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
 
 /**
  * Factory for creating IL Instruction objects
@@ -101,6 +102,11 @@ public class CilInstructionFactory {
       case LDFLDA:
         return new CilLdFldaInstruction(instruction, dotnetBody, cilBlock);
       case LDOBJ:
+        if (instruction.getTarget().getOpCode() == IlOpCode.LDELEMA) {
+          //we want to load the *value* of an array reference
+          //ilspy resolves the ldelem opcode to storeobj(ldelema)
+          return new CilLdElemInstruction(instruction.getTarget(), dotnetBody, cilBlock);
+        }
         return fromInstructionMsg(instruction.getTarget(), dotnetBody, cilBlock);
       // return new CilLdObjInstruction(instruction, dotnetBody);
       case NEWOBJ:
@@ -118,7 +124,7 @@ public class CilInstructionFactory {
       case NEWARR:
         return new CilNewArrInstruction(instruction, dotnetBody, cilBlock);
       case LDELEMA:
-        return new CilLdElemaInstruction(instruction, dotnetBody, cilBlock);
+        return new CilLdElemInstruction(instruction, dotnetBody, cilBlock);
       case ISINST:
         return new CilIsInstInstruction(instruction, dotnetBody, cilBlock);
       case CASTCLASS:

@@ -22,31 +22,24 @@ package soot.dotnet.instructions;
  * #L%
  */
 import soot.Body;
-import soot.Local;
-import soot.SootClass;
-import soot.Type;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
-import soot.dotnet.members.ArrayByReferenceWrapperGenerator;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JArrayRef;
 
 /**
  * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g. elem[1,5]);
  * unfolding it
  * 
- * This opcode loads an address, i.e. a pointer on a specific element
+ * Loads the object itself, not a reference!
+ * 
+ * https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.opcodes.ldelem?view=net-8.0
  */
-public class CilLdElemaInstruction extends AbstractCilnstruction {
-  private Local targetVar;
-
-  public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock,
-      Local variable) {
+public class CilLdElemInstruction extends AbstractCilnstruction {
+  public CilLdElemInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
-    this.targetVar = variable;
   }
 
   @Override
@@ -61,32 +54,17 @@ public class CilLdElemaInstruction extends AbstractCilnstruction {
     baseArrayLocal = simplifyComplexExpression(jb, baseArrayLocal);
 
     for (int i = 0; i < instruction.getIndicesCount() - 1; i++) {
-      final IlInstructionMsg ind = instruction.getIndices(i);
+      IlInstructionMsg ind = instruction.getIndicesList().get(i);
       Value indExpr = CilInstructionFactory.fromInstructionMsg(ind, dotnetBody, cilBlock).jimplifyExpr(jb);
       Value index = simplifyComplexExpression(jb, indExpr);
       baseArrayLocal = simplifyComplexExpression(jb, Jimple.v().newArrayRef(baseArrayLocal, index));
-
     }
 
-    //the last one is going to be a pointer!
-    IlInstructionMsg last = instruction.getIndices(instruction.getIndicesCount() - 1);
-    Value ind = CilInstructionFactory.fromInstructionMsg(last, dotnetBody, cilBlock).jimplifyExpr(jb);
+    Value ind = CilInstructionFactory
+        .fromInstructionMsg(instruction.getIndices(instruction.getIndicesCount() - 1), dotnetBody, cilBlock)
+        .jimplifyExpr(jb);
     Value index = simplifyComplexExpression(jb, ind);
-    //In the CilLdElemInstruction instruction, we would generate an arrayref 
-    //Jimple.v().newArrayRef(baseArrayLocal, index);
-    //however, this is a pointer, so we'll use a special generated class
-    Type elemType = JArrayRef.getElementType(baseArrayLocal.getType());
-    SootClass wc = ArrayByReferenceWrapperGenerator.getWrapperClass(elemType);
-    Jimple j = Jimple.v();
-
-    Local base = dotnetBody.variableManager.getReferenceLocal(targetVar);
-    if (base == null) {
-      base = (Local) simplifyComplexExpression(jb, j.newNewExpr(wc.getType()));
-      dotnetBody.variableManager.addReferenceLocal(targetVar, (Local) base);
-    }
-    jb.getUnits()
-        .add(j.newInvokeStmt(j.newSpecialInvokeExpr(base, wc.getMethodByName("<init>").makeRef(), baseArrayLocal, index)));
-    return base;
+    return Jimple.v().newArrayRef(baseArrayLocal, index);
   }
 
 }

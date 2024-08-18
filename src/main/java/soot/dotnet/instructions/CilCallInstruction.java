@@ -258,7 +258,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
     }
 
     final FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
-    final RefType valueType = RefType.v("System.ValueType");
+    final RefType valueType = RefType.v(DotnetBasicTypes.SYSTEM_VALUETYPE);
 
     // Check if cast is needed for correct validation, e.g.:
     // System.Object modifiers = null;

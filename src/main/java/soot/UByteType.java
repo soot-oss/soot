@@ -25,6 +25,7 @@ import soot.dotnet.types.DotNetINumber;
  */
 
 import soot.dotnet.types.DotnetBasicTypes;
+import soot.jimple.internal.IIntLikeType;
 import soot.options.Options;
 import soot.util.Switch;
 
@@ -32,7 +33,7 @@ import soot.util.Switch;
  * Soot representation of the .NET built-in type 'byte'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class UByteType extends PrimType implements DotNetINumber {
+public class UByteType extends PrimType implements DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0x213D1329;
   public static final int MIN_VALUE = 0;
