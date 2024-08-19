@@ -56,6 +56,7 @@ public class DelegateHandler {
 
   public static final String REMOVE_METHOD_NAME = "removeDelegate";
   public static final String COMBINE_WITH_METHOD_NAME = "combineWith";
+  public static final String COMBINE = "combine";
   public static final String INVOKE_METHOD_NAME = "doInvoke";
   public static final String DELEGATE_LIST_NAME = "DelegateList";
 
@@ -471,6 +472,30 @@ public class DelegateHandler {
       SootMethod getList = sc.makeSootMethod(GET_LIST, Collections.emptyList(),
           RefType.v("System.Collections.Generic.List`1"), Modifier.PUBLIC | Modifier.ABSTRACT);
       delegateInterface.addMethod(getList);
+
+      SootMethod combine
+          = sc.makeSootMethod(COMBINE, Arrays.asList(delegateInterface.getType(), delegateInterface.getType()),
+              delegateInterface.getType(), Modifier.PUBLIC | Modifier.STATIC);
+      delegateInterface.addMethod(combine);
+      Jimple j = Jimple.v();
+      JimpleBody bd = j.newBody(combine);
+      combine.setActiveBody(bd);
+      bd.insertIdentityStmts();
+      UnitPatchingChain uc = bd.getUnits();
+
+      Local l = j.newLocal("retHandler", delegateInterface.getType());
+      bd.getLocals().add(l);
+      Unit retOne = j.newReturnStmt(bd.getParameterLocal(1));
+      Unit retTwo = j.newReturnStmt(bd.getParameterLocal(0));
+      uc.add(j.newIfStmt(j.newEqExpr(bd.getParameterLocal(0), NullConstant.v()), retOne));
+      uc.add(j.newIfStmt(j.newEqExpr(bd.getParameterLocal(1), NullConstant.v()), retTwo));
+      //            assign.setRightOp(j.newInterfaceInvokeExpr((Local) inv.getArg(0), combineMRef, inv.getArg(1)));
+      uc.add(j.newAssignStmt(l,
+          j.newInterfaceInvokeExpr(bd.getParameterLocal(0), combineWith.makeRef(), bd.getParameterLocal(1))));
+      uc.add(j.newReturnStmt(l));
+      uc.add(retOne);
+      uc.add(retTwo);
+
       return delegateInterface;
     }
 
@@ -635,11 +660,11 @@ public class DelegateHandler {
           }
         } else if (inv instanceof StaticInvokeExpr && c instanceof AssignStmt) {
           AssignStmt assign = (AssignStmt) c;
-          switch (inv.getMethod().getSignature()) {
+          switch (inv.getMethodRef().getSignature()) {
             case "<System.Delegate: System.Delegate Combine(System.Delegate,System.Delegate)>":
               SootClass delegateInterface = getOrCreateCommonDelegateInterface(sc);
-              SootMethodRef combineMRef = delegateInterface.getMethodByName(COMBINE_WITH_METHOD_NAME).makeRef();
-              assign.setRightOp(j.newInterfaceInvokeExpr((Local) inv.getArg(0), combineMRef, inv.getArg(1)));
+              SootMethodRef combineMRef = delegateInterface.getMethodByName(COMBINE).makeRef();
+              assign.setRightOp(j.newStaticInvokeExpr(combineMRef, inv.getArg(0), inv.getArg(1)));
               break;
             case "<System.Delegate: System.Delegate Remove(System.Delegate,System.Delegate)>":
               delegateInterface = getOrCreateCommonDelegateInterface(sc);

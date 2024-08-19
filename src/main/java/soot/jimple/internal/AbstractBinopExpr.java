@@ -39,6 +39,7 @@ import soot.ShortType;
 import soot.SootClass;
 import soot.Type;
 import soot.UByteType;
+import soot.ULongType;
 import soot.UShortType;
 import soot.UnitPrinter;
 import soot.UnknownType;
@@ -202,6 +203,12 @@ public abstract class AbstractBinopExpr implements Expr {
         return t1;
       }
       if (t1 instanceof IntType && t2 instanceof DotNetINumber) {
+        return t2;
+      }
+      if (t1 instanceof ULongType && t2 instanceof IIntLikeType) {
+        return t1;
+      }
+      if (t2 instanceof ULongType && t1 instanceof IIntLikeType) {
         return t2;
       }
     }
