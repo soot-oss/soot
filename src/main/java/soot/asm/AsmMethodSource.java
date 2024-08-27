@@ -21,6 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
@@ -38,6 +39,12 @@ import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -77,12 +84,6 @@ import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
 
 import soot.ArrayType;
 import soot.Body;
