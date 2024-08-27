@@ -243,9 +243,10 @@ public class InstructionFactory {
 
       case INVOKE_DIRECT:
       case INVOKE_DIRECT_RANGE:
+        return new InvokeSpecialDirectInstruction(instruction, codeAddress);
       case INVOKE_SUPER:
       case INVOKE_SUPER_RANGE:
-        return new InvokeSpecialInstruction(instruction, codeAddress);
+        return new InvokeSpecialSuperInstruction(instruction, codeAddress);
 
       case INVOKE_STATIC:
       case INVOKE_STATIC_RANGE:

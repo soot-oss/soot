@@ -167,7 +167,11 @@
 		<targets>
 			<direct
 				subsignature="java.lang.Object doInBackground(java.lang.Object[])"
-				target-position="base" />
+				target-position="base">
+				<parameterMappings>
+					<direct sourceIdx="0" targetIdx="0" />
+				</parameterMappings>	
+			</direct>
 		</targets>
 	</edge>
 	<edge>
@@ -178,9 +182,17 @@
 				target-position="base" />
 			<direct
 				subsignature="void onProgressUpdate(java.lang.Object[])"
-				target-position="base" />
+				target-position="base">
+				<parameterMappings>
+					<direct sourceIdx="0" targetIdx="0" />
+				</parameterMappings>
+			</direct>
 			<direct subsignature="void onPostExecute(java.lang.Object)"
-				target-position="base" />
+				target-position="base">
+				<parameterMappings>
+					<direct sourceIdx="0" targetIdx="0" />
+				</parameterMappings>
+			</direct>
 		</targets>
 	</edge>
 	<!-- doPrivileged -->
@@ -704,6 +716,24 @@
 		<targets>
 			<direct
 				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.Spliterator spliterator()" />
+		<targets>
+			<deferred position="return" />
+		</targets>
+	</edge>
+	
+	<!--  java.util.Spliterator -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachRemaining(java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
 				target-position="argument" index="0" />
 		</targets>
 	</edge>

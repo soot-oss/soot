@@ -344,10 +344,12 @@ public abstract class AbstractASMBackend {
                 if (va == null) {
                   continue;
                 }
-                for (AnnotationTag at : va.getAnnotations()) {
-                  AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
-                      (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
-                  generateAnnotationElems(av, at.getElems(), true);
+                if (va.hasAnnotations()) {
+                  for (AnnotationTag at : va.getAnnotations()) {
+                    AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
+                        (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
+                    generateAnnotationElems(av, at.getElems(), true);
+                  }
                 }
               }
             }
@@ -503,17 +505,19 @@ public abstract class AbstractASMBackend {
         // Find all VisibilityAnnotationTags
         VisibilityAnnotationTag vat = (VisibilityAnnotationTag) t;
         boolean runTimeVisible = (vat.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE);
-        for (AnnotationTag at : vat.getAnnotations()) {
-          AnnotationVisitor av = null;
-          if (visitor instanceof ClassVisitor) {
-            av = ((ClassVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
-          } else if (visitor instanceof FieldVisitor) {
-            av = ((FieldVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
-          } else if (visitor instanceof MethodVisitor) {
-            av = ((MethodVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
-          }
+        if (vat.hasAnnotations()) {
+          for (AnnotationTag at : vat.getAnnotations()) {
+            AnnotationVisitor av = null;
+            if (visitor instanceof ClassVisitor) {
+              av = ((ClassVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
+            } else if (visitor instanceof FieldVisitor) {
+              av = ((FieldVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
+            } else if (visitor instanceof MethodVisitor) {
+              av = ((MethodVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
+            }
 
-          generateAnnotationElems(av, at.getElems(), true);
+            generateAnnotationElems(av, at.getElems(), true);
+          }
         }
       } else if (t instanceof AnnotationDefaultTag && host instanceof SootMethod) {
         // Visit AnnotationDefault on methods

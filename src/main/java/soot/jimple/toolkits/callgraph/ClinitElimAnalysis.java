@@ -37,7 +37,7 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
   private final CallGraph cg = Scene.v().getCallGraph();
   private final UnitGraph g;
 
-  private static FlowSet<SootMethod> cachedFlowSet = null;
+  private FlowSet<SootMethod> cachedFlowSet = null;
 
   public ClinitElimAnalysis(UnitGraph g) {
     super(g);
@@ -88,6 +88,7 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
     cachedFlowSet.copy(returnedFlowSet);
     return returnedFlowSet;
   }
+
   protected FlowSet<SootMethod> calculateInitialFlow() {
     HashSparseSet<SootMethod> newFlowSet = new HashSparseSet<>();
     for (Iterator<Edge> mIt = cg.edgesOutOf(g.getBody().getMethod()); mIt.hasNext();) {

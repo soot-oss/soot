@@ -64,10 +64,11 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
   }
 
   public static RefType v() {
-    if (ModuleUtil.module_mode()) {
-      return G.v().soot_ModuleRefType();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_ModuleRefType();
     } else {
-      return G.v().soot_RefType();
+      return g.soot_RefType();
     }
   }
 

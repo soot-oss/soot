@@ -25,6 +25,8 @@ package soot.dexpler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,6 +82,7 @@ import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.DeprecatedTag;
+import soot.tagkit.DexInnerClassTag;
 import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
@@ -112,6 +115,18 @@ public class DexAnnotation {
   private final Type ARRAY_TYPE = RefType.v("Array");
   private final SootClass clazz;
   private final Dependencies deps;
+
+  protected static Set<String> isHandled = new HashSet<>();
+
+  static {
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_DEFAULT));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_SIGNATURE));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_MEMBERCLASSES));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_INNERCLASS));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_ENCLOSINGMETHOD));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_ENCLOSINGCLASS));
+    isHandled.add(SootToDexUtils.getDexClassName(JAVA_DEPRECATED));
+  }
 
   public DexAnnotation(SootClass clazz, Dependencies deps) {
     this.clazz = clazz;
@@ -161,8 +176,14 @@ public class DexAnnotation {
           // to methods through the creation of new
           // AnnotationDefaultTag.
           VisibilityAnnotationTag vt = (VisibilityAnnotationTag) t;
-          for (AnnotationTag a : vt.getAnnotations()) {
+          if (!vt.hasAnnotations()) {
+            continue;
+          }
+          Iterator<AnnotationTag> it = vt.getAnnotations().iterator();
+          while (it.hasNext()) {
+            AnnotationTag a = it.next();
             if (a.getType().equals("Ldalvik/annotation/AnnotationDefault;")) {
+              it.remove();
               for (AnnotationElem ae : a.getElems()) {
                 if (ae instanceof AnnotationAnnotationElem) {
                   AnnotationAnnotationElem aae = (AnnotationAnnotationElem) ae;
@@ -228,14 +249,29 @@ public class DexAnnotation {
               }
             }
           }
-          if (!(vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE)) {
+          if (vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE) {
             clazz.addTag(vt);
+          } else {
+            // filter out the tags we handle explicitly
+            VisibilityAnnotationTag vbCopy = new VisibilityAnnotationTag(vt.getVisibility());
+            for (AnnotationTag tf : vt.getAnnotations()) {
+              if (!isHandled(tf)) {
+                vbCopy.addAnnotation(tf);
+              }
+            }
+            if (vbCopy.getAnnotations() != null && !vbCopy.getAnnotations().isEmpty()) {
+              clazz.addTag(vbCopy);
+            }
           }
         } else {
           clazz.addTag(t);
         }
       }
     }
+  }
+
+  private boolean isHandled(AnnotationTag tf) {
+    return isHandled.contains(tf.getType());
   }
 
   private Type getSootType(AnnotationElem e) {
@@ -579,8 +615,8 @@ public class DexAnnotation {
           // annotation is broken and does not end in $nn.
           outerClass = null;
         }
-        Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
-            outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
+        Tag innerTag = new DexInnerClassTag(DexType.toSootICAT(classType),
+            outerClass == null ? null : DexType.toSootICAT(outerClass), name, name, accessFlags);
         tags.add(innerTag);
         if (outerClass != null && !clazz.hasOuterClass()) {
           String sootOuterClass = Util.dottedClassName(outerClass);

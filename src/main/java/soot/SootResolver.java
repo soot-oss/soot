@@ -101,10 +101,11 @@ public class SootResolver {
   }
 
   public static SootResolver v() {
-    if (ModuleUtil.module_mode()) {
-      return G.v().soot_SootModuleResolver();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_SootModuleResolver();
     } else {
-      return G.v().soot_SootResolver();
+      return g.soot_SootResolver();
     }
   }
 

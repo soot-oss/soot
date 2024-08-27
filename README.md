@@ -2,7 +2,9 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/soot-oss/soot) 
 
 # IMPORTANT: Soot is now succeeded by SootUp!
-**In December 2022, we have officially released [SootUp](https://soot-oss.github.io/SootUp/announce/), a version of Soot with a completely overhauled, more modular, testable, maintainable and usable architecture. Please check this out in case you wish to start a new program-analysis project.**
+**In December 2022, we have officially released [SootUp](https://soot-oss.github.io/SootUp/), a version of Soot with a completely overhauled, more modular, testable, maintainable and usable architecture. Please check this out in case you wish to start a new program-analysis project.**
+
+Since there has been some confusion: SootUp is not yet feature-complete. Therefore, the "old" Soot needs to live on for the time being, especially for projects that require instrumentation capabilities or robust Android support. The "old" Soot is still being maintained until it can safely be dropped for a feature-complete successor.
 
 # Using Soot? Let us know about it!
 We are regularly applying for funding to help us maintain Soot. You can help us immensely by letting us know about [**projects that use Soot**](https://github.com/soot-oss/soot/wiki/Users-of-Soot), both commercially or in the form of research tools.
@@ -107,8 +109,6 @@ If you cannot work with the prebuild versions and need to build Soot on your own
 
 Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.
 Development happens in the develop branch. To catch the bleeding edge of Soot, check out the latter.
-In case of any questions, please consult the Soot
-mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 
 # How do I contribute to Soot?
 

@@ -149,10 +149,11 @@ public class Scene {
   }
 
   public static Scene v() {
-    if (ModuleUtil.module_mode()) {
-      return G.v().soot_ModuleScene();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_ModuleScene();
     } else {
-      return G.v().soot_Scene();
+      return g.soot_Scene();
     }
   }
 
@@ -2072,7 +2073,7 @@ public class Scene {
     doneResolving = true;
   }
 
-  void setResolving(boolean value) {
+  public void setResolving(boolean value) {
     doneResolving = value;
   }
 
@@ -2201,5 +2202,14 @@ public class Scene {
 
   public LocalCreation createLocalCreation(Chain<Local> locals, String prefix) {
     return new DefaultLocalCreation(locals, prefix);
+  }
+
+  /**
+   * Resets the sootClassPath to null.
+   * This method allows for subsequent calls to {@link #loadNecessaryClasses()}
+   * to recompute and load the classes using updated configurations if provided.
+   */
+  public void resetSootClassPathCache() {
+    this.sootClassPath = null;
   }
 }

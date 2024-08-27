@@ -25,7 +25,7 @@ package soot.jimple;
 import soot.Unit;
 import soot.UnitBox;
 
-public interface GotoStmt extends Stmt {
+public interface GotoStmt extends BranchableStmt {
   public Unit getTarget();
 
   public void setTarget(Unit target);

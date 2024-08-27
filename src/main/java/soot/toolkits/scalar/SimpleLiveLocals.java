@@ -77,13 +77,13 @@ public class SimpleLiveLocals implements LiveLocals {
 
   @Override
   public List<Local> getLiveLocalsAfter(Unit s) {
-    // ArraySparseSet returns a unbacked list of elements!
+    // HashSparseSet returns a unbacked list of elements!
     return analysis.getFlowAfter(s).toList();
   }
 
   @Override
   public List<Local> getLiveLocalsBefore(Unit s) {
-    // ArraySparseSet returns a unbacked list of elements!
+    // HashSparseSet returns a unbacked list of elements!
     return analysis.getFlowBefore(s).toList();
   }
 
@@ -94,7 +94,7 @@ public class SimpleLiveLocals implements LiveLocals {
 
     @Override
     protected FlowSet<Local> newInitialFlow() {
-      return new ArraySparseSet<Local>();
+      return new HashSparseSet<Local>();
     }
 
     @Override

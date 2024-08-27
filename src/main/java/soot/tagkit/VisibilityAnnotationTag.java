@@ -23,6 +23,7 @@ package soot.tagkit;
  */
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the visibility of an annotation attribute attached to a class, field, method or method param (only one of these
@@ -94,7 +95,7 @@ public class VisibilityAnnotationTag implements Tag {
     annotations.add(a);
   }
 
-  public ArrayList<AnnotationTag> getAnnotations() {
+  public List<AnnotationTag> getAnnotations() {
     return annotations;
   }
 

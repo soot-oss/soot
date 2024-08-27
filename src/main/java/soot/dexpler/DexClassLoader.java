@@ -181,7 +181,7 @@ public class DexClassLoader {
           }
 
           // Transfer the tag from the inner class to the outer class
-          icat.add(new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags()));
+          icat.add(ict);
 
           // Remove the tag from the inner class as inner classes do
           // not have these tags in the Java / Soot semantics. The

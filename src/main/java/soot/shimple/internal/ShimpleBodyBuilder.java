@@ -36,7 +36,7 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.DefinitionStmt;
-import soot.jimple.internal.JimpleLocal;
+import soot.jimple.Jimple;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
@@ -338,7 +338,7 @@ public class ShimpleBodyBuilder {
     String name = oldLocal.getName() + freshSeparator + subscript;
     Local newLocal = newLocals.get(name);
     if (newLocal == null) {
-      newLocal = new JimpleLocal(name, oldLocal.getType());
+      newLocal = Jimple.v().newLocal(name, oldLocal.getType());
       newLocals.put(name, newLocal);
       newLocalsToOldLocal.put(newLocal, oldLocal);
 

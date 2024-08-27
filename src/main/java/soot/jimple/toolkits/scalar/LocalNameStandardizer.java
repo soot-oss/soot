@@ -66,7 +66,7 @@ public class LocalNameStandardizer extends BodyTransformer {
     return (n < 0) ? len - 1 : len;
   }
 
-  private static String genName(String prefix, String type, int n, int digits) {
+  protected String genName(String prefix, String type, int n, int digits) {
     return String.format("%s%s%0" + digits + "d", prefix, type, n);
   }
 
@@ -135,7 +135,7 @@ public class LocalNameStandardizer extends BodyTransformer {
       locals.addAll(sortedLocals);
     }
 
-    if (!PhaseOptions.getBoolean(options, "only-stack-locals")) {
+    if (changeLocalNames(options)) {
       // Change the names to the standard forms now.
 
       final BooleanType booleanType = BooleanType.v();
@@ -192,5 +192,9 @@ public class LocalNameStandardizer extends BodyTransformer {
         }
       }
     }
+  }
+
+  protected boolean changeLocalNames(Map<String, String> options) {
+    return !PhaseOptions.getBoolean(options, "only-stack-locals");
   }
 }

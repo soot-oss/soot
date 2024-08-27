@@ -164,4 +164,14 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
     u.addAllTagsOf(this);
     out.add(u);
   }
+
+  @Override
+  public Unit getTargetForValue(int value) {
+    for (int i = 0; i < lookupValues.size(); i++) {
+      if (lookupValues.get(i).value == value) {
+        return getTarget(i);
+      }
+    }
+    return getDefaultTarget();
+  }
 }
