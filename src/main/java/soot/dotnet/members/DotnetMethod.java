@@ -125,8 +125,7 @@ public class DotnetMethod extends AbstractDotnetMember {
   }
 
   public boolean isStatic() {
-    return protoMethod.getIsStatic() || protoMethod.getName().contains(STATIC_CONSTRUCTOR_NAME)
-        || protoMethod.getName().contains(JAVA_STATIC_CONSTRUCTOR_NAME);
+    return protoMethod.getIsStatic();
   }
 
   public ProtoAssemblyAllTypes.MethodDefinition getProtoMessage() {

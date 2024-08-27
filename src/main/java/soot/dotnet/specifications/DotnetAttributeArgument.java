@@ -51,7 +51,11 @@ public class DotnetAttributeArgument {
     if (arg.getType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ENUM)) {
       // return new AnnotationIntElem(arg.getValueInt32(0), arg.getName());
       // enums are ints in dotnet
-      return new AnnotationEnumElem(arg.getType().getFullname(), arg.getValueString(0), arg.getName());
+      String name = null;
+      if (arg.getValueStringCount() > 0) {
+        name = arg.getValueString(0);
+      }
+      return new AnnotationEnumElem(arg.getType().getFullname(), name, arg.getName());
     }
     if (arg.getType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ARRAY)) {
       ArrayList<AnnotationElem> arrElements = new ArrayList<>();

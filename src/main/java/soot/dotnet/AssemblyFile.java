@@ -410,10 +410,27 @@ public class AssemblyFile extends File {
   /**
    * Check if given assembly file is an assembly
    *
+   * @param pathToNativeHost
+   *          Path where the library file of the native host is located, e.g.
+   *          /Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib
    * @param absolutePathAssembly
    *          e.g. /home/user/cs/myassembly.dll
    * @return true if given file is assembly
    */
   private native boolean nativeIsAssembly(String pathToNativeHost, String absolutePathAssembly);
+
+  /**
+   * Returns a manifest resource stream
+   *
+   * @param pathToNativeHost
+   *          Path where the library file of the native host is located, e.g.
+   *          /Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib
+   * @param absolutePathAssembly
+   *          e.g. /home/user/cs/myassembly.dll
+   * @param name 
+   *          the name of the resource
+   * @return the content of the resource or null if not found
+   */
+  public native byte[] nativeGetManifestResourceStream(String pathToNativeHost, String absolutePathAssembly, String name);
 
 }

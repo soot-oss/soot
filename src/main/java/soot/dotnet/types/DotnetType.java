@@ -58,6 +58,7 @@ import soot.Type;
 import soot.UnitPatchingChain;
 import soot.VoidType;
 import soot.dotnet.AssemblyFile;
+import soot.dotnet.AssemblyTag;
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.members.DotnetField;
 import soot.dotnet.members.DotnetMethod;
@@ -113,6 +114,7 @@ public class DotnetType {
    * @return dependencies which this type depend on (base class, implemented interfaces, method calls, etc.)
    */
   public Dependencies resolveSootClass(SootClass sootClass) {
+    sootClass.addTag(new AssemblyTag(assemblyFile.getAbsolutePath()));
     Dependencies dependencies = new Dependencies();
 
     resolveModifier(sootClass);
