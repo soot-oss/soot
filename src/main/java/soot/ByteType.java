@@ -22,8 +22,8 @@ package soot;
  * #L%
  */
 
-import soot.dotnet.types.DotNetINumber;
 import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
 import soot.jimple.internal.IIntLikeType;
 import soot.options.Options;
 import soot.util.Switch;

@@ -1,7 +1,5 @@
 package soot;
 
-import soot.dotnet.types.DotNetINumber;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,6 +23,7 @@ import soot.dotnet.types.DotNetINumber;
  */
 
 import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
 import soot.options.Options;
 import soot.util.Switch;
 
