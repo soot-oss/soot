@@ -58,8 +58,9 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
   public Value jimplifyExpr(Body jb) {
     this.lhs = createTempVar(jb, NullType.v());
     Value j = super.jimplifyExpr(jb);
-    if (j != null)
+    if (j != null) {
       throw new RuntimeException("Should never happen.");
+    }
     return lhs;
 
   }

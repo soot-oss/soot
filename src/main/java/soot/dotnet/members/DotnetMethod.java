@@ -44,7 +44,7 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.specifications.DotnetAttributeArgument;
 import soot.dotnet.specifications.DotnetModifier;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
@@ -169,7 +169,7 @@ public class DotnetMethod extends AbstractDotnetMember {
     // public unsafe void* ToPointer() { return this._value; }
     if (dotnetMethodType == DotnetMethodType.METHOD) {
       if (protoMethod.getReturnType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.POINTER)
-          && protoMethod.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID)) {
+          && protoMethod.getReturnType().getFullname().equals(DotNetBasicTypes.SYSTEM_VOID)) {
         return_type = declaringClass.getType();
       }
     }
@@ -273,7 +273,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
         method.addTag(new AnnotationTag(annotationType, elements));
 
-        if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE)) {
+        if (annotationType.equals(DotNetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE)) {
           method.addTag(new DeprecatedTag());
         }
       } catch (Exception ignore) {
@@ -399,5 +399,5 @@ public class DotnetMethod extends AbstractDotnetMember {
   public static final String JAVA_CONSTRUCTOR_NAME = "<init>";
   public static final String DESTRUCTOR_NAME = "Finalize";
 
-  public static final String MAIN_METHOD_SIGNATURE = "void Main(" + DotnetBasicTypes.SYSTEM_STRING + "[])";
+  public static final String MAIN_METHOD_SIGNATURE = "void Main(" + DotNetBasicTypes.SYSTEM_STRING + "[])";
 }

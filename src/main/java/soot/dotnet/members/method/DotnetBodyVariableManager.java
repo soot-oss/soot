@@ -44,7 +44,7 @@ import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
@@ -129,7 +129,7 @@ public class DotnetBodyVariableManager {
       }
 
       // for unsafe methods, where no definition is used
-      if (!(v.getType().getFullname().equals(DotnetBasicTypes.SYSTEM_OBJECT))) {
+      if (!(v.getType().getFullname().equals(DotNetBasicTypes.SYSTEM_OBJECT))) {
         initLocalValueTypes.add(v);
       }
     }
@@ -203,8 +203,9 @@ public class DotnetBodyVariableManager {
         : DotnetTypeFactory.toSootType(type); // deprecated JimpleToDotnetType(type)
 
     String n = v.getName();
-    if (n.isEmpty())
+    if (n.isEmpty()) {
       n = "noname";
+    }
     Local newLocal = Jimple.v().newLocal(n, localType);
     this.mainJb.getLocals().add(newLocal);
     if (jbTmp != null && jbTmp != this.mainJb) {

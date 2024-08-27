@@ -24,7 +24,7 @@ import soot.dotnet.types.DotNetINumber;
  * #L%
  */
 
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.internal.IIntLikeType;
 import soot.options.Options;
 import soot.util.Switch;
@@ -67,7 +67,7 @@ public class ShortType extends PrimType implements IJavaType, IntegerType, DotNe
   @Override
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return DotnetBasicTypes.SYSTEM_INT16;
+      return DotNetBasicTypes.SYSTEM_INT16;
     }
     return JavaBasicTypes.JAVA_LANG_SHORT;
   }

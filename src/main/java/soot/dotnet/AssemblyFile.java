@@ -22,6 +22,8 @@ package soot.dotnet;
  * #L%
  */
 
+import com.google.common.base.Strings;
+
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -33,8 +35,6 @@ import java.util.Map;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
 
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;

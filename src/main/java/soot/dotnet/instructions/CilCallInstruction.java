@@ -48,7 +48,7 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg;
 import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.AssignStmt;
@@ -237,7 +237,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
     }
 
     final FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
-    final RefType valueType = RefType.v(DotnetBasicTypes.SYSTEM_VALUETYPE);
+    final RefType valueType = RefType.v(DotNetBasicTypes.SYSTEM_VALUETYPE);
 
     // Check if cast is needed for correct validation, e.g.:
     // System.Object modifiers = null;
@@ -262,8 +262,8 @@ public class CilCallInstruction extends AbstractCilnstruction {
         }
       } else {
         if (modifiedArg instanceof Local) {
-          if (argType.toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-              && !methodParam.toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+          if (argType.toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)
+              && !methodParam.toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)) {
             Local castLocal = dotnetBody.variableManager.localGenerator.generateLocal(methodParam);
             localsToCastForCall.add(new Pair<>((Local) modifiedArg, castLocal));
             modifiedArg = castLocal;
@@ -293,7 +293,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
     // due to unsafe methods with "void*" rewrite this
     Type return_type;
     if (method.getReturnType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.POINTER)
-        && method.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID)) {
+        && method.getReturnType().getFullname().equals(DotNetBasicTypes.SYSTEM_VOID)) {
       return_type = DotnetTypeFactory.toSootType(method.getProtoMessage().getDeclaringType());
     } else {
       return_type = DotnetTypeFactory.toSootType(method.getProtoMessage().getReturnType());

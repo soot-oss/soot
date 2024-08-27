@@ -37,12 +37,13 @@ import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.VoidType;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 
 /**
- * Array elments in .NET can be loaded by reference. Since Jimple does not support this semantic, we generate Wrapper classes.
+ * Array elements in .NET can be loaded by reference. 
+ * Since Jimple does not support this semantic, we generate Wrapper classes.
  * 
  * Note that in .NET, array covariance is allowed for reference types:
  * <code>
@@ -62,11 +63,11 @@ public class ArrayByReferenceWrapperGenerator {
     Scene scene = Scene.v();
     String name = WRAPPER_CLASS_NAME_START;
     String suffix = "";
-    if (DotnetBasicTypes.isValueType(elementType)) {
+    if (DotNetBasicTypes.isValueType(elementType)) {
       name += elementType.toString().replace(".", "_");
     } else {
       name += "Object";
-      elementType = RefType.v(DotnetBasicTypes.SYSTEM_OBJECT);
+      elementType = RefType.v(DotNetBasicTypes.SYSTEM_OBJECT);
     }
     name += suffix;
     RefType rt = RefType.v(name);

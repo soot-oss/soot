@@ -37,7 +37,7 @@ import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetType;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
@@ -76,19 +76,16 @@ public class CilStLocInstruction extends AbstractCilnstruction {
     }
 
     if (value.getType() instanceof IntType
-        && Scene.v().getOrMakeFastHierarchy().canStoreType(variable.getType(), RefType.v(DotnetBasicTypes.SYSTEM_ENUM))) {
+        && Scene.v().getOrMakeFastHierarchy().canStoreType(variable.getType(), RefType.v(DotNetBasicTypes.SYSTEM_ENUM))) {
       //we need a cast
       value = Jimple.v().newCastExpr(value, variable.getType());
-    } else
-
-    // create this cast, to validate successfully
-    if (value instanceof Local && variable.getType() != value.getType()
+    } else if (value instanceof Local && variable.getType() != value.getType()
         && dotnetBody.variableManager.localsToCastContains(((Local) value).getName())) {
+      // create this cast, to validate successfully
       value = Jimple.v().newCastExpr(value, variable.getType());
-    }
-    // for validation, because array = obj, where array typeof byte[] and obj typeof System.Object
-    else if (value instanceof Local && value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-        && !variable.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+    } else if (value instanceof Local && value.getType().toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)
+        && !variable.getType().toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)) {
+      // for validation, because array = obj, where array typeof byte[] and obj typeof System.Object
       value = Jimple.v().newCastExpr(value, variable.getType());
     }
 

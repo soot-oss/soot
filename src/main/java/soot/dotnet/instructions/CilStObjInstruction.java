@@ -34,7 +34,7 @@ import soot.dotnet.members.ArrayByReferenceWrapperGenerator;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.IntConstant;
@@ -83,7 +83,7 @@ public class CilStObjInstruction extends AbstractCilnstruction {
 
     // create this cast, to validate successfully
     if (value instanceof Local && !target.getType().toString().equals(value.getType().toString())) {
-      if (value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+      if (value.getType().toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)) {
         value = Jimple.v().newCastExpr(value, target.getType());
       }
     }

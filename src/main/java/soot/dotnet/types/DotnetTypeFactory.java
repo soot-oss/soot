@@ -63,46 +63,46 @@ import soot.jimple.ULongConstant;
 public class DotnetTypeFactory {
   public static Type toSootType(String type) {
     switch (type) {
-      case DotnetBasicTypes.SYSTEM_BYTE:
+      case DotNetBasicTypes.SYSTEM_BYTE:
         // unsigned byte
         return UByteType.v();
-      case DotnetBasicTypes.SYSTEM_SBYTE:
+      case DotNetBasicTypes.SYSTEM_SBYTE:
         // signed byte
         return ByteType.v();
-      case DotnetBasicTypes.SYSTEM_CHAR:
+      case DotNetBasicTypes.SYSTEM_CHAR:
         return CharType.v();
-      case DotnetBasicTypes.SYSTEM_DOUBLE:
+      case DotNetBasicTypes.SYSTEM_DOUBLE:
         return DoubleType.v();
-      case DotnetBasicTypes.SYSTEM_SINGLE:
+      case DotNetBasicTypes.SYSTEM_SINGLE:
         return FloatType.v();
-      case DotnetBasicTypes.SYSTEM_INT64:
+      case DotNetBasicTypes.SYSTEM_INT64:
         return LongType.v();
-      case DotnetBasicTypes.SYSTEM_INT16:
+      case DotNetBasicTypes.SYSTEM_INT16:
         return ShortType.v();
-      case DotnetBasicTypes.SYSTEM_BOOLEAN:
+      case DotNetBasicTypes.SYSTEM_BOOLEAN:
         return BooleanType.v();
-      case DotnetBasicTypes.SYSTEM_VOID:
+      case DotNetBasicTypes.SYSTEM_VOID:
         return VoidType.v();
-      case DotnetBasicTypes.SYSTEM_UINT32:
+      case DotNetBasicTypes.SYSTEM_UINT32:
         return UIntType.v();
-      case DotnetBasicTypes.SYSTEM_DECIMAL:
+      case DotNetBasicTypes.SYSTEM_DECIMAL:
         return DecimalType.v();
-      case DotnetBasicTypes.SYSTEM_UINT64:
+      case DotNetBasicTypes.SYSTEM_UINT64:
         return ULongType.v();
-      case DotnetBasicTypes.SYSTEM_UINT16:
+      case DotNetBasicTypes.SYSTEM_UINT16:
         return UShortType.v();
-      case DotnetBasicTypes.SYSTEM_INT32:
+      case DotNetBasicTypes.SYSTEM_INT32:
         return IntType.v();
 
-      case DotnetBasicTypes.SYSTEM_INTPTR:
-      case DotnetBasicTypes.SYSTEM_UINTPTR:
+      case DotNetBasicTypes.SYSTEM_INTPTR:
+      case DotNetBasicTypes.SYSTEM_UINTPTR:
       case "nint":
       case "nuint":
         // not supported at the moment
         return IntType.v();
     }
     if (type.startsWith("`") || type.startsWith("``")) {
-      return RefType.v(DotnetBasicTypes.SYSTEM_OBJECT);
+      return RefType.v(DotNetBasicTypes.SYSTEM_OBJECT);
     }
 
     return RefType.v(type);
@@ -189,15 +189,15 @@ public class DotnetTypeFactory {
 
   public static List<String> listOfCilPrimitives() {
     ArrayList<String> lst = new ArrayList<>();
-    lst.add(DotnetBasicTypes.SYSTEM_INTPTR);
-    lst.add(DotnetBasicTypes.SYSTEM_UINTPTR);
+    lst.add(DotNetBasicTypes.SYSTEM_INTPTR);
+    lst.add(DotNetBasicTypes.SYSTEM_UINTPTR);
     lst.add("nint");
     lst.add("nuint");
-    lst.add(DotnetBasicTypes.SYSTEM_UINT32);
-    lst.add(DotnetBasicTypes.SYSTEM_SBYTE);
-    lst.add(DotnetBasicTypes.SYSTEM_DECIMAL);
-    lst.add(DotnetBasicTypes.SYSTEM_UINT64);
-    lst.add(DotnetBasicTypes.SYSTEM_UINT16);
+    lst.add(DotNetBasicTypes.SYSTEM_UINT32);
+    lst.add(DotNetBasicTypes.SYSTEM_SBYTE);
+    lst.add(DotNetBasicTypes.SYSTEM_DECIMAL);
+    lst.add(DotNetBasicTypes.SYSTEM_UINT64);
+    lst.add(DotNetBasicTypes.SYSTEM_UINT16);
     return lst;
   }
 }

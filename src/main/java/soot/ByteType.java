@@ -1,7 +1,5 @@
 package soot;
 
-import soot.dotnet.types.DotNetINumber;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,7 +22,8 @@ import soot.dotnet.types.DotNetINumber;
  * #L%
  */
 
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.internal.IIntLikeType;
 import soot.options.Options;
 import soot.util.Switch;
@@ -56,10 +55,11 @@ public class ByteType extends PrimType implements IntegerType, IJavaType, DotNet
 
   @Override
   public String toString() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet)
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
       return "sbyte";
-    else
+    } else {
       return "byte";
+    }
   }
 
   @Override
@@ -70,7 +70,7 @@ public class ByteType extends PrimType implements IntegerType, IJavaType, DotNet
   @Override
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return DotnetBasicTypes.SYSTEM_SBYTE;
+      return DotNetBasicTypes.SYSTEM_SBYTE;
     }
     return JavaBasicTypes.JAVA_LANG_BYTE;
   }

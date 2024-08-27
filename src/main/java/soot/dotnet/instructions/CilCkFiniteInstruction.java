@@ -30,7 +30,7 @@ import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
 import soot.jimple.Jimple;
@@ -60,7 +60,7 @@ public class CilCkFiniteInstruction extends AbstractCilnstruction {
     NeExpr eqNaNExpr = Jimple.v().newNeExpr(argument, argument);
 
     // if value is infinity, throw exception
-    SootClass exceptionClass = Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_ARITHMETICEXCEPTION);
+    SootClass exceptionClass = Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_ARITHMETICEXCEPTION);
     Local tmpLocalVar = dotnetBody.variableManager.localGenerator.generateLocal(exceptionClass.getType());
     ThrowStmt throwStmt = Jimple.v().newThrowStmt(tmpLocalVar);
 

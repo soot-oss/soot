@@ -36,7 +36,7 @@ import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.GotoStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NopStmt;
@@ -53,7 +53,7 @@ public class CilTryCatchInstruction extends AbstractCilnstruction {
   @Override
   public void jimplify(Body jb) {
     List<Unit> nopsToReplaceWithGoto = new ArrayList<>();
-    final SootClass exceptionClass = Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_EXCEPTION);
+    final SootClass exceptionClass = Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_EXCEPTION);
     NopStmt gotoEndTryCatchBlockNop = Jimple.v().newNopStmt();
 
     // try block
@@ -99,7 +99,7 @@ public class CilTryCatchInstruction extends AbstractCilnstruction {
           exceptionIdentityStmt, nopsToReplaceWithGoto);
       handlersList.add(handler);
 
-      if (handlerMsg.getVariable().getType().getFullname().equals(DotnetBasicTypes.SYSTEM_EXCEPTION)) {
+      if (handlerMsg.getVariable().getType().getFullname().equals(DotNetBasicTypes.SYSTEM_EXCEPTION)) {
         systemExceptionHandler = handler;
       }
     }

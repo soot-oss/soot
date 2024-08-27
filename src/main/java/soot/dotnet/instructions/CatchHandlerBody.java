@@ -32,7 +32,7 @@ import soot.Trap;
 import soot.Unit;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NopStmt;
@@ -50,7 +50,7 @@ public class CatchHandlerBody {
   // method body of this handler
   private final ProtoIlInstructions.IlTryCatchHandlerMsg handlerMsg;
   private final DotnetBody dotnetBody;
-  private final SootClass exceptionClass = Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_EXCEPTION);
+  private final SootClass exceptionClass = Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_EXCEPTION);
   // Jimple Body of TryCatch Try part
   private final Body tryBody;
   private final Unit exceptionIdentityStmt;

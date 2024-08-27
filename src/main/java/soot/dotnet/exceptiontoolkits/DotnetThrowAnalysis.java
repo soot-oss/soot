@@ -66,7 +66,7 @@ import soot.baf.StoreInst;
 import soot.baf.TableSwitchInst;
 import soot.baf.ThrowInst;
 import soot.baf.VirtualInvokeInst;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -186,17 +186,17 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseArrayWriteInst(ArrayWriteInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION));
         if (i.getOpType() instanceof RefType) {
-          result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_ARRAYTYPEMISMATCHEXCEPTION));
+          result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_ARRAYTYPEMISMATCHEXCEPTION));
         }
       }
 
       @Override
       public void caseArrayReadInst(ArrayReadInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION));
       }
 
       /**
@@ -204,8 +204,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
        */
       @Override
       public void caseStaticGetInst(StaticGetInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
       }
 
       /**
@@ -213,40 +213,40 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
        */
       @Override
       public void caseStaticPutInst(StaticPutInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
       }
 
       @Override
       public void caseFieldGetInst(FieldGetInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
       }
 
       @Override
       public void caseFieldPutInst(FieldPutInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
       }
 
       @Override
       public void caseInstanceCastInst(InstanceCastInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
       }
 
       @Override
       public void caseInstanceOfInst(InstanceOfInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
       }
 
       @Override
       public void casePrimitiveCastInst(PrimitiveCastInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
         // result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION));
       }
 
       // does not exist
@@ -256,78 +256,78 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseStaticInvokeInst(StaticInvokeInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(mightThrow(i.getMethodRef()));
       }
 
       @Override
       public void caseVirtualInvokeInst(VirtualInvokeInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(mightThrow(i.getMethodRef()));
       }
 
       @Override
       public void caseInterfaceInvokeInst(InterfaceInvokeInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(mightThrow(i.getMethodRef()));
       }
 
       @Override
       public void caseSpecialInvokeInst(SpecialInvokeInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(mightThrow(i.getMethodRef()));
       }
 
       @Override
       public void caseThrowInst(ThrowInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         // all throwables which throw can throw
         result = result.add(mightThrowExplicitly(i));
       }
 
       @Override
       public void caseArrayLengthInst(ArrayLengthInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
       }
 
       @Override
       public void caseDivInst(DivInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_ARITHMETICEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_ARITHMETICEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION));
       }
 
       @Override
       public void caseRemInst(RemInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_ARITHMETICEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_ARITHMETICEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION));
       }
 
       @Override
       public void caseNewInst(NewInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INVALIDOPERATIONEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INVALIDOPERATIONEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
       }
 
       @Override
       public void caseNewArrayInst(NewArrayInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
       }
 
       @Override
       public void caseNewMultiArrayInst(NewMultiArrayInst i) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
       }
 
       @Override
@@ -348,8 +348,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseAssignStmt(AssignStmt s) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
         // handle all exceptions in expressions
         result = result.add(mightThrow(s.getLeftOp()));
         result = result.add(mightThrow(s.getRightOp()));
@@ -432,27 +432,27 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseCheckedAddExpr(JCheckedAddExpr v) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
       }
 
       @Override
       public void caseCheckedMulExpr(JCheckedMulExpr v) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
       }
 
       @Override
       public void caseCheckedSubExpr(JCheckedSubExpr v) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
       }
 
       @Override
       public void caseCheckedCastExpr(JCheckedCastExpr v) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
       }
 
       @Override
       public void caseClassConstant(ClassConstant c) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
         // ignore, only refanyval
         // result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION));
       }
@@ -501,20 +501,20 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseCastExpr(CastExpr expr) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
 
         Type fromType = expr.getOp().getType();
         Type toType = expr.getCastType();
         if (!(fromType instanceof RefLikeType)) {
-          result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION));
+          result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION));
         }
         if (toType instanceof RefLikeType) {
           // if typeTok cannot be found - see ECMA 335
           FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
           if (fromType == null || fromType instanceof UnknownType
               || ((!(fromType instanceof NullType)) && (!h.canStoreType(fromType, toType)))) {
-            result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
+            result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
           }
         }
         result = result.add(mightThrow(expr.getOp()));
@@ -522,28 +522,28 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseInstanceOfExpr(InstanceOfExpr expr) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
         result = result.add(mightThrow(expr.getOp()));
       }
 
       @Override
       public void caseNewArrayExpr(NewArrayExpr expr) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
         Value count = expr.getSize();
         if (!(count instanceof IntConstant) || ((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO)) {
-          result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+          result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
         }
         result = result.add(mightThrow(count));
       }
 
       @Override
       public void caseNewMultiArrayExpr(NewMultiArrayExpr expr) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION));
         for (int i = 0; i < expr.getSizeCount(); i++) {
           Value count = expr.getSize(i);
           if ((!(count instanceof IntConstant))
               || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
-            result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
+            result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
           }
           result = result.add(mightThrow(count));
         }
@@ -555,7 +555,7 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseLengthExpr(LengthExpr expr) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(mightThrow(expr.getOp()));
       }
 
@@ -563,8 +563,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseArrayRef(ArrayRef ref) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION));
         result = result.add(mightThrow(ref.getBase()));
         result = result.add(mightThrow(ref.getIndex()));
       }
@@ -572,17 +572,17 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
       // static field load
       @Override
       public void caseStaticFieldRef(StaticFieldRef ref) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
       }
 
       // Non-static field
       @Override
       public void caseInstanceFieldRef(InstanceFieldRef ref) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_INVALIDOPERATIONEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INVALIDOPERATIONEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(mightThrow(ref.getBase()));
       }
 
@@ -597,7 +597,7 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseLocal(Local l) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_VERIFICATIONEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_VERIFICATIONEXCEPTION));
       }
 
       @Override
@@ -625,9 +625,9 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
                 && (!(divisor instanceof LongConstant) || divisor.equals(LONG_CONSTANT_ZERO)))
         // floating points never throw an exception
         ) {
-          result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION));
+          result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION));
         }
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_ARITHMETICEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_ARITHMETICEXCEPTION));
         // result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION)); //Implementation specific
         // (Microsoft)
 
@@ -636,9 +636,9 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
       }
 
       private void caseInstanceInvokeExpr(InvokeExpr expr, boolean staticInvoke) {
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
-        result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_METHODACCESSEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION));
+        result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         // result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_SECURITYEXCEPTION));
         for (int i = 0; i < expr.getArgCount(); i++) {
           result = result.add(mightThrow(expr.getArg(i)));

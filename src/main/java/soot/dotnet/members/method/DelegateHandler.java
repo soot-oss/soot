@@ -371,10 +371,11 @@ public class DelegateHandler {
         bodyInvoke.getUnits().add(j.newAssignStmt(lclIndex, IntConstant.v(0)));
 
         Stmt retS;
-        if (lclRet != null)
+        if (lclRet != null) {
           retS = j.newReturnStmt(lclRet);
-        else
+        } else {
           retS = j.newReturnVoidStmt();
+        }
 
         Stmt backedge = j.newIfStmt(j.newEqExpr(lclIndex, lclCount), retS);
         bodyInvoke.getUnits().add(backedge);
@@ -479,8 +480,9 @@ public class DelegateHandler {
 
     public static synchronized SootClass createDelegateInterface(Scene sc) {
       SootClass delegateInterface = sc.getSootClassUnsafe(DELEGATE_INTERFACE_CLASSNAME);
-      if (delegateInterface != null)
+      if (delegateInterface != null) {
         return delegateInterface;
+      }
       delegateInterface
           = sc.makeSootClass(DELEGATE_INTERFACE_CLASSNAME, Modifier.PUBLIC | Modifier.INTERFACE | Modifier.ABSTRACT);
       delegateInterface.setApplicationClass();
@@ -523,8 +525,9 @@ public class DelegateHandler {
 
     protected static synchronized SootClass createDelegateHolder(Scene sc) {
       SootClass dh = sc.getSootClassUnsafe(DELEGATE_HOLDER_CLASSNAME);
-      if (dh != null)
+      if (dh != null) {
         return dh;
+      }
       SootClass delegateHolder = sc.makeSootClass(DELEGATE_HOLDER_CLASSNAME, Modifier.PUBLIC);
       delegateHolder.setApplicationClass();
 
@@ -702,8 +705,9 @@ public class DelegateHandler {
 
   public static SootClass getOrCreateCommonDelegateInterface(Scene scene) {
     SootClass delegateInterface = scene.getSootClassUnsafe(DELEGATE_INTERFACE_CLASSNAME);
-    if (delegateInterface == null)
+    if (delegateInterface == null) {
       delegateInterface = DelegateInfo.createDelegateInterface(scene);
+    }
     return delegateInterface;
   }
 

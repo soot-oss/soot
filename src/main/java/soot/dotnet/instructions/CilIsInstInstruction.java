@@ -28,7 +28,7 @@ import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
@@ -67,7 +67,7 @@ public class CilIsInstInstruction extends AbstractCilnstruction {
   public Local resolveRewritingIsInst(Body jb, Local variable, InstanceOfExpr instanceOfExpr) {
     Jimple j = Jimple.v();
     Local local = dotnetBody.variableManager.localGenerator
-        .generateLocal(DotnetTypeFactory.toSootType(DotnetBasicTypes.SYSTEM_BOOLEAN));
+        .generateLocal(DotnetTypeFactory.toSootType(DotNetBasicTypes.SYSTEM_BOOLEAN));
     AssignStmt assignInstanceOfStmt = j.newAssignStmt(local, instanceOfExpr);
     NopStmt nopStmt = j.newNopStmt();
 

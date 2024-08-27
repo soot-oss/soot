@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
@@ -158,13 +158,13 @@ public class FastHierarchy {
     this.rtObject = sc.getObjectType();
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
-    this.cilArray = RefType.v(DotnetBasicTypes.SYSTEM_ARRAY);
+    this.cilArray = RefType.v(DotNetBasicTypes.SYSTEM_ARRAY);
     // for CIL prim type structs, which implement these interfaces
-    this.cilIcomparable = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE);
-    this.cilIcomparable1 = RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1);
-    this.cilIconvertible = RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE);
-    this.cilIequatable1 = RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1);
-    this.cilIformattable = RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE);
+    this.cilIcomparable = RefType.v(DotNetBasicTypes.SYSTEM_ICOMPARABLE);
+    this.cilIcomparable1 = RefType.v(DotNetBasicTypes.SYSTEM_ICOMPARABLE_1);
+    this.cilIconvertible = RefType.v(DotNetBasicTypes.SYSTEM_ICONVERTIBLE);
+    this.cilIequatable1 = RefType.v(DotNetBasicTypes.SYSTEM_IEQUATABLE_1);
+    this.cilIformattable = RefType.v(DotNetBasicTypes.SYSTEM_IFORMATTABLE);
 
     /* First build the inverse maps. */
     buildInverseMaps();

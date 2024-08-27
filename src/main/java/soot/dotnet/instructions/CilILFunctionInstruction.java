@@ -27,8 +27,8 @@ import soot.Local;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
-import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.AssignStmt;
 import soot.jimple.GotoStmt;
@@ -43,7 +43,7 @@ import soot.jimple.NullConstant;
  * CIL isinst differs from instanceof: isinst returns object or null, while instanceof returns a boolean - rewrite
  */
 public class CilILFunctionInstruction extends AbstractCilnstruction {
-  public CilILFunctionInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  public CilILFunctionInstruction(IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
   }
 
@@ -64,7 +64,7 @@ public class CilILFunctionInstruction extends AbstractCilnstruction {
   public void resolveRewritingIsInst(Body jb, Local variable, Value instanceOfExpr) {
 
     Local local = dotnetBody.variableManager.localGenerator
-        .generateLocal(DotnetTypeFactory.toSootType(DotnetBasicTypes.SYSTEM_BOOLEAN));
+        .generateLocal(DotnetTypeFactory.toSootType(DotNetBasicTypes.SYSTEM_BOOLEAN));
     AssignStmt assignInstanceOfStmt = Jimple.v().newAssignStmt(local, instanceOfExpr);
     NopStmt nopStmt = Jimple.v().newNopStmt();
     AssignStmt assignIfTrueStmt = Jimple.v().newAssignStmt(variable, ((InstanceOfExpr) instanceOfExpr).getOp());

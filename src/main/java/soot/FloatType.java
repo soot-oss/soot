@@ -24,7 +24,7 @@ import soot.dotnet.types.DotNetINumber;
  * #L%
  */
 
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.options.Options;
 import soot.util.Switch;
 
@@ -66,7 +66,7 @@ public class FloatType extends PrimType implements DotNetINumber, IJavaType {
   @Override
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return DotnetBasicTypes.SYSTEM_SINGLE;
+      return DotNetBasicTypes.SYSTEM_SINGLE;
     }
     return JavaBasicTypes.JAVA_LANG_FLOAT;
   }

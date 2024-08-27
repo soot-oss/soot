@@ -93,7 +93,10 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * Instructions .NET Method Body (with ILSpy AST) -> BlockContainer -> Block -> IL Instruction
  */
 public class DotnetBody {
-
+  //we need to split thanks to the style imposed line length limit. Great.
+  private static final String INIT_ARRAY
+      = "<System.Runtime.CompilerServices.RuntimeHelpers:" + 
+        "void InitializeArray(System.Array,System.RuntimeFieldHandle)>";
   private final ProtoIlInstructions.IlFunctionMsg ilFunctionMsg;
   private JimpleBody jb;
 
@@ -236,8 +239,7 @@ public class DotnetBody {
       if (c.containsInvokeExpr()) {
         InvokeExpr invExpr = c.getInvokeExpr();
         if (invExpr.getMethodRef().getName().equals("InitializeArray")) {
-          if (invExpr.getMethodRef().getSignature().equals(
-              "<System.Runtime.CompilerServices.RuntimeHelpers: void InitializeArray(System.Array,System.RuntimeFieldHandle)>")) {
+          if (invExpr.getMethodRef().getSignature().equals(INIT_ARRAY)) {
             Value ref = invExpr.getArg(1);
             if (ref instanceof soot.jimple.MethodHandle) {
               soot.jimple.MethodHandle mh = (soot.jimple.MethodHandle) ref;

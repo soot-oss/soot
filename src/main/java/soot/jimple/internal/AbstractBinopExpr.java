@@ -46,7 +46,7 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.dotnet.types.DotNetINumber;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
 import soot.options.Options;
@@ -234,7 +234,7 @@ public abstract class AbstractBinopExpr implements Expr {
     if (superclass == null) {
       return false;
     }
-    if (Scene.v().getOrMakeFastHierarchy().canStoreType(superclass.getType(), RefType.v(DotnetBasicTypes.SYSTEM_ENUM))) {
+    if (Scene.v().getOrMakeFastHierarchy().canStoreType(superclass.getType(), RefType.v(DotNetBasicTypes.SYSTEM_ENUM))) {
       return true;
     }
     return false;
