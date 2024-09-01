@@ -1,7 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -68,13 +66,10 @@ public class CilStLocInstruction extends AbstractCilnstruction {
 
     // cast for validation
     if (cilExpr instanceof CilCallVirtInstruction) {
-      List<Pair<Local, Local>> locals = ((CilCallVirtInstruction) cilExpr).getLocalsToCastForCall();
-      if (locals.size() != 0) {
-        for (Pair<Local, Local> pair : locals) {
-          CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());
-          AssignStmt assignStmt = Jimple.v().newAssignStmt(pair.getO2(), castExpr);
-          jb.getUnits().add(assignStmt);
-        }
+      for (Pair<Value, Value> pair : ((CilCallVirtInstruction) cilExpr).getPrimitivesToCastForCall()) {
+        CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());
+        AssignStmt assignStmt = Jimple.v().newAssignStmt(pair.getO2(), castExpr);
+        jb.getUnits().add(assignStmt);
       }
     }
     // create this cast, to validate successfully
