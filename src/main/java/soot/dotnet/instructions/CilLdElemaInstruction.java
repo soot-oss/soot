@@ -1,8 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,39 +22,32 @@ import java.util.List;
  * #L%
  */
 import soot.Body;
-import soot.Immediate;
 import soot.Local;
+import soot.SootClass;
 import soot.Type;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
+import soot.dotnet.members.ArrayByReferenceWrapperGenerator;
 import soot.dotnet.members.method.DotnetBody;
-import soot.dotnet.members.method.DotnetBodyVariableManager;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.jimple.ArrayRef;
-import soot.jimple.AssignStmt;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JArrayRef;
 
 /**
- * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g.
- * elem[1,5]); unfolding it
+ * Load element out of an array local In ILSpy/.NET instruction an element can be loaded by one instruction (e.g. elem[1,5]);
+ * unfolding it
+ * 
+ * This opcode loads an address, i.e. a pointer on a specific element
  */
 public class CilLdElemaInstruction extends AbstractCilnstruction {
-  public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
+  private Local targetVar;
+
+  public CilLdElemaInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock,
+      Local variable) {
     super(instruction, dotnetBody, cilBlock);
-
-    if (instruction.getIndicesCount() > 1) {
-      isMultiArrayRef = true;
-    }
+    this.targetVar = variable;
   }
-
-  private boolean isMultiArrayRef = false;
-
-  private final List<Value> indices = new ArrayList<>();
-
-  /**
-   * Base array value/local from where to load element
-   */
-  private Value baseArrayLocal;
 
   @Override
   public void jimplify(Body jb) {
@@ -67,63 +57,36 @@ public class CilLdElemaInstruction extends AbstractCilnstruction {
   @Override
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
-    baseArrayLocal = cilExpr.jimplifyExpr(jb);
+    Value baseArrayLocal = cilExpr.jimplifyExpr(jb);
+    baseArrayLocal = simplifyComplexExpression(jb, baseArrayLocal);
 
-    if (instruction.getIndicesCount() == 1) {
-      Value ind
-          = CilInstructionFactory.fromInstructionMsg(instruction.getIndices(0), dotnetBody, cilBlock).jimplifyExpr(jb);
-      Value index = ind instanceof Immediate ? ind : DotnetBodyVariableManager.inlineLocals(ind, jb);
-      return Jimple.v().newArrayRef(baseArrayLocal, index);
-    }
-
-    // if is multiArrayRef
-    for (ProtoIlInstructions.IlInstructionMsg ind : instruction.getIndicesList()) {
+    for (int i = 0; i < instruction.getIndicesCount() - 1; i++) {
+      final IlInstructionMsg ind = instruction.getIndices(i);
       Value indExpr = CilInstructionFactory.fromInstructionMsg(ind, dotnetBody, cilBlock).jimplifyExpr(jb);
-      Value index = indExpr instanceof Immediate ? indExpr : DotnetBodyVariableManager.inlineLocals(indExpr, jb);
-      indices.add(index);
+      Value index = simplifyComplexExpression(jb, indExpr);
+      baseArrayLocal = simplifyComplexExpression(jb, Jimple.v().newArrayRef(baseArrayLocal, index));
+
     }
-    // only temporary - MultiArrayRef is rewritten later in in StLoc with the resolveRewriteMultiArrAccess instruction
-    return Jimple.v().newArrayRef(baseArrayLocal, indices.get(0));
-  }
 
-  public boolean isMultiArrayRef() {
-    return isMultiArrayRef;
-  }
+    //the last one is going to be a pointer!
+    IlInstructionMsg last = instruction.getIndices(instruction.getIndicesCount() - 1);
+    Value ind = CilInstructionFactory.fromInstructionMsg(last, dotnetBody, cilBlock).jimplifyExpr(jb);
+    Value index = simplifyComplexExpression(jb, ind);
+    //In the CilLdElemInstruction instruction, we would generate an arrayref 
+    //Jimple.v().newArrayRef(baseArrayLocal, index);
+    //however, this is a pointer, so we'll use a special generated class
+    Type elemType = JArrayRef.getElementType(baseArrayLocal.getType());
+    SootClass wc = ArrayByReferenceWrapperGenerator.getWrapperClass(elemType);
+    Jimple j = Jimple.v();
 
-  public Value getBaseArrayLocal() {
-    return baseArrayLocal;
-  }
-
-  public List<Value> getIndices() {
-    return indices;
-  }
-
-  /**
-   * Resolve Jimple Body, rollout array access dimension for dimension and return new rValue
-   *
-   * @param jb
-   *          Jimple Body where to insert the rewritten statements
-   */
-  public Value resolveRewriteMultiArrAccess(Body jb) {
-    // can only be >1
-    int size = getIndices().size();
-
-    Local lLocalVar;
-    Local rLocalVar = null;
-    for (int z = 0; z < size; z++) {
-      ArrayRef arrayRef;
-      if (z == 0) {
-        arrayRef = Jimple.v().newArrayRef(getBaseArrayLocal(), getIndices().get(z));
-      } else {
-        arrayRef = Jimple.v().newArrayRef(rLocalVar, getIndices().get(z));
-      }
-      Type arrayType = arrayRef.getType();
-      lLocalVar = dotnetBody.variableManager.localGenerator.generateLocal(arrayType);
-
-      AssignStmt assignStmt = Jimple.v().newAssignStmt(lLocalVar, arrayRef);
-      jb.getUnits().add(assignStmt);
-      rLocalVar = lLocalVar;
+    Local base = dotnetBody.variableManager.getReferenceLocal(targetVar);
+    if (base == null) {
+      base = (Local) simplifyComplexExpression(jb, j.newNewExpr(wc.getType()));
+      dotnetBody.variableManager.addReferenceLocal(targetVar, (Local) base);
     }
-    return rLocalVar;
+    jb.getUnits()
+        .add(j.newInvokeStmt(j.newSpecialInvokeExpr(base, wc.getMethodByName("<init>").makeRef(), baseArrayLocal, index)));
+    return base;
   }
+
 }

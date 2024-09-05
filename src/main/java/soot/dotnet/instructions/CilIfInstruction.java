@@ -55,7 +55,7 @@ public class CilIfInstruction extends AbstractCilnstruction {
       // Store expression to local variable and check if true in second instruction
       Local tmpLocalCond = dotnetBody.variableManager.localGenerator.generateLocal(condition.getType());
       jb.getUnits().add(Jimple.v().newAssignStmt(tmpLocalCond, condition));
-      eqExpr = Jimple.v().newEqExpr(tmpLocalCond, IntConstant.v(1));
+      eqExpr = Jimple.v().newNeExpr(tmpLocalCond, IntConstant.v(0));
     }
 
     // for such cases in ILSpy AST as: if (comp.i4(ldloc capacity == ldloc num5)) leave IL_0000 (nop)

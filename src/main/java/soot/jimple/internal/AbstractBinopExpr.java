@@ -28,19 +28,25 @@ import java.util.List;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
+import soot.DecimalType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
 import soot.RefType;
+import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
 import soot.Type;
+import soot.UByteType;
+import soot.ULongType;
+import soot.UShortType;
 import soot.UnitPrinter;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
 import soot.options.Options;
@@ -156,8 +162,17 @@ public abstract class AbstractBinopExpr implements Expr {
     final ShortType tyShort = ShortType.v();
     final CharType tyChar = CharType.v();
     final BooleanType tyBool = BooleanType.v();
-    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1))
-        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2))) {
+    final UByteType tyUByte = UByteType.v();
+    final UShortType tyUShort = UShortType.v();
+
+    boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
+    if (isDotNet && t1.equals(t2)) {
+      return t1;
+    }
+    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1)
+        || tyUByte.equals(t1) || tyUShort.equals(t1))
+        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2)
+            || tyUByte.equals(t2) || tyUShort.equals(t2))) {
       return tyInt;
     }
     final LongType tyLong = LongType.v();
@@ -165,6 +180,10 @@ public abstract class AbstractBinopExpr implements Expr {
       return tyLong;
     }
     if (exprTypes.equals(BinopExprEnum.ABSTRACT_FLOAT_BINOP_EXPR)) {
+      final DecimalType tyDecimal = DecimalType.v();
+      if (tyDecimal.equals(t1) || tyDecimal.equals(t2)) {
+        return tyDecimal;
+      }
       final DoubleType tyDouble = DoubleType.v();
       if (tyDouble.equals(t1) || tyDouble.equals(t2)) {
         return tyDouble;
@@ -176,9 +195,21 @@ public abstract class AbstractBinopExpr implements Expr {
     }
 
     // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+    if (isDotNet) {
       if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2)) {
         return tyInt;
+      }
+      if (t2 instanceof IntType && t1 instanceof DotNetINumber) {
+        return t1;
+      }
+      if (t1 instanceof IntType && t2 instanceof DotNetINumber) {
+        return t2;
+      }
+      if (t1 instanceof ULongType && t2 instanceof IIntLikeType) {
+        return t1;
+      }
+      if (t2 instanceof ULongType && t1 instanceof IIntLikeType) {
+        return t2;
       }
     }
     return UnknownType.v();
@@ -199,11 +230,11 @@ public abstract class AbstractBinopExpr implements Expr {
     if (sootClass == null) {
       return false;
     }
-    SootClass superclass = sootClass.getSuperclass();
+    SootClass superclass = sootClass.getSuperclassUnsafe();
     if (superclass == null) {
       return false;
     }
-    if (superclass.getName().equals(DotnetBasicTypes.SYSTEM_ENUM)) {
+    if (Scene.v().getOrMakeFastHierarchy().canStoreType(superclass.getType(), RefType.v(DotNetBasicTypes.SYSTEM_ENUM))) {
       return true;
     }
     return false;

@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
+import soot.BooleanConstant;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -85,6 +86,7 @@ import soot.jimple.parser.node.AAssignStatement;
 import soot.jimple.parser.node.ABaseNonvoidType;
 import soot.jimple.parser.node.ABinopBoolExpr;
 import soot.jimple.parser.node.ABinopExpr;
+import soot.jimple.parser.node.ABoolConstant;
 import soot.jimple.parser.node.ABooleanBaseType;
 import soot.jimple.parser.node.ABooleanBaseTypeNoName;
 import soot.jimple.parser.node.ABreakpointStatement;
@@ -1053,6 +1055,13 @@ public class Walker extends DepthFirstAdapter {
     } else {
       mProductions.addLast(IntConstant.v(Integer.parseInt(s)));
     }
+  }
+
+  @Override
+  public void outABoolConstant(ABoolConstant node) {
+    String s = node.getBoolConstant().getText();
+    BooleanConstant b = BooleanConstant.v(s.equals("true"));
+    mProductions.addLast(b);
   }
 
   public void outAStringConstant(AStringConstant node) {

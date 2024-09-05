@@ -24,7 +24,7 @@ package soot.dotnet.members;
 
 import soot.SootClass;
 import soot.Value;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
 
@@ -46,14 +46,14 @@ public abstract class AbstractDotnetMember implements DotnetTypeMember {
      * Normally System.String.Empty == Reftype(System.String), because is string, lead to errors in validation With this
      * fix: System.String.Empty == StringConstant
      */
-    if (declaringClass.getName().equals(DotnetBasicTypes.SYSTEM_STRING) && fieldMethodName.equals("Empty")) {
+    if (declaringClass.getName().equals(DotNetBasicTypes.SYSTEM_STRING) && fieldMethodName.equals("Empty")) {
       return StringConstant.v("");
     }
     /*
      * If System.Array.Empty, normal RefType(System.Array) Problem with System.Type[] = System.Array.Empty With this fix
      * null constant
      */
-    if (declaringClass.getName().equals(DotnetBasicTypes.SYSTEM_ARRAY) && fieldMethodName.equals("Empty")) {
+    if (declaringClass.getName().equals(DotNetBasicTypes.SYSTEM_ARRAY) && fieldMethodName.equals("Empty")) {
       // return Jimple.v().newNewExpr(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY));
       return NullConstant.v();
     }

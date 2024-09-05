@@ -57,6 +57,10 @@ import soot.jimple.internal.JAssignStmt;
 import soot.jimple.internal.JBreakpointStmt;
 import soot.jimple.internal.JCastExpr;
 import soot.jimple.internal.JCaughtExceptionRef;
+import soot.jimple.internal.JCheckedAddExpr;
+import soot.jimple.internal.JCheckedCastExpr;
+import soot.jimple.internal.JCheckedMulExpr;
+import soot.jimple.internal.JCheckedSubExpr;
 import soot.jimple.internal.JCmpExpr;
 import soot.jimple.internal.JCmpgExpr;
 import soot.jimple.internal.JCmplExpr;
@@ -348,6 +352,27 @@ public class Jimple {
   }
 
   /**
+   * Constructs a CheckedAddExpr(Immediate, Immediate) grammar chunk.
+   */
+  public AddExpr newCheckedAddExpr(Value op1, Value op2) {
+    return new JCheckedAddExpr(op1, op2);
+  }
+
+  /**
+   * Constructs a CheckedSubExpr(Immediate, Immediate) grammar chunk.
+   */
+  public SubExpr newCheckedSubExpr(Value op1, Value op2) {
+    return new JCheckedSubExpr(op1, op2);
+  }
+
+  /**
+   * Constructs a CheckedMulExpr(Immediate, Immediate) grammar chunk.
+   */
+  public MulExpr newCheckedMulExpr(Value op1, Value op2) {
+    return new JCheckedMulExpr(op1, op2);
+  }
+
+  /**
    * Constructs a AndExpr(Immediate, Immediate) grammar chunk.
    */
   public AndExpr newAndExpr(Value op1, Value op2) {
@@ -373,6 +398,13 @@ public class Jimple {
    */
   public CastExpr newCastExpr(Value op1, Type t) {
     return new JCastExpr(op1, t);
+  }
+
+  /**
+   * Constructs a CheckedCastExpr(Immediate, Type) grammar chunk.
+   */
+  public CastExpr newCheckedCastExpr(Value op1, Type t) {
+    return new JCheckedCastExpr(op1, t);
   }
 
   /**

@@ -1,5 +1,7 @@
 package soot.dotnet.instructions;
 
+import soot.ArrayType;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,17 +25,19 @@ package soot.dotnet.instructions;
  */
 
 import soot.Body;
+import soot.ByteType;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.jimple.Jimple;
+import soot.jimple.NewArrayExpr;
 
 /**
  * Local allocate instruction - pass argument
  */
 public class CilLocAllocInstruction extends AbstractCilnstruction {
-  public CilLocAllocInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody,
-      CilBlock cilBlock) {
+  public CilLocAllocInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
   }
 
@@ -45,6 +49,8 @@ public class CilLocAllocInstruction extends AbstractCilnstruction {
   @Override
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
-    return cilExpr.jimplifyExpr(jb);
+    Value d = simplifyComplexExpression(jb, cilExpr.jimplifyExpr(jb));
+    NewArrayExpr newArr = Jimple.v().newNewArrayExpr(ArrayType.v(ByteType.v(), 1), d);
+    return newArr;
   }
 }

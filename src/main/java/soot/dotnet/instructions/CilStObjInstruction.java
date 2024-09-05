@@ -23,15 +23,23 @@ package soot.dotnet.instructions;
  */
 
 import soot.Body;
+import soot.ByteConstant;
+import soot.Immediate;
 import soot.Local;
+import soot.ShortConstant;
+import soot.UByteConstant;
 import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
+import soot.dotnet.members.ArrayByReferenceWrapperGenerator;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.UShortConstant;
 
 /**
  * AssignStmt - Store ValueTypes to a local
@@ -43,16 +51,39 @@ public class CilStObjInstruction extends AbstractCilnstruction {
 
   @Override
   public void jimplify(Body jb) {
-    CilInstruction cilTargetExpr = CilInstructionFactory.fromInstructionMsg(instruction.getTarget(), dotnetBody, cilBlock);
-    Value target = cilTargetExpr.jimplifyExpr(jb);
+    Value target;
+    if (instruction.getTarget().getOpCode() == IlOpCode.LDELEMA) {
+      CilInstruction cilTargetExpr = new CilLdElemInstruction(instruction.getTarget(), dotnetBody, cilBlock);
+      target = cilTargetExpr.jimplifyExpr(jb);
+    } else {
+      CilInstruction cilTargetExpr = CilInstructionFactory.fromInstructionMsg(instruction.getTarget(), dotnetBody, cilBlock);
+      target = cilTargetExpr.jimplifyExpr(jb);
+    }
     CilInstruction cilExpr
         = CilInstructionFactory.fromInstructionMsg(instruction.getValueInstruction(), dotnetBody, cilBlock);
     Value value = cilExpr.jimplifyExpr(jb);
 
+    if (value instanceof IntConstant) {
+      IntConstant ii = (IntConstant) value;
+      switch (instruction.getTarget().getType().getFullname()) {
+        case "System.Byte":
+          value = UByteConstant.v((byte) ii.value);
+          break;
+        case "System.SByte":
+          value = ByteConstant.v((byte) ii.value);
+          break;
+        case "System.Int16":
+          value = ShortConstant.v((short) ii.value);
+          break;
+        case "System.UInt16":
+          value = UShortConstant.v((short) ii.value);
+          break;
+      }
+    }
+
     // create this cast, to validate successfully
     if (value instanceof Local && !target.getType().toString().equals(value.getType().toString())) {
-      if (value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-          && !target.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+      if (value.getType().toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)) {
         value = Jimple.v().newCastExpr(value, target.getType());
       }
     }
@@ -66,18 +97,24 @@ public class CilStObjInstruction extends AbstractCilnstruction {
       value = generatedLocal;
     }
 
+    if (!(value instanceof Immediate) && !(target instanceof Local)) {
+      value = simplifyComplexExpression(jb, value);
+    }
+    if (target instanceof CastExpr) {
+      // weird but ok
+      target = ((CastExpr) target).getOp();
+    }
+    if (target instanceof Local) {
+      Local l = (Local) target;
+      Local ref = dotnetBody.variableManager.getReferenceLocal(l);
+      if (ref != null) {
+        jb.getUnits().add(ArrayByReferenceWrapperGenerator.createSet(ref, value));
+      }
+    }
+
     AssignStmt astm = Jimple.v().newAssignStmt(target, value);
     jb.getUnits().add(astm);
 
-    // if new Obj also add call of constructor - relevant for structs (System.ValueType)
-    if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
-      if (!(target instanceof Local)) {
-        throw new RuntimeException("STOBJ: The given target is not a local! " + "The value is: " + target.toString()
-            + " of type " + target.getType() + "! " + "The resolving method body is: "
-            + dotnetBody.getDotnetMethodSig().getSootMethodSignature().getSignature());
-      }
-      ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, (Local) target);
-    }
   }
 
   @Override

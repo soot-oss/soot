@@ -1,5 +1,10 @@
 package soot.dotnet.types;
 
+import soot.PrimType;
+import soot.RefType;
+import soot.Scene;
+import soot.Type;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,7 +30,7 @@ package soot.dotnet.types;
 /**
  * Constants with basic classes
  */
-public class DotnetBasicTypes {
+public class DotNetBasicTypes {
   public static final String SYSTEM_OBJECT = "System.Object";
   public static final String SYSTEM_VALUETYPE = "System.ValueType";
   public static final String SYSTEM_VOID = "System.Void";
@@ -112,6 +117,18 @@ public class DotnetBasicTypes {
   public static final String SYSTEM_RUNTIMEMETHODHANDLE = "System.RuntimeMethodHandle";
   public static final String SYSTEM_RUNTIMEFIELDHANDLE = "System.RuntimeFieldHandle";
   public static final String SYSTEM_RUNTIMETYPEHANDLE = "System.RuntimeTypeHandle";
+  public static boolean isValueType(Type t) {
+    if (t instanceof PrimType) {
+      return true;
+    }
+    if (t instanceof RefType) {
+      RefType rt = (RefType) t;
+      if (rt.hasSootClass()) {
+        final RefType valueType = RefType.v(SYSTEM_VALUETYPE);
+        return Scene.v().getOrMakeFastHierarchy().canStoreType(rt, valueType);
+      }
+    }
+    return false;
+  }
 
-  public static final String FAKE_LDFTN = "Fake.LdFtn";
 }

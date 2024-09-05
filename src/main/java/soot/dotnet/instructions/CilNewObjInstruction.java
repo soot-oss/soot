@@ -1,7 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.ArrayList;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,13 +23,14 @@ import java.util.ArrayList;
  */
 import soot.Body;
 import soot.Local;
+import soot.NullType;
 import soot.Scene;
 import soot.SootClass;
-import soot.Type;
 import soot.Value;
+import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetTypeFactory;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
 
@@ -40,8 +39,15 @@ import soot.jimple.NewExpr;
  * resolveCallConstructorBody() afterwards in StLoc
  */
 public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
+  private Local lhs;
+
   public CilNewObjInstruction(ProtoIlInstructions.IlInstructionMsg instruction, DotnetBody dotnetBody, CilBlock cilBlock) {
     super(instruction, dotnetBody, cilBlock);
+  }
+
+  @Override
+  protected boolean hasBaseObj() {
+    return false;
   }
 
   @Override
@@ -50,23 +56,23 @@ public class CilNewObjInstruction extends AbstractNewObjInstanceInstruction {
 
   @Override
   public Value jimplifyExpr(Body jb) {
-    if (!instruction.hasMethod()) {
-      throw new RuntimeException("NewObj: There is no method information in the method definiton!");
+    this.lhs = createTempVar(jb, NullType.v());
+    Value j = super.jimplifyExpr(jb);
+    if (j != null) {
+      throw new RuntimeException("Should never happen.");
     }
-    SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
-    NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
+    return lhs;
 
-    ArrayList<Local> argsVariables = new ArrayList<>();
-    ArrayList<Type> argsTypes = new ArrayList<>();
-    for (ProtoIlInstructions.IlInstructionMsg a : instruction.getArgumentsList()) {
-      argsVariables.add(dotnetBody.variableManager.addOrGetVariable(a.getVariable(), jb));
-      argsTypes.add(DotnetTypeFactory.toSootType(a.getVariable().getType().getFullname()));
-    }
-
-    // Constructor call expression
-    methodRef = Scene.v().makeConstructorRef(clazz, argsTypes);
-    listOfArgs = argsVariables;
-
-    return newExpr;
   }
+
+  @Override
+  protected InvokeExpr createInvokeExpr(Body jb, SootClass clazz, DotnetMethod method, MethodParams methodParams) {
+    Jimple j = Jimple.v();
+    NewExpr newExpr = j.newNewExpr(clazz.getType());
+    lhs.setType(clazz.getType());
+    jb.getUnits().add(j.newAssignStmt(lhs, newExpr));
+    methodRef = Scene.v().makeConstructorRef(clazz, methodParams.methodRef.getParameterTypes());
+    return j.newSpecialInvokeExpr(lhs, methodRef, methodParams.argumentVariables);
+  }
+
 }

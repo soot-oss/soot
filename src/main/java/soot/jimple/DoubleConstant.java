@@ -206,4 +206,9 @@ public class DoubleConstant extends RealConstant {
       throw new IllegalArgumentException("DoubleConstant expected");
     }
   }
+
+  @Override
+  public Number getNumericValue() {
+    return value;
+  }
 }

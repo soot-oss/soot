@@ -23,11 +23,14 @@ package soot.dotnet.instructions;
  */
 
 import soot.Body;
+import soot.Scene;
+import soot.SootClass;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
+import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetFakeLdFtnType;
+import soot.dotnet.values.FunctionPointerConstant;
 
 /**
  * Create Fake stub for LdFtn (load function), cannot be represented in Jimple
@@ -51,7 +54,9 @@ public class CilLdFtnInstruction extends AbstractCilnstruction {
    */
   @Override
   public Value jimplifyExpr(Body jb) {
-    return DotnetFakeLdFtnType.makeMethod();
+    SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
+    DotnetMethod method = new DotnetMethod(instruction.getMethod(), clazz);
+    return new FunctionPointerConstant(method, false);
   }
 
 }

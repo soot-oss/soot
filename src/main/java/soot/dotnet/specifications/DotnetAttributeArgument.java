@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetType;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
@@ -51,57 +51,61 @@ public class DotnetAttributeArgument {
     if (arg.getType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ENUM)) {
       // return new AnnotationIntElem(arg.getValueInt32(0), arg.getName());
       // enums are ints in dotnet
-      return new AnnotationEnumElem(arg.getType().getFullname(), arg.getValueString(0), arg.getName());
+      String name = null;
+      if (arg.getValueStringCount() > 0) {
+        name = arg.getValueString(0);
+      }
+      return new AnnotationEnumElem(arg.getType().getFullname(), name, arg.getName());
     }
     if (arg.getType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.ARRAY)) {
       ArrayList<AnnotationElem> arrElements = new ArrayList<>();
       switch (arg.getType().getFullname()) {
-        case DotnetBasicTypes.SYSTEM_STRING:
+        case DotNetBasicTypes.SYSTEM_STRING:
           for (String v : arg.getValueStringList()) {
             arrElements.add(new AnnotationStringElem(v, arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_INT32:
-        case DotnetBasicTypes.SYSTEM_UINT32:
+        case DotNetBasicTypes.SYSTEM_INT32:
+        case DotNetBasicTypes.SYSTEM_UINT32:
           for (int v : arg.getValueInt32List()) {
             arrElements.add(new AnnotationIntElem(v, arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_SINGLE:
+        case DotNetBasicTypes.SYSTEM_SINGLE:
           for (float v : arg.getValueFloatList()) {
             arrElements.add(new AnnotationFloatElem(v, arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_DOUBLE:
-        case DotnetBasicTypes.SYSTEM_DECIMAL:
+        case DotNetBasicTypes.SYSTEM_DOUBLE:
+        case DotNetBasicTypes.SYSTEM_DECIMAL:
           for (double v : arg.getValueDoubleList()) {
             arrElements.add(new AnnotationDoubleElem(v, arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_BOOLEAN:
+        case DotNetBasicTypes.SYSTEM_BOOLEAN:
           for (int v : arg.getValueInt32List()) {
             arrElements.add(new AnnotationBooleanElem(v == 1, arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_INT64:
-        case DotnetBasicTypes.SYSTEM_UINT64:
+        case DotNetBasicTypes.SYSTEM_INT64:
+        case DotNetBasicTypes.SYSTEM_UINT64:
           for (long v : arg.getValueInt64List()) {
             arrElements.add(new AnnotationLongElem(v, arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_BYTE:
-        case DotnetBasicTypes.SYSTEM_SBYTE:
+        case DotNetBasicTypes.SYSTEM_BYTE:
+        case DotNetBasicTypes.SYSTEM_SBYTE:
           for (int v : arg.getValueInt32List()) {
             arrElements.add(new AnnotationIntElem((Byte) (Integer.valueOf(v).byteValue()), arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_CHAR:
+        case DotNetBasicTypes.SYSTEM_CHAR:
           for (int v : arg.getValueInt32List()) {
             arrElements.add(new AnnotationIntElem(Character.valueOf((char) v), arg.getName()));
           }
           break;
-        case DotnetBasicTypes.SYSTEM_INT16: // Short
-        case DotnetBasicTypes.SYSTEM_UINT16:
+        case DotNetBasicTypes.SYSTEM_INT16: // Short
+        case DotNetBasicTypes.SYSTEM_UINT16:
           for (int v : arg.getValueInt32List()) {
             arrElements.add(new AnnotationIntElem(Short.valueOf((short) v), arg.getName()));
           }
@@ -116,25 +120,25 @@ public class DotnetAttributeArgument {
       return new AnnotationArrayElem(arrElements, arg.getName());
     } else {
       switch (arg.getType().getFullname()) {
-        case DotnetBasicTypes.SYSTEM_STRING:
+        case DotNetBasicTypes.SYSTEM_STRING:
           return new AnnotationStringElem(arg.getValueString(0), arg.getName());
-        case DotnetBasicTypes.SYSTEM_INT32:
+        case DotNetBasicTypes.SYSTEM_INT32:
           return new AnnotationIntElem(arg.getValueInt32(0), arg.getName());
-        case DotnetBasicTypes.SYSTEM_SINGLE:
+        case DotNetBasicTypes.SYSTEM_SINGLE:
           return new AnnotationFloatElem(arg.getValueFloat(0), arg.getName());
-        case DotnetBasicTypes.SYSTEM_DOUBLE:
+        case DotNetBasicTypes.SYSTEM_DOUBLE:
           return new AnnotationDoubleElem(arg.getValueDouble(0), arg.getName());
-        case DotnetBasicTypes.SYSTEM_BOOLEAN:
+        case DotNetBasicTypes.SYSTEM_BOOLEAN:
           return new AnnotationBooleanElem(arg.getValueInt32(0) == 1, arg.getName());
-        case DotnetBasicTypes.SYSTEM_INT64:
+        case DotNetBasicTypes.SYSTEM_INT64:
           return new AnnotationLongElem(arg.getValueInt64(0), arg.getName());
-        case DotnetBasicTypes.SYSTEM_TYPE: // typeof()
+        case DotNetBasicTypes.SYSTEM_TYPE: // typeof()
           return new AnnotationClassElem(arg.getType().getFullname(), arg.getName());
-        case DotnetBasicTypes.SYSTEM_BYTE:
+        case DotNetBasicTypes.SYSTEM_BYTE:
           return new AnnotationIntElem((Byte) (Integer.valueOf(arg.getValueInt32(0)).byteValue()), arg.getName());
-        case DotnetBasicTypes.SYSTEM_CHAR:
+        case DotNetBasicTypes.SYSTEM_CHAR:
           return new AnnotationIntElem(Character.valueOf((char) arg.getValueInt32(0)), arg.getName());
-        case DotnetBasicTypes.SYSTEM_INT16: // Short
+        case DotNetBasicTypes.SYSTEM_INT16: // Short
           return new AnnotationIntElem(Short.valueOf((short) arg.getValueInt32(0)), arg.getName());
         // UInt32 - uint
         // UInt16 - ushort

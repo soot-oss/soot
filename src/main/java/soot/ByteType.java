@@ -22,15 +22,17 @@ package soot;
  * #L%
  */
 
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.jimple.internal.IIntLikeType;
 import soot.options.Options;
 import soot.util.Switch;
 
 /**
- * Soot representation of the Java built-in type 'byte'. Implemented as a singleton.
+ * Soot representation of the Java built-in type 'byte' and .NETs built-in type 'sbyte'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class ByteType extends PrimType implements IntegerType {
+public class ByteType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0x813D1329;
 
@@ -53,7 +55,11 @@ public class ByteType extends PrimType implements IntegerType {
 
   @Override
   public String toString() {
-    return "byte";
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return "sbyte";
+    } else {
+      return "byte";
+    }
   }
 
   @Override
@@ -64,7 +70,7 @@ public class ByteType extends PrimType implements IntegerType {
   @Override
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return DotnetBasicTypes.SYSTEM_BYTE;
+      return DotNetBasicTypes.SYSTEM_SBYTE;
     }
     return JavaBasicTypes.JAVA_LANG_BYTE;
   }

@@ -28,17 +28,22 @@ public class LongConstantValueTag extends ConstantValueTag {
 
   public static final String NAME = "LongConstantValueTag";
 
-  private final long value;
+  private final LongConstant value;
 
   public LongConstantValueTag(long value) {
     super(new byte[] { (byte) ((value >> 56) & 0xff), (byte) ((value >> 48) & 0xff), (byte) ((value >> 40) & 0xff),
         (byte) ((value >> 32) & 0xff), (byte) ((value >> 24) & 0xff), (byte) ((value >> 16) & 0xff),
         (byte) ((value >> 8) & 0xff), (byte) ((value) & 0xff) });
+    this.value = LongConstant.v(value);
+  }
+
+  public LongConstantValueTag(LongConstant value) {
+    super(null);
     this.value = value;
   }
 
   public long getLongValue() {
-    return value;
+    return value.value;
   }
 
   @Override
@@ -48,19 +53,19 @@ public class LongConstantValueTag extends ConstantValueTag {
 
   @Override
   public String toString() {
-    return "ConstantValue: " + Long.toString(value);
+    return "ConstantValue: " + value.value;
   }
 
   @Override
   public LongConstant getConstant() {
-    return LongConstant.v(value);
+    return value;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + (int) (value ^ (value >>> 32));
+    result = prime * result + (int) (value.value ^ (value.value >>> 32));
     return result;
   }
 

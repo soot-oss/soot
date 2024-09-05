@@ -1,8 +1,11 @@
 package soot.dotnet.members.method;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /*-
  * #%L
@@ -32,14 +35,16 @@ import soot.LocalGenerator;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+import soot.SootClass;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
+import soot.dotnet.members.ByReferenceWrapperGenerator;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
@@ -57,7 +62,8 @@ public class DotnetBodyVariableManager {
   private final DotnetBody dotnetBody;
   private final Body mainJb;
   public final LocalGenerator localGenerator;
-  private final HashSet<String> localsToCast = new HashSet<>();
+  private final Set<String> localsToCast = new HashSet<>();
+  private final Map<Local, Local> localsToReference = new HashMap<>();
 
   public DotnetBodyVariableManager(DotnetBody dotnetBody, Body mainJb) {
     this.dotnetBody = dotnetBody;
@@ -68,9 +74,9 @@ public class DotnetBodyVariableManager {
   /**
    * Add parameters of the .NET method to the Jimple Body
    */
-  public void fillMethodParameter() {
+  public void fillMethodParameter(List<Unit> unwrapCalls, Map<Local, Local> unwrappedToWrapped) {
     DotnetMethod dotnetMethodSig = dotnetBody.getDotnetMethodSig();
-    fillMethodParameter(mainJb, dotnetMethodSig.getParameterDefinitions());
+    fillMethodParameter(mainJb, dotnetMethodSig.getParameterDefinitions(), unwrapCalls, unwrappedToWrapped);
   }
 
   /**
@@ -79,15 +85,29 @@ public class DotnetBodyVariableManager {
    * @param jb
    * @param parameters
    */
-  public void fillMethodParameter(Body jb, List<ProtoAssemblyAllTypes.ParameterDefinition> parameters) {
+  public void fillMethodParameter(Body jb, List<ProtoAssemblyAllTypes.ParameterDefinition> parameters,
+      List<Unit> unwrapCalls, Map<Local, Local> unwrappedToWrapped) {
     // parameters
     for (int i = 0; i < parameters.size(); i++) {
       ProtoAssemblyAllTypes.ParameterDefinition parameter = parameters.get(i);
-      Local paramLocal
-          = Jimple.v().newLocal(parameter.getParameterName(), DotnetTypeFactory.toSootType(parameter.getType()));
-      jb.getLocals().add(paramLocal);
-      jb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal,
-          Jimple.v().newParameterRef(DotnetTypeFactory.toSootType(parameter.getType()), i)));
+      Type type = DotnetTypeFactory.toSootType(parameter.getType());
+      if (ByReferenceWrapperGenerator.needsWrapper(parameter)) {
+        SootClass wrapperClass = ByReferenceWrapperGenerator.getWrapperClass(type);
+        RefType wrappedType = wrapperClass.getType();
+        Local paramLocal = Jimple.v().newLocal(parameter.getParameterName() + "wrapped", wrappedType);
+        jb.getLocals().add(paramLocal);
+        jb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(wrappedType, i)));
+
+        Local unwrappedParamLocal = Jimple.v().newLocal(parameter.getParameterName(), type);
+        jb.getLocals().add(unwrappedParamLocal);
+        unwrapCalls.add(ByReferenceWrapperGenerator.getUnwrapCall(wrapperClass, paramLocal, unwrappedParamLocal));
+        unwrappedToWrapped.put(unwrappedParamLocal, paramLocal);
+      } else {
+        Local paramLocal = Jimple.v().newLocal(parameter.getParameterName(), type);
+        jb.getLocals().add(paramLocal);
+        jb.getUnits().add(Jimple.v().newIdentityStmt(paramLocal, Jimple.v().newParameterRef(type, i)));
+
+      }
     }
   }
 
@@ -109,7 +129,7 @@ public class DotnetBodyVariableManager {
       }
 
       // for unsafe methods, where no definition is used
-      if (!(v.getType().getFullname().equals(DotnetBasicTypes.SYSTEM_OBJECT))) {
+      if (!(v.getType().getFullname().equals(DotNetBasicTypes.SYSTEM_OBJECT))) {
         initLocalValueTypes.add(v);
       }
     }
@@ -182,7 +202,11 @@ public class DotnetBodyVariableManager {
         ? DotnetTypeFactory.toSootType(v.getType())
         : DotnetTypeFactory.toSootType(type); // deprecated JimpleToDotnetType(type)
 
-    Local newLocal = Jimple.v().newLocal(v.getName(), localType);
+    String n = v.getName();
+    if (n.isEmpty()) {
+      n = "noname";
+    }
+    Local newLocal = Jimple.v().newLocal(n, localType);
     this.mainJb.getLocals().add(newLocal);
     if (jbTmp != null && jbTmp != this.mainJb) {
       jbTmp.getLocals().add(newLocal); // dummy due to clone method
@@ -231,5 +255,13 @@ public class DotnetBodyVariableManager {
 
   public boolean localsToCastContains(String local) {
     return localsToCast.contains(local);
+  }
+
+  public void addReferenceLocal(Local element, Local referenceHolder) {
+    localsToReference.put(element, referenceHolder);
+  }
+
+  public Local getReferenceLocal(Local element) {
+    return localsToReference.get(element);
   }
 }

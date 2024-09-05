@@ -33,7 +33,7 @@ import soot.dotnet.DotnetClassConstant;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.Jimple;
 
 /**
@@ -59,11 +59,11 @@ public class CilSizeOfInstruction extends AbstractCilnstruction {
     // Unit stmt = Jimple.v().newAssignStmt(tmpLocalVar, DotnetClassConstant.v(typeName));
     // jb.getUnits().add(stmt);
 
-    SootClass clazz = Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_RUNTIME_INTEROPSERVICES_MARSHAL);
+    SootClass clazz = Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_RUNTIME_INTEROPSERVICES_MARSHAL);
     // SootMethod method = clazz.getMethod("SizeOf",
     // Collections.singletonList(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OBJECT)));
     SootMethodRef methodRef = Scene.v().makeMethodRef(clazz, "SizeOf",
-        Collections.singletonList(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OBJECT)), IntType.v(), true);
+        Collections.singletonList(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OBJECT)), IntType.v(), true);
     return Jimple.v().newStaticInvokeExpr(methodRef, DotnetClassConstant.v(typeName));
   }
 }

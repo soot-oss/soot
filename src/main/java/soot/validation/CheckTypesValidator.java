@@ -39,7 +39,7 @@ import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.InstanceInvokeExpr;
@@ -115,30 +115,30 @@ public enum CheckTypesValidator implements BodyValidator {
 
         // if left/right type type of System.ValueType == primtype, is ok
 
-        if ((leftType instanceof RefType && ((RefType) leftType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR))
+        if ((leftType instanceof RefType && ((RefType) leftType).getClassName().equals(DotNetBasicTypes.SYSTEM_INTPTR))
             || (rightType instanceof RefType
-                && ((RefType) rightType).getClassName().equals(DotnetBasicTypes.SYSTEM_INTPTR))) {
+                && ((RefType) rightType).getClassName().equals(DotNetBasicTypes.SYSTEM_INTPTR))) {
           return;
         }
         if (leftType instanceof RefType) {
           FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
           if (fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
-              Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
+              Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
           }
 
           // if lefttype is base class, all right types are legal
-          if (((RefType) leftType).getSootClass().getName().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
+          if (((RefType) leftType).getSootClass().getName().equals(DotNetBasicTypes.SYSTEM_OBJECT)) {
             return;
           }
 
           // if righttype is primtype - primitive structs inherits from ValueType and
           // implements IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
-          if (leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICOMPARABLE_1))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ICONVERTIBLE))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IEQUATABLE_1))
-              || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_IFORMATTABLE))) {
+          if (leftType.equals(RefType.v(DotNetBasicTypes.SYSTEM_ICOMPARABLE))
+              || leftType.equals(RefType.v(DotNetBasicTypes.SYSTEM_ICOMPARABLE_1))
+              || leftType.equals(RefType.v(DotNetBasicTypes.SYSTEM_ICONVERTIBLE))
+              || leftType.equals(RefType.v(DotNetBasicTypes.SYSTEM_IEQUATABLE_1))
+              || leftType.equals(RefType.v(DotNetBasicTypes.SYSTEM_IFORMATTABLE))) {
             return;
           }
 
@@ -146,7 +146,7 @@ public enum CheckTypesValidator implements BodyValidator {
         if (rightType instanceof RefType) {
           FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
           if (fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
-              Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE))) {
+              Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
           }
         }
@@ -169,7 +169,7 @@ public enum CheckTypesValidator implements BodyValidator {
       if (rightType instanceof ArrayType) {
         // Dotnet: it is legal to assign arrays to System.Array, because it is base class in CLR
         if (leftType.equals(RefType.v("java.io.Serializable")) || leftType.equals(RefType.v("java.lang.Cloneable"))
-            || leftType.equals(Scene.v().getObjectType()) || leftType.equals(RefType.v(DotnetBasicTypes.SYSTEM_ARRAY))) {
+            || leftType.equals(Scene.v().getObjectType()) || leftType.equals(RefType.v(DotNetBasicTypes.SYSTEM_ARRAY))) {
           return;
         }
       }
@@ -201,9 +201,9 @@ public enum CheckTypesValidator implements BodyValidator {
         // if dotnet check for ValueTypes, assignment can only be correct from compiler
         FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
         boolean lTypeIsChild = fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
-            Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
+            Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_VALUETYPE));
         boolean rTypeIsChild = fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
-            Scene.v().getSootClass(DotnetBasicTypes.SYSTEM_VALUETYPE));
+            Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_VALUETYPE));
         if (lTypeIsChild && rTypeIsChild) {
           return;
         }

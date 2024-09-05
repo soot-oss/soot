@@ -138,6 +138,7 @@ public interface Analysis extends Switch
     void caseAIntegerConstant(AIntegerConstant node);
     void caseAFloatConstant(AFloatConstant node);
     void caseAStringConstant(AStringConstant node);
+    void caseABoolConstant(ABoolConstant node);
     void caseAClzzConstant(AClzzConstant node);
     void caseANullConstant(ANullConstant node);
     void caseAAndBinop(AAndBinop node);
@@ -270,4 +271,5 @@ public interface Analysis extends Switch
     void caseTFloatConstant(TFloatConstant node);
     void caseTStringConstant(TStringConstant node);
     void caseEOF(EOF node);
+    void caseInvalidToken(InvalidToken node);
 }

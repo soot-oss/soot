@@ -44,7 +44,7 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.specifications.DotnetAttributeArgument;
 import soot.dotnet.specifications.DotnetModifier;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
@@ -125,8 +125,7 @@ public class DotnetMethod extends AbstractDotnetMember {
   }
 
   public boolean isStatic() {
-    return protoMethod.getIsStatic() || protoMethod.getName().contains(STATIC_CONSTRUCTOR_NAME)
-        || protoMethod.getName().contains(JAVA_STATIC_CONSTRUCTOR_NAME);
+    return protoMethod.getIsStatic();
   }
 
   public ProtoAssemblyAllTypes.MethodDefinition getProtoMessage() {
@@ -170,7 +169,7 @@ public class DotnetMethod extends AbstractDotnetMember {
     // public unsafe void* ToPointer() { return this._value; }
     if (dotnetMethodType == DotnetMethodType.METHOD) {
       if (protoMethod.getReturnType().getTypeKind().equals(ProtoAssemblyAllTypes.TypeKindDef.POINTER)
-          && protoMethod.getReturnType().getFullname().equals(DotnetBasicTypes.SYSTEM_VOID)) {
+          && protoMethod.getReturnType().getFullname().equals(DotNetBasicTypes.SYSTEM_VOID)) {
         return_type = declaringClass.getType();
       }
     }
@@ -225,8 +224,8 @@ public class DotnetMethod extends AbstractDotnetMember {
     JimpleBody b = Jimple.v().newBody(sootMethod);
     try {
       if (ilFunctionMsg == null) {
-        throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " "
-            + sootMethod.getName() + " declared in class " + declaringClass.getName());
+        throw new RuntimeException("Could not resolve JimpleBody for " + dotnetMethodType.name() + " " + sootMethod.getName()
+            + " declared in class " + declaringClass.getName());
       }
 
       // add the body of this code item
@@ -274,7 +273,7 @@ public class DotnetMethod extends AbstractDotnetMember {
 
         method.addTag(new AnnotationTag(annotationType, elements));
 
-        if (annotationType.equals(DotnetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE)) {
+        if (annotationType.equals(DotNetBasicTypes.SYSTEM_OBSOLETEATTRIBUTE)) {
           method.addTag(new DeprecatedTag());
         }
       } catch (Exception ignore) {
@@ -357,11 +356,14 @@ public class DotnetMethod extends AbstractDotnetMember {
    * @return unique name
    */
   public String getUniqueName() {
-    if (!(hasGenericParameters() || hasCallByRefParameters() || hasCilPrimitiveParameters()) || isConstructor()) {
-      return getName();
-    }
-
-    return getName() + "[[" + protoMethod.getPeToken() + "]]";
+    // For now, use the actual name. Having random name portions e.g. in library code isn't a good idea.
+    return getName();
+    /*
+     * if (!(hasGenericParameters() || hasCallByRefParameters() || hasCilPrimitiveParameters()) || isConstructor()) { return
+     * getName(); }
+     * 
+     * return getName() + "[[" + protoMethod.getPeToken() + "]]";
+     */
   }
 
   // --- static methods ---
@@ -374,16 +376,20 @@ public class DotnetMethod extends AbstractDotnetMember {
    * @return java constructor name
    */
   public static String convertCtorName(String methodName) {
-    methodName = methodName.replace(CONSTRUCTOR_NAME, JAVA_CONSTRUCTOR_NAME);
-    methodName = methodName.replace(STATIC_CONSTRUCTOR_NAME, JAVA_STATIC_CONSTRUCTOR_NAME);
+    if (methodName.equals(CONSTRUCTOR_NAME)) {
+      return JAVA_CONSTRUCTOR_NAME;
+    }
+    if (methodName.equals(STATIC_CONSTRUCTOR_NAME)) {
+      return JAVA_STATIC_CONSTRUCTOR_NAME;
+    }
+    if (methodName.endsWith(CONSTRUCTOR_NAME)) {
+      methodName = methodName.substring(0, methodName.length() - CONSTRUCTOR_NAME.length()) + JAVA_CONSTRUCTOR_NAME;
+    }
+    if (methodName.endsWith(STATIC_CONSTRUCTOR_NAME)) {
+      methodName
+          = methodName.substring(0, methodName.length() - STATIC_CONSTRUCTOR_NAME.length()) + JAVA_STATIC_CONSTRUCTOR_NAME;
+    }
     methodName = methodName.replace("+", "$");
-    return methodName;
-  }
-
-  public static String convertCilToJvmNaming(String methodName) {
-    methodName = methodName.replace("+", "$");
-    methodName = methodName.replace(JAVA_CONSTRUCTOR_NAME, CONSTRUCTOR_NAME);
-    methodName = methodName.replace(JAVA_STATIC_CONSTRUCTOR_NAME, STATIC_CONSTRUCTOR_NAME);
     return methodName;
   }
 
@@ -393,5 +399,5 @@ public class DotnetMethod extends AbstractDotnetMember {
   public static final String JAVA_CONSTRUCTOR_NAME = "<init>";
   public static final String DESTRUCTOR_NAME = "Finalize";
 
-  public static final String MAIN_METHOD_SIGNATURE = "void Main(" + DotnetBasicTypes.SYSTEM_STRING + "[])";
+  public static final String MAIN_METHOD_SIGNATURE = "void Main(" + DotNetBasicTypes.SYSTEM_STRING + "[])";
 }

@@ -23,7 +23,6 @@ package soot.dotnet.instructions;
  */
 
 import soot.Body;
-import soot.Immediate;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
@@ -47,9 +46,7 @@ public class CilLdLenInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArray(), dotnetBody, cilBlock);
     Value arr = cilExpr.jimplifyExpr(jb);
-    if (!(arr instanceof Immediate)) {
-      throw new RuntimeException("LdLen: Given value is no Immediate!");
-    }
+    arr = simplifyComplexExpression(jb, arr);
     return Jimple.v().newLengthExpr(arr);
   }
 }

@@ -1,7 +1,5 @@
 package soot.dotnet.instructions;
 
-import java.util.List;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,16 +23,26 @@ import java.util.List;
  */
 
 import soot.Body;
+import soot.FastHierarchy;
+import soot.IntType;
 import soot.Local;
+import soot.RefType;
+import soot.Scene;
+import soot.SootMethod;
+import soot.Type;
 import soot.Value;
 import soot.dotnet.exceptions.NoExpressionInstructionException;
+import soot.dotnet.members.ArrayByReferenceWrapperGenerator;
 import soot.dotnet.members.method.DotnetBody;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeKindDef;
 import soot.dotnet.proto.ProtoIlInstructions;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotnetType;
 import soot.jimple.AssignStmt;
-import soot.jimple.CastExpr;
+import soot.jimple.Constant;
 import soot.jimple.Jimple;
-import soot.toolkits.scalar.Pair;
+import soot.jimple.NewExpr;
 
 /**
  * AssignStmt - Store a expression to a local Make additional tasks for rewriting .NET opcodes to Jimple
@@ -46,55 +54,66 @@ public class CilStLocInstruction extends AbstractCilnstruction {
 
   @Override
   public void jimplify(Body jb) {
-    CilInstruction cilExpr
-        = CilInstructionFactory.fromInstructionMsg(instruction.getValueInstruction(), dotnetBody, cilBlock);
-    Value value = cilExpr.jimplifyExpr(jb);
 
-    // if rvalue is isinst, change to instanceof semantic, see description of opcode
-    if (cilExpr instanceof CilIsInstInstruction) {
-      CilIsInstInstruction isInst = (CilIsInstInstruction) cilExpr;
-      Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), jb);
-      isInst.resolveRewritingIsInst(jb, variable, value);
+    Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), jb);
+    Value value;
+    if (instruction.getValueInstruction().getOpCode() == IlOpCode.LDELEMA) {
+      CilInstruction cilExpr = new CilLdElemaInstruction(instruction.getValueInstruction(), dotnetBody, cilBlock, variable);
+      value = cilExpr.jimplifyExpr(jb);
+
+      AssignStmt astm = Jimple.v().newAssignStmt(variable, ArrayByReferenceWrapperGenerator.createGet(value));
+      jb.getUnits().add(astm);
       return;
+    } else {
+      CilInstruction cilExpr
+          = CilInstructionFactory.fromInstructionMsg(instruction.getValueInstruction(), dotnetBody, cilBlock);
+      value = cilExpr.jimplifyExpr(jb);
     }
 
-    // rewrite multi array to Jimple semantic, see description of opcode
-    if (cilExpr instanceof CilLdElemaInstruction && ((CilLdElemaInstruction) cilExpr).isMultiArrayRef()) {
-      CilLdElemaInstruction newArrInstruction = (CilLdElemaInstruction) cilExpr;
-      value = newArrInstruction.resolveRewriteMultiArrAccess(jb);
+    Local ref = dotnetBody.variableManager.getReferenceLocal(variable);
+    if (ref != null) {
+      jb.getUnits().add(ArrayByReferenceWrapperGenerator.createSet(ref, value));
     }
 
-    Local variable = dotnetBody.variableManager.addOrGetVariable(instruction.getVariable(), value.getType(), jb);
+    if (value.getType() instanceof IntType
+        && Scene.v().getOrMakeFastHierarchy().canStoreType(variable.getType(), RefType.v(DotNetBasicTypes.SYSTEM_ENUM))) {
+      //we need a cast
+      value = Jimple.v().newCastExpr(value, variable.getType());
+    } else if (value instanceof Local && variable.getType() != value.getType()
+        && dotnetBody.variableManager.localsToCastContains(((Local) value).getName())) {
+      // create this cast, to validate successfully
+      value = Jimple.v().newCastExpr(value, variable.getType());
+    } else if (value instanceof Local && value.getType().toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)
+        && !variable.getType().toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)) {
+      // for validation, because array = obj, where array typeof byte[] and obj typeof System.Object
+      value = Jimple.v().newCastExpr(value, variable.getType());
+    }
 
-    // cast for validation
-    if (cilExpr instanceof CilCallVirtInstruction) {
-      List<Pair<Local, Local>> locals = ((CilCallVirtInstruction) cilExpr).getLocalsToCastForCall();
-      if (locals.size() != 0) {
-        for (Pair<Local, Local> pair : locals) {
-          CastExpr castExpr = Jimple.v().newCastExpr(pair.getO1(), pair.getO2().getType());
-          AssignStmt assignStmt = Jimple.v().newAssignStmt(pair.getO2(), castExpr);
-          jb.getUnits().add(assignStmt);
+    final FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+    final RefType valueType = RefType.v("System.ValueType");
+
+    Type modType = variable.getType();
+    TypeKindDef varkind = instruction.getVariable().getType().getTypeKind();
+    if (varkind != TypeKindDef.BY_REF && fh.canStoreType(modType, valueType) && !(value instanceof Constant)) {
+      // we need to copy structs!
+      RefType rt = (RefType) modType;
+      SootMethod cm = DotnetType.getCopyMethod(rt.getSootClass());
+      if (cm != null) {
+        Jimple j = Jimple.v();
+        boolean doCopy = true;
+        if (!(value instanceof Local)) {
+          if (value instanceof NewExpr) {
+            doCopy = false;
+          }
+          value = simplifyComplexExpression(jb, value);
+        }
+        if (doCopy) {
+          value = createTempVar(jb, j, j.newSpecialInvokeExpr((Local) value, cm.makeRef()));
         }
       }
     }
-    // create this cast, to validate successfully
-    if (value instanceof Local && !variable.getType().toString().equals(value.getType().toString())
-        && dotnetBody.variableManager.localsToCastContains(((Local) value).getName())) {
-      value = Jimple.v().newCastExpr(value, variable.getType());
-    }
-    // for validation, because array = obj, where array typeof byte[] and obj typeof System.Object
-    if (value instanceof Local && value.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)
-        && !variable.getType().toString().equals(DotnetBasicTypes.SYSTEM_OBJECT)) {
-      value = Jimple.v().newCastExpr(value, variable.getType());
-    }
-
     AssignStmt astm = Jimple.v().newAssignStmt(variable, value);
     jb.getUnits().add(astm);
-
-    // if new Obj also add call of constructor, see description of opcode
-    if (cilExpr instanceof AbstractNewObjInstanceInstruction) {
-      ((AbstractNewObjInstanceInstruction) cilExpr).resolveCallConstructorBody(jb, variable);
-    }
   }
 
   @Override

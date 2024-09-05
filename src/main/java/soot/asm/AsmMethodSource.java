@@ -21,6 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -157,7 +158,6 @@ import static org.objectweb.asm.Opcodes.T_FLOAT;
 import static org.objectweb.asm.Opcodes.T_INT;
 import static org.objectweb.asm.Opcodes.T_LONG;
 import static org.objectweb.asm.Opcodes.T_SHORT;
-
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -222,6 +222,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Body;
+import soot.BooleanConstant;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -1251,7 +1252,7 @@ public class AsmMethodSource implements MethodSource {
       } else {
         switch (op) {
           case IFEQ:
-            cond = Jimple.v().newEqExpr(v, IntConstant.v(0));
+            cond = Jimple.v().newEqExpr(v, BooleanConstant.v(false));
             break;
           case IFNE:
             cond = Jimple.v().newNeExpr(v, IntConstant.v(0));

@@ -30,6 +30,10 @@ import soot.IntType;
 import soot.LongType;
 import soot.ShortType;
 import soot.Type;
+import soot.UByteType;
+import soot.UIntType;
+import soot.ULongType;
+import soot.UShortType;
 import soot.UnknownType;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
@@ -63,23 +67,30 @@ public class CilConvInstruction extends AbstractCilnstruction {
     Type convType;
     switch (targetType) {
       case I1: // SByte
-      case U1: // Byte
         convType = ByteType.v();
         break;
+      case U1: // Byte
+        convType = UByteType.v();
+        break;
       case I2: // Int16
-      case U2: // UInt16
         convType = ShortType.v();
         break;
-      case I4: // Int32
+      case U2: // UInt16
+        convType = UShortType.v();
+        break;
       case U4: // UInt32
+        convType = UIntType.v();
+        break;
+      case I4: // Int32
       case I: // System.IntPtr
       case U: // System.UIntPtr
       case Ref: // managed reference - always pointer as integer
         convType = IntType.v();
         break;
       case I8: // Int64
-      case U8: // UInt64
         convType = LongType.v();
+      case U8: // UInt64
+        convType = ULongType.v();
         break;
       case R4: // Single
         convType = FloatType.v();
@@ -92,7 +103,12 @@ public class CilConvInstruction extends AbstractCilnstruction {
         convType = UnknownType.v();
         break;
     }
+    argument = simplifyComplexExpression(jb, argument);
 
-    return Jimple.v().newCastExpr(argument, convType);
+    if (instruction.getCheckForOverflow()) {
+      return Jimple.v().newCheckedCastExpr(argument, convType);
+    } else {
+      return Jimple.v().newCastExpr(argument, convType);
+    }
   }
 }

@@ -25,8 +25,10 @@ package soot.dotnet.instructions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.dotnet.instructions.CilBlockContainer.BlockContainerKind;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.dotnet.proto.ProtoIlInstructions.IlInstructionMsg.IlOpCode;
 
 /**
  * Factory for creating IL Instruction objects
@@ -42,11 +44,17 @@ public class CilInstructionFactory {
 
     switch (instruction.getOpCode()) {
       case CALL:
+        return new CilCallInstruction(instruction, dotnetBody, cilBlock) {
+          @Override
+          protected boolean isNonVirtualCall() {
+            return true;
+          }
+        };
       case CALLVIRT:
         // e.g. System.Object..ctor call
-        return new CilCallVirtInstruction(instruction, dotnetBody, cilBlock);
+        return new CilCallInstruction(instruction, dotnetBody, cilBlock);
       case LEAVE:
-        // return (void)
+        // return
         return new CilLeaveInstruction(instruction, dotnetBody, cilBlock);
       case STLOC:
         return new CilStLocInstruction(instruction, dotnetBody, cilBlock);
@@ -77,6 +85,8 @@ public class CilInstructionFactory {
       case LDLOCA:
       case LDLOC:
         return new CilLdLocInstruction(instruction, dotnetBody, cilBlock);
+      case LDC_DECIMAL:
+        return new CilLdcDecimalInstruction(instruction, dotnetBody, cilBlock);
       case LDC_I4:
         return new CilLdcI4Instruction(instruction, dotnetBody, cilBlock);
       case LDC_I8:
@@ -92,6 +102,11 @@ public class CilInstructionFactory {
       case LDFLDA:
         return new CilLdFldaInstruction(instruction, dotnetBody, cilBlock);
       case LDOBJ:
+        if (instruction.getTarget().getOpCode() == IlOpCode.LDELEMA) {
+          //we want to load the *value* of an array reference
+          //ilspy resolves the ldelem opcode to storeobj(ldelema)
+          return new CilLdElemInstruction(instruction.getTarget(), dotnetBody, cilBlock);
+        }
         return fromInstructionMsg(instruction.getTarget(), dotnetBody, cilBlock);
       // return new CilLdObjInstruction(instruction, dotnetBody);
       case NEWOBJ:
@@ -109,7 +124,7 @@ public class CilInstructionFactory {
       case NEWARR:
         return new CilNewArrInstruction(instruction, dotnetBody, cilBlock);
       case LDELEMA:
-        return new CilLdElemaInstruction(instruction, dotnetBody, cilBlock);
+        return new CilLdElemInstruction(instruction, dotnetBody, cilBlock);
       case ISINST:
         return new CilIsInstInstruction(instruction, dotnetBody, cilBlock);
       case CASTCLASS:
@@ -128,8 +143,9 @@ public class CilInstructionFactory {
       case LOC_ALLOC:
         return new CilLocAllocInstruction(instruction, dotnetBody, cilBlock);
       case LD_FTN:
-      case LD_VIRT_FTN:
         return new CilLdFtnInstruction(instruction, dotnetBody, cilBlock);
+      case LD_VIRT_FTN:
+        return new CilLdVirtualFtnInstruction(instruction, dotnetBody, cilBlock);
       case MK_REF_ANY:
       case REF_ANY_VAL:
         return new CilRefAnyInstruction(instruction, dotnetBody, cilBlock);
@@ -137,6 +153,14 @@ public class CilInstructionFactory {
         return new CilRefTypeInstruction(instruction, dotnetBody, cilBlock);
       case SIZE_OF:
         return new CilSizeOfInstruction(instruction, dotnetBody, cilBlock);
+      case NONE_OP:
+        throw new IllegalArgumentException("Check the native wrapper; some instruction is not handled in "
+            + dotnetBody.getDotnetMethodSig().getSootMethodSignature());
+      case MATCH_INSTRUCTION:
+        return new CilMatchInstruction(instruction, dotnetBody, cilBlock);
+      case BLOCK:
+        return new CILBlockContainerInstr(instruction.getTryBlock(), dotnetBody, BlockContainerKind.INSTR_BLOCK);
+
       default:
         throw new IllegalArgumentException("Opcode " + instruction.getOpCode().name() + " is not implemented!");
     }

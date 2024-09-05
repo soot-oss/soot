@@ -22,7 +22,9 @@ package soot;
  * #L%
  */
 
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.jimple.internal.IIntLikeType;
 import soot.options.Options;
 import soot.util.Switch;
 
@@ -30,7 +32,7 @@ import soot.util.Switch;
  * Soot representation of the Java built-in type 'short'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class ShortType extends PrimType implements IntegerType {
+public class ShortType extends PrimType implements IJavaType, IntegerType, DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0x8B817DD3;
 
@@ -64,7 +66,7 @@ public class ShortType extends PrimType implements IntegerType {
   @Override
   public String getTypeAsString() {
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return DotnetBasicTypes.SYSTEM_INT16;
+      return DotNetBasicTypes.SYSTEM_INT16;
     }
     return JavaBasicTypes.JAVA_LANG_SHORT;
   }

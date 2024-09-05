@@ -56,6 +56,7 @@ public class CilLdFldaInstruction extends AbstractCilnstruction {
         DotnetTypeFactory.toSootType(instruction.getField().getType()), false);
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getTarget(), dotnetBody, cilBlock);
     Value target = cilExpr.jimplifyExpr(jb);
+    target = simplifyComplexExpression(jb, target);
 
     return Jimple.v().newInstanceFieldRef(target, fieldRef);
   }

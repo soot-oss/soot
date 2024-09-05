@@ -24,28 +24,6 @@ package soot.dotnet.instructions;
 
 import static soot.dotnet.members.method.DotnetBody.inlineCastExpr;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 2015 Steven Arzt
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- *
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
 import soot.Body;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
@@ -71,32 +49,47 @@ public class CilBinaryNumericInstruction extends AbstractCilnstruction {
   public Value jimplifyExpr(Body jb) {
     Value left = CilInstructionFactory.fromInstructionMsg(instruction.getLeft(), dotnetBody, cilBlock).jimplifyExpr(jb);
     left = inlineCastExpr(left);
+    left = simplifyComplexExpression(jb, left);
     Value right = CilInstructionFactory.fromInstructionMsg(instruction.getRight(), dotnetBody, cilBlock).jimplifyExpr(jb);
     right = inlineCastExpr(right);
+    right = simplifyComplexExpression(jb, right);
+    Jimple jimple = Jimple.v();
     switch (instruction.getOperator()) {
       case Add:
-        return Jimple.v().newAddExpr(left, right);
+        if (instruction.getCheckForOverflow()) {
+          return jimple.newCheckedAddExpr(left, right);
+        } else {
+          return jimple.newAddExpr(left, right);
+        }
       case Sub:
-        return Jimple.v().newSubExpr(left, right);
+        if (instruction.getCheckForOverflow()) {
+          return jimple.newCheckedSubExpr(left, right);
+        } else {
+          return jimple.newSubExpr(left, right);
+        }
       case Mul:
-        return Jimple.v().newMulExpr(left, right);
+        if (instruction.getCheckForOverflow()) {
+          return jimple.newCheckedMulExpr(left, right);
+        } else {
+          return jimple.newMulExpr(left, right);
+        }
       case Div:
-        return Jimple.v().newDivExpr(left, right);
+        return jimple.newDivExpr(left, right);
       case Rem:
-        return Jimple.v().newRemExpr(left, right);
+        return jimple.newRemExpr(left, right);
       case BitAnd:
-        return Jimple.v().newAndExpr(left, right);
+        return jimple.newAndExpr(left, right);
       case BitOr:
-        return Jimple.v().newOrExpr(left, right);
+        return jimple.newOrExpr(left, right);
       case BitXor:
-        return Jimple.v().newXorExpr(left, right);
+        return jimple.newXorExpr(left, right);
       case ShiftLeft:
-        return Jimple.v().newShlExpr(left, right);
+        return jimple.newShlExpr(left, right);
       case ShiftRight:
         if (instruction.getSign().equals(ProtoIlInstructions.IlInstructionMsg.IlSign.Signed)) {
-          return Jimple.v().newShrExpr(left, right);
+          return jimple.newShrExpr(left, right);
         }
-        return Jimple.v().newUshrExpr(left, right);
+        return jimple.newUshrExpr(left, right);
       default:
         return null;
     }

@@ -205,4 +205,9 @@ public class FloatConstant extends RealConstant {
       throw new IllegalArgumentException("FloatConstant expected");
     }
   }
+
+  @Override
+  public Number getNumericValue() {
+    return value;
+  }
 }

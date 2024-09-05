@@ -229,4 +229,9 @@ public class IntConstant extends ArithmeticConstant {
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseIntConstant(this);
   }
+
+  @Override
+  public Number getNumericValue() {
+    return value;
+  }
 }

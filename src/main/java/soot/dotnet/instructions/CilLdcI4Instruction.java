@@ -41,6 +41,6 @@ public class CilLdcI4Instruction extends AbstractCilnstruction {
 
   @Override
   public Value jimplifyExpr(Body jb) {
-    return IntConstant.v(instruction.getValueConstantInt32());
+    return IntConstant.v((int) instruction.getValueConstantInt64());
   }
 }

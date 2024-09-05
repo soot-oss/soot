@@ -1,7 +1,5 @@
 package soot.dotnet;
 
-import com.google.common.base.Strings;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,11 +22,15 @@ import com.google.common.base.Strings;
  * #L%
  */
 
+import com.google.common.base.Strings;
+
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.dotnet.members.DotnetEvent;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
+import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition;
 import soot.dotnet.proto.ProtoDotnetNativeHost;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.options.Options;
@@ -49,6 +52,9 @@ import soot.toolkits.scalar.Pair;
 public class AssemblyFile extends File {
   private static final Logger logger = LoggerFactory.getLogger(AssemblyFile.class);
 
+  private static boolean loaded;
+  private static final Object lockobj = new Object();
+
   /**
    * Constructs a new AssemblyFile with the path to the file
    *
@@ -60,8 +66,16 @@ public class AssemblyFile extends File {
     this.fullyQualifiedAssemblyPathFilename = fullyQualifiedAssemblyPathFilename;
     this.pathNativeHost = Options.v().dotnet_nativehost_path();
 
-    // load JNI library
-    System.load(this.pathNativeHost);
+    if (!loaded) {
+      // load JNI library
+      synchronized (lockobj) {
+        if (loaded) {
+          return;
+        }
+        System.load(this.pathNativeHost);
+        loaded = true;
+      }
+    }
   }
 
   /**
@@ -73,6 +87,11 @@ public class AssemblyFile extends File {
    * all types of this assembly file
    */
   private ProtoAssemblyAllTypes.AssemblyAllTypes protoAllTypes;
+
+  /**
+   * All types of the assembly file indexed by the full class name
+   */
+  private Map<String, TypeDefinition> allTypeMap;
 
   /**
    * e.g. "/Users/user/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib"
@@ -98,15 +117,23 @@ public class AssemblyFile extends File {
       ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder
           = createAnalyzerParamsBuilder("", ProtoDotnetNativeHost.AnalyzerMethodCall.GET_ALL_TYPES);
       ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
+      logger.info("Getting all .NET types");
 
-      byte[] protobufMessageBytes = nativeGetAllTypesMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protobufMessageBytes;
+      synchronized (lockobj) {
+        protobufMessageBytes = nativeGetAllTypesMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       ProtoAssemblyAllTypes.AssemblyAllTypes a = ProtoAssemblyAllTypes.AssemblyAllTypes.parseFrom(protobufMessageBytes);
+      logger.info("Finished: Getting all .NET types");
+      List<ProtoAssemblyAllTypes.TypeDefinition> allTypesList = a.getListOfTypesList();
+      allTypeMap = new HashMap<>();
+      for (TypeDefinition p : allTypesList) {
+        allTypeMap.put(p.getFullname(), p);
+      }
       protoAllTypes = a;
       return a;
     } catch (Exception e) {
-      if (Options.v().verbose()) {
-        logger.warn(getAssemblyFileName() + " has no types. Error of protobuf message: " + e.getMessage());
-      }
+      logger.error(MessageFormat.format("Could not read in {0}", getAssemblyFileName()), e);
       return null;
     }
   }
@@ -130,7 +157,10 @@ public class AssemblyFile extends File {
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
     try {
-      byte[] protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protoMsgBytes;
+      synchronized (lockobj) {
+        protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -164,8 +194,7 @@ public class AssemblyFile extends File {
    *          request setter or getter
    * @return proto message with method body
    */
-  public ProtoIlInstructions.IlFunctionMsg getMethodBodyOfProperty(String className, String propertyName,
-      boolean isSetter) {
+  public ProtoIlInstructions.IlFunctionMsg getMethodBodyOfProperty(String className, String propertyName, boolean isSetter) {
     ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder
         = createAnalyzerParamsBuilder(className, ProtoDotnetNativeHost.AnalyzerMethodCall.GET_METHOD_BODY_OF_PROPERTY);
     analyzerParamsBuilder.setPropertyName(propertyName);
@@ -173,7 +202,10 @@ public class AssemblyFile extends File {
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
     try {
-      byte[] protoMsgBytes = nativeGetMethodBodyOfPropertyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protoMsgBytes;
+      synchronized (lockobj) {
+        protoMsgBytes = nativeGetMethodBodyOfPropertyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -220,7 +252,10 @@ public class AssemblyFile extends File {
     ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
 
     try {
-      byte[] protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      byte[] protoMsgBytes;
+      synchronized (lockobj) {
+        protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
+      }
       return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
     } catch (Exception e) {
       if (Options.v().verbose()) {
@@ -236,7 +271,9 @@ public class AssemblyFile extends File {
    * @return true if this object referenced to a file is an assembly
    */
   public boolean isAssembly() {
-    return nativeIsAssembly(pathNativeHost, fullyQualifiedAssemblyPathFilename);
+    synchronized (lockobj) {
+      return nativeIsAssembly(pathNativeHost, fullyQualifiedAssemblyPathFilename);
+    }
   }
 
   /**
@@ -250,14 +287,10 @@ public class AssemblyFile extends File {
     if (Strings.isNullOrEmpty(className)) {
       return null;
     }
-    ProtoAssemblyAllTypes.AssemblyAllTypes allTypes = getAllTypes();
-    if (allTypes == null) {
-      return null;
+    if (allTypeMap == null) {
+      getAllTypes();
     }
-    List<ProtoAssemblyAllTypes.TypeDefinition> allTypesList = allTypes.getListOfTypesList();
-    Optional<ProtoAssemblyAllTypes.TypeDefinition> c
-        = allTypesList.stream().filter(x -> x.getFullname().equals(className)).findFirst();
-    return c.orElse(null);
+    return allTypeMap.get(className);
   }
 
   /**
@@ -265,13 +298,11 @@ public class AssemblyFile extends File {
    *
    * @return list of strings with all types
    */
-  public List<String> getAllTypeNames() {
-    ProtoAssemblyAllTypes.AssemblyAllTypes allTypes = getAllTypes();
-    if (allTypes == null) {
-      return null;
+  public Collection<String> getAllTypeNames() {
+    if (allTypeMap == null) {
+      getAllTypes();
     }
-    List<ProtoAssemblyAllTypes.TypeDefinition> listOfTypesList = allTypes.getListOfTypesList();
-    return listOfTypesList.stream().map(ProtoAssemblyAllTypes.TypeDefinition::getFullname).collect(Collectors.toList());
+    return allTypeMap.keySet();
   }
 
   /**
@@ -379,10 +410,27 @@ public class AssemblyFile extends File {
   /**
    * Check if given assembly file is an assembly
    *
+   * @param pathToNativeHost
+   *          Path where the library file of the native host is located, e.g.
+   *          /Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib
    * @param absolutePathAssembly
    *          e.g. /home/user/cs/myassembly.dll
    * @return true if given file is assembly
    */
   private native boolean nativeIsAssembly(String pathToNativeHost, String absolutePathAssembly);
+
+  /**
+   * Returns a manifest resource stream
+   *
+   * @param pathToNativeHost
+   *          Path where the library file of the native host is located, e.g.
+   *          /Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib
+   * @param absolutePathAssembly
+   *          e.g. /home/user/cs/myassembly.dll
+   * @param name 
+   *          the name of the resource
+   * @return the content of the resource or null if not found
+   */
+  public native byte[] nativeGetManifestResourceStream(String pathToNativeHost, String absolutePathAssembly, String name);
 
 }

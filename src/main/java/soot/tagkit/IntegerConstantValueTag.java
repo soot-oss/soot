@@ -28,16 +28,21 @@ public class IntegerConstantValueTag extends ConstantValueTag {
 
   public static final String NAME = "IntegerConstantValueTag";
 
-  private final int value;
+  private final IntConstant value;
 
   public IntegerConstantValueTag(int value) {
     super(new byte[] { (byte) ((value >> 24) & 0xff), (byte) ((value >> 16) & 0xff), (byte) ((value >> 8) & 0xff),
         (byte) ((value) & 0xff) });
-    this.value = value;
+    this.value = IntConstant.v(value);
+  }
+
+  public IntegerConstantValueTag(IntConstant c) {
+    super(null);
+    this.value = c;
   }
 
   public int getIntValue() {
-    return value;
+    return value.value;
   }
 
   @Override
@@ -47,19 +52,19 @@ public class IntegerConstantValueTag extends ConstantValueTag {
 
   @Override
   public String toString() {
-    return "ConstantValue: " + Integer.toString(value);
+    return "ConstantValue: " + value.value;
   }
 
   @Override
   public IntConstant getConstant() {
-    return IntConstant.v(value);
+    return value;
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = super.hashCode();
-    result = prime * result + value;
+    result = prime * result + value.value;
     return result;
   }
 

@@ -1,6 +1,5 @@
 package soot;
 
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework

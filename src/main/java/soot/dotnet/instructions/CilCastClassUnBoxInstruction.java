@@ -50,6 +50,7 @@ public class CilCastClassUnBoxInstruction extends AbstractCilnstruction {
     Type type = DotnetTypeFactory.toSootType(instruction.getType());
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
     Value argument = cilExpr.jimplifyExpr(jb);
+    argument = simplifyComplexExpression(jb, argument);
     return Jimple.v().newCastExpr(argument, type);
   }
 }

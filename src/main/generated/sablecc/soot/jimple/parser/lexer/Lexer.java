@@ -11,7 +11,7 @@ public class Lexer
     protected Token token;
     protected State state = State.INITIAL;
 
-    private PushbackReader in;
+    private IPushbackReader in;
     private int line;
     private int pos;
     private boolean cr;
@@ -24,7 +24,25 @@ public class Lexer
         // Do nothing
     }
 
-    public Lexer(@SuppressWarnings("hiding") PushbackReader in)
+    public Lexer(@SuppressWarnings("hiding") final PushbackReader in)
+    {
+        this.in = new IPushbackReader() {
+
+            private PushbackReader pushbackReader = in;
+            
+            @Override
+            public void unread(int c) throws IOException {
+                pushbackReader.unread(c);
+            }
+            
+            @Override
+            public int read() throws IOException {
+                return pushbackReader.read();
+            }
+        };
+    }
+ 
+    public Lexer(@SuppressWarnings("hiding") IPushbackReader in)
     {
         this.in = in;
     }
@@ -1182,6 +1200,7 @@ public class Lexer
                     if(this.text.length() > 0)
                     {
                         throw new LexerException(
+                            new InvalidToken(this.text.substring(0, 1), start_line + 1, start_pos + 1),
                             "[" + (start_line + 1) + "," + (start_pos + 1) + "]" +
                             " Unknown token: " + this.text);
                     }
@@ -2202,7 +2221,7 @@ public class Lexer
         {
             DataInputStream s = new DataInputStream(
                 new BufferedInputStream(
-                Lexer.class.getResourceAsStream("/lexer.dat")));
+                Lexer.class.getResourceAsStream("lexer.dat")));
 
             // read gotoTable
             int length = s.readInt();

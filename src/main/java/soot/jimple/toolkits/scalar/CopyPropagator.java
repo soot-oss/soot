@@ -144,6 +144,7 @@ public class CopyPropagator extends BodyTransformer {
       boolean onlyRegularLocals = options.only_regular_locals();
       boolean onlyStackLocals = options.only_stack_locals();
       boolean allLocals = onlyRegularLocals && onlyStackLocals;
+      boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
 
       // Perform a local propagation pass.
       for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(graph, false)) {
@@ -202,8 +203,12 @@ public class CopyPropagator extends BodyTransformer {
                   if ((op instanceof IntConstant && ((IntConstant) op).value == 0)
                       || (op instanceof LongConstant && ((LongConstant) op).value == 0)) {
                     if (useBox.canContainValue(NullConstant.v())) {
-                      useBox.setValue(NullConstant.v());
-                      copyLineTags(useBox, def);
+                      // for .NET, we cannot eliminate casts to enums, since we might lose information otherwise
+                      // But even for non-casts, using 0 as a ref-like type is legal here
+                      if (!isDotNet) {
+                        useBox.setValue(NullConstant.v());
+                        copyLineTags(useBox, def);
+                      }
                     }
                   }
                 }

@@ -43,7 +43,7 @@ public abstract class AbstractJimpleValueSwitch<T> extends AbstractExprSwitch<T>
 
   @Override
   public void caseIntConstant(IntConstant v) {
-    defaultCase(v);
+    // this if fine for .NET code
   }
 
   @Override

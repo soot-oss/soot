@@ -26,12 +26,10 @@ import java.util.List;
  */
 import soot.ArrayType;
 import soot.Body;
-import soot.Immediate;
 import soot.Type;
 import soot.Value;
 import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
-import soot.dotnet.members.method.DotnetBodyVariableManager;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
 import soot.jimple.Jimple;
@@ -57,7 +55,7 @@ public class CilNewArrInstruction extends AbstractCilnstruction {
     for (ProtoIlInstructions.IlInstructionMsg index : instruction.getIndicesList()) {
       CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(index, dotnetBody, cilBlock);
       Value value = cilExpr.jimplifyExpr(jb);
-      Value val = value instanceof Immediate ? value : DotnetBodyVariableManager.inlineLocals(value, jb);
+      Value val = simplifyComplexExpression(jb, value);
       sizesOfArr.add(val);
     }
 

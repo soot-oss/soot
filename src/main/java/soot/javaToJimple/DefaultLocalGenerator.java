@@ -30,6 +30,7 @@ import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
+import soot.DecimalType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
@@ -39,6 +40,10 @@ import soot.LongType;
 import soot.RefLikeType;
 import soot.ShortType;
 import soot.Type;
+import soot.UByteType;
+import soot.UIntType;
+import soot.ULongType;
+import soot.UShortType;
 import soot.UnknownType;
 import soot.VoidType;
 import soot.jimple.Jimple;
@@ -74,7 +79,7 @@ public class DefaultLocalGenerator extends LocalGenerator {
   public Local generateLocal(Type type) {
     Supplier<String> nameGen;
     if (type instanceof IntType || type instanceof Integer1Type || type instanceof Integer127Type
-        || type instanceof Integer32767Type) {
+        || type instanceof Integer32767Type || type instanceof UIntType) {
       nameGen = this::nextIntName;
     } else if (type instanceof ByteType) {
       nameGen = this::nextByteName;
@@ -86,12 +91,18 @@ public class DefaultLocalGenerator extends LocalGenerator {
       nameGen = this::nextVoidName;
     } else if (type instanceof CharType) {
       nameGen = this::nextCharName;
-    } else if (type instanceof DoubleType) {
+    } else if (type instanceof DoubleType || type instanceof DecimalType) {
       nameGen = this::nextDoubleName;
     } else if (type instanceof FloatType) {
       nameGen = this::nextFloatName;
     } else if (type instanceof LongType) {
       nameGen = this::nextLongName;
+    } else if (type instanceof ULongType) {
+      nameGen = this::nextLongName;
+    } else if (type instanceof UByteType) {
+      nameGen = this::nextByteName;
+    } else if (type instanceof UShortType) {
+      nameGen = this::nextShortName;
     } else if (type instanceof RefLikeType) {
       nameGen = this::nextRefLikeTypeName;
     } else if (type instanceof UnknownType) {

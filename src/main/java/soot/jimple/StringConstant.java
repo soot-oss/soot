@@ -24,7 +24,7 @@ package soot.jimple;
 
 import soot.RefType;
 import soot.Type;
-import soot.dotnet.types.DotnetBasicTypes;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.options.Options;
 import soot.util.StringTools;
 import soot.util.Switch;
@@ -68,7 +68,7 @@ public class StringConstant extends Constant {
   @Override
   public Type getType() {
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return RefType.v(DotnetBasicTypes.SYSTEM_STRING);
+      return RefType.v(DotNetBasicTypes.SYSTEM_STRING);
     }
     return RefType.v("java.lang.String");
   }
