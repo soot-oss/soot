@@ -401,7 +401,11 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
   @Override
   final public void caseStaticFieldRef(StaticFieldRef sfr) {
-    setResult(pag.makeGlobalVarNode(sfr.getField(), sfr.getField().getType()));
+    if (sfr.getField() != null) {
+      setResult(pag.makeGlobalVarNode(sfr.getField(), sfr.getField().getType()));
+    } else if (sfr.getFieldRef() != null) {
+      setResult(pag.makeGlobalVarNode(sfr.getFieldRef(), sfr.getFieldRef().type()));
+    }
   }
 
   @Override
