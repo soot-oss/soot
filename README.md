@@ -109,8 +109,6 @@ If you cannot work with the prebuild versions and need to build Soot on your own
 
 Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.
 Development happens in the develop branch. To catch the bleeding edge of Soot, check out the latter.
-In case of any questions, please consult the Soot
-mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 
 # How do I contribute to Soot?
 
