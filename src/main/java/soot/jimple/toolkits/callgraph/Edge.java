@@ -40,7 +40,7 @@ import soot.util.Invalidable;
  *
  * @author Ondrej Lhotak
  */
-public final class Edge implements Invalidable {
+public class Edge implements Invalidable {
 
   /**
    * The method in which the call occurs; may be null for calls not occurring in a specific method (eg. implicit calls by the
