@@ -125,6 +125,11 @@ public class FastHierarchy {
       return (potentialSubrange == this)
           || (potentialSubrange != null && this.lower <= potentialSubrange.lower && this.upper >= potentialSubrange.upper);
     }
+
+    @Override
+    public String toString() {
+      return String.format("%d - %d", lower, upper);
+    }
   }
 
   protected int dfsVisit(int start, SootClass c) {

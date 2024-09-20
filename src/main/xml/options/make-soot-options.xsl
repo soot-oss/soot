@@ -146,7 +146,7 @@ public class Options extends OptionsBase {
     <xsl:template mode="parse" match="boolopt">
             else if (false<xsl:text/>
         <xsl:choose>
-            <xsl:when test="default='true'">
+            <xsl:when test="child::default='true'">
                 <xsl:for-each select="alias">
                     || option.equals("no-<xsl:value-of select="."/>")<xsl:text/>
                 </xsl:for-each>

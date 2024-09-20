@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: ['8', '9', '11']
+        java_version: ['11', '17', '21']
 
     steps:
     - name: Checkout
