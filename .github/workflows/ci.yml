@@ -20,18 +20,18 @@ jobs:
       - name: Stylecheck
         if: always()
         run: |
-          mvn -B clean checkstyle:check -Dcheckstyle.failOnViolation=true
+          mvn -B --no-transfer-progress clean checkstyle:check -Dcheckstyle.failOnViolation=true
       - name: Licensecheck
         if: always()
         run: |
-          mvn -B clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
+          mvn -B --no-transfer-progress clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
     
   BuildAndTest:
     name: Build and Test with java ${{ matrix.java_version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: ['8', '9', '11']
+        java_version: ['11', '17', '21']
 
     steps:
     - name: Checkout
@@ -42,7 +42,7 @@ jobs:
         java-version: ${{ matrix.java_version }}
     - name: Build and test Java ${{ matrix.java_version }}
       run: |
-        mvn -B clean test -PJava${{ matrix.java_version }}
+        mvn -B --no-transfer-progress clean test -PJava${{ matrix.java_version }}
 
         
   DeployArtifacts:
