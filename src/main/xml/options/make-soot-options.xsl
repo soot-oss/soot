@@ -520,7 +520,7 @@ public class Options extends OptionsBase {
                 <xsl:variable name="filename" select="class"/>
                 <xsl:variable name="fullname" select="concat($filename,'.java')"/>
                 <xsl:variable name="fullpath" select="concat('src/main/generated/options/soot/options/',$fullname)"/>
-                <xsl:result-document href="{$fullpath}">package soot.options;
+                <xsl:result-document href="{$fullpath}" omit-xml-declaration="yes">package soot.options;
 
 /*-
  * #%L
