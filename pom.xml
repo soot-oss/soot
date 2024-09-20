@@ -319,6 +319,10 @@
                             <trimStackTrace>false</trimStackTrace>
                             <reuseForks>false</reuseForks>
                             <forkCount>1</forkCount>
+                            <argLine>
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                                --add-opens=java.base/java.util=ALL-UNNAMED
+                            </argLine>
                         </configuration>
                     </execution>
                     <execution>
