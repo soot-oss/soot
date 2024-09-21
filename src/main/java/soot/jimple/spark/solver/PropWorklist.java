@@ -56,7 +56,7 @@ import soot.util.queue.QueueReader;
 
 public class PropWorklist extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropWorklist.class);
-  protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
+  protected final TreeSet<VarNode> varNodeWorkList = new TreeSet<VarNode>();
 
   public PropWorklist(PAG pag) {
     this.pag = pag;
@@ -75,10 +75,9 @@ public class PropWorklist extends Propagator {
       if (verbose) {
         logger.debug("Worklist has " + varNodeWorkList.size() + " nodes.");
       }
-      while (!varNodeWorkList.isEmpty()) {
-        VarNode src = varNodeWorkList.iterator().next();
-        varNodeWorkList.remove(src);
-        handleVarNode(src);
+      VarNode vsrc;
+      while ((vsrc = varNodeWorkList.pollFirst()) != null) {
+        handleVarNode(vsrc);
       }
       if (verbose) {
         logger.debug("Now handling field references");
