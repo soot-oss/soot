@@ -22,11 +22,14 @@ package soot.jimple.toolkits.typing.integer;
  * #L%
  */
 
-import soot.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.G;
+import soot.IntType;
+import soot.ShortType;
 import soot.Singletons.Global;
-import soot.jimple.toolkits.typing.fast.Integer127Type;
-import soot.jimple.toolkits.typing.fast.Integer1Type;
-import soot.jimple.toolkits.typing.fast.Integer32767Type;
+import soot.Type;
 
 /**
  * This class encapsulates the integer type hierarchy.
@@ -52,7 +55,6 @@ public class ClassHierarchy {
   public final TypeNode R0_1 = new TypeNode(6, null); // eventually becomes boolean
   public final TypeNode R0_127 = new TypeNode(7, null); // eventually becomes byte
   public final TypeNode R0_32767 = new TypeNode(8, null); // eventually becomes short
-  public final TypeNode REF = new TypeNode(9, RefType.v());
 
   private final boolean[][] ancestors_1 = { { false, false, false, false, false, true, false, false, false, },
       { false, false, true, false, true, true, false, false, false, },
@@ -124,7 +126,7 @@ public class ClassHierarchy {
 
   /** Get the type node for the given type. **/
   public TypeNode typeNode(Type type) {
-    if (type instanceof IntType || type instanceof Integer1Type || type instanceof Integer127Type || type instanceof Integer32767Type) {
+    if (type instanceof IntType) {
       return INT;
     } else if (type instanceof BooleanType) {
       return BOOLEAN;
@@ -134,8 +136,6 @@ public class ClassHierarchy {
       return SHORT;
     } else if (type instanceof CharType) {
       return CHAR;
-    } else if (type instanceof RefType){
-      return REF;
     } else {
       throw new InternalTypingException(type);
     }

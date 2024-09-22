@@ -22,7 +22,6 @@ package soot;
  * #L%
  */
 
-import java.util.List;
 import java.util.Map;
 
 import soot.jimple.JimpleBody;
@@ -45,19 +44,12 @@ public class JimpleBodyPack extends BodyPack {
   private void applyPhaseOptions(JimpleBody b, Map<String, String> opts) {
     JBOptions options = new JBOptions(opts);
 
-    final PackManager pacman = PackManager.v();
-    final boolean time = Options.v().time();
-
-    List<String> enableBTList = Options.v().getEnableBTList();
-    for (String enableBT: enableBTList) {
-      pacman.getTransform(enableBT).apply(b);
-    }
-
-    /*
-
     if (options.use_original_names()) {
       PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
     }
+
+    final PackManager pacman = PackManager.v();
+    final boolean time = Options.v().time();
 
     if (time) {
       Timers.v().splitTimer.start();
@@ -100,8 +92,6 @@ public class JimpleBodyPack extends BodyPack {
     pacman.getTransform("jb.lp").apply(b); // LocalPacker
     pacman.getTransform("jb.ne").apply(b); // NopEliminator
     pacman.getTransform("jb.uce").apply(b); // UnreachableCodeEliminator: Again, we might have new dead code
-    pacman.getTransform("jb.cbf").apply(b); // Conditional Branch Folder
-    pacman.getTransform("jb.ese").apply(b); // Empty Switch Eliminator
 
     // LocalNameStandardizer: After all these changes, some locals
     // may end up being eliminated. If we want a stable local iteration
@@ -111,7 +101,6 @@ public class JimpleBodyPack extends BodyPack {
       PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
       pacman.getTransform("jb.lns").apply(b);
     }
-     */
 
     if (time) {
       Timers.v().stmtCount += b.getUnits().size();
