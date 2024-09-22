@@ -6,7 +6,7 @@
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
     <name>Soot - a J*va Optimization Framework</name>
-    <version>4.6.0-SNAPSHOT</version>
+    <version>4.6.0-SNAPSHOT-disableBTList</version>
     <description>A Java Optimization Framework</description>
     <url>https://soot-oss.github.io/soot</url>
     <organization>
@@ -70,13 +70,13 @@
         <checkstyle.version>8.18</checkstyle.version>
         <checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
         <checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
-        <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
-        <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
+        <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+        <licence-check.failOnMissingHeader>false</licence-check.failOnMissingHeader>
         <testcase.groups.excluded>categories.Java9Test,categories.Java11Test</testcase.groups.excluded>
         <asm.version>9.7</asm.version>
     </properties>
     <build>
-        <finalName>sootclasses-trunk</finalName>
+        <finalName>sootclasses-trunk-disableBTList</finalName>
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

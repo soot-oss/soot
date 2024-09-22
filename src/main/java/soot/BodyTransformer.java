@@ -22,8 +22,9 @@ package soot;
  * #L%
  */
 
-import java.util.Collections;
-import java.util.Map;
+import soot.options.Options;
+
+import java.util.*;
 
 /**
  * An abstract class which acts on a Body. This class provides a harness and acts as an interface for classes that wish to
@@ -43,13 +44,67 @@ public abstract class BodyTransformer extends Transformer {
    *          phaseName for the transform. Used to retrieve options from the Scene.
    */
   public final void transform(Body b, String phaseName, Map<String, String> options) {
-    if (PhaseOptions.getBoolean(options, "enabled")) {
-      internalTransform(b, phaseName, options);
+    Options.getInternallyAppliedBT().add(phaseName);
+    if (Options.allBTList.contains(phaseName)) {
+      if (Options.getFirstBodyTransformer() == null){
+        Options.setFirstBodyTransformer(phaseName);
+        Options.setInitialStmtCount(Options.getInitialStmtCount() + b.getUnits().size());
+      }
+      if (Options.getFirstBodyTransformer().equals(phaseName)){
+        Options.setInitialStmtCount(Options.getInitialStmtCount() + b.getUnits().size());
+      }
+      if (Options.getEnableBTList() != null && Options.getEnableBTList().contains(phaseName)){
+        internalTransformWrapper(b, phaseName, options);
+      }
+    } else {
+      if (PhaseOptions.getBoolean(options, "enabled")) {
+        internalTransform(b, phaseName, options);
+      }
     }
   }
 
+  public final void internalTransformWrapper(Body b, String phaseName, Map<String, String> options) {
+    long startTime = System.currentTimeMillis(); // Start time
+    final int MB = 1024 * 1024;
+    Runtime runtime = Runtime.getRuntime();
+    long usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
+
+    internalTransform(b, phaseName, options);
+
+    long endTime = System.currentTimeMillis(); // End time
+    long duration = endTime - startTime;
+    long usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
+    long memoryUsed = (usedMemoryAfter - usedMemoryBefore) / MB;
+
+    Map<String, List<Long>> bodyTransformerMetric = Options.getBodyTransformerMetric();
+    LinkedList<Long> defaultValues = new LinkedList<>();
+    defaultValues.add(0L); // index 0 has runtime
+    defaultValues.add(0L); // index 1 has memory usage
+    bodyTransformerMetric.putIfAbsent(phaseName, defaultValues);
+    bodyTransformerMetric.computeIfPresent(phaseName,(str,list)->{
+      list.set(0, list.get(0) + duration);
+      list.set(1, list.get(1) + memoryUsed);
+      return list;
+    });
+  }
+
   public final void transform(Body b, String phaseName) {
-    internalTransform(b, phaseName, enabledOnlyMap);
+    Options.getInternallyAppliedBT().add(phaseName);
+    if (Options.allBTList.contains(phaseName)) {
+      if (Options.getFirstBodyTransformer() == null){
+        Options.setFirstBodyTransformer(phaseName);
+        Options.setInitialStmtCount(Options.getInitialStmtCount() + b.getUnits().size());
+      }
+      if (Options.getFirstBodyTransformer().equals(phaseName)){
+        Options.setInitialStmtCount(Options.getInitialStmtCount() + b.getUnits().size());
+      }
+      Options.setInitialStmtCount(Options.getInitialStmtCount() + b.getUnits().size());
+      if (Options.getEnableBTList() != null && Options.getEnableBTList().contains(phaseName)) {
+        internalTransformWrapper(b, phaseName, enabledOnlyMap);
+      }
+    } else {
+      internalTransform(b, phaseName, enabledOnlyMap);
+    }
   }
 
   public final void transform(Body b) {

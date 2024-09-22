@@ -42,6 +42,55 @@ public class Options extends OptionsBase {
         return G.v().soot_options_Options();
     }
 
+    public static int initialStmtCount = 0;
+    // must be LinkedList to enable ordering as well
+    public static List<String> enableBTList;
+    public static List<String> allBTList = Arrays.asList("jb.ls", "jb.lp", "jb.ese", "jb.ne", "jb.dae", "jb.ule", "jb.cp", "jb.uce", "jb.tr", "jb.tt", "jb.lns", "jb.cbf", "jb.dtr", "jb.sils", "jb.a", "jb.ulp", "jb.cp-ule");
+    public static List<String> defaultBTList = Arrays.asList("jb.tt", "jb.dtr", "jb.uce", "jb.ls", "jb.sils", "jb.a", "jb.ule", "jb.tr", "jb.lns", "jb.cp", "jb.dae", "jb.cp-ule", "jb.lp", "jb.ne", "jb.uce");
+    public static String firstBodyTransformer = null;
+    public static Set<String> internallyAppliedBT = new LinkedHashSet<>();
+    public static Map<String, List<Long>> bodyTransformerMetric = new HashMap<>();
+
+    public static Map<String, List<Long>> getBodyTransformerMetric() {
+        return bodyTransformerMetric;
+    }
+
+    public static void setBodyTransformerMetric(Map<String, List<Long>> bodyTransformerMetric) {
+        Options.bodyTransformerMetric = bodyTransformerMetric;
+    }
+
+    public static Set<String> getInternallyAppliedBT() {
+        return internallyAppliedBT;
+    }
+
+    public static void setInternallyAppliedBT(Set<String> internallyAppliedBT) {
+        Options.internallyAppliedBT = internallyAppliedBT;
+    }
+
+    public static String getFirstBodyTransformer() {
+        return firstBodyTransformer;
+    }
+
+    public static void setFirstBodyTransformer(String firstBodyTransformer) {
+        Options.firstBodyTransformer = firstBodyTransformer;
+    }
+
+    public static List<String> getEnableBTList() {
+        return enableBTList;
+    }
+
+    public static void setEnableBTList(List<String> enableBTList) {
+        Options.enableBTList = enableBTList;
+    }
+
+    public static int getInitialStmtCount() {
+        return initialStmtCount;
+    }
+
+    public static void setInitialStmtCount(int initialStmtCount) {
+        Options.initialStmtCount = initialStmtCount;
+    }
+
     public static final int src_prec_c = 1;
     public static final int src_prec_class = 1;
     public static final int src_prec_only_class = 2;

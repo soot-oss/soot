@@ -43,6 +43,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
+import soot.jimple.toolkits.typing.fast.BottomType;
 import soot.options.CGOptions;
 import soot.toolkits.scalar.Pair;
 import soot.util.HashMultiMap;
@@ -125,6 +126,9 @@ public class VirtualCalls {
 
   public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
       ChunkedQueue<SootMethod> targets, boolean appOnly) {
+    if (declaredType instanceof BottomType) {
+      declaredType = Scene.v().getObjectType();
+    }
     if (declaredType instanceof ArrayType) {
       declaredType = Scene.v().getObjectType();
     }

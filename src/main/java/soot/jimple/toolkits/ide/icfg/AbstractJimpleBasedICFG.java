@@ -201,6 +201,9 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   public boolean setOwnerStatement(Unit u, Body b) {
+    if (b == null) {
+      return true;
+    }
     return unitToOwner.put(u, b) == null;
   }
 
