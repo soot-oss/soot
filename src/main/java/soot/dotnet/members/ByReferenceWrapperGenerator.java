@@ -50,6 +50,7 @@ import soot.jimple.JimpleBody;
  * @author Marc Miltenberger
  */
 public class ByReferenceWrapperGenerator {
+  public static final String WRAPPER_FIELD_NAME = "r";
   public static final String WRAPPER_CLASS_NAME = "ByReferenceWrappers.Wrapper";
 
   public synchronized static SootClass getWrapperClass(Type t) {
@@ -61,7 +62,7 @@ public class ByReferenceWrapperGenerator {
     }
     SootClass sc = scene.makeSootClass(name, Modifier.FINAL | Modifier.STATIC);
     sc.setApplicationClass();
-    SootField r = scene.makeSootField("r", RefType.v("System.Object"));
+    SootField r = scene.makeSootField(WRAPPER_FIELD_NAME, RefType.v("System.Object"));
     r.setModifiers(Modifier.PUBLIC);
     sc.addField(r);
 
@@ -120,7 +121,7 @@ public class ByReferenceWrapperGenerator {
   }
 
   public static SootField getWrapperField(SootClass wrapperClass) {
-    return wrapperClass.getFieldByName("r");
+    return wrapperClass.getFieldByName(WRAPPER_FIELD_NAME);
   }
 
   /**
@@ -134,7 +135,7 @@ public class ByReferenceWrapperGenerator {
    */
   public static Unit getUpdateWrappedValueCall(Local wrapped, Local unwrapped) {
     RefType rt = (RefType) wrapped.getType();
-    SootField f = rt.getSootClass().getFieldByName("r");
+    SootField f = rt.getSootClass().getFieldByName(WRAPPER_FIELD_NAME);
     Jimple j = Jimple.v();
     return j.newAssignStmt(j.newInstanceFieldRef(wrapped, f.makeRef()), unwrapped);
 

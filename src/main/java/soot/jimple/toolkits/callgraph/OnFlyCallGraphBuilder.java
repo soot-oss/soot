@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.callgraph;
 
-import java.lang.reflect.Constructor;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -96,7 +94,6 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.AllocDotField;
-import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DeferredVirtualEdgeTarget;
@@ -810,17 +807,21 @@ public class OnFlyCallGraphBuilder {
         if (ie instanceof InstanceInvokeExpr) {
           InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
           Local receiver = (Local) iie.getBase();
-          MethodSubSignature subSig = new MethodSubSignature(iie.getMethodRef());
+          if (!(iie instanceof SpecialInvokeExpr)) {
+            MethodSubSignature subSig = new MethodSubSignature(iie.getMethodRef());
 
-          VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingSubSig(subSig);
-          if (virtualEdge != null) {
-            for (VirtualEdgeTarget t : virtualEdge.targets) {
-              if (t instanceof InvocationVirtualEdgeTarget) {
-                processVirtualEdgeSummary(m, s, receiver, (InvocationVirtualEdgeTarget) t, virtualEdge.edgeType);
-              } else if (t instanceof DeferredVirtualEdgeTarget) {
-                addVirtualCallSite(s, m, receiver, iie, new MethodSubSignature(iie.getMethodRef()), Kind.GENERIC_FAKE);
+            VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingSubSig(subSig);
+            if (virtualEdge != null) {
+              for (VirtualEdgeTarget t : virtualEdge.targets) {
+                if (t instanceof InvocationVirtualEdgeTarget) {
+                  processVirtualEdgeSummary(m, s, receiver, (InvocationVirtualEdgeTarget) t, virtualEdge.edgeType);
+                } else if (t instanceof DeferredVirtualEdgeTarget) {
+                  addVirtualCallSite(s, m, receiver, iie, new MethodSubSignature(iie.getMethodRef()), Kind.GENERIC_FAKE);
+                }
               }
             }
+          } else {
+            addEdge(m, s, ie.getMethod(), Kind.SPECIAL);
           }
 
           // if (!hasVirtualEdge || !iie.getMethod().isPhantom())
@@ -970,7 +971,7 @@ public class OnFlyCallGraphBuilder {
     if (!source.isConcrete()) {
       return;
     }
-    if (source.getSubSignature().contains("<init>")) {
+    if (source.isConstructor()) {
       handleInit(source, scl);
     }
     for (Unit u : source.retrieveActiveBody().getUnits()) {
