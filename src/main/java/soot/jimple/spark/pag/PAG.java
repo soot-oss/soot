@@ -1097,8 +1097,8 @@ public class PAG implements PointsToAnalysis {
       if (edgeSrc instanceof InstanceinvokeSource) {
         for (VirtualEdgeTarget edgeTgt : ve.getTargets()) {
           if (edgeTgt instanceof InvocationVirtualEdgeTarget) {
-            for (Local local : getOnFlyCallGraph().ofcgb().getReceiversOfVirtualEdge((InvocationVirtualEdgeTarget) edgeTgt,
-                ie)) {
+            InvocationVirtualEdgeTarget ieEdgeTgt = (InvocationVirtualEdgeTarget) edgeTgt;
+            for (Local local : getOnFlyCallGraph().ofcgb().getReceiversOfVirtualEdge(ieEdgeTgt, ie)) {
               Node parm = srcmpag.nodeFactory().getNode(local);
               parm = srcmpag.parameterize(parm, e.srcCtxt());
               parm = parm.getReplacement();
@@ -1111,6 +1111,12 @@ public class PAG implements PointsToAnalysis {
               // Make an edge from caller.argument to callee.this
               addEdge(parm, thiz);
               pval = addInterproceduralAssignment(parm, thiz, e);
+
+              // We need to ensure that the target method exists, at least as a phantom
+              if (local.getType() instanceof RefType) {
+                RefType rtTarget = (RefType) local.getType();
+                Scene.v().makeMethodRef(rtTarget.getSootClass(), ieEdgeTgt.getTargetMethod(), false).resolve();
+              }
             }
           } else if (edgeTgt instanceof DeferredVirtualEdgeTarget && e.srcStmt() instanceof AssignStmt
               && ie.getMethodRef().getReturnType() instanceof RefType) {
