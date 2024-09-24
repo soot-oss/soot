@@ -846,4 +846,31 @@
 				target-position="argument" index="0" />
 		</targets>
 	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream generate(java.util.function.Supplier)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.Stream: java.util.stream.Stream iterate(java.lang.Object,java.util.function.UnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
 </virtualedges>
