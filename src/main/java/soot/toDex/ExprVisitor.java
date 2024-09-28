@@ -702,7 +702,7 @@ public class ExprVisitor implements ExprSwitch {
     }
   }
 
-  private void castPrimitive(Register sourceReg, Value source, Type castSootType) {
+  protected void castPrimitive(Register sourceReg, Value source, Type castSootType) {
     PrimitiveType castType = PrimitiveType.getByName(castSootType.toString());
 
     // Fix null_types on the fly. This should not be necessary, but better
