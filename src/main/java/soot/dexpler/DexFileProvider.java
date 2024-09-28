@@ -230,6 +230,10 @@ public class DexFileProvider {
     while (entryNameIterator.hasPrevious()) {
       String entryName = entryNameIterator.previous();
       DexEntry<? extends DexFile> entry = dexContainer.getEntry(entryName);
+      if (!acceptFile(entry)) {
+        continue;
+      }
+
       entryName = deriveDexName(entryName);
       logger.debug("" + String.format("Found dex file '%s' with %d classes in '%s'", entryName,
           entry.getDexFile().getClasses().size(), dexSourceFile.getCanonicalPath()));
@@ -247,6 +251,10 @@ public class DexFileProvider {
       }
     }
     return Collections.unmodifiableMap(dexMap);
+  }
+
+  protected boolean acceptFile(DexEntry<? extends DexFile> entry) {
+    return true;
   }
 
   private String deriveDexName(String entryName) {
