@@ -21,7 +21,6 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -1104,6 +1103,16 @@ public class AsmMethodSource implements MethodSource {
     } else if (op >= IRETURN && op <= ARETURN) {
       convertReturnInsn(insn);
     } else if (op == RETURN) {
+      // We might be at the end of the stack, but there is still a dangling instruction, i.e., a method call whose return
+      // value
+      // was never used. Since the method may have side effects, we need to handle the call.
+      if (!stack.isEmpty()) {
+        Operand o1 = pop();
+        if (!units.containsKey(o1.insn)) {
+          InvokeExpr iexpr = (InvokeExpr) getFrame(o1.insn).out()[0].value;
+          setUnit(o1.insn, Jimple.v().newInvokeStmt(iexpr));
+        }
+      }
       if (!units.containsKey(insn)) {
         setUnit(insn, Jimple.v().newReturnVoidStmt());
       }

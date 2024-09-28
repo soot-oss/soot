@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
+
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
@@ -79,6 +80,7 @@ import soot.util.ArrayNumberer;
 import soot.util.Chain;
 import soot.util.HashChain;
 import soot.util.IterableNumberer;
+import soot.util.NumberedString;
 import soot.util.StringNumberer;
 
 /**
@@ -131,6 +133,8 @@ public class Scene {
   private final Map<String, Integer> maxAPIs = new HashMap<String, Integer>();
   private AndroidVersionInfo androidSDKVersionInfo;
   private int androidAPIVersion = -1;
+
+  protected List<ISootClassAddedListener> classAddedListeners = new ArrayList<>(4);
 
   public Scene(Singletons.Global g) {
     setReservedNames();
@@ -846,6 +850,8 @@ public class Scene {
       }
       nameToClass.computeIfAbsent(c.getName(), k -> c.getType());
     }
+
+    classAddedListeners.stream().forEach(l -> l.onSootClassAdded(c));
   }
 
   public void removeClass(SootClass c) {
@@ -2044,6 +2050,30 @@ public class Scene {
     }
   }
 
+  /** Create an unresolved reference to a method. */
+  public SootMethodRef makeMethodRef(SootClass declaringClass, String subsig, boolean isStatic) {
+    NumberedString numbered = Scene.v().getSubSigNumberer().findOrAdd(subsig);
+    MethodSubSignature sootSubsig = new MethodSubSignature(numbered);
+    if (PolymorphicMethodRef.handlesClass(declaringClass)) {
+      return new PolymorphicMethodRef(declaringClass, sootSubsig.getMethodName(), sootSubsig.getParameterTypes(),
+          sootSubsig.getReturnType(), isStatic);
+    } else {
+      return new SootMethodRefImpl(declaringClass, sootSubsig.getMethodName(), sootSubsig.getParameterTypes(),
+          sootSubsig.getReturnType(), isStatic);
+    }
+  }
+
+  /** Create an unresolved reference to a method. */
+  public SootMethodRef makeMethodRef(SootClass declaringClass, MethodSubSignature subsig, boolean isStatic) {
+    if (PolymorphicMethodRef.handlesClass(declaringClass)) {
+      return new PolymorphicMethodRef(declaringClass, subsig.getMethodName(), subsig.getParameterTypes(),
+          subsig.getReturnType(), isStatic);
+    } else {
+      return new SootMethodRefImpl(declaringClass, subsig.getMethodName(), subsig.getParameterTypes(),
+          subsig.getReturnType(), isStatic);
+    }
+  }
+
   /** Create an unresolved reference to a constructor. */
   public SootMethodRef makeConstructorRef(SootClass declaringClass, List<Type> parameterTypes) {
     return makeMethodRef(declaringClass, SootMethod.constructorName, parameterTypes, VoidType.v(), false);
@@ -2210,5 +2240,26 @@ public class Scene {
    */
   public void resetSootClassPathCache() {
     this.sootClassPath = null;
+  }
+
+  /**
+   * Registers a new listener that is invoked when a new SootClass is added to the scene
+   * 
+   * @param listener
+   *          The listener that shall be invoked when a new SootClass is added to the scene
+   */
+  public void registerSootClassAddedListener(ISootClassAddedListener listener) {
+    classAddedListeners.add(listener);
+  }
+
+  /**
+   * Unrgisters a listener that processes new SootClases being added to the scene
+   * 
+   * @param listener
+   *          The listener to remove
+   */
+  public void unregisterSootClassAddedListener(ISootClassAddedListener listener) {
+    classAddedListeners.remove(listener);
+
   }
 }

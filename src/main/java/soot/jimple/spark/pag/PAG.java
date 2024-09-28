@@ -60,6 +60,7 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
+import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.builder.GlobalNodeFactory;
@@ -84,6 +85,7 @@ import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DeferredVirtualEdgeTarget;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.InstanceinvokeSource;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.InvocationVirtualEdgeTarget;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.StaticinvokeSource;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeSource;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
@@ -1086,7 +1088,12 @@ public class PAG implements PointsToAnalysis {
       }
       VirtualEdgesSummaries summaries = getOnFlyCallGraph().ofcgb().getVirtualEdgeSummaries();
       InvokeExpr ie = e.srcStmt().getInvokeExpr();
-      VirtualEdge ve = summaries.getVirtualEdgesMatchingSubSig(new MethodSubSignature(ie.getMethodRef().getSubSignature()));
+      VirtualEdge ve = null;
+      if (ie instanceof InstanceInvokeExpr) {
+        ve = summaries.getVirtualEdgesMatchingSubSig(new MethodSubSignature(ie.getMethodRef().getSubSignature()));
+      } else if (ie instanceof StaticInvokeExpr) {
+        ve = summaries.getVirtualEdgesMatchingFunction(ie.getMethodRef().getSignature());
+      }
       // if there is no virtual edge there is no point in continuing
       if (ve == null) {
         return;
@@ -1094,11 +1101,11 @@ public class PAG implements PointsToAnalysis {
       // The source is equal for direct and indirect targets
       VirtualEdgeSource edgeSrc = ve.getSource();
 
-      if (edgeSrc instanceof InstanceinvokeSource) {
+      if (edgeSrc instanceof InstanceinvokeSource || edgeSrc instanceof StaticinvokeSource) {
         for (VirtualEdgeTarget edgeTgt : ve.getTargets()) {
           if (edgeTgt instanceof InvocationVirtualEdgeTarget) {
-            for (Local local : getOnFlyCallGraph().ofcgb().getReceiversOfVirtualEdge((InvocationVirtualEdgeTarget) edgeTgt,
-                ie)) {
+            InvocationVirtualEdgeTarget ieEdgeTgt = (InvocationVirtualEdgeTarget) edgeTgt;
+            for (Local local : getOnFlyCallGraph().ofcgb().getReceiversOfVirtualEdge(ieEdgeTgt, ie)) {
               Node parm = srcmpag.nodeFactory().getNode(local);
               parm = srcmpag.parameterize(parm, e.srcCtxt());
               parm = parm.getReplacement();
@@ -1111,6 +1118,12 @@ public class PAG implements PointsToAnalysis {
               // Make an edge from caller.argument to callee.this
               addEdge(parm, thiz);
               pval = addInterproceduralAssignment(parm, thiz, e);
+
+              // We need to ensure that the target method exists, at least as a phantom
+              if (local.getType() instanceof RefType) {
+                RefType rtTarget = (RefType) local.getType();
+                Scene.v().makeMethodRef(rtTarget.getSootClass(), ieEdgeTgt.getTargetMethod(), false).resolve();
+              }
             }
           } else if (edgeTgt instanceof DeferredVirtualEdgeTarget && e.srcStmt() instanceof AssignStmt
               && ie.getMethodRef().getReturnType() instanceof RefType) {
