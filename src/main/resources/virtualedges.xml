@@ -803,7 +803,7 @@
 	</edge>
 	<edge>
 		<source invoketype="instance"
-				subsignature="java.util.stream.Stream mapToDouble(java.util.function.ToDoubleFunction)" />
+				subsignature="java.util.stream.DoubleStream mapToDouble(java.util.function.ToDoubleFunction)" />
 		<targets>
 			<direct
 				subsignature="double applyAsDouble(java.lang.Object)"
@@ -812,7 +812,7 @@
 	</edge>
 	<edge>
 		<source invoketype="instance"
-				subsignature="java.util.stream.Stream mapToInt(java.util.function.ToIntFunction)" />
+				subsignature="java.util.stream.IntStream mapToInt(java.util.function.ToIntFunction)" />
 		<targets>
 			<direct
 				subsignature="int applyAsInt(java.lang.Object)"
@@ -821,7 +821,7 @@
 	</edge>
 	<edge>
 		<source invoketype="instance"
-				subsignature="java.util.stream.Stream mapToLong(java.util.function.ToLongFunction)" />
+				subsignature="java.util.stream.LongStream mapToLong(java.util.function.ToLongFunction)" />
 		<targets>
 			<direct
 				subsignature="long applyAsLong(java.lang.Object)"
@@ -949,8 +949,8 @@
 		</targets>
 	</edge>
 	<edge>
-		<source invoketype="instance"
-				subsignature="java.util.stream.Stream generate(java.util.function.Supplier)" />
+		<source invoketype="static"
+				signature="&lt;java.util.stream.Stream: java.util.stream.Stream generate(java.util.function.Supplier)&gt;" />
 		<targets>
 			<direct
 				subsignature="java.lang.Object get()"
@@ -973,6 +973,489 @@
 			<direct
 				subsignature="int compare(java.lang.Object,java.lang.Object)"
 				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	
+	<!-- java.util.stream.DoubleStream -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean allMatch(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean anyMatch(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.function.Supplier,java.util.function.ObjDoubleConsumer,java.util.function.BiConsumer)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+			<direct
+				subsignature="void accept(java.lang.Object,double)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream filter(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream flatMap(java.util.function.DoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEach(java.util.function.DoubleConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.DoubleConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.DoubleStream: java.util.stream.DoubleStream generate(java.util.function.DoubleSupplier)&gt;" />
+		<targets>
+			<direct
+				subsignature="double getAsDouble()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.DoubleStream: java.util.stream.DoubleStream iterate(java.lang.Object,java.util.function.DoubleUnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream map(java.util.function.DoubleUnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToInt(java.util.function.DoubleToIntFunction)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToLong(java.util.function.DoubleToLongFunction)" />
+		<targets>
+			<direct
+				subsignature="long applyAsInt(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToObj(java.util.function.DoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean noneMatch(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream peek(java.util.function.DoubleConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.OptionalDouble reduce(java.util.function.DoubleBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double,double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="double reduce(double,java.util.function.DoubleBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double,double)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
+	<!-- java.util.stream.IntStream -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean allMatch(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean anyMatch(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.function.Supplier,java.util.function.ObjIntConsumer,java.util.function.BiConsumer)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+			<direct
+				subsignature="void accept(java.lang.Object,int)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream filter(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream flatMap(java.util.function.IntFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEach(java.util.function.IntConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.IntConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.IntStream: java.util.stream.IntStream generate(java.util.function.IntSupplier)&gt;" />
+		<targets>
+			<direct
+				subsignature="int getAsInt()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.IntStream: java.util.stream.IntStream iterate(java.lang.Object,java.util.function.IntUnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(int)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream map(java.util.function.IntUnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream mapToDouble(java.util.function.IntToDoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream mapToLong(java.util.function.IntToLongFunction)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToObj(java.util.function.IntFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean noneMatch(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream peek(java.util.function.IntConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.OptionalInt reduce(java.util.function.IntBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(int,int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="int reduce(int,java.util.function.IntBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="int applyAsDouble(int,int)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
+	<!-- java.util.stream.LongStream -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean allMatch(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean anyMatch(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.function.Supplier,java.util.function.ObjLongConsumer,java.util.function.BiConsumer)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+			<direct
+				subsignature="void accept(java.lang.Object,long)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream filter(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream flatMap(java.util.function.LongFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEach(java.util.function.LongConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.LongConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.LongStream: java.util.stream.LongStream generate(java.util.function.LongSupplier)&gt;" />
+		<targets>
+			<direct
+				subsignature="long getAsLong()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.LongStream: java.util.stream.LongStream iterate(java.lang.Object,java.util.function.LongUnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream map(java.util.function.LongUnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream mapToDouble(java.util.function.IntToDoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream mapToInt(java.util.function.LongToIntFunction)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToObj(java.util.function.LongFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean noneMatch(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream peek(java.util.function.LongConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.OptionalLong reduce(java.util.function.LongBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long,long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="long reduce(long,java.util.function.LongBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long,long)"
+				target-position="argument" index="1" />
 		</targets>
 	</edge>
 </virtualedges>
