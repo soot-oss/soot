@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -1282,9 +1283,9 @@ public class DexPrinter {
     toTries(activeBody.getTraps(), builder, labelAssigner);
 
     // Make sure that all labels have been placed by now
-    for (Label lbl : labelAssigner.getAllLabels()) {
-      if (!lbl.isPlaced()) {
-        throw new DexPrinterException("Label not placed: " + lbl);
+    for (Entry<Stmt, Label> lbl : labelAssigner.getAllStmtsToLabels()) {
+      if (!lbl.getValue().isPlaced()) {
+        throw new DexPrinterException("Label not placed for statement " + lbl.getKey());
       }
     }
 
