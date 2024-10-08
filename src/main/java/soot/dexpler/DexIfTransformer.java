@@ -229,34 +229,10 @@ public class DexIfTransformer extends AbstractNullTransformer {
 
                 if (left instanceof ArrayRef) {
                   if (((ArrayRef) left).getIndex() == l) {
-                    // doBreak = true;
                     return;
                   }
                 }
 
-                // IMPOSSIBLE! WOULD BE DEF!
-                // // gets value assigned
-                // if (stmt.getLeftOp() == l) {
-                // if (r instanceof FieldRef)
-                // usedAsObject = isObject(((FieldRef)
-                // r).getFieldRef().type());
-                // else if (r instanceof ArrayRef)
-                // usedAsObject = isObject(((ArrayRef)
-                // r).getType());
-                // else if (r instanceof StringConstant || r
-                // instanceof NewExpr || r instanceof
-                // NewArrayExpr)
-                // usedAsObject = true;
-                // else if (r instanceof CastExpr)
-                // usedAsObject = isObject
-                // (((CastExpr)r).getCastType());
-                // else if (r instanceof InvokeExpr)
-                // usedAsObject = isObject(((InvokeExpr)
-                // r).getType());
-                // // introduces alias
-                // else if (r instanceof Local) {}
-                //
-                // }
                 // used to assign
                 if (stmt.getRightOp() == l) {
                   Value l = stmt.getLeftOp();
@@ -289,11 +265,9 @@ public class DexIfTransformer extends AbstractNullTransformer {
                 // is used as value (does not exclude
                 // assignment)
                 if (r instanceof FieldRef) {
-                  usedAsObject = true; // isObject(((FieldRef)
-                  // r).getFieldRef().type());
+                  usedAsObject = true;
                   doBreak = true;
 
-                  return;
                 } else if (r instanceof ArrayRef) {
                   ArrayRef ar = (ArrayRef) r;
                   if (ar.getBase() == l) {
@@ -302,39 +276,26 @@ public class DexIfTransformer extends AbstractNullTransformer {
                   } else { // used as index
                     usedAsObject = false;
                   }
-                  return;
                 } else if (r instanceof StringConstant || r instanceof NewExpr) {
-                  throw new RuntimeException("NOT POSSIBLE StringConstant or NewExpr at " + stmt);
+                  usedAsObject = true;
+                  doBreak = true;
                 } else if (r instanceof NewArrayExpr) {
                   usedAsObject = false;
-                  if (usedAsObject) {
-                    doBreak = true;
-                  }
-                  return;
                 } else if (r instanceof CastExpr) {
                   usedAsObject = isObject(((CastExpr) r).getCastType());
                   if (usedAsObject) {
                     doBreak = true;
                   }
-                  return;
                 } else if (r instanceof InvokeExpr) {
                   usedAsObject = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
                   if (usedAsObject) {
                     doBreak = true;
                   }
-                  return;
                 } else if (r instanceof LengthExpr) {
                   usedAsObject = true;
-                  if (usedAsObject) {
-                    doBreak = true;
-                  }
-                  return;
+                  doBreak = true;
                 } else if (r instanceof BinopExpr) {
                   usedAsObject = false;
-                  if (usedAsObject) {
-                    doBreak = true;
-                  }
-                  return;
                 }
               }
 
