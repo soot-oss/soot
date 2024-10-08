@@ -25,6 +25,8 @@ package soot.toDex;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.jf.dexlib2.builder.Label;
 import org.jf.dexlib2.builder.MethodImplementationBuilder;
@@ -118,6 +120,10 @@ public class LabelAssigner {
 
   public Collection<Label> getAllLabels() {
     return stmtToLabel.values();
+  }
+
+  public Set<Entry<Stmt, Label>> getAllStmtsToLabels() {
+    return stmtToLabel.entrySet();
   }
 
 }
