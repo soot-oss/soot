@@ -995,6 +995,9 @@ public class DexBody {
     // Must be last to ensure local ordering does not change
     PackManager.v().getTransform("jb.lns").apply(jBody);
 
+    // Check that we don't have anything weird
+    checkUnrealizableCasts();
+
     // t_whole_jimplification.end();
 
     return jBody;
@@ -1069,6 +1072,25 @@ public class DexBody {
         unit.removeTag(t.getName());
       }
 
+    }
+  }
+
+  /**
+   * Checks wheter the Jimple code contains unrealizable casts between reference types and primitives
+   */
+  private void checkUnrealizableCasts() {
+    for (Unit u : jBody.getUnits()) {
+      if (u instanceof AssignStmt) {
+        AssignStmt assignStmt = (AssignStmt) u;
+        Value rop = assignStmt.getRightOp();
+        if (rop instanceof CastExpr) {
+          CastExpr cast = (CastExpr) rop;
+          if ((cast.getCastType() instanceof PrimType && cast.getOp().getType() instanceof RefType)
+              || (cast.getCastType() instanceof RefType && cast.getOp().getType() instanceof PrimType)) {
+            throw new RuntimeException("Unrealizable cast " + u + " detected in method " + jBody.getMethod().getSignature());
+          }
+        }
+      }
     }
   }
 
