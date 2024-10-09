@@ -44,7 +44,7 @@ package soot.dexpler.tags;
 
 import soot.tagkit.Tag;
 
-public class LongOpTag implements Tag {
+public class LongOpTag implements Tag, DexplerTag {
 
   public static final String NAME = "LongOpTag";
 

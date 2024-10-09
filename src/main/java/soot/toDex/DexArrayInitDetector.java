@@ -36,7 +36,11 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
+import soot.jimple.Constant;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 
 /**
@@ -92,28 +96,34 @@ public class DexArrayInitDetector {
         } else {
           arrayValues = null;
         }
-      } else if (assignStmt.getLeftOp() instanceof ArrayRef && assignStmt.getRightOp() instanceof IntConstant
+      } else if (assignStmt.getLeftOp() instanceof ArrayRef && assignStmt.getRightOp() instanceof Constant
       /*
        * NumericConstant
        */
           && arrayValues != null) {
-        ArrayRef aref = (ArrayRef) assignStmt.getLeftOp();
-        if (aref.getBase() != concernedArray) {
-          arrayValues = null;
-          continue;
-        }
-        if (aref.getIndex() instanceof IntConstant) {
-          IntConstant intConst = (IntConstant) aref.getIndex();
-          if (intConst.value == arrayValues.size()) {
-            arrayValues.add(assignStmt.getRightOp());
-            if (intConst.value == 0) {
-              arrayInitStmt = u;
-            } else if (intConst.value == arraySize - 1) {
-              curIgnoreUnits.add(u);
-              checkAndSave(arrayInitStmt, arrayValues, arraySize, curIgnoreUnits);
-              arrayValues = null;
+        Value rop = assignStmt.getRightOp();
+        if (rop instanceof IntConstant || rop instanceof LongConstant || rop instanceof FloatConstant
+            || rop instanceof DoubleConstant) {
+          ArrayRef aref = (ArrayRef) assignStmt.getLeftOp();
+          if (aref.getBase() != concernedArray) {
+            arrayValues = null;
+            continue;
+          }
+          if (aref.getIndex() instanceof IntConstant) {
+            IntConstant intConst = (IntConstant) aref.getIndex();
+            if (intConst.value == arrayValues.size()) {
+              arrayValues.add(rop);
+              if (intConst.value == 0) {
+                arrayInitStmt = u;
+              } else if (intConst.value == arraySize - 1) {
+                curIgnoreUnits.add(u);
+                checkAndSave(arrayInitStmt, arrayValues, arraySize, curIgnoreUnits);
+                arrayValues = null;
+              } else {
+                curIgnoreUnits.add(u);
+              }
             } else {
-              curIgnoreUnits.add(u);
+              arrayValues = null;
             }
           } else {
             arrayValues = null;

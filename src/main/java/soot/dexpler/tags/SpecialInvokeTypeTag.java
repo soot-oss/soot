@@ -51,7 +51,7 @@ import soot.tagkit.Tag;
  * 
  * @author Marc Miltenberger
  */
-public class SpecialInvokeTypeTag implements Tag {
+public class SpecialInvokeTypeTag implements Tag, DexplerTag {
 
   public static final String NAME = "SpecialInvokeTypeTag";
 

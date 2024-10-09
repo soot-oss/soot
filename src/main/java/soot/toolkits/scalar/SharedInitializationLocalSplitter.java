@@ -135,10 +135,11 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
     }
 
+    DexNullThrowTransformer.v().transform(body);
     CopyPropagator.v().transform(body);
+    DexNullThrowTransformer.v().transform(body);
     ConstantPropagatorAndFolder.v().transform(body);
 
-    DexNullThrowTransformer.v().transform(body);
     DexNullArrayRefTransformer.v().transform(body);
     FlowSensitiveConstantPropagator.v().transform(body);
     CopyPropagator.v().transform(body);
