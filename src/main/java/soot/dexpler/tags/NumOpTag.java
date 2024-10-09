@@ -44,7 +44,7 @@ package soot.dexpler.tags;
 
 import soot.tagkit.Tag;
 
-public class NumOpTag implements Tag {
+public class NumOpTag implements Tag, DexplerTag {
 
   public static final String NAME = "NumOpTag";
 

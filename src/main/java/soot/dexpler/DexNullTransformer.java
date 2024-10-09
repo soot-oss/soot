@@ -215,15 +215,14 @@ public class DexNullTransformer extends AbstractNullTransformer {
           } else if (l instanceof ArrayRef) {
             Type aType = ((ArrayRef) l).getType();
             if (aType instanceof UnknownType) {
-              usedAsObject = stmt.hasTag(ObjectOpTag.NAME); // isObject(
-              // findArrayType(g,
-              // localDefs,
-              // localUses,
-              // stmt));
+              if (stmt.hasTag(ObjectOpTag.NAME)) {
+                usedAsObject = true;
+                doBreak = true;
+              }
             } else {
               usedAsObject = isObject(aType);
+              doBreak = true;
             }
-            doBreak = true;
             return;
           }
         }

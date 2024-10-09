@@ -35,10 +35,12 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.Local;
+import soot.RefLikeType;
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.tags.ObjectOpTag;
 import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -68,8 +70,8 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
     Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
     // NewArrayExpr needs the ElementType as it increases the array dimension by 1
-    Type arrayType = ((ArrayType) t).getElementType();
-    NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
+    Type elementType = ((ArrayType) t).getElementType();
+    NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(elementType, IntConstant.v(usedRegister));
     // new local generated intentional, will be moved to real register by MoveResult
     Local arrayLocal = body.getStoreResultLocal();
     AssignStmt assign = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
@@ -78,6 +80,9 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
       ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
 
       AssignStmt assign2 = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(regs[i]));
+      if (elementType instanceof RefLikeType) {
+        assign2.addTag(new ObjectOpTag());
+      }
       addTags(assign2);
       body.add(assign2);
     }

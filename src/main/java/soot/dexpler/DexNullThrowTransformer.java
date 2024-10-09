@@ -28,6 +28,7 @@ import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.BooleanConstant;
 import soot.Local;
 import soot.RefType;
 import soot.Scene;
@@ -64,14 +65,18 @@ public class DexNullThrowTransformer extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     LocalCreation lc = Scene.v().createLocalCreation(b.getLocals(), "ex");
 
+    final NullConstant nc = NullConstant.v();
+    final IntConstant ic = IntConstant.v(0);
+    final BooleanConstant bc = BooleanConstant.v(false);
+    final LongConstant llc = LongConstant.v(0);
     for (Iterator<Unit> unitIt = b.getUnits().snapshotIterator(); unitIt.hasNext();) {
       Unit u = unitIt.next();
 
       // Check for a null exception
       if (u instanceof ThrowStmt) {
         ThrowStmt throwStmt = (ThrowStmt) u;
-        if (throwStmt.getOp() == NullConstant.v() || throwStmt.getOp().equals(IntConstant.v(0))
-            || throwStmt.getOp().equals(LongConstant.v(0))) {
+        if (throwStmt.getOp() == nc || throwStmt.getOp().equals(ic) || throwStmt.getOp().equals(llc)
+            || throwStmt.getOp().equals(bc)) {
           createThrowStmt(b, throwStmt, lc);
         }
       }

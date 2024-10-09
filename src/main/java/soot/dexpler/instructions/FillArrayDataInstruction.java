@@ -37,8 +37,6 @@ import org.slf4j.LoggerFactory;
 
 import soot.Local;
 import soot.dexpler.DexBody;
-import soot.dexpler.DexFillArrayDataTransformer;
-import soot.dexpler.typing.UntypedConstant;
 import soot.dexpler.typing.UntypedIntOrFloatConstant;
 import soot.dexpler.typing.UntypedLongOrDoubleConstant;
 import soot.jimple.ArrayRef;

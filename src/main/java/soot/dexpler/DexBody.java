@@ -1076,7 +1076,7 @@ public class DexBody {
   }
 
   /**
-   * Checks wheter the Jimple code contains unrealizable casts between reference types and primitives
+   * Checks whether the Jimple code contains unrealizable casts between reference types and primitives
    */
   private void checkUnrealizableCasts() {
     for (Unit u : jBody.getUnits()) {
@@ -1087,6 +1087,7 @@ public class DexBody {
           CastExpr cast = (CastExpr) rop;
           if ((cast.getCastType() instanceof PrimType && cast.getOp().getType() instanceof RefType)
               || (cast.getCastType() instanceof RefType && cast.getOp().getType() instanceof PrimType)) {
+
             throw new RuntimeException("Unrealizable cast " + u + " detected in method " + jBody.getMethod().getSignature());
           }
         }
