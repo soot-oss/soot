@@ -103,7 +103,6 @@ public class DexNullTransformer extends AbstractNullTransformer {
         if (r instanceof FieldRef) {
           usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
           doBreak = true;
-          return;
         } else if (r instanceof ArrayRef) {
           ArrayRef ar = (ArrayRef) r;
           if (ar.getType() instanceof UnknownType) {
@@ -117,24 +116,19 @@ public class DexNullTransformer extends AbstractNullTransformer {
             usedAsObject = isObject(ar.getType());
           }
           doBreak = true;
-          return;
         } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr
             || r instanceof ClassConstant) {
           usedAsObject = true;
           doBreak = true;
-          return;
         } else if (r instanceof CastExpr) {
           usedAsObject = isObject(((CastExpr) r).getCastType());
           doBreak = true;
-          return;
         } else if (r instanceof InvokeExpr) {
           usedAsObject = isObject(((InvokeExpr) r).getType());
           doBreak = true;
-          return;
         } else if (r instanceof LengthExpr) {
           usedAsObject = false;
           doBreak = true;
-          return;
           // introduces alias
         }
 
@@ -239,7 +233,6 @@ public class DexNullTransformer extends AbstractNullTransformer {
           usedAsObject = true; // isObject(((FieldRef)
           // r).getFieldRef().type());
           doBreak = true;
-          return;
         } else if (r instanceof ArrayRef) {
           ArrayRef ar = (ArrayRef) r;
           if (ar.getBase() == l) {
@@ -248,29 +241,24 @@ public class DexNullTransformer extends AbstractNullTransformer {
             usedAsObject = false;
           }
           doBreak = true;
-          return;
         } else if (r instanceof StringConstant || r instanceof NewExpr) {
-          throw new RuntimeException("NOT POSSIBLE StringConstant or NewExpr at " + stmt);
+          usedAsObject = true;
+          doBreak = true;
         } else if (r instanceof NewArrayExpr) {
           usedAsObject = false;
           doBreak = true;
-          return;
         } else if (r instanceof CastExpr) {
           usedAsObject = isObject(((CastExpr) r).getCastType());
           doBreak = true;
-          return;
         } else if (r instanceof InvokeExpr) {
           usedAsObject = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
           doBreak = true;
-          return;
         } else if (r instanceof LengthExpr) {
           usedAsObject = true;
           doBreak = true;
-          return;
         } else if (r instanceof BinopExpr) {
           usedAsObject = false;
           doBreak = true;
-          return;
         }
       }
 
