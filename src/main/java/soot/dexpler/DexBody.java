@@ -1072,7 +1072,7 @@ public class DexBody {
               } else if (isFloat) {
                 if (!(c.getType() instanceof FloatType)) {
                   if (convFloat[idxConvVar] == null) {
-                    convFloat[idxConvVar] = jimple.newLocal(("lclConvToFloat" + idxConvVar), FloatType.v());
+                    convFloat[idxConvVar] = jimple.newLocal(freshLocalName("lclConvToFloat" + idxConvVar), FloatType.v());
                     b.getLocals().add(convFloat[idxConvVar]);
                   }
                   units.insertBefore(
