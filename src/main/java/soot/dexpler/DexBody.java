@@ -1026,7 +1026,7 @@ public class DexBody {
               || rop instanceof RemExpr) {
             if (isDouble) {
               if (convResultDouble == null) {
-                convResultDouble = jimple.newLocal("lclConvToDouble", DoubleType.v());
+                convResultDouble = jimple.newLocal(freshLocalName("lclConvToDouble"), DoubleType.v());
                 b.getLocals().add(convResultDouble);
               }
               Value prev = def.getLeftOp();
@@ -1035,7 +1035,7 @@ public class DexBody {
             }
             if (isFloat) {
               if (convResultFloat == null) {
-                convResultFloat = jimple.newLocal("lclConvToFloat", FloatType.v());
+                convResultFloat = jimple.newLocal(freshLocalName("lclConvToFloat"), FloatType.v());
                 b.getLocals().add(convResultFloat);
               }
               Value prev = def.getLeftOp();
@@ -1061,7 +1061,7 @@ public class DexBody {
               if (isDouble) {
                 if (!(c.getType() instanceof DoubleType)) {
                   if (convDouble[idxConvVar] == null) {
-                    convDouble[idxConvVar] = jimple.newLocal("lclConvToDouble" + idxConvVar, DoubleType.v());
+                    convDouble[idxConvVar] = jimple.newLocal(freshLocalName("lclConvToDouble" + idxConvVar), DoubleType.v());
                     b.getLocals().add(convDouble[idxConvVar]);
                   }
                   units.insertBefore(
@@ -1072,7 +1072,7 @@ public class DexBody {
               } else if (isFloat) {
                 if (!(c.getType() instanceof FloatType)) {
                   if (convFloat[idxConvVar] == null) {
-                    convFloat[idxConvVar] = jimple.newLocal("lclConvToFloat" + idxConvVar, FloatType.v());
+                    convFloat[idxConvVar] = jimple.newLocal(("lclConvToFloat" + idxConvVar), FloatType.v());
                     b.getLocals().add(convFloat[idxConvVar]);
                   }
                   units.insertBefore(
