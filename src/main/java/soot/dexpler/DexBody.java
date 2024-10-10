@@ -695,6 +695,7 @@ public class DexBody {
 
     // Make sure that we don't have any overlapping uses due to returns
     DexReturnInliner.v().transform(jBody);
+    convertFloatsAndDoubles(b, jimple);
 
     new SharedInitializationLocalSplitter(DalvikThrowAnalysis.v()).transform(jBody);
 
@@ -783,8 +784,6 @@ public class DexBody {
       UnconditionalBranchFolder.v().transform(jBody);
     }
     DexFillArrayDataTransformer.v().transform(jBody);
-
-    convertFloatsAndDoubles(b, jimple);
 
     TypeAssigner.v().transform(jBody);
 
