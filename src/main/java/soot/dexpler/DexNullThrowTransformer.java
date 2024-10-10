@@ -35,8 +35,11 @@ import soot.Scene;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
@@ -78,6 +81,16 @@ public class DexNullThrowTransformer extends BodyTransformer {
         if (throwStmt.getOp() == nc || throwStmt.getOp().equals(ic) || throwStmt.getOp().equals(llc)
             || throwStmt.getOp().equals(bc)) {
           createThrowStmt(b, throwStmt, lc);
+        }
+      }
+      if (u instanceof AssignStmt) {
+        AssignStmt throwStmt = (AssignStmt) u;
+        Value rop = throwStmt.getRightOp();
+        if (rop instanceof LengthExpr) {
+          LengthExpr l = (LengthExpr) rop;
+          if (l.getOp() == nc || l.getOp().equals(ic) || l.getOp().equals(llc) || l.getOp().equals(bc)) {
+            createThrowStmt(b, throwStmt, lc);
+          }
         }
       }
     }
