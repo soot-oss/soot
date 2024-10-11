@@ -1,5 +1,7 @@
 package soot.dexpler.tags;
 
+import soot.Type;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,5 +25,7 @@ package soot.dexpler.tags;
  */
 
 public interface DexplerTag {
-
+  public default Type getDefiniteType() {
+    return null;
+  }
 }

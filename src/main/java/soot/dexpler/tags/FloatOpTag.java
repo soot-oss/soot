@@ -20,6 +20,9 @@
 
 package soot.dexpler.tags;
 
+import soot.FloatType;
+import soot.Type;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -56,5 +59,10 @@ public class FloatOpTag implements Tag, DexplerTag {
   @Override
   public byte[] getValue() {
     return new byte[1];
+  }
+
+  @Override
+  public Type getDefiniteType() {
+    return FloatType.v();
   }
 }
