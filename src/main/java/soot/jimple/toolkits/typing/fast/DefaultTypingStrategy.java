@@ -41,7 +41,6 @@ import soot.Local;
 import soot.RefType;
 import soot.Scene;
 import soot.Type;
-import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
@@ -57,7 +56,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   public static int USE_PARALLEL_MINIMIZE_IF_ENTRIES_MORE_THAN = 1000;
 
   @Override
-  public Typing createTyping(Chain<Local> locals) {
+  public Typing createTyping(Collection<Local> locals) {
     return new Typing(locals);
   }
 

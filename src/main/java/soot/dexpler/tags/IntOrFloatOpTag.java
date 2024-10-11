@@ -20,9 +20,6 @@
 
 package soot.dexpler.tags;
 
-import soot.FloatType;
-import soot.Type;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -47,9 +44,9 @@ import soot.Type;
 
 import soot.tagkit.Tag;
 
-public class FloatOpTag implements Tag, DexplerTag {
+public class IntOrFloatOpTag implements Tag, DexplerTag {
 
-  public static final String NAME = "FloatOpTag";
+  public static final String NAME = "IntOrFloatOpTag";
 
   @Override
   public String getName() {
@@ -59,10 +56,5 @@ public class FloatOpTag implements Tag, DexplerTag {
   @Override
   public byte[] getValue() {
     return new byte[1];
-  }
-
-  @Override
-  public Type getDefiniteType() {
-    return FloatType.v();
   }
 }

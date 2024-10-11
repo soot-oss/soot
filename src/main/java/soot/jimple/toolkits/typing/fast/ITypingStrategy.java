@@ -1,9 +1,9 @@
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.Collection;
 import java.util.List;
 
 import soot.Local;
-import soot.util.Chain;
 
 /*-
  * #%L
@@ -43,7 +43,7 @@ public interface ITypingStrategy {
    *          the locals
    * @return the {@link Typing}
    */
-  public Typing createTyping(Chain<Local> locals);
+  public Typing createTyping(Collection<Local> locals);
 
   /**
    * Creates a new typing class as a copy from a given class

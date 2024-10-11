@@ -20,7 +20,7 @@
 
 package soot.dexpler.tags;
 
-import soot.FloatType;
+import soot.ByteType;
 import soot.Type;
 
 /*-
@@ -47,9 +47,9 @@ import soot.Type;
 
 import soot.tagkit.Tag;
 
-public class FloatOpTag implements Tag, DexplerTag {
+public class ByteOpTag implements Tag, DexplerTag {
 
-  public static final String NAME = "FloatOpTag";
+  public static final String NAME = "ByteOpTag";
 
   @Override
   public String getName() {
@@ -63,6 +63,6 @@ public class FloatOpTag implements Tag, DexplerTag {
 
   @Override
   public Type getDefiniteType() {
-    return FloatType.v();
+    return ByteType.v();
   }
 }
