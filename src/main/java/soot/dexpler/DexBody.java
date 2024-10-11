@@ -94,6 +94,7 @@ import soot.dexpler.tags.DexplerTag;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.typing.DalvikTyper;
+import soot.jimple.AddExpr;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
@@ -101,6 +102,7 @@ import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
 import soot.jimple.FloatConstant;
@@ -109,9 +111,12 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
+import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.NumericConstant;
+import soot.jimple.RemExpr;
+import soot.jimple.SubExpr;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
@@ -784,6 +789,8 @@ public class DexBody {
       UnconditionalBranchFolder.v().transform(jBody);
     }
     DexFillArrayDataTransformer.v().transform(jBody);
+    //SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
+    convertFloatsAndDoubles(b, jimple);
 
     TypeAssigner.v().transform(jBody);
 
@@ -1005,8 +1012,9 @@ public class DexBody {
   public void convertFloatsAndDoubles(Body b, final Jimple jimple) {
     UnitPatchingChain units = jBody.getUnits();
     Unit u = units.getFirst();
+    Local convResultFloat = null;
+    Local convResultDouble = null;
     Local[] convFloat = new Local[2], convDouble = new Local[2];
-
     while (u != null) {
       if (u instanceof AssignStmt) {
         AssignStmt def = (AssignStmt) u;
@@ -1014,6 +1022,27 @@ public class DexBody {
         if (rop instanceof BinopExpr) {
           boolean isDouble = u.hasTag(DoubleOpTag.NAME);
           boolean isFloat = u.hasTag(FloatOpTag.NAME);
+          if (rop instanceof AddExpr || rop instanceof SubExpr || rop instanceof MulExpr || rop instanceof DivExpr
+              || rop instanceof RemExpr) {
+            if (isDouble) {
+              if (convResultDouble == null) {
+                convResultDouble = jimple.newLocal(freshLocalName("lclConvToDouble"), DoubleType.v());
+                b.getLocals().add(convResultDouble);
+              }
+              Value prev = def.getLeftOp();
+              def.setLeftOp(convResultDouble);
+              units.insertAfter(jimple.newAssignStmt(prev, jimple.newCastExpr(convResultDouble, DoubleType.v())), u);
+            }
+            if (isFloat) {
+              if (convResultFloat == null) {
+                convResultFloat = jimple.newLocal(freshLocalName("lclConvToFloat"), FloatType.v());
+                b.getLocals().add(convResultFloat);
+              }
+              Value prev = def.getLeftOp();
+              def.setLeftOp(convResultFloat);
+              units.insertAfter(jimple.newAssignStmt(prev, jimple.newCastExpr(convResultFloat, FloatType.v())), u);
+            }
+          }
           BinopExpr bop = (BinopExpr) rop;
           int idxConvVar = 0;
           for (ValueBox cmp : bop.getUseBoxes()) {
@@ -1032,7 +1061,7 @@ public class DexBody {
               if (isDouble) {
                 if (!(c.getType() instanceof DoubleType)) {
                   if (convDouble[idxConvVar] == null) {
-                    convDouble[idxConvVar] = jimple.newLocal("lclConvToDouble" + idxConvVar, DoubleType.v());
+                    convDouble[idxConvVar] = jimple.newLocal(freshLocalName("lclConvToDouble" + idxConvVar), DoubleType.v());
                     b.getLocals().add(convDouble[idxConvVar]);
                   }
                   units.insertBefore(
@@ -1043,7 +1072,7 @@ public class DexBody {
               } else if (isFloat) {
                 if (!(c.getType() instanceof FloatType)) {
                   if (convFloat[idxConvVar] == null) {
-                    convFloat[idxConvVar] = jimple.newLocal("lclConvToFloat" + idxConvVar, FloatType.v());
+                    convFloat[idxConvVar] = jimple.newLocal(freshLocalName("lclConvToFloat" + idxConvVar), FloatType.v());
                     b.getLocals().add(convFloat[idxConvVar]);
                   }
                   units.insertBefore(
