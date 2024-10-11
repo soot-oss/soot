@@ -650,8 +650,6 @@ public class DexBody {
         throw new RuntimeException(e);
       }
     }
-    if (m.getSignature().equals("<i2.a: boolean a()>"))
-      System.out.println();
 
     int prevLineNumber = -1;
     for (DexlibAbstractInstruction instruction : instructions) {
@@ -819,15 +817,11 @@ public class DexBody {
         }
       }
     }
-    if (jBody.getMethod().getSignature().equals("<u.g: void <init>(double[],double[][])>"))
-      System.out.println();
 
     new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
 
       @Override
       protected Collection<Type> reduceToAllowedTypesForLocal(Collection<Type> lcas, Local v) {
-        if (v.getName().contains("arrObject"))
-          System.out.println();
         Collection<Type> t = definiteConstraints.get(v);
         if (t != null) {
           return t;
