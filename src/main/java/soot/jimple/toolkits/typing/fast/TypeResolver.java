@@ -514,8 +514,7 @@ public class TypeResolver {
         final DefinitionStmt stmt = this.assignments.get(defIdx);
 
         Value lhs = stmt.getLeftOp();
-        if (lhs.toString().equals("lclIntOrFloatOpTag3"))
-          System.out.println();
+
         Local v = (lhs instanceof Local) ? (Local) lhs : (Local) ((ArrayRef) lhs).getBase();
         Type told = tg.get(v);
 
