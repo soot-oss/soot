@@ -29,8 +29,6 @@ package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
-import com.google.common.collect.ArrayListMultimap;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,6 +60,8 @@ import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
 import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ArrayListMultimap;
 
 import soot.Body;
 import soot.DoubleType;
@@ -1096,7 +1096,7 @@ public class DexBody {
    * @param unit
    *          the statement
    */
-  private void removeDexplerTags(Unit unit) {
+  protected void removeDexplerTags(Unit unit) {
     for (Iterator<Tag> it = unit.getTags().iterator(); it.hasNext();) {
       Tag t = it.next();
       if (t instanceof DexplerTag) {
