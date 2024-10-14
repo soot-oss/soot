@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -789,7 +790,7 @@ public class DexBody {
       UnconditionalBranchFolder.v().transform(jBody);
     }
     DexFillArrayDataTransformer.v().transform(jBody);
-    //SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
+    // SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
     convertFloatsAndDoubles(b, jimple);
 
     TypeAssigner.v().transform(jBody);
@@ -952,7 +953,6 @@ public class DexBody {
     DexReturnPacker.v().transform(jBody);
 
     for (Unit u : jBody.getUnits()) {
-
       if (u instanceof AssignStmt) {
         AssignStmt ass = (AssignStmt) u;
         if (ass.getRightOp() instanceof CastExpr) {
@@ -1092,14 +1092,16 @@ public class DexBody {
 
   /**
    * Removes all dexpler specific tags. Saves some memory.
-   * @param unit the statement
+   * 
+   * @param unit
+   *          the statement
    */
   private void removeDexplerTags(Unit unit) {
-    for (Tag t : unit.getTags()) {
+    for (Iterator<Tag> it = unit.getTags().iterator(); it.hasNext();) {
+      Tag t = it.next();
       if (t instanceof DexplerTag) {
-        unit.removeTag(t.getName());
+        it.remove();
       }
-
     }
   }
 
