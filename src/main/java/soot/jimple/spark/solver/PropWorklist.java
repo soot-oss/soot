@@ -46,6 +46,7 @@ import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.options.Options;
 import soot.util.queue.QueueReader;
 
 /**
@@ -66,8 +67,18 @@ public class PropWorklist extends Propagator {
   public void propagate() {
     ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
+    boolean ignoreErrors = Options.v().allow_cg_errors();
+    logger.error("Note that we log, but continue in case of SPARK problems");
     for (AllocNode object : pag.allocSources()) {
-      handleAllocNode(object);
+      try {
+        handleAllocNode(object);
+      } catch (Exception e) {
+        if (ignoreErrors) {
+          logger.error("An error occurred during SPARK worklist propagation; continuing", e);
+        } else {
+          throw e;
+        }
+      }
     }
 
     boolean verbose = pag.getOpts().verbose();
@@ -77,7 +88,15 @@ public class PropWorklist extends Propagator {
       }
       VarNode vsrc;
       while ((vsrc = varNodeWorkList.pollFirst()) != null) {
-        handleVarNode(vsrc);
+        try {
+          handleVarNode(vsrc);
+        } catch (Exception e) {
+          if (ignoreErrors) {
+            logger.error("An error occurred during SPARK worklist propagation; continuing", e);
+          } else {
+            throw e;
+          }
+        }
       }
       if (verbose) {
         logger.debug("Now handling field references");
@@ -99,7 +118,15 @@ public class PropWorklist extends Propagator {
       }
       HashSet<Object[]> edgesToPropagate = new HashSet<Object[]>();
       for (FieldRefNode object : pag.loadSources()) {
-        handleFieldRefNode(object, edgesToPropagate);
+        try {
+          handleFieldRefNode(object, edgesToPropagate);
+        } catch (Exception e) {
+          if (ignoreErrors) {
+            logger.error("An error occurred during SPARK worklist propagation; continuing", e);
+          } else {
+            throw e;
+          }
+        }
       }
       Set<PointsToSetInternal> nodesToFlush = Collections.newSetFromMap(new IdentityHashMap<PointsToSetInternal, Boolean>());
       for (Object[] pair : edgesToPropagate) {

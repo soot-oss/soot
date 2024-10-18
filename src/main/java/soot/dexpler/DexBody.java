@@ -29,14 +29,18 @@ package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
+import com.google.common.collect.ArrayListMultimap;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -61,11 +65,11 @@ import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ArrayListMultimap;
-
+import soot.ArrayType;
 import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Modifier;
@@ -94,8 +98,11 @@ import soot.dexpler.instructions.RetypeableInstruction;
 import soot.dexpler.tags.DexplerTag;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
+import soot.dexpler.tags.IntOrFloatOpTag;
+import soot.dexpler.tags.LongOrDoubleOpTag;
 import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AddExpr;
+import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
@@ -117,6 +124,7 @@ import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.RemExpr;
+import soot.jimple.Stmt;
 import soot.jimple.SubExpr;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
@@ -131,7 +139,8 @@ import soot.jimple.toolkits.scalar.MethodStaticnessCorrector;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
-import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.jimple.toolkits.typing.fast.DefaultTypingStrategy;
+import soot.jimple.toolkits.typing.fast.ITypingStrategy;
 import soot.options.JBOptions;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
@@ -142,6 +151,8 @@ import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.SharedInitializationLocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 /**
  * A DexBody contains the code of a DexMethod and is used as a wrapper around JimpleBody in the jimplification process.
@@ -487,6 +498,10 @@ public class DexBody {
     return instructionAtAddress.get(key);
   }
 
+  protected ITypingStrategy getTypingStrategy() {
+    return new DefaultTypingStrategy();
+  }
+
   /**
    * Return the jimple equivalent of this body.
    *
@@ -701,7 +716,7 @@ public class DexBody {
 
     // Make sure that we don't have any overlapping uses due to returns
     DexReturnInliner.v().transform(jBody);
-    convertFloatsAndDoubles(b, jimple);
+    handleKnownDexTypes(b, jimple);
 
     new SharedInitializationLocalSplitter(DalvikThrowAnalysis.v()).transform(jBody);
 
@@ -790,10 +805,67 @@ public class DexBody {
       UnconditionalBranchFolder.v().transform(jBody);
     }
     DexFillArrayDataTransformer.v().transform(jBody);
-    // SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
-    convertFloatsAndDoubles(b, jimple);
+    //SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
+    MultiMap<Local, Type> maybetypeConstraints = new HashMultiMap<>();
+    handleKnownDexTypes(b, jimple);
+    handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
+    Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
+    for (Local l : b.getLocals()) {
+      Type type = l.getType();
+      if (type instanceof PrimType) {
+        definiteConstraints.put(l, Collections.singleton(type));
+      }
+    }
 
-    TypeAssigner.v().transform(jBody);
+    new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
+
+      @Override
+      protected Collection<Type> reduceToAllowedTypesForLocal(Collection<Type> lcas, Local v) {
+        Collection<Type> t = definiteConstraints.get(v);
+        if (t != null) {
+          return t;
+        }
+        Set<Type> constraints = maybetypeConstraints.get(v);
+        if (constraints.isEmpty()) {
+          return lcas;
+        }
+        Set<Type> res = new HashSet<>(lcas);
+        res.retainAll(constraints);
+        if (res.isEmpty()) {
+          //No typing left
+          res.addAll(lcas);
+          res.addAll(constraints);
+          return res;
+        }
+
+        return res;
+      }
+
+      protected soot.jimple.toolkits.typing.fast.ITypingStrategy getTypingStrategy() {
+        ITypingStrategy useTyping = DexBody.this.getTypingStrategy();
+        return useTyping;
+      }
+
+      protected CastInsertionUseVisitor createCastInsertionUseVisitor(soot.jimple.toolkits.typing.fast.Typing tg,
+          soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly) {
+        return new CastInsertionUseVisitor(countOnly, jBody, tg, h) {
+          @Override
+          public Value visit(Value op, Type useType, Stmt stmt, boolean checkOnly) {
+            if (op instanceof LongConstant && useType instanceof DoubleType) {
+              //no cast necessary for Dex
+              return op;
+            }
+            if (op instanceof IntConstant && useType instanceof FloatType) {
+              //no cast necessary for Dex
+              return op;
+            }
+            return super.visit(op, useType, stmt, checkOnly);
+          }
+        };
+
+      }
+    }.inferTypes();
+    checkUnrealizableCasts();
 
     // Shortcut: Reduce array initializations
     // We need to do this after typing, because otherwise we run into problems
@@ -953,6 +1025,7 @@ public class DexBody {
     DexReturnPacker.v().transform(jBody);
 
     for (Unit u : jBody.getUnits()) {
+
       if (u instanceof AssignStmt) {
         AssignStmt ass = (AssignStmt) u;
         if (ass.getRightOp() instanceof CastExpr) {
@@ -1009,11 +1082,78 @@ public class DexBody {
     return jBody;
   }
 
-  public void convertFloatsAndDoubles(Body b, final Jimple jimple) {
+  /**
+   * For non-object array instructions, we know from the bytecode already what the types are, or at least
+   * we can reduce it to two possibilities (int/float or float/double).
+   * 
+   * @param b the body
+   * @param jimple the jimple instance to use (caching is slightly faster)
+   * @param typeConstraints type constraints (these might be multiple valid possibilities)
+   */
+  private void handleKnownDexArrayTypes(Body b, Jimple jimple, MultiMap<Local, Type> typeConstraints) {
+
+    Map<Type, Local> convSingle = new HashMap<>();
     UnitPatchingChain units = jBody.getUnits();
     Unit u = units.getFirst();
-    Local convResultFloat = null;
-    Local convResultDouble = null;
+    while (u != null) {
+      if (u instanceof AssignStmt) {
+        AssignStmt assign = ((AssignStmt) u);
+        Value rop = assign.getRightOp();
+        if (rop instanceof ArrayRef) {
+          for (Tag tg : u.getTags()) {
+            if (tg instanceof DexplerTag) {
+              DexplerTag dexplerTypeTag = (DexplerTag) tg;
+              Type definiteType = dexplerTypeTag.getDefiniteType();
+              if (definiteType != null) {
+                Local l = createOrGetVariableOfType(b, convSingle, definiteType);
+                Value prev = assign.getLeftOp();
+                assign.setLeftOp(l);
+                units.insertAfter(jimple.newAssignStmt(prev, jimple.newCastExpr(l, definiteType)), u);
+
+                ArrayType tp = ArrayType.v(definiteType, 1);
+                l = jimple.newLocal(freshLocalName("lcl" + tg.getName()), tp);
+                b.getLocals().add(l);
+                ArrayRef array = (ArrayRef) rop;
+                units.insertBefore(jimple.newAssignStmt(l, array.getBase()), u);
+                array.setBase(l);
+                typeConstraints.put(l, tp);
+
+              } else if (tg instanceof IntOrFloatOpTag || tg instanceof LongOrDoubleOpTag) {
+                //sadly, we don't know for sure. But: we know that it's either of these two.
+                //we need a fresh local or each instance, no re-use allowed.
+                Local l = jimple.newLocal(freshLocalName("lcl" + tg.getName()), UnknownType.v());
+                b.getLocals().add(l);
+                ArrayRef array = (ArrayRef) rop;
+                units.insertBefore(jimple.newAssignStmt(l, array.getBase()), u);
+                array.setBase(l);
+                if (typeConstraints != null) {
+                  if (tg instanceof IntOrFloatOpTag) {
+                    typeConstraints.put(l, ArrayType.v(IntType.v(), 1));
+                    typeConstraints.put(l, ArrayType.v(FloatType.v(), 1));
+                  } else {
+                    typeConstraints.put(l, ArrayType.v(LongType.v(), 1));
+                    typeConstraints.put(l, ArrayType.v(DoubleType.v(), 1));
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      u = units.getSuccOf(u);
+    }
+  }
+
+  /**
+   * For several instructions, we know from the bytecode already what the types are.
+   * We use that knowledge here to help the type assigner.
+   * @param b the body
+   * @param jimple the jimple instance to use (caching is slightly faster)
+   */
+  private void handleKnownDexTypes(Body b, final Jimple jimple) {
+    UnitPatchingChain units = jBody.getUnits();
+    Unit u = units.getFirst();
+    Map<Type, Local> convSingle = new HashMap<>();
     Local[] convFloat = new Local[2], convDouble = new Local[2];
     while (u != null) {
       if (u instanceof AssignStmt) {
@@ -1024,23 +1164,17 @@ public class DexBody {
           boolean isFloat = u.hasTag(FloatOpTag.NAME);
           if (rop instanceof AddExpr || rop instanceof SubExpr || rop instanceof MulExpr || rop instanceof DivExpr
               || rop instanceof RemExpr) {
+            Type t = null;
             if (isDouble) {
-              if (convResultDouble == null) {
-                convResultDouble = jimple.newLocal(freshLocalName("lclConvToDouble"), DoubleType.v());
-                b.getLocals().add(convResultDouble);
-              }
-              Value prev = def.getLeftOp();
-              def.setLeftOp(convResultDouble);
-              units.insertAfter(jimple.newAssignStmt(prev, jimple.newCastExpr(convResultDouble, DoubleType.v())), u);
+              t = DoubleType.v();
+            } else if (isFloat) {
+              t = FloatType.v();
             }
-            if (isFloat) {
-              if (convResultFloat == null) {
-                convResultFloat = jimple.newLocal(freshLocalName("lclConvToFloat"), FloatType.v());
-                b.getLocals().add(convResultFloat);
-              }
+            if (t != null) {
+              Local l = createOrGetVariableOfType(b, convSingle, t);
               Value prev = def.getLeftOp();
-              def.setLeftOp(convResultFloat);
-              units.insertAfter(jimple.newAssignStmt(prev, jimple.newCastExpr(convResultFloat, FloatType.v())), u);
+              def.setLeftOp(l);
+              units.insertAfter(jimple.newAssignStmt(prev, jimple.newCastExpr(l, t)), u);
             }
           }
           BinopExpr bop = (BinopExpr) rop;
@@ -1088,20 +1222,62 @@ public class DexBody {
       }
       u = units.getSuccOf(u);
     }
+    for (Unit u1 : units) {
+      if (u1 instanceof AssignStmt) {
+        AssignStmt assign = (AssignStmt) u1;
+        Type tl = assign.getLeftOp().getType();
+        Value rop = assign.getRightOp();
+        if (rop instanceof CastExpr) {
+          CastExpr ce = (CastExpr) rop;
+          if (ce.getCastType() instanceof DoubleType) {
+            if (ce.getOp() instanceof LongConstant) {
+              LongConstant lc = (LongConstant) ce.getOp();
+              long vVal = lc.value;
+              assign.setRightOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
+            }
+          }
+          if (ce.getCastType() instanceof FloatType) {
+            if (ce.getOp() instanceof IntConstant) {
+              IntConstant ic = (IntConstant) ce.getOp();
+              int vVal = ic.value;
+              assign.setRightOp(FloatConstant.v(Float.intBitsToFloat(vVal)));
+            }
+          }
+        }
+        if (rop instanceof Constant) {
+          Constant c = (Constant) assign.getRightOp();
+          if (tl instanceof DoubleType) {
+            long vVal = ((LongConstant) c).value;
+            assign.setRightOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
+          } else if (tl instanceof FloatType) {
+            int vVal = ((IntConstant) c).value;
+            assign.setRightOp(FloatConstant.v(Float.intBitsToFloat(vVal)));
+          }
+        }
+      }
+    }
+  }
+
+  private Local createOrGetVariableOfType(Body b, Map<Type, Local> map, Type t) {
+    Local lcl = map.get(t);
+    if (lcl == null) {
+      lcl = Jimple.v().newLocal(freshLocalName("lclConvTo" + t), t);
+      b.getLocals().add(lcl);
+      map.put(t, lcl);
+    }
+    return lcl;
   }
 
   /**
    * Removes all dexpler specific tags. Saves some memory.
-   * 
-   * @param unit
-   *          the statement
+   * @param unit the statement
    */
-  protected void removeDexplerTags(Unit unit) {
-    for (Iterator<Tag> it = unit.getTags().iterator(); it.hasNext();) {
-      Tag t = it.next();
+  private void removeDexplerTags(Unit unit) {
+    for (Tag t : unit.getTags()) {
       if (t instanceof DexplerTag) {
-        it.remove();
+        unit.removeTag(t.getName());
       }
+
     }
   }
 

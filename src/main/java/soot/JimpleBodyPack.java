@@ -92,6 +92,7 @@ public class JimpleBodyPack extends BodyPack {
     pacman.getTransform("jb.lp").apply(b); // LocalPacker
     pacman.getTransform("jb.ne").apply(b); // NopEliminator
     pacman.getTransform("jb.uce").apply(b); // UnreachableCodeEliminator: Again, we might have new dead code
+    pacman.getTransform("jb.cp").apply(b); // CopyPropagator
 
     // LocalNameStandardizer: After all these changes, some locals
     // may end up being eliminated. If we want a stable local iteration

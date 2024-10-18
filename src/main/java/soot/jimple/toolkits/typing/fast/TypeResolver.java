@@ -145,8 +145,9 @@ public class TypeResolver {
   }
 
   public void inferTypes() {
+    this.split_new();
     ITypingStrategy typingStrategy = getTypingStrategy();
-    AugEvalFunction ef = new AugEvalFunction(this.jb);
+    AugEvalFunction ef = createAugEvalFunction(this.jb);
     BytecodeHierarchy bh = new BytecodeHierarchy();
     Collection<Typing> sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
 
@@ -157,11 +158,6 @@ public class TypeResolver {
 
     int[] castCount = new int[1];
     Typing tg = this.minCasts(sigma, bh, castCount);
-    if (castCount[0] != 0) {
-      this.split_new();
-      sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
-      tg = this.minCasts(sigma, bh, castCount);
-    }
 
     this.insertCasts(tg, bh, false);
 
@@ -185,6 +181,10 @@ public class TypeResolver {
         v.setType(type);
       }
     }
+  }
+
+  protected AugEvalFunction createAugEvalFunction(JimpleBody jb2) {
+    return new AugEvalFunction(this.jb);
   }
 
   protected ITypingStrategy getTypingStrategy() {
@@ -212,6 +212,13 @@ public class TypeResolver {
     public Value visit(Value op, Type useType, Stmt stmt, boolean checkOnly) {
       Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
       if (useType == t) {
+        if (op instanceof CastExpr) {
+          CastExpr ce = (CastExpr) op;
+          if (ce.getType() == t) {
+            //no cast necessary!
+            return ce.getOp();
+          }
+        }
         return op;
       }
 
@@ -511,6 +518,7 @@ public class TypeResolver {
         final DefinitionStmt stmt = this.assignments.get(defIdx);
 
         Value lhs = stmt.getLeftOp();
+
         Local v = (lhs instanceof Local) ? (Local) lhs : (Local) ((ArrayRef) lhs).getBase();
         Type told = tg.get(v);
 
@@ -529,7 +537,7 @@ public class TypeResolver {
           }
 
           // Special handling for exception objects with phantom types
-          final Collection<Type> lcas;
+          Collection<Type> lcas;
           if (!typesEqual(told, t_) && told instanceof RefType && t_ instanceof RefType
               && (((RefType) told).getSootClass().isPhantom() || ((RefType) t_).getSootClass().isPhantom())
               && (stmt.getRightOp() instanceof CaughtExceptionRef)) {
@@ -548,6 +556,7 @@ public class TypeResolver {
           }
           boolean addFirstDecision = false;
 
+          lcas = reduceToAllowedTypesForLocal(lcas, v);
           for (Type t : lcas) {
             if (!typesEqual(t, told)) {
               BitSet dependsV = this.depends.get(v);
@@ -596,6 +605,14 @@ public class TypeResolver {
     }
     typingStrategy.minimize(r, h);
     return r;
+  }
+
+  protected Collection<Type> reduceToAllowedTypesForLocal(Collection<Type> lcas, Local v) {
+    return lcas;
+  }
+
+  protected boolean isAllowedTypeForLocal(Local v, Type t) {
+    return true;
   }
 
   protected ArrayDeque<WorklistElement> createSigmaQueue() {

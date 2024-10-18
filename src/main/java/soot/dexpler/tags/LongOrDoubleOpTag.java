@@ -1,7 +1,5 @@
 package soot.dexpler.tags;
 
-import soot.Type;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,8 +22,19 @@ import soot.Type;
  * #L%
  */
 
-public interface DexplerTag {
-  public default Type getDefiniteType() {
-    return null;
+import soot.tagkit.Tag;
+
+public class LongOrDoubleOpTag implements Tag, DexplerTag {
+
+  public static final String NAME = "LongOrDoubleOpTag";
+
+  @Override
+  public String getName() {
+    return NAME;
+  }
+
+  @Override
+  public byte[] getValue() {
+    return new byte[1];
   }
 }
