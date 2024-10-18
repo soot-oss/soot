@@ -79,8 +79,6 @@ public class RedundantJimpleStatementsTest {
             //JUnits assertEquals mangles with the text, which makes it harder to retrieve the ground truth
             throw new AssertionError(String.format("Expected:\n%s\n\nWas:\n%s", exp, actualStmts));
         }
-
-}
     }
 
     @Test

@@ -274,8 +274,6 @@ public class DexPrinter {
   }
 
   protected static MethodReference toMethodReference(SootMethodRef m) {
-    if (m.getName().contains("onTaskRemoved") && m.getDeclaringClass().getName().contains("com.appyet.service.MediaService"))
-      System.out.println();
     List<String> parameters = new ArrayList<String>();
     for (Type t : m.getParameterTypes()) {
       parameters.add(SootToDexUtils.getDexTypeDescriptor(t));
