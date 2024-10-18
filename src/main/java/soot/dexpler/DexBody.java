@@ -38,6 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -807,7 +808,7 @@ public class DexBody {
       UnconditionalBranchFolder.v().transform(jBody);
     }
     DexFillArrayDataTransformer.v().transform(jBody);
-    //SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
+    // SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
     MultiMap<Local, Type> maybetypeConstraints = new HashMultiMap<>();
     handleKnownDexTypes(b, jimple);
     handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
@@ -852,7 +853,7 @@ public class DexBody {
         Set<Type> res = new HashSet<>(lcas);
         res.retainAll(constraints);
         if (res.isEmpty()) {
-          //No typing left
+          // No typing left
           res.addAll(lcas);
           res.addAll(constraints);
           return res;
@@ -872,11 +873,11 @@ public class DexBody {
           @Override
           public Value visit(Value op, Type useType, Stmt stmt, boolean checkOnly) {
             if (op instanceof LongConstant && useType instanceof DoubleType) {
-              //no cast necessary for Dex
+              // no cast necessary for Dex
               return op;
             }
             if (op instanceof IntConstant && useType instanceof FloatType) {
-              //no cast necessary for Dex
+              // no cast necessary for Dex
               return op;
             }
             return super.visit(op, useType, stmt, checkOnly);
@@ -1103,12 +1104,15 @@ public class DexBody {
   }
 
   /**
-   * For non-object array instructions, we know from the bytecode already what the types are, or at least
-   * we can reduce it to two possibilities (int/float or float/double).
+   * For non-object array instructions, we know from the bytecode already what the types are, or at least we can reduce it to
+   * two possibilities (int/float or float/double).
    * 
-   * @param b the body
-   * @param jimple the jimple instance to use (caching is slightly faster)
-   * @param typeConstraints type constraints (these might be multiple valid possibilities)
+   * @param b
+   *          the body
+   * @param jimple
+   *          the jimple instance to use (caching is slightly faster)
+   * @param typeConstraints
+   *          type constraints (these might be multiple valid possibilities)
    */
   private void handleKnownDexArrayTypes(Body b, Jimple jimple, MultiMap<Local, Type> typeConstraints) {
 
@@ -1139,8 +1143,8 @@ public class DexBody {
                 typeConstraints.put(l, tp);
 
               } else if (tg instanceof IntOrFloatOpTag || tg instanceof LongOrDoubleOpTag) {
-                //sadly, we don't know for sure. But: we know that it's either of these two.
-                //we need a fresh local or each instance, no re-use allowed.
+                // sadly, we don't know for sure. But: we know that it's either of these two.
+                // we need a fresh local or each instance, no re-use allowed.
                 Local l = jimple.newLocal(freshLocalName("lcl" + tg.getName()), UnknownType.v());
                 b.getLocals().add(l);
                 ArrayRef array = (ArrayRef) rop;
@@ -1165,10 +1169,13 @@ public class DexBody {
   }
 
   /**
-   * For several instructions, we know from the bytecode already what the types are.
-   * We use that knowledge here to help the type assigner.
-   * @param b the body
-   * @param jimple the jimple instance to use (caching is slightly faster)
+   * For several instructions, we know from the bytecode already what the types are. We use that knowledge here to help the
+   * type assigner.
+   * 
+   * @param b
+   *          the body
+   * @param jimple
+   *          the jimple instance to use (caching is slightly faster)
    */
   private void handleKnownDexTypes(Body b, final Jimple jimple) {
     UnitPatchingChain units = jBody.getUnits();
@@ -1290,14 +1297,16 @@ public class DexBody {
 
   /**
    * Removes all dexpler specific tags. Saves some memory.
-   * @param unit the statement
+   * 
+   * @param unit
+   *          the statement
    */
   private void removeDexplerTags(Unit unit) {
-    for (Tag t : unit.getTags()) {
+    for (Iterator<Tag> it = unit.getTags().iterator(); it.hasNext();) {
+      Tag t = it.next();
       if (t instanceof DexplerTag) {
-        unit.removeTag(t.getName());
+        it.remove();
       }
-
     }
   }
 
