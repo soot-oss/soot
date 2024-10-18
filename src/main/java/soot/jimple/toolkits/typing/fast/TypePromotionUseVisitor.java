@@ -99,7 +99,7 @@ public class TypePromotionUseVisitor implements IUseVisitor {
 
     Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
 
-    if (!AugHierarchy.ancestor_(useType, t)) {
+    if (!allowConversion(useType, t)) {
       logger.error(String.format("Failed Typing in %s at statement %s: Is not cast compatible: %s <-- %s",
           jb.getMethod().getSignature(), stmt, useType, t));
       this.fail = true;
@@ -116,6 +116,10 @@ public class TypePromotionUseVisitor implements IUseVisitor {
     }
 
     return op;
+  }
+
+  protected boolean allowConversion(Type ancestor, Type child) {
+    return AugHierarchy.ancestor_(ancestor, child);
   }
 
   @Override

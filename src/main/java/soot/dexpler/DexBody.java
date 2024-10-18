@@ -70,6 +70,7 @@ import soot.Body;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
+import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
 import soot.Modifier;
@@ -141,6 +142,7 @@ import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.fast.DefaultTypingStrategy;
 import soot.jimple.toolkits.typing.fast.ITypingStrategy;
+import soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor;
 import soot.options.JBOptions;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
@@ -818,6 +820,24 @@ public class DexBody {
     }
 
     new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
+
+      protected soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb,
+          soot.jimple.toolkits.typing.fast.Typing tg) {
+        return new TypePromotionUseVisitor(jb, tg) {
+          protected boolean allowConversion(Type ancestor, Type child) {
+            if ((ancestor instanceof IntegerType || ancestor instanceof FloatType)
+                && (child instanceof IntegerType || child instanceof FloatType)) {
+              return true;
+            }
+            if ((ancestor instanceof LongType || ancestor instanceof DoubleType)
+                && (child instanceof LongType || child instanceof DoubleType)) {
+              return true;
+            }
+            return super.allowConversion(ancestor, child);
+          }
+        };
+
+      }
 
       @Override
       protected Collection<Type> reduceToAllowedTypesForLocal(Collection<Type> lcas, Local v) {

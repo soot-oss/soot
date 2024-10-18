@@ -322,7 +322,7 @@ public class TypeResolver {
       AugEvalFunction ef = new AugEvalFunction(this.jb);
       AugHierarchy h = new AugHierarchy();
       UseChecker uc = new UseChecker(this.jb);
-      TypePromotionUseVisitor uv = new TypePromotionUseVisitor(jb, tg);
+      TypePromotionUseVisitor uv = createTypePromotionUseVisitor(jb, tg);
       do {
         Collection<Typing> sigma = this.applyAssignmentConstraints(tg, ef, h);
         if (sigma.isEmpty()) {
@@ -349,6 +349,10 @@ public class TypeResolver {
     } while (conversionsPending);
 
     return tg;
+  }
+
+  protected TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb, Typing tg) {
+    return new TypePromotionUseVisitor(jb, tg);
   }
 
   protected Type convert(Type t) {
