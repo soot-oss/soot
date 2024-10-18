@@ -124,6 +124,7 @@ import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.RemExpr;
+import soot.jimple.Stmt;
 import soot.jimple.SubExpr;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
@@ -845,6 +846,24 @@ public class DexBody {
       protected soot.jimple.toolkits.typing.fast.ITypingStrategy getTypingStrategy() {
         ITypingStrategy useTyping = DexBody.this.getTypingStrategy();
         return useTyping;
+      }
+
+      protected CastInsertionUseVisitor createCastInsertionUseVisitor(soot.jimple.toolkits.typing.fast.Typing tg,
+          soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly) {
+        return new CastInsertionUseVisitor(countOnly, jBody, tg, h) {
+          @Override
+          public Value visit(Value op, Type useType, Stmt stmt, boolean checkOnly) {
+            if (op instanceof LongConstant && useType instanceof DoubleType) {
+              //no cast necessary for Dex
+              return op;
+            }
+            if (op instanceof IntConstant && useType instanceof FloatType) {
+              //no cast necessary for Dex
+              return op;
+            }
+            return super.visit(op, useType, stmt, checkOnly);
+          }
+        };
 
       }
     }.inferTypes();
@@ -1209,7 +1228,25 @@ public class DexBody {
       if (u1 instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u1;
         Type tl = assign.getLeftOp().getType();
-        if (assign.getRightOp() instanceof Constant) {
+        Value rop = assign.getRightOp();
+        if (rop instanceof CastExpr) {
+          CastExpr ce = (CastExpr) rop;
+          if (ce.getCastType() instanceof DoubleType) {
+            if (ce.getOp() instanceof LongConstant) {
+              LongConstant lc = (LongConstant) ce.getOp();
+              long vVal = lc.value;
+              assign.setRightOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
+            }
+          }
+          if (ce.getCastType() instanceof FloatType) {
+            if (ce.getOp() instanceof IntConstant) {
+              IntConstant ic = (IntConstant) ce.getOp();
+              int vVal = ic.value;
+              assign.setRightOp(FloatConstant.v(Float.intBitsToFloat(vVal)));
+            }
+          }
+        }
+        if (rop instanceof Constant) {
           Constant c = (Constant) assign.getRightOp();
           if (tl instanceof DoubleType) {
             long vVal = ((LongConstant) c).value;

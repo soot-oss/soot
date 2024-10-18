@@ -147,7 +147,7 @@ public class TypeResolver {
   public void inferTypes() {
     this.split_new();
     ITypingStrategy typingStrategy = getTypingStrategy();
-    AugEvalFunction ef = new AugEvalFunction(this.jb);
+    AugEvalFunction ef = createAugEvalFunction(this.jb);
     BytecodeHierarchy bh = new BytecodeHierarchy();
     Collection<Typing> sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
 
@@ -181,6 +181,10 @@ public class TypeResolver {
         v.setType(type);
       }
     }
+  }
+
+  protected AugEvalFunction createAugEvalFunction(JimpleBody jb2) {
+    return new AugEvalFunction(this.jb);
   }
 
   protected ITypingStrategy getTypingStrategy() {
