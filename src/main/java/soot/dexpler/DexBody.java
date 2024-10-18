@@ -812,10 +812,8 @@ public class DexBody {
     Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
     for (Local l : b.getLocals()) {
       Type type = l.getType();
-      if (!(type instanceof UnknownType)) {
-        if (type instanceof PrimType) {
-          definiteConstraints.put(l, Collections.singleton(type));
-        }
+      if (type instanceof PrimType) {
+        definiteConstraints.put(l, Collections.singleton(type));
       }
     }
 
