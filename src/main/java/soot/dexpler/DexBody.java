@@ -141,6 +141,7 @@ import soot.jimple.toolkits.scalar.MethodStaticnessCorrector;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
+import soot.jimple.toolkits.typing.fast.BottomType;
 import soot.jimple.toolkits.typing.fast.DefaultTypingStrategy;
 import soot.jimple.toolkits.typing.fast.ITypingStrategy;
 import soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor;
@@ -1091,7 +1092,7 @@ public class DexBody {
     //
     for (Local l : jBody.getLocals()) {
       Type t = l.getType();
-      if (t instanceof NullType) {
+      if (t instanceof NullType || t instanceof BottomType) {
         l.setType(objectType);
       }
     }
