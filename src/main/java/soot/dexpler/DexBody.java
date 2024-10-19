@@ -722,7 +722,6 @@ public class DexBody {
     handleKnownDexTypes(b, jimple);
 
     new SharedInitializationLocalSplitter(DalvikThrowAnalysis.v()).transform(jBody);
-
     // split first to find undefined uses
     getLocalSplitter().transform(jBody);
 
@@ -820,12 +819,17 @@ public class DexBody {
       }
     }
 
+    getLocalSplitter().transform(jBody);
+
     new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
 
       protected soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb,
           soot.jimple.toolkits.typing.fast.Typing tg) {
         return new TypePromotionUseVisitor(jb, tg) {
           protected boolean allowConversion(Type ancestor, Type child) {
+            if (ancestor == child) {
+              return true;
+            }
             if ((ancestor instanceof IntegerType || ancestor instanceof FloatType)
                 && (child instanceof IntegerType || child instanceof FloatType)) {
               return true;

@@ -97,7 +97,12 @@ public class TypePromotionUseVisitor implements IUseVisitor {
       return op;
     }
 
-    Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
+    final Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
+    final boolean eqType = TypeResolver.typesEqual(t, useType);
+    if (eqType) {
+      //shortcut
+      return op;
+    }
 
     if (!allowConversion(useType, t)) {
       logger.error(String.format("Failed Typing in %s at statement %s: Is not cast compatible: %s <-- %s",
@@ -106,7 +111,7 @@ public class TypePromotionUseVisitor implements IUseVisitor {
     } else if (!checkOnly && op instanceof Local && (t instanceof Integer1Type || t instanceof Integer127Type
         || t instanceof Integer32767Type || t instanceof WeakObjectType)) {
       Local v = (Local) op;
-      if (!TypeResolver.typesEqual(t, useType)) {
+      if (!eqType) {
         Type t_ = this.promote(t, useType);
         if (!TypeResolver.typesEqual(t, t_)) {
           this.tg.set(v, t_);

@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import soot.ArrayType;
@@ -83,6 +85,7 @@ public class TypeResolver {
 
   private final List<DefinitionStmt> assignments;
   private final HashMap<Local, BitSet> depends;
+  private final Set<Local> singleAssignments;
   private final LocalGenerator localGenerator;
 
   public TypeResolver(JimpleBody jb) {
@@ -90,6 +93,31 @@ public class TypeResolver {
     this.assignments = new ArrayList<DefinitionStmt>();
     this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
     this.localGenerator = Scene.v().createLocalGenerator(jb);
+    Map<Local, Integer> map = new HashMap<>();
+    for (Unit stmt : this.jb.getUnits()) {
+      if (stmt instanceof DefinitionStmt) {
+        DefinitionStmt def = (DefinitionStmt) stmt;
+
+        Value lhs = def.getLeftOp();
+        if (lhs instanceof Local) {
+          Local l = (Local) lhs;
+          Integer c = map.get(l);
+          if (c == null) {
+            c = 0;
+          }
+          c++;
+          map.put(l, c);
+        }
+      }
+    }
+    Iterator<Entry<Local, Integer>> t = map.entrySet().iterator();
+    while (t.hasNext()) {
+      if (t.next().getValue() > 1) {
+        t.remove();
+      }
+    }
+    this.singleAssignments = map.keySet();
+
     this.initAssignments();
   }
 
@@ -503,6 +531,28 @@ public class TypeResolver {
     BitSet wl = new BitSet(numAssignments);
     wl.set(0, numAssignments);
     sigma.add(new WorklistElement(tg, wl, new TypeDecision()));
+
+    if (tg.map.isEmpty()) {
+      //First get the easy cases out of the way.
+      for (int i = 0; i < numAssignments; i++) {
+        final DefinitionStmt stmt = this.assignments.get(i);
+        Value lhs = stmt.getLeftOp();
+        if (lhs instanceof Local) {
+          Local v = (Local) lhs;
+          if (singleAssignments.contains(v)) {
+            Collection<Type> d = ef.eval(tg, stmt.getRightOp(), stmt);
+            if (d.size() == 1) {
+              Type t_ = d.iterator().next();
+              d = reduceToAllowedTypesForLocal(Collections.singleton(t_), v);
+              if (d.size() == 1) {
+                tg.set(v, d.iterator().next());
+                wl.clear(i);
+              }
+            }
+          }
+        }
+      }
+    }
 
     Set<Type> throwable = null;
 

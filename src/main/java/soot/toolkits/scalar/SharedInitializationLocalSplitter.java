@@ -149,6 +149,10 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
     DeadAssignmentEliminator.v().transform(body);
     CopyPropagator.v().transform(body);
+    transformOnly(body);
+  }
+
+  public void transformOnly(Body body) {
 
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
@@ -177,8 +181,11 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
       if (clusters.size() <= 1) {
-        // Not interesting
-        continue;
+        //Do we have any non-cluster writes?
+        if (clusters.iterator().next().constantInitializers.containsAll(defs.getDefsOf(lcl))) {
+          // Not interesting
+          continue;
+        }
       }
       for (Cluster cluster : clusters) {
         // we have an overlap, we need to split.
