@@ -73,20 +73,46 @@ public class DefaultTypingStrategy implements ITypingStrategy {
     return map;
   }
 
-  public static Set<Local> getObjectLikeTypings(List<Typing> tgs) {
+  public static Set<Local> getUseTypingsForLocals(List<Typing> tgs, IHierarchy h) {
     Set<Type> objectLikeTypeSet = new HashSet<>();
     objectLikeTypeSet.add(Scene.v().getObjectType());
     objectLikeTypeSet.add(RefType.v("java.io.Serializable"));
     objectLikeTypeSet.add(RefType.v("java.lang.Cloneable"));
 
-    Set<Local> objectLikeVars = new HashSet<>();
     MultiMap<Local, Type> ft = getFlatTyping(tgs);
+    Set<Local> localsToCheck = new HashSet<>(ft.keySet());
     for (Local l : ft.keySet()) {
-      if (objectLikeTypeSet.equals(ft.get(l))) {
-        objectLikeVars.add(l);
+      Set<Type> typings = ft.get(l);
+      if (typings.size() == 1) {
+        //all typings agree on that type for that local
+        localsToCheck.remove(l);
+        continue;
       }
+      if (objectLikeTypeSet.equals(typings)) {
+        localsToCheck.remove(l);
+      }
+      Type[] types = new Type[typings.size()];
+      typings.toArray(types);
+      boolean allNotComparable = true;
+      outer: for (int x = 0; x < types.length; x++) {
+        Type ta = types[x];
+        for (int y = x + 1; y < types.length; y++) {
+          Type tb = types[y];
+          if (TypeResolver.typesEqual(ta, tb)) {
+            throw new AssertionError("Should not happen: " + ta + " == " + tb);
+          } else if (h.ancestor(ta, tb) || h.ancestor(tb, ta)) {
+            allNotComparable = false;
+            break outer;
+          }
+        }
+      }
+      if (allNotComparable) {
+        //we can't compare any of two types to each other, so why bother?
+        localsToCheck.remove(l);
+      }
+
     }
-    return objectLikeVars;
+    return localsToCheck;
   }
 
   @Override
@@ -106,7 +132,10 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   public void minimizeSequential(List<Typing> tgs, IHierarchy h) {
     // int count = 0;
     // int tgsSize = tgs.size();
-    Set<Local> objectVars = getObjectLikeTypings(tgs);
+    Set<Local> test = getUseTypingsForLocals(tgs, h);
+    if (test.isEmpty()) {
+      return;
+    }
     OUTER: for (ListIterator<Typing> i = tgs.listIterator(); i.hasNext();) {
       Typing tgi = i.next();
       // count++;
@@ -126,7 +155,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
         if (tgj == null) {
           continue; // element is marked to be deleted
         }
-        int comp = compare(tgi, tgj, h, objectVars);
+        int comp = compare(tgi, tgj, h, test);
         if (comp == 1) {
           // if compare = 1, then tgi is the more general typing
           // We shouldn't pick that one as we would then end up
@@ -144,31 +173,29 @@ public class DefaultTypingStrategy implements ITypingStrategy {
     }
   }
 
-  public int compare(Typing a, Typing b, IHierarchy h, Collection<Local> localsToIgnore) {
+  public int compare(Typing a, Typing b, IHierarchy h, Collection<Local> localsCheck) {
     int r = 0;
-    for (Local v : a.map.keySet()) {
-      if (!localsToIgnore.contains(v)) {
-        Type ta = a.get(v), tb = b.get(v);
+    for (Local v : localsCheck) {
+      Type ta = a.get(v), tb = b.get(v);
 
-        int cmp;
-        if (TypeResolver.typesEqual(ta, tb)) {
-          cmp = 0;
-        } else if (h.ancestor(ta, tb)) {
-          cmp = 1;
-          if (r == -1) {
-            return 2;
-          }
-        } else if (h.ancestor(tb, ta)) {
-          cmp = -1;
-          if (r == 1) {
-            return 2;
-          }
-        } else {
-          return -2;
+      int cmp;
+      if (TypeResolver.typesEqual(ta, tb)) {
+        cmp = 0;
+      } else if (h.ancestor(ta, tb)) {
+        cmp = 1;
+        if (r == -1) {
+          return 2;
         }
-        if (r == 0) {
-          r = cmp;
+      } else if (h.ancestor(tb, ta)) {
+        cmp = -1;
+        if (r == 1) {
+          return 2;
         }
+      } else {
+        return -2;
+      }
+      if (r == 0) {
+        r = cmp;
       }
     }
     return r;
@@ -176,7 +203,10 @@ public class DefaultTypingStrategy implements ITypingStrategy {
 
   public void minimizeParallel(List<Typing> tgs, IHierarchy h) {
     logger.debug("Performing parallel minimization");
-    Set<Local> objectVars = getObjectLikeTypings(tgs);
+    Set<Local> test = getUseTypingsForLocals(tgs, h);
+    if (test.isEmpty()) {
+      return;
+    }
 
     // We don't know what type of list we get, we need a list that is thread safe for get/set
     // values. (get could return stale values, but this would not cause harm)
@@ -203,7 +233,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
         if (tgj == null) {
           continue;
         }
-        int comp = compare(tgi, tgj, h, objectVars);
+        int comp = compare(tgi, tgj, h, test);
         if (comp == 1) {
           // if compare = 1, then tgi is the more general typing
           // We shouldn't pick that one as we would then end up
