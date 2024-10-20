@@ -68,6 +68,8 @@ import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Body;
+import soot.BooleanConstant;
+import soot.BooleanType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
@@ -118,6 +120,7 @@ import soot.jimple.EqExpr;
 import soot.jimple.FloatConstant;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
@@ -841,6 +844,20 @@ public class DexBody {
             }
             return super.allowConversion(ancestor, child);
           }
+
+          public Type promote(Type tlow, Type thigh) {
+            if (thigh instanceof BooleanType) {
+              if (tlow instanceof IntegerType) {
+                //Well... in Android's dex code, 0 = false and everything else is true
+                //While the compiler should never generate such code, there can be found code like this in the wild.
+                //And Android accepts it!
+                //Thus, we allow the type promotion and then correct the boolean constants
+                return thigh;
+              }
+            }
+            return super.promote(tlow, thigh);
+
+          }
         };
 
       }
@@ -1053,11 +1070,30 @@ public class DexBody {
     for (Unit u : jBody.getUnits()) {
 
       if (u instanceof AssignStmt) {
-        AssignStmt ass = (AssignStmt) u;
-        if (ass.getRightOp() instanceof CastExpr) {
-          CastExpr c = (CastExpr) ass.getRightOp();
+        final AssignStmt ass = (AssignStmt) u;
+        final Value rop = ass.getRightOp();
+        if (rop instanceof CastExpr) {
+          CastExpr c = (CastExpr) rop;
           if (c.getType() instanceof NullType) {
             ass.setRightOp(nullConstant);
+          }
+        }
+        if (rop instanceof IntConstant) {
+          if (ass.getLeftOp().getType() instanceof BooleanType) {
+            ass.setRightOp(fixBooleanConstant((IntConstant) rop));
+          }
+        }
+
+      }
+      Stmt s = (Stmt) u;
+      if (s.containsInvokeExpr()) {
+        InvokeExpr inv = s.getInvokeExpr();
+        for (int p = 0; p < inv.getArgCount(); p++) {
+          if (inv.getMethodRef().getParameterType(p) instanceof BooleanType) {
+            Value arg = inv.getArg(p);
+            if (arg instanceof IntConstant) {
+              inv.setArg(p, fixBooleanConstant((IntConstant) arg));
+            }
           }
         }
       }
@@ -1106,6 +1142,16 @@ public class DexBody {
     // t_whole_jimplification.end();
 
     return jBody;
+  }
+
+  /**
+   * In Dex, every int is a valid boolean.
+   * 0 = false and everything else = true.
+   * @param arg
+   * @return
+   */
+  private static BooleanConstant fixBooleanConstant(IntConstant arg) {
+    return BooleanConstant.v(arg.value != 0);
   }
 
   /**

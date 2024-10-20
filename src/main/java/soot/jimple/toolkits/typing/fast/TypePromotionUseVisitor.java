@@ -56,7 +56,7 @@ public class TypePromotionUseVisitor implements IUseVisitor {
     this.typingChanged = false;
   }
 
-  private Type promote(Type tlow, Type thigh) {
+  public Type promote(Type tlow, Type thigh) {
     if (tlow instanceof Integer1Type) {
       if (thigh instanceof IntType) {
         return Integer127Type.v();
