@@ -1294,7 +1294,7 @@ public class SootClass extends AbstractHost {
 
   /**
    * Returns all methods with exactly the number of parameters specified.
-   * 
+   *
    * @param name
    *          the name of the method
    * @param paramCount
@@ -1303,7 +1303,7 @@ public class SootClass extends AbstractHost {
    */
   public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
     List<SootMethod> result = null;
-    for (SootMethod m : getMethods()) {
+    for (SootMethod m : new ArrayList<>(getMethods())) {
       if (m.getParameterCount() == paramCount && m.getName().equals(name)) {
         if (result == null) {
           result = new ArrayList<>();
