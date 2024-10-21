@@ -248,10 +248,9 @@ public class RedundantJimpleStatementsTest {
         		"$r3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(22)",
         		"$r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(23)",
         		"$r2 = (MyClass) $r1",
-        		"$r7 = virtualinvoke $r2.<MyClass: java.lang.Object add(java.lang.Object,java.lang.Object)>($r3, $r4)",
-        		"$r5 = (java.lang.Integer) $r7",
-        		"r6 = $r5",
-        		"$i0 = virtualinvoke r6.<java.lang.Integer: int intValue()>()",
+        		"$r6 = virtualinvoke $r2.<MyClass: java.lang.Object add(java.lang.Object,java.lang.Object)>($r3, $r4)",
+        		"r5 = (java.lang.Integer) $r6",
+        		"$i0 = virtualinvoke r5.<java.lang.Integer: int intValue()>()",
         		"return $i0").collect(Collectors.toCollection(ArrayList::new));
         SootMethod method = Scene.v().getMethod("<AnonymousDiamondOperator: int innerClassDiamond()>");
         assertJimpleStmts(method, expectedBodyStmts);
