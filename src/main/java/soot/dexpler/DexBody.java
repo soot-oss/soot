@@ -905,6 +905,18 @@ public class DexBody {
         if (constraints.isEmpty()) {
           return lcas;
         }
+        if (lcas.size() == 1) {
+          Type e = lcas.iterator().next();
+          //Only one element, we can check this directly
+          if (!constraints.contains(e)) {
+            // No typing left
+            Set<Type> res = new HashSet<>(constraints);
+            res.add(e);
+            return res;
+          } else {
+            return lcas;
+          }
+        }
         Set<Type> res = new HashSet<>(lcas);
         res.retainAll(constraints);
         if (res.isEmpty()) {
@@ -926,6 +938,15 @@ public class DexBody {
           soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly) {
         return new CastInsertionUseVisitor(countOnly, jBody, tg, h) {
 
+          @Override
+          protected boolean eliminateUnnecessaryCasts() {
+            //We do not want to eliminate casts that were explicitly present in the original dex code
+            //Otherwise we have problems in certain edge cases, were our typings are suboptimal 
+            //with respect to float/int and double/long
+            return false;
+          }
+
+          @Override
           protected NeedCastResult needCast(Type target, Type from, IHierarchy h) {
             NeedCastResult r = super.needCast(target, from, h);
             if (r == NeedCastResult.NEEDS_CAST) {
