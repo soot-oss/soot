@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import soot.BooleanType;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -44,6 +46,11 @@ public class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr {
   @Override
   public void apply(Switch sw) {
     ((ExprSwitch) sw).caseEqExpr(this);
+  }
+
+  @Override
+  public Type getType() {
+    return BooleanType.v();
   }
 
   @Override

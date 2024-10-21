@@ -56,7 +56,7 @@ public class TypePromotionUseVisitor implements IUseVisitor {
     this.typingChanged = false;
   }
 
-  private Type promote(Type tlow, Type thigh) {
+  public Type promote(Type tlow, Type thigh) {
     if (tlow instanceof Integer1Type) {
       if (thigh instanceof IntType) {
         return Integer127Type.v();
@@ -97,16 +97,21 @@ public class TypePromotionUseVisitor implements IUseVisitor {
       return op;
     }
 
-    Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
+    final Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
+    final boolean eqType = TypeResolver.typesEqual(t, useType);
+    if (eqType) {
+      //shortcut
+      return op;
+    }
 
-    if (!AugHierarchy.ancestor_(useType, t)) {
+    if (!allowConversion(useType, t)) {
       logger.error(String.format("Failed Typing in %s at statement %s: Is not cast compatible: %s <-- %s",
           jb.getMethod().getSignature(), stmt, useType, t));
       this.fail = true;
     } else if (!checkOnly && op instanceof Local && (t instanceof Integer1Type || t instanceof Integer127Type
         || t instanceof Integer32767Type || t instanceof WeakObjectType)) {
       Local v = (Local) op;
-      if (!TypeResolver.typesEqual(t, useType)) {
+      if (!eqType) {
         Type t_ = this.promote(t, useType);
         if (!TypeResolver.typesEqual(t, t_)) {
           this.tg.set(v, t_);
@@ -116,6 +121,10 @@ public class TypePromotionUseVisitor implements IUseVisitor {
     }
 
     return op;
+  }
+
+  protected boolean allowConversion(Type ancestor, Type child) {
+    return AugHierarchy.ancestor_(ancestor, child);
   }
 
   @Override

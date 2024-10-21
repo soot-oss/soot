@@ -22,6 +22,9 @@ package soot.toolkits.scalar;
  * #L%
  */
 
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +45,7 @@ import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.Jimple;
 import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
@@ -73,12 +77,15 @@ import soot.util.MultiMap;
  * 
  * @author Marc Miltenberger
  */
+
 // @formatter:on
 public class SharedInitializationLocalSplitter extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(SharedInitializationLocalSplitter.class);
 
   protected ThrowAnalysis throwAnalysis;
   protected boolean omitExceptingUnitEdges;
+
+  private boolean actAsNormalLocalSplitter;
 
   public SharedInitializationLocalSplitter(Singletons.Global g) {
   }
@@ -98,27 +105,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
   private static final class Cluster {
 
-    protected final List<Unit> constantInitializers;
-    protected final Unit use;
+    protected final BitSet constantInitializers;
+    protected final BitSet uses;
+    protected final BitSet nonConstantDefs;
 
-    public Cluster(Unit use, List<Unit> constantInitializers) {
-      this.use = use;
-      this.constantInitializers = constantInitializers;
+    public Cluster(BitSet uses, BitSet constantDefs, BitSet nonConstantDefs) {
+      this.uses = uses;
+      this.constantInitializers = constantDefs;
+      this.nonConstantDefs = nonConstantDefs;
     }
 
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("Constant intializers:\n");
-      for (Unit r : constantInitializers) {
-        sb.append("\n - ").append(toStringUnit(r));
-      }
-      return sb.toString();
-    }
-
-    private String toStringUnit(Unit u) {
-      return u + " (" + System.identityHashCode(u) + ")";
-    }
   }
 
   @Override
@@ -149,25 +145,88 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
     DeadAssignmentEliminator.v().transform(body);
     CopyPropagator.v().transform(body);
+    transformOnly(body);
+  }
+
+  /**
+   * Sets a value on whether to act as a normal local splitter, making 
+   * soot.toolkits.scalar.LocalSplitter redundant.
+   * @param actAsLocalSplitter
+   * @return this
+   */
+  public SharedInitializationLocalSplitter setActAsNormalLocalSplitter(boolean actAsLocalSplitter) {
+    this.actAsNormalLocalSplitter = actAsLocalSplitter;
+    return this;
+  }
+
+  public void transformOnly(Body body) {
 
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
     final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
 
+    final Map<Unit, Integer> stmtToIndex = new HashMap<>();
+    final Map<Integer, Unit> indexToStmt = new HashMap<>();
     final Chain<Unit> units = body.getUnits();
+    int idx = 0;
     for (Unit s : units) {
-      for (ValueBox useBox : s.getUseBoxes()) {
+      stmtToIndex.put(s, idx);
+      indexToStmt.put(idx, s);
+      idx++;
+
+    }
+
+    for (Unit s : units) {
+      nextUse: for (ValueBox useBox : s.getUseBoxes()) {
         Value v = useBox.getValue();
         if (v instanceof Local) {
           Local luse = (Local) v;
           List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
-          // Make sure we are only affected by Constant definitions via AssignStmt
-          if (allAffectingDefs.isEmpty() || !allAffectingDefs.stream()
-              .allMatch(u -> (u instanceof AssignStmt) && (((AssignStmt) u).getRightOp() instanceof Constant))) {
-            continue;
+
+          BitSet constantDefs = new BitSet(idx);
+          BitSet nonConstantDefs = null;
+
+          for (Unit affect : allAffectingDefs) {
+            if (affect instanceof DefinitionStmt) {
+              DefinitionStmt def = (DefinitionStmt) affect;
+              int actualidx = stmtToIndex.get(def);
+              if (def.getRightOp() instanceof Constant) {
+                constantDefs.set(actualidx);
+              } else {
+                if (nonConstantDefs == null) {
+                  nonConstantDefs = new BitSet(idx);
+                }
+                nonConstantDefs.set(actualidx);
+              }
+            }
           }
-          clustersPerLocal.put(luse, new Cluster(s, allAffectingDefs));
+          int useidx = stmtToIndex.get(s);
+          BitSet useset = new BitSet(useidx);
+          useset.set(useidx);
+          if (nonConstantDefs != null) {
+            Iterator<Cluster> it = clustersPerLocal.get(luse).iterator();
+            while (it.hasNext()) {
+              Cluster existing = it.next();
+              if (existing.nonConstantDefs == null) {
+                continue;
+              }
+
+              //the idea is: When there is an overlap in any non-constant definition units,
+              //we need to merge them, since two different usages have overlapping definitions, 
+              //i.e. we can only change all these uses 
+              if (existing.nonConstantDefs.intersects(nonConstantDefs)) {
+                //we have an overlap
+                useset.or(existing.uses);
+                constantDefs.or(existing.constantInitializers);
+                nonConstantDefs.or(existing.nonConstantDefs);
+
+                //we only keep the new definition with an overlap
+                it.remove();
+              }
+            }
+          }
+          clustersPerLocal.put(luse, new Cluster(useset, constantDefs, nonConstantDefs));
         }
       }
     }
@@ -176,7 +235,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     int w = 0;
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
-      if (clusters.size() <= 1) {
+      if (clusters.size() == 1) {
         // Not interesting
         continue;
       }
@@ -185,17 +244,43 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         Local newLocal = (Local) lcl.clone();
         newLocal.setName(newLocal.getName() + '_' + ++w);
         locals.add(newLocal);
-
-        for (Unit u : cluster.constantInitializers) {
-          AssignStmt assign = (AssignStmt) u;
+        BitSet constantInit = cluster.constantInitializers;
+        if (!actAsNormalLocalSplitter && constantInit.isEmpty()) {
+          continue;
+        }
+        for (int i = constantInit.nextSetBit(0); i != -1; i = constantInit.nextSetBit(i + 1)) {
+          AssignStmt assign = (AssignStmt) indexToStmt.get(i);
+          if (assign == null) {
+            throw new AssertionError("Wrong indice");
+          }
           AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, assign.getRightOp());
           units.insertAfter(newAssign, assign);
           CopyPropagator.copyLineTags(newAssign.getUseBoxes().get(0), assign);
         }
 
-        replaceLocalsInUnitUses(cluster.use, lcl, newLocal);
+        BitSet uses = cluster.uses;
+        for (int i = uses.nextSetBit(0); i != -1; i = uses.nextSetBit(i + 1)) {
+          Unit use = indexToStmt.get(i);
+          if (use == null) {
+            throw new AssertionError("Wrong indice");
+          }
+          replaceLocalsInUnitUses(use, lcl, newLocal);
+        }
+        BitSet nonConstantDefs = cluster.nonConstantDefs;
+        if (nonConstantDefs != null) {
+          for (int i = nonConstantDefs.nextSetBit(0); i != -1; i = nonConstantDefs.nextSetBit(i + 1)) {
+            DefinitionStmt def = (DefinitionStmt) indexToStmt.get(i);
+            if (def == null) {
+              throw new AssertionError("Wrong indice");
+            }
+            if (def.getLeftOp() == lcl) {
+              def.getLeftOpBox().setValue(newLocal);
+            }
+          }
+        }
       }
     }
+    UnusedLocalEliminator.v().transform(body);
   }
 
   private void replaceLocalsInUnitUses(Unit change, Value oldLocal, Local newLocal) {

@@ -33,6 +33,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import soot.ArrayType;
@@ -81,19 +83,46 @@ import soot.toolkits.scalar.LocalDefs;
 public class TypeResolver {
   protected final JimpleBody jb;
 
-  private final List<DefinitionStmt> assignments;
-  private final HashMap<Local, BitSet> depends;
+  private List<DefinitionStmt> assignments;
+  private HashMap<Local, BitSet> depends;
+  private Set<Local> singleAssignments;
+  private BitSet simple;
   private final LocalGenerator localGenerator;
 
   public TypeResolver(JimpleBody jb) {
     this.jb = jb;
-    this.assignments = new ArrayList<DefinitionStmt>();
-    this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
     this.localGenerator = Scene.v().createLocalGenerator(jb);
-    this.initAssignments();
+
   }
 
   private void initAssignments() {
+    this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
+    Map<Local, Integer> map = new HashMap<>();
+    for (Unit stmt : this.jb.getUnits()) {
+      if (stmt instanceof DefinitionStmt) {
+        DefinitionStmt def = (DefinitionStmt) stmt;
+
+        Value lhs = def.getLeftOp();
+        if (lhs instanceof Local) {
+          Local l = (Local) lhs;
+          Integer c = map.get(l);
+          if (c == null) {
+            c = 0;
+          }
+          c++;
+          map.put(l, c);
+        }
+      }
+    }
+    Iterator<Entry<Local, Integer>> t = map.entrySet().iterator();
+    while (t.hasNext()) {
+      if (t.next().getValue() > 1) {
+        t.remove();
+      }
+    }
+    this.singleAssignments = map.keySet();
+
+    this.assignments = new ArrayList<DefinitionStmt>();
     for (Unit stmt : this.jb.getUnits()) {
       if (stmt instanceof DefinitionStmt) {
         this.initAssignment((DefinitionStmt) stmt);
@@ -146,9 +175,11 @@ public class TypeResolver {
 
   public void inferTypes() {
     this.split_new();
+    //split_new creates new assignments...
+    this.initAssignments();
     ITypingStrategy typingStrategy = getTypingStrategy();
     AugEvalFunction ef = createAugEvalFunction(this.jb);
-    BytecodeHierarchy bh = new BytecodeHierarchy();
+    BytecodeHierarchy bh = createBytecodeHierarchy();
     Collection<Typing> sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
 
     // If there is nothing to type, we can quit
@@ -158,8 +189,9 @@ public class TypeResolver {
 
     int[] castCount = new int[1];
     Typing tg = this.minCasts(sigma, bh, castCount);
-
-    this.insertCasts(tg, bh, false);
+    if (castCount[0] > 0) {
+      this.insertCasts(tg, bh, false);
+    }
 
     final BottomType bottom = BottomType.v();
     for (Local v : this.jb.getLocals()) {
@@ -183,8 +215,12 @@ public class TypeResolver {
     }
   }
 
-  protected AugEvalFunction createAugEvalFunction(JimpleBody jb2) {
-    return new AugEvalFunction(this.jb);
+  protected BytecodeHierarchy createBytecodeHierarchy() {
+    return new BytecodeHierarchy();
+  }
+
+  protected AugEvalFunction createAugEvalFunction(JimpleBody jb) {
+    return new AugEvalFunction(jb);
   }
 
   protected ITypingStrategy getTypingStrategy() {
@@ -214,6 +250,8 @@ public class TypeResolver {
       if (useType == t) {
         if (op instanceof CastExpr) {
           CastExpr ce = (CastExpr) op;
+          //by default, t only checks for the type of the cast target
+          t = AugEvalFunction.eval_(this.tg, ce.getOp(), stmt, this.jb);
           if (ce.getType() == t) {
             //no cast necessary!
             return ce.getOp();
@@ -222,19 +260,14 @@ public class TypeResolver {
         return op;
       }
 
-      boolean needCast = false;
-      if (useType instanceof PrimType && t instanceof PrimType) {
-        if (t.isAllowedInFinalCode() && useType.isAllowedInFinalCode()) {
-          needCast = true;
-        }
-      }
-      if (!needCast && this.h.ancestor(useType, t)) {
+      NeedCastResult needCast = needCast(useType, t, h);
+      if (needCast == NeedCastResult.DOESNT_NEED_CAST && this.h.ancestor(useType, t)) {
         return op;
       }
 
       this.count++;
 
-      if (countOnly) {
+      if (countOnly || needCast == NeedCastResult.DISCOURAGED_TARGET_TYPE) {
         return op;
       } else {
         // If we're referencing an array of the base type java.lang.Object,
@@ -264,6 +297,15 @@ public class TypeResolver {
         // Cast from the original type to the type that we use in the code
         return createCast(useType, stmt, vold, false);
       }
+    }
+
+    protected NeedCastResult needCast(Type target, Type from, IHierarchy h) {
+      if (target instanceof PrimType && from instanceof PrimType) {
+        if (from.isAllowedInFinalCode() && target.isAllowedInFinalCode()) {
+          return NeedCastResult.NEEDS_CAST;
+        }
+      }
+      return NeedCastResult.DOESNT_NEED_CAST;
     }
 
     private boolean isObjectLikeType(RefType rt) {
@@ -319,10 +361,10 @@ public class TypeResolver {
   private Typing typePromotion(Typing tg) {
     boolean conversionsPending;
     do {
-      AugEvalFunction ef = new AugEvalFunction(this.jb);
+      AugEvalFunction ef = createAugEvalFunction(this.jb);
       AugHierarchy h = new AugHierarchy();
-      UseChecker uc = new UseChecker(this.jb);
-      TypePromotionUseVisitor uv = new TypePromotionUseVisitor(jb, tg);
+      UseChecker uc = createUseChecker(this.jb);
+      TypePromotionUseVisitor uv = createTypePromotionUseVisitor(jb, tg);
       do {
         Collection<Typing> sigma = this.applyAssignmentConstraints(tg, ef, h);
         if (sigma.isEmpty()) {
@@ -351,6 +393,14 @@ public class TypeResolver {
     return tg;
   }
 
+  protected UseChecker createUseChecker(JimpleBody jb) {
+    return new UseChecker(jb);
+  }
+
+  protected TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb, Typing tg) {
+    return new TypePromotionUseVisitor(jb, tg);
+  }
+
   protected Type convert(Type t) {
     if (t instanceof Integer1Type) {
       return booleanType;
@@ -371,7 +421,7 @@ public class TypeResolver {
   }
 
   private int insertCasts(Typing tg, IHierarchy h, boolean countOnly) {
-    UseChecker uc = new UseChecker(this.jb);
+    UseChecker uc = createUseChecker(this.jb);
     CastInsertionUseVisitor uv = createCastInsertionUseVisitor(tg, h, countOnly);
     uc.check(tg, uv);
     return uv.getCount();
@@ -500,6 +550,34 @@ public class TypeResolver {
     wl.set(0, numAssignments);
     sigma.add(new WorklistElement(tg, wl, new TypeDecision()));
 
+    if (tg.map.isEmpty()) {
+      simple = new BitSet(numAssignments);
+      //First get the easy cases out of the way.
+      for (int i = 0; i < numAssignments; i++) {
+        final DefinitionStmt stmt = this.assignments.get(i);
+        Value lhs = stmt.getLeftOp();
+        if (lhs instanceof Local) {
+          Local v = (Local) lhs;
+          if (singleAssignments.contains(v)) {
+            Collection<Type> d = ef.eval(tg, stmt.getRightOp(), stmt);
+            if (d.size() == 1) {
+              Type t_ = d.iterator().next();
+              d = reduceToAllowedTypesForLocal(Collections.singleton(t_), v);
+              if (d.size() == 1) {
+                tg.set(v, d.iterator().next());
+                simple.set(i);
+                wl.clear(i);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      if (simple != null) {
+        wl.andNot(simple);
+      }
+    }
+
     Set<Type> throwable = null;
 
     while (!sigma.isEmpty()) {
@@ -603,6 +681,7 @@ public class TypeResolver {
         } // end for
       }
     }
+
     typingStrategy.minimize(r, h);
     return r;
   }
@@ -667,7 +746,6 @@ public class TypeResolver {
                 units.insertAfter(assignStmt, Util.findLastIdentityUnit(body, assign));
 
                 assign.setLeftOp(newlocal);
-                this.initAssignment(assignStmt);
               }
             }
             break;

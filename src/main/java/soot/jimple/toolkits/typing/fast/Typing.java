@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import soot.Local;
+import soot.NullType;
 import soot.Type;
 
 /**
@@ -56,7 +57,7 @@ public class Typing {
   }
 
   public Type set(Local v, Type t) {
-    return (t instanceof BottomType) ? null : this.map.put(v, t);
+    return (t instanceof BottomType || t instanceof NullType) ? null : this.map.put(v, t);
   }
 
   public Collection<Local> getAllLocals() {

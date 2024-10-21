@@ -784,9 +784,6 @@ public class StmtVisitor implements StmtSwitch {
     // create sparse-switch instruction that references the payload
     Value key = stmt.getKey();
     Stmt defaultTarget = (Stmt) stmt.getDefaultTarget();
-    if (defaultTarget == stmt) {
-      throw new RuntimeException("Looping switch block detected");
-    }
     addInsn(buildSwitchInsn(Opcode.SPARSE_SWITCH, key, defaultTarget, payload, stmt), stmt);
   }
 
