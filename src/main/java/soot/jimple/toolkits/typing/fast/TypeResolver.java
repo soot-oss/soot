@@ -44,7 +44,6 @@ import soot.G;
 import soot.IntegerType;
 import soot.Local;
 import soot.LocalGenerator;
-import soot.LongType;
 import soot.PatchingChain;
 import soot.PrimType;
 import soot.RefType;
@@ -603,11 +602,6 @@ public class TypeResolver {
 
         boolean isFirstType = true;
         for (Type t_ : ef.eval(tg, stmt.getRightOp(), stmt)) {
-          if (t_ instanceof LongType)
-            DebugPoint.Break();
-          if (t_ instanceof BooleanType) {
-            ef.eval(tg, stmt.getRightOp(), stmt);
-          }
           if (lhs instanceof ArrayRef) {
             /*
              * We only need to consider array references on the LHS of assignments where there is supertyping between array
@@ -688,13 +682,6 @@ public class TypeResolver {
       }
     }
 
-    for (Typing p : r) {
-      for (Entry<Local, Type> x : p.map.entrySet()) {
-        if (x.getValue() instanceof Integer1Type) {
-          DebugPoint.Break();
-        }
-      }
-    }
     typingStrategy.minimize(r, h);
     return r;
   }

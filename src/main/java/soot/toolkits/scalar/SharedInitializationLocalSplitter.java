@@ -79,9 +79,6 @@ import soot.util.MultiMap;
  */
 
 // @formatter:on
-/**
- * 
- */
 public class SharedInitializationLocalSplitter extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(SharedInitializationLocalSplitter.class);
 
@@ -215,8 +212,9 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                 continue;
               }
 
-              //the idea is: When there is an overlap in any non-constant definition units, we need to merge them, since two different usages have overlapping definitions, i.e. we
-              //can only change all these uses 
+              //the idea is: When there is an overlap in any non-constant definition units,
+              //we need to merge them, since two different usages have overlapping definitions, 
+              //i.e. we can only change all these uses 
               if (existing.nonConstantDefs.intersects(nonConstantDefs)) {
                 //we have an overlap
                 useset.or(existing.uses);

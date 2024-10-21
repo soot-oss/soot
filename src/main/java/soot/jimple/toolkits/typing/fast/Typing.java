@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import soot.BooleanType;
 import soot.Local;
 import soot.NullType;
 import soot.Type;
@@ -58,8 +57,6 @@ public class Typing {
   }
 
   public Type set(Local v, Type t) {
-    if (t instanceof BooleanType || t instanceof Integer1Type)
-      DebugPoint.Break();
     return (t instanceof BottomType || t instanceof NullType) ? null : this.map.put(v, t);
   }
 
