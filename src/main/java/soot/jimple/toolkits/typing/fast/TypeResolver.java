@@ -565,6 +565,14 @@ public class TypeResolver {
         Value lhs = stmt.getLeftOp();
         if (lhs instanceof Local) {
           Local v = (Local) lhs;
+          Type t = getDefiniteType(v);
+          if (t != null) {
+            simple.set(i);
+            wl.clear(i);
+            tg.set(v, t);
+            continue;
+          }
+
           if (singleAssignments.contains(v)) {
             Collection<Type> d = ef.eval(tg, stmt.getRightOp(), stmt);
             if (d.size() == 1) {
@@ -697,6 +705,10 @@ public class TypeResolver {
 
     typingStrategy.minimize(r, h);
     return r;
+  }
+
+  protected Type getDefiniteType(Local v) {
+    return null;
   }
 
   protected Collection<Type> reduceToAllowedTypesForLocal(Collection<Type> lcas, Local v) {

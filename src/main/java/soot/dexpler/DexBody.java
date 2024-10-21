@@ -881,6 +881,15 @@ public class DexBody {
 
       }
 
+      protected Type getDefiniteType(Local v) {
+        Collection<Type> r = definiteConstraints.get(v);
+        if (r != null && r.size() == 1) {
+          return r.iterator().next();
+        } else {
+          return null;
+        }
+      }
+
       protected soot.jimple.toolkits.typing.fast.BytecodeHierarchy createBytecodeHierarchy() {
         return new soot.jimple.toolkits.typing.fast.BytecodeHierarchy() {
           public java.util.Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
