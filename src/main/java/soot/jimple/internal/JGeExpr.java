@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import soot.BooleanType;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -39,6 +41,11 @@ public class JGeExpr extends AbstractJimpleIntBinopExpr implements GeExpr {
   @Override
   public final String getSymbol() {
     return " >= ";
+  }
+
+  @Override
+  public Type getType() {
+    return BooleanType.v();
   }
 
   @Override

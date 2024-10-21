@@ -659,6 +659,8 @@ public class StmtVisitor implements StmtSwitch {
     Register indexReg = regAlloc.asImmediate(index, constantV);
     Local array = (Local) sourceRef.getBase();
     Register arrayReg = regAlloc.asLocal(array);
+    if (!(array.getType() instanceof ArrayType))
+      System.out.println();
     String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
     Opcode opc = getPutGetOpcodeWithTypeSuffix(AGET_OPCODE, arrayTypeDescriptor);
     return new Insn23x(opc, destinationReg, arrayReg, indexReg);
