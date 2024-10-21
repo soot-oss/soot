@@ -44,6 +44,7 @@ import soot.G;
 import soot.IntegerType;
 import soot.Local;
 import soot.LocalGenerator;
+import soot.NullType;
 import soot.PatchingChain;
 import soot.PrimType;
 import soot.RefType;
@@ -64,6 +65,7 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NegExpr;
 import soot.jimple.NewExpr;
+import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.typing.Util;
@@ -175,7 +177,7 @@ public class TypeResolver {
 
   public void inferTypes() {
     this.split_new();
-    //split_new creates new assignments...
+    // split_new creates new assignments...
     this.initAssignments();
     ITypingStrategy typingStrategy = getTypingStrategy();
     AugEvalFunction ef = createAugEvalFunction(this.jb);
@@ -250,10 +252,10 @@ public class TypeResolver {
       if (useType == t) {
         if (op instanceof CastExpr) {
           CastExpr ce = (CastExpr) op;
-          //by default, t only checks for the type of the cast target
+          // by default, t only checks for the type of the cast target
           t = AugEvalFunction.eval_(this.tg, ce.getOp(), stmt, this.jb);
           if (ce.getType() == t) {
-            //no cast necessary!
+            // no cast necessary!
             return ce.getOp();
           }
         }
@@ -552,7 +554,7 @@ public class TypeResolver {
 
     if (tg.map.isEmpty()) {
       simple = new BitSet(numAssignments);
-      //First get the easy cases out of the way.
+      // First get the easy cases out of the way.
       for (int i = 0; i < numAssignments; i++) {
         final DefinitionStmt stmt = this.assignments.get(i);
         Value lhs = stmt.getLeftOp();
@@ -562,11 +564,16 @@ public class TypeResolver {
             Collection<Type> d = ef.eval(tg, stmt.getRightOp(), stmt);
             if (d.size() == 1) {
               Type t_ = d.iterator().next();
-              d = reduceToAllowedTypesForLocal(Collections.singleton(t_), v);
-              if (d.size() == 1) {
-                tg.set(v, d.iterator().next());
-                simple.set(i);
-                wl.clear(i);
+              if (stmt.getRightOp() instanceof NullConstant) {
+                t_ = NullType.v();
+              }
+              if (t_.isAllowedInFinalCode() || t_ instanceof NullType) {
+                d = reduceToAllowedTypesForLocal(Collections.singleton(t_), v);
+                if (d.size() == 1) {
+                  tg.set(v, d.iterator().next());
+                  simple.set(i);
+                  wl.clear(i);
+                }
               }
             }
           }
