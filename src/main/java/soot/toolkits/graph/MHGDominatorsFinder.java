@@ -84,6 +84,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
         BitSet self = new BitSet();
         self.set(indexOf(o));
         nodeToFlowSet.put(o, self);
+      } else if (graph.getPredsOf(o).isEmpty()) {
+        BitSet empty = new BitSet();
+        nodeToFlowSet.put(o, empty);
       } else {
         nodeToFlowSet.put(o, fullSet);
       }
@@ -93,7 +96,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     do {
       changed = false;
       for (N o : graph) {
-        if (heads.contains(o)) {
+        if (heads.contains(o) || graph.getPredsOf(o).isEmpty()) {
           continue;
         }
 
