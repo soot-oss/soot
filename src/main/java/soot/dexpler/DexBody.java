@@ -1307,13 +1307,11 @@ public class DexBody {
    */
   private void handleKnownDexArrayTypes(Body b, Jimple jimple, MultiMap<Local, Type> typeConstraints) {
 
-    Map<Type, Local> convSingle = new HashMap<>();
     UnitPatchingChain units = jBody.getUnits();
     Unit u = units.getFirst();
     while (u != null) {
       if (u instanceof AssignStmt) {
         AssignStmt assign = ((AssignStmt) u);
-        Value lop = assign.getLeftOp();
         Value rop = assign.getRightOp();
         if (rop instanceof ArrayRef) {
           for (Tag tg : u.getTags()) {
@@ -1321,18 +1319,13 @@ public class DexBody {
               DexplerTag dexplerTypeTag = (DexplerTag) tg;
               Type definiteType = dexplerTypeTag.getDefiniteType();
               if (definiteType != null) {
-                Local l = createOrGetVariableOfType(b, convSingle, definiteType);
-                Value prev = assign.getLeftOp();
-                assign.setLeftOp(l);
-                units.insertAfter(jimple.newAssignStmt(prev, jimple.newCastExpr(l, definiteType)), u);
-
+                Local prev = (Local) assign.getLeftOp();
+                prev.setType(definiteType);
                 ArrayType tp = ArrayType.v(definiteType, 1);
-                l = jimple.newLocal(freshLocalName("lcl" + tg.getName()), tp);
-                b.getLocals().add(l);
+
                 ArrayRef array = (ArrayRef) rop;
-                units.insertBefore(jimple.newAssignStmt(l, array.getBase()), u);
-                array.setBase(l);
-                typeConstraints.put(l, tp);
+                Local lbase = (Local) array.getBase();
+                lbase.setType(tp);
 
               } else if (tg instanceof IntOrFloatOpTag || tg instanceof LongOrDoubleOpTag) {
                 // sadly, we don't know for sure. But: we know that it's either of these two.
@@ -1372,8 +1365,6 @@ public class DexBody {
   private void handleKnownDexTypes(Body b, final Jimple jimple) {
     UnitPatchingChain units = jBody.getUnits();
     Unit u = units.getFirst();
-    Map<Type, Local> convSingle = new HashMap<>();
-    Local[] convFloat = new Local[2], convDouble = new Local[2];
     while (u != null) {
       if (u instanceof AssignStmt) {
         AssignStmt def = (AssignStmt) u;
@@ -1422,14 +1413,11 @@ public class DexBody {
               t = ByteType.v();
             }
             if (t != null) {
-              Local l = createOrGetVariableOfType(b, convSingle, t);
-              Value prev = def.getLeftOp();
-              def.setLeftOp(l);
-              units.insertAfter(jimple.newAssignStmt(prev, l), u);
+              Local left = (Local) def.getLeftOp();
+              left.setType(t);
             }
           }
           BinopExpr bop = (BinopExpr) rop;
-          int idxConvVar = 0;
           for (ValueBox cmp : bop.getUseBoxes()) {
             Value c = cmp.getValue();
             if (c instanceof Constant) {
@@ -1443,26 +1431,11 @@ public class DexBody {
                 cmp.setValue(FloatConstant.v(Float.intBitsToFloat(vVal)));
               }
             } else {
+              Local t = (Local) cmp.getValue();
               if (isDouble) {
-                if (!(c.getType() instanceof DoubleType)) {
-                  if (convDouble[idxConvVar] == null) {
-                    convDouble[idxConvVar] = jimple.newLocal(freshLocalName("lclConvToDouble" + idxConvVar), DoubleType.v());
-                    b.getLocals().add(convDouble[idxConvVar]);
-                  }
-                  units.insertBefore(jimple.newAssignStmt(convDouble[idxConvVar], cmp.getValue()), u);
-                  cmp.setValue(convDouble[idxConvVar]);
-                  idxConvVar++;
-                }
+                t.setType(DoubleType.v());
               } else if (isFloat) {
-                if (!(c.getType() instanceof FloatType)) {
-                  if (convFloat[idxConvVar] == null) {
-                    convFloat[idxConvVar] = jimple.newLocal(freshLocalName("lclConvToFloat" + idxConvVar), FloatType.v());
-                    b.getLocals().add(convFloat[idxConvVar]);
-                  }
-                  units.insertBefore(jimple.newAssignStmt(convFloat[idxConvVar], cmp.getValue()), u);
-                  cmp.setValue(convFloat[idxConvVar]);
-                  idxConvVar++;
-                }
+                t.setType(FloatType.v());
               }
             }
           }
@@ -1523,16 +1496,6 @@ public class DexBody {
         }
       }
     }
-  }
-
-  private Local createOrGetVariableOfType(Body b, Map<Type, Local> map, Type t) {
-    Local lcl = map.get(t);
-    if (lcl == null) {
-      lcl = Jimple.v().newLocal(freshLocalName("lclConvTo" + t), t);
-      b.getLocals().add(lcl);
-      map.put(t, lcl);
-    }
-    return lcl;
   }
 
   /**
