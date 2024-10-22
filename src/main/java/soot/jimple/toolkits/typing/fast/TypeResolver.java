@@ -236,6 +236,7 @@ public class TypeResolver {
 
     private final boolean countOnly;
     private int count;
+    protected boolean eliminateUnnecessaryCasts = eliminateUnnecessaryCasts();
 
     public CastInsertionUseVisitor(boolean countOnly, JimpleBody jb, Typing tg, IHierarchy h) {
       this.jb = jb;
@@ -246,6 +247,10 @@ public class TypeResolver {
       this.count = 0;
     }
 
+    protected boolean eliminateUnnecessaryCasts() {
+      return true;
+    }
+
     @Override
     public Value visit(Value op, Type useType, Stmt stmt, boolean checkOnly) {
       Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
@@ -254,7 +259,7 @@ public class TypeResolver {
           CastExpr ce = (CastExpr) op;
           // by default, t only checks for the type of the cast target
           t = AugEvalFunction.eval_(this.tg, ce.getOp(), stmt, this.jb);
-          if (ce.getType() == t) {
+          if (eliminateUnnecessaryCasts && ce.getType() == t) {
             // no cast necessary!
             return ce.getOp();
           }
@@ -560,6 +565,14 @@ public class TypeResolver {
         Value lhs = stmt.getLeftOp();
         if (lhs instanceof Local) {
           Local v = (Local) lhs;
+          Type t = getDefiniteType(v);
+          if (t != null) {
+            simple.set(i);
+            wl.clear(i);
+            tg.set(v, t);
+            continue;
+          }
+
           if (singleAssignments.contains(v)) {
             Collection<Type> d = ef.eval(tg, stmt.getRightOp(), stmt);
             if (d.size() == 1) {
@@ -586,6 +599,7 @@ public class TypeResolver {
     }
 
     Set<Type> throwable = null;
+    BottomType bt = BottomType.v();
 
     while (!sigma.isEmpty()) {
       WorklistElement element = sigma.element();
@@ -632,7 +646,7 @@ public class TypeResolver {
             lcas = throwable;
           } else {
             Type featureType = ds.getTypeDecision(told, t_);
-            if (!typesEqual(featureType, BottomType.v())) {
+            if (!typesEqual(featureType, bt)) {
               // Use feature type.
               lcas = Collections.singleton(featureType);
             } else {
@@ -666,7 +680,7 @@ public class TypeResolver {
                 sigma.add(e);
               }
 
-              if (!typesEqual(told, BottomType.v()) && !typesEqual(t_, BottomType.v())) {
+              if (!typesEqual(told, bt) && !typesEqual(t_, bt)) {
                 // 't' is base class of type 'told' & 't_';
                 // It will decide the feature type by target value.
                 TypeContainer container = new TypeContainer(told, t_, t);
@@ -691,6 +705,10 @@ public class TypeResolver {
 
     typingStrategy.minimize(r, h);
     return r;
+  }
+
+  protected Type getDefiniteType(Local v) {
+    return null;
   }
 
   protected Collection<Type> reduceToAllowedTypesForLocal(Collection<Type> lcas, Local v) {

@@ -33,7 +33,9 @@ import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
 import soot.jimple.Constant;
 import soot.jimple.DivExpr;
+import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
+import soot.jimple.FloatConstant;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
 import soot.jimple.IntConstant;
@@ -119,8 +121,8 @@ public class Evaluator {
       }
     } else if (op instanceof BinopExpr) {
       final BinopExpr binExpr = (BinopExpr) op;
-      final Value c1 = getConstantValueOf(binExpr.getOp1());
-      final Value c2 = getConstantValueOf(binExpr.getOp2());
+      Value c1 = getConstantValueOf(binExpr.getOp1());
+      Value c2 = getConstantValueOf(binExpr.getOp2());
 
       if (op instanceof AddExpr) {
         return ((NumericConstant) c1).add((NumericConstant) c2);
@@ -174,6 +176,10 @@ public class Evaluator {
           throw new IllegalArgumentException("CmpExpr: LongConstant(s) expected");
         }
       } else if ((op instanceof CmpgExpr) || (op instanceof CmplExpr)) {
+        //In Dalvik code:
+        //int <-> float and long <-> double are equivalent essentially.
+        c1 = convertToFloatOrDouble(c1);
+        c2 = convertToFloatOrDouble(c2);
         if ((c1 instanceof RealConstant) && (c2 instanceof RealConstant)) {
           if (op instanceof CmpgExpr) {
             return ((RealConstant) c1).cmpg((RealConstant) c2);
@@ -190,5 +196,24 @@ public class Evaluator {
 
     throw new RuntimeException("couldn't getConstantValueOf of: " + op);
   } // getConstantValueOf
+
+  /**
+   * For Android Dex:
+   * 
+   * Converts int and long constants to their corresponding float and double counterparts
+   * @param c the constant
+   * @return the potentially changed value
+   */
+  private static Value convertToFloatOrDouble(Value c) {
+    if (c instanceof IntConstant) {
+      IntConstant ic = (IntConstant) c;
+      return FloatConstant.v(Float.intBitsToFloat(ic.value));
+    } else if (c instanceof LongConstant) {
+      LongConstant ic = (LongConstant) c;
+      return DoubleConstant.v(Double.longBitsToDouble(ic.value));
+    }
+
+    return c;
+  }
 
 } // Evaluator

@@ -108,6 +108,7 @@ import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.IntOrFloatOpTag;
+import soot.dexpler.tags.LongOpTag;
 import soot.dexpler.tags.LongOrDoubleOpTag;
 import soot.dexpler.tags.ShortOpTag;
 import soot.dexpler.typing.DalvikTyper;
@@ -125,6 +126,7 @@ import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
 import soot.jimple.EqExpr;
 import soot.jimple.FloatConstant;
+import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
@@ -133,6 +135,8 @@ import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.NeExpr;
+import soot.jimple.NegExpr;
+import soot.jimple.NopStmt;
 import soot.jimple.NullConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.OrExpr;
@@ -877,6 +881,15 @@ public class DexBody {
 
       }
 
+      protected Type getDefiniteType(Local v) {
+        Collection<Type> r = definiteConstraints.get(v);
+        if (r != null && r.size() == 1) {
+          return r.iterator().next();
+        } else {
+          return null;
+        }
+      }
+
       protected soot.jimple.toolkits.typing.fast.BytecodeHierarchy createBytecodeHierarchy() {
         return new soot.jimple.toolkits.typing.fast.BytecodeHierarchy() {
           public java.util.Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
@@ -905,6 +918,18 @@ public class DexBody {
         if (constraints.isEmpty()) {
           return lcas;
         }
+        if (lcas.size() == 1) {
+          Type e = lcas.iterator().next();
+          //Only one element, we can check this directly
+          if (!constraints.contains(e)) {
+            // No typing left
+            Set<Type> res = new HashSet<>(constraints);
+            res.add(e);
+            return res;
+          } else {
+            return lcas;
+          }
+        }
         Set<Type> res = new HashSet<>(lcas);
         res.retainAll(constraints);
         if (res.isEmpty()) {
@@ -926,6 +951,15 @@ public class DexBody {
           soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly) {
         return new CastInsertionUseVisitor(countOnly, jBody, tg, h) {
 
+          @Override
+          protected boolean eliminateUnnecessaryCasts() {
+            //We do not want to eliminate casts that were explicitly present in the original dex code
+            //Otherwise we have problems in certain edge cases, were our typings are suboptimal 
+            //with respect to float/int and double/long
+            return false;
+          }
+
+          @Override
           protected NeedCastResult needCast(Type target, Type from, IHierarchy h) {
             NeedCastResult r = super.needCast(target, from, h);
             if (r == NeedCastResult.NEEDS_CAST) {
@@ -984,6 +1018,23 @@ public class DexBody {
 
       }
     }.inferTypes();
+    for (Unit u : jBody.getUnits()) {
+      Stmt s = (Stmt) u;
+      if (s.containsArrayRef() && s instanceof AssignStmt) {
+        AssignStmt assign = (AssignStmt) s;
+        Value lop = assign.getLeftOp();
+        Value rop = assign.getRightOp();
+        if (lop.getType() instanceof FloatType && rop instanceof IntConstant) {
+          IntConstant intC = (IntConstant) rop;
+          assign.setRightOp(FloatConstant.v(Float.intBitsToFloat(intC.value)));
+        }
+        if (lop.getType() instanceof DoubleType && rop instanceof LongConstant) {
+          LongConstant longC = (LongConstant) rop;
+          assign.setRightOp(DoubleConstant.v(Double.longBitsToDouble(longC.value)));
+        }
+      }
+    }
+
     checkUnrealizableCasts();
 
     // Shortcut: Reduce array initializations
@@ -1214,6 +1265,20 @@ public class DexBody {
     // Check that we don't have anything weird
     checkUnrealizableCasts();
 
+    UnitPatchingChain units = jBody.getUnits();
+    Unit u = units.getFirst();
+    while (u != null) {
+      if (u instanceof GotoStmt) {
+        GotoStmt gt = (GotoStmt) u;
+        if (gt.getTarget() == gt) {
+          //There are crazy cases like that in the wild.
+          NopStmt nop = jimple.newNopStmt();
+          units.insertBefore(nop, u);
+          gt.setTarget(nop);
+        }
+      }
+      u = units.getSuccOf(u);
+    }
     // t_whole_jimplification.end();
 
     return jBody;
@@ -1248,6 +1313,7 @@ public class DexBody {
     while (u != null) {
       if (u instanceof AssignStmt) {
         AssignStmt assign = ((AssignStmt) u);
+        Value lop = assign.getLeftOp();
         Value rop = assign.getRightOp();
         if (rop instanceof ArrayRef) {
           for (Tag tg : u.getTags()) {
@@ -1312,6 +1378,28 @@ public class DexBody {
       if (u instanceof AssignStmt) {
         AssignStmt def = (AssignStmt) u;
         Value rop = def.getRightOp();
+        if (rop instanceof NegExpr) {
+          boolean isDouble = u.hasTag(DoubleOpTag.NAME);
+          boolean isFloat = u.hasTag(FloatOpTag.NAME);
+          boolean isLong = u.hasTag(LongOpTag.NAME);
+          NegExpr neg = ((NegExpr) rop);
+          Value op = neg.getOp();
+          Type t = null;
+          //As for ints, shorts etc.: the type assigner
+          //already handles this automatically
+          if (isDouble) {
+            t = DoubleType.v();
+          } else if (isFloat) {
+            t = FloatType.v();
+          } else if (isLong) {
+            t = LongType.v();
+          }
+          if (t != null) {
+            Local l = (Local) op;
+            l.setType(t);
+          }
+
+        }
         if (rop instanceof BinopExpr) {
           boolean isDouble = u.hasTag(DoubleOpTag.NAME);
           boolean isFloat = u.hasTag(FloatOpTag.NAME);
@@ -1425,10 +1513,10 @@ public class DexBody {
         }
         if (rop instanceof Constant) {
           Constant c = (Constant) assign.getRightOp();
-          if (tl instanceof DoubleType) {
+          if (tl instanceof DoubleType && c instanceof LongConstant) {
             long vVal = ((LongConstant) c).value;
             assign.setRightOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
-          } else if (tl instanceof FloatType) {
+          } else if (tl instanceof FloatType && c instanceof IntConstant) {
             int vVal = ((IntConstant) c).value;
             assign.setRightOp(FloatConstant.v(Float.intBitsToFloat(vVal)));
           }
