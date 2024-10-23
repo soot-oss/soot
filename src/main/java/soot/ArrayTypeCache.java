@@ -24,8 +24,8 @@ package soot;
 
 import heros.solver.Pair;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import soot.Singletons.Global;
@@ -36,7 +36,7 @@ import soot.Singletons.Global;
  * @author Marc Miltenberger
  */
 public class ArrayTypeCache {
-  private final Map<Pair<Type, Integer>, ArrayType> cache = new HashMap<>();
+  private final Map<Pair<Type, Integer>, ArrayType> cache = new ConcurrentHashMap<>();
 
   private final Function<Pair<Type, Integer>, ArrayType> mapping = new Function<Pair<Type, Integer>, ArrayType>() {
 
