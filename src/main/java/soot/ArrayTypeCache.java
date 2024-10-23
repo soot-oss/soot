@@ -49,7 +49,12 @@ public class ArrayTypeCache {
       while (numDimensions > 0) {
         ArrayType ret = elementType.getArrayType();
         if (ret == null) {
-          ret = cache.computeIfAbsent(new Pair<>(baseType, orgDimensions - numDimensions + 1), mapping);
+          int n = orgDimensions - numDimensions + 1;
+          if (n != orgDimensions) {
+            ret = cache.computeIfAbsent(new Pair<>(baseType, n), mapping);
+          } else {
+            ret = new ArrayType(baseType, n);
+          }
           elementType.setArrayType(ret);
         }
         elementType = ret;
