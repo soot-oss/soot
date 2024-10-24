@@ -34,5 +34,5 @@ import soot.jimple.Stmt;
  * @author Ben Bellamy
  */
 public interface IEvalFunction {
-  Collection<Type> eval(Typing tg, Value expr, Stmt stmt);
+  Collection<Type> eval(ITyping tg, Value expr, Stmt stmt);
 }

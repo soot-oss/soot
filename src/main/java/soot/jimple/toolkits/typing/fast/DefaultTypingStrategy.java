@@ -56,30 +56,30 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   public static int USE_PARALLEL_MINIMIZE_IF_ENTRIES_MORE_THAN = 1000;
 
   @Override
-  public Typing createTyping(Collection<Local> locals) {
-    return new Typing(locals);
+  public ITyping createEmptyTyping(Collection<Local> locals) {
+    return new MapTyping(locals);
   }
 
-  @Override
-  public Typing createTyping(Typing tg) {
-    return new Typing(tg);
-  }
-
-  public static MultiMap<Local, Type> getFlatTyping(List<Typing> tgs) {
+  public static MultiMap<Local, Type> getFlatNonConstantTyping(List<ITyping> tgs) {
     MultiMap<Local, Type> map = new HashMultiMap<>();
-    for (Typing tg : tgs) {
-      map.putMap(tg.map);
+    for (ITyping tg : tgs) {
+      if (tg instanceof PartialConstantTyping) {
+        PartialConstantTyping t = (PartialConstantTyping) tg;
+        map.putMap(t.getNonConstantTypings());
+      } else {
+        map.putMap(tg.getMap());
+      }
     }
     return map;
   }
 
-  public static Set<Local> getUseTypingsForLocals(List<Typing> tgs, IHierarchy h) {
+  public static Set<Local> getUseTypingsForLocals(List<ITyping> tgs, IHierarchy h) {
     Set<Type> objectLikeTypeSet = new HashSet<>();
     objectLikeTypeSet.add(Scene.v().getObjectType());
     objectLikeTypeSet.add(RefType.v("java.io.Serializable"));
     objectLikeTypeSet.add(RefType.v("java.lang.Cloneable"));
 
-    MultiMap<Local, Type> ft = getFlatTyping(tgs);
+    MultiMap<Local, Type> ft = getFlatNonConstantTyping(tgs);
     Set<Local> localsToCheck = new HashSet<>(ft.keySet());
     for (Local l : ft.keySet()) {
       Set<Type> typings = ft.get(l);
@@ -116,7 +116,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   }
 
   @Override
-  public void minimize(List<Typing> tgs, IHierarchy h) {
+  public void minimize(List<ITyping> tgs, IHierarchy h) {
     if (!MINIMIZING_ENABLED) {
       return;
     }
@@ -129,15 +129,15 @@ public class DefaultTypingStrategy implements ITypingStrategy {
     minimizeSequential(tgs, h);
   }
 
-  public void minimizeSequential(List<Typing> tgs, IHierarchy h) {
+  public void minimizeSequential(List<ITyping> tgs, IHierarchy h) {
     // int count = 0;
     // int tgsSize = tgs.size();
     Set<Local> test = getUseTypingsForLocals(tgs, h);
     if (test.isEmpty()) {
       return;
     }
-    OUTER: for (ListIterator<Typing> i = tgs.listIterator(); i.hasNext();) {
-      Typing tgi = i.next();
+    OUTER: for (ListIterator<ITyping> i = tgs.listIterator(); i.hasNext();) {
+      ITyping tgi = i.next();
       // count++;
       // if (count % 500 == 0) {
       // logger.info("{} of {} = {}%", count, tgsSize, 100f * count / tgsSize);
@@ -149,9 +149,9 @@ public class DefaultTypingStrategy implements ITypingStrategy {
       }
 
       // Throw out duplicate typings
-      ListIterator<Typing> j = tgs.listIterator(i.nextIndex());
+      ListIterator<ITyping> j = tgs.listIterator(i.nextIndex());
       while (j.hasNext()) {
-        Typing tgj = j.next();
+        ITyping tgj = j.next();
         if (tgj == null) {
           continue; // element is marked to be deleted
         }
@@ -173,7 +173,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
     }
   }
 
-  public int compare(Typing a, Typing b, IHierarchy h, Collection<Local> localsCheck) {
+  public int compare(ITyping a, ITyping b, IHierarchy h, Collection<Local> localsCheck) {
     int r = 0;
     for (Local v : localsCheck) {
       Type ta = a.get(v), tb = b.get(v);
@@ -201,7 +201,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
     return r;
   }
 
-  public void minimizeParallel(List<Typing> tgs, IHierarchy h) {
+  public void minimizeParallel(List<ITyping> tgs, IHierarchy h) {
     logger.debug("Performing parallel minimization");
     Set<Local> test = getUseTypingsForLocals(tgs, h);
     if (test.isEmpty()) {
@@ -210,7 +210,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
 
     // We don't know what type of list we get, we need a list that is thread safe for get/set
     // values. (get could return stale values, but this would not cause harm)
-    ArrayList<Typing> workList = new ArrayList<>(tgs);
+    ArrayList<ITyping> workList = new ArrayList<>(tgs);
     final AtomicInteger processed = new AtomicInteger();
     final int tgsSize = tgs.size();
 
@@ -223,13 +223,13 @@ public class DefaultTypingStrategy implements ITypingStrategy {
       if (count % 1000 == 0) {
         logger.debug("minimizing {} = {}%", count, (100f * count) / tgsSize);
       }
-      Typing tgi = workList.get(i);
+      ITyping tgi = workList.get(i);
       if (tgi == null) {
         return;
       }
-      ListIterator<Typing> j = workList.listIterator(i + 1);
+      ListIterator<ITyping> j = workList.listIterator(i + 1);
       while (j.hasNext()) {
-        Typing tgj = j.next();
+        ITyping tgj = j.next();
         if (tgj == null) {
           continue;
         }
@@ -262,7 +262,7 @@ public class DefaultTypingStrategy implements ITypingStrategy {
   }
 
   @Override
-  public void finalizeTypes(Typing tp) {
+  public void finalizeTypes(ITyping tp) {
     for (Local l : tp.getAllLocals()) {
       Type t = tp.get(l);
       if (!t.isAllowedInFinalCode()) {

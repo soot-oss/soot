@@ -182,7 +182,8 @@ public class TypeResolver {
     ITypingStrategy typingStrategy = getTypingStrategy();
     AugEvalFunction ef = createAugEvalFunction(this.jb);
     BytecodeHierarchy bh = createBytecodeHierarchy();
-    Collection<Typing> sigma = this.applyAssignmentConstraints(typingStrategy.createTyping(this.jb.getLocals()), ef, bh);
+    Collection<ITyping> sigma = this
+        .applyAssignmentConstraints(new PartialConstantTyping(typingStrategy.createEmptyTyping(this.jb.getLocals())), ef, bh);
 
     // If there is nothing to type, we can quit
     if (sigma.isEmpty()) {
@@ -190,7 +191,7 @@ public class TypeResolver {
     }
 
     int[] castCount = new int[1];
-    Typing tg = this.minCasts(sigma, bh, castCount);
+    ITyping tg = this.minCasts(sigma, bh, castCount);
     if (castCount[0] > 0) {
       this.insertCasts(tg, bh, false);
     }
@@ -231,14 +232,14 @@ public class TypeResolver {
 
   public class CastInsertionUseVisitor implements IUseVisitor {
     protected JimpleBody jb;
-    protected Typing tg;
+    protected ITyping tg;
     protected IHierarchy h;
 
     private final boolean countOnly;
     private int count;
     protected boolean eliminateUnnecessaryCasts = eliminateUnnecessaryCasts();
 
-    public CastInsertionUseVisitor(boolean countOnly, JimpleBody jb, Typing tg, IHierarchy h) {
+    public CastInsertionUseVisitor(boolean countOnly, JimpleBody jb, ITyping tg, IHierarchy h) {
       this.jb = jb;
       this.tg = tg;
       this.h = h;
@@ -365,7 +366,7 @@ public class TypeResolver {
   final ByteType byteType = ByteType.v();
   final ShortType shortType = ShortType.v();
 
-  private Typing typePromotion(Typing tg) {
+  private ITyping typePromotion(ITyping tg) {
     boolean conversionsPending;
     do {
       AugEvalFunction ef = createAugEvalFunction(this.jb);
@@ -373,7 +374,7 @@ public class TypeResolver {
       UseChecker uc = createUseChecker(this.jb);
       TypePromotionUseVisitor uv = createTypePromotionUseVisitor(jb, tg);
       do {
-        Collection<Typing> sigma = this.applyAssignmentConstraints(tg, ef, h);
+        Collection<ITyping> sigma = this.applyAssignmentConstraints(tg, ef, h);
         if (sigma.isEmpty()) {
           return null;
         }
@@ -404,7 +405,7 @@ public class TypeResolver {
     return new UseChecker(jb);
   }
 
-  protected TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb, Typing tg) {
+  protected TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb, ITyping tg) {
     return new TypePromotionUseVisitor(jb, tg);
   }
 
@@ -427,7 +428,7 @@ public class TypeResolver {
     return null;
   }
 
-  private int insertCasts(Typing tg, IHierarchy h, boolean countOnly) {
+  private int insertCasts(ITyping tg, IHierarchy h, boolean countOnly) {
     UseChecker uc = createUseChecker(this.jb);
     CastInsertionUseVisitor uv = createCastInsertionUseVisitor(tg, h, countOnly);
     uc.check(tg, uv);
@@ -445,14 +446,14 @@ public class TypeResolver {
    *          whether to count only (no actual changes)
    * @return the visitor
    */
-  protected CastInsertionUseVisitor createCastInsertionUseVisitor(Typing tg, IHierarchy h, boolean countOnly) {
+  protected CastInsertionUseVisitor createCastInsertionUseVisitor(ITyping tg, IHierarchy h, boolean countOnly) {
     return new CastInsertionUseVisitor(countOnly, this.jb, tg, h);
   }
 
-  private Typing minCasts(Collection<Typing> sigma, IHierarchy h, int[] count) {
+  private ITyping minCasts(Collection<ITyping> sigma, IHierarchy h, int[] count) {
     count[0] = -1;
-    Typing r = null;
-    for (Typing tg : sigma) {
+    ITyping r = null;
+    for (ITyping tg : sigma) {
       int n = this.insertCasts(tg, h, true);
       if (count[0] == -1 || n < count[0]) {
         count[0] = n;
@@ -463,11 +464,11 @@ public class TypeResolver {
   }
 
   static class WorklistElement {
-    Typing typing;
+    ITyping typing;
     BitSet worklist;
     TypeDecision decision;
 
-    public WorklistElement(Typing tg, BitSet wl, TypeDecision decision) {
+    public WorklistElement(ITyping tg, BitSet wl, TypeDecision decision) {
       this.typing = tg;
       this.worklist = wl;
       this.decision = decision;
@@ -542,14 +543,14 @@ public class TypeResolver {
     }
   }
 
-  protected Collection<Typing> applyAssignmentConstraints(Typing tg, IEvalFunction ef, IHierarchy h) {
+  protected Collection<ITyping> applyAssignmentConstraints(ITyping tg, IEvalFunction ef, IHierarchy h) {
     final int numAssignments = this.assignments.size();
     if (numAssignments == 0) {
       return Collections.emptyList();
     }
 
     ArrayDeque<WorklistElement> sigma = createSigmaQueue();
-    List<Typing> r = createResultList();
+    List<ITyping> r = createResultList();
 
     final ITypingStrategy typingStrategy = getTypingStrategy();
 
@@ -557,7 +558,7 @@ public class TypeResolver {
     wl.set(0, numAssignments);
     sigma.add(new WorklistElement(tg, wl, new TypeDecision()));
 
-    if (tg.map.isEmpty()) {
+    if (tg.isEmpty()) {
       simple = new BitSet(numAssignments);
       // First get the easy cases out of the way.
       for (int i = 0; i < numAssignments; i++) {
@@ -569,7 +570,7 @@ public class TypeResolver {
           if (t != null) {
             simple.set(i);
             wl.clear(i);
-            tg.set(v, t);
+            ((PartialConstantTyping) tg).setConstantTyping(v, t);
             continue;
           }
 
@@ -583,7 +584,7 @@ public class TypeResolver {
               if (t_.isAllowedInFinalCode() || t_ instanceof NullType) {
                 d = reduceToAllowedTypesForLocal(Collections.singleton(t_), v);
                 if (d.size() == 1) {
-                  tg.set(v, d.iterator().next());
+                  ((PartialConstantTyping) tg).setConstantTyping(v, d.iterator().next());
                   simple.set(i);
                   wl.clear(i);
                 }
@@ -659,7 +660,7 @@ public class TypeResolver {
           for (Type t : lcas) {
             if (!typesEqual(t, told)) {
               BitSet dependsV = this.depends.get(v);
-              Typing tg_;
+              ITyping tg_;
               BitSet wl_;
               TypeDecision ds_;
               if (/* (eval.size() == 1 && lcas.size() == 1) || */isFirstType) {
@@ -669,7 +670,7 @@ public class TypeResolver {
                 ds_ = ds;
               } else {
                 // The types do not agree, add all supertype candidates
-                tg_ = typingStrategy.createTyping(tg);
+                tg_ = tg.createCloneTyping();
                 wl_ = (BitSet) wl.clone();
                 ds_ = ds.copy();
                 if (addFirstDecision) {
@@ -723,8 +724,8 @@ public class TypeResolver {
     return new ArrayDeque<>();
   }
 
-  protected List<Typing> createResultList() {
-    return new ArrayList<Typing>();
+  protected List<ITyping> createResultList() {
+    return new ArrayList<ITyping>();
   }
 
   // The ArrayType.equals method seems odd in Soot 2.2.5

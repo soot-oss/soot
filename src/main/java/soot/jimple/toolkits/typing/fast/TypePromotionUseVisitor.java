@@ -44,12 +44,12 @@ public class TypePromotionUseVisitor implements IUseVisitor {
   private final Integer127Type integer127Type = Integer127Type.v();
 
   private final JimpleBody jb;
-  private final Typing tg;
+  private final ITyping tg;
 
   public boolean fail;
   public boolean typingChanged;
 
-  public TypePromotionUseVisitor(JimpleBody jb, Typing tg) {
+  public TypePromotionUseVisitor(JimpleBody jb, ITyping tg) {
     this.jb = jb;
     this.tg = tg;
     this.fail = false;

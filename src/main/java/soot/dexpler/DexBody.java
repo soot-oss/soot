@@ -163,6 +163,7 @@ import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.fast.BottomType;
 import soot.jimple.toolkits.typing.fast.DefaultTypingStrategy;
 import soot.jimple.toolkits.typing.fast.IHierarchy;
+import soot.jimple.toolkits.typing.fast.ITyping;
 import soot.jimple.toolkits.typing.fast.ITypingStrategy;
 import soot.jimple.toolkits.typing.fast.Integer1Type;
 import soot.jimple.toolkits.typing.fast.NeedCastResult;
@@ -844,7 +845,7 @@ public class DexBody {
 
     new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
       protected soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb,
-          soot.jimple.toolkits.typing.fast.Typing tg) {
+          ITyping tg) {
         return new TypePromotionUseVisitor(jb, tg) {
           protected boolean allowConversion(Type ancestor, Type child) {
             if (ancestor == child) {
@@ -947,7 +948,7 @@ public class DexBody {
         return useTyping;
       }
 
-      protected CastInsertionUseVisitor createCastInsertionUseVisitor(soot.jimple.toolkits.typing.fast.Typing tg,
+      protected CastInsertionUseVisitor createCastInsertionUseVisitor(ITyping tg,
           soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly) {
         return new CastInsertionUseVisitor(countOnly, jBody, tg, h) {
 

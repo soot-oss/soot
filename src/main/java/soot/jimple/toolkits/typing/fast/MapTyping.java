@@ -29,38 +29,49 @@ import java.util.HashMap;
 import java.util.Map;
 
 import soot.Local;
-import soot.NullType;
 import soot.Type;
 
 /**
  * @author Ben Bellamy
  */
-public class Typing {
+public class MapTyping implements ITyping {
 
   protected HashMap<Local, Type> map;
+  private Type bottomType = BottomType.v();
 
-  public Typing(Collection<Local> vs) {
+  public MapTyping(Collection<Local> vs) {
     this.map = new HashMap<Local, Type>(vs.size());
   }
 
-  public Typing(Typing tg) {
-    this.map = new HashMap<Local, Type>(tg.map);
+  public MapTyping(ITyping tg) {
+    if (tg instanceof MapTyping) {
+      MapTyping mp = (MapTyping) tg;
+      this.map = new HashMap<Local, Type>(mp.map);
+    } else {
+      cloneFrom(tg);
+    }
   }
 
+  @Override
   public Map<Local, Type> getMap() {
     return map;
   }
 
+  @Override
   public Type get(Local v) {
     Type t = this.map.get(v);
     return (t == null) ? BottomType.v() : t;
   }
 
-  public Type set(Local v, Type t) {
-    return (t instanceof BottomType) ? null : this.map.put(v, t);
+  @Override
+  public void set(Local v, Type t) {
+    if (t != bottomType) {
+      this.map.put(v, t);
+    }
   }
 
-  public Collection<Local> getAllLocals() {
+  @Override
+  public Iterable<Local> getAllLocals() {
     return map.keySet();
   }
 
@@ -76,5 +87,20 @@ public class Typing {
     }
     sb.append('}');
     return sb.toString();
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return map.isEmpty();
+  }
+
+  @Override
+  public void clear() {
+    map.clear();
+  }
+
+  @Override
+  public ITyping createCloneTyping() {
+    return new MapTyping(this);
   }
 }
