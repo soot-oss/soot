@@ -2581,4 +2581,18 @@ public class Singletons {
     protected void release_soot_toolkits_scalar_LocalDefsFactory() {
     	instance_soot_toolkits_scalar_LocalDefsFactory = null;
     }
+
+    private soot.ArrayTypeCache instance_soot_ArrayTypeCache;
+    public soot.ArrayTypeCache soot_ArrayTypeCache() {
+        if (instance_soot_ArrayTypeCache == null) {
+	       	synchronized (this) {
+		        if (instance_soot_ArrayTypeCache == null)
+	        		instance_soot_ArrayTypeCache = new soot.ArrayTypeCache(g);
+	       	}
+       	}
+        return instance_soot_ArrayTypeCache;
+    }
+    protected void release_soot_ArrayTypeCache() {
+    	instance_soot_ArrayTypeCache = null;
+    }
 }

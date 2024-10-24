@@ -182,4 +182,5 @@
   <class>soot.LambdaMetaFactory</class>
   <class>soot.jbco.jimpleTransformations.FieldRenamer</class>
   <class>soot.toolkits.scalar.LocalDefsFactory</class>
+  <class>soot.ArrayTypeCache</class>
 </singletons>

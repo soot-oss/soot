@@ -26,7 +26,7 @@ import java.util.List;
 
 import soot.jimple.toolkits.typing.fast.BytecodeHierarchy;
 import soot.jimple.toolkits.typing.fast.DefaultTypingStrategy;
-import soot.jimple.toolkits.typing.fast.Typing;
+import soot.jimple.toolkits.typing.fast.ITyping;
 
 /**
  * JUnit-Tests for the {@link DefaultTypingStrategy#minimizeParallel(List, soot.jimple.toolkits.typing.fast.IHierarchy)}
@@ -40,7 +40,7 @@ import soot.jimple.toolkits.typing.fast.Typing;
 public class DefaultTypingStrategyMinimizeParallelTest extends DefaultTypingStrategyMinimizeSequentialTest {
 
   @Override
-  protected void executeMinimize(List<Typing> typingList) {
+  protected void executeMinimize(List<ITyping> typingList) {
     new DefaultTypingStrategy().minimizeParallel(typingList, new BytecodeHierarchy());
   }
 

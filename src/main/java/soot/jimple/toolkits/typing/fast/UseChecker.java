@@ -114,7 +114,7 @@ public class UseChecker extends AbstractStmtSwitch {
 
   private final JimpleBody jb;
 
-  private Typing tg;
+  private ITyping tg;
   private IUseVisitor uv;
 
   private LocalDefs defs = null;
@@ -126,7 +126,7 @@ public class UseChecker extends AbstractStmtSwitch {
     this.jb = jb;
   }
 
-  public void check(Typing tg, IUseVisitor uv) {
+  public void check(ITyping tg, IUseVisitor uv) {
     if (tg == null) {
       throw new RuntimeException("null typing passed to useChecker");
     }

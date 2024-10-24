@@ -44,7 +44,8 @@ import soot.Type;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.typing.fast.BytecodeHierarchy;
 import soot.jimple.toolkits.typing.fast.DefaultTypingStrategy;
-import soot.jimple.toolkits.typing.fast.Typing;
+import soot.jimple.toolkits.typing.fast.ITyping;
+import soot.jimple.toolkits.typing.fast.MapTyping;
 import soot.options.Options;
 
 /**
@@ -239,18 +240,18 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
   public void testMostCommonTypingPairs_1() {
     logger.debug("Starting Object Random Minimize");
 
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
     Type Type1 = serializableType;
     Type Type2 = comparableType;
     Local x1 = new JimpleLocal("$x1", null);
-    Typing resultTyping;
+    ITyping resultTyping;
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, Type1);
     typingList.add(typing1);
     resultTyping = typing1;
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, Type2);
     typingList.add(typing2);
 
@@ -264,22 +265,22 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
   public void testMostCommonTypingPairs_2() {
     logger.debug("Starting Object Random Minimize");
 
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
 
     Type Type1 = serializableType;
     Type Type2 = comparableType;
     Type Type3 = numberType;
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, Type1);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, Type2);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, Type3);
     typingList.add(typing3);
 
@@ -292,26 +293,26 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
   @Test
   public void testMostCommonTypingPairs_3() {
 
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
     Type Type1 = randomAccessType;
     Type Type2 = listType;
     Type Type3 = abstractListType;
     Type Type4 = objectType;
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, Type1);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, Type2);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, Type3);
     typingList.add(typing3);
 
-    Typing typing4 = new Typing(Arrays.asList(x1));
+    ITyping typing4 = new MapTyping(Arrays.asList(x1));
     typing4.set(x1, Type4);
     typingList.add(typing4);
 
@@ -323,7 +324,7 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
 
   @Test
   public void testMostCommonTypingPairs_4() {
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
 
     Type Type1 = cloneableType;
     Type Type2 = serializableType;
@@ -331,15 +332,15 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
 
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, Type1);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, Type2);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, Type3);
     typingList.add(typing3);
 
@@ -356,7 +357,7 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
    */
   @Test
   public void testHugeCommonTypingPair() {
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
 
     Type Type1 = serializableType;
     Type Type2 = comparableType;
@@ -364,49 +365,49 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
     Local x2 = new JimpleLocal("$x2", null);
     Local x3 = new JimpleLocal("$x3", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing1.set(x1, Type1);
     typing1.set(x2, Type1);
     typing1.set(x3, Type1);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing2.set(x1, Type2);
     typing2.set(x2, Type1);
     typing2.set(x3, Type1);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing3.set(x1, Type1);
     typing3.set(x2, Type2);
     typing3.set(x3, Type1);
     typingList.add(typing3);
 
-    Typing typing4 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing4 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing4.set(x1, Type1);
     typing4.set(x2, Type1);
     typing4.set(x3, Type2);
     typingList.add(typing4);
 
-    Typing typing5 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing5 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing5.set(x1, Type2);
     typing5.set(x2, Type2);
     typing5.set(x3, Type1);
     typingList.add(typing5);
 
-    Typing typing6 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing6 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing6.set(x1, Type2);
     typing6.set(x2, Type1);
     typing6.set(x3, Type2);
     typingList.add(typing6);
 
-    Typing typing7 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing7 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing7.set(x1, Type1);
     typing7.set(x2, Type2);
     typing7.set(x3, Type2);
     typingList.add(typing7);
 
-    Typing typing8 = new Typing(Arrays.asList(x1, x2, x3));
+    ITyping typing8 = new MapTyping(Arrays.asList(x1, x2, x3));
     typing8.set(x1, Type2);
     typing8.set(x2, Type2);
     typing8.set(x3, Type2);
@@ -420,19 +421,19 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
 
   @Test
   public void testAbstractInterfaceTyping() {
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
 
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, interfaceType);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, abstractClass_Interface2Type);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, class_AbstractInterfaceClassType);
     typingList.add(typing3);
 
@@ -446,18 +447,18 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
   public void testAbstractAbstractTyping() {
     logger.debug("Starting Object Random Minimize");
 
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, interfaceType);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, abstractClass_Interface1Type);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, abstractClass_Interface2Type);
     typingList.add(typing3);
 
@@ -469,19 +470,19 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
 
   @Test
   public void testJavaInterfaceTyping() {
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
 
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, interfaceType);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, integerType);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, numberType);
     typingList.add(typing3);
 
@@ -493,19 +494,19 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
 
   @Test
   public void testInterfaceInterfaceTyping() {
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
 
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, interfaceType);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, interfaceInterfaceType);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, numberType);
     typingList.add(typing3);
 
@@ -523,50 +524,50 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
    */
   @Test
   public void testAllRelatedClassesTyping() {
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, objectType);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, stringType);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, comparableType);
     typingList.add(typing3);
 
-    Typing typing4 = new Typing(Arrays.asList(x1));
+    ITyping typing4 = new MapTyping(Arrays.asList(x1));
     typing4.set(x1, abstractClass_Interface2Type);
     typingList.add(typing4);
 
-    Typing typing5 = new Typing(Arrays.asList(x1));
+    ITyping typing5 = new MapTyping(Arrays.asList(x1));
     typing5.set(x1, class_AbstractInterfaceClassType);
     typingList.add(typing5);
 
-    Typing typing6 = new Typing(Arrays.asList(x1));
+    ITyping typing6 = new MapTyping(Arrays.asList(x1));
     typing6.set(x1, abstractClass_Interface1Type);
     typingList.add(typing6);
 
-    Typing typing7 = new Typing(Arrays.asList(x1));
+    ITyping typing7 = new MapTyping(Arrays.asList(x1));
     typing7.set(x1, class_InterfaceType);
     typingList.add(typing7);
 
-    Typing typing8 = new Typing(Arrays.asList(x1));
+    ITyping typing8 = new MapTyping(Arrays.asList(x1));
     typing8.set(x1, abstractType);
     typingList.add(typing8);
 
-    Typing typing9 = new Typing(Arrays.asList(x1));
+    ITyping typing9 = new MapTyping(Arrays.asList(x1));
     typing9.set(x1, class_AbstractType);
     typingList.add(typing9);
 
-    Typing typing10 = new Typing(Arrays.asList(x1));
+    ITyping typing10 = new MapTyping(Arrays.asList(x1));
     typing10.set(x1, fatherClassType);
     typingList.add(typing10);
 
-    Typing typing11 = new Typing(Arrays.asList(x1));
+    ITyping typing11 = new MapTyping(Arrays.asList(x1));
     typing11.set(x1, childClassType);
     typingList.add(typing11);
 
@@ -581,38 +582,38 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
    */
   @Test
   public void testAllNonRelatedClassesTyping() {
-    List<Typing> typingList = new ArrayList<>();
+    List<ITyping> typingList = new ArrayList<>();
     Local x1 = new JimpleLocal("$x1", null);
 
-    Typing typing1 = new Typing(Arrays.asList(x1));
+    ITyping typing1 = new MapTyping(Arrays.asList(x1));
     typing1.set(x1, objectType);
     typingList.add(typing1);
 
-    Typing typing2 = new Typing(Arrays.asList(x1));
+    ITyping typing2 = new MapTyping(Arrays.asList(x1));
     typing2.set(x1, stringType);
     typingList.add(typing2);
 
-    Typing typing3 = new Typing(Arrays.asList(x1));
+    ITyping typing3 = new MapTyping(Arrays.asList(x1));
     typing3.set(x1, cloneableType);
     typingList.add(typing3);
 
-    Typing typing4 = new Typing(Arrays.asList(x1));
+    ITyping typing4 = new MapTyping(Arrays.asList(x1));
     typing4.set(x1, integerType);
     typingList.add(typing4);
 
-    Typing typing5 = new Typing(Arrays.asList(x1));
+    ITyping typing5 = new MapTyping(Arrays.asList(x1));
     typing5.set(x1, processType);
     typingList.add(typing5);
 
-    Typing typing6 = new Typing(Arrays.asList(x1));
+    ITyping typing6 = new MapTyping(Arrays.asList(x1));
     typing6.set(x1, interfaceType);
     typingList.add(typing6);
 
-    Typing typing7 = new Typing(Arrays.asList(x1));
+    ITyping typing7 = new MapTyping(Arrays.asList(x1));
     typing7.set(x1, abstractType);
     typingList.add(typing7);
 
-    Typing typing8 = new Typing(Arrays.asList(x1));
+    ITyping typing8 = new MapTyping(Arrays.asList(x1));
     typing8.set(x1, fatherClassType);
     typingList.add(typing8);
 
@@ -622,7 +623,7 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
     assertThat(typingList, containsInAnyOrder(typing2, typing3, typing4, typing5, typing6, typing7, typing8));
   }
 
-  protected void executeMinimize(List<Typing> typingList) {
+  protected void executeMinimize(List<ITyping> typingList) {
     new DefaultTypingStrategy().minimizeSequential(typingList, new BytecodeHierarchy());
   }
 
