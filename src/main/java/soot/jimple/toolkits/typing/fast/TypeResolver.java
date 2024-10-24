@@ -182,8 +182,8 @@ public class TypeResolver {
     ITypingStrategy typingStrategy = getTypingStrategy();
     AugEvalFunction ef = createAugEvalFunction(this.jb);
     BytecodeHierarchy bh = createBytecodeHierarchy();
-    Collection<ITyping> sigma = this
-        .applyAssignmentConstraints(new PartialConstantTyping(typingStrategy.createEmptyTyping(this.jb.getLocals())), ef, bh);
+    PartialConstantTyping constantTyping = new PartialConstantTyping(typingStrategy.createEmptyTyping(this.jb.getLocals()));
+    Collection<ITyping> sigma = this.applyAssignmentConstraints(constantTyping, ef, bh);
 
     // If there is nothing to type, we can quit
     if (sigma.isEmpty()) {
