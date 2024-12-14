@@ -94,16 +94,19 @@ public class CatchFilterHandlerBody {
       ConditionExpr cond = Jimple.v().newEqExpr(returnValue, IntConstant.v(0));
       IfStmt ifRetCondStmt = Jimple.v().newIfStmt(cond, filterCondFalseNop); // if ret==0 ignore handler
       // jump to end of filter instructions - cond true
-      GotoStmt gotoHandlerBodyCondTrueStmt = Jimple.v().newGotoStmt(handlerBody.getUnits().getFirst());
+      if (!handlerBody.getUnits().isEmpty()) {
+        //this may happen when there is an empty handler
+        GotoStmt gotoHandlerBodyCondTrueStmt = Jimple.v().newGotoStmt(handlerBody.getUnits().getFirst());
 
-      handlerFilterContainerBlockBody.getUnits().insertAfter(gotoHandlerBodyCondTrueStmt, returnStmt);
+        handlerFilterContainerBlockBody.getUnits().insertAfter(gotoHandlerBodyCondTrueStmt, returnStmt);
+      }
       handlerFilterContainerBlockBody.getUnits().swapWith(returnStmt, ifRetCondStmt);
       dotnetBody.blockEntryPointsManager.swapGotoEntryUnit(ifRetCondStmt, returnStmt);
     }
     jb.getUnits().addAll(handlerFilterContainerBlockBody.getUnits());
 
     // handler body
-    if (lastStmtIsNotReturn(handlerBody)) {
+    if (handlerBody.getUnits().isEmpty() || lastStmtIsNotReturn(handlerBody)) {
       // if last stmt is not return, insert goto stmt, to go to end whole block
       handlerBody.getUnits().add(Jimple.v().newGotoStmt(nopStmtEnd));
     }
