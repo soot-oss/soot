@@ -67,8 +67,9 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int numFolded = 0;
     int numPropagated = 0;
+    final boolean verbose = Options.v().verbose();
 
-    if (Options.v().verbose()) {
+    if (verbose) {
       logger.debug("[" + b.getMethod().getName() + "] Propagating and folding constants...");
     }
 
@@ -79,47 +80,59 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
     // go through each use box in each statement
     for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(g, false)) {
       // propagation pass
-      for (ValueBox useBox : u.getUseBoxes()) {
-        Value value = useBox.getValue();
-        if (value instanceof Local) {
-          Local local = (Local) value;
-          List<Unit> defsOfUse = localDefs.getDefsOfAt(local, u);
-          if (defsOfUse.size() == 1) {
-            DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
-            Value rhs = defStmt.getRightOp();
-            if (rhs instanceof NumericConstant || rhs instanceof StringConstant || rhs instanceof NullConstant) {
-              if (useBox.canContainValue(rhs)) {
-                useBox.setValue(rhs);
-                numPropagated++;
-              }
-            } else if (rhs instanceof CastExpr) {
-              CastExpr ce = (CastExpr) rhs;
-              if (ce.getCastType() instanceof RefType && ce.getOp() instanceof NullConstant) {
-                defStmt.getRightOpBox().setValue(NullConstant.v());
-                numPropagated++;
-              }
-            }
-          }
-        }
-      }
+      numPropagated += propagate(localDefs, u);
 
       // folding pass
-      for (ValueBox useBox : u.getUseBoxes()) {
-        Value value = useBox.getValue();
-        if (!(value instanceof Constant)) {
-          if (Evaluator.isValueConstantValued(value)) {
-            Value constValue = Evaluator.getConstantValueOf(value);
-            if (useBox.canContainValue(constValue)) {
-              useBox.setValue(constValue);
-              numFolded++;
+      numFolded += fold(u);
+    }
+
+    if (verbose) {
+      logger.debug("[" + b.getMethod().getName() + "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
+    }
+  }
+
+  protected int fold(Unit u) {
+    int numFolded = 0;
+    for (ValueBox useBox : u.getUseBoxes()) {
+      Value value = useBox.getValue();
+      if (!(value instanceof Constant)) {
+        if (Evaluator.isValueConstantValued(value)) {
+          Value constValue = Evaluator.getConstantValueOf(value);
+          if (useBox.canContainValue(constValue)) {
+            useBox.setValue(constValue);
+            numFolded++;
+          }
+        }
+      }
+    }
+    return numFolded;
+  }
+
+  protected int propagate(LocalDefs localDefs, Unit u) {
+    int numPropagated = 0;
+    for (ValueBox useBox : u.getUseBoxes()) {
+      Value value = useBox.getValue();
+      if (value instanceof Local) {
+        Local local = (Local) value;
+        List<Unit> defsOfUse = localDefs.getDefsOfAt(local, u);
+        if (defsOfUse.size() == 1) {
+          DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
+          Value rhs = defStmt.getRightOp();
+          if (rhs instanceof NumericConstant || rhs instanceof StringConstant || rhs instanceof NullConstant) {
+            if (useBox.canContainValue(rhs)) {
+              useBox.setValue(rhs);
+              numPropagated++;
+            }
+          } else if (rhs instanceof CastExpr) {
+            CastExpr ce = (CastExpr) rhs;
+            if (ce.getCastType() instanceof RefType && ce.getOp() instanceof NullConstant) {
+              defStmt.getRightOpBox().setValue(NullConstant.v());
+              numPropagated++;
             }
           }
         }
       }
     }
-
-    if (Options.v().verbose()) {
-      logger.debug("[" + b.getMethod().getName() + "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
-    }
+    return numPropagated;
   }
 }
