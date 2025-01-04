@@ -1410,8 +1410,7 @@ public class DexBody {
             l.setType(t);
           }
 
-        }
-        if (rop instanceof BinopExpr) {
+        } else if (rop instanceof BinopExpr) {
           boolean isDouble = u.hasTag(DoubleOpTag.NAME);
           boolean isFloat = u.hasTag(FloatOpTag.NAME);
           boolean isInt = u.hasTag(IntOpTag.NAME);
@@ -1459,6 +1458,30 @@ public class DexBody {
               }
             }
           }
+        } else if (rop instanceof CastExpr) {
+          CastExpr ce = (CastExpr) rop;
+          Value op = ce.getOp();
+          if (op instanceof Constant) {
+            boolean isDouble = u.hasTag(DoubleOpTag.NAME);
+            boolean isFloat = u.hasTag(FloatOpTag.NAME);
+            if (isFloat) {
+              if (op instanceof IntConstant) {
+                int vVal = ((IntConstant) op).value;
+                ce.setOp(FloatConstant.v(Float.intBitsToFloat(vVal)));
+              } else if (op instanceof LongConstant) {
+                long vVal = ((LongConstant) op).value;
+                ce.setOp(FloatConstant.v(Float.intBitsToFloat((int) vVal)));
+              }
+            } else if (isDouble) {
+              if (op instanceof LongConstant) {
+                long vVal = ((LongConstant) op).value;
+                ce.setOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
+              } else if (op instanceof IntConstant) {
+                int vVal = ((IntConstant) op).value;
+                ce.setOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
+              }
+            }
+          }
         }
 
       }
@@ -1487,23 +1510,6 @@ public class DexBody {
         AssignStmt assign = (AssignStmt) u1;
         Type tl = assign.getLeftOp().getType();
         Value rop = assign.getRightOp();
-        if (rop instanceof CastExpr) {
-          CastExpr ce = (CastExpr) rop;
-          if (ce.getCastType() instanceof DoubleType) {
-            if (ce.getOp() instanceof LongConstant) {
-              LongConstant lc = (LongConstant) ce.getOp();
-              long vVal = lc.value;
-              assign.setRightOp(DoubleConstant.v(Double.longBitsToDouble(vVal)));
-            }
-          }
-          if (ce.getCastType() instanceof FloatType) {
-            if (ce.getOp() instanceof IntConstant) {
-              IntConstant ic = (IntConstant) ce.getOp();
-              int vVal = ic.value;
-              assign.setRightOp(FloatConstant.v(Float.intBitsToFloat(vVal)));
-            }
-          }
-        }
         if (rop instanceof Constant) {
           Constant c = (Constant) assign.getRightOp();
           if (tl instanceof DoubleType && c instanceof LongConstant) {
