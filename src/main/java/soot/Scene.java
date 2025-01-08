@@ -1632,6 +1632,7 @@ public class Scene {
 
     addBasicClass("java.lang.String");
     addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
+    addBasicClass("java.lang.StringBuilder", SootClass.SIGNATURES);
     addBasicClass("java.lang.Enum", SootClass.SIGNATURES);
 
     addBasicClass("java.lang.Error");
