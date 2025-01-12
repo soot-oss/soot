@@ -36,12 +36,14 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
+import soot.jimple.BranchableStmt;
 import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
+import soot.jimple.Stmt;
 
 /**
  * Detector class that identifies array initializations and packs them into a single instruction:
@@ -76,6 +78,12 @@ public class DexArrayInitDetector {
     Set<Unit> curIgnoreUnits = null;
     int arraySize = 0;
     Value concernedArray = null;
+    Set<Stmt> directGotoTargets = new HashSet<>();
+    for (Unit u : body.getUnits()) {
+      if (u instanceof BranchableStmt) {
+        directGotoTargets.add((Stmt) ((BranchableStmt) u).getTarget());
+      }
+    }
     for (Unit u : body.getUnits()) {
       if (!(u instanceof AssignStmt)) {
         arrayValues = null;
@@ -105,7 +113,7 @@ public class DexArrayInitDetector {
         if (rop instanceof IntConstant || rop instanceof LongConstant || rop instanceof FloatConstant
             || rop instanceof DoubleConstant) {
           ArrayRef aref = (ArrayRef) assignStmt.getLeftOp();
-          if (aref.getBase() != concernedArray) {
+          if (aref.getBase() != concernedArray || directGotoTargets.contains(assignStmt)) {
             arrayValues = null;
             continue;
           }
