@@ -48,6 +48,7 @@ import soot.G;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefLikeType;
+import soot.RefType;
 import soot.Scene;
 import soot.Singletons;
 import soot.SootMethod;
@@ -297,6 +298,9 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
         // would be detected there.
         //
         // result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+
+        // that being said, a NoClassDefFoundError is possible nonetheless.
+        result = result.add(RefType.v("java.lang.NoClassDefFoundError"));
       }
 
       @Override

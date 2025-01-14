@@ -892,6 +892,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseClassConstant(ClassConstant c) {
+      result = result.add(RefType.v("java.lang.NoClassDefFoundError"));
     }
 
     @Override

@@ -44,6 +44,7 @@ import soot.ValueBox;
 import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
+import soot.jimple.ClassConstant;
 import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
 import soot.jimple.Constant;
@@ -344,7 +345,15 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
             Object rop = assign.getRightOp();
             Constant value = null;
             if (rop instanceof Constant) {
-              value = (Constant) rop;
+              //Class Constants can trigger a NoClassDefFoundError.
+              //Therefore, cannot not propagate them in some cases, since we might change the semantics of the original
+              //program w.r.t. traps.
+              //The normal constant propagator propagates them when they are safe to propagate.
+              //Implementing this here is harder,
+              //since we need to keep track of trap handlers at all assigns in the original code. 
+              if (!(rop instanceof ClassConstant)) {
+                value = (Constant) rop;
+              }
             } else {
               if (rop instanceof Local) {
                 value = in.getConstant((Local) rop);

@@ -57,9 +57,9 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
-import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 
 public class CopyPropagator extends BodyTransformer {
@@ -137,7 +137,7 @@ public class CopyPropagator extends BodyTransformer {
       int fastCopyPropagationCount = 0;
       int slowCopyPropagationCount = 0;
 
-      UnitGraph graph
+      ExceptionalUnitGraph graph
           = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b, throwAnalysis, forceOmitExceptingUnitEdges);
       LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
       CPOptions options = new CPOptions(opts);
@@ -192,10 +192,11 @@ public class CopyPropagator extends BodyTransformer {
               final Value rightOp = def.getRightOp();
 
               if (rightOp instanceof Constant) {
-                if (useBox.canContainValue(rightOp)) {
+                if (ConstantPropagatorUtils.mayPropagate(graph, rightOp, def, u, useBox)) {
                   useBox.setValue(rightOp);
                   copyLineTags(useBox, def);
                 }
+
               } else if (rightOp instanceof CastExpr) {
                 CastExpr ce = (CastExpr) rightOp;
                 if (ce.getCastType() instanceof RefLikeType) {
