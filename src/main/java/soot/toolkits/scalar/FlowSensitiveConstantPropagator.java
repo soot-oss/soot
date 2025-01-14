@@ -348,7 +348,8 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
               //Class Constants can trigger a NoClassDefFoundError.
               //Therefore, cannot not propagate them in some cases, since we might change the semantics of the original
               //program w.r.t. traps.
-              //The normal constant propagator propagates them when they are safe to propagate. Implementing this here is harder,
+              //The normal constant propagator propagates them when they are safe to propagate.
+              //Implementing this here is harder,
               //since we need to keep track of trap handlers at all assigns in the original code. 
               if (!(rop instanceof ClassConstant)) {
                 value = (Constant) rop;
