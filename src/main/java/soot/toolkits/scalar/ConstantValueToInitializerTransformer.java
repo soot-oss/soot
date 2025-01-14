@@ -38,13 +38,10 @@ import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
-import soot.Value;
-import soot.ValueBox;
 import soot.VoidType;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
-import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.IntConstant;
@@ -123,7 +120,7 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
           if (sf.isStatic()) {
             Stmt initStmt = jimp.newAssignStmt(jimp.newStaticFieldRef(sf.makeRef()), constant);
             if (smInit == null) {
-              smInit = getOrCreateInitializer(sc, alreadyInitialized);
+              smInit = getOrCreateInitializer(sc);
             }
             if (smInit != null) {
               smInit.getActiveBody().getUnits().addFirst(initStmt);
@@ -196,7 +193,7 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
     return false;
   }
 
-  private SootMethod getOrCreateInitializer(SootClass sc, Set<SootField> alreadyInitialized) {
+  private SootMethod getOrCreateInitializer(SootClass sc) {
     // Create a static initializer if we don't already have one
     SootMethod smInit = sc.getMethodByNameUnsafe(SootMethod.staticInitializerName);
     if (smInit == null) {
@@ -206,17 +203,6 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
       smInit.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
     } else if (smInit.isPhantom()) {
       return null;
-    } else {
-      // We need to collect those variables that are already initialized somewhere
-      for (Unit u : smInit.retrieveActiveBody().getUnits()) {
-        Stmt s = (Stmt) u;
-        for (ValueBox vb : s.getDefBoxes()) {
-          Value value = vb.getValue();
-          if (value instanceof FieldRef) {
-            alreadyInitialized.add(((FieldRef) value).getField());
-          }
-        }
-      }
     }
     return smInit;
   }
