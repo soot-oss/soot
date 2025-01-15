@@ -36,6 +36,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -69,6 +72,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.typing.Util;
+import soot.jimple.toolkits.typing.fast.UseChecker.UseCheckerCache;
 import soot.toolkits.scalar.LocalDefs;
 
 /**
@@ -83,6 +87,9 @@ import soot.toolkits.scalar.LocalDefs;
  * @author Ben Bellamy
  */
 public class TypeResolver {
+  private static final int SINGLE_THREAD_LIMIT = 100000;
+  private static int NUM_CORES = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
+
   protected final JimpleBody jb;
 
   private List<DefinitionStmt> assignments;
@@ -90,10 +97,12 @@ public class TypeResolver {
   private Set<Local> singleAssignments;
   private BitSet simple;
   private final LocalGenerator localGenerator;
+  private final UseCheckerCache useCheckerCache;
 
   public TypeResolver(JimpleBody jb) {
     this.jb = jb;
     this.localGenerator = Scene.v().createLocalGenerator(jb);
+    this.useCheckerCache = new UseCheckerCache(jb);
 
   }
 
@@ -402,7 +411,7 @@ public class TypeResolver {
   }
 
   protected UseChecker createUseChecker(JimpleBody jb) {
-    return new UseChecker(jb);
+    return new UseChecker(jb, useCheckerCache);
   }
 
   protected TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb, ITyping tg) {
@@ -453,14 +462,47 @@ public class TypeResolver {
   private ITyping minCasts(Collection<ITyping> sigma, IHierarchy h, int[] count) {
     count[0] = -1;
     ITyping r = null;
-    for (ITyping tg : sigma) {
-      int n = this.insertCasts(tg, h, true);
-      if (count[0] == -1 || n < count[0]) {
-        count[0] = n;
-        r = tg;
+    if (sigma.size() <= SINGLE_THREAD_LIMIT) {
+      for (ITyping tg : sigma) {
+        int n = this.insertCasts(tg, h, true);
+        if (count[0] == -1 || n < count[0]) {
+          count[0] = n;
+          r = tg;
+        }
       }
+      return r;
+    } else {
+      ExecutorService executionService = Executors.newFixedThreadPool(NUM_CORES);
+      ITyping[] minTyping = new ITyping[1];
+      try {
+        for (ITyping tg : sigma) {
+          executionService.submit(new Runnable() {
+
+            @Override
+            public void run() {
+              int n = insertCasts(tg, h, true);
+              if (count[0] == -1 || n < count[0]) {
+                synchronized (count) {
+                  if (count[0] == -1 || n < count[0]) {
+                    count[0] = n;
+                    minTyping[0] = tg;
+                  }
+                }
+              }
+            }
+
+          });
+        }
+      } finally {
+        executionService.shutdown();
+        try {
+          executionService.awaitTermination(100, TimeUnit.DAYS);
+        } catch (InterruptedException e) {
+          throw new RuntimeException("Interrupted during type resolving", e);
+        }
+      }
+      return minTyping[0];
     }
-    return r;
   }
 
   static class WorklistElement {

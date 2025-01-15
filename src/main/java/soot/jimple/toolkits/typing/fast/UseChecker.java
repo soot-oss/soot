@@ -117,13 +117,53 @@ public class UseChecker extends AbstractStmtSwitch {
   private ITyping tg;
   private IUseVisitor uv;
 
-  private LocalDefs defs = null;
-  private LocalUses uses = null;
-
   private static final Logger logger = LoggerFactory.getLogger(UseChecker.class);
+
+  public static class UseCheckerCache {
+    private LocalDefs defs = null;
+    private LocalUses uses = null;
+
+    private final Type objectType = Scene.v().getObjectType();
+    private final JimpleBody body;
+
+    public UseCheckerCache(JimpleBody body) {
+      this.body = body;
+    }
+
+    public Type getObjectType() {
+      return objectType;
+    }
+
+    public LocalDefs getDefs() {
+      LocalDefs d = defs;
+      if (d == null) {
+        d = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(body);
+        defs = d;
+      }
+      return d;
+    }
+
+    public LocalUses getUses() {
+      LocalUses u = uses;
+      if (u != null) {
+        return u;
+      }
+      u = LocalUses.Factory.newLocalUses(body, getDefs());
+      uses = u;
+      return u;
+    }
+  }
+
+  private UseCheckerCache cache;
 
   public UseChecker(JimpleBody jb) {
     this.jb = jb;
+    cache = new UseCheckerCache(jb);
+  }
+
+  public UseChecker(JimpleBody jb, UseCheckerCache cache) {
+    this.jb = jb;
+    this.cache = cache;
   }
 
   public void check(ITyping tg, IUseVisitor uv) {
@@ -203,6 +243,9 @@ public class UseChecker extends AbstractStmtSwitch {
     Value lhs = stmt.getLeftOp();
     Value rhs = stmt.getRightOp();
     Type tlhs = null;
+    LocalDefs defs = cache.defs;
+    LocalUses uses = cache.uses;
+    final IUseVisitor uv = this.uv;
 
     if (lhs instanceof Local) {
       tlhs = this.tg.get((Local) lhs);
@@ -221,10 +264,10 @@ public class UseChecker extends AbstractStmtSwitch {
         // is java.lang.Object
         if (rhs instanceof Local) {
           Type rhsType = this.tg.get((Local) rhs);
-          if ((tgType == Scene.v().getObjectType() && rhsType instanceof PrimType) || tgType instanceof WeakObjectType) {
+          if ((tgType == cache.getObjectType() && rhsType instanceof PrimType) || tgType instanceof WeakObjectType) {
             if (defs == null) {
-              defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
-              uses = LocalUses.Factory.newLocalUses(jb, defs);
+              defs = cache.getDefs();
+              uses = cache.getUses();
             }
 
             // Check the original type of the array from the alloc site
@@ -254,9 +297,9 @@ public class UseChecker extends AbstractStmtSwitch {
 
       this.handleArrayRef(aref, stmt);
 
-      aref.setBase((Local) this.uv.visit(aref.getBase(), at, stmt));
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
-      stmt.setLeftOp(this.uv.visit(lhs, tlhs, stmt));
+      aref.setBase((Local) uv.visit(aref.getBase(), at, stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
+      stmt.setLeftOp(uv.visit(lhs, tlhs, stmt));
     } else if (lhs instanceof FieldRef) {
       tlhs = ((FieldRef) lhs).getFieldRef().type();
       if (lhs instanceof InstanceFieldRef) {
@@ -269,7 +312,7 @@ public class UseChecker extends AbstractStmtSwitch {
     rhs = stmt.getRightOp();
 
     if (rhs instanceof Local) {
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof ArrayRef) {
       ArrayRef aref = (ArrayRef) rhs;
       Local base = (Local) aref.getBase();
@@ -287,11 +330,11 @@ public class UseChecker extends AbstractStmtSwitch {
         // For some fixed type T, we assume that we can fix the array to T[].
         if (bt instanceof RefType || bt instanceof NullType) {
           String btName = bt instanceof NullType ? null : ((RefType) bt).getSootClass().getName();
-          if (btName == null || Scene.v().getObjectType().toString().equals(btName) || "java.io.Serializable".equals(btName)
+          if (btName == null || cache.getObjectType().toString().equals(btName) || "java.io.Serializable".equals(btName)
               || "java.lang.Cloneable".equals(btName)) {
             if (defs == null) {
-              defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
-              uses = LocalUses.Factory.newLocalUses(jb, defs);
+              defs = cache.getDefs();
+              uses = cache.getUses();
             }
             // First, we check the definitions. If we can see the definitions and know the array type
             // that way, we are safe.
@@ -409,39 +452,39 @@ public class UseChecker extends AbstractStmtSwitch {
 
       this.handleArrayRef(aref, stmt);
 
-      aref.setBase((Local) this.uv.visit(aref.getBase(), at, stmt));
-      stmt.setRightOp(this.uv.visit(rhs, trhs, stmt));
+      aref.setBase((Local) uv.visit(aref.getBase(), at, stmt));
+      stmt.setRightOp(uv.visit(rhs, trhs, stmt));
     } else if (rhs instanceof InstanceFieldRef) {
       this.handleInstanceFieldRef((InstanceFieldRef) rhs, stmt);
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof BinopExpr) {
       this.handleBinopExpr((BinopExpr) rhs, stmt, tlhs);
     } else if (rhs instanceof InvokeExpr) {
       this.handleInvokeExpr((InvokeExpr) rhs, stmt);
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof CastExpr) {
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof InstanceOfExpr) {
       InstanceOfExpr ioe = (InstanceOfExpr) rhs;
-      ioe.setOp(this.uv.visit(ioe.getOp(), Scene.v().getObjectType(), stmt));
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      ioe.setOp(uv.visit(ioe.getOp(), Scene.v().getObjectType(), stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof NewArrayExpr) {
       NewArrayExpr nae = (NewArrayExpr) rhs;
-      nae.setSize(this.uv.visit(nae.getSize(), IntType.v(), stmt));
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      nae.setSize(uv.visit(nae.getSize(), IntType.v(), stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof NewMultiArrayExpr) {
       NewMultiArrayExpr nmae = (NewMultiArrayExpr) rhs;
       for (int i = 0, e = nmae.getSizeCount(); i < e; i++) {
-        nmae.setSize(i, this.uv.visit(nmae.getSize(i), IntType.v(), stmt));
+        nmae.setSize(i, uv.visit(nmae.getSize(i), IntType.v(), stmt));
       }
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof LengthExpr) {
-      stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+      stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
     } else if (rhs instanceof NegExpr) {
-      ((NegExpr) rhs).setOp(this.uv.visit(((NegExpr) rhs).getOp(), tlhs, stmt));
+      ((NegExpr) rhs).setOp(uv.visit(((NegExpr) rhs).getOp(), tlhs, stmt));
     } else if (rhs instanceof Constant) {
       if (!(rhs instanceof NullConstant)) {
-        stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+        stmt.setRightOp(uv.visit(rhs, tlhs, stmt));
       }
     }
   }
