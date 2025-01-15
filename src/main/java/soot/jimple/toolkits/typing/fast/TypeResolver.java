@@ -498,6 +498,7 @@ public class TypeResolver {
         try {
           executionService.awaitTermination(100, TimeUnit.DAYS);
         } catch (InterruptedException e) {
+          throw new RuntimeException("Interrupted during type resolving", e);
         }
       }
       return minTyping[0];
