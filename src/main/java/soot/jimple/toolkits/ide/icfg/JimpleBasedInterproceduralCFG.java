@@ -26,7 +26,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import heros.DontSynchronize;
-import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
@@ -39,10 +38,15 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.FastHierarchy;
 import soot.MethodOrMethodContext;
+import soot.RefType;
 import soot.Scene;
 import soot.SootMethod;
+import soot.Type;
 import soot.Unit;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -62,7 +66,23 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 
   protected boolean includeReflectiveCalls = false;
   protected boolean includePhantomCallees = false;
-  protected boolean fallbackToImmediateCallees = true;
+
+  public enum Fallback {
+    /**
+     * Do utilize any callee.
+     */
+    NONE,
+    /**
+     * Use the immediate callee if the callgraph does not contain any edges for the respective call site.
+     */
+    IMMEDIATE_CALLEES,
+    /**
+     * Assume Class-Hierarchy Analysis style that all subclasses are possible. 
+     */
+    CHA
+  }
+
+  protected Fallback fallback = Fallback.NONE;
 
   // retains only callers that are explicit call sites or Thread.start()
   public class EdgeFilter extends Filter {
@@ -108,10 +128,20 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         res.trimToSize();
         return res;
       } else {
-        if (fallbackToImmediateCallees && u instanceof Stmt) {
+        if (fallback != Fallback.NONE && u instanceof Stmt) {
           Stmt s = (Stmt) u;
           if (s.containsInvokeExpr()) {
-            SootMethod immediate = s.getInvokeExpr().getMethod();
+            InvokeExpr invExpr = s.getInvokeExpr();
+            SootMethod immediate = invExpr.getMethod();
+            if (fallback == Fallback.CHA && invExpr instanceof InstanceInvokeExpr) {
+              InstanceInvokeExpr instinv = (InstanceInvokeExpr) invExpr;
+              FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+              Type t = instinv.getBase().getType();
+              if (t instanceof RefType) {
+                RefType rt = (RefType) t;
+                return fh.resolveAbstractDispatch(rt.getSootClass(), instinv.getMethodRef());
+              }
+            }
             if (includePhantomCallees || immediate.hasActiveBody()) {
               return Collections.singleton(immediate);
             }
@@ -191,15 +221,12 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
   }
 
   /**
-   * Sets whether methods that operate on the callgraph shall return the immediate callee of a call site if the callgraph has
-   * no outgoing edges
+   * Sets the fallback mode. The fallback is used when the call graph reports no outgoing edges.
    * 
-   * @param fallbackToImmediateCallees
-   *          True to return the immediate callee if the callgraph does not contain any edges for the respective call site,
-   *          false to return an empty set in such cases
+   * @param fallbackMode the fallback mode to use
    */
-  public void setFallbackToImmediateCallees(boolean fallbackToImmediateCallees) {
-    this.fallbackToImmediateCallees = fallbackToImmediateCallees;
+  public void setFallbackMode(Fallback fallbackMode) {
+    this.fallback = fallbackMode;
   }
 
   protected EdgeFilter createEdgeFilter() {
