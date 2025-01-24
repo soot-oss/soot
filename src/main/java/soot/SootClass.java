@@ -1322,18 +1322,13 @@ public class SootClass extends AbstractHost {
    * @return the methods
    */
   public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
-    List<SootMethod> result = null;
-    for (SootMethod m : getMethods()) {
-      if (m.getParameterCount() == paramCount && m.getName().equals(name)) {
-        if (result == null) {
-          result = new ArrayList<>();
+    List<SootMethod> result = new ArrayList<>();
+    // 创建副本以避免并发修改
+    List<SootMethod> methodsCopy = new ArrayList<>(this.getMethods());
+    for (SootMethod m : methodsCopy) {
+        if (m.getName().equals(name) && m.getParameterCount() == paramCount) {
+            result.add(m);
         }
-        result.add(m);
-      }
-    }
-
-    if (result == null) {
-      return Collections.emptyList();
     }
     return result;
   }
