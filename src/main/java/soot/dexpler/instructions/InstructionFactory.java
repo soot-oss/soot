@@ -201,6 +201,7 @@ public class InstructionFactory {
 
       case IGET:
       case IGET_OBJECT:
+      case IGET_OBJECT_VOLATILE:
       case IGET_BOOLEAN:
       case IGET_BYTE:
       case IGET_CHAR:
@@ -209,6 +210,7 @@ public class InstructionFactory {
         return new IgetInstruction(instruction, codeAddress);
       case IPUT:
       case IPUT_OBJECT:
+      case IPUT_OBJECT_VOLATILE:
       case IPUT_BOOLEAN:
       case IPUT_BYTE:
       case IPUT_CHAR:
