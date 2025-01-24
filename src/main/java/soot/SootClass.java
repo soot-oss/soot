@@ -1323,7 +1323,7 @@ public class SootClass extends AbstractHost {
    */
   public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
     List<SootMethod> result = new ArrayList<>();
-    // 创建副本以避免并发修改
+    // Create a copy to avoid concurrent modification
     List<SootMethod> methodsCopy = new ArrayList<>(this.getMethods());
     for (SootMethod m : methodsCopy) {
         if (m.getName().equals(name) && m.getParameterCount() == paramCount) {
