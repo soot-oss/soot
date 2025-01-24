@@ -218,7 +218,10 @@ public class CopyPropagator extends BodyTransformer {
                 if (l != m) {
                   Integer defCount = localToDefCount.get(m);
                   if (defCount == null || defCount == 0) {
-                    throw new RuntimeException("Variable " + m + " used without definition!");
+                    if (Options.v().verbose()) {
+                      logger.debug("[" + b.getMethod().getName() + "] Skipping undefined variable: " + m);
+                    }
+                    continue;
                   } else if (defCount == 1) {
                     useBox.setValue(m);
                     copyLineTags(useBox, def);
