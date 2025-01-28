@@ -133,7 +133,7 @@ public class PDGNode {
     return this.m_dependents;
   }
 
-  public List<PDGNode> getBackDependets() {
+  public List<PDGNode> getBackDependents() {
     return this.m_backDependents;
   }
 
