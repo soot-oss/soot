@@ -42,7 +42,6 @@ import soot.PatchingChain;
 import soot.SootMethod;
 import soot.Unit;
 import soot.UnitBox;
-import soot.Value;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
@@ -61,15 +60,6 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
         @Override
         public DirectedGraph<Unit> load(Body body) throws Exception {
           return makeGraph(body);
-        }
-      });
-
-  @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected LoadingCache<SootMethod, List<Value>> methodToParameterRefs
-      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, List<Value>>() {
-        @Override
-        public List<Value> load(SootMethod m) throws Exception {
-          return m.getActiveBody().getParameterRefs();
         }
       });
 
@@ -183,11 +173,6 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       }
     }
     return false;
-  }
-
-  @Override
-  public List<Value> getParameterRefs(SootMethod m) {
-    return methodToParameterRefs.getUnchecked(m);
   }
 
   @Override

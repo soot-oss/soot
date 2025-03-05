@@ -445,37 +445,6 @@ public abstract class Body extends AbstractHost implements Serializable {
   }
 
   /**
-   * Returns the list of parameter references used in this body. The list is as long as the number of parameters declared in
-   * the associated method's signature. The list may have <code>null</code> entries for parameters not referenced in the
-   * body. The returned list is of fixed size.
-   *
-   * @return
-   */
-  public List<Value> getParameterRefs() {
-    final int numParams = getMethod().getParameterCount();
-    Value[] res = new Value[numParams];
-    int numFound = 0;
-    for (Unit u : getUnits()) {
-      if (u instanceof IdentityStmt) {
-        Value rightOp = ((IdentityStmt) u).getRightOp();
-        if (rightOp instanceof ParameterRef) {
-          ParameterRef pr = (ParameterRef) rightOp;
-          int idx = pr.getIndex();
-          if (res[idx] != null) {
-            throw new RuntimeException("duplicate parameterref" + idx + " in " + getMethod());
-          }
-          res[idx] = pr;
-          numFound++;
-          if (numFound >= numParams) {
-            break;
-          }
-        }
-      }
-    }
-    return Arrays.asList(res);
-  }
-
-  /**
    * Returns the Chain of Units that make up this body. The units are returned as a PatchingChain. The client can then
    * manipulate the chain, adding and removing units, and the changes will be reflected in the body. Since a PatchingChain is
    * returned the client need <i>not</i> worry about removing exception boundary units or otherwise corrupting the chain.
