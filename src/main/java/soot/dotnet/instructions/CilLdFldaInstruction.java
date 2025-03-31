@@ -28,7 +28,6 @@ import soot.SootClass;
 import soot.SootFieldRef;
 import soot.SootResolver;
 import soot.Value;
-import soot.dotnet.exceptions.NoStatementInstructionException;
 import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotnetTypeFactory;
@@ -44,7 +43,6 @@ public class CilLdFldaInstruction extends AbstractCilnstruction {
 
   @Override
   public void jimplify(Body jb) {
-    throw new NoStatementInstructionException(instruction);
   }
 
   @Override
