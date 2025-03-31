@@ -105,11 +105,14 @@ public class CilConvInstruction extends AbstractCilnstruction {
     }
     argument = simplifyComplexExpression(jb, argument);
     if (convType instanceof UnknownType) {
-      //Decompilation errors might happen. But even in this case, we do not
-      //want to cast to unknown. In this case, let the type assigner figure something out.
+      // Decompilation errors might happen. But even in this case, we do not
+      // want to cast to unknown. In this case, let the type assigner figure something out.
       return argument;
     }
 
+    if (argument.getType() == convType) {
+      return argument;
+    }
     if (instruction.getCheckForOverflow()) {
       return Jimple.v().newCheckedCastExpr(argument, convType);
     } else {
