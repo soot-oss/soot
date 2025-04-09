@@ -176,9 +176,7 @@ public class Hierarchy {
   /** Returns a list of subclasses of c, including itself. */
   public List<SootClass> getSubclassesOfIncluding(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (c.isInterface()) {
-      throw new RuntimeException("class needed!");
-    }
+    assertNoInterface(c, "getSubclassesOfIncluding");
 
     List<SootClass> subclasses = getSubclassesOf(c);
     List<SootClass> result = new ArrayList<SootClass>(subclasses.size() + 1);
@@ -191,9 +189,7 @@ public class Hierarchy {
   /** Returns a list of subclasses of c, excluding itself. */
   public List<SootClass> getSubclassesOf(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (c.isInterface()) {
-      throw new RuntimeException("class needed!");
-    }
+    assertNoInterface(c, "getSubclassesOf");
 
     checkState();
 
@@ -208,6 +204,11 @@ public class Hierarchy {
       ArrayList<SootClass> l = new ArrayList<SootClass>();
       for (SootClass cls : classToDirSubclasses.get(c)) {
         if (cls.resolvingLevel() < SootClass.HIERARCHY) {
+          continue;
+        }
+        if (cls.isInterface()) {
+          // this is possible when asking when c is the Object class,
+          // since all interfaces inherit from Object.
           continue;
         }
         l.addAll(getSubclassesOfIncluding(cls));
@@ -253,9 +254,7 @@ public class Hierarchy {
    */
   public List<SootClass> getSuperclassesOf(SootClass sootClass) {
     sootClass.checkLevel(SootClass.HIERARCHY);
-    if (sootClass.isInterface()) {
-      throw new IllegalArgumentException(sootClass.getName() + " is an interface, but class is expected");
-    }
+    assertNoInterface(sootClass, "getSuperclassesOf");
 
     checkState();
 
@@ -335,9 +334,7 @@ public class Hierarchy {
   /** Returns a list of superinterfaces of c, including itself. */
   public List<SootClass> getSuperinterfacesOfIncluding(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (!c.isInterface()) {
-      throw new RuntimeException("interface needed!");
-    }
+    assertInterface(c, "getSuperinterfacesOfIncluding");
 
     List<SootClass> superinterfaces = getSuperinterfacesOf(c);
     List<SootClass> result = new ArrayList<SootClass>(superinterfaces.size() + 1);
@@ -350,9 +347,7 @@ public class Hierarchy {
   /** Returns a list of superinterfaces of c, excluding itself. */
   public List<SootClass> getSuperinterfacesOf(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (!c.isInterface()) {
-      throw new RuntimeException("interface needed!");
-    }
+    assertInterface(c, "getSuperinterfacesOf");
 
     checkState();
 
@@ -384,9 +379,7 @@ public class Hierarchy {
   /** Returns a list of direct subclasses of c, excluding c. */
   public List<SootClass> getDirectSubclassesOf(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (c.isInterface()) {
-      throw new RuntimeException("class needed!");
-    }
+    assertNoInterface(c, "getDirectSubclassesOf");
 
     checkState();
 
@@ -397,9 +390,7 @@ public class Hierarchy {
   /** Returns a list of direct subclasses of c, including c. */
   public List<SootClass> getDirectSubclassesOfIncluding(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (c.isInterface()) {
-      throw new RuntimeException("class needed!");
-    }
+    assertNoInterface(c, "getDirectSubclassesOfIncluding");
 
     checkState();
 
@@ -419,9 +410,7 @@ public class Hierarchy {
   /** Returns a list of direct subinterfaces of c. */
   public List<SootClass> getDirectSubinterfacesOf(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (!c.isInterface()) {
-      throw new RuntimeException("interface needed!");
-    }
+    assertInterface(c, "getDirectSubinterfacesOf");
 
     checkState();
 
@@ -431,9 +420,7 @@ public class Hierarchy {
   /** Returns a list of direct subinterfaces of c, including itself. */
   public List<SootClass> getDirectSubinterfacesOfIncluding(SootClass c) {
     c.checkLevel(SootClass.HIERARCHY);
-    if (!c.isInterface()) {
-      throw new RuntimeException("interface needed!");
-    }
+    assertInterface(c, "getDirectSubinterfacesOfIncluding");
 
     checkState();
 
@@ -448,9 +435,7 @@ public class Hierarchy {
   /** Returns a list of direct implementers of c, excluding itself. */
   public List<SootClass> getDirectImplementersOf(SootClass i) {
     i.checkLevel(SootClass.HIERARCHY);
-    if (!i.isInterface()) {
-      throw new RuntimeException("interface needed; got " + i);
-    }
+    assertInterface(i, "getDirectImplementersOf");
 
     checkState();
 
@@ -460,9 +445,7 @@ public class Hierarchy {
   /** Returns a list of implementers of c, excluding itself. */
   public List<SootClass> getImplementersOf(SootClass i) {
     i.checkLevel(SootClass.HIERARCHY);
-    if (!i.isInterface()) {
-      throw new RuntimeException("interface needed; got " + i);
-    }
+    assertInterface(i, "getImplementersOf");
 
     checkState();
 
@@ -625,9 +608,7 @@ public class Hierarchy {
     m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
     checkState();
 
-    if (concreteType.isInterface()) {
-      throw new RuntimeException("class needed!");
-    }
+    assertNoInterface(concreteType, "resolveConcreteDispatch");
 
     final String methodSig = m.getSubSignature();
     for (SootClass c : getSuperclassesOfIncluding(concreteType)) {
@@ -724,4 +705,19 @@ public class Hierarchy {
       return target;
     }
   }
+
+  private static void assertNoInterface(SootClass c, String operation) {
+    if (c.isInterface()) {
+      throw new RuntimeException(
+          String.format("%s is an interface; %s is not supported on interfaces", c.getName(), operation));
+    }
+  }
+
+  private static void assertInterface(SootClass c, String operation) {
+    if (!c.isInterface()) {
+      throw new RuntimeException(String.format("%s is a non-interface class; %s is not supported on non-interface classes",
+          c.getName(), operation));
+    }
+  }
+
 }
