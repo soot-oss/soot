@@ -1,0 +1,10 @@
+*       text=auto eol=lf
+
+*.java  text eol=lf diff=java
+
+*.bat   text eol=crlf
+
+*.jpg   binary
+*.pdf   binary
+*.jar   binary
+*.zip   binary
