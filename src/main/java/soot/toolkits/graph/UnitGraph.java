@@ -309,6 +309,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
     pathStack.add(from);
     pathStackIndex.add(0);
 
+    Unit firstUnit = getBody().getUnits().getFirst();
     final int psiMax = this.getSuccsOf(from).size();
     int level = 0;
     while (pathStackIndex.get(0) != psiMax) {
@@ -336,7 +337,14 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       }
 
       // check preds of betweenUnit to see if we should visit its kids.
-      if (this.getPredsOf(betweenUnit).size() > 1) {
+      int min = 1;
+      if (firstUnit == betweenUnit) {
+        // the first unit of the body has no inherent predecessor;
+        // so having at least one predecessor means that there is a backedge
+        // and the start of the method is a start of a loop
+        min = 0;
+      }
+      if (this.getPredsOf(betweenUnit).size() > min) {
         pathStackIndex.set(level, p + 1);
         continue;
       }
