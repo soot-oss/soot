@@ -57,10 +57,10 @@ import soot.util.LocalBitSetPacker;
 public class SmartLocalDefs implements LocalDefs {
   private static final Logger logger = LoggerFactory.getLogger(SmartLocalDefs.class);
 
-  private final UnitGraph graph;
-  private Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
-  private Map<Unit, BitSet> liveLocalsAfter;
-  private final Map<Cons<Unit, Local>, List<Unit>> answer;
+  protected final UnitGraph graph;
+  protected Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
+  protected Map<Unit, BitSet> liveLocalsAfter;
+  protected final Map<Cons<Unit, Local>, List<Unit>> answer;
 
   public SmartLocalDefs(UnitGraph g, LiveLocals live) {
     this.graph = g;
