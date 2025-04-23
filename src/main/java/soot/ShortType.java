@@ -38,6 +38,7 @@ public class ShortType extends PrimType implements IJavaType, IntegerType, DotNe
   public static final ShortType INSTANCE = new ShortType();
 
   private ShortType() {
+    super(false);
   }
 
   public static ShortType v() {

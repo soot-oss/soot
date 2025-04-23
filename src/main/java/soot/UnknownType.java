@@ -32,6 +32,7 @@ public class UnknownType extends Type {
   public static final UnknownType INSTANCE = new UnknownType();
 
   private UnknownType() {
+    super(false);
   }
 
   public static UnknownType v() {

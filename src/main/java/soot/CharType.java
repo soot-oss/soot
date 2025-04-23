@@ -38,6 +38,7 @@ public class CharType extends PrimType implements IntegerType, IJavaType, DotNet
   public static final CharType INSTANCE = new CharType();
 
   private CharType() {
+    super(false);
   }
 
   public static CharType v() {

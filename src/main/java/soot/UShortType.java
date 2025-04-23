@@ -39,6 +39,7 @@ public class UShortType extends PrimType implements DotNetINumber {
   public static final UShortType INSTANCE = new UShortType();
 
   private UShortType() {
+    super(false);
   }
 
   public static UShortType v() {

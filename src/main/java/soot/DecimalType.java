@@ -37,6 +37,7 @@ public class DecimalType extends PrimType implements DotNetINumber {
   public static final DecimalType INSTANCE = new DecimalType();
 
   private DecimalType() {
+    super(false);
   }
 
   public static DecimalType v() {

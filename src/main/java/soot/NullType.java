@@ -32,6 +32,7 @@ public class NullType extends RefLikeType {
   public static final NullType INSTANCE = new NullType();
 
   private NullType() {
+    super(false);
   }
 
   public static NullType v() {

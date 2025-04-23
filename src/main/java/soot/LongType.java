@@ -37,6 +37,7 @@ public class LongType extends PrimType implements IJavaType, DotNetINumber {
   public static final LongType INSTANCE = new LongType();
 
   private LongType() {
+    super(false);
   }
 
   public static LongType v() {

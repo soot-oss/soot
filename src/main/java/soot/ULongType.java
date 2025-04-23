@@ -37,6 +37,7 @@ public class ULongType extends PrimType implements DotNetINumber {
   public static final ULongType INSTANCE = new ULongType();
 
   private ULongType() {
+    super(false);
   }
 
   public static ULongType v() {

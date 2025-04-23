@@ -32,6 +32,7 @@ public class VoidType extends Type {
   public static final VoidType INSTANCE = new VoidType();
 
   private VoidType() {
+    super(false);
   }
 
   public static VoidType v() {

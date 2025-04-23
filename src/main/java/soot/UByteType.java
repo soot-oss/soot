@@ -40,6 +40,7 @@ public class UByteType extends PrimType implements DotNetINumber, IIntLikeType {
   public static final UByteType INSTANCE = new UByteType();
 
   private UByteType() {
+    super(false);
   }
 
   public static UByteType v() {

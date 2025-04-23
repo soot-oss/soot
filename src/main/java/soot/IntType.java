@@ -38,6 +38,7 @@ public class IntType extends PrimType implements IntegerType, IJavaType, DotNetI
   public static final IntType INSTANCE = new IntType();
 
   private IntType() {
+    super(false);
   }
 
   public static IntType v() {

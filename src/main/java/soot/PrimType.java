@@ -31,6 +31,13 @@ package soot;
 @SuppressWarnings("serial")
 public abstract class PrimType extends Type {
 
+  public PrimType(boolean b) {
+    super(b);
+  }
+
+  public PrimType() {
+  }
+
   public RefType boxedType() {
     return RefType.v(getTypeAsString());
   }

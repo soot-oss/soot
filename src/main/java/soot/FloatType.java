@@ -37,6 +37,7 @@ public class FloatType extends PrimType implements DotNetINumber, IJavaType {
   public static final FloatType INSTANCE = new FloatType();
 
   private FloatType() {
+    super(false);
   }
 
   public static FloatType v() {

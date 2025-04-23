@@ -38,7 +38,13 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   private int number = 0;
 
   public Type() {
-    Scene.v().getTypeNumberer().add(this);
+    this(true);
+  }
+
+  public Type(boolean doNumber) {
+    if (doNumber) {
+      Scene.v().getTypeNumberer().add(this);
+    }
   }
 
   /**

@@ -40,6 +40,7 @@ public class UIntType extends PrimType implements DotNetINumber, IIntLikeType {
   public static final UIntType INSTANCE = new UIntType();
 
   private UIntType() {
+    super(false);
   }
 
   public static UIntType v() {

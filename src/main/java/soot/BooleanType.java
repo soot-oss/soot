@@ -38,6 +38,7 @@ public class BooleanType extends PrimType implements IntegerType, IJavaType, Dot
   public static final BooleanType INSTANCE = new BooleanType();
 
   private BooleanType() {
+    super(false);
   }
 
   public static BooleanType v() {

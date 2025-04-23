@@ -37,6 +37,10 @@ public class ByteType extends PrimType implements IntegerType, IJavaType, DotNet
   public static final int HASHCODE = 0x813D1329;
   public static final ByteType INSTANCE = new ByteType();
 
+  private ByteType() {
+    super(false);
+  }
+
   public static ByteType v() {
     return INSTANCE;
   }

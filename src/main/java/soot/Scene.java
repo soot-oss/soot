@@ -56,7 +56,6 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
-
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
@@ -137,6 +136,25 @@ public class Scene {
   protected List<ISootClassAddedListener> classAddedListeners = new ArrayList<>(4);
 
   public Scene(Singletons.Global g) {
+
+    IterableNumberer<Type> tn = getTypeNumberer();
+    tn.add(BooleanType.INSTANCE);
+    tn.add(ByteType.INSTANCE);
+    tn.add(CharType.INSTANCE);
+    tn.add(DecimalType.INSTANCE);
+    tn.add(DoubleType.INSTANCE);
+    tn.add(FloatType.INSTANCE);
+    tn.add(IntType.INSTANCE);
+    tn.add(LongType.INSTANCE);
+    tn.add(NullType.INSTANCE);
+    tn.add(ShortType.INSTANCE);
+    tn.add(UByteType.INSTANCE);
+    tn.add(UIntType.INSTANCE);
+    tn.add(ULongType.INSTANCE);
+    tn.add(UShortType.INSTANCE);
+    tn.add(UnknownType.INSTANCE);
+    tn.add(VoidType.INSTANCE);
+
     setReservedNames();
 
     // load soot.class.path system property, if defined
@@ -1087,8 +1105,18 @@ public class Scene {
         case "float":
           result = FloatType.v();
           break;
-        case "byte":
+        case "sbyte":
           result = ByteType.v();
+          break;
+        case "ubyte":
+          result = UByteType.v();
+          break;
+        case "byte":
+          if (Options.v().src_prec() == Options.src_prec_dotnet) {
+            result = UByteType.v();
+          } else {
+            result = ByteType.v();
+          }
           break;
         case "char":
           result = CharType.v();

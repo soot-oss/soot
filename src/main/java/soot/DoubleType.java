@@ -37,6 +37,7 @@ public class DoubleType extends PrimType implements DotNetINumber, IJavaType {
   public static final DoubleType INSTANCE = new DoubleType();
 
   private DoubleType() {
+    super(false);
   }
 
   public static DoubleType v() {
