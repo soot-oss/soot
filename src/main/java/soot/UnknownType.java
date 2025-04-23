@@ -29,12 +29,14 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class UnknownType extends Type {
+  public static final UnknownType INSTANCE = new UnknownType();
 
-  public UnknownType(Singletons.Global g) {
+  private UnknownType() {
+    super(false);
   }
 
   public static UnknownType v() {
-    return G.v().soot_UnknownType();
+    return INSTANCE;
   }
 
   @Override

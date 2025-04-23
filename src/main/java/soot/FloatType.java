@@ -34,12 +34,14 @@ import soot.util.Switch;
 public class FloatType extends PrimType implements DotNetINumber, IJavaType {
 
   public static final int HASHCODE = 0xA84373FA;
+  public static final FloatType INSTANCE = new FloatType();
 
-  public FloatType(Singletons.Global g) {
+  private FloatType() {
+    super(false);
   }
 
   public static FloatType v() {
-    return G.v().soot_FloatType();
+    return INSTANCE;
   }
 
   @Override

@@ -37,12 +37,14 @@ public class UIntType extends PrimType implements DotNetINumber, IIntLikeType {
   public static final int HASHCODE = 0xB347239F;
   public static final long MAX_VALUE = 4294967295L;
   public static final int MIN_VALUE = 0;
+  public static final UIntType INSTANCE = new UIntType();
 
-  public UIntType(Singletons.Global g) {
+  private UIntType() {
+    super(false);
   }
 
   public static UIntType v() {
-    return G.v().soot_UIntType();
+    return INSTANCE;
   }
 
   @Override

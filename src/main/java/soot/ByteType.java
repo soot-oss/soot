@@ -35,12 +35,14 @@ import soot.util.Switch;
 public class ByteType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0x813D1329;
+  public static final ByteType INSTANCE = new ByteType();
 
-  public ByteType(Singletons.Global g) {
+  private ByteType() {
+    super(false);
   }
 
   public static ByteType v() {
-    return G.v().soot_ByteType();
+    return INSTANCE;
   }
 
   @Override

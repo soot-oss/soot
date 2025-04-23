@@ -35,12 +35,14 @@ import soot.util.Switch;
 public class BooleanType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0x1C4585DA;
+  public static final BooleanType INSTANCE = new BooleanType();
 
-  public BooleanType(Singletons.Global g) {
+  private BooleanType() {
+    super(false);
   }
 
   public static BooleanType v() {
-    return G.v().soot_BooleanType();
+    return INSTANCE;
   }
 
   @Override

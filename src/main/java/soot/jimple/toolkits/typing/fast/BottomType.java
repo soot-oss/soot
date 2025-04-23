@@ -4,8 +4,8 @@ package soot.jimple.toolkits.typing.fast;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) Soot contributers
+ *
  * All rights reserved.
  * %%
  * This program is free software: you can redistribute it and/or modify
@@ -24,20 +24,19 @@ package soot.jimple.toolkits.typing.fast;
  * #L%
  */
 
-import soot.G;
-import soot.Singletons;
 import soot.Type;
 
 /**
  * @author Ben Bellamy
  */
 public class BottomType extends Type {
+  public static final BottomType INSTANCE = new BottomType();
 
   public static BottomType v() {
-    return G.v().soot_jimple_toolkits_typing_fast_BottomType();
+    return INSTANCE;
   }
 
-  public BottomType(Singletons.Global g) {
+  private BottomType() {
   }
 
   @Override

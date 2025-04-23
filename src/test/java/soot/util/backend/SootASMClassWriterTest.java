@@ -40,7 +40,7 @@ import soot.Scene;
 import soot.SootClass;
 import soot.UnknownType;
 
-@PrepareForTest({ Scene.class, UnknownType.class, RefType.class })
+@PrepareForTest({ Scene.class, RefType.class })
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"javax.management.", "com.sun.org.apache.xerces.",
 		"javax.xml.", "org.xml.", "org.w3c.dom.",
@@ -65,13 +65,11 @@ public class SootASMClassWriterTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		mockStatic(Scene.class);
 		mockStatic(RefType.class);
-		mockStatic(UnknownType.class);
 
 		scene = mock(Scene.class);
 		when(Scene.v()).thenReturn(scene);
+		when(Scene.v().getTypeNumberer()).thenReturn(new soot.util.ArrayNumberer());
 
-		UnknownType unknown = mock(UnknownType.class);
-		when(UnknownType.v()).thenReturn(unknown);
 
 		sc1 = mockClass("A");
 		sc2 = mockClass("B");

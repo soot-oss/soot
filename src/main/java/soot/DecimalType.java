@@ -34,12 +34,14 @@ import soot.util.Switch;
 public class DecimalType extends PrimType implements DotNetINumber {
 
   public static final int HASHCODE = 0x2B9D7242;
+  public static final DecimalType INSTANCE = new DecimalType();
 
-  public DecimalType(Singletons.Global g) {
+  private DecimalType() {
+    super(false);
   }
 
   public static DecimalType v() {
-    return G.v().soot_DecimalType();
+    return INSTANCE;
   }
 
   @Override

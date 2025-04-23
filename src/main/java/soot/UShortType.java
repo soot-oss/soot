@@ -36,12 +36,14 @@ public class UShortType extends PrimType implements DotNetINumber {
   public static final int HASHCODE = 0x5B817DD3;
   public static final int MAX_VALUE = 65535;
   public static final int MIN_VALUE = 0;
+  public static final UShortType INSTANCE = new UShortType();
 
-  public UShortType(Singletons.Global g) {
+  private UShortType() {
+    super(false);
   }
 
   public static UShortType v() {
-    return G.v().soot_UShortType();
+    return INSTANCE;
   }
 
   @Override

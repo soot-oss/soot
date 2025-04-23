@@ -1,13 +1,11 @@
 package soot.jimple.toolkits.typing.fast;
 
-import soot.BooleanType;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) Soot contributers
+ *
  * All rights reserved.
  * %%
  * This program is free software: you can redistribute it and/or modify
@@ -26,22 +24,22 @@ import soot.BooleanType;
  * #L%
  */
 
-import soot.G;
+import soot.BooleanType;
 import soot.IntegerType;
 import soot.PrimType;
-import soot.Singletons;
 import soot.Type;
 
 /**
  * @author Ben Bellamy
  */
 public class Integer1Type extends PrimType implements IntegerType {
+  public static final Integer1Type INSTANCE = new Integer1Type();
 
   public static Integer1Type v() {
-    return G.v().soot_jimple_toolkits_typing_fast_Integer1Type();
+    return INSTANCE;
   }
 
-  public Integer1Type(Singletons.Global g) {
+  private Integer1Type() {
   }
 
   @Override
