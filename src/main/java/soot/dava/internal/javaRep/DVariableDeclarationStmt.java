@@ -221,4 +221,19 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
     throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
   }
 
+  @Override
+  public InvokeExpr getInvokeExprUnsafe() {
+    return null;
+  }
+
+  @Override
+  public ArrayRef getArrayRefUnsafe() {
+    return null;
+  }
+
+  @Override
+  public FieldRef getFieldRefUnsafe() {
+    return null;
+  }
+
 }
