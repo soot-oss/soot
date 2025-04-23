@@ -58,6 +58,11 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt {
   }
 
   @Override
+  public InvokeExpr getInvokeExprUnsafe() {
+    return (InvokeExpr) invokeExprBox.getValue();
+  }
+
+  @Override
   public boolean containsInvokeExpr() {
     return true;
   }

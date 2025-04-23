@@ -51,6 +51,21 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
   }
 
   @Override
+  public InvokeExpr getInvokeExprUnsafe() {
+    return null;
+  }
+
+  @Override
+  public FieldRef getFieldRefUnsafe() {
+    return null;
+  }
+
+  @Override
+  public ArrayRef getArrayRefUnsafe() {
+    return null;
+  }
+
+  @Override
   public InvokeExpr getInvokeExpr() {
     throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
   }
