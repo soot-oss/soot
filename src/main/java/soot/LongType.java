@@ -34,12 +34,13 @@ import soot.util.Switch;
 public class LongType extends PrimType implements IJavaType, DotNetINumber {
 
   public static final int HASHCODE = 0x023DA077;
+  public static final LongType INSTANCE = new LongType();
 
-  public LongType(Singletons.Global g) {
+  private LongType() {
   }
 
   public static LongType v() {
-    return G.v().soot_LongType();
+    return INSTANCE;
   }
 
   @Override

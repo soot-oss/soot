@@ -35,12 +35,13 @@ import soot.util.Switch;
 public class ShortType extends PrimType implements IJavaType, IntegerType, DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0x8B817DD3;
+  public static final ShortType INSTANCE = new ShortType();
 
-  public ShortType(Singletons.Global g) {
+  private ShortType() {
   }
 
   public static ShortType v() {
-    return G.v().soot_ShortType();
+    return INSTANCE;
   }
 
   @Override

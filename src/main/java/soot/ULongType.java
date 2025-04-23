@@ -34,12 +34,13 @@ import soot.util.Switch;
 public class ULongType extends PrimType implements DotNetINumber {
 
   public static final int HASHCODE = 0x013DA077;
+  public static final ULongType INSTANCE = new ULongType();
 
-  public ULongType(Singletons.Global g) {
+  private ULongType() {
   }
 
   public static ULongType v() {
-    return G.v().soot_ULongType();
+    return INSTANCE;
   }
 
   @Override

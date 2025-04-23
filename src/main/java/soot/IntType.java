@@ -35,12 +35,13 @@ import soot.util.Switch;
 public class IntType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0xB747239F;
+  public static final IntType INSTANCE = new IntType();
 
-  public IntType(Singletons.Global g) {
+  private IntType() {
   }
 
   public static IntType v() {
-    return G.v().soot_IntType();
+    return INSTANCE;
   }
 
   @Override

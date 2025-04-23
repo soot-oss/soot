@@ -23,12 +23,8 @@
   <class>soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator</class>
   <class>soot.dava.toolkits.base.AST.ASTWalker</class>
   <class>soot.baf.Baf</class>
-  <class>soot.BooleanType</class>
   <class>soot.jimple.toolkits.scalar.pre.BusyCodeMotion</class>
-  <class>soot.ByteType</class>
-  <class>soot.UByteType</class>
   <class>soot.jimple.toolkits.pointer.CastCheckEliminatorDumper</class>
-  <class>soot.CharType</class>
   <class>soot.jimple.toolkits.annotation.arraycheck.ClassFieldAnalysis</class>
   <class>soot.jimple.toolkits.scalar.CommonSubexpressionEliminator</class>
   <class>soot.jimple.toolkits.scalar.ConditionalBranchFolder</class>
@@ -44,19 +40,15 @@
   <class>soot.Printer</class>
   <class>soot.jimple.toolkits.scalar.DeadAssignmentEliminator</class>
   <class>soot.jimple.toolkits.pointer.DependenceTagAggregator</class>
-  <class>soot.DoubleType</class>
   <class>soot.baf.DoubleWordType</class>
   <class>soot.jimple.toolkits.pointer.DumbPointerAnalysis</class>
   <class>soot.jimple.spark.sets.EmptyPointsToSet</class>
   <class>soot.ErroneousType</class>
   <class>soot.dava.toolkits.base.finders.ExceptionFinder</class>
   <class>soot.jimple.toolkits.pointer.FieldRWTagger</class>
-  <class>soot.FloatType</class>
   <class>soot.jimple.toolkits.pointer.FullObjectSet</class>
   <class>soot.grimp.Grimp</class>
   <class>soot.dava.toolkits.base.finders.IfFinder</class>
-  <class>soot.IntType</class>
-  <class>soot.UIntType</class>
   <class>soot.jimple.Jimple</class>
   <class>soot.dava.toolkits.base.finders.LabeledBlockFinder</class>
   <class>soot.jimple.toolkits.scalar.pre.LazyCodeMotion</class>
@@ -70,13 +62,10 @@
   <class>soot.toolkits.scalar.LocalSplitter</class>
   <class>soot.toolkits.scalar.SharedInitializationLocalSplitter</class>
   <class>soot.toolkits.scalar.FlowSensitiveConstantPropagator</class>
-  <class>soot.LongType</class>
-  <class>soot.ULongType</class>
   <class>soot.dava.toolkits.base.misc.MonitorConverter</class>
   <class>soot.jimple.toolkits.scalar.NopEliminator</class>
   <class>soot.jimple.NullConstant</class>
   <class>soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker</class>
-  <class>soot.NullType</class>
   <class>soot.dava.toolkits.base.misc.PackageNamer</class>
   <class>soot.PackManager</class>
   <class>soot.baf.toolkits.base.PeepholeOptimizer</class>
@@ -91,9 +80,6 @@
   <class>soot.shimple.Shimple</class>
   <class>soot.shimple.ShimpleTransformer</class>
   <class>soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder</class>
-  <class>soot.ShortType</class>
-  <class>soot.UShortType</class>
-  <class>soot.DecimalType</class>
   <class>soot.jimple.toolkits.pointer.SideEffectTagger</class>
   <class>soot.jimple.spark.SparkTransformer</class>
   <class>soot.jimple.toolkits.invoke.StaticInliner</class>
@@ -112,11 +98,9 @@
   <class>soot.jimple.toolkits.scalar.FieldStaticnessCorrector</class>
   <class>soot.jimple.toolkits.scalar.MethodStaticnessCorrector</class>
   <class>soot.jimple.toolkits.scalar.IdentityOperationEliminator</class>
-  <class>soot.UnknownType</class>
   <class>soot.jimple.toolkits.scalar.UnreachableCodeEliminator</class>
   <class>soot.toolkits.scalar.UnusedLocalEliminator</class>
   <class>soot.dava.toolkits.base.AST.UselessTryRemover</class>
-  <class>soot.VoidType</class>
   <class>soot.baf.WordType</class>
   <class>soot.jimple.spark.fieldrw.FieldReadTagAggregator</class>
   <class>soot.jimple.spark.fieldrw.FieldWriteTagAggregator</class>
@@ -168,10 +152,6 @@
   <class>soot.toDex.TrapSplitter</class>
   <class>soot.toDex.FastDexTrapTightener</class>
   <class>soot.jimple.toolkits.base.RenameDuplicatedClasses</class>
-  <class>soot.jimple.toolkits.typing.fast.Integer127Type</class>
-  <class>soot.jimple.toolkits.typing.fast.Integer1Type</class>
-  <class>soot.jimple.toolkits.typing.fast.Integer32767Type</class>
-  <class>soot.jimple.toolkits.typing.fast.BottomType</class>
   <class>soot.dexpler.TrapMinimizer</class>
   <class>soot.toolkits.scalar.SmartLocalDefsPool</class>
   <class>soot.jimple.spark.internal.PublicAndProtectedAccessibility</class>

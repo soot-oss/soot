@@ -37,12 +37,13 @@ public class UByteType extends PrimType implements DotNetINumber, IIntLikeType {
   public static final int HASHCODE = 0x213D1329;
   public static final int MIN_VALUE = 0;
   public static final int MAX_VALUE = 255;
+  public static final UByteType INSTANCE = new UByteType();
 
-  public UByteType(Singletons.Global g) {
+  private UByteType() {
   }
 
   public static UByteType v() {
-    return G.v().soot_UByteType();
+    return INSTANCE;
   }
 
   @Override

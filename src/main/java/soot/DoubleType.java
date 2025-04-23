@@ -34,12 +34,13 @@ import soot.util.Switch;
 public class DoubleType extends PrimType implements DotNetINumber, IJavaType {
 
   public static final int HASHCODE = 0x4B9D7242;
+  public static final DoubleType INSTANCE = new DoubleType();
 
-  public DoubleType(Singletons.Global g) {
+  private DoubleType() {
   }
 
   public static DoubleType v() {
-    return G.v().soot_DoubleType();
+    return INSTANCE;
   }
 
   @Override

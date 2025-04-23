@@ -35,12 +35,13 @@ import soot.util.Switch;
 public class CharType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
   public static final int HASHCODE = 0x739EA474;
+  public static final CharType INSTANCE = new CharType();
 
-  public CharType(Singletons.Global g) {
+  private CharType() {
   }
 
   public static CharType v() {
-    return G.v().soot_CharType();
+    return INSTANCE;
   }
 
   @Override
