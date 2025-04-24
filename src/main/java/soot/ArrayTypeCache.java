@@ -1,8 +1,5 @@
 package soot;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
 /*-
  * #%L
@@ -27,6 +24,11 @@ import java.util.function.Function;
  */
 
 import heros.solver.Pair;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
 import soot.Singletons.Global;
 
 /**
