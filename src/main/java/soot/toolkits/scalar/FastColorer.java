@@ -218,11 +218,13 @@ public class FastColorer {
     // Maps a local to its interfering locals.
     final Map<Local, Set<Local>> localToLocals;
     final List<Local> locals;
+    private boolean useArraySet;
 
     public UnitInterferenceGraph(Body body, Map<Local, ? extends Object> localToGroup, LiveLocals liveLocals,
         ExceptionalUnitGraph unitGraph) {
 
       this.locals = new ArrayList<Local>(body.getLocals());
+      this.useArraySet = locals.size() <= 15;
       this.localToLocals = new HashMap<Local, Set<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
       // Go through code, noting interferences
@@ -287,7 +289,7 @@ public class FastColorer {
       // l1 -> l2
       Set<Local> locals = localToLocals.get(l1);
       if (locals == null) {
-        locals = new ArraySet<Local>();
+        locals = createLocalSet();
         localToLocals.put(l1, locals);
       }
       locals.add(l2);
@@ -295,10 +297,18 @@ public class FastColorer {
       // l2 -> l1
       locals = localToLocals.get(l2);
       if (locals == null) {
-        locals = new ArraySet<Local>();
+        locals = createLocalSet();
         localToLocals.put(l2, locals);
       }
       locals.add(l1);
+    }
+
+    protected Set<Local> createLocalSet() {
+      if (useArraySet) {
+        return new ArraySet<>();
+      } else {
+        return new HashSet<>();
+      }
     }
 
     public int getInterferenceCount(Local l) {
