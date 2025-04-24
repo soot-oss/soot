@@ -1,5 +1,6 @@
 package soot;
 
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -36,9 +37,9 @@ import soot.Singletons.Global;
  * @author Marc Miltenberger
  */
 public class ArrayTypeCache {
-  private final Map<Pair<Type, Integer>, ArrayType> cache = new HashMap<>();
+  protected final Map<Pair<Type, Integer>, ArrayType> cache = new HashMap<>();
 
-  private final Function<Pair<Type, Integer>, ArrayType> mapping = new Function<Pair<Type, Integer>, ArrayType>() {
+  protected final Function<Pair<Type, Integer>, ArrayType> mapping = new Function<Pair<Type, Integer>, ArrayType>() {
 
     @Override
     public ArrayType apply(Pair<Type, Integer> t) {
@@ -72,14 +73,17 @@ public class ArrayTypeCache {
 
   /**
    * Returns a potentially cached array type of the given dimensions
-   * @param baseType the base type (array element type)
-   * @param numDimensions the number of dimensions
+   * 
+   * @param baseType
+   *          the base type (array element type)
+   * @param numDimensions
+   *          the number of dimensions
    * @return the array type
    */
-  //We are doing this synchronized now to ensure correctness:
-  //Already creating a new ArrayType adds it to the type numberer, so we must not create
-  //the same array type twice. Furthermore, the ConcurrentHashMap's computeIfAbsent
-  //method does not allow the update of other keys in while a value is computed.
+  // We are doing this synchronized now to ensure correctness:
+  // Already creating a new ArrayType adds it to the type numberer, so we must not create
+  // the same array type twice. Furthermore, the ConcurrentHashMap's computeIfAbsent
+  // method does not allow the update of other keys in while a value is computed.
   public synchronized ArrayType getArrayType(Type baseType, int numDimensions) {
     Pair<Type, Integer> pairSearch = new Pair<>(baseType, numDimensions);
     ArrayType res = cache.get(pairSearch);
