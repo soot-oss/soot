@@ -215,6 +215,7 @@ public class FastColorer {
   /** Implementation of a unit interference graph. */
   private static class UnitInterferenceGraph {
 
+    private static final int THESHOLD_HASHSET = 15;
     // Maps a local to its interfering locals.
     final Map<Local, Set<Local>> localToLocals;
     final List<Local> locals;
@@ -224,7 +225,7 @@ public class FastColorer {
         ExceptionalUnitGraph unitGraph) {
 
       this.locals = new ArrayList<Local>(body.getLocals());
-      this.useArraySet = locals.size() <= 15;
+      this.useArraySet = locals.size() <= THESHOLD_HASHSET;
       this.localToLocals = new HashMap<Local, Set<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
       // Go through code, noting interferences
