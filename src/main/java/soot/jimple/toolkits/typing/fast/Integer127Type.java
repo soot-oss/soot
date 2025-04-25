@@ -4,7 +4,7 @@ package soot.jimple.toolkits.typing.fast;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) Soot contributers
+ * Copyright (C) 2008 Ben Bellamy
  *
  * All rights reserved.
  * %%
