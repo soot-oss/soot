@@ -42,16 +42,15 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 
 /**
- * Array elements in .NET can be loaded by reference. 
- * Since Jimple does not support this semantic, we generate Wrapper classes.
+ * Array elements in .NET can be loaded by reference. Since Jimple does not support this semantic, we generate Wrapper
+ * classes.
  * 
- * Note that in .NET, array covariance is allowed for reference types:
- * <code>
+ * Note that in .NET, array covariance is allowed for reference types: <code>
    string[] strings = new string[10];
    object[] objects = strings; 
-   </code>
- * However, for value types, this is not the case.
- * So all the reference types may share one object[] wrapper, but value types need their own.
+   </code> However, for value types, this is not the case. So all the reference types may share one object[] wrapper, but
+ * value types need their own.
+ * 
  * @author Marc Miltenberger
  */
 public class ArrayByReferenceWrapperGenerator {
@@ -77,6 +76,7 @@ public class ArrayByReferenceWrapperGenerator {
     Type arrType = elementType.makeArrayType();
 
     SootClass sc = scene.makeSootClass(name, Modifier.FINAL | Modifier.STATIC);
+    Scene.v().addClass(sc);
     sc.setApplicationClass();
     SootField arrayField = scene.makeSootField("array", arrType);
     arrayField.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
