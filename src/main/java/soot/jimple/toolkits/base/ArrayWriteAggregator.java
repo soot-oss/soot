@@ -142,8 +142,9 @@ public class ArrayWriteAggregator extends BodyTransformer {
     Set<SootClass> initializedClasses;
 
     public void copyTo(ArraySafetyFact dest) {
-      if (initializedClasses != null)
+      if (initializedClasses != null) {
         dest.initializedClasses = new HashSet<>(initializedClasses);
+      }
     }
 
     public void intersection(ArraySafetyFact in1, ArraySafetyFact in2) {
@@ -211,14 +212,17 @@ public class ArrayWriteAggregator extends BodyTransformer {
     public boolean equals(Object obj) {
       if (this == obj)
         return true;
-      if (!(obj instanceof ArraySafetyFact))
+      if (!(obj instanceof ArraySafetyFact)) {
         return false;
+      }
       ArraySafetyFact other = (ArraySafetyFact) obj;
       if (initializedClasses == null) {
-        if (other.initializedClasses != null)
+        if (other.initializedClasses != null) {
           return false;
-      } else if (!initializedClasses.equals(other.initializedClasses))
+        }
+      } else if (!initializedClasses.equals(other.initializedClasses)) {
         return false;
+      }
       return true;
     }
 
@@ -255,16 +259,20 @@ public class ArrayWriteAggregator extends BodyTransformer {
     // The rest is the same anyway.
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
-      if (!(obj instanceof Result))
+      }
+      if (!(obj instanceof Result)) {
         return false;
+      }
       Result other = (Result) obj;
       if (assign == null) {
-        if (other.assign != null)
+        if (other.assign != null) {
           return false;
-      } else if (!assign.equals(other.assign))
+        }
+      } else if (!assign.equals(other.assign)) {
         return false;
+      }
       return true;
     }
 

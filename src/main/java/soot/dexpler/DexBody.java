@@ -29,6 +29,8 @@ package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
+import com.google.common.collect.ArrayListMultimap;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,8 +65,6 @@ import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
 import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ArrayListMultimap;
 
 import soot.ArrayType;
 import soot.Body;
