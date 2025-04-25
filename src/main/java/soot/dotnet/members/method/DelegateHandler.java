@@ -199,38 +199,6 @@ public class DelegateHandler {
 
       }
       {
-        // public static List<Delegate> remove(List<Delegate> my, List<Delegate> other)
-        // {
-        // List<Delegate> list = new List<Delegate>(my);
-        //
-        // int idx = list.Count;
-        // idx -= other.Count;
-        // if (other.Count == 0)
-        // return list;
-        // Delegate firstOtherElem = other[0];
-        // next:
-        // while (idx >= 0)
-        // {
-        // idx = list.LastIndexOf(firstOtherElem, idx);
-        // if (idx == -1)
-        // break;
-        // int i = idx;
-        // int x = 0;
-        // while (i < idx + other.Count)
-        // {
-        // if (list[i] != other[x])
-        // {
-        // idx--;
-        // goto next;
-        // }
-        // x++;
-        // i++;
-        // }
-        // list.RemoveRange(idx, other.Count);
-        // break;
-        // }
-        // return list;
-        // }
 
         SootMethod removeFrom = sc.makeSootMethod(REMOVE_METHOD_NAME, Arrays.asList(delegateInterface.getType()),
             delegateInterface.getType(), Modifier.PUBLIC);
