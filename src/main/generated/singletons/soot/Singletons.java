@@ -286,6 +286,20 @@ public class Singletons {
     	instance_soot_jimple_toolkits_base_Aggregator = null;
     }
 
+    private soot.jimple.toolkits.base.ArrayWriteAggregator instance_soot_jimple_toolkits_base_ArrayWriteAggregator;
+    public soot.jimple.toolkits.base.ArrayWriteAggregator soot_jimple_toolkits_base_ArrayWriteAggregator() {
+        if (instance_soot_jimple_toolkits_base_ArrayWriteAggregator == null) {
+	       	synchronized (this) {
+		        if (instance_soot_jimple_toolkits_base_ArrayWriteAggregator == null)
+	        		instance_soot_jimple_toolkits_base_ArrayWriteAggregator = new soot.jimple.toolkits.base.ArrayWriteAggregator(g);
+	       	}
+       	}
+        return instance_soot_jimple_toolkits_base_ArrayWriteAggregator;
+    }
+    protected void release_soot_jimple_toolkits_base_ArrayWriteAggregator() {
+    	instance_soot_jimple_toolkits_base_ArrayWriteAggregator = null;
+    }
+
     private soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker;
     public soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker() {
         if (instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker == null) {

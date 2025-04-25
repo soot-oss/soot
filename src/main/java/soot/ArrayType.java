@@ -149,6 +149,15 @@ public class ArrayType extends RefLikeType {
     }
   }
 
+  /**
+   * Returns the base type of the array, which in itself must not be an array type
+   * 
+   * @return the base type
+   */
+  public Type getBaseType() {
+    return baseType;
+  }
+
   @Override
   public ArrayType makeArrayType() {
     return ArrayType.v(baseType, numDimensions + 1);
