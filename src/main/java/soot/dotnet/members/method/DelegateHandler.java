@@ -199,38 +199,6 @@ public class DelegateHandler {
 
       }
       {
-        //public static List<Delegate> remove(List<Delegate> my, List<Delegate> other)
-        //{
-        //    List<Delegate> list = new List<Delegate>(my);
-        //
-        //    int idx = list.Count;
-        //    idx -= other.Count;
-        //    if (other.Count == 0)
-        //        return list;
-        //    Delegate firstOtherElem = other[0];
-        //next:
-        //    while (idx >= 0)
-        //    {
-        //        idx = list.LastIndexOf(firstOtherElem, idx);
-        //        if (idx == -1)
-        //            break;
-        //        int i = idx;
-        //        int x = 0;
-        //        while (i < idx + other.Count)
-        //        {
-        //            if (list[i] != other[x])
-        //            {
-        //                idx--;
-        //                goto next;
-        //            }
-        //            x++;
-        //            i++;
-        //        }
-        //        list.RemoveRange(idx, other.Count);
-        //        break;
-        //    }
-        //    return list;
-        //}
 
         SootMethod removeFrom = sc.makeSootMethod(REMOVE_METHOD_NAME, Arrays.asList(delegateInterface.getType()),
             delegateInterface.getType(), Modifier.PUBLIC);
@@ -379,7 +347,7 @@ public class DelegateHandler {
 
         Stmt backedge = j.newIfStmt(j.newEqExpr(lclIndex, lclCount), retS);
         bodyInvoke.getUnits().add(backedge);
-        //loop
+        // loop
         List<Value> parameters = new ArrayList<>();
         Local objFromDelegate = j.newLocal("objFromDelegate", sc.getObjectType());
         bodyInvoke.getLocals().add(objFromDelegate);
@@ -428,7 +396,7 @@ public class DelegateHandler {
 
     protected void createSingleConstructor(Scene sc, SootClass actualDelegateClass) {
       Jimple j = Jimple.v();
-      //we use a long type as a parameter to distinguish it from the one generate by the .NET compiler
+      // we use a long type as a parameter to distinguish it from the one generate by the .NET compiler
       mCtorSingle
           = sc.makeSootMethod("<init>", Arrays.asList(sc.getObjectType(), LongType.v()), VoidType.v(), Modifier.PUBLIC);
 
@@ -485,6 +453,7 @@ public class DelegateHandler {
       }
       delegateInterface
           = sc.makeSootClass(DELEGATE_INTERFACE_CLASSNAME, Modifier.PUBLIC | Modifier.INTERFACE | Modifier.ABSTRACT);
+      Scene.v().addClass(delegateInterface);
       delegateInterface.setApplicationClass();
 
       SootMethod combineWith = sc.makeSootMethod(COMBINE_WITH_METHOD_NAME, Arrays.asList(delegateInterface.getType()),
@@ -513,7 +482,7 @@ public class DelegateHandler {
       Unit retTwo = j.newReturnStmt(bd.getParameterLocal(0));
       uc.add(j.newIfStmt(j.newEqExpr(bd.getParameterLocal(0), NullConstant.v()), retOne));
       uc.add(j.newIfStmt(j.newEqExpr(bd.getParameterLocal(1), NullConstant.v()), retTwo));
-      //            assign.setRightOp(j.newInterfaceInvokeExpr((Local) inv.getArg(0), combineMRef, inv.getArg(1)));
+      // assign.setRightOp(j.newInterfaceInvokeExpr((Local) inv.getArg(0), combineMRef, inv.getArg(1)));
       uc.add(j.newAssignStmt(l,
           j.newInterfaceInvokeExpr(bd.getParameterLocal(0), combineWith.makeRef(), bd.getParameterLocal(1))));
       uc.add(j.newReturnStmt(l));
@@ -529,6 +498,7 @@ public class DelegateHandler {
         return dh;
       }
       SootClass delegateHolder = sc.makeSootClass(DELEGATE_HOLDER_CLASSNAME, Modifier.PUBLIC);
+      Scene.v().addClass(delegateHolder);
       delegateHolder.setApplicationClass();
 
       SootField instanceField = sc.makeSootField(INSTANCE_FIELDNAME, sc.getObjectType(), Modifier.PUBLIC);

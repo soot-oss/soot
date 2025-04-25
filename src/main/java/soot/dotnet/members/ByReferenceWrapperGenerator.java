@@ -61,6 +61,7 @@ public class ByReferenceWrapperGenerator {
       return rt.getSootClass();
     }
     SootClass sc = scene.makeSootClass(name, Modifier.FINAL | Modifier.STATIC);
+    scene.addClass(sc);
     sc.setApplicationClass();
     SootField r = scene.makeSootField(WRAPPER_FIELD_NAME, RefType.v("System.Object"));
     r.setModifiers(Modifier.PUBLIC);
