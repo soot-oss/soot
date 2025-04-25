@@ -72,6 +72,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.base.ArrayWriteAggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.ConstantCastEliminator;
 import soot.jimple.toolkits.scalar.CopyPropagator;
@@ -93,10 +94,9 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * Instructions .NET Method Body (with ILSpy AST) -> BlockContainer -> Block -> IL Instruction
  */
 public class DotnetBody {
-  //we need to split thanks to the style imposed line length limit. Great.
+  // we need to split thanks to the style imposed line length limit. Great.
   private static final String INIT_ARRAY
-      = "<System.Runtime.CompilerServices.RuntimeHelpers:" + 
-        "void InitializeArray(System.Array,System.RuntimeFieldHandle)>";
+      = "<System.Runtime.CompilerServices.RuntimeHelpers:" + "void InitializeArray(System.Array,System.RuntimeFieldHandle)>";
   private final ProtoIlInstructions.IlFunctionMsg ilFunctionMsg;
   private JimpleBody jb;
 
@@ -160,10 +160,11 @@ public class DotnetBody {
 
     UnconditionalBranchFolder.v().transform(jb);
 
-    //LocalPacker.v().transform(jb);
+    // LocalPacker.v().transform(jb);
     // UnusedLocalEliminator.v().transform(jb);
 
     TrapTightener.v().transform(jb);
+    ArrayWriteAggregator.v().transform(jb);
     Aggregator.v().transform(jb);
 
     ConditionalBranchFolder.v().transform(jb);
@@ -265,7 +266,7 @@ public class DotnetBody {
   }
 
   private void introduceStructConstructorCalls(JimpleBody jb) {
-    //in some cases, we do not generate <init> calls for structs (when default values are used)
+    // in some cases, we do not generate <init> calls for structs (when default values are used)
 
     SimpleLocalUses uses = null;
     UnitPatchingChain uchain = jb.getUnits();
