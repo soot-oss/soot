@@ -89,7 +89,7 @@ public class CatchHandlerBody {
     jb.getUnits().addAll(handlerBody.getUnits());
     jb.getTraps().addAll(handlerBody.getTraps());
 
-    Trap trap = Jimple.v().newTrap(Scene.v().getSootClass(exceptionVariable.getType().toString()),
+    Trap trap = Jimple.v().newTrap(Scene.v().forceResolve(exceptionVariable.getType().toString(), SootClass.HIERARCHY),
         tryBody.getUnits().getFirst(), tryBody.getUnits().getLast(), excStmt);
     jb.getTraps().add(trap);
 

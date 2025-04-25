@@ -289,6 +289,7 @@ public class ArrayWriteAggregator extends BodyTransformer {
 
       // usages that might be causing the array to be visible to the outside world
       List<Unit> exposingUses = new ArrayList<>();
+      List<Unit> allConstantWrites = new ArrayList<>();
       for (UnitValueBoxPair use : allUses) {
         if (ld.getDefsOfAt(lclArray, use.unit).size() != 1) {
           // we have a problem, we cannot apply our algorithm here
@@ -314,6 +315,8 @@ public class ArrayWriteAggregator extends BodyTransformer {
                     return null;
                   }
                   allWrites.add(cassign);
+                } else {
+                  allConstantWrites.add(cassign);
                 }
 
               } else {
@@ -369,6 +372,7 @@ public class ArrayWriteAggregator extends BodyTransformer {
         Value rop = assignWrite.getRightOp();
         allDefs.addAll(ld.getDefsOfAt((Local) rop, write));
       }
+      allDefs.addAll(allConstantWrites);
       Unit dominatesAll = null;
       for (Unit d : allDefs) {
         if (d instanceof IdentityStmt) {
@@ -384,7 +388,7 @@ public class ArrayWriteAggregator extends BodyTransformer {
       final boolean insertNewArrayBefore;
       if (dominatesAll != null) {
         insertNewArrayAt = dominatesAll;
-        insertNewArrayBefore = false;
+        insertNewArrayBefore = allConstantWrites.contains(dominatesAll);
       } else {
         insertNewArrayAt = null;
         insertNewArrayBefore = true;
