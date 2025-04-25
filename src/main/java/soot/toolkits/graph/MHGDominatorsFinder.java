@@ -211,4 +211,27 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     }
     return true;
   }
+
+  @Override
+  public boolean isDominatingAllGiven(N node, Collection<N> given) {
+    int c = indexOfAssert(node);
+    for (N n : given) {
+      BitSet s1 = getDominatorsBitSet(n);
+      if (!s1.get(c)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public boolean isDominatedByAny(N node, Collection<N> dominators) {
+    BitSet s1 = getDominatorsBitSet(node);
+    for (N n : dominators) {
+      if (s1.get(indexOfAssert(n))) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

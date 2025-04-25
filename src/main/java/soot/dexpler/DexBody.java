@@ -149,6 +149,7 @@ import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.base.ArrayWriteAggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.ConstantCastEliminator;
 import soot.jimple.toolkits.scalar.CopyPropagator;
@@ -864,10 +865,10 @@ public class DexBody {
 
           public Type promote(Type tlow, Type thigh) {
             if (thigh instanceof BooleanType && tlow instanceof IntegerType) {
-              //Well... in Android's dex code, 0 = false and everything else is true
-              //While the compiler should never generate such code, there can be found code like this in the wild.
-              //And Android accepts it!
-              //Thus, we allow the type promotion and then correct the boolean constants
+              // Well... in Android's dex code, 0 = false and everything else is true
+              // While the compiler should never generate such code, there can be found code like this in the wild.
+              // And Android accepts it!
+              // Thus, we allow the type promotion and then correct the boolean constants
               return thigh;
             }
             if (tlow instanceof IntegerType) {
@@ -896,7 +897,7 @@ public class DexBody {
           public java.util.Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
             Collection<Type> s = super.lcas(a, b, useWeakObjectType);
             if (s.isEmpty()) {
-              //when we merge a null constant and anything non-primitive, we use the non-primitive type
+              // when we merge a null constant and anything non-primitive, we use the non-primitive type
               if (a instanceof Integer1Type && b instanceof RefLikeType) {
                 return Collections.singleton(b);
               }
@@ -921,7 +922,7 @@ public class DexBody {
         }
         if (lcas.size() == 1) {
           Type e = lcas.iterator().next();
-          //Only one element, we can check this directly
+          // Only one element, we can check this directly
           if (!constraints.contains(e)) {
             // No typing left
             Set<Type> res = new HashSet<>(constraints);
@@ -954,9 +955,9 @@ public class DexBody {
 
           @Override
           protected boolean eliminateUnnecessaryCasts() {
-            //We do not want to eliminate casts that were explicitly present in the original dex code
-            //Otherwise we have problems in certain edge cases, were our typings are suboptimal 
-            //with respect to float/int and double/long
+            // We do not want to eliminate casts that were explicitly present in the original dex code
+            // Otherwise we have problems in certain edge cases, were our typings are suboptimal
+            // with respect to float/int and double/long
             return false;
           }
 
@@ -977,8 +978,8 @@ public class DexBody {
               return r;
             }
 
-            //we need to this since some types are final already. Otherwise,
-            //we get no casts at all.
+            // we need to this since some types are final already. Otherwise,
+            // we get no casts at all.
             if (target instanceof PrimType && from instanceof PrimType) {
               if (!from.isAllowedInFinalCode()) {
                 from = from.getDefaultFinalType();
@@ -1151,6 +1152,7 @@ public class DexBody {
     TrapTightener.v().transform(jBody);
     TrapMinimizer.v().transform(jBody);
     // LocalSplitter.v().transform(jBody);
+    ArrayWriteAggregator.v().transform(jBody);
     Aggregator.v().transform(jBody);
     // UnusedLocalEliminator.v().transform(jBody);
     // TypeAssigner.v().transform(jBody);
@@ -1272,7 +1274,7 @@ public class DexBody {
       if (u instanceof GotoStmt) {
         GotoStmt gt = (GotoStmt) u;
         if (gt.getTarget() == gt) {
-          //There are crazy cases like that in the wild.
+          // There are crazy cases like that in the wild.
           NopStmt nop = jimple.newNopStmt();
           units.insertBefore(nop, u);
           gt.setTarget(nop);
@@ -1286,8 +1288,8 @@ public class DexBody {
   }
 
   /**
-   * In Dex, every int is a valid boolean.
-   * 0 = false and everything else = true.
+   * In Dex, every int is a valid boolean. 0 = false and everything else = true.
+   * 
    * @param arg
    * @return
    */
@@ -1333,8 +1335,8 @@ public class DexBody {
                 if (!(definiteType instanceof PrimType) || localsSingleDefinitions.getOrDefault(prev, 0) == 1) {
                   prev.setType(definiteType);
                 } else {
-                  //Since there are multiple definitions, e.g. for a byte retrieved from a byte[],
-                  //there could be another non-distinct definition which uses the same variable as an int.
+                  // Since there are multiple definitions, e.g. for a byte retrieved from a byte[],
+                  // there could be another non-distinct definition which uses the same variable as an int.
                   PrimType[] wider = DexType.getWiderTypes((PrimType) definiteType);
                   if (wider.length == 1) {
                     prev.setType(wider[0]);
@@ -1396,8 +1398,8 @@ public class DexBody {
           NegExpr neg = ((NegExpr) rop);
           Value op = neg.getOp();
           Type t = null;
-          //As for ints, shorts etc.: the type assigner
-          //already handles this automatically
+          // As for ints, shorts etc.: the type assigner
+          // already handles this automatically
           if (isDouble) {
             t = DoubleType.v();
           } else if (isFloat) {

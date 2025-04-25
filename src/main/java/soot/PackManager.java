@@ -93,6 +93,7 @@ import soot.jimple.toolkits.annotation.purity.PurityAnalysis;
 import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger;
 import soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator;
 import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.base.ArrayWriteAggregator;
 import soot.jimple.toolkits.base.RenameDuplicatedClasses;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.toolkits.callgraph.CallGraphPack;
@@ -184,6 +185,7 @@ public class PackManager {
       p.add(new Transform("jb.ese", EmptySwitchEliminator.v()));
       p.add(new Transform("jb.ls", LocalSplitter.v()));
       p.add(new Transform("jb.sils", SharedInitializationLocalSplitter.v()));
+      p.add(new Transform("jb.awa", ArrayWriteAggregator.v()));
       p.add(new Transform("jb.a", Aggregator.v()));
       p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));
       p.add(new Transform("jb.tr", TypeAssigner.v()));
