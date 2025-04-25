@@ -210,8 +210,9 @@ public class ArrayWriteAggregator extends BodyTransformer {
 
     @Override
     public boolean equals(Object obj) {
-      if (this == obj)
+      if (this == obj) {
         return true;
+      }
       if (!(obj instanceof ArraySafetyFact)) {
         return false;
       }
