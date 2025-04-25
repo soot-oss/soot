@@ -45,12 +45,19 @@ public class ReachableMethods {
   protected Iterator<Edge> edgeSource;
   protected CallGraph cg;
   protected Filter filter;
+  private boolean allowUnconnectedMethods;
 
   public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter) {
+    this(graph, entryPoints, filter, false);
+  }
+
+  public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter,
+      boolean allowUnconnectedMethods) {
     this.filter = filter;
     this.cg = graph;
-    addMethods(entryPoints);
+    this.allowUnconnectedMethods = allowUnconnectedMethods;
     this.unprocessedMethods = reachables.reader();
+    addMethods(entryPoints);
     this.edgeSource = (filter == null) ? graph.listener() : filter.wrap(graph.listener());
   }
 
@@ -82,7 +89,7 @@ public class ReachableMethods {
       Edge e = edgeSource.next();
       if (e != null) {
         MethodOrMethodContext srcMethod = e.getSrc();
-        if (srcMethod != null && !e.isInvalid() && set.contains(srcMethod)) {
+        if (srcMethod != null && !e.isInvalid() && (allowUnconnectedMethods || set.contains(srcMethod))) {
           addMethod(e.getTgt());
         }
       }
