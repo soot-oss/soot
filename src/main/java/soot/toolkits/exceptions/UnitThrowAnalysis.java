@@ -25,6 +25,8 @@ package soot.toolkits.exceptions;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
+import heros.solver.IDESolver;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,7 +35,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import heros.solver.IDESolver;
 import soot.Body;
 import soot.DecimalConstant;
 import soot.FastHierarchy;
