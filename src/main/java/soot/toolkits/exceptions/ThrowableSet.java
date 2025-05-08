@@ -40,7 +40,6 @@ import soot.RefType;
 import soot.Scene;
 import soot.Singletons;
 import soot.SootClass;
-import soot.Unit;
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.options.Options;
 
@@ -934,22 +933,22 @@ public class ThrowableSet {
   }
 
   /**
-   * A package-private method to provide unit tests with access to the {@link RefLikeType} objects which represent the
-   * <code>Throwable</code> types included in this set.
+   * Provides access to the {@link RefLikeType} objects which represent the <code>Throwable</code> types included in this
+   * set.
    *
    * @return an unmodifiable collection view of the <code>Throwable</code> types in this set.
    */
-  Collection<RefLikeType> typesIncluded() {
+  public Collection<RefLikeType> typesIncluded() {
     return exceptionsIncluded;
   }
 
   /**
-   * A package-private method to provide unit tests with access to the {@link RefLikeType} objects which represent the
-   * <code>Throwable</code> types excluded from this set.
+   * Provides access to the {@link RefLikeType} objects which represent the <code>Throwable</code> types excluded from this
+   * set.
    *
    * @return an unmodifiable collection view of the <code>Throwable</code> types excluded from this set.
    */
-  Collection<AnySubType> typesExcluded() {
+  public Collection<AnySubType> typesExcluded() {
     return exceptionsExcluded;
   }
 
