@@ -1,5 +1,13 @@
 package soot.toolkits.exceptions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,15 +34,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import heros.solver.IDESolver;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.DecimalConstant;
 import soot.FastHierarchy;
@@ -44,6 +43,7 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.PatchingChain;
+import soot.PrimType;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
@@ -1061,9 +1061,11 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseCastExpr(CastExpr expr) {
-      result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       Type fromType = expr.getOp().getType();
       Type toType = expr.getCastType();
+      if (!(fromType instanceof PrimType) || !(toType instanceof PrimType)) {
+        result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+      }
       if (toType instanceof RefLikeType) {
         // fromType might still be unknown when we are called,
         // but toType will have a value.
