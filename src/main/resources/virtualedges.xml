@@ -664,6 +664,177 @@
 		</targets>
 	</edge>
 
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void getCurrentLocation(java.lang.String,android.os.CancellationSignal,java.util.concurrent.Executor,java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void getCurrentLocation(java.lang.String,android.location.LocationRequest,android.os.CancellationSignal,java.util.concurrent.Executor,java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="4" />
+		</targets>
+	</edge>
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestSingleUpdate(java.lang.String,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestSingleUpdate(android.location.Criteria,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="2" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="2" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="2" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,long,float,java.util.concurrent.Executor,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="4" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(long,float,android.location.Criteria,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(long,float,android.location.Criteria,java.util.concurrent.Executor,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="4" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,android.location.LocationRequest,java.util.concurrent.Executor,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestFlush(java.lang.String,android.location.LocationListener,int)" />
+		<targets>
+			<direct
+				subsignature="void onFlushComplete(int)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
 	<!-- GSON -->
 	<edge>
 		<source invoketype="instance"
