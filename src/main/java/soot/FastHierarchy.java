@@ -22,6 +22,9 @@ package soot;
  * #L%
  */
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,9 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.spark.internal.TypeManager;
