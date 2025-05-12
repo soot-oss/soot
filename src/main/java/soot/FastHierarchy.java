@@ -109,7 +109,7 @@ public class FastHierarchy {
   protected final RefType cilIequatable1;
   protected final RefType cilIformattable;
 
-  protected class Interval {
+  public static class Interval {
     int lower;
     int upper;
 
@@ -152,6 +152,17 @@ public class FastHierarchy {
     }
     classToInterval.putIfAbsent(c, r);
     return start;
+  }
+
+  /**
+   * Returns the interval for a given class or null
+   * 
+   * @param clz
+   *          the class
+   * @return the interval for the class, or null if no interval was found
+   */
+  public Interval getIntervalForClass(SootClass clz) {
+    return classToInterval.get(clz);
   }
 
   /**
