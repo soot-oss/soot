@@ -1,8 +1,5 @@
 package soot;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -36,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.spark.internal.TypeManager;
@@ -110,8 +110,8 @@ public class FastHierarchy {
   protected final RefType cilIformattable;
 
   public static class Interval {
-    int lower;
-    int upper;
+    public int lower;
+    public int upper;
 
     public Interval() {
     }
