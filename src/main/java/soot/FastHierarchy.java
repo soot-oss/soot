@@ -1,8 +1,5 @@
 package soot;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,6 +21,9 @@ import com.google.common.collect.Table;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -109,9 +109,9 @@ public class FastHierarchy {
   protected final RefType cilIequatable1;
   protected final RefType cilIformattable;
 
-  protected class Interval {
-    int lower;
-    int upper;
+  public static class Interval {
+    public int lower;
+    public int upper;
 
     public Interval() {
     }
@@ -152,6 +152,17 @@ public class FastHierarchy {
     }
     classToInterval.putIfAbsent(c, r);
     return start;
+  }
+
+  /**
+   * Returns the interval for a given class or null
+   * 
+   * @param clz
+   *          the class
+   * @return the interval for the class, or null if no interval was found
+   */
+  public Interval getIntervalForClass(SootClass clz) {
+    return classToInterval.get(clz);
   }
 
   /**
