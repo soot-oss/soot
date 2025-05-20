@@ -254,4 +254,9 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     u.addAllTagsOf(context.getCurrentUnit());
     out.add(u);
   }
+
+  @Override
+  public boolean hasDefiniteMethodTarget() {
+    return false;
+  }
 }

@@ -686,7 +686,7 @@ public class ThrowableSet {
           }
           // At runtime, thrownType might be instantiated by any
           // of thrownBase's subtypes, so:
-          else if (h.canStoreType(thrownBase, catcher) || h.canStoreType(catcher, thrownBase)) {
+          else if (h.canStoreType(thrownBase, catcher)) {
             return true;
           }
         }
@@ -1013,28 +1013,28 @@ public class ThrowableSet {
     /**
      * <code>ThrowableSet</code> representing all possible Throwables.
      */
-    final ThrowableSet ALL_THROWABLES;
+    public final ThrowableSet ALL_THROWABLES;
     /**
      * <code>ThrowableSet</code> containing all the asynchronous and virtual machine errors, which may be thrown by any
      * bytecode instruction at any point in the computation.
      */
-    final ThrowableSet VM_ERRORS;
+    public final ThrowableSet VM_ERRORS;
     /**
      * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
      * field.
      */
-    final ThrowableSet RESOLVE_FIELD_ERRORS;
+    public final ThrowableSet RESOLVE_FIELD_ERRORS;
     /**
      * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
      * non-static method.
      */
-    final ThrowableSet RESOLVE_METHOD_ERRORS;
+    public final ThrowableSet RESOLVE_METHOD_ERRORS;
     /**
      * <code>ThrowableSet</code> containing all the exceptions which may be thrown by instructions that have the potential to
      * cause a new class to be loaded and initialized (including UnsatisfiedLinkError, which is raised at runtime rather than
      * linking type).
      */
-    final ThrowableSet INITIALIZATION_ERRORS;
+    public final ThrowableSet INITIALIZATION_ERRORS;
     /**
      * This map stores all referenced <code>ThrowableSet</code>s.
      */
