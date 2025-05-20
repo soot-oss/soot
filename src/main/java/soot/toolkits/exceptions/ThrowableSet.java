@@ -686,7 +686,7 @@ public class ThrowableSet {
           }
           // At runtime, thrownType might be instantiated by any
           // of thrownBase's subtypes, so:
-          else if (h.canStoreType(thrownBase, catcher)) {
+          else if (h.canStoreType(thrownBase, catcher) || h.canStoreType(catcher, thrownBase)) {
             return true;
           }
         }
