@@ -1,6 +1,5 @@
 package soot.toolkits.exceptions;
 
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -53,6 +52,7 @@ import soot.RefType;
 import soot.Scene;
 import soot.ShortConstant;
 import soot.Singletons;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Trap;
@@ -411,10 +411,15 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
               curStmtSet = mightThrow(inv.getMethod(), doneSet);
             } else {
               RefType refType = (RefType) type;
-              Set<SootMethod> possibleCallees = fasthierarchy.resolveAbstractDispatch(refType.getSootClass(), sm);
-              curStmtSet = EMPTY;
-              for (SootMethod possibleCallee : possibleCallees) {
-                curStmtSet = curStmtSet.add(mightThrow(possibleCallee, doneSet));
+              SootClass sc = refType.getSootClass();
+              if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
+                Set<SootMethod> possibleCallees = fasthierarchy.resolveAbstractDispatch(sc, sm);
+                curStmtSet = EMPTY;
+                for (SootMethod possibleCallee : possibleCallees) {
+                  curStmtSet = curStmtSet.add(mightThrow(possibleCallee, doneSet));
+                }
+              } else {
+                curStmtSet = mightThrow(inv.getMethod(), doneSet);
               }
             }
           }
