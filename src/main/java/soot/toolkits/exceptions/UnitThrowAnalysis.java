@@ -413,7 +413,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
               RefType refType = (RefType) type;
               SootClass sc = refType.getSootClass();
               if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
-                Set<SootMethod> possibleCallees = fasthierarchy.resolveAbstractDispatch(sc, sm);
+                Set<SootMethod> possibleCallees = fasthierarchy.resolveAbstractDispatch(sc, inv.getMethodRef());
                 curStmtSet = EMPTY;
                 for (SootMethod possibleCallee : possibleCallees) {
                   curStmtSet = curStmtSet.add(mightThrow(possibleCallee, doneSet));
