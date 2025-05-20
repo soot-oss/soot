@@ -35,8 +35,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.lang.model.type.ArrayType;
-
 import soot.Body;
 import soot.DecimalConstant;
 import soot.FastHierarchy;
@@ -406,10 +404,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
               fasthierarchy = Scene.v().getOrMakeFastHierarchy();
             }
             Type type = inst.getBase().getType();
-            if (type instanceof ArrayType) {
-              // e.g. Object.clone
-              curStmtSet = mightThrow(inv.getMethod(), doneSet);
-            } else {
+            if (type instanceof RefType) {
               RefType refType = (RefType) type;
               SootClass sc = refType.getSootClass();
               if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
@@ -421,6 +416,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
               } else {
                 curStmtSet = mightThrow(inv.getMethod(), doneSet);
               }
+            } else {
+              // e.g. Object.clone
+              curStmtSet = mightThrow(inv.getMethod(), doneSet);
             }
           }
         } else {
