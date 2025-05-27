@@ -153,4 +153,9 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
     out.add(u);
     u.addAllTagsOf(context.getCurrentUnit());
   }
+
+  @Override
+  public boolean hasDefiniteMethodTarget() {
+    return false;
+  }
 }

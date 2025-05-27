@@ -415,6 +415,11 @@ public class ExceptionTestUtility {
 						UNDECLARED_THROWABLE_EXCEPTION,
 						UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION, }));
 		ALL_TEST_THROWABLES = Collections.unmodifiableSet(tempTest);
+		
+		for (RefType t : ALL_TEST_THROWABLES) {
+		  Scene.v().forceResolve(t.getClassName(), SootClass.SIGNATURES);
+		}
+		Scene.v().forceResolve("java.lang.NumberFormatException", SootClass.SIGNATURES);
 
 		temp = new ExceptionHashSet<RefLikeType>();
 		temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));

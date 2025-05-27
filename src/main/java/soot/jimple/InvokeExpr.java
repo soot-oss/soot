@@ -65,4 +65,11 @@ public interface InvokeExpr extends Expr {
 
   ValueBox getArgBox(int index);
 
+  /**
+   * Returns true if and only if a statically resolvable method is definitely the target of the method call
+   * 
+   * @return whether there is only one specific method that can be called using this invoke expression
+   */
+  boolean hasDefiniteMethodTarget();
+
 }

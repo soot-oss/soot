@@ -139,4 +139,9 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     out.add(u);
     u.addAllTagsOf(context.getCurrentUnit());
   }
+
+  @Override
+  public boolean hasDefiniteMethodTarget() {
+    return true;
+  }
 }

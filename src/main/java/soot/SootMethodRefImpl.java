@@ -325,9 +325,9 @@ public class SootMethodRefImpl implements SootMethodRef {
     body.insertIdentityStmts(declaringClass);
 
     // exc = new Error
-    RefType runtimeExceptionType = RefType.v("java.lang.Error");
+    RefType runtimeExceptionType = RefType.v("java.lang.NoSuchMethodError");
     if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      runtimeExceptionType = RefType.v(DotNetBasicTypes.SYSTEM_EXCEPTION);
+      runtimeExceptionType = RefType.v(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION);
     }
     Local exceptionLocal = lg.generateLocal(runtimeExceptionType);
     AssignStmt assignStmt = jimp.newAssignStmt(exceptionLocal, jimp.newNewExpr(runtimeExceptionType));
