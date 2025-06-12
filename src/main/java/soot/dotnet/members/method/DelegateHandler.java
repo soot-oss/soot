@@ -494,8 +494,9 @@ public class DelegateHandler {
 
     protected static synchronized SootClass createDelegateHolder(Scene sc) {
       SootClass dh = sc.getSootClassUnsafe(DELEGATE_HOLDER_CLASSNAME, false);
-      if (dh != null)
+      if (dh != null) {
         return dh;
+      }
       dh = sc.makeSootClass(DELEGATE_HOLDER_CLASSNAME, Modifier.PUBLIC);
       SootClass delegateHolder = dh;
       Scene.v().addClass(delegateHolder);
