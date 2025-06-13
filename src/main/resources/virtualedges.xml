@@ -271,6 +271,24 @@
 		</targets>
 	</edge>
 	<edge>
+		<source invoketype="instance"
+			declaringclass="java.lang.ThreadGroup"
+			subsignature="void &lt;init&gt;(java.lang.String)" />
+		<targets>
+			<direct subsignature="void uncaughtException(java.lang.Thread,java.lang.Throwable)"
+				target-position="base" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="java.lang.ThreadGroup"
+			subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.String)" />
+		<targets>
+			<direct subsignature="void uncaughtException(java.lang.Thread,java.lang.Throwable)"
+				target-position="base" />
+		</targets>
+	</edge>
+	<edge>
 		<source invoketype="static"
 			signature="&lt;java.lang.Thread: void setDefaultUncaughtExceptionHandler(java.lang.Thread$UncaughtExceptionHandler)&gt;" />
 		<targets>
