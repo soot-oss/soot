@@ -447,7 +447,7 @@ public class DelegateHandler {
     }
 
     public static synchronized SootClass createDelegateInterface(Scene sc) {
-      SootClass delegateInterface = sc.getSootClassUnsafe(DELEGATE_INTERFACE_CLASSNAME);
+      SootClass delegateInterface = sc.getSootClassUnsafe(DELEGATE_INTERFACE_CLASSNAME, false);
       if (delegateInterface != null) {
         return delegateInterface;
       }
@@ -493,11 +493,12 @@ public class DelegateHandler {
     }
 
     protected static synchronized SootClass createDelegateHolder(Scene sc) {
-      SootClass dh = sc.getSootClassUnsafe(DELEGATE_HOLDER_CLASSNAME);
+      SootClass dh = sc.getSootClassUnsafe(DELEGATE_HOLDER_CLASSNAME, false);
       if (dh != null) {
         return dh;
       }
-      SootClass delegateHolder = sc.makeSootClass(DELEGATE_HOLDER_CLASSNAME, Modifier.PUBLIC);
+      dh = sc.makeSootClass(DELEGATE_HOLDER_CLASSNAME, Modifier.PUBLIC);
+      SootClass delegateHolder = dh;
       Scene.v().addClass(delegateHolder);
       delegateHolder.setApplicationClass();
 
