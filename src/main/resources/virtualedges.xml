@@ -337,6 +337,16 @@
 		</targets>
 	</edge>
 
+	<edge>
+		<source invoketype="instance"
+			declaringclass="java.io.ObjectInputStream"
+			subsignature="void registerValidation(java.io.ObjectInputValidation,int)" />
+		<targets>
+			<direct
+				subsignature="void validateObject()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
 	<!-- callback summaries automatically detected from real-world applications. 
 		previously, soot failed to add any edges into these callback functions. -->
 
