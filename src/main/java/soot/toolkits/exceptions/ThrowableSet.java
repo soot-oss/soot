@@ -90,7 +90,12 @@ import soot.options.Options;
 public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
-  private final SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
+  
+  	/**
+	 * A reference to java.lang.Object. Not final to allow subclasses to use a
+	 * different class here, e.g., when analyzing .net programs.
+	 */
+  protected SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
 
   /**
    * Set of exception types included within the set.
