@@ -220,9 +220,11 @@ import soot.toolkits.exceptions.ThrowableSet.Pair;
  */
 public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
+  private static final int MAX_DEFAULT_DEPTH = 25;
   protected final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
   protected final ThrowableSet EMPTY = ThrowableSet.Manager.v().EMPTY;
   protected final ThrowableSet ALL_THROWABLES = ThrowableSet.Manager.v().ALL_THROWABLES;
+  protected FastHierarchy fasthierarchy = null;
 
   // Cache the response to mightThrowImplicitly():
   private final ThrowableSet implicitThrowExceptions = ThrowableSet.Manager.v().VM_ERRORS
@@ -350,14 +352,30 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
    *          method whose exceptions are to be returned.
    * @param doneSet
    *          The set of methods that were already processed
-   *
+   * 
    * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
    */
   protected ThrowableSet mightThrow(final SootMethod sm, Set<SootMethod> doneSet) {
+    return mightThrow(sm, doneSet, MAX_DEFAULT_DEPTH);
+  }
+
+  /**
+   * Returns the set of types that might be thrown as a result of calling the specified method.
+   *
+   * @param sm
+   *          method whose exceptions are to be returned.
+   * @param doneSet
+   *          The set of methods that were already processed
+   * @param depth
+   *          The maximum depth to use
+   * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
+   */
+  protected ThrowableSet mightThrow(final SootMethod sm, Set<SootMethod> doneSet, int depth) {
     // Do not run in loops
-    if (!doneSet.add(sm)) {
+    if (!doneSet.add(sm) || depth < 0) {
       return EMPTY;
     }
+    int nextDepth = depth - 1;
 
     // If we don't have body, we silently ignore the method. This is
     // unsound, but would otherwise always bloat our result set.
@@ -387,7 +405,6 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     ThrowableSet methodSet = EMPTY;
-    FastHierarchy fasthierarchy = null;
 
     for (Unit u : methodBody.getUnits()) {
       if (u instanceof Stmt) {
@@ -397,28 +414,25 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         if (stmt.containsInvokeExpr()) {
           InvokeExpr inv = stmt.getInvokeExpr();
           if (inv.hasDefiniteMethodTarget() || !(inv instanceof InstanceInvokeExpr)) {
-            curStmtSet = mightThrow(inv.getMethod(), doneSet);
+            curStmtSet = mightThrow(inv.getMethod(), doneSet, nextDepth);
           } else {
             InstanceInvokeExpr inst = (InstanceInvokeExpr) inv;
-            if (fasthierarchy == null) {
-              fasthierarchy = Scene.v().getOrMakeFastHierarchy();
-            }
             Type type = inst.getBase().getType();
             if (type instanceof RefType) {
               RefType refType = (RefType) type;
               SootClass sc = refType.getSootClass();
               if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
-                Set<SootMethod> possibleCallees = fasthierarchy.resolveAbstractDispatch(sc, inv.getMethodRef());
+                Set<SootMethod> possibleCallees = getCallees(stmt, sc, inv.getMethodRef());
                 curStmtSet = EMPTY;
                 for (SootMethod possibleCallee : possibleCallees) {
-                  curStmtSet = curStmtSet.add(mightThrow(possibleCallee, doneSet));
+                  curStmtSet = curStmtSet.add(mightThrow(possibleCallee, doneSet, nextDepth));
                 }
               } else {
-                curStmtSet = mightThrow(inv.getMethod(), doneSet);
+                curStmtSet = mightThrow(inv.getMethod(), doneSet, nextDepth);
               }
             } else {
               // e.g. Object.clone
-              curStmtSet = mightThrow(inv.getMethod(), doneSet);
+              curStmtSet = mightThrow(inv.getMethod(), doneSet, nextDepth);
             }
           }
         } else {
@@ -441,6 +455,16 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     return methodSet;
+  }
+
+  protected Set<SootMethod> getCallees(Stmt stmt, SootClass sc, SootMethodRef methodRef) {
+    FastHierarchy fh = fasthierarchy;
+    if (fh == null) {
+      fh = Scene.v().getOrMakeFastHierarchy();
+      fasthierarchy = fh;
+    }
+
+    return fh.resolveAbstractDispatch(sc, methodRef);
   }
 
   private static final IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
