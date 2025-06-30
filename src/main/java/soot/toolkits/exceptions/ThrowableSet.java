@@ -90,11 +90,11 @@ import soot.options.Options;
 public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
-  
-  	/**
-	 * A reference to java.lang.Object. Not final to allow subclasses to use a
-	 * different class here, e.g., when analyzing .net programs.
-	 */
+
+  /**
+   * A reference to java.lang.Object. Not final to allow subclasses to use a different class here, e.g., when analyzing .net
+   * programs.
+   */
   protected SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
 
   /**
@@ -1155,7 +1155,10 @@ public class ThrowableSet {
       // hack to allow Soot to analyze older class libraries
       // (UnsupportedClassVersionError was added in JDK 1.2).
       if (!Options.v().j2me()) {
-        resolveClassErrorSet.add(AnySubType.v(Scene.v().getRefTypeUnsafe("java.lang.ClassFormatError")));
+        RefType e = scene.getRefTypeUnsafe("java.lang.ClassFormatError");
+        if (e != null) {
+          resolveClassErrorSet.add(AnySubType.v(e));
+        }
       }
 
       resolveClassErrorSet.add(scene.getRefTypeUnsafe("java.lang.IllegalAccessError"));
@@ -1181,7 +1184,10 @@ public class ThrowableSet {
       // ExceptionInInitializerError):
       //
       Set<RefLikeType> initializationErrorSet = new HashSet<>();
-      initializationErrorSet.add(AnySubType.v(scene.getRefTypeUnsafe("java.lang.Error")));
+      RefType e = scene.getRefTypeUnsafe("java.lang.Error");
+      if (e != null) {
+        initializationErrorSet.add(AnySubType.v(e));
+      }
       INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet, null);
     }
 
