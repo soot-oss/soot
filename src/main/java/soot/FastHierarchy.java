@@ -710,7 +710,8 @@ public class FastHierarchy {
       }
 
       if (!resolved.contains(concreteType)) {
-        SootMethod resolvedMethod = resolveMethod(concreteType, m, false, resolved);
+        SootMethod resolvedMethod = resolveMethod(concreteType, m.getDeclaringClass(), m.getName(), m.getParameterTypes(),
+            m.getReturnType(), false, resolved, m.getSubSignature());
         if (resolvedMethod != null) {
           ret.add(resolvedMethod);
         }
@@ -891,17 +892,23 @@ public class FastHierarchy {
       methodSignature = subsignature;
     }
 
-    {
-      SootMethod resolvedMethod = typeToVtbl.get(baseType, methodSignature);
-      if (resolvedMethod != null) {
-        return resolvedMethod;
-      }
-    }
-
     // When there is no proper dispatch found, we simply return null to let the caller decide what to do
     SootMethod candidate = null;
     boolean calleeExist = declaringClass.getMethodUnsafe(subsignature) != null;
     for (SootClass concreteType = baseType; concreteType != null;) {
+      SootMethod previouslyResolvedMethod = typeToVtbl.get(concreteType, methodSignature);
+      if (previouslyResolvedMethod != null) {
+        if (!previouslyResolvedMethod.getDeclaringClass().isInterface()) {
+          typeToVtbl.put(concreteType, methodSignature, previouslyResolvedMethod);
+          return previouslyResolvedMethod;
+        } else {
+          // Hmm... we might have another, more specific implementation in one of our interfaces (see comments below
+          // for default interfaces)
+          candidate = previouslyResolvedMethod;
+          break;
+        }
+      }
+
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
       if (candidate != null) {
         if (!calleeExist || isVisible(concreteType, declaringClass, candidate.getModifiers())) {
@@ -959,7 +966,10 @@ public class FastHierarchy {
       ignoreList.addAll(interfaceIgnoreList);
     }
 
-    if (candidate != null) {
+    if (candidate != null &&
+    // We cannot use it in the vtable, since others might ask for
+    // concrete methods
+        !candidate.isAbstract()) {
       typeToVtbl.put(baseType, methodSignature, candidate);
     }
     return candidate;
