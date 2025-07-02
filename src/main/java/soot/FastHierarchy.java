@@ -899,7 +899,7 @@ public class FastHierarchy {
       SootMethod previouslyResolvedMethod = typeToVtbl.get(concreteType, methodSignature);
       if (previouslyResolvedMethod != null) {
         if (!previouslyResolvedMethod.getDeclaringClass().isInterface()) {
-          typeToVtbl.put(concreteType, methodSignature, previouslyResolvedMethod);
+          typeToVtbl.put(baseType, methodSignature, previouslyResolvedMethod);
           return previouslyResolvedMethod;
         } else {
           // Hmm... we might have another, more specific implementation in one of our interfaces (see comments below
