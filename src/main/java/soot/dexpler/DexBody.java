@@ -950,8 +950,8 @@ public class DexBody {
       }
 
       protected CastInsertionUseVisitor createCastInsertionUseVisitor(ITyping tg,
-          soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly) {
-        return new CastInsertionUseVisitor(countOnly, jBody, tg, h) {
+          soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly, int maxCasts) {
+        return new CastInsertionUseVisitor(countOnly, jBody, tg, h, maxCasts) {
 
           @Override
           protected boolean eliminateUnnecessaryCasts() {
