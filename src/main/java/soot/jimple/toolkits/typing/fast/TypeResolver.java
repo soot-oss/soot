@@ -486,6 +486,10 @@ public class TypeResolver {
         if (n < g) {
           castCount.set(n);
           r = tg;
+          if (n == 0) {
+            // We can't be better than this
+            break;
+          }
         }
       }
       return r;
@@ -498,7 +502,12 @@ public class TypeResolver {
 
             @Override
             public void run() {
-              int n = insertCasts(tg, h, true, castCount.get());
+              final int prevBest = castCount.get();
+              if (prevBest == 0) {
+                // We can't be better than this
+                return;
+              }
+              int n = insertCasts(tg, h, true, prevBest);
               while (true) {
                 int t = castCount.get();
                 if (n < t) {
