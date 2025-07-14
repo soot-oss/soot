@@ -265,6 +265,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     Chain<Unit> units = body.getUnits();
     Map<Unit, ThrowableSet> unitToUncaughtThrowables = new LinkedHashMap<Unit, ThrowableSet>(units.size());
     Map<Unit, Collection<ExceptionDest>> result = null;
+    final ThrowableSet EMPTY = ThrowableSet.Manager.v().EMPTY;
 
     // Record the caught exceptions.
     for (Trap trap : body.getTraps()) {
@@ -278,7 +279,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
         }
 
         ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
-        if (!catchableAs.getCaught().equals(ThrowableSet.Manager.v().EMPTY)) {
+        if (!catchableAs.getCaught().equals(EMPTY)) {
           result = addDestToMap(result, unit, trap, catchableAs.getCaught());
           unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
         } else {

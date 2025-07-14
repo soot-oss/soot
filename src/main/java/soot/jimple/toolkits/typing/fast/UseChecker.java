@@ -166,14 +166,14 @@ public class UseChecker extends AbstractStmtSwitch {
     this.cache = cache;
   }
 
-  public void check(ITyping tg, IUseVisitor uv) {
+  public void check(ITyping tg, IUseVisitor uv, Iterator<Unit> i) {
     if (tg == null) {
       throw new RuntimeException("null typing passed to useChecker");
     }
 
     this.tg = tg;
     this.uv = uv;
-    for (Iterator<Unit> i = this.jb.getUnits().snapshotIterator(); i.hasNext();) {
+    while (i.hasNext()) {
       if (uv.finish()) {
         return;
       }
@@ -439,7 +439,7 @@ public class UseChecker extends AbstractStmtSwitch {
           // base type is
           et = bt;
           if (logger.isDebugEnabled()) {
-            //This can happen in rare cases in Android for int/float and long/double arrays
+            // This can happen in rare cases in Android for int/float and long/double arrays
             logger.debug(
                 "Could not find any indication on the array type of " + stmt + " in " + jb.getMethod().getSignature(),
                 ", assuming its base type is " + bt);

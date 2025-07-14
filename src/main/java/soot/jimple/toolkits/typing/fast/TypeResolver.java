@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -55,6 +56,7 @@ import soot.Scene;
 import soot.ShortType;
 import soot.Type;
 import soot.Unit;
+import soot.UnitPatchingChain;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -199,10 +201,10 @@ public class TypeResolver {
       return;
     }
 
-    int[] castCount = new int[1];
+    AtomicInteger castCount = new AtomicInteger();
     ITyping tg = this.minCasts(sigma, bh, castCount);
-    if (castCount[0] > 0) {
-      this.insertCasts(tg, bh, false);
+    if (castCount.get() > 0) {
+      this.insertCasts(tg, bh, false, Integer.MAX_VALUE);
     }
 
     final BottomType bottom = BottomType.v();
@@ -247,13 +249,15 @@ public class TypeResolver {
     private final boolean countOnly;
     private int count;
     protected boolean eliminateUnnecessaryCasts = eliminateUnnecessaryCasts();
+    private final int maximumCasts;
 
-    public CastInsertionUseVisitor(boolean countOnly, JimpleBody jb, ITyping tg, IHierarchy h) {
+    public CastInsertionUseVisitor(boolean countOnly, JimpleBody jb, ITyping tg, IHierarchy h, int maximumCasts) {
       this.jb = jb;
       this.tg = tg;
       this.h = h;
 
       this.countOnly = countOnly;
+      this.maximumCasts = maximumCasts;
       this.count = 0;
     }
 
@@ -283,6 +287,9 @@ public class TypeResolver {
       }
 
       this.count++;
+      if (count > maximumCasts) {
+        return op;
+      }
 
       if (countOnly || needCast == NeedCastResult.DISCOURAGED_TARGET_TYPE) {
         return op;
@@ -367,7 +374,7 @@ public class TypeResolver {
 
     @Override
     public boolean finish() {
-      return false;
+      return count >= maximumCasts;
     }
   }
 
@@ -389,7 +396,7 @@ public class TypeResolver {
         }
         tg = sigma.iterator().next();
         uv.typingChanged = false;
-        uc.check(tg, uv);
+        uc.check(tg, uv, this.jb.getUnits().snapshotIterator());
         if (uv.fail) {
           return null;
         }
@@ -437,10 +444,11 @@ public class TypeResolver {
     return null;
   }
 
-  private int insertCasts(ITyping tg, IHierarchy h, boolean countOnly) {
+  private int insertCasts(ITyping tg, IHierarchy h, boolean countOnly, int maximumCasts) {
     UseChecker uc = createUseChecker(this.jb);
-    CastInsertionUseVisitor uv = createCastInsertionUseVisitor(tg, h, countOnly);
-    uc.check(tg, uv);
+    CastInsertionUseVisitor uv = createCastInsertionUseVisitor(tg, h, countOnly, maximumCasts);
+    UnitPatchingChain units = this.jb.getUnits();
+    uc.check(tg, uv, countOnly ? units.iterator() : units.snapshotIterator());
     return uv.getCount();
   }
 
@@ -453,26 +461,40 @@ public class TypeResolver {
    *          the hierarchy
    * @param countOnly
    *          whether to count only (no actual changes)
+   * @param maximumCasts
+   *          the maximum casts to insert (aborts when max casts have been reached). Only use when countOnly is true,
+   *          otherwise use MAX_INT
    * @return the visitor
    */
-  protected CastInsertionUseVisitor createCastInsertionUseVisitor(ITyping tg, IHierarchy h, boolean countOnly) {
-    return new CastInsertionUseVisitor(countOnly, this.jb, tg, h);
+  protected CastInsertionUseVisitor createCastInsertionUseVisitor(ITyping tg, IHierarchy h, boolean countOnly,
+      int maximumCasts) {
+    return new CastInsertionUseVisitor(countOnly, this.jb, tg, h, maximumCasts);
   }
 
-  private ITyping minCasts(Collection<ITyping> sigma, IHierarchy h, int[] count) {
-    count[0] = -1;
+  private ITyping minCasts(Collection<ITyping> sigma, IHierarchy h, AtomicInteger castCount) {
+    castCount.set(Integer.MAX_VALUE);
     ITyping r = null;
-    if (sigma.size() <= SINGLE_THREAD_LIMIT) {
+    int sz = sigma.size();
+    if (sz <= SINGLE_THREAD_LIMIT) {
+      if (sz == 0) {
+        // compatibility
+        castCount.set(-1);
+      }
       for (ITyping tg : sigma) {
-        int n = this.insertCasts(tg, h, true);
-        if (count[0] == -1 || n < count[0]) {
-          count[0] = n;
+        int n = this.insertCasts(tg, h, true, castCount.get());
+        int g = castCount.get();
+        if (n < g) {
+          castCount.set(n);
           r = tg;
+          if (n == 0) {
+            // We can't be better than this
+            break;
+          }
         }
       }
       return r;
     } else {
-      ExecutorService executionService = Executors.newFixedThreadPool(NUM_CORES);
+      ExecutorService executionService = Executors.newFixedThreadPool(Math.max(NUM_CORES, sigma.size()));
       ITyping[] minTyping = new ITyping[1];
       try {
         for (ITyping tg : sigma) {
@@ -480,13 +502,23 @@ public class TypeResolver {
 
             @Override
             public void run() {
-              int n = insertCasts(tg, h, true);
-              if (count[0] == -1 || n < count[0]) {
-                synchronized (count) {
-                  if (count[0] == -1 || n < count[0]) {
-                    count[0] = n;
+              final int prevBest = castCount.get();
+              if (prevBest == 0) {
+                // We can't be better than this
+                return;
+              }
+              int n = insertCasts(tg, h, true, prevBest);
+              while (true) {
+                int t = castCount.get();
+                if (n < t) {
+                  if (castCount.compareAndSet(t, n)) {
+                    // update successful!
                     minTyping[0] = tg;
+                    break;
                   }
+                } else {
+                  // worse than the current typing
+                  break;
                 }
               }
             }
