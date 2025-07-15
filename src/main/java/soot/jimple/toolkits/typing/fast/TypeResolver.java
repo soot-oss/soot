@@ -494,7 +494,7 @@ public class TypeResolver {
       }
       return r;
     } else {
-      ExecutorService executionService = Executors.newFixedThreadPool(Math.max(NUM_CORES, sigma.size()));
+      ExecutorService executionService = Executors.newFixedThreadPool(Math.min(NUM_CORES, sigma.size()));
       ITyping[] minTyping = new ITyping[1];
       try {
         for (ITyping tg : sigma) {
