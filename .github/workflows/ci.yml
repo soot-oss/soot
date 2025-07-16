@@ -64,7 +64,7 @@ jobs:
           server-password: MAVEN_CENTRAL_TOKEN            # Env var that holds the central publisher user token
           gpg-private-key: ${{ secrets.gpg_private_key }} # Substituted with the value stored in the referenced secret
           gpg-passphrase: MAVEN_GPG_PASSPHRASE            # Env var that holds the key's passphrase
-      - name: Deploy Boomerang
+      - name: Deploy Soot
         run: mvn -B -U clean deploy -P deploy -DskipTests -Dcheckstyle.failOnViolation=true
         env:
           MAVEN_USERNAME: ${{ secrets.nexus_username }}
