@@ -25,47 +25,51 @@ jobs:
         if: always()
         run: |
           mvn -B --no-transfer-progress clean license:check-file-header -Dlicence-check.failOnMissingHeader=true
-    
+
   BuildAndTest:
     name: Build and Test with java ${{ matrix.java_version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: ['11', '17', '21']
+        java_version: [ '11', '17', '21' ]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Use Java ${{ matrix.java_version }}
-      uses: actions/setup-java@v1
-      with:
-        java-version: ${{ matrix.java_version }}
-    - name: Build and test Java ${{ matrix.java_version }}
-      run: |
-        mvn -B --no-transfer-progress clean test -PJava${{ matrix.java_version }}
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Use Java ${{ matrix.java_version }}
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.java_version }}
+      - name: Build and test Java ${{ matrix.java_version }}
+        run: |
+          mvn -B --no-transfer-progress clean test -PJava${{ matrix.java_version }}
+  
 
-        
   DeployArtifacts:
     name: Deploy artifacts to Maven Central
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/umbrella'
-    needs: [BuildAndTest]
+    needs: [ BuildAndTest ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use Java 11
-        uses: actions/setup-java@v1
+      - name: Set up Java
+        uses: actions/setup-java@v4
         with:
-          java-version: '11'
-      - name: Deploy artifacts
-        uses: samuelmeuli/action-maven-publish@v1
-        with:
-          gpg_private_key: ${{ secrets.gpg_private_key }}
-          gpg_passphrase: ${{ secrets.gpg_passphrase }}
-          nexus_username: ${{ secrets.nexus_username }}
-          nexus_password: ${{ secrets.nexus_password }}
-          maven_args: "-DskipTests -Dcheckstyle.failOnViolation=true"
-      
+          distribution: adopt
+          java-package: jdk
+          java-version: 11
+          server-id: central                              # must match the serverId configured for the nexus-staging-maven-plugin
+          server-username: MAVEN_USERNAME                 # Env var that holds the central publisher user name
+          server-password: MAVEN_CENTRAL_TOKEN            # Env var that holds the central publisher user token
+          gpg-private-key: ${{ secrets.gpg_private_key }} # Substituted with the value stored in the referenced secret
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE            # Env var that holds the key's passphrase
+      - name: Deploy Boomerang
+        run: mvn -B -U clean deploy -P deploy -DskipTests -Dcheckstyle.failOnViolation=true
+        env:
+          MAVEN_USERNAME: ${{ secrets.nexus_username }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.nexus_password }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}
       # has to happen in same job, so that the documention was already created (would require another checkout and maven run otherwise)
       - name: Get Version
         id: version
