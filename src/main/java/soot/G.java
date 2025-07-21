@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import soot.dava.internal.SET.SETBasicBlock;
 import soot.dava.internal.SET.SETNode;
@@ -112,7 +113,7 @@ public class G extends Singletons {
   public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
   public int Timer_count;
   public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<Scene, ClassHierarchy>();
-  public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<MethodContext, MethodContext>();
+  public final Map<MethodContext, MethodContext> MethodContext_map = new ConcurrentHashMap<MethodContext, MethodContext>();
 
   public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis = null;
 
