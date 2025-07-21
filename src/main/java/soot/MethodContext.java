@@ -65,12 +65,12 @@ public final class MethodContext implements MethodOrMethodContext {
     }
     MethodContext probe = new MethodContext(method, context);
     Map<MethodContext, MethodContext> map = G.v().MethodContext_map;
-    MethodContext ret = map.get(probe);
+    MethodContext ret = map.putIfAbsent(probe, probe);
     if (ret == null) {
-      map.put(probe, probe);
       return probe;
+    } else {
+      return ret;
     }
-    return ret;
   }
 
   public String toString() {
