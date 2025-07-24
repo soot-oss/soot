@@ -1768,7 +1768,11 @@ public class DexBody {
       while (!instructionAtAddress(endAddress).getInstruction().getOpcode().canThrow()) {
         e = instructionAtAddress(endAddress);
         endAddressU = endAddress;
-        endAddress = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
+        Integer res = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
+        if (res == null) {
+          break;
+        }
+        endAddress = res;
       }
       if (endAddress < startAddress) {
         // eliminated the trap entirely
