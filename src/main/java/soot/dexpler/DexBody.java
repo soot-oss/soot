@@ -34,6 +34,7 @@ import com.google.common.collect.ArrayListMultimap;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,8 +43,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;
@@ -169,6 +172,7 @@ import soot.jimple.toolkits.typing.fast.ITypingStrategy;
 import soot.jimple.toolkits.typing.fast.Integer1Type;
 import soot.jimple.toolkits.typing.fast.NeedCastResult;
 import soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor;
+import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.options.JBOptions;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
@@ -837,6 +841,78 @@ public class DexBody {
     handleKnownDexTypes(b, jimple);
     handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
     Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
+    boolean arrayConstraintsNecessary = false;
+    for (Unit u : b.getUnits()) {
+      Stmt s = (Stmt) u;
+      if (s instanceof DefinitionStmt) {
+        DefinitionStmt def = (DefinitionStmt) s;
+        Value lop = def.getLeftOp();
+        if (lop instanceof Local && lop.getType() == unknownType && !maybetypeConstraints.containsKey((Local) lop)) {
+          Local write = (Local) lop;
+          Type ropType = def.getRightOp().getType();
+          // Since all Java arrays are Serializable, Clonable and Object, the same Jimple local can be used among different
+          // array types without splitting
+          if (ropType instanceof ArrayType) {
+            Collection<Type> p = definiteConstraints.computeIfAbsent(write, new Function<Local, Collection<Type>>() {
+
+              @Override
+              public Collection<Type> apply(Local t) {
+                LinkedList<Type> types = new LinkedList<>();
+                types.add(ropType);
+                return types;
+              }
+            });
+            p.retainAll(Arrays.asList(ropType));
+            if (p.size() == 0) {
+              arrayConstraintsNecessary = true;
+            }
+          }
+        }
+      }
+    }
+    if (arrayConstraintsNecessary) {
+      RefType weakObject = new WeakObjectType("java.lang.Object");
+      RefType serializable = RefType.v("java.io.Serializable");
+      RefType clonable = RefType.v("java.lang.Cloneable");
+      RefType weakSerializable = null;
+      RefType weakCloneable = null;
+      for (Unit u : b.getUnits()) {
+        Stmt s = (Stmt) u;
+        // Performance optimization: Only if another method or field requires us to use the Cloneable or Serializable,
+        // we consider this as a valid type.
+        if (s.containsInvokeExpr()) {
+          for (Type p : s.getInvokeExpr().getMethodRef().getParameterTypes()) {
+            if (p == clonable) {
+              weakCloneable = new WeakObjectType("java.lang.Cloneable");
+            } else if (p == serializable) {
+              weakSerializable = new WeakObjectType("java.io.Serializable");
+            }
+          }
+        } else if (s.containsFieldRef()) {
+          Type ft = s.getFieldRef().getType();
+          if (ft == clonable) {
+            weakCloneable = new WeakObjectType("java.lang.Cloneable");
+          } else if (ft == serializable) {
+            weakSerializable = new WeakObjectType("java.io.Serializable");
+          }
+        }
+      }
+
+      for (Entry<Local, Collection<Type>> key : definiteConstraints.entrySet()) {
+        Collection<Type> vs = key.getValue();
+        if (vs.isEmpty()) {
+          // incompatible arrays -> we can use Serializable/Object
+          vs.add(weakObject);
+          if (weakSerializable != null) {
+            vs.add(weakSerializable);
+          }
+          if (weakCloneable != null) {
+            vs.add(weakCloneable);
+          }
+        }
+      }
+    }
+
     for (Local l : b.getLocals()) {
       Type type = l.getType();
       if (type instanceof PrimType) {
@@ -886,10 +962,12 @@ public class DexBody {
       protected Type getDefiniteType(Local v) {
         Collection<Type> r = definiteConstraints.get(v);
         if (r != null && r.size() == 1) {
-          return r.iterator().next();
-        } else {
-          return null;
+          Type n = r.iterator().next();
+          if (!(n instanceof WeakObjectType)) {
+            return n;
+          }
         }
+        return null;
       }
 
       protected soot.jimple.toolkits.typing.fast.BytecodeHierarchy createBytecodeHierarchy() {
