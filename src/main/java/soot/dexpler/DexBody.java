@@ -69,6 +69,7 @@ import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanConstant;
@@ -1735,6 +1736,7 @@ public class DexBody {
    */
   private void addTraps() {
     final Jimple jimple = Jimple.v();
+    boolean removedOneTrap = false;
     for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
       int startAddress = tryItem.getStartCodeAddress();
       int length = tryItem.getCodeUnitCount(); // .getTryLength();
@@ -1745,7 +1747,7 @@ public class DexBody {
       // but also potentially easier to type.
       // I've encountered a case where due too-far reaching traps, the local splitter cannot split
       // to locals, since the catch-handler uses this local, although the trap handler cannot be reached from
-      //the definition of the local.
+      // the definition of the local.
       // Therefore, want the traps as tight as possible.
       while (!s.getInstruction().getOpcode().canThrow()) {
         startAddress = instructionAtAddress.navigableKeySet().ceiling(startAddress + 1);
@@ -1767,8 +1769,9 @@ public class DexBody {
         e = instructionAtAddress(endAddress);
         endAddress = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
       }
-      if (endAddress <= startAddress) {
+      if (endAddress < startAddress) {
         // eliminated the trap entirely
+        removedOneTrap = true;
         continue;
       }
       Unit endStmt = e.getUnit();
@@ -1793,16 +1796,20 @@ public class DexBody {
           SootClass exception = ((RefType) t).getSootClass();
           DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
           if (!(instruction instanceof MoveExceptionInstruction)) {
-            logger.debug("" + String.format("First instruction of trap handler unit not MoveException but %s",
+            logger.debug(String.format("First instruction of trap handler unit not MoveException but %s",
                 instruction.getClass().getName()));
           } else {
             ((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
           }
 
-          Trap trap = jimple.newTrap(exception, beginStmt, endStmt, instruction.getUnit());
+          Unit handlerStmt = instruction.getUnit();
+          Trap trap = jimple.newTrap(exception, beginStmt, endStmt, handlerStmt);
           jBody.getTraps().add(trap);
         }
       }
+    }
+    if (removedOneTrap) {
+      getUnreachableCodeEliminator().transform(jBody);
     }
   }
 }
