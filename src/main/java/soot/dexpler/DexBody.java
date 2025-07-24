@@ -69,7 +69,6 @@ import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanConstant;
@@ -1763,10 +1762,12 @@ public class DexBody {
       // the last instruction of the try block since the smallest
       // instruction is on two bytes (nop = 0x0000).
       DexlibAbstractInstruction e = instructionAtAddress(endAddress);
-      endAddress = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
+      int endAddressU = endAddress;
+      endAddress = instructionAtAddress.navigableKeySet().floor(endAddressU - 1);
       // Narrow the traps: when the statement cannot throw, we can narrow the end
       while (!instructionAtAddress(endAddress).getInstruction().getOpcode().canThrow()) {
         e = instructionAtAddress(endAddress);
+        endAddressU = endAddress;
         endAddress = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
       }
       if (endAddress < startAddress) {
@@ -1778,7 +1779,7 @@ public class DexBody {
       // if the try block ends on the last instruction of the body, add a
       // nop instruction so Soot can include
       // the last instruction in the try block.
-      if (jBody.getUnits().getLast() == endStmt && instructionAtAddress(endAddress - 1).getUnit() == endStmt) {
+      if (jBody.getUnits().getLast() == endStmt && instructionAtAddress(endAddressU - 1).getUnit() == endStmt) {
         Unit nop = jimple.newNopStmt();
         jBody.getUnits().insertAfter(nop, endStmt);
         endStmt = nop;
