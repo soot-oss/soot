@@ -1739,7 +1739,19 @@ public class DexBody {
       int startAddress = tryItem.getStartCodeAddress();
       int length = tryItem.getCodeUnitCount(); // .getTryLength();
       int endAddress = startAddress + length; // - 1;
-      Unit beginStmt = instructionAtAddress(startAddress).getUnit();
+      DexlibAbstractInstruction s = instructionAtAddress(startAddress);
+      // Narrow the traps: when the statement cannot throw, we can take the next one
+      // This trap narrowing has multiple purposes: It not only makes the code easier to read,
+      // but also potentially easier to type.
+      // I've encountered a case where due too-far reaching traps, the local splitter cannot split
+      // to locals, since the catch-handler uses this local, although the trap handler cannot be reached from
+      //the definition of the local.
+      // Therefore, want the traps as tight as possible.
+      while (!s.getInstruction().getOpcode().canThrow()) {
+        startAddress = instructionAtAddress.navigableKeySet().ceiling(startAddress + 1);
+        s = instructionAtAddress(startAddress);
+      }
+      Unit beginStmt = s.getUnit();
       // (startAddress + length) typically points to the first byte of the
       // first instruction after the try block
       // except if there is no instruction after the try block in which
@@ -1748,7 +1760,18 @@ public class DexBody {
       // length) always points to "somewhere" in
       // the last instruction of the try block since the smallest
       // instruction is on two bytes (nop = 0x0000).
-      Unit endStmt = instructionAtAddress(endAddress).getUnit();
+      DexlibAbstractInstruction e = instructionAtAddress(endAddress);
+      endAddress = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
+      // Narrow the traps: when the statement cannot throw, we can narrow the end
+      while (!instructionAtAddress(endAddress).getInstruction().getOpcode().canThrow()) {
+        e = instructionAtAddress(endAddress);
+        endAddress = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
+      }
+      if (endAddress <= startAddress) {
+        // eliminated the trap entirely
+        continue;
+      }
+      Unit endStmt = e.getUnit();
       // if the try block ends on the last instruction of the body, add a
       // nop instruction so Soot can include
       // the last instruction in the try block.
