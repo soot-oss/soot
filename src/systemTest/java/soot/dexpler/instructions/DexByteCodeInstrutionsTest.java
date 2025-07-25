@@ -106,7 +106,7 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
     Assert.assertTrue(invokePoly instanceof VirtualInvokeExpr);
     final SootMethodRef targetMethodRef = invokePoly.getMethodRef();
     Assert.assertEquals(methodSigFromComponents(METHOD_HANDLE_CLASS, METHOD_HANDLE_INVOKE_SUBSIG),
-        targetMethodRef.getSignature());
+        "<java.lang.invoke.MethodHandle: void invoke(java.lang.String,java.lang.String>");
   }
 
   @Test
