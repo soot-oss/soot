@@ -496,6 +496,9 @@ public class UseChecker extends AbstractStmtSwitch {
     if (newType == previousType) {
       return previousType;
     }
+    if (newType instanceof ArrayType) {
+      return new WeakObjectType("java.lang.Object");
+    }
     Type choose;
     // we choose the wider one. Note that this probably still results in code which cannot be executed!
     if (TypeUtils.getValueBitSize(previousType) > TypeUtils.getValueBitSize(newType)) {

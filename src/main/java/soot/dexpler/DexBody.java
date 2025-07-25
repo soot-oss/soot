@@ -34,6 +34,7 @@ import com.google.common.collect.ArrayListMultimap;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,8 +43,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.ClassPathResolver;
@@ -169,6 +172,7 @@ import soot.jimple.toolkits.typing.fast.ITypingStrategy;
 import soot.jimple.toolkits.typing.fast.Integer1Type;
 import soot.jimple.toolkits.typing.fast.NeedCastResult;
 import soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor;
+import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.options.JBOptions;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
@@ -837,6 +841,7 @@ public class DexBody {
     handleKnownDexTypes(b, jimple);
     handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
     Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
+    handleIncompatibleDexArrayTypes(b, maybetypeConstraints, definiteConstraints);
     for (Local l : b.getLocals()) {
       Type type = l.getType();
       if (type instanceof PrimType) {
@@ -883,13 +888,16 @@ public class DexBody {
 
       }
 
+
       protected Type getDefiniteType(Local v) {
         Collection<Type> r = definiteConstraints.get(v);
         if (r != null && r.size() == 1) {
-          return r.iterator().next();
-        } else {
-          return null;
+          Type n = r.iterator().next();
+          if (!(n instanceof WeakObjectType)) {
+            return n;
+          }
         }
+        return null;
       }
 
       protected soot.jimple.toolkits.typing.fast.BytecodeHierarchy createBytecodeHierarchy() {
@@ -1286,6 +1294,86 @@ public class DexBody {
 
     return jBody;
   }
+  
+
+/**
+ * Handles cases where the array types are incompatible (any two different array types)
+ */
+  private void handleIncompatibleDexArrayTypes(Body b, MultiMap<Local, Type> maybetypeConstraints,
+      Map<Local, Collection<Type>> definiteConstraints) {
+    boolean arrayConstraintsNecessary = false;
+    UnknownType unknownType = UnknownType.v();
+    for (Unit u : b.getUnits()) {
+      Stmt s = (Stmt) u;
+      if (s instanceof DefinitionStmt) {
+        DefinitionStmt def = (DefinitionStmt) s;
+        Value lop = def.getLeftOp();
+        if (lop instanceof Local && lop.getType() == unknownType && !maybetypeConstraints.containsKey((Local) lop)) {
+          Local write = (Local) lop;
+          Type ropType = def.getRightOp().getType();
+          // Since all Java arrays are Serializable, Clonable and Object, the same Jimple local can be used among different
+          // array types without splitting
+          if (ropType instanceof ArrayType) {
+            Collection<Type> p = definiteConstraints.computeIfAbsent(write, new Function<Local, Collection<Type>>() {
+
+              @Override
+              public Collection<Type> apply(Local t) {
+                LinkedList<Type> types = new LinkedList<>();
+                types.add(ropType);
+                return types;
+              }
+            });
+            p.retainAll(Arrays.asList(ropType));
+            if (p.size() == 0) {
+              arrayConstraintsNecessary = true;
+            }
+          }
+        }
+      }
+    }
+    if (arrayConstraintsNecessary) {
+      RefType weakObject = new WeakObjectType("java.lang.Object");
+      RefType serializable = RefType.v("java.io.Serializable");
+      RefType clonable = RefType.v("java.lang.Cloneable");
+      RefType weakSerializable = null;
+      RefType weakCloneable = null;
+      for (Unit u : b.getUnits()) {
+        Stmt s = (Stmt) u;
+        // Performance optimization: Only if another method or field requires us to use the Cloneable or Serializable,
+        // we consider this as a valid type.
+        if (s.containsInvokeExpr()) {
+          for (Type p : s.getInvokeExpr().getMethodRef().getParameterTypes()) {
+            if (p == clonable) {
+              weakCloneable = new WeakObjectType("java.lang.Cloneable");
+            } else if (p == serializable) {
+              weakSerializable = new WeakObjectType("java.io.Serializable");
+            }
+          }
+        } else if (s.containsFieldRef()) {
+          Type ft = s.getFieldRef().getType();
+          if (ft == clonable) {
+            weakCloneable = new WeakObjectType("java.lang.Cloneable");
+          } else if (ft == serializable) {
+            weakSerializable = new WeakObjectType("java.io.Serializable");
+          }
+        }
+      }
+
+      for (Entry<Local, Collection<Type>> key : definiteConstraints.entrySet()) {
+        Collection<Type> vs = key.getValue();
+        if (vs.isEmpty()) {
+          // incompatible arrays -> we can use Serializable/Object
+          vs.add(weakObject);
+          if (weakSerializable != null) {
+            vs.add(weakSerializable);
+          }
+          if (weakCloneable != null) {
+            vs.add(weakCloneable);
+          }
+        }
+      }
+    }
+  }
 
   /**
    * In Dex, every int is a valid boolean. 0 = false and everything else = true.
@@ -1657,11 +1745,24 @@ public class DexBody {
    */
   private void addTraps() {
     final Jimple jimple = Jimple.v();
+    boolean removedOneTrap = false;
     for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
       int startAddress = tryItem.getStartCodeAddress();
       int length = tryItem.getCodeUnitCount(); // .getTryLength();
       int endAddress = startAddress + length; // - 1;
-      Unit beginStmt = instructionAtAddress(startAddress).getUnit();
+      DexlibAbstractInstruction s = instructionAtAddress(startAddress);
+      // Narrow the traps: when the statement cannot throw, we can take the next one
+      // This trap narrowing has multiple purposes: It not only makes the code easier to read,
+      // but also potentially easier to type.
+      // I've encountered a case where due too-far reaching traps, the local splitter cannot split
+      // to locals, since the catch-handler uses this local, although the trap handler cannot be reached from
+      // the definition of the local.
+      // Therefore, want the traps as tight as possible.
+      while (!s.getInstruction().getOpcode().canThrow()) {
+        startAddress = instructionAtAddress.navigableKeySet().ceiling(startAddress + 1);
+        s = instructionAtAddress(startAddress);
+      }
+      Unit beginStmt = s.getUnit();
       // (startAddress + length) typically points to the first byte of the
       // first instruction after the try block
       // except if there is no instruction after the try block in which
@@ -1670,11 +1771,29 @@ public class DexBody {
       // length) always points to "somewhere" in
       // the last instruction of the try block since the smallest
       // instruction is on two bytes (nop = 0x0000).
-      Unit endStmt = instructionAtAddress(endAddress).getUnit();
+      DexlibAbstractInstruction e = instructionAtAddress(endAddress);
+      int endAddressU = endAddress;
+      endAddress = instructionAtAddress.navigableKeySet().floor(endAddressU - 1);
+      // Narrow the traps: when the statement cannot throw, we can narrow the end
+      while (!instructionAtAddress(endAddress).getInstruction().getOpcode().canThrow()) {
+        e = instructionAtAddress(endAddress);
+        endAddressU = endAddress;
+        Integer res = instructionAtAddress.navigableKeySet().floor(endAddress - 1);
+        if (res == null) {
+          break;
+        }
+        endAddress = res;
+      }
+      if (endAddress < startAddress) {
+        // eliminated the trap entirely
+        removedOneTrap = true;
+        continue;
+      }
+      Unit endStmt = e.getUnit();
       // if the try block ends on the last instruction of the body, add a
       // nop instruction so Soot can include
       // the last instruction in the try block.
-      if (jBody.getUnits().getLast() == endStmt && instructionAtAddress(endAddress - 1).getUnit() == endStmt) {
+      if (jBody.getUnits().getLast() == endStmt && instructionAtAddress(endAddressU - 1).getUnit() == endStmt) {
         Unit nop = jimple.newNopStmt();
         jBody.getUnits().insertAfter(nop, endStmt);
         endStmt = nop;
@@ -1692,16 +1811,20 @@ public class DexBody {
           SootClass exception = ((RefType) t).getSootClass();
           DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
           if (!(instruction instanceof MoveExceptionInstruction)) {
-            logger.debug("" + String.format("First instruction of trap handler unit not MoveException but %s",
+            logger.debug(String.format("First instruction of trap handler unit not MoveException but %s",
                 instruction.getClass().getName()));
           } else {
             ((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
           }
 
-          Trap trap = jimple.newTrap(exception, beginStmt, endStmt, instruction.getUnit());
+          Unit handlerStmt = instruction.getUnit();
+          Trap trap = jimple.newTrap(exception, beginStmt, endStmt, handlerStmt);
           jBody.getTraps().add(trap);
         }
       }
+    }
+    if (removedOneTrap) {
+      getUnreachableCodeEliminator().transform(jBody);
     }
   }
 }
