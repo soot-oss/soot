@@ -1299,7 +1299,8 @@ public class DexBody {
 /**
  * Handles cases where the array types are incompatible (any two different array types)
  */
-  private void handleIncompatibleDexArrayTypes(Body b, MultiMap<Local, Type> maybetypeConstraints, Map<Local, Collection<Type>> definiteConstraints) {
+  private void handleIncompatibleDexArrayTypes(Body b, MultiMap<Local, Type> maybetypeConstraints,
+   Map<Local, Collection<Type>> definiteConstraints) {
     boolean arrayConstraintsNecessary = false;
     UnknownType unknownType = UnknownType.v();
     for (Unit u : b.getUnits()) {
