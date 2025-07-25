@@ -42,6 +42,7 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.Type;
 import soot.Value;
 import soot.dexpler.tags.SpecialInvokeTypeTag;
@@ -159,7 +160,8 @@ public class ExprVisitor implements ExprSwitch {
 
   @Override
   public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
-    MethodReference method = DexPrinter.toMethodReference(sie.getMethodRef());
+    SootMethodRef mr = sie.getMethodRef();
+    MethodReference method = DexPrinter.toMethodReference(mr);
     List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
     lastInvokeInstructionPosition = stmtV.getInstructionCount();
     SpecialInvokeTypeTag tg = (SpecialInvokeTypeTag) origStmt.getTag(SpecialInvokeTypeTag.NAME);
@@ -264,9 +266,20 @@ public class ExprVisitor implements ExprSwitch {
      * for final methods we build an invoke-virtual opcode, too, although the dex spec says that a virtual method is not
      * final. An alternative would be the invoke-direct opcode, but this is inconsistent with dx's output...
      */
-    MethodReference method = DexPrinter.toMethodReference(vie.getMethodRef());
+    SootMethodRef mr = vie.getMethodRef();
+    MethodReference method = DexPrinter.toMethodReference(mr);
     List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
     lastInvokeInstructionPosition = stmtV.getInstructionCount();
+    if (vie.toString().contains("invokeExact"))
+      System.out.println();
+    if (mr.getDeclaringClass().getName().equals("java.lang.invoke.MethodHandle")) {
+      String name = mr.getName();
+      if (name.equals("invoke") || name.equals("invokeExact")) {
+        stmtV.addInsn(buildInvokeInsn("INVOKE_POLYMORPHIC", method, argumentRegs), origStmt);
+
+      }
+    }
+
     stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, argumentRegs), origStmt);
   }
 
