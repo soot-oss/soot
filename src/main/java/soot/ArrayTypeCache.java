@@ -1,6 +1,5 @@
 package soot;
 
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -84,12 +83,17 @@ public class ArrayTypeCache {
   // Already creating a new ArrayType adds it to the type numberer, so we must not create
   // the same array type twice. Furthermore, the ConcurrentHashMap's computeIfAbsent
   // method does not allow the update of other keys in while a value is computed.
-  public synchronized ArrayType getArrayType(Type baseType, int numDimensions) {
+  public ArrayType getArrayType(Type baseType, int numDimensions) {
     Pair<Type, Integer> pairSearch = new Pair<>(baseType, numDimensions);
     ArrayType res = cache.get(pairSearch);
     if (res == null) {
-      res = mapping.apply(pairSearch);
-      cache.put(pairSearch, res);
+      synchronized (cache) {
+        res = cache.get(pairSearch);
+        if (res == null) {
+          res = mapping.apply(pairSearch);
+          cache.put(pairSearch, res);
+        }
+      }
     }
 
     return res;

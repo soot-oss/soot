@@ -1,5 +1,6 @@
 package soot;
 
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -881,7 +882,7 @@ public class FastHierarchy {
    *          The subsignature (can be null) to speed up the resolving process.
    * @return The concrete method o.f() to call
    */
-  private SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
+  protected SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
       final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList,
       NumberedString subsignature) {
     final NumberedString methodSignature;
