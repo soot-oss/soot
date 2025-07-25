@@ -88,7 +88,7 @@ import soot.util.StringNumberer;
 public class Scene {
   private static final Logger logger = LoggerFactory.getLogger(Scene.class);
 
-  private static final int defaultSdkVersion = 15;
+  private static final int defaultSdkVersion = 27;
   private static final Pattern arrayPattern = Pattern.compile("([^\\[\\]]*)(.*)");
 
   protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<String, RefType>();

@@ -23,11 +23,14 @@ package soot.toDex;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.reference.MethodReference;
+import org.jf.dexlib2.iface.reference.Reference;
 import org.jf.dexlib2.iface.reference.TypeReference;
+import org.jf.dexlib2.immutable.reference.ImmutableMethodProtoReference;
 
 import soot.ArrayType;
 import soot.DoubleType;
@@ -42,6 +45,7 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.Type;
 import soot.Value;
 import soot.dexpler.tags.SpecialInvokeTypeTag;
@@ -98,6 +102,8 @@ import soot.toDex.instructions.Insn22t;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
+import soot.toDex.instructions.Insn45cc;
+import soot.toDex.instructions.Insn4rcc;
 import soot.toDex.instructions.InsnWithOffset;
 import soot.util.NumberedString;
 
@@ -159,7 +165,8 @@ public class ExprVisitor implements ExprSwitch {
 
   @Override
   public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
-    MethodReference method = DexPrinter.toMethodReference(sie.getMethodRef());
+    SootMethodRef mr = sie.getMethodRef();
+    MethodReference method = DexPrinter.toMethodReference(mr);
     List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
     lastInvokeInstructionPosition = stmtV.getInstructionCount();
     SpecialInvokeTypeTag tg = (SpecialInvokeTypeTag) origStmt.getTag(SpecialInvokeTypeTag.NAME);
@@ -264,10 +271,44 @@ public class ExprVisitor implements ExprSwitch {
      * for final methods we build an invoke-virtual opcode, too, although the dex spec says that a virtual method is not
      * final. An alternative would be the invoke-direct opcode, but this is inconsistent with dx's output...
      */
-    MethodReference method = DexPrinter.toMethodReference(vie.getMethodRef());
+    SootMethodRef mr = vie.getMethodRef();
+    MethodReference method = DexPrinter.toMethodReference(mr);
     List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
     lastInvokeInstructionPosition = stmtV.getInstructionCount();
+    if (mr.getDeclaringClass().getName().equals("java.lang.invoke.MethodHandle")) {
+      String name = mr.getName();
+      if (name.equals("invoke") || name.equals("invokeExact")) {
+        stmtV.addInsn(handleMethodHandleInvoke(vie, method, argumentRegs), origStmt);
+        return;
+      }
+    }
+
     stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, argumentRegs), origStmt);
+  }
+
+  private Insn handleMethodHandleInvoke(VirtualInvokeExpr vie, MethodReference method, List<Register> argumentRegs) {
+    Insn invokeInsn;
+    int regCountForArguments = SootToDexUtils.getRealRegCount(argumentRegs);
+    Reference m = new ImmutableMethodProtoReference(method.getParameterTypes(), method.getReturnType());
+    MethodReference methodH
+        = DexPrinter.toMethodReference(Scene.v().makeMethodRef(vie.getMethodRef().getDeclaringClass(), method.getName(),
+            Collections.singletonList(ArrayType.v(Scene.v().getObjectType(), 1)), Scene.v().getObjectType(), false));
+    if (regCountForArguments <= 5) {
+      Register[] paddedArray = pad35cRegs(argumentRegs);
+      Opcode opc = Opcode.INVOKE_POLYMORPHIC;
+      invokeInsn = new Insn45cc(opc, regCountForArguments, paddedArray[0], paddedArray[1], paddedArray[2], paddedArray[3],
+          paddedArray[4], methodH, m);
+    } else if (regCountForArguments <= 255) {
+      Opcode opc = Opcode.INVOKE_POLYMORPHIC_RANGE;
+      invokeInsn = new Insn4rcc(opc, argumentRegs, (short) regCountForArguments, methodH, m);
+    } else {
+      throw new Error(
+          "too many parameter registers for invoke-* (> 255): " + regCountForArguments + " or registers too big (> 4 bits)");
+    }
+    // save the return type for the move-result insn
+    stmtV.setLastReturnTypeDescriptor(method.getReturnType());
+    return invokeInsn;
+
   }
 
   private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
