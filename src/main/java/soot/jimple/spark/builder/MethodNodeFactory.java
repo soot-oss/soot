@@ -62,6 +62,7 @@ import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.pag.NewInstanceNode;
 import soot.jimple.spark.pag.Node;
@@ -71,6 +72,7 @@ import soot.jimple.spark.pag.VarNode;
 import soot.options.CGOptions;
 import soot.shimple.AbstractShimpleValueSwitch;
 import soot.shimple.PhiExpr;
+import soot.tagkit.ExpectedTypeTag;
 import soot.toolkits.scalar.Pair;
 
 /**
@@ -131,6 +133,15 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
   /** Adds the edges required for this statement to the graph. */
   final public void handleStmt(Stmt s) {
+    if (s.hasTag(ExpectedTypeTag.NAME)) {
+      ExpectedTypeTag tag = (ExpectedTypeTag) s.getTag(ExpectedTypeTag.NAME);
+      Local l = (Local) ((AssignStmt) s).getLeftOp();
+      AllocNode src = pag.makeAllocNode(tag, tag.getExpectedType(), method);
+      LocalVarNode dest = pag.makeLocalVarNode(l, l.getType(), method);
+      mpag.addInternalEdge(src, dest);
+      return;
+    }
+
     // We only consider reflective class creation when it is enabled
     if (s.containsInvokeExpr()) {
       if (!pag.getCGOpts().types_for_invoke()) {

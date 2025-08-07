@@ -92,6 +92,7 @@ import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.options.CGOptions;
 import soot.options.SparkOptions;
+import soot.tagkit.ExpectedTypeTag;
 import soot.tagkit.LinkTag;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
@@ -1094,6 +1095,13 @@ public class PAG implements PointsToAnalysis {
       } else if (ie instanceof StaticInvokeExpr) {
         ve = summaries.getVirtualEdgesMatchingFunction(ie.getMethodRef().getSignature());
       }
+      boolean isExpectedType = false;
+      if (e.srcStmt().hasTag(ExpectedTypeTag.NAME)) {
+        ExpectedTypeTag tag = (ExpectedTypeTag) e.srcStmt().getTag(ExpectedTypeTag.NAME);
+        ve = new VirtualEdge(Kind.GENERIC_FAKE, null, new DeferredVirtualEdgeTarget(tag.getExpectedType()));
+        isExpectedType = true;
+      }
+
       // if there is no virtual edge there is no point in continuing
       if (ve == null) {
         return;
@@ -1101,7 +1109,7 @@ public class PAG implements PointsToAnalysis {
       // The source is equal for direct and indirect targets
       VirtualEdgeSource edgeSrc = ve.getSource();
 
-      if (edgeSrc instanceof InstanceinvokeSource || edgeSrc instanceof StaticinvokeSource) {
+      if (edgeSrc instanceof InstanceinvokeSource || edgeSrc instanceof StaticinvokeSource || isExpectedType) {
         for (VirtualEdgeTarget edgeTgt : ve.getTargets()) {
           if (edgeTgt instanceof InvocationVirtualEdgeTarget) {
             InvocationVirtualEdgeTarget ieEdgeTgt = (InvocationVirtualEdgeTarget) edgeTgt;
