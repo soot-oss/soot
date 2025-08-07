@@ -49,6 +49,7 @@ import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.OnFlyCallGraphBuilder;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.options.Options;
+import soot.tagkit.ExpectedTypeTag;
 import soot.util.queue.QueueReader;
 
 /**
@@ -133,6 +134,10 @@ public class OnFlyCallGraph {
     while (callEdges.hasNext()) {
       Edge e = callEdges.next();
       if (e == null) {
+        continue;
+      }
+      if (e.srcStmt().hasTag(ExpectedTypeTag.NAME)) {
+        pag.addCallTarget(e);
         continue;
       }
       MethodPAG amp = MethodPAG.v(pag, e.tgt());
