@@ -136,7 +136,7 @@ public class OnFlyCallGraph {
       if (e == null) {
         continue;
       }
-      if (e.srcStmt().hasTag(ExpectedTypeTag.NAME)) {
+      if (e.srcStmt() != null && e.srcStmt().hasTag(ExpectedTypeTag.NAME)) {
         pag.addCallTarget(e);
         continue;
       }
