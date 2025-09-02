@@ -1,6 +1,5 @@
 package soot;
 
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -1018,8 +1017,10 @@ public class FastHierarchy {
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
       if (method.getParameterTypes().equals(parameterTypes) && canStoreType(method.getReturnType(), returnType)) {
-        candidate = method;
-        returnType = method.getReturnType();
+        if (candidate == null || returnType.equals(method.getReturnType())) {
+          candidate = method;
+          returnType = method.getReturnType();
+        }
       }
       // if dotnet structs or generics
       if (isDotNet) {
