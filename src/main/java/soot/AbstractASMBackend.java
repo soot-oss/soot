@@ -117,7 +117,21 @@ public abstract class AbstractASMBackend {
           + " too low to support required features (" + translateJavaVersion(minVersion) + " required)");
     }
 
-    this.javaVersion = AsmUtil.javaToBytecodeVersion(Math.max(javaVersion, minVersion));
+    this.javaVersion = getByteCodeVersion(javaVersion, minVersion);
+  }
+
+  /**
+   * Returns the bytecode version to use based on a computed minimum java version, which is based on features used by the
+   * methods in this class and the default minimum version
+   * 
+   * @param javaVersion
+   *          the default minimum version specified in the options
+   * @param minVersion
+   *          the version computed by the used features in this class
+   * @return the bytecode version
+   */
+  protected int getByteCodeVersion(int optionsMinJavaVersion, int computedMinVersion) {
+    return AsmUtil.javaToBytecodeVersion(Math.max(optionsMinJavaVersion, computedMinVersion));
   }
 
   /**
@@ -157,7 +171,7 @@ public abstract class AbstractASMBackend {
    *          The SootClass the minimum Java version is to be determined for
    * @return The minimum Java version required for the given SootClass
    */
-  private int getMinJavaVersion(SootClass sc) {
+  protected int getMinJavaVersion(SootClass sc) {
     int minVersion = Options.java_version_1_1;
 
     if (Modifier.isAnnotation(sc.getModifiers()) || sc.hasTag(VisibilityAnnotationTag.NAME)) {
