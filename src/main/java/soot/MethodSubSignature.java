@@ -62,14 +62,14 @@ public class MethodSubSignature {
 
     Scene sc = Scene.v();
     methodName = m.group(2);
-    returnType = sc.getTypeUnsafe(m.group(1));
+    returnType = sc.getTypeUnsafe(m.group(1), true);
     String parameters = m.group(3);
     String[] spl = parameters.split(",");
     parameterTypes = new ArrayList<>(spl.length);
 
     if (parameters != null && !parameters.isEmpty()) {
       for (String p : spl) {
-        parameterTypes.add(sc.getTypeUnsafe(p.trim()));
+        parameterTypes.add(sc.getTypeUnsafe(p.trim(), true));
       }
     }
   }
