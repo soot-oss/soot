@@ -48,8 +48,10 @@ import soot.dexpler.instructions.FillArrayDataInstruction;
 import soot.dexpler.typing.UntypedConstant;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
+import soot.jimple.IdentityStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewArrayExpr;
+import soot.jimple.ParameterRef;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.LocalDefs;
@@ -96,12 +98,12 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
           List<Type> arrayTypes = new LinkedList<>();
           checkArrayDefinitions(l, ass, defs, arrayTypes, MAX_RECURSION_DEPTH);
           if (arrayTypes.isEmpty()) {
-            throw new InternalError("Failed to determine the array type ");
+            throw new InternalError("Failed to determine the array type of " + l + " in method " + body.getMethod());
           }
           if (arrayTypes.size() > 1) {
             arrayTypes = arrayTypes.stream().distinct().collect(Collectors.toList());
             if (arrayTypes.size() > 1) {
-              logger.warn("Found multiple possible array types, using first ignoreing the others: {}", arrayTypes);
+              logger.warn("Found multiple possible array types, using first ignoring the others: {}", arrayTypes);
             }
           }
 
@@ -159,8 +161,11 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
         } else {
           throw new InternalError("Unsupported array definition statement: " + d);
         }
+      } else if (d instanceof IdentityStmt) {
+        IdentityStmt is = (IdentityStmt) d;
+        ParameterRef pRef = (ParameterRef) is.getRightOpBox().getValue();
+        arrayTypes.add(((ArrayType) pRef.getType()).getArrayElementType());
       }
     }
-
   }
 }
