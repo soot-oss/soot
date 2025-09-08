@@ -383,8 +383,10 @@ public class TypeResolver {
   final ShortType shortType = ShortType.v();
 
   private ITyping typePromotion(ITyping tg) {
-    boolean conversionsPending;
+    int conversionsPending = Integer.MAX_VALUE;
+    int lastConversionsPending;
     do {
+      lastConversionsPending = conversionsPending;
       AugEvalFunction ef = createAugEvalFunction(this.jb);
       AugHierarchy h = new AugHierarchy();
       UseChecker uc = createUseChecker(this.jb);
@@ -403,16 +405,19 @@ public class TypeResolver {
 
       } while (uv.typingChanged);
 
-      conversionsPending = false;
+      conversionsPending = 0;
       for (Local v : this.jb.getLocals()) {
         Type t = tg.get(v);
         Type r = convert(t);
         if (r != null) {
           tg.set(v, r);
-          conversionsPending = true;
+          conversionsPending++;
         }
       }
-    } while (conversionsPending);
+      if (lastConversionsPending <= conversionsPending) {
+        throw new RuntimeException("typePromotion failed: conversionsPending was not reduced " + jb.getMethod());
+      }
+    } while (conversionsPending > 0);
 
     return tg;
   }
