@@ -23,6 +23,7 @@ package soot.toolkits.graph;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -98,12 +99,11 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       Unit currentUnit = nextUnit;
       nextUnit = unitIt.hasNext() ? unitIt.next() : null;
 
-      ArrayList<Unit> successors = new ArrayList<Unit>();
-
+      Unit singleSuccessor = null;
       if (currentUnit.fallsThrough()) {
         // Add the next unit as the successor
         if (nextUnit != null) {
-          successors.add(nextUnit);
+          singleSuccessor = nextUnit;
 
           List<Unit> preds = unitToPreds.get(nextUnit);
           if (preds == null) {
@@ -114,28 +114,44 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
         }
       }
 
+      List<Unit> successors = null;
       if (currentUnit.branches()) {
-        for (UnitBox targetBox : currentUnit.getUnitBoxes()) {
+        List<UnitBox> ub = currentUnit.getUnitBoxes();
+        Unit[] successorsArr = new Unit[ub.size() + (singleSuccessor != null ? 1 : 0)];
+        int idx = 0;
+        if (singleSuccessor != null) {
+          successorsArr[idx++] = singleSuccessor;
+        }
+        next: for (UnitBox targetBox : ub) {
           Unit target = targetBox.getUnit();
           // Arbitrary bytecode can branch to the same
           // target it falls through to, so we screen for duplicates:
-          if (!successors.contains(target)) {
-            successors.add(target);
-
-            List<Unit> preds = unitToPreds.get(target);
-            if (preds == null) {
-              preds = new ArrayList<Unit>();
-              unitToPreds.put(target, preds);
+          for (int i = 0; i < idx; i++) {
+            if (successorsArr[i].equals(target)) {
+              continue next;
             }
-            preds.add(currentUnit);
           }
+
+          successorsArr[idx++] = target;
+
+          List<Unit> preds = unitToPreds.get(target);
+          if (preds == null) {
+            preds = new ArrayList<Unit>();
+            unitToPreds.put(target, preds);
+          }
+          preds.add(currentUnit);
         }
+        if (idx != successorsArr.length) {
+          successorsArr = Arrays.copyOf(successorsArr, idx);
+        }
+        successors = Arrays.asList(successorsArr);
       }
 
       // Store away successors
-      if (!successors.isEmpty()) {
-        successors.trimToSize();
+      if (successors != null) {
         unitToSuccs.put(currentUnit, successors);
+      } else if (singleSuccessor != null) {
+        unitToSuccs.put(currentUnit, Collections.singletonList(singleSuccessor));
       }
     }
   }
