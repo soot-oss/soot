@@ -107,10 +107,17 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
 
           List<Unit> preds = unitToPreds.get(nextUnit);
           if (preds == null) {
-            preds = new ArrayList<Unit>();
-            unitToPreds.put(nextUnit, preds);
+            // Most units only have one predecessor.
+            unitToPreds.put(nextUnit, Collections.singletonList(currentUnit));
+          } else {
+            if (!(preds instanceof ArrayList)) {
+              List<Unit> npreds = new ArrayList<>(preds.size() + 1);
+              npreds.addAll(preds);
+              preds = npreds;
+              unitToPreds.put(nextUnit, npreds);
+            }
+            preds.add(currentUnit);
           }
-          preds.add(currentUnit);
         }
       }
 
@@ -137,6 +144,11 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
           List<Unit> preds = unitToPreds.get(target);
           if (preds == null) {
             preds = new ArrayList<Unit>();
+            unitToPreds.put(target, preds);
+          } else if (!(preds instanceof ArrayList)) {
+            List<Unit> npreds = new ArrayList<>(preds.size() + 1);
+            npreds.addAll(preds);
+            preds = npreds;
             unitToPreds.put(target, preds);
           }
           preds.add(currentUnit);
