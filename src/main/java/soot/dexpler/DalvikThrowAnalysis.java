@@ -54,12 +54,16 @@ import soot.Singletons;
 import soot.SootMethod;
 import soot.Type;
 import soot.UnknownType;
+import soot.Value;
 import soot.baf.EnterMonitorInst;
 import soot.baf.ReturnInst;
 import soot.baf.ReturnVoidInst;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.ClassConstant;
+import soot.jimple.DivExpr;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.StringConstant;
 import soot.toolkits.exceptions.ThrowableSet;
@@ -226,7 +230,15 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
         // ArrayRef expressions. There is no ArrayStoreException in
         // Dalvik.
         result = result.add(mightThrow(s.getLeftOp()));
-        result = result.add(mightThrow(s.getRightOp()));
+        Value rightOp = s.getRightOp();
+        if (rightOp instanceof DivExpr && (s.hasTag(FloatOpTag.NAME) || s.hasTag(DoubleOpTag.NAME))) {
+          // workaround for https://github.com/soot-oss/soot/issues/2188
+          // skip right op processing - float and double divisions don't throw any exceptions but when 
+          // building the Jimple body the value types are not yet known so we can not know from the expression 
+          // if it is an int or float/double division  
+        } else {
+          result = result.add(mightThrow(rightOp));
+        }
       }
 
     };
