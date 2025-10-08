@@ -210,13 +210,16 @@ public class ThrowableSet {
    *           {@link #whichCatchableAs(RefType)} operation and, thus, unable to represent the addition of <code>e</code>.
    */
   public ThrowableSet add(RefType e) throws ThrowableSet.AlreadyHasExclusionsException {
+    final Manager manager = Manager.v();
+    final Set<RefLikeType> included = this.exceptionsIncluded;
+    final Set<AnySubType> excluded = this.exceptionsExcluded;
     if (INSTRUMENTING) {
-      Manager.v().addsOfRefType++;
+      manager.addsOfRefType++;
     }
-    if (this.exceptionsIncluded.contains(e)) {
+    if (included.contains(e)) {
       if (INSTRUMENTING) {
-        Manager.v().addsInclusionFromMap++;
-        Manager.v().addsExclusionWithoutSearch++;
+        manager.addsInclusionFromMap++;
+        manager.addsExclusionWithoutSearch++;
       }
       return this;
     }
@@ -224,25 +227,25 @@ public class ThrowableSet {
     ThrowableSet result = getMemoizedAdds(e);
     if (result != null) {
       if (INSTRUMENTING) {
-        Manager.v().addsInclusionFromMemo++;
-        Manager.v().addsExclusionWithoutSearch++;
+        manager.addsInclusionFromMemo++;
+        manager.addsExclusionWithoutSearch++;
       }
       return result;
     }
 
     if (INSTRUMENTING) {
-      Manager.v().addsInclusionFromSearch++;
-      if (exceptionsExcluded.isEmpty()) {
-        Manager.v().addsExclusionWithoutSearch++;
+      manager.addsInclusionFromSearch++;
+      if (excluded.isEmpty()) {
+        manager.addsExclusionWithoutSearch++;
       } else {
-        Manager.v().addsExclusionWithSearch++;
+        manager.addsExclusionWithSearch++;
       }
     }
 
     FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
     boolean eHasNoHierarchy = hasNoHierarchy(e);
 
-    for (AnySubType excludedType : exceptionsExcluded) {
+    for (AnySubType excludedType : excluded) {
       RefType exclusionBase = excludedType.getBase();
       if ((eHasNoHierarchy && exclusionBase.equals(e)) || (!eHasNoHierarchy && hierarchy.canStoreType(e, exclusionBase))) {
         throw new AlreadyHasExclusionsException("ThrowableSet.add(RefType): adding" + e.toString() + " to the set [ "
@@ -253,7 +256,7 @@ public class ThrowableSet {
     // If this is a real class, we need to check whether we already have it
     // in the list through subtyping.
     if (!eHasNoHierarchy) {
-      for (RefLikeType incumbent : exceptionsIncluded) {
+      for (RefLikeType incumbent : included) {
         if (incumbent instanceof AnySubType) {
           // Need to use incumbent.getBase() because
           // hierarchy.canStoreType() assumes that parent
@@ -270,9 +273,10 @@ public class ThrowableSet {
         }
       }
     }
-    Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
+    Set<RefLikeType> resultSet = new HashSet<>(Math.max((int) ((included.size() + 1) / .75f) + 1, 16));
+    resultSet.addAll(included);
     resultSet.add(e);
-    result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
+    result = manager.registerSetIfNew(resultSet, this.exceptionsExcluded);
     addToMemoizedAdds(e, result);
     return result;
   }
