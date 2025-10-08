@@ -149,6 +149,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
             List<Unit> npreds = new ArrayList<>(preds.size() + 1);
             npreds.addAll(preds);
             preds = npreds;
+            unitToPreds.put(target, preds);
           }
           preds.add(currentUnit);
         }
