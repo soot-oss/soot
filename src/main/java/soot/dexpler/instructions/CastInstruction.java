@@ -85,53 +85,53 @@ public class CastInstruction extends TaggedInstruction {
     Opcode opcode = instruction.getOpcode();
     switch (opcode) {
       case INT_TO_BYTE:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return ByteType.v();
       case INT_TO_CHAR:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return CharType.v();
       case INT_TO_SHORT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return ShortType.v();
 
       case LONG_TO_INT:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return IntType.v();
       case DOUBLE_TO_INT:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return IntType.v();
       case FLOAT_TO_INT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return IntType.v();
 
       case INT_TO_LONG:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return LongType.v();
       case DOUBLE_TO_LONG:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return LongType.v();
       case FLOAT_TO_LONG:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return LongType.v();
 
       case LONG_TO_FLOAT:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return FloatType.v();
       case DOUBLE_TO_FLOAT:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return FloatType.v();
       case INT_TO_FLOAT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return FloatType.v();
 
       case INT_TO_DOUBLE:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return DoubleType.v();
       case FLOAT_TO_DOUBLE:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return DoubleType.v();
       case LONG_TO_DOUBLE:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return DoubleType.v();
 
       default:

@@ -48,7 +48,14 @@ import soot.tagkit.Tag;
 
 public class IntOpTag implements Tag, DexplerTag {
 
+  public static final IntOpTag INSTANCE = new IntOpTag();
+
   public static final String NAME = "IntOpTag";
+
+  @Deprecated
+  public IntOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {

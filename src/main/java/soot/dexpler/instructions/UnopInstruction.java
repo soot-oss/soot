@@ -87,22 +87,22 @@ public class UnopInstruction extends TaggedInstruction {
     Opcode opcode = instruction.getOpcode();
     switch (opcode) {
       case NEG_INT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NEG_LONG:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NEG_FLOAT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NEG_DOUBLE:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NOT_LONG:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return getNotLongExpr(source);
       case NOT_INT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return getNotIntExpr(source);
       default:
         throw new RuntimeException("Invalid Opcode: " + opcode);
