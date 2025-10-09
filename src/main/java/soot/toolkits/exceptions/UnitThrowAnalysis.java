@@ -1,5 +1,13 @@
 package soot.toolkits.exceptions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,15 +34,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import heros.solver.IDESolver;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import soot.Body;
 import soot.DecimalConstant;
 import soot.FastHierarchy;
@@ -131,6 +130,8 @@ import soot.baf.ThrowInst;
 import soot.baf.UshrInst;
 import soot.baf.VirtualInvokeInst;
 import soot.baf.XorInst;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
 import soot.grimp.GrimpValueSwitch;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.AddExpr;
@@ -823,7 +824,16 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         result = result.add(mgr.ARRAY_STORE_EXCEPTION);
       }
       result = result.add(mightThrow(s.getLeftOp()));
-      result = result.add(mightThrow(s.getRightOp()));
+
+      Value rightOp = s.getRightOp();
+      if (rightOp instanceof DivExpr && (s.hasTag(FloatOpTag.NAME) || s.hasTag(DoubleOpTag.NAME))) {
+        // workaround for https://github.com/soot-oss/soot/issues/2188
+        // skip right op processing - float and double divisions don't throw any exceptions but when
+        // building the Jimple body the value types are not yet known so we can not know from the expression
+        // if it is an int or float/double division
+      } else {
+        result = result.add(mightThrow(rightOp));
+      }
     }
 
     @Override

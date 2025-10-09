@@ -174,12 +174,6 @@ import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -219,6 +213,12 @@ import org.objectweb.asm.tree.VarInsnNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanConstant;
@@ -253,6 +253,11 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
+import soot.asm.Operand.OperandType;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
+import soot.dexpler.tags.IntOpTag;
+import soot.dexpler.tags.LongOpTag;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -461,7 +466,7 @@ public class AsmMethodSource implements MethodSource {
     Local l = o.stack;
     if (l == null && !(v instanceof Local)) {
       l = o.stack = newStackLocal();
-      setUnit(o.insn, Jimple.v().newAssignStmt(l, v));
+      setUnit(o, Jimple.v().newAssignStmt(l, v));
       o.updateBoxes();
     }
     return o;
@@ -472,7 +477,7 @@ public class AsmMethodSource implements MethodSource {
     Local l = o.stack;
     if (l == null && !(v instanceof Local) && !(v instanceof Constant)) {
       l = o.stack = newStackLocal();
-      setUnit(o.insn, Jimple.v().newAssignStmt(l, v));
+      setUnit(o, Jimple.v().newAssignStmt(l, v));
       o.updateBoxes();
     }
     return o;
@@ -483,7 +488,7 @@ public class AsmMethodSource implements MethodSource {
     Local l = o.stack;
     if (l == null && !(v instanceof Constant)) {
       l = o.stack = newStackLocal();
-      setUnit(o.insn, Jimple.v().newAssignStmt(l, v));
+      setUnit(o, Jimple.v().newAssignStmt(l, v));
       o.updateBoxes();
     }
     return o;
@@ -525,6 +530,13 @@ public class AsmMethodSource implements MethodSource {
   @SuppressWarnings("unused")
   private Operand popStackConst(Type t) {
     return AsmUtil.isDWord(t) ? popStackConstDual() : popStackConst();
+  }
+
+  protected void setUnit(Operand op, Unit u) {
+    setUnit(op.insn, u);
+    if (op.tag != null) {
+      u.addTag(op.tag);
+    }
   }
 
   protected void setUnit(AbstractInsnNode insn, Unit u) {
@@ -600,7 +612,7 @@ public class AsmMethodSource implements MethodSource {
       opr.stack = stack;
       AssignStmt as = Jimple.v().newAssignStmt(stack, opr.value);
       opr.updateBoxes();
-      setUnit(opr.insn, as);
+      setUnit(opr, as);
     }
   }
 
@@ -938,6 +950,28 @@ public class AsmMethodSource implements MethodSource {
       op1.addBox(binop.getOp1Box());
       op2.addBox(binop.getOp2Box());
       opr = new Operand(insn, binop);
+      if (op >= IADD && op <= DDIV) {
+        // The operations in this range always exists in four flavors: one for int, long, float, double
+        int flavor = op & 0x3;
+        switch (flavor) {
+          case 0b00:
+            opr.tag = IntOpTag.INSTANCE;
+            opr.type = OperandType.INT;
+            break;
+          case 0b01:
+            opr.tag = LongOpTag.INSTANCE;
+            opr.type = OperandType.LONG;
+            break;
+          case 0b10:
+            opr.tag = FloatOpTag.INSTANCE;
+            opr.type = OperandType.FLOAT;
+            break;
+          case 0b11:
+            opr.tag = DoubleOpTag.INSTANCE;
+            opr.type = OperandType.DOUBLE;
+            break;
+        }
+      }
       frame.in(op2, op1);
       frame.boxes(binop.getOp2Box(), binop.getOp1Box());
       frame.out(opr);
@@ -1116,7 +1150,7 @@ public class AsmMethodSource implements MethodSource {
         Operand o1 = pop();
         if (!units.containsKey(o1.insn)) {
           InvokeExpr iexpr = (InvokeExpr) getFrame(o1.insn).out()[0].value;
-          setUnit(o1.insn, Jimple.v().newInvokeStmt(iexpr));
+          setUnit(o1, Jimple.v().newInvokeStmt(iexpr));
         }
       }
       if (!units.containsKey(insn)) {
@@ -1894,7 +1928,7 @@ public class AsmMethodSource implements MethodSource {
         Local stack = secondOp.stack;
         firstOp.stack = stack;
         AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
-        setUnit(firstOp.insn, as);
+        setUnit(firstOp, as);
       } else {
         // Both operands have a stack local. We need to create an assignment to a temporary variable.
         Local stack = firstOp.stack;
@@ -1908,7 +1942,7 @@ public class AsmMethodSource implements MethodSource {
         Local stack = firstOp.stack;
         secondOp.stack = stack;
         AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
-        setUnit(secondOp.insn, as);
+        setUnit(secondOp, as);
       } else {
         throw new RuntimeException("Cannot merge operands, since neither has a stack local. Bummer.");
       }
