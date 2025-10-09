@@ -72,25 +72,25 @@ public class AgetInstruction extends DexlibAbstractInstruction {
     AssignStmt assign = Jimple.v().newAssignStmt(l, arrayRef);
     switch (aGetInstr.getOpcode()) {
       case AGET_OBJECT:
-        assign.addTag(new ObjectOpTag());
+        assign.addTag(ObjectOpTag.INSTANCE);
         break;
       case AGET:
-        assign.addTag(new IntOrFloatOpTag());
+        assign.addTag(IntOrFloatOpTag.INSTANCE);
         break;
       case AGET_WIDE:
-        assign.addTag(new LongOrDoubleOpTag());
+        assign.addTag(LongOrDoubleOpTag.INSTANCE);
         break;
       case AGET_BYTE:
-        assign.addTag(new ByteOpTag());
+        assign.addTag(ByteOpTag.INSTANCE);
         break;
       case AGET_CHAR:
-        assign.addTag(new CharOpTag());
+        assign.addTag(CharOpTag.INSTANCE);
         break;
       case AGET_SHORT:
-        assign.addTag(new ShortOpTag());
+        assign.addTag(ShortOpTag.INSTANCE);
         break;
       case AGET_BOOLEAN:
-        assign.addTag(new BooleanOpTag());
+        assign.addTag(BooleanOpTag.INSTANCE);
         break;
     }
 

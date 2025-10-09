@@ -27,8 +27,15 @@ import soot.Type;
 import soot.tagkit.Tag;
 
 public class CharOpTag implements Tag, DexplerTag {
+  
+  public static final CharOpTag INSTANCE = new CharOpTag();
 
   public static final String NAME = "CharOpTag";
+
+  @Deprecated
+  public CharOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {

@@ -47,8 +47,15 @@ import soot.Type;
 import soot.tagkit.Tag;
 
 public class FloatOpTag implements Tag, DexplerTag {
-
+  
+  public static final FloatOpTag INSTANCE = new FloatOpTag();
+  
   public static final String NAME = "FloatOpTag";
+
+  @Deprecated
+  public FloatOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {

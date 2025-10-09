@@ -28,7 +28,14 @@ import soot.tagkit.Tag;
 
 public class ShortOpTag implements Tag, DexplerTag {
 
+  public static final ShortOpTag INSTANCE = new ShortOpTag();
+
   public static final String NAME = "ShortOpTag";
+
+  @Deprecated
+  public ShortOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
