@@ -151,7 +151,7 @@ public class SootClassBuilder extends ClassVisitor {
     }
   }
 
-  private void setJavaVersion(int version) {
+  protected void setJavaVersion(int version) {
     final Options opts = Options.v();
     if (opts.derive_java_version()) {
       opts.set_java_version(Math.max(opts.java_version(), AsmUtil.byteCodeToJavaVersion(version)));
