@@ -27,6 +27,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -105,7 +106,8 @@ public class SmartLocalDefs implements LocalDefs {
         continue;
       }
 
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
@@ -161,16 +163,15 @@ public class SmartLocalDefs implements LocalDefs {
   }
 
   private Local localDef(Unit u) {
-    List<ValueBox> defBoxes = u.getDefBoxes();
-    switch (defBoxes.size()) {
-      case 0:
-        return null;
-      case 1:
-        Value v = defBoxes.get(0).getValue();
-        return (v instanceof Local) ? (Local) v : null;
-      default:
-        throw new RuntimeException();
+    Iterator<ValueBox> defBoxes = u.getDefBoxesIterator();
+    if (!defBoxes.hasNext()) {
+      return null;
     }
+    Value v = defBoxes.next().getValue();
+    if (defBoxes.hasNext()) {
+      throw new RuntimeException();
+    }
+    return (v instanceof Local) ? (Local) v : null;
   }
 
   private Set<Unit> defsOf(Local l) {

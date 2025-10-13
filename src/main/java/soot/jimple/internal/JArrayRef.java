@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,6 +25,7 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.ArrayType;
@@ -131,6 +134,12 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
     useBoxes.add(indexBox);
 
     return useBoxes;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return Iterators.concat(baseBox.getValue().getUseBoxesIterator(), Iterators.singletonIterator(baseBox),
+        indexBox.getValue().getUseBoxesIterator(), Iterators.singletonIterator(indexBox));
   }
 
   @Override

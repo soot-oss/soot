@@ -1,5 +1,7 @@
 package soot;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,10 +25,10 @@ package soot;
  */
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.tagkit.Host;
-import soot.util.Chain;
 import soot.util.Switchable;
 
 /**
@@ -37,8 +39,26 @@ public interface Unit extends Switchable, Host, Serializable, Context {
   /** Returns a list of Boxes containing Values used in this Unit. */
   public List<ValueBox> getUseBoxes();
 
+  /**
+   * Returns an iterator over all use boxes. Potentially more efficient than <i>getUseBoxes</i>
+   * 
+   * @return iterator over all use boxes
+   */
+  public default Iterator<ValueBox> getUseBoxesIterator() {
+    return getUseBoxes().iterator();
+  }
+
   /** Returns a list of Boxes containing Values defined in this Unit. */
   public List<ValueBox> getDefBoxes();
+
+  /**
+   * Returns an iterator over all definition boxes. Potentially more efficient than <i>getDefBoxes</i>
+   * 
+   * @return iterator over all definition boxes
+   */
+  public default Iterator<ValueBox> getDefBoxesIterator() {
+    return getDefBoxes().iterator();
+  }
 
   /**
    * Returns a list of Boxes containing Units defined in this Unit; typically branch targets.
@@ -61,6 +81,23 @@ public interface Unit extends Switchable, Host, Serializable, Context {
    * Returns a list of Boxes containing any Value either used or defined in this Unit.
    */
   public List<ValueBox> getUseAndDefBoxes();
+
+  /**
+   * Returns an iterator over all use and definition boxes. Potentially more efficient than <i>getUseAndDefBoxes</i>
+   * 
+   * @return iterator over all use and definition boxes
+   */
+  public default Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    Iterator<ValueBox> ub = getUseBoxesIterator();
+    Iterator<ValueBox> db = getDefBoxesIterator();
+    if (!ub.hasNext()) {
+      return db;
+    }
+    if (!db.hasNext()) {
+      return ub;
+    }
+    return Iterators.concat(db, ub);
+  }
 
   public Object clone();
 

@@ -24,6 +24,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Function;
@@ -33,6 +34,7 @@ import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.SwitchStmt;
+import soot.util.IteratorConcatElement;
 
 @SuppressWarnings("serial")
 public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
@@ -102,6 +104,21 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
     List<ValueBox> list = new ArrayList<ValueBox>(keyBox.getValue().getUseBoxes());
     list.add(keyBox);
     return list;
+  }
+
+  @Override
+  public final Iterator<ValueBox> getDefBoxesIterator() {
+    return Collections.emptyIterator();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    return getUseBoxesIterator();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(keyBox.getValue().getUseBoxesIterator(), keyBox);
   }
 
   final public int getTargetCount() {

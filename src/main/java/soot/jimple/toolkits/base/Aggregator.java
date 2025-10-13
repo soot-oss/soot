@@ -90,7 +90,8 @@ public class Aggregator extends BodyTransformer {
       Zonation zonation = new Zonation(body);
       for (Unit u : body.getUnits()) {
         Zone zone = zonation.getZoneOf(u);
-        for (ValueBox box : u.getUseAndDefBoxes()) {
+        for (Iterator<ValueBox> iterator = u.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+          ValueBox box = iterator.next();
           boxToZone.put(box, zone);
         }
       }
@@ -170,7 +171,8 @@ public class Aggregator extends BodyTransformer {
         boolean propagatingArrayRef = false;
         ArrayList<FieldRef> fieldRefList = new ArrayList<FieldRef>();// iteration
         HashSet<Value> localsUsed = new HashSet<Value>();// fast contains check
-        for (ValueBox vb : s.getUseBoxes()) {
+        for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+          ValueBox vb = iterator.next();
           Value v = vb.getValue();
           if (v instanceof Local) {
             localsUsed.add(v);
@@ -196,8 +198,8 @@ public class Aggregator extends BodyTransformer {
               continue NEXT_UNIT;// give up: can't aggregate.
             }
 
-            // Check for killing definitions
-            for (ValueBox vb : between.getDefBoxes()) {
+            for (Iterator<ValueBox> iterator = between.getDefBoxesIterator(); iterator.hasNext();) {
+              ValueBox vb = iterator.next();
               Value v = vb.getValue();
               if (localsUsed.contains(v)) {
                 continue NEXT_UNIT;// give up: can't aggregate.
@@ -228,7 +230,8 @@ public class Aggregator extends BodyTransformer {
 
           // Check for intervening side effects due to method calls
           if (propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef) {
-            for (ValueBox box : between.getUseBoxes()) {
+            for (Iterator<ValueBox> iterator = between.getUseBoxesIterator(); iterator.hasNext();) {
+              ValueBox box = iterator.next();
               if (between == usepairUnit && box == usepairValueBox) {
                 // Reached use point, stop looking for side effects
                 break;

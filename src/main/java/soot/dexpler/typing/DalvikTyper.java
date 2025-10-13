@@ -45,6 +45,7 @@ package soot.dexpler.typing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -503,10 +504,6 @@ public class DalvikTyper implements IDalvikTyper {
         }
       }
 
-      for (Unit u : todoUnits) {
-        // Debug.printDbg("todo unit: ", u);
-      }
-
       while (!todoUnits.isEmpty()) {
         Unit u = todoUnits.iterator().next();
         if (!(u instanceof AssignStmt)) {
@@ -777,7 +774,8 @@ public class DalvikTyper implements IDalvikTyper {
             newValue = cst.toIntConstant();
           } else { // check if used in cast, just in case...
             for (Unit u : b.getUnits()) {
-              for (ValueBox vb1 : u.getUseBoxes()) {
+              for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+                ValueBox vb1 = iterator.next();
                 Value v1 = vb1.getValue();
                 if (v1 == l) {
                   // Debug.printDbg("local used in ", u);
@@ -1025,7 +1023,8 @@ public class DalvikTyper implements IDalvikTyper {
 
   protected void checkExpr(Value v, Type t) {
 
-    for (ValueBox vb : v.getUseBoxes()) {
+    for (Iterator<ValueBox> iterator = v.getUseBoxesIterator(); iterator.hasNext();) {
+      ValueBox vb = iterator.next();
       Value value = vb.getValue();
       if (value instanceof Local) {
         // special case where the second operand is always of type integer
@@ -1047,7 +1046,6 @@ public class DalvikTyper implements IDalvikTyper {
         }
         vb.setValue(uc.defineType(t));
       }
-
     }
 
   }

@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.RefType;
@@ -68,6 +69,11 @@ public class JCaughtExceptionRef implements CaughtExceptionRef {
   @Override
   public final List<ValueBox> getUseBoxes() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+    return Collections.emptyIterator();
   }
 
   @Override

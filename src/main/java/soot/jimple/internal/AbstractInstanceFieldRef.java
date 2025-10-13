@@ -24,6 +24,7 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.SootField;
@@ -39,6 +40,7 @@ import soot.jimple.ConvertToBaf;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.RefSwitch;
+import soot.util.IteratorConcatElement;
 import soot.util.Switch;
 
 @SuppressWarnings("serial")
@@ -104,6 +106,11 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     useBoxes.add(baseBox);
 
     return useBoxes;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(baseBox.getValue().getUseBoxesIterator(), baseBox);
   }
 
   public Type getType() {

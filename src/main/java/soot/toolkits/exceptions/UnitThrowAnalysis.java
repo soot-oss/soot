@@ -1173,7 +1173,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @Override
     public void caseNewExpr(NewExpr expr) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
-      for (ValueBox box : expr.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = expr.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         result = result.add(mightThrow(box.getValue()));
       }
     }
@@ -1235,7 +1236,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @SuppressWarnings("rawtypes")
     @Override
     public void casePhiExpr(PhiExpr e) {
-      for (ValueBox box : e.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = e.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         result = result.add(mightThrow(box.getValue()));
       }
     }

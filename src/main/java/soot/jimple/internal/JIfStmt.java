@@ -24,6 +24,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Unit;
@@ -49,6 +50,7 @@ import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
 import soot.jimple.StmtSwitch;
+import soot.util.IteratorConcatElement;
 import soot.util.Switch;
 
 public class JIfStmt extends AbstractStmt implements IfStmt, BranchableStmt {
@@ -126,6 +128,16 @@ public class JIfStmt extends AbstractStmt implements IfStmt, BranchableStmt {
     List<ValueBox> useBoxes = new ArrayList<ValueBox>(conditionBox.getValue().getUseBoxes());
     useBoxes.add(conditionBox);
     return useBoxes;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(conditionBox.getValue().getUseBoxesIterator(), conditionBox);
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    return getUseBoxesIterator();
   }
 
   @Override

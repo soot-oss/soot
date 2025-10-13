@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -230,14 +231,10 @@ public class FastColorer {
 
       // Go through code, noting interferences
       for (Unit unit : body.getUnits()) {
-        List<ValueBox> defBoxes = unit.getDefBoxes();
+        Iterator<ValueBox> defBoxes = unit.getDefBoxesIterator();
 
         // Note interferences if this stmt is a definition
-        if (!defBoxes.isEmpty()) {
-          // Only one def box is supported
-          if (defBoxes.size() != 1) {
-            throw new RuntimeException("invalid number of def boxes");
-          }
+        if (defBoxes.hasNext()) {
 
           // Remove those locals that are only live on exceptional flows.
           // If we have code like this:
@@ -262,7 +259,12 @@ public class FastColorer {
           // throw the exception). We may want to have a more complex
           // reasoning here some day, but I'll leave it as is for now.
 
-          Value defValue = defBoxes.get(0).getValue();
+          Value defValue = defBoxes.next().getValue();
+          if (defBoxes.hasNext()) {
+            // Only one def box is supported
+            throw new RuntimeException("invalid number of def boxes");
+          }
+
           if (defValue instanceof Local) {
             Local defLocal = (Local) defValue;
 

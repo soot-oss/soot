@@ -1,5 +1,8 @@
 package soot.jimple.internal;
 
+import java.util.Collections;
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,6 +29,7 @@ import java.util.List;
 
 import soot.Unit;
 import soot.UnitPrinter;
+import soot.ValueBox;
 import soot.baf.Baf;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
@@ -46,6 +50,21 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt {
   @Override
   public String toString() {
     return Jimple.RETURN;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    return Collections.emptyIterator();
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return Collections.emptyIterator();
+  }
+
+  @Override
+  public Iterator<ValueBox> getDefBoxesIterator() {
+    return Collections.emptyIterator();
   }
 
   @Override

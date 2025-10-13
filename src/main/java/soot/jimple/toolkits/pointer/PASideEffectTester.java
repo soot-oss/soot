@@ -23,6 +23,7 @@ package soot.jimple.toolkits.pointer;
  */
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.G;
@@ -122,7 +123,8 @@ public class PASideEffectTester implements SideEffectTester {
   }
 
   protected boolean valueTouchesRWSet(RWSet s, Value v, List<ValueBox> boxes) {
-    for (ValueBox use : v.getUseBoxes()) {
+    for (Iterator<ValueBox> iterator = v.getUseBoxesIterator(); iterator.hasNext();) {
+      ValueBox use = iterator.next();
       if (valueTouchesRWSet(s, use.getValue(), boxes)) {
         return true;
       }

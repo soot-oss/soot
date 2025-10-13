@@ -24,6 +24,7 @@ package soot.jimple.toolkits.scalar;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import soot.EquivalentValue;
@@ -106,8 +107,8 @@ public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
         if (!exprs.contains(v)) {
           exprs.add(v);
 
-          // Add map values for contained objects.
-          for (ValueBox vb : v.getUseBoxes()) {
+          for (Iterator<ValueBox> iterator = v.getUseBoxesIterator(); iterator.hasNext();) {
+            ValueBox vb = iterator.next();
             Value o = vb.getValue();
             EquivalentValue eo = valueToEquivValue.get(o);
             if (eo == null) {

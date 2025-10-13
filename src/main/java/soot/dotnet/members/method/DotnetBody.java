@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -203,7 +204,8 @@ public class DotnetBody {
     renameLocals(jb);
 
     for (Unit u : jb.getUnits()) {
-      for (ValueBox d : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox d = iterator.next();
         if (d.getValue() instanceof FunctionPointerConstant) {
           if (dotnetMethodSig.getProtoMessage().getIsUnsafe()) {
             // this is somewhat expected. We resolve unsafe methods on a best effort basis

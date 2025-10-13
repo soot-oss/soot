@@ -24,6 +24,7 @@ package soot.jimple.validation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -181,7 +182,8 @@ public enum NewValidator implements BodyValidator {
         }
 
         if (!creatingAlias) {
-          for (ValueBox box : curStmt.getUseBoxes()) {
+          for (Iterator<ValueBox> iterator = curStmt.getUseBoxesIterator(); iterator.hasNext();) {
+            ValueBox box = iterator.next();
             Value used = box.getValue();
             if (aliasingLocals.contains(used)) {
               // The current unit uses one of the aliasing locals, but

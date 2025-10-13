@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,6 +25,7 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.BooleanType;
@@ -103,6 +106,13 @@ public abstract class AbstractBinopExpr implements Expr {
     list.add(op2Box);
 
     return list;
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+
+    return Iterators.concat(op1Box.getValue().getUseBoxesIterator(), Iterators.singletonIterator(op1Box),
+        op2Box.getValue().getUseBoxesIterator(), Iterators.singletonIterator(op2Box));
   }
 
   @Override

@@ -181,7 +181,8 @@ public class TypeAssigner extends BodyTransformer {
     List<Unit> unitToReplaceByException = new ArrayList<Unit>();
     for (Unit u : b.getUnits()) {
       Stmt s = (Stmt) u;
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value value = vb.getValue();
         if (value instanceof Local && value.getType() instanceof NullType) {
 

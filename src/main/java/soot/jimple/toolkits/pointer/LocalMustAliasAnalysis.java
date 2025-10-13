@@ -42,7 +42,6 @@ import soot.ValueBox;
 import soot.jimple.CastExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
-import soot.jimple.IdentityRef;
 import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
@@ -141,7 +140,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
     Set<Value> usedFieldRefs = new HashSet<Value>();
     // add all field references that are in use boxes
     for (Unit unit : this.graph) {
-      for (ValueBox useBox : unit.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = unit.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox useBox = iterator.next();
         Value val = useBox.getValue();
         if (val instanceof FieldRef) {
           FieldRef fieldRef = (FieldRef) val;
@@ -167,7 +167,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
         if (m.hasActiveBody() && !(SootMethod.staticInitializerName.equals(m.getName())
             && m.getDeclaringClass().equals(container.getDeclaringClass()))) {
           for (Unit u : m.getActiveBody().getUnits()) {
-            for (ValueBox defBox : u.getDefBoxes()) {
+            for (Iterator<ValueBox> iterator2 = u.getDefBoxesIterator(); iterator2.hasNext();) {
+              ValueBox defBox = iterator2.next();
               Value value = defBox.getValue();
               if (value instanceof FieldRef) {
                 usedFieldRefs.remove(new EquivalentValue(value));
@@ -264,7 +265,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Va
       }
     } else {
       // which other kind of statement has def-boxes? hopefully none...
-      assert u.getDefBoxes().isEmpty();
+      assert !u.getDefBoxesIterator().hasNext();
     }
   }
 

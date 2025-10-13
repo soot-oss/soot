@@ -565,7 +565,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       return (i.containsInvokeExpr() || (i instanceof StaticPutInst) || (i instanceof StaticGetInst)
           || (i instanceof NewInst));
     } else if (u instanceof Stmt) {
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if ((v instanceof StaticFieldRef) || (v instanceof InvokeExpr) || (v instanceof NewExpr)) {
           return true;

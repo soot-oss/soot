@@ -326,7 +326,7 @@ public class StmtVisitor implements StmtSwitch {
   }
 
   public List<BuilderInstruction> getRealInsns(LabelAssigner labelAssigner) {
-    List<BuilderInstruction> finalInsns = new ArrayList<>();
+    List<BuilderInstruction> finalInsns = new ArrayList<>(insns.size());
     for (Insn i : insns) {
       if (i instanceof AddressInsn) {
         continue; // skip non-insns

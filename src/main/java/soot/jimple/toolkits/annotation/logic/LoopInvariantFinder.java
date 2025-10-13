@@ -119,7 +119,9 @@ public class LoopInvariantFinder extends BodyTransformer {
       return;
     }
 
-    logger.debug("s : " + s + " use boxes: " + s.getUseBoxes() + " def boxes: " + s.getDefBoxes());
+    if (logger.isDebugEnabled()) {
+      logger.debug("s : " + s + " use boxes: " + s.getUseBoxes() + " def boxes: " + s.getDefBoxes());
+    }
     // just use boxes here
     Iterator useBoxesIt = s.getUseBoxes().iterator();
     boolean result = true;
@@ -160,7 +162,7 @@ public class LoopInvariantFinder extends BodyTransformer {
 
     }
 
-    Iterator defBoxesIt = s.getDefBoxes().iterator();
+    Iterator defBoxesIt = s.getDefBoxesIterator();
     defs: while (defBoxesIt.hasNext()) {
       ValueBox vb = (ValueBox) defBoxesIt.next();
       Value v = vb.getValue();

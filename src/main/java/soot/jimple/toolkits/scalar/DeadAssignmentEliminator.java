@@ -244,7 +244,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
         while (!q.isEmpty()) {
           Unit s = q.removeFirst();
           if (essential.add(s)) {
-            for (ValueBox box : s.getUseBoxes()) {
+            for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+              ValueBox box = iterator.next();
               Value v = box.getValue();
               if (v instanceof Local) {
                 Local l = (Local) v;

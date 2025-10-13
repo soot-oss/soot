@@ -79,7 +79,7 @@ public class UnreachableFieldsTagger extends SceneTransformer {
         }
         Body b = sm.getActiveBody();
 
-        Iterator usesIt = b.getUseBoxes().iterator();
+        Iterator usesIt = b.getUseBoxesIterator();
         while (usesIt.hasNext()) {
           ValueBox vBox = (ValueBox) usesIt.next();
           Value v = vBox.getValue();

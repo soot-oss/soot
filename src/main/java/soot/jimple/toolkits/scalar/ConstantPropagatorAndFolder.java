@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -93,7 +95,8 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
 
   protected int fold(Unit u) {
     int numFolded = 0;
-    for (ValueBox useBox : u.getUseBoxes()) {
+    for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+      ValueBox useBox = iterator.next();
       Value value = useBox.getValue();
       if (!(value instanceof Constant)) {
         if (Evaluator.isValueConstantValued(value)) {
@@ -110,7 +113,8 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
 
   protected int propagate(LocalDefs localDefs, Unit u) {
     int numPropagated = 0;
-    for (ValueBox useBox : u.getUseBoxes()) {
+    for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+      ValueBox useBox = iterator.next();
       Value value = useBox.getValue();
       if (value instanceof Local) {
         Local local = (Local) value;

@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,6 +26,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Value;
@@ -67,12 +70,23 @@ public abstract class AbstractDefinitionStmt extends AbstractStmt implements Def
   }
 
   @Override
+  public final Iterator<ValueBox> getDefBoxesIterator() {
+    return Iterators.singletonIterator(leftBox);
+  }
+
+  @Override
   public List<ValueBox> getUseBoxes() {
     List<ValueBox> list = new ArrayList<ValueBox>();
     list.addAll(getLeftOp().getUseBoxes());
     list.add(rightBox);
     list.addAll(getRightOp().getUseBoxes());
     return list;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return Iterators.concat(getLeftOp().getUseBoxesIterator(), Iterators.singletonIterator(rightBox),
+        getRightOp().getUseBoxesIterator());
   }
 
   @Override

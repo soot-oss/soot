@@ -106,7 +106,8 @@ public class NullPointerChecker extends BodyTransformer {
           // Monitor enter and exit
           obj = ((MonitorStmt) s).getOp();
         } else {
-          for (ValueBox vBox : s.getDefBoxes()) {
+          for (Iterator<ValueBox> iterator = s.getDefBoxesIterator(); iterator.hasNext();) {
+            ValueBox vBox = iterator.next();
             Value v = vBox.getValue();
             // putfield, and getfield
             if (v instanceof InstanceFieldRef) {
@@ -122,7 +123,8 @@ public class NullPointerChecker extends BodyTransformer {
               break;
             }
           }
-          for (ValueBox vBox : s.getUseBoxes()) {
+          for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+            ValueBox vBox = iterator.next();
             Value v = vBox.getValue();
             // putfield, and getfield
             if (v instanceof InstanceFieldRef) {

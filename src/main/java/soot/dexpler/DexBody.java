@@ -888,7 +888,6 @@ public class DexBody {
 
       }
 
-
       protected Type getDefiniteType(Local v) {
         Collection<Type> r = definiteConstraints.get(v);
         if (r != null && r.size() == 1) {
@@ -1115,25 +1114,22 @@ public class DexBody {
       }
 
       // For null_type locals: replace their use by NullConstant()
-      List<ValueBox> uses = jBody.getUseBoxes();
+      Iterator<ValueBox> uses = jBody.getUseBoxesIterator();
       // List<ValueBox> defs = jBody.getDefBoxes();
-      List<ValueBox> toNullConstantify = new ArrayList<ValueBox>();
       List<Local> toRemove = new ArrayList<Local>();
       for (Local l : jBody.getLocals()) {
 
         if (l.getType() instanceof NullType) {
           toRemove.add(l);
-          for (ValueBox vb : uses) {
-            Value v = vb.getValue();
-            if (v == l) {
-              toNullConstantify.add(vb);
-            }
-          }
         }
       }
-      for (ValueBox vb : toNullConstantify) {
-        System.out.println("replace valuebox '" + vb + " with null constant");
-        vb.setValue(nullConstant);
+      while (uses.hasNext()) {
+        ValueBox vb = uses.next();
+        Value v = vb.getValue();
+        if (v instanceof Local && toRemove.contains(v)) {
+          System.out.println("replace valuebox '" + vb + " with null constant");
+          vb.setValue(nullConstant);
+        }
       }
       for (Local l : toRemove) {
         System.out.println("removing null_type local " + l);
@@ -1294,11 +1290,10 @@ public class DexBody {
 
     return jBody;
   }
-  
 
-/**
- * Handles cases where the array types are incompatible (any two different array types)
- */
+  /**
+   * Handles cases where the array types are incompatible (any two different array types)
+   */
   private void handleIncompatibleDexArrayTypes(Body b, MultiMap<Local, Type> maybetypeConstraints,
       Map<Local, Collection<Type>> definiteConstraints) {
     boolean arrayConstraintsNecessary = false;
@@ -1527,7 +1522,8 @@ public class DexBody {
             }
           }
           BinopExpr bop = (BinopExpr) rop;
-          for (ValueBox cmp : bop.getUseBoxes()) {
+          for (Iterator<ValueBox> iterator = bop.getUseBoxesIterator(); iterator.hasNext();) {
+            ValueBox cmp = iterator.next();
             Value c = cmp.getValue();
             if (c instanceof Constant) {
               if (isDouble) {

@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,13 +25,16 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.SootMethodRef;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InstanceInvokeExpr;
+import soot.util.IteratorConcatElement;
 
 @SuppressWarnings("serial")
 public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr implements InstanceInvokeExpr {
@@ -69,5 +74,15 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr impl
     }
 
     return list;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    Iterator<ValueBox> binner = baseBox.getValue().getUseBoxesIterator();
+    if (argBoxes == null) {
+      return IteratorConcatElement.v(binner, baseBox);
+    } else {
+      return Iterators.concat(binner, Iterators.singletonIterator(baseBox), Arrays.asList(argBoxes).iterator(), new ArgBoxesIterator(argBoxes));
+    }
   }
 }
