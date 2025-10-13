@@ -75,27 +75,27 @@ public class CmpInstruction extends TaggedInstruction {
     Type type = null;
     switch (opcode) {
       case CMPL_DOUBLE:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         type = DoubleType.v();
         cmpExpr = Jimple.v().newCmplExpr(first, second);
         break;
       case CMPL_FLOAT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         type = FloatType.v();
         cmpExpr = Jimple.v().newCmplExpr(first, second);
         break;
       case CMPG_DOUBLE:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         type = DoubleType.v();
         cmpExpr = Jimple.v().newCmpgExpr(first, second);
         break;
       case CMPG_FLOAT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         type = FloatType.v();
         cmpExpr = Jimple.v().newCmpgExpr(first, second);
         break;
       case CMP_LONG:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         type = LongType.v();
         cmpExpr = Jimple.v().newCmpExpr(first, second);
         break;

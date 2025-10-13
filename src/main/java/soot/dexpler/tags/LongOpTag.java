@@ -48,7 +48,14 @@ import soot.tagkit.Tag;
 
 public class LongOpTag implements Tag, DexplerTag {
 
+  public static final LongOpTag INSTANCE = new LongOpTag();
+
   public static final String NAME = "LongOpTag";
+
+  @Deprecated
+  public LongOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {

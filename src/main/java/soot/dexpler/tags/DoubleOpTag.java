@@ -48,7 +48,14 @@ import soot.tagkit.Tag;
 
 public class DoubleOpTag implements Tag, DexplerTag {
 
+  public static final DoubleOpTag INSTANCE = new DoubleOpTag();  
+  
   public static final String NAME = "DoubleOpTag";
+
+  @Deprecated
+  public DoubleOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
