@@ -82,7 +82,7 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr impl
     if (argBoxes == null) {
       return IteratorConcatElement.v(binner, baseBox);
     } else {
-      return Iterators.concat(binner, Iterators.singletonIterator(baseBox), Arrays.asList(argBoxes).iterator(), new ArgBoxesIterator(argBoxes));
+      return Iterators.concat(binner, Iterators.singletonIterator(baseBox), Arrays.asList(argBoxes).iterator(), new ValueBoxesIterator(argBoxes));
     }
   }
 }

@@ -131,7 +131,7 @@ public abstract class AbstractInvokeExpr implements InvokeExpr {
     if (argBoxes == null) {
       return Collections.emptyIterator();
     } else {
-      return Iterators.concat(Arrays.asList(argBoxes).iterator(), new ArgBoxesIterator(argBoxes));
+      return Iterators.concat(Arrays.asList(argBoxes).iterator(), new ValueBoxesIterator(argBoxes));
     }
   }
 }

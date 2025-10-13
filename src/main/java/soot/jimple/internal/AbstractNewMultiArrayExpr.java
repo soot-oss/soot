@@ -155,7 +155,7 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
 
   @Override
   public Iterator<ValueBox> getUseBoxesIterator() {
-    return Iterators.concat(Arrays.asList(sizeBoxes).iterator(), new ArgBoxesIterator(sizeBoxes));
+    return Iterators.concat(Arrays.asList(sizeBoxes).iterator(), new ValueBoxesIterator(sizeBoxes));
   }
 
   @Override
