@@ -51,7 +51,6 @@
   <class>soot.jimple.Jimple</class>
   <class>soot.dava.toolkits.base.finders.LabeledBlockFinder</class>
   <class>soot.jimple.toolkits.scalar.pre.LazyCodeMotion</class>
-  <class>soot.tagkit.LineNumberTagAggregator</class>
   <class>soot.tagkit.InnerClassTagAggregator</class>
   <class>soot.jimple.toolkits.annotation.LineNumberAdder</class>
   <class>soot.baf.toolkits.base.LoadStoreOptimizer</class>
