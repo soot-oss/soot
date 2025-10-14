@@ -34,21 +34,16 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.DoubleType;
 import soot.FloatType;
-import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Type;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.LongOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
 
@@ -109,14 +104,6 @@ public class CmpInstruction extends TaggedInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      getTag().getName();
-      BinopExpr bexpr = (BinopExpr) cmpExpr;
-      DalvikTyper.v().setType(bexpr.getOp1Box(), type, true);
-      DalvikTyper.v().setType(bexpr.getOp2Box(), type, true);
-      DalvikTyper.v().setType(((JAssignStmt) assign).getLeftOpBox(), IntType.v(), false);
-    }
   }
 
   @Override

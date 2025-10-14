@@ -39,7 +39,6 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
-import soot.dexpler.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
@@ -63,10 +62,6 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      // DalvikTyper.v().?
-    }
   }
 
   @Override

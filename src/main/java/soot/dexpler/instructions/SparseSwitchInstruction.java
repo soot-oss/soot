@@ -34,12 +34,9 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.SwitchElement;
 import org.jf.dexlib2.iface.instruction.formats.SparseSwitchPayload;
 
-import soot.IntType;
 import soot.Local;
 import soot.Unit;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LookupSwitchStmt;
@@ -70,10 +67,6 @@ public class SparseSwitchInstruction extends SwitchInstruction {
     LookupSwitchStmt switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
     setUnit(switchStmt);
     addTags(switchStmt);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().setType(switchStmt.getKeyBox(), IntType.v(), true);
-    }
 
     return switchStmt;
   }

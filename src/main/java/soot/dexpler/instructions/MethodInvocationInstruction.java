@@ -55,10 +55,7 @@ import soot.SootResolver;
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -94,24 +91,6 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
       addTags(invoke);
       body.add(invoke);
       unit = invoke;
-    }
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      // Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
-
-      if (invocation instanceof InstanceInvokeExpr) {
-        Type t = invocation.getMethodRef().getDeclaringClass().getType();
-        DalvikTyper.v().setType(((InstanceInvokeExpr) invocation).getBaseBox(), t, true);
-        // DalvikTyper.v().setObjectType(assign.getLeftOpBox());
-      }
-      int i = 0;
-      for (Type pt : invocation.getMethodRef().getParameterTypes()) {
-        DalvikTyper.v().setType(invocation.getArgBox(i++), pt, true);
-      }
-      if (assign != null) {
-        DalvikTyper.v().setType(assign.getLeftOpBox(), invocation.getType(), false);
-      }
-
     }
   }
 
