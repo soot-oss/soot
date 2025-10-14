@@ -37,14 +37,11 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
-import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.Value;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
@@ -79,11 +76,6 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
-      DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);
-    }
   }
 
   @Override
