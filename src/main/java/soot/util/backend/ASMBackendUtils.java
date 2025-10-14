@@ -279,7 +279,7 @@ public class ASMBackendUtils {
     }
   }
 
-public static String jvmDescriptorOf(SootMethodRef m) {
+  public static String jvmDescriptorOf(SootMethodRef m) {
     StringBuilder buffer = new StringBuilder();
     buffer.append('(');
 
@@ -294,7 +294,7 @@ public static String jvmDescriptorOf(SootMethodRef m) {
     return buffer.toString();
   }
 
-public static String jvmDescriptorOf(Type type) {
+  public static String jvmDescriptorOf(Type type) {
     TypeSwitch<String> sw = new TypeSwitch<String>() {
       @Override
       public void caseBooleanType(BooleanType t) {

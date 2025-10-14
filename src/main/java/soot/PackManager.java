@@ -1077,8 +1077,8 @@ public class PackManager {
 
     switch (format) {
       case Options.output_format_class:
-	    createASMBackend(c).generateClassFile(streamOut);
-	    break;
+        createASMBackend(c).generateClassFile(streamOut);
+        break;
       case Options.output_format_jimp:
       case Options.output_format_shimp:
       case Options.output_format_b:
