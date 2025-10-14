@@ -278,4 +278,91 @@ public class ASMBackendUtils {
       return "1." + (javaVersion - 1);
     }
   }
+
+public static String jvmDescriptorOf(SootMethodRef m) {
+    StringBuilder buffer = new StringBuilder();
+    buffer.append('(');
+
+    // Add methods parameters
+    for (Type t : m.parameterTypes()) {
+      buffer.append(ASMBackendUtils.jvmDescriptorOf(t));
+    }
+
+    buffer.append(')');
+    buffer.append(ASMBackendUtils.jvmDescriptorOf(m.returnType()));
+
+    return buffer.toString();
+  }
+
+public static String jvmDescriptorOf(Type type) {
+    TypeSwitch<String> sw = new TypeSwitch<String>() {
+      @Override
+      public void caseBooleanType(BooleanType t) {
+        setResult("Z");
+      }
+
+      @Override
+      public void caseByteType(ByteType t) {
+        setResult("B");
+      }
+
+      @Override
+      public void caseCharType(CharType t) {
+        setResult("C");
+      }
+
+      @Override
+      public void caseDoubleType(DoubleType t) {
+        setResult("D");
+      }
+
+      @Override
+      public void caseFloatType(FloatType t) {
+        setResult("F");
+      }
+
+      @Override
+      public void caseIntType(IntType t) {
+        setResult("I");
+      }
+
+      @Override
+      public void caseLongType(LongType t) {
+        setResult("J");
+      }
+
+      @Override
+      public void caseShortType(ShortType t) {
+        setResult("S");
+      }
+
+      @Override
+      public void defaultCase(Type t) {
+        throw new RuntimeException("Invalid type: " + t);
+      }
+
+      @Override
+      public void caseArrayType(ArrayType t) {
+        StringBuilder buffer = new StringBuilder();
+        for (int i = 0; i < t.numDimensions; i++) {
+          buffer.append('[');
+        }
+        buffer.append(jvmDescriptorOf(t.baseType));
+        setResult(buffer.toString());
+      }
+
+      @Override
+      public void caseRefType(RefType t) {
+        setResult("L" + t.getClassName().replace('.', '/') + ";");
+      }
+
+      @Override
+      public void caseVoidType(VoidType t) {
+        setResult("V");
+      }
+    };
+
+    type.apply(sw);
+    return sw.getResult();
+  }
 }

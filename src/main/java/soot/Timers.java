@@ -101,10 +101,6 @@ public class Timers {
 
   public Timer propagatorTimer = new Timer("propagator");
 
-  public Timer buildJasminTimer = new Timer("buildjasmin");
-
-  public Timer assembleJasminTimer = new Timer("assembling jasmin");
-
   public Timer resolverTimer = new Timer("resolver");
 
   public int conversionLocalCount;
@@ -179,8 +175,6 @@ public class Timers {
       logger.debug("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
       logger.debug("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
       logger.debug("            Coloring locals: " + toTimeString(packTimer, totalTime));
-      logger.debug("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
-      logger.debug("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
 
       // logger.debug(" Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
       // "\t" + cleanup1LocalCount + " locals " + cleanup1StmtCount + " stmts");

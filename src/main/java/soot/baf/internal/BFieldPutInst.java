@@ -1,35 +1,12 @@
 package soot.baf.internal;
 
-/*-
- * #%L
- * Soot - a J*va Optimization Framework
- * %%
- * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
- * Copyright (C) 2004 Ondrej Lhotak
- * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 2.1 of the
- * License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Lesser Public License for more details.
- * 
- * You should have received a copy of the GNU General Lesser Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/lgpl-2.1.html>.
- * #L%
- */
-
-import soot.AbstractJasminClass;
 import soot.SootField;
 import soot.SootFieldRef;
 import soot.UnitPrinter;
 import soot.baf.FieldPutInst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BFieldPutInst extends AbstractInst implements FieldPutInst {
 
@@ -59,7 +36,7 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst {
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(fieldRef.type()) + 1;
+    return ASMBackendUtils.sizeOfType(fieldRef.type()) + 1;
   }
 
   @Override

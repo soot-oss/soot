@@ -260,27 +260,15 @@
                </li>
                <li><a href="#phase_20">Baf Optimization (bop)
                      </a></li>
-               <li><a href="#phase_21">Tag Aggregator (tag)
+               <li><a href="#phase_21">Dava Body Creation (db)
                      </a><ul>
-                     <li><a href="#phase_21_1">Line Number Tag Aggregator (tag.ln)
+                     <li><a href="#phase_21_1">Transformations (db.transformations)
                            </a></li>
-                     <li><a href="#phase_21_2">Array Bounds and Null Pointer Check Tag Aggregator (tag.an)
+                     <li><a href="#phase_21_2">Renamer (db.renamer)
                            </a></li>
-                     <li><a href="#phase_21_3">Dependence Tag Aggregator (tag.dep)
+                     <li><a href="#phase_21_3">De-obfuscate (db.deobfuscate)
                            </a></li>
-                     <li><a href="#phase_21_4">Field Read/Write Tag Aggregator (tag.fieldrw)
-                           </a></li>
-                  </ul>
-               </li>
-               <li><a href="#phase_22">Dava Body Creation (db)
-                     </a><ul>
-                     <li><a href="#phase_22_1">Transformations (db.transformations)
-                           </a></li>
-                     <li><a href="#phase_22_2">Renamer (db.renamer)
-                           </a></li>
-                     <li><a href="#phase_22_3">De-obfuscate (db.deobfuscate)
-                           </a></li>
-                     <li><a href="#phase_22_4">Force Recompilability (db.force-recompile)
+                     <li><a href="#phase_21_4">Force Recompilability (db.force-recompile)
                            </a></li>
                   </ul>
                </li>
@@ -445,10 +433,6 @@
       <H1><A NAME="options">OPTIONS</A></H1>
       <H2><A name="section_1">General Options</A></H2>
       <table border="3">
-         <tr>
-            <td><tt>-jasmin-backend </tt><br></td>
-            <td colspan="2">Use the Jasmin back end for generating Java bytecode (instead of using ASM).</td>
-         </tr>
          <tr>
             <td><tt>-h </tt><br><tt>-help </tt><br></td>
             <td colspan="2">Display help and exit</td>
@@ -721,7 +705,6 @@
                   </tt><br><tt>force-dex&nbsp;
                   </tt><br><tt>n&nbsp;
                   </tt><tt>none&nbsp;
-                  </tt><br><tt>jasmin&nbsp;
                   </tt><br><tt>c&nbsp;
                   </tt><tt>class&nbsp;
                   </tt><br><tt>d&nbsp;
@@ -7146,112 +7129,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_21">Tag Aggregator (tag)
-            </a></h2>
-      <p>
-         
-         The Tag Aggregator pack aggregates tags attached to individual units
-         into a code attribute for each method, so that these attributes can be
-         encoded in Java class files.
-         
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">true</span>
-            )
-            
-            <p></p>
-         </li>
-      </ul>
-      <h2><a name="phase_21_1">Line Number Tag Aggregator (tag.ln)
-            </a></h2>
-      <p>
-         
-         The Line Number Tag Aggregator aggregates line number
-         tags.
-         
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">true</span>
-            )
-            
-            <p></p>
-         </li>
-      </ul>
-      <h2><a name="phase_21_2">Array Bounds and Null Pointer Check Tag Aggregator (tag.an)
-            </a></h2>
-      <p>
-         
-         The Array Bounds and Null Pointer Tag Aggregator aggregates
-         tags produced by the Array Bound Checker and Null Pointer Checker.
-         
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p></p>
-         </li>
-      </ul>
-      <h2><a name="phase_21_3">Dependence Tag Aggregator (tag.dep)
-            </a></h2>
-      <p>
-         
-         The Dependence Tag Aggregator aggregates
-         tags produced by the Side Effect Tagger.
-         
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p></p>
-         </li>
-      </ul>
-      <h2><a name="phase_21_4">Field Read/Write Tag Aggregator (tag.fieldrw)
-            </a></h2>
-      <p>
-         The Field Read/Write Tag Aggregator aggregates field read/write
-         tags produced by the Field Read/Write Tagger, phase
-         jap.fieldrw.
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p></p>
-         </li>
-      </ul>
-      <h2><a name="phase_22">Dava Body Creation (db)
+      <h2><a name="phase_21">Dava Body Creation (db)
             </a></h2>
       <p>
          The decompile (Dava) option is set using the -f dava options in Soot.
@@ -7288,7 +7166,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_22_1">Transformations (db.transformations)
+      <h2><a name="phase_21_1">Transformations (db.transformations)
             </a></h2>
       <p>
          The transformations implemented using AST Traversal and structural flow analses on
@@ -7307,7 +7185,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_22_2">Renamer (db.renamer)
+      <h2><a name="phase_21_2">Renamer (db.renamer)
             </a></h2>
       <p>If set, the renaming analyses implemented in Dava are applied to each method body
          being
@@ -7329,7 +7207,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_22_3">De-obfuscate (db.deobfuscate)
+      <h2><a name="phase_21_3">De-obfuscate (db.deobfuscate)
             </a></h2>
       <p>Certain analyses make sense only when the bytecode is obfuscated code.
          There are plans to implement such analyses and apply them on methods only if this
@@ -7360,7 +7238,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_22_4">Force Recompilability (db.force-recompile)
+      <h2><a name="phase_21_4">Force Recompilability (db.force-recompile)
             </a></h2>
       <p>While decompiling we have to be clear what our aim is: do we want to convert bytecode
          to Java syntax and stay as close to the actual execution of bytecode or do we want

@@ -307,7 +307,6 @@ public abstract class AbstractTestingFramework {
       // Convert JimpleBody to BafBody (based on PackManager#convertJimpleBodyToBaf)
       BafBody bafBody = Baf.v().newBody((JimpleBody) b);
       PackManager.v().getPack("bop").apply(bafBody);
-      PackManager.v().getPack("tag").apply(bafBody);
 
       m.setActiveBody(bafBody);
     }

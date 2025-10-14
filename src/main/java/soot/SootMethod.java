@@ -42,6 +42,7 @@ import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
 import soot.util.NumberedString;
+import soot.util.backend.ASMBackendUtils;
 
 /**
  * Soot representation of a Java method. Can be declared to belong to a {@link SootClass}. Does not contain the actual code,
@@ -655,7 +656,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   public String getBytecodeParms() {
     StringBuilder buffer = new StringBuilder();
     for (Type type : getParameterTypes()) {
-      buffer.append(AbstractJasminClass.jasminDescriptorOf(type));
+      buffer.append(ASMBackendUtils.jvmDescriptorOf(type));
     }
     return buffer.toString().intern();
   }
@@ -670,7 +671,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     buffer.append(Scene.v().quotedNameOf(getDeclaringClass().getName()));
     buffer.append(": ");
     buffer.append(getName());
-    buffer.append(AbstractJasminClass.jasminDescriptorOf(makeRef()));
+    buffer.append(ASMBackendUtils.jvmDescriptorOf(makeRef()));
     buffer.append('>');
     return buffer.toString().intern();
   }

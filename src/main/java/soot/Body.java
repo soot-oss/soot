@@ -40,8 +40,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
-import soot.tagkit.CodeAttribute;
-import soot.tagkit.Tag;
 import soot.util.Chain;
 import soot.util.EscapedWriter;
 import soot.util.HashChain;
@@ -481,11 +479,6 @@ public abstract class Body extends AbstractHost implements Serializable {
     for (Trap item : trapChain) {
       unitBoxList.addAll(item.getUnitBoxes());
     }
-    for (Tag t : getTags()) {
-      if (t instanceof CodeAttribute) {
-        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-      }
-    }
 
     return unitBoxList;
   }
@@ -517,11 +510,6 @@ public abstract class Body extends AbstractHost implements Serializable {
     }
     for (Trap item : trapChain) {
       unitBoxList.addAll(item.getUnitBoxes());
-    }
-    for (Tag t : getTags()) {
-      if (t instanceof CodeAttribute) {
-        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-      }
     }
 
     return unitBoxList;

@@ -114,10 +114,6 @@ public class AntTask extends MatchingTask {
 
 
 
-        public void setjasmin_backend(boolean arg) {
-            if(arg) addArg("-jasmin-backend");
-        }
-  
         public void sethelp(boolean arg) {
             if(arg) addArg("-help");
         }
@@ -375,7 +371,6 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "force-dex" )
                 || arg.equals( "n" )
                 || arg.equals( "none" )
-                || arg.equals( "jasmin" )
                 || arg.equals( "c" )
                 || arg.equals( "class" )
                 || arg.equals( "d" )
@@ -3371,81 +3366,6 @@ public class AntTask extends MatchingTask {
           public void setenabled(boolean arg) {
             addArg("-p");
             addArg("bop");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag() {
-            Object ret = new PhaseOpttag();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_ln() {
-            Object ret = new PhaseOpttag_ln();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_ln {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.ln");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_an() {
-            Object ret = new PhaseOpttag_an();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_an {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.an");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_dep() {
-            Object ret = new PhaseOpttag_dep();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_dep {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.dep");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_fieldrw() {
-            Object ret = new PhaseOpttag_fieldrw();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_fieldrw {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.fieldrw");
             addArg("enabled:"+(arg?"true":"false"));
           }
       
