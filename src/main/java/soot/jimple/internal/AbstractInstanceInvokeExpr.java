@@ -1,7 +1,5 @@
 package soot.jimple.internal;
 
-import com.google.common.collect.Iterators;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -25,7 +23,6 @@ import com.google.common.collect.Iterators;
  */
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -82,8 +79,61 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr impl
     if (argBoxes == null) {
       return IteratorConcatElement.v(binner, baseBox);
     } else {
-      return Iterators.concat(binner, Iterators.singletonIterator(baseBox), Arrays.asList(argBoxes).iterator(),
-          new ValueBoxesIterator(argBoxes));
+      return new Iterator<ValueBox>() {
+
+        Iterator<ValueBox> binnerIt = binner;
+        int argBoxesIterator;
+        ValueBoxesUseBoxIterator op2 = new ValueBoxesUseBoxIterator(argBoxes);
+        // 0 = base inner
+        // 1 = base box
+        // 2 = argboxes boxes
+        // 3 = argboxes inner
+        int state = 0;
+
+        @Override
+        public boolean hasNext() {
+          switch (state) {
+            case 0:
+              boolean b = binnerIt.hasNext();
+              if (b) {
+                return true;
+              } else {
+                state = 1;
+              }
+            case 1:
+              return true;
+            case 2:
+              if (argBoxesIterator < argBoxes.length) {
+                return true;
+              } else {
+                state = 3;
+              }
+            default:
+              return op2.hasNext();
+          }
+        }
+
+        @Override
+        public ValueBox next() {
+          switch (state) {
+            case 0:
+              if (binnerIt.hasNext()) {
+                return binnerIt.next();
+              }
+            case 1:
+              state = 2;
+              return baseBox;
+            case 2:
+              ValueBox p = argBoxes[argBoxesIterator];
+              if (++argBoxesIterator >= argBoxes.length) {
+                state = 3;
+              }
+              return p;
+            default:
+              return op2.next();
+          }
+        }
+      };
     }
   }
 }

@@ -1,7 +1,5 @@
 package soot.jimple.internal;
 
-import com.google.common.collect.Iterators;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -138,8 +136,68 @@ public class JArrayRef implements ArrayRef, ConvertToBaf {
 
   @Override
   public Iterator<ValueBox> getUseBoxesIterator() {
-    return Iterators.concat(baseBox.getValue().getUseBoxesIterator(), Iterators.singletonIterator(baseBox),
-        indexBox.getValue().getUseBoxesIterator(), Iterators.singletonIterator(indexBox));
+
+    // , Iterators.singletonIterator(baseBox),
+    // indexBox.getValue().getUseBoxesIterator(), Iterators.singletonIterator(indexBox)
+    return new Iterator<ValueBox>() {
+
+      Iterator<ValueBox> binnerIt = baseBox.getValue().getUseBoxesIterator();
+      Iterator<ValueBox> iinnerIt = indexBox.getValue().getUseBoxesIterator();
+      // 0 = base inner
+      // 1 = base box
+      // 2 = index box inner
+      // 3 = index box
+      int state = 0;
+
+      @Override
+      public boolean hasNext() {
+        switch (state) {
+          case 0:
+            boolean b = binnerIt.hasNext();
+            if (b) {
+              return true;
+            } else {
+              state = 1;
+            }
+          case 1:
+            return true;
+          case 2:
+            b = iinnerIt.hasNext();
+            if (b) {
+              return true;
+            } else {
+              state = 3;
+            }
+          case 3:
+            return true;
+          default:
+            return false;
+        }
+      }
+
+      @Override
+      public ValueBox next() {
+        switch (state) {
+          case 0:
+            if (binnerIt.hasNext()) {
+              return binnerIt.next();
+            }
+          case 1:
+            state = 2;
+            return baseBox;
+          case 2:
+            if (iinnerIt.hasNext()) {
+              return iinnerIt.next();
+            }
+          case 3:
+            state = 4;
+            return indexBox;
+          default:
+            throw new IllegalStateException("No more element");
+        }
+      }
+    };
+
   }
 
   @Override

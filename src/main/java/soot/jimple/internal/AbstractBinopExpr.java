@@ -1,7 +1,5 @@
 package soot.jimple.internal;
 
-import com.google.common.collect.Iterators;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -111,8 +109,55 @@ public abstract class AbstractBinopExpr implements Expr {
   @Override
   public final Iterator<ValueBox> getUseBoxesIterator() {
 
-    return Iterators.concat(op1Box.getValue().getUseBoxesIterator(), Iterators.singletonIterator(op1Box),
-        op2Box.getValue().getUseBoxesIterator(), Iterators.singletonIterator(op2Box));
+    return new Iterator<ValueBox>() {
+
+      Iterator<ValueBox> op1 = op1Box.getValue().getUseBoxesIterator();
+      Iterator<ValueBox> op2 = op2Box.getValue().getUseBoxesIterator();
+      // 0 = op1 inner
+      // 1 = op1 box
+      // 2 = op2 inner
+      // 3 = op2 box
+      int state = 0;
+
+      @Override
+      public boolean hasNext() {
+        switch (state) {
+          case 0:
+            boolean b = op1.hasNext();
+            if (b) {
+              return true;
+            } else {
+              state = 1;
+            }
+          case 1:
+          case 2:
+            return true;
+          default:
+            return false;
+        }
+      }
+
+      @Override
+      public ValueBox next() {
+        switch (state) {
+          case 0:
+            if (op1.hasNext()) {
+              return op1.next();
+            }
+          case 1:
+            state = 2;
+            return op1Box;
+          case 2:
+            if (op2.hasNext()) {
+              return op2.next();
+            }
+          default:
+            state = 3;
+            return op2Box;
+        }
+      }
+    };
+
   }
 
   @Override

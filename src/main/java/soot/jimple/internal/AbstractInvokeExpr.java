@@ -131,7 +131,42 @@ public abstract class AbstractInvokeExpr implements InvokeExpr {
     if (argBoxes == null) {
       return Collections.emptyIterator();
     } else {
-      return Iterators.concat(Arrays.asList(argBoxes).iterator(), new ValueBoxesIterator(argBoxes));
+      return new Iterator<ValueBox>() {
+        int argBoxesIterator;
+        ValueBoxesUseBoxIterator abInner = new ValueBoxesUseBoxIterator(argBoxes);
+        // 0 = argBoxes
+        // 1 = argBoxes inner
+        int state = 0;
+
+        @Override
+        public boolean hasNext() {
+          switch (state) {
+            case 0:
+              if (argBoxesIterator < argBoxes.length) {
+                return true;
+              } else {
+                state = 1;
+              }
+            default:
+              return abInner.hasNext();
+          }
+        }
+
+        @Override
+        public ValueBox next() {
+          switch (state) {
+            case 0:
+              ValueBox p = argBoxes[argBoxesIterator];
+              if (++argBoxesIterator >= argBoxes.length) {
+                state = 1;
+              }
+              return p;
+            default:
+              return abInner.next();
+          }
+        }
+      };
+      
     }
   }
 }

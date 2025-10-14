@@ -26,12 +26,15 @@ import java.util.Iterator;
 
 import soot.ValueBox;
 
-final class ValueBoxesIterator implements Iterator<ValueBox> {
+/**
+ * Recursively iterates over the use boxes of the given value boxes.
+ */
+final class ValueBoxesUseBoxIterator implements Iterator<ValueBox> {
   Iterator<ValueBox> currentIterator;
   int i = 0;
   private ValueBox[] argBoxes;
 
-  public ValueBoxesIterator(ValueBox[] argBoxes) {
+  public ValueBoxesUseBoxIterator(ValueBox[] argBoxes) {
     this.argBoxes = argBoxes;
   }
 
