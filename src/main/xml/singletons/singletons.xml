@@ -21,7 +21,6 @@
   <class>soot.jimple.toolkits.base.ArrayWriteAggregator</class>
   <class>soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker</class>
   <class>soot.jimple.spark.pag.ArrayElement</class>
-  <class>soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator</class>
   <class>soot.dava.toolkits.base.AST.ASTWalker</class>
   <class>soot.baf.Baf</class>
   <class>soot.jimple.toolkits.scalar.pre.BusyCodeMotion</class>
@@ -40,7 +39,6 @@
   <class>soot.xml.XMLPrinter</class>
   <class>soot.Printer</class>
   <class>soot.jimple.toolkits.scalar.DeadAssignmentEliminator</class>
-  <class>soot.jimple.toolkits.pointer.DependenceTagAggregator</class>
   <class>soot.baf.DoubleWordType</class>
   <class>soot.jimple.toolkits.pointer.DumbPointerAnalysis</class>
   <class>soot.jimple.spark.sets.EmptyPointsToSet</class>
@@ -53,7 +51,6 @@
   <class>soot.jimple.Jimple</class>
   <class>soot.dava.toolkits.base.finders.LabeledBlockFinder</class>
   <class>soot.jimple.toolkits.scalar.pre.LazyCodeMotion</class>
-  <class>soot.tagkit.LineNumberTagAggregator</class>
   <class>soot.tagkit.InnerClassTagAggregator</class>
   <class>soot.jimple.toolkits.annotation.LineNumberAdder</class>
   <class>soot.baf.toolkits.base.LoadStoreOptimizer</class>
@@ -103,9 +100,6 @@
   <class>soot.toolkits.scalar.UnusedLocalEliminator</class>
   <class>soot.dava.toolkits.base.AST.UselessTryRemover</class>
   <class>soot.baf.WordType</class>
-  <class>soot.jimple.spark.fieldrw.FieldReadTagAggregator</class>
-  <class>soot.jimple.spark.fieldrw.FieldWriteTagAggregator</class>
-  <class>soot.jimple.spark.fieldrw.FieldTagAggregator</class>
   <class>soot.EntryPoints</class>
   <class>soot.jimple.toolkits.annotation.callgraph.CallGraphTagger</class>
   <class>soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer</class>

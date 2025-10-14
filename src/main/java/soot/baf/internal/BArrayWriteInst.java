@@ -22,11 +22,11 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.ArrayWriteInst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BArrayWriteInst extends AbstractOpTypeInst implements ArrayWriteInst {
 
@@ -46,7 +46,7 @@ public class BArrayWriteInst extends AbstractOpTypeInst implements ArrayWriteIns
 
   @Override
   public int getInMachineCount() {
-    return 2 + AbstractJasminClass.sizeOfType(getOpType());
+    return 2 + ASMBackendUtils.sizeOfType(getOpType());
   }
 
   @Override

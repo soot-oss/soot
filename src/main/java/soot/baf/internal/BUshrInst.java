@@ -22,11 +22,11 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.InstSwitch;
 import soot.baf.UshrInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BUshrInst extends AbstractOpTypeInst implements UshrInst {
 
@@ -46,7 +46,7 @@ public class BUshrInst extends AbstractOpTypeInst implements UshrInst {
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(getOpType()) + 1;
+    return ASMBackendUtils.sizeOfType(getOpType()) + 1;
   }
 
   @Override
@@ -56,7 +56,7 @@ public class BUshrInst extends AbstractOpTypeInst implements UshrInst {
 
   @Override
   public int getOutMachineCount() {
-    return 1 * AbstractJasminClass.sizeOfType(getOpType());
+    return 1 * ASMBackendUtils.sizeOfType(getOpType());
   }
 
   @Override

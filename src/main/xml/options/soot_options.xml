@@ -221,11 +221,6 @@
     <section>
         <name>General Options</name>
         <boolopt>
-            <name>Jasmin Backend</name>
-            <alias>jasmin-backend</alias>
-            <short_desc>Use the Jasmin back end for generating Java bytecode (instead of using ASM).</short_desc>
-        </boolopt>
-        <boolopt>
             <name>Help</name>
             <alias>h</alias>
             <alias>help</alias>
@@ -1099,16 +1094,6 @@
                 <short_desc>Produce no output</short_desc>
                 <long_desc>
                     Produce no output files.
-                </long_desc>
-            </value>
-            <value>
-                <name>Jasmin File</name>
-                <alias>jasmin</alias>
-                <short_desc>Produce <tt>.jasmin</tt> files
-                </short_desc>
-                <long_desc>
-                    Produce <tt>.jasmin</tt> files, suitable as input to the jasmin
-                    bytecode assembler.
                 </long_desc>
             </value>
             <value>
@@ -6762,94 +6747,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                     <alias>enabled</alias>
                     <default>false</default>
                 </boolopt>
-            </phase>
-            <phase>
-                <name>Tag Aggregator</name>
-                <alias>tag</alias>
-                <short_desc>Tag aggregator: turns tags into attributes</short_desc>
-                <long_desc>
-                    <p>
-                        The Tag Aggregator pack aggregates tags attached to individual units
-                        into a code attribute for each method, so that these attributes can be
-                        encoded in Java class files.
-                    </p>
-                </long_desc>
-                <boolopt>
-                    <name>Enabled</name>
-                    <alias>enabled</alias>
-                    <default>true</default>
-                </boolopt>
-                <sub_phase>
-                    <name>Line Number Tag Aggregator</name>
-                    <alias>tag.ln</alias>
-                    <short_desc>Line number aggregator</short_desc>
-                    <long_desc>
-                        <p>
-                            The Line Number Tag Aggregator aggregates line number
-                            tags.
-                        </p>
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Array Bounds and Null Pointer Check Tag Aggregator</name>
-                    <alias>tag.an</alias>
-                    <short_desc>Array bounds and null pointer check aggregator</short_desc>
-                    <long_desc>
-                        <p>
-                            The Array Bounds and Null Pointer Tag Aggregator aggregates
-                            tags produced by the Array Bound Checker and Null Pointer Checker.
-                        </p>
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Dependence Tag Aggregator</name>
-                    <alias>tag.dep</alias>
-                    <short_desc>Dependence aggregator</short_desc>
-                    <long_desc>
-                        <p>
-                            The Dependence Tag Aggregator aggregates
-                            tags produced by the Side Effect Tagger.
-                        </p>
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Field Read/Write Tag Aggregator</name>
-                    <alias>tag.fieldrw</alias>
-                    <short_desc>Field read/write aggregator</short_desc>
-                    <long_desc>
-                        The Field Read/Write Tag Aggregator aggregates field read/write
-                        tags produced by the Field Read/Write Tagger, phase
-                        <tt>jap.fieldrw</tt>.
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
             </phase>
 
 

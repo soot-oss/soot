@@ -5,7 +5,6 @@ package soot.baf.internal;
  * Soot - a J*va Optimization Framework
  * %%
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
- * Copyright (C) 2004 Ondrej Lhotak
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,13 +22,13 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.SootField;
 import soot.SootFieldRef;
 import soot.UnitPrinter;
 import soot.baf.InstSwitch;
 import soot.baf.StaticPutInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BStaticPutInst extends AbstractInst implements StaticPutInst {
 
@@ -54,7 +53,7 @@ public class BStaticPutInst extends AbstractInst implements StaticPutInst {
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(fieldRef.type());
+    return ASMBackendUtils.sizeOfType(fieldRef.type());
   }
 
   @Override

@@ -69,7 +69,6 @@ public class JavaClassSource extends ClassSource {
      * 1st March 2006 Nomair This seems to be a good place to calculate all the AST Metrics needed from Java's AST
      */
     if (Options.v().ast_metrics()) {
-      // System.out.println("CALLING COMPUTEASTMETRICS!!!!!!!");
       Node ast = InitialResolver.v().getAst();
       if (ast == null) {
         logger.debug("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");

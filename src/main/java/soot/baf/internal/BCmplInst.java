@@ -22,11 +22,11 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.CmplInst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BCmplInst extends AbstractOpTypeInst implements CmplInst {
 
@@ -46,7 +46,7 @@ public class BCmplInst extends AbstractOpTypeInst implements CmplInst {
 
   @Override
   public int getInMachineCount() {
-    return 2 * AbstractJasminClass.sizeOfType(getOpType());
+    return 2 * ASMBackendUtils.sizeOfType(getOpType());
   }
 
   @Override
