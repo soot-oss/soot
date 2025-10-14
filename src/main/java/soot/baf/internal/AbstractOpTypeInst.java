@@ -22,10 +22,10 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.baf.Baf;
+import soot.util.backend.ASMBackendUtils;
 
 public abstract class AbstractOpTypeInst extends AbstractInst {
 
@@ -59,6 +59,6 @@ public abstract class AbstractOpTypeInst extends AbstractInst {
 
   @Override
   public int getOutMachineCount() {
-    return AbstractJasminClass.sizeOfType(getOpType());
+    return ASMBackendUtils.sizeOfType(getOpType());
   }
 }

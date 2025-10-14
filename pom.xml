@@ -507,13 +507,6 @@
             <artifactId>heros</artifactId>
             <version>1.2.3</version>
         </dependency>
-        <!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
-            from the nightly build server -->
-        <dependency>
-            <groupId>ca.mcgill.sable</groupId>
-            <artifactId>jasmin</artifactId>
-            <version>3.0.3</version>
-        </dependency>
         <!-- Logging dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>

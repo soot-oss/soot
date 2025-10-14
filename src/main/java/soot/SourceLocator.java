@@ -609,8 +609,6 @@ public class SourceLocator {
         return ".class";
       case Options.output_format_dava:
         return ".java";
-      case Options.output_format_jasmin:
-        return ".jasmin";
       case Options.output_format_xml:
         return ".xml";
       case Options.output_format_template:

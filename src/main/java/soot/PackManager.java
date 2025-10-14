@@ -70,7 +70,6 @@ import soot.grimp.toolkits.base.ConstructorFolder;
 import soot.jimple.JimpleBody;
 import soot.jimple.paddle.PaddleHook;
 import soot.jimple.spark.SparkTransformer;
-import soot.jimple.spark.fieldrw.FieldTagAggregator;
 import soot.jimple.spark.fieldrw.FieldTagger;
 import soot.jimple.toolkits.annotation.AvailExprTagger;
 import soot.jimple.toolkits.annotation.DominatorsTagger;
@@ -91,7 +90,6 @@ import soot.jimple.toolkits.annotation.parity.ParityTagger;
 import soot.jimple.toolkits.annotation.profiling.ProfilingGenerator;
 import soot.jimple.toolkits.annotation.purity.PurityAnalysis;
 import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger;
-import soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.base.ArrayWriteAggregator;
 import soot.jimple.toolkits.base.RenameDuplicatedClasses;
@@ -101,7 +99,6 @@ import soot.jimple.toolkits.callgraph.UnreachableMethodTransformer;
 import soot.jimple.toolkits.invoke.StaticInliner;
 import soot.jimple.toolkits.invoke.StaticMethodBinder;
 import soot.jimple.toolkits.pointer.CastCheckEliminatorDumper;
-import soot.jimple.toolkits.pointer.DependenceTagAggregator;
 import soot.jimple.toolkits.pointer.ParameterAliasTagger;
 import soot.jimple.toolkits.pointer.SideEffectTagger;
 import soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer;
@@ -127,7 +124,6 @@ import soot.shimple.ShimpleTransformer;
 import soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder;
 import soot.sootify.TemplatePrinter;
 import soot.tagkit.InnerClassTagAggregator;
-import soot.tagkit.LineNumberTagAggregator;
 import soot.toDex.DexPrinter;
 import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
 import soot.toolkits.exceptions.TrapTightener;
@@ -139,7 +135,6 @@ import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.SharedInitializationLocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.EscapedWriter;
-import soot.util.JasminOutputStream;
 import soot.util.PhaseDumper;
 import soot.xml.TagCollector;
 import soot.xml.XMLPrinter;
@@ -356,15 +351,6 @@ public class PackManager {
 
     // Baf optimization pack
     addPack(p = new BodyPack("bop"));
-
-    // Code attribute tag aggregation pack
-    addPack(p = new BodyPack("tag"));
-    {
-      p.add(new Transform("tag.ln", LineNumberTagAggregator.v()));
-      p.add(new Transform("tag.an", ArrayNullTagAggregator.v()));
-      p.add(new Transform("tag.dep", DependenceTagAggregator.v()));
-      p.add(new Transform("tag.fieldrw", FieldTagAggregator.v()));
-    }
 
     // Dummy Dava Phase
     /*
@@ -896,7 +882,6 @@ public class PackManager {
       case Options.output_format_b:
         produceBaf = true;
         break;
-      case Options.output_format_jasmin:
       case Options.output_format_class:
       case Options.output_format_asm:
         produceGrimp = Options.v().via_grimp();
@@ -1030,7 +1015,6 @@ public class PackManager {
     // UnusedLocalEliminator.v().transform(body);
     BafBody bafBody = Baf.v().newBody(body);
     getPack("bop").apply(bafBody);
-    getPack("tag").apply(bafBody);
     if (Options.v().validate()) {
       bafBody.validate();
     }
@@ -1081,11 +1065,6 @@ public class PackManager {
       if (Options.v().gzip()) {
         streamOut = new GZIPOutputStream(streamOut);
       }
-      if (format == Options.output_format_class) {
-        if (Options.v().jasmin_backend()) {
-          streamOut = new JasminOutputStream(streamOut);
-        }
-      }
       writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
       logger.debug("Writing to " + fileName);
     } catch (IOException e) {
@@ -1098,12 +1077,7 @@ public class PackManager {
 
     switch (format) {
       case Options.output_format_class:
-        if (!Options.v().jasmin_backend()) {
-          createASMBackend(c).generateClassFile(streamOut);
-          break;
-        }
-      case Options.output_format_jasmin:
-        createJasminBackend(c).print(writerOut);
+        createASMBackend(c).generateClassFile(streamOut);
         break;
       case Options.output_format_jimp:
       case Options.output_format_shimp:
@@ -1144,21 +1118,6 @@ public class PackManager {
       }
     } catch (IOException e) {
       throw new CompilationDeathException("Cannot close output file " + fileName);
-    }
-  }
-
-  /**
-   * Factory method for creating a new backend on top of Jasmin
-   *
-   * @param c
-   *          The class for which to create a Jasmin-based backend
-   * @return The Jasmin-based backend for writing the given class into bytecode
-   */
-  private AbstractJasminClass createJasminBackend(SootClass c) {
-    if (c.containsBafBody()) {
-      return new soot.baf.JasminClass(c);
-    } else {
-      return new soot.jimple.JasminClass(c);
     }
   }
 

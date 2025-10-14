@@ -81,7 +81,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite gopChild = gopCreate(getPageContainer());
 		Composite bbChild = bbCreate(getPageContainer());
 		Composite bopChild = bopCreate(getPageContainer());
-		Composite tagChild = tagCreate(getPageContainer());
 		Composite dbChild = dbCreate(getPageContainer());
 		Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
 		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
@@ -180,10 +179,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
 		Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
 		Composite bbbb_neChild = bbbb_neCreate(getPageContainer());
-		Composite tagtag_lnChild = tagtag_lnCreate(getPageContainer());
-		Composite tagtag_anChild = tagtag_anCreate(getPageContainer());
-		Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
-		Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		Composite dbdb_transformationsChild = dbdb_transformationsCreate(getPageContainer());
 		Composite dbdb_renamerChild = dbdb_renamerCreate(getPageContainer());
 		Composite dbdb_deobfuscateChild = dbdb_deobfuscateCreate(getPageContainer());
@@ -918,26 +913,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("bop", getbopenabled_widget(), "enabled");
 		getbopenabled_widget().getButton().addSelectionListener(this);
 
-		makeNewEnableGroup("tag");
-		addToEnableGroup("tag", gettagenabled_widget(), "enabled");
-		gettagenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.ln");
-		addToEnableGroup("tag", "tag.ln", gettagtag_lnenabled_widget(), "enabled");
-		gettagtag_lnenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.an");
-		addToEnableGroup("tag", "tag.an", gettagtag_anenabled_widget(), "enabled");
-		gettagtag_anenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.dep");
-		addToEnableGroup("tag", "tag.dep", gettagtag_depenabled_widget(), "enabled");
-		gettagtag_depenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.fieldrw");
-		addToEnableGroup("tag", "tag.fieldrw", gettagtag_fieldrwenabled_widget(), "enabled");
-		gettagtag_fieldrwenabled_widget().getButton().addSelectionListener(this);
-
 		makeNewEnableGroup("db");
 		addToEnableGroup("db", getdbenabled_widget(), "enabled");
 		addToEnableGroup("db", getdbsource_is_javac_widget(), "source-is-javac");
@@ -996,12 +971,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		String nextListToken;
 
 	
-		boolRes = getGeneral_Optionsjasmin_backend_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionsjasmin_backend_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -3173,36 +3142,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = gettagenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_lnenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_lnenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_anenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_anenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_depenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_depenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_fieldrwenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getdbenabled_widget().getButton().getSelection();
 		defBoolRes = true;
 
@@ -4430,53 +4369,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 			
-			//Tag Aggregator
-			SootOption tag_branch = new SootOption("Tag Aggregator", "tag");
-			parent.addChild(tag_branch);
-			subParent = tag_branch;
-
-
-			
-			SootOption tag_tag_ln_branch = new SootOption("Line Number Tag Aggregator", "tagtag_ln");
-			subParent.addChild(tag_tag_ln_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_ln_branch;
-			
-			
-			SootOption tag_tag_an_branch = new SootOption("Array Bounds and Null Pointer Check Tag Aggregator", "tagtag_an");
-			subParent.addChild(tag_tag_an_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_an_branch;
-			
-			
-			SootOption tag_tag_dep_branch = new SootOption("Dependence Tag Aggregator", "tagtag_dep");
-			subParent.addChild(tag_tag_dep_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_dep_branch;
-			
-			
-			SootOption tag_tag_fieldrw_branch = new SootOption("Field Read/Write Tag Aggregator", "tagtag_fieldrw");
-			subParent.addChild(tag_tag_fieldrw_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_fieldrw_branch;
-			
-			
 			//Dava Body Creation
 			SootOption db_branch = new SootOption("Dava Body Creation", "db");
 			parent.addChild(db_branch);
@@ -4553,16 +4445,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		
 		
-	private BooleanOptionWidget General_Optionsjasmin_backend_widget;
-	
-	private void setGeneral_Optionsjasmin_backend_widget(BooleanOptionWidget widget) {
-		General_Optionsjasmin_backend_widget = widget;
-	}
-	
-	public BooleanOptionWidget getGeneral_Optionsjasmin_backend_widget() {
-		return General_Optionsjasmin_backend_widget;
-	}	
-	
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -8305,56 +8187,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return bopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget tagenabled_widget;
-	
-	private void settagenabled_widget(BooleanOptionWidget widget) {
-		tagenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagenabled_widget() {
-		return tagenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_lnenabled_widget;
-	
-	private void settagtag_lnenabled_widget(BooleanOptionWidget widget) {
-		tagtag_lnenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_lnenabled_widget() {
-		return tagtag_lnenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_anenabled_widget;
-	
-	private void settagtag_anenabled_widget(BooleanOptionWidget widget) {
-		tagtag_anenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_anenabled_widget() {
-		return tagtag_anenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_depenabled_widget;
-	
-	private void settagtag_depenabled_widget(BooleanOptionWidget widget) {
-		tagtag_depenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_depenabled_widget() {
-		return tagtag_depenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_fieldrwenabled_widget;
-	
-	private void settagtag_fieldrwenabled_widget(BooleanOptionWidget widget) {
-		tagtag_fieldrwenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_fieldrwenabled_widget() {
-		return tagtag_fieldrwenabled_widget;
-	}	
-	
 	private BooleanOptionWidget dbenabled_widget;
 	
 	private void setdbenabled_widget(BooleanOptionWidget widget) {
@@ -8619,17 +8451,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		
 		
 		
-
-		defKey = ""+" "+""+" "+"jasmin-backend";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setGeneral_Optionsjasmin_backend_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Jasmin Backend", "", "","jasmin-backend", "\n", defaultBool)));
 
 		defKey = ""+" "+""+" "+"h help";
 		defKey = defKey.trim();
@@ -9389,10 +9210,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("No Output File",
 						"n none",
 						"\nProduce no output files.",
-						false),
-				new OptionData("Jasmin File",
-						"jasmin",
-						"\nProduce .jasmin files, suitable as input to the jasmin bytecode \nassembler.",
 						false),
 				new OptionData("Class File",
 						"c class",
@@ -16988,211 +16805,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupbop;
-	}
-
-
-
-	private Composite tagCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptag = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptag.setLayout(layout);
-	
-	 	editGrouptag.setText("Tag Aggregator");
-	 	
-		editGrouptag.setData("id", "tag");
-		
-		String desctag = "Tag aggregator: turns tags into attributes";	
-		if (desctag.length() > 0) {
-			Label descLabeltag = new Label(editGrouptag, SWT.WRAP);
-			descLabeltag.setText(desctag);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		settagenabled_widget(new BooleanOptionWidget(editGrouptag, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag","enabled", "\n", defaultBool)));
-
-
-		return editGrouptag;
-	}
-
-
-
-	private Composite tagtag_lnCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_ln = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_ln.setLayout(layout);
-	
-	 	editGrouptagtag_ln.setText("Line Number Tag Aggregator");
-	 	
-		editGrouptagtag_ln.setData("id", "tagtag_ln");
-		
-		String desctagtag_ln = "Line number aggregator";	
-		if (desctagtag_ln.length() > 0) {
-			Label descLabeltagtag_ln = new Label(editGrouptagtag_ln, SWT.WRAP);
-			descLabeltagtag_ln.setText(desctagtag_ln);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.ln"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		settagtag_lnenabled_widget(new BooleanOptionWidget(editGrouptagtag_ln, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.ln","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_ln;
-	}
-
-
-
-	private Composite tagtag_anCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_an = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_an.setLayout(layout);
-	
-	 	editGrouptagtag_an.setText("Array Bounds and Null Pointer Check Tag Aggregator");
-	 	
-		editGrouptagtag_an.setData("id", "tagtag_an");
-		
-		String desctagtag_an = "Array bounds and null pointer check aggregator";	
-		if (desctagtag_an.length() > 0) {
-			Label descLabeltagtag_an = new Label(editGrouptagtag_an, SWT.WRAP);
-			descLabeltagtag_an.setText(desctagtag_an);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.an"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		settagtag_anenabled_widget(new BooleanOptionWidget(editGrouptagtag_an, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.an","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_an;
-	}
-
-
-
-	private Composite tagtag_depCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_dep = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_dep.setLayout(layout);
-	
-	 	editGrouptagtag_dep.setText("Dependence Tag Aggregator");
-	 	
-		editGrouptagtag_dep.setData("id", "tagtag_dep");
-		
-		String desctagtag_dep = "Dependence aggregator";	
-		if (desctagtag_dep.length() > 0) {
-			Label descLabeltagtag_dep = new Label(editGrouptagtag_dep, SWT.WRAP);
-			descLabeltagtag_dep.setText(desctagtag_dep);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.dep"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		settagtag_depenabled_widget(new BooleanOptionWidget(editGrouptagtag_dep, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.dep","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_dep;
-	}
-
-
-
-	private Composite tagtag_fieldrwCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_fieldrw = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_fieldrw.setLayout(layout);
-	
-	 	editGrouptagtag_fieldrw.setText("Field Read/Write Tag Aggregator");
-	 	
-		editGrouptagtag_fieldrw.setData("id", "tagtag_fieldrw");
-		
-		String desctagtag_fieldrw = "Field read/write aggregator";	
-		if (desctagtag_fieldrw.length() > 0) {
-			Label descLabeltagtag_fieldrw = new Label(editGrouptagtag_fieldrw, SWT.WRAP);
-			descLabeltagtag_fieldrw.setText(desctagtag_fieldrw);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.fieldrw"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		settagtag_fieldrwenabled_widget(new BooleanOptionWidget(editGrouptagtag_fieldrw, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.fieldrw","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_fieldrw;
 	}
 
 

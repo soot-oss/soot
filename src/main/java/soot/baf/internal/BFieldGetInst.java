@@ -22,13 +22,13 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.SootField;
 import soot.SootFieldRef;
 import soot.UnitPrinter;
 import soot.baf.FieldGetInst;
 import soot.baf.InstSwitch;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BFieldGetInst extends AbstractInst implements FieldGetInst {
 
@@ -63,7 +63,7 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst {
 
   @Override
   public int getOutMachineCount() {
-    return AbstractJasminClass.sizeOfType(fieldRef.type());
+    return ASMBackendUtils.sizeOfType(fieldRef.type());
   }
 
   @Override

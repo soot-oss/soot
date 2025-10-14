@@ -5,6 +5,7 @@ import soot.options.*;
 import soot.util.*;
 import soot.dava.*;
 import soot.grimp.*;
+import soot.baf.*;
 
 import java.util.Arrays;
 import java.io.*;
@@ -98,15 +99,11 @@ public class GenHelloWorld
 		OutputStream streamOut = null;
 		try {
 			String filename = SourceLocator.v().getFileNameFor(sClass, output_format);
-			if (output_format == Options.output_format_class)
-				streamOut = new JasminOutputStream(new FileOutputStream(filename));
-			else
-				streamOut = new FileOutputStream(filename);
+			streamOut = new FileOutputStream(filename);
 			PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-			if (output_format == Options.output_format_class) {
-				JasminClass jasClass = new JasminClass(sClass);
-				jasClass.print(writerOut);
-			} else if (output_format == Options.output_format_jimple)
+			if (output_format == Options.output_format_class)
+				new BafASMBackend(sClass, Options.v().java_version()).generateClassFile(streamOut);
+			else if (output_format == Options.output_format_jimple)
 				Printer.v().printTo(sClass, writerOut);
 			else if (output_format == Options.output_format_dava)
 				DavaPrinter.v().printTo(sClass, writerOut);

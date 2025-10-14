@@ -73,15 +73,14 @@ public class Options extends OptionsBase {
     public static final int output_format_force_dex = 11;
     public static final int output_format_n = 12;
     public static final int output_format_none = 12;
-    public static final int output_format_jasmin = 13;
-    public static final int output_format_c = 14;
-    public static final int output_format_class = 14;
-    public static final int output_format_d = 15;
-    public static final int output_format_dava = 15;
-    public static final int output_format_t = 16;
-    public static final int output_format_template = 16;
-    public static final int output_format_a = 17;
-    public static final int output_format_asm = 17;
+    public static final int output_format_c = 13;
+    public static final int output_format_class = 13;
+    public static final int output_format_d = 14;
+    public static final int output_format_dava = 14;
+    public static final int output_format_t = 15;
+    public static final int output_format_template = 15;
+    public static final int output_format_a = 16;
+    public static final int output_format_asm = 16;
     public static final int java_version_default = 1;
     public static final int java_version_1_1 = 2;
     public static final int java_version_1 = 2;
@@ -146,10 +145,6 @@ public class Options extends OptionsBase {
             }
 
             if (false);
-            else if (false
-                    || option.equals("jasmin-backend")
-            )
-                jasmin_backend = true;
             else if (false
                     || option.equals("h")
                     || option.equals("help")
@@ -693,15 +688,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_none;
-                }
-                else if (false
-                        || value.equals("jasmin")
-                ) {
-                    if (output_format != 0 && output_format != output_format_jasmin) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    output_format = output_format_jasmin;
                 }
                 else if (false
                         || value.equals("c")
@@ -1468,10 +1454,6 @@ public class Options extends OptionsBase {
         return true;
     }
 
-    public boolean jasmin_backend() { return jasmin_backend; }
-    private boolean jasmin_backend = false;
-    public void set_jasmin_backend(boolean setting) { jasmin_backend = setting; }
-
     public boolean help() { return help; }
     private boolean help = false;
     public void set_help(boolean setting) { help = setting; }
@@ -1845,7 +1827,6 @@ public class Options extends OptionsBase {
     public String getUsage() {
         return ""
                 + "\nGeneral Options:\n"
-                + padOpt("-jasmin-backend", "Use the Jasmin back end for generating Java bytecode (instead of using ASM).")
                 + padOpt("-h, -help", "Display help and exit")
                 + padOpt("-pl, -phase-list", "Print list of available phases")
                 + padOpt("-ph ARG -phase-help ARG", "Print help for specified ARG")
@@ -1914,7 +1895,6 @@ public class Options extends OptionsBase {
                     + padVal("dex", "Produce Dalvik Virtual Machine files")
                     + padVal("force-dex", "Produce Dalvik DEX files")
                     + padVal("n none", "Produce no output")
-                    + padVal("jasmin", "Produce .jasmin files")
                     + padVal("c class (default)", "Produce .class Files")
                     + padVal("d dava", "Produce dava-decompiled .java files")
                     + padVal("t template", "Produce .java files with Jimple templates.")
@@ -2107,11 +2087,6 @@ public class Options extends OptionsBase {
                     + padVal("bb.lp", "Local packer: minimizes number of locals")
                     + padVal("bb.ne", "Nop eliminator")
                 + padOpt("bop", "Baf optimization pack")
-                + padOpt("tag", "Tag aggregator: turns tags into attributes")
-                    + padVal("tag.ln", "Line number aggregator")
-                    + padVal("tag.an", "Array bounds and null pointer check aggregator")
-                    + padVal("tag.dep", "Dependence aggregator")
-                    + padVal("tag.fieldrw", "Field read/write aggregator")
                 + padOpt("db", "Dummy phase to store options for Dava")
                     + padVal("db.transformations", "The Dava back-end with all its transformations")
                     + padVal("db.renamer", "Apply heuristics based naming of local variables")
@@ -3031,36 +3006,6 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
 
-        if (phaseName.equals("tag"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Tag Aggregator pack aggregates tags attached to individual \nunits into a code attribute for each method, so that these \nattributes can be encoded in Java class files."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "");
-
-        if (phaseName.equals("tag.ln"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Line Number Tag Aggregator aggregates line number tags."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "");
-
-        if (phaseName.equals("tag.an"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Array Bounds and Null Pointer Tag Aggregator aggregates tags \nproduced by the Array Bound Checker and Null Pointer Checker."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "");
-
-        if (phaseName.equals("tag.dep"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Dependence Tag Aggregator aggregates tags produced by the \nSide Effect Tagger."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "");
-
-        if (phaseName.equals("tag.fieldrw"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Field Read/Write Tag Aggregator aggregates field read/write \ntags produced by the Field Read/Write Tagger, phase jap.fieldrw."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "");
-
         if (phaseName.equals("db"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe decompile (Dava) option is set using the -f dava options in \nSoot. Options provided by Dava are added to this dummy phase so \nas not to clutter the soot general arguments. -p db (option \nname):(value) will be used to set all required values for Dava."
@@ -3805,31 +3750,6 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
-        if (phaseName.equals("tag"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("tag.ln"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("tag.an"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("tag.dep"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("tag.fieldrw"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
         if (phaseName.equals("db"))
             return String.join(" ", 
                     "enabled",
@@ -4464,26 +4384,6 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:false ";
 
-        if (phaseName.equals("tag"))
-            return ""
-                    + "enabled:true ";
-
-        if (phaseName.equals("tag.ln"))
-            return ""
-                    + "enabled:true ";
-
-        if (phaseName.equals("tag.an"))
-            return ""
-                    + "enabled:false ";
-
-        if (phaseName.equals("tag.dep"))
-            return ""
-                    + "enabled:false ";
-
-        if (phaseName.equals("tag.fieldrw"))
-            return ""
-                    + "enabled:false ";
-
         if (phaseName.equals("db"))
             return ""
                     + "enabled:true "
@@ -4616,11 +4516,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("bb.lp")
                 || phaseName.equals("bb.ne")
                 || phaseName.equals("bop")
-                || phaseName.equals("tag")
-                || phaseName.equals("tag.ln")
-                || phaseName.equals("tag.an")
-                || phaseName.equals("tag.dep")
-                || phaseName.equals("tag.fieldrw")
                 || phaseName.equals("db")
                 || phaseName.equals("db.transformations")
                 || phaseName.equals("db.renamer")
@@ -4842,16 +4737,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase bb.ne");
         if (!PackManager.v().hasPhase("bop"))
             G.v().out.println("Warning: Options exist for non-existent phase bop");
-        if (!PackManager.v().hasPhase("tag"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag");
-        if (!PackManager.v().hasPhase("tag.ln"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.ln");
-        if (!PackManager.v().hasPhase("tag.an"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.an");
-        if (!PackManager.v().hasPhase("tag.dep"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.dep");
-        if (!PackManager.v().hasPhase("tag.fieldrw"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.fieldrw");
         if (!PackManager.v().hasPhase("db"))
             G.v().out.println("Warning: Options exist for non-existent phase db");
         if (!PackManager.v().hasPhase("db.transformations"))

@@ -22,11 +22,11 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.InstSwitch;
 import soot.baf.NegInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BNegInst extends AbstractOpTypeInst implements NegInst {
 
@@ -51,12 +51,12 @@ public class BNegInst extends AbstractOpTypeInst implements NegInst {
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(getOpType());
+    return ASMBackendUtils.sizeOfType(getOpType());
   }
 
   @Override
   public int getOutMachineCount() {
-    return AbstractJasminClass.sizeOfType(getOpType());
+    return ASMBackendUtils.sizeOfType(getOpType());
   }
 
   @Override

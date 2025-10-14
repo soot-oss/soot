@@ -22,7 +22,6 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -37,6 +36,7 @@ import soot.TypeSwitch;
 import soot.baf.InstSwitch;
 import soot.baf.PrimitiveCastInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BPrimitiveCastInst extends AbstractInst implements PrimitiveCastInst {
 
@@ -63,7 +63,7 @@ public class BPrimitiveCastInst extends AbstractInst implements PrimitiveCastIns
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(fromType);
+    return ASMBackendUtils.sizeOfType(fromType);
   }
 
   @Override
@@ -73,7 +73,7 @@ public class BPrimitiveCastInst extends AbstractInst implements PrimitiveCastIns
 
   @Override
   public int getOutMachineCount() {
-    return AbstractJasminClass.sizeOfType(toType);
+    return ASMBackendUtils.sizeOfType(toType);
   }
 
   // after changing the types, use getName to check validity
