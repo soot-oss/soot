@@ -244,7 +244,6 @@
                                 <source>${basedir}/src/main/generated/singletons</source>
                                 <source>${basedir}/src/main/generated/sablecc</source>
                                 <source>${basedir}/src/main/generated/options</source>
-                                <source>${basedir}/src/main/generated/jastadd</source>
                                 <source>${basedir}/src/main/generated/protobuf</source>
                             </sources>
                         </configuration>
