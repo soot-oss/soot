@@ -60,7 +60,6 @@ import soot.dexpler.DalvikThrowAnalysis;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.types.DotNetBasicTypes;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.toolkits.callgraph.CallGraph;

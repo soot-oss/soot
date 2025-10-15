@@ -1,4 +1,4 @@
-package soot.javaToJimple;
+package soot;
 
 /*-
  * #%L
@@ -22,34 +22,19 @@ package soot.javaToJimple;
  * #L%
  */
 
-public class InnerClassInfo {
+import java.util.HashSet;
+import java.util.Set;
 
-  public static final int NESTED = 0;
-  public static final int STATIC = 1;
-  public static final int LOCAL = 2;
-  public static final int ANON = 3;
+public class Dependencies {
+  public final Set<Type> typesToHierarchy, typesToSignature;
 
-  private soot.SootClass outerClass;
-
-  public soot.SootClass getOuterClass() {
-    return outerClass;
+  public Dependencies() {
+    typesToHierarchy = new HashSet<>();
+    typesToSignature = new HashSet<>();
   }
 
-  private String simpleName;
-
-  public String getSimpleName() {
-    return simpleName;
-  }
-
-  private int innerType;
-
-  public int getInnerType() {
-    return innerType;
-  }
-
-  public InnerClassInfo(soot.SootClass outerClass, String simpleName, int innerType) {
-    this.outerClass = outerClass;
-    this.simpleName = simpleName;
-    this.innerType = innerType;
+  public Dependencies(Set<Type> typesToHierarchy, Set<Type> typesToSignature) {
+    this.typesToHierarchy = typesToHierarchy == null ? new HashSet<>() : typesToHierarchy;
+    this.typesToSignature = typesToSignature == null ? new HashSet<>() : typesToSignature;
   }
 }

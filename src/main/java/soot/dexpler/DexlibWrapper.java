@@ -46,13 +46,13 @@ import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 
 import soot.ArrayType;
 import soot.CompilationDeathException;
+import soot.Dependencies;
 import soot.PrimType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootResolver;
 import soot.Type;
 import soot.VoidType;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
  * DexlibWrapper provides an entry point to the dexlib library from the smali project. Given a dex file, it will use dexlib

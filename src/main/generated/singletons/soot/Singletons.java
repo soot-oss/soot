@@ -1560,20 +1560,6 @@ public class Singletons {
     	instance_soot_SootModuleResolver = null;
     }
 
-    private soot.javaToJimple.InitialResolver instance_soot_javaToJimple_InitialResolver;
-    public soot.javaToJimple.InitialResolver soot_javaToJimple_InitialResolver() {
-        if (instance_soot_javaToJimple_InitialResolver == null) {
-	       	synchronized (this) {
-		        if (instance_soot_javaToJimple_InitialResolver == null)
-	        		instance_soot_javaToJimple_InitialResolver = new soot.javaToJimple.InitialResolver(g);
-	       	}
-       	}
-        return instance_soot_javaToJimple_InitialResolver;
-    }
-    protected void release_soot_javaToJimple_InitialResolver() {
-    	instance_soot_javaToJimple_InitialResolver = null;
-    }
-
     private soot.jimple.paddle.PaddleHook instance_soot_jimple_paddle_PaddleHook;
     public soot.jimple.paddle.PaddleHook soot_jimple_paddle_PaddleHook() {
         if (instance_soot_jimple_paddle_PaddleHook == null) {
@@ -1614,20 +1600,6 @@ public class Singletons {
     }
     protected void release_soot_jimple_toolkits_annotation_purity_PurityAnalysis() {
     	instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis = null;
-    }
-
-    private soot.javaToJimple.toolkits.CondTransformer instance_soot_javaToJimple_toolkits_CondTransformer;
-    public soot.javaToJimple.toolkits.CondTransformer soot_javaToJimple_toolkits_CondTransformer() {
-        if (instance_soot_javaToJimple_toolkits_CondTransformer == null) {
-	       	synchronized (this) {
-		        if (instance_soot_javaToJimple_toolkits_CondTransformer == null)
-	        		instance_soot_javaToJimple_toolkits_CondTransformer = new soot.javaToJimple.toolkits.CondTransformer(g);
-	       	}
-       	}
-        return instance_soot_javaToJimple_toolkits_CondTransformer;
-    }
-    protected void release_soot_javaToJimple_toolkits_CondTransformer() {
-    	instance_soot_javaToJimple_toolkits_CondTransformer = null;
     }
 
     private soot.jimple.spark.sets.AllSharedListNodes instance_soot_jimple_spark_sets_AllSharedListNodes;
@@ -1684,20 +1656,6 @@ public class Singletons {
     }
     protected void release_soot_jimple_toolkits_thread_mhp_MhpTransformer() {
     	instance_soot_jimple_toolkits_thread_mhp_MhpTransformer = null;
-    }
-
-    private soot.JastAddInitialResolver instance_soot_JastAddInitialResolver;
-    public soot.JastAddInitialResolver soot_JastAddInitialResolver() {
-        if (instance_soot_JastAddInitialResolver == null) {
-	       	synchronized (this) {
-		        if (instance_soot_JastAddInitialResolver == null)
-	        		instance_soot_JastAddInitialResolver = new soot.JastAddInitialResolver(g);
-	       	}
-       	}
-        return instance_soot_JastAddInitialResolver;
-    }
-    protected void release_soot_JastAddInitialResolver() {
-    	instance_soot_JastAddInitialResolver = null;
     }
 
     private soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator;

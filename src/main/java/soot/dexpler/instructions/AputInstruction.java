@@ -32,14 +32,11 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.ArrayType;
-import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.UnknownType;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.ObjectOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -72,11 +69,6 @@ public class AputInstruction extends FieldInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-      DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
-    }
   }
 
   @Override

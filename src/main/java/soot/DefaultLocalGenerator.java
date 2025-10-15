@@ -1,4 +1,4 @@
-package soot.javaToJimple;
+package soot;
 
 /*-
  * #%L
@@ -26,26 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import soot.Body;
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.DecimalType;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.Local;
-import soot.LocalGenerator;
-import soot.LongType;
-import soot.RefLikeType;
-import soot.ShortType;
-import soot.Type;
-import soot.UByteType;
-import soot.UIntType;
-import soot.ULongType;
-import soot.UShortType;
-import soot.UnknownType;
-import soot.VoidType;
 import soot.jimple.Jimple;
 import soot.jimple.toolkits.typing.fast.Integer127Type;
 import soot.jimple.toolkits.typing.fast.Integer1Type;

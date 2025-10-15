@@ -39,8 +39,6 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
 import soot.jimple.Constant;
@@ -68,12 +66,6 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      // DalvikTyper.v().captureAssign((JAssignStmt)assign, op); //TODO:
-      // classtype could be null!
-      DalvikTyper.v().setType(assign.getLeftOpBox(), cst.getType(), false);
-    }
   }
 
   @Override

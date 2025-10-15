@@ -109,16 +109,13 @@
   <class>soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher</class>
   <class>soot.SootResolver</class>
   <class>soot.SootModuleResolver</class>
-  <class>soot.javaToJimple.InitialResolver</class>
   <class>soot.jimple.paddle.PaddleHook</class>
   <class>soot.jimple.toolkits.annotation.DominatorsTagger</class>
   <class>soot.jimple.toolkits.annotation.purity.PurityAnalysis</class>
-  <class>soot.javaToJimple.toolkits.CondTransformer</class>
   <class>soot.jimple.spark.sets.AllSharedListNodes</class>
   <class>soot.jimple.spark.sets.AllSharedHybridNodes</class>
   <class>soot.jimple.toolkits.thread.synchronization.LockAllocator</class>
   <class>soot.jimple.toolkits.thread.mhp.MhpTransformer</class>
-  <class>soot.JastAddInitialResolver</class>
   <class>soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator</class>
   <class>soot.sootify.TemplatePrinter</class>
   <class>soot.dexpler.DexResolver</class>

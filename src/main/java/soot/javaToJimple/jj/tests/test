@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# TODO: make sure polyglot/bin (which is where jlc lives) is in your path
-jlc -ext jj $@

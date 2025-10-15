@@ -30,6 +30,7 @@ import java.util.Set;
  */
 import soot.ArrayType;
 import soot.Body;
+import soot.DefaultLocalGenerator;
 import soot.Local;
 import soot.LocalGenerator;
 import soot.NullType;
@@ -46,7 +47,6 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;

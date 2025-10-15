@@ -58,7 +58,6 @@ import org.jf.dexlib2.iface.DexFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
 import soot.asm.AsmClassSource;
 import soot.asm.AsmJava9ClassProvider;
@@ -227,39 +226,24 @@ public class SourceLocator {
     if (classProviders == null) {
       setupClassProviders();
     }
-    JarException ex = null;
     for (ClassProvider cp : classProviders) {
-      try {
-        ClassSource ret = cp.find(className);
-        if (ret != null) {
-          return ret;
-        }
-      } catch (JarException e) {
-        ex = e;
+      ClassSource ret = cp.find(className);
+      if (ret != null) {
+        return ret;
       }
-    }
-    if (ex != null) {
-      throw ex;
     }
     for (final ClassLoader cl : additionalClassLoaders) {
-      try {
-        ClassSource ret = new ClassProvider() {
-          @Override
-          public ClassSource find(String className) {
-            String fileName = className.replace('.', '/') + ".class";
-            InputStream stream = cl.getResourceAsStream(fileName);
-            return (stream == null) ? null : new AsmClassSource(className, new ClassLoaderFoundFile(cl, fileName));
-          }
-        }.find(className);
-        if (ret != null) {
-          return ret;
+      ClassSource ret = new ClassProvider() {
+        @Override
+        public ClassSource find(String className) {
+          String fileName = className.replace('.', '/') + ".class";
+          InputStream stream = cl.getResourceAsStream(fileName);
+          return (stream == null) ? null : new AsmClassSource(className, new ClassLoaderFoundFile(cl, fileName));
         }
-      } catch (JarException e) {
-        ex = e;
+      }.find(className);
+      if (ret != null) {
+        return ret;
       }
-    }
-    if (ex != null) {
-      throw ex;
     }
     if (className.startsWith("soot.rtlib.tamiflex.")) {
       ClassLoader cl = getClass().getClassLoader();
@@ -285,25 +269,17 @@ public class SourceLocator {
       case Options.src_prec_class:
         classProviders.add(classFileClassProvider);
         classProviders.add(new JimpleClassProvider());
-        classProviders.add(new JavaClassProvider());
         break;
       case Options.src_prec_only_class:
         classProviders.add(classFileClassProvider);
         break;
-      case Options.src_prec_java:
-        classProviders.add(new JavaClassProvider());
-        classProviders.add(classFileClassProvider);
-        classProviders.add(new JimpleClassProvider());
-        break;
       case Options.src_prec_jimple:
         classProviders.add(new JimpleClassProvider());
         classProviders.add(classFileClassProvider);
-        classProviders.add(new JavaClassProvider());
         break;
       case Options.src_prec_apk:
         classProviders.add(new DexClassProvider());
         classProviders.add(classFileClassProvider);
-        classProviders.add(new JavaClassProvider());
         classProviders.add(new JimpleClassProvider());
         break;
       case Options.src_prec_apk_c_j:

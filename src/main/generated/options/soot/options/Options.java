@@ -47,11 +47,10 @@ public class Options extends OptionsBase {
     public static final int src_prec_only_class = 2;
     public static final int src_prec_J = 3;
     public static final int src_prec_jimple = 3;
-    public static final int src_prec_java = 4;
-    public static final int src_prec_apk = 5;
-    public static final int src_prec_apk_class_jimple = 6;
-    public static final int src_prec_apk_c_j = 6;
-    public static final int src_prec_dotnet = 7;
+    public static final int src_prec_apk = 4;
+    public static final int src_prec_apk_class_jimple = 5;
+    public static final int src_prec_apk_c_j = 5;
+    public static final int src_prec_dotnet = 6;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -391,10 +390,6 @@ public class Options extends OptionsBase {
                 }
             }
             else if (false
-                    || option.equals("ast-metrics")
-            )
-                ast_metrics = true;
-            else if (false
                     || option.equals("src-prec")
             ) {
                 if (!hasMoreOptions()) {
@@ -433,15 +428,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     src_prec = src_prec_jimple;
-                }
-                else if (false
-                        || value.equals("java")
-                ) {
-                    if (src_prec != 0 && src_prec != src_prec_java) {
-                        G.v().out.println("Multiple values given for option " + option);
-                        return false;
-                    }
-                    src_prec = src_prec_java;
                 }
                 else if (false
                         || value.equals("apk")
@@ -524,10 +510,6 @@ public class Options extends OptionsBase {
                     return false;
                 }
             }
-            else if (false
-                    || option.equals("polyglot")
-            )
-                polyglot = true;
             else if (false
                     || option.equals("permissive-resolving")
             )
@@ -1572,10 +1554,6 @@ public class Options extends OptionsBase {
     public void set_android_api_version(int setting) { android_api_version = setting; }
     private int android_api_version = -1;
 
-    public boolean ast_metrics() { return ast_metrics; }
-    private boolean ast_metrics = false;
-    public void set_ast_metrics(boolean setting) { ast_metrics = setting; }
-
     public int src_prec() {
         if (src_prec == 0) return src_prec_class;
         return src_prec; 
@@ -1618,10 +1596,6 @@ public class Options extends OptionsBase {
     public String main_class() { return main_class; }
     public void set_main_class(String setting) { main_class = setting; }
     private String main_class = "";
-
-    public boolean polyglot() { return polyglot; }
-    private boolean polyglot = false;
-    public void set_polyglot(boolean setting) { polyglot = setting; }
 
     public boolean permissive_resolving() { return permissive_resolving; }
     private boolean permissive_resolving = false;
@@ -1846,12 +1820,10 @@ public class Options extends OptionsBase {
                 + padOpt("-oaat", "From the process-dir, processes one class at a time.")
                 + padOpt("-android-jars ARG", "Use ARG as the path for finding the android.jar file")
                 + padOpt("-force-android-jar ARG", "Force Soot to use ARG as the path for the android.jar file.")
-                + padOpt("-ast-metrics", "Compute AST Metrics if performing java to jimple")
                 + padOpt("-src-prec ARG", "Sets source precedence to ARG files")
                     + padVal("c class (default)", "Favour class files as Soot source")
                     + padVal("only-class", "Use only class files as Soot source")
                     + padVal("J jimple", "Favour Jimple files as Soot source")
-                    + padVal("java", "Favour Java files as Soot source")
                     + padVal("apk", "Favour APK files as Soot source")
                     + padVal("apk-class-jimple apk-c-j", "Favour APK files as Soot source, disregard Java files")
                     + padVal("dotnet", "Favour .NET assemblies files as Soot source")
@@ -1864,7 +1836,6 @@ public class Options extends OptionsBase {
                 + padOpt("-no-bodies-for-excluded", "Do not load bodies for excluded classes")
                 + padOpt("-j2me", "Use J2ME mode; changes assignment of types")
                 + padOpt("-main-class ARG", "Sets the main class for whole-program analysis.")
-                + padOpt("-polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd")
                 + padOpt("-permissive-resolving", "Use alternative sources when classes cannot be found using the normal resolving strategy")
                 + padOpt("-drop-bodies-after-load", "Drop the method source after it has served its purpose of loading the method body")
                 + padOpt("-nc, -native-code", "Enables native methods to be concrete. Needed for analyzing the Java Native Interface.")
@@ -1987,20 +1958,6 @@ public class Options extends OptionsBase {
                     + padVal("jb.uce", "Unreachable code eliminator")
                     + padVal("jb.tt", "Trap Tightener")
                     + padVal("jb.cbf", "Conditional branch folder")
-                + padOpt("jj", "Creates a JimpleBody for each method directly from source")
-                    + padVal("jj.ls", "Local splitter: one local per DU-UD web")
-                    + padVal("jj.sils", "Splits primitive locals used as different types")
-                    + padVal("jj.a", "Aggregator: removes some unnecessary copies")
-                    + padVal("jj.ule", "Unused local eliminator")
-                    + padVal("jj.tr", "Assigns types to locals")
-                    + padVal("jj.ulp", "Local packer: minimizes number of locals")
-                    + padVal("jj.lns", "Local name standardizer")
-                    + padVal("jj.cp", "Copy propagator")
-                    + padVal("jj.dae", "Dead assignment eliminator")
-                    + padVal("jj.cp-ule", "Post-copy propagation unused local eliminator")
-                    + padVal("jj.lp", "Local packer: minimizes number of locals")
-                    + padVal("jj.ne", "Nop eliminator")
-                    + padVal("jj.uce", "Unreachable code eliminator")
                 + padOpt("wjpp", "Whole Jimple Pre-processing Pack")
                     + padVal("wjpp.cimbt", "Replaces base objects of calls to Method.invoke() that are string constants by locals")
                 + padOpt("wspp", "Whole Shimple Pre-processing Pack")
@@ -2198,98 +2155,6 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jb.cbf"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Conditional Branch Folder statically evaluates the \nconditional expression of Jimple if statements. If the condition \nis identically true or false, the Folder replaces the \nconditional branch statement with an unconditional goto \nstatement."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "");
-
-        if (phaseName.equals("jj"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nJimple Body Creation creates a JimpleBody for each input method, \nusing polyglot, to read .java files."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "")
-                    + padOpt("use-original-names (true)", "");
-
-        if (phaseName.equals("jj.ls"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "");
-
-        if (phaseName.equals("jj.sils"))
-            return "Phase " + phaseName + ":\n"
-                    + "\n"
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "");
-
-        if (phaseName.equals("jj.a"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Jimple Local Aggregator removes some unnecessary copies by \ncombining local variables. Essentially, it finds definitions \nwhich have only a single use and, if it is safe to do so, \nremoves the original definition after replacing the use with the \ndefinition's right-hand side. At this stage in JimpleBody \nconstruction, local aggregation serves largely to remove the \ncopies to and from stack variables which simulate load and store \ninstructions in the original bytecode."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "")
-                    + padOpt("only-stack-locals (true)", "");
-
-        if (phaseName.equals("jj.ule"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Unused Local Eliminator removes any unused locals from the \nmethod."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "");
-
-        if (phaseName.equals("jj.tr"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Type Assigner gives local variables types which will \naccommodate the values stored in them over the course of the \nmethod."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "");
-
-        if (phaseName.equals("jj.ulp"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Unsplit-originals Local Packer executes only when the \n`use-original-names' option is chosen for the `jb' phase. The \nLocal Packer attempts to minimize the number of local variables \nrequired in a method by reusing the same variable for disjoint \nDU-UD webs. Conceptually, it is the inverse of the Local \nSplitter."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "")
-                    + padOpt("unsplit-original-locals (false)", "");
-
-        if (phaseName.equals("jj.lns"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Local Name Standardizer assigns generic names to local \nvariables."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "")
-                    + padOpt("only-stack-locals (false)", "");
-
-        if (phaseName.equals("jj.cp"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThis phase performs cascaded copy propagation. If the propagator \nencounters situations of the form: A: a = ...; ... B: x = a; ... \nC: ... = ... x; where a and x are each defined only once (at A \nand B, respectively), then it can propagate immediately without \nchecking between B and C for redefinitions of a. In this case \nthe propagator is global. Otherwise, if a has multiple \ndefinitions then the propagator checks for redefinitions and \npropagates copies only within extended basic blocks."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "")
-                    + padOpt("only-regular-locals (false)", "")
-                    + padOpt("only-stack-locals (true)", "");
-
-        if (phaseName.equals("jj.dae"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Dead Assignment Eliminator eliminates assignment statements \nto locals whose values are not subsequently used, unless \nevaluating the right-hand side of the assignment may cause \nside-effects."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "")
-                    + padOpt("only-stack-locals (true)", "");
-
-        if (phaseName.equals("jj.cp-ule"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThis phase removes any locals that are unused after copy \npropagation."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "");
-
-        if (phaseName.equals("jj.lp"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Local Packer attempts to minimize the number of local \nvariables required in a method by reusing the same variable for \ndisjoint DU-UD webs. Conceptually, it is the inverse of the \nLocal Splitter."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "")
-                    + padOpt("unsplit-original-locals (false)", "");
-
-        if (phaseName.equals("jj.ne"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Nop Eliminator removes nop statements from the method."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (true)", "");
-
-        if (phaseName.equals("jj.uce"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Unreachable Code Eliminator removes unreachable code and \ntraps whose catch blocks are empty."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "");
 
@@ -3098,84 +2963,6 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
-        if (phaseName.equals("jj"))
-            return String.join(" ", 
-                    "enabled",
-                    "use-original-names"
-            );
-
-        if (phaseName.equals("jj.ls"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("jj.sils"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("jj.a"))
-            return String.join(" ", 
-                    "enabled",
-                    "only-stack-locals"
-            );
-
-        if (phaseName.equals("jj.ule"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("jj.tr"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("jj.ulp"))
-            return String.join(" ", 
-                    "enabled",
-                    "unsplit-original-locals"
-            );
-
-        if (phaseName.equals("jj.lns"))
-            return String.join(" ", 
-                    "enabled",
-                    "only-stack-locals"
-            );
-
-        if (phaseName.equals("jj.cp"))
-            return String.join(" ", 
-                    "enabled",
-                    "only-regular-locals",
-                    "only-stack-locals"
-            );
-
-        if (phaseName.equals("jj.dae"))
-            return String.join(" ", 
-                    "enabled",
-                    "only-stack-locals"
-            );
-
-        if (phaseName.equals("jj.cp-ule"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("jj.lp"))
-            return String.join(" ", 
-                    "enabled",
-                    "unsplit-original-locals"
-            );
-
-        if (phaseName.equals("jj.ne"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
-        if (phaseName.equals("jj.uce"))
-            return String.join(" ", 
-                    "enabled"
-            );
-
         if (phaseName.equals("wjpp"))
             return String.join(" ", 
                     "enabled"
@@ -3794,70 +3581,6 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true ";
 
-        if (phaseName.equals("jj"))
-            return ""
-                    + "enabled:true "
-                    + "use-original-names:true ";
-
-        if (phaseName.equals("jj.ls"))
-            return ""
-                    + "enabled:false ";
-
-        if (phaseName.equals("jj.sils"))
-            return ""
-                    + "enabled:true ";
-
-        if (phaseName.equals("jj.a"))
-            return ""
-                    + "enabled:true "
-                    + "only-stack-locals:true ";
-
-        if (phaseName.equals("jj.ule"))
-            return ""
-                    + "enabled:true ";
-
-        if (phaseName.equals("jj.tr"))
-            return ""
-                    + "enabled:false ";
-
-        if (phaseName.equals("jj.ulp"))
-            return ""
-                    + "enabled:false "
-                    + "unsplit-original-locals:false ";
-
-        if (phaseName.equals("jj.lns"))
-            return ""
-                    + "enabled:true "
-                    + "only-stack-locals:false ";
-
-        if (phaseName.equals("jj.cp"))
-            return ""
-                    + "enabled:true "
-                    + "only-regular-locals:false "
-                    + "only-stack-locals:true ";
-
-        if (phaseName.equals("jj.dae"))
-            return ""
-                    + "enabled:true "
-                    + "only-stack-locals:true ";
-
-        if (phaseName.equals("jj.cp-ule"))
-            return ""
-                    + "enabled:true ";
-
-        if (phaseName.equals("jj.lp"))
-            return ""
-                    + "enabled:false "
-                    + "unsplit-original-locals:false ";
-
-        if (phaseName.equals("jj.ne"))
-            return ""
-                    + "enabled:true ";
-
-        if (phaseName.equals("jj.uce"))
-            return ""
-                    + "enabled:true ";
-
         if (phaseName.equals("wjpp"))
             return ""
                     + "enabled:true ";
@@ -4333,20 +4056,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.uce")
                 || phaseName.equals("jb.tt")
                 || phaseName.equals("jb.cbf")
-                || phaseName.equals("jj")
-                || phaseName.equals("jj.ls")
-                || phaseName.equals("jj.sils")
-                || phaseName.equals("jj.a")
-                || phaseName.equals("jj.ule")
-                || phaseName.equals("jj.tr")
-                || phaseName.equals("jj.ulp")
-                || phaseName.equals("jj.lns")
-                || phaseName.equals("jj.cp")
-                || phaseName.equals("jj.dae")
-                || phaseName.equals("jj.cp-ule")
-                || phaseName.equals("jj.lp")
-                || phaseName.equals("jj.ne")
-                || phaseName.equals("jj.uce")
                 || phaseName.equals("wjpp")
                 || phaseName.equals("wjpp.cimbt")
                 || phaseName.equals("wspp")
@@ -4462,34 +4171,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.tt");
         if (!PackManager.v().hasPhase("jb.cbf"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.cbf");
-        if (!PackManager.v().hasPhase("jj"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj");
-        if (!PackManager.v().hasPhase("jj.ls"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ls");
-        if (!PackManager.v().hasPhase("jj.sils"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.sils");
-        if (!PackManager.v().hasPhase("jj.a"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.a");
-        if (!PackManager.v().hasPhase("jj.ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ule");
-        if (!PackManager.v().hasPhase("jj.tr"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.tr");
-        if (!PackManager.v().hasPhase("jj.ulp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ulp");
-        if (!PackManager.v().hasPhase("jj.lns"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.lns");
-        if (!PackManager.v().hasPhase("jj.cp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.cp");
-        if (!PackManager.v().hasPhase("jj.dae"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.dae");
-        if (!PackManager.v().hasPhase("jj.cp-ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.cp-ule");
-        if (!PackManager.v().hasPhase("jj.lp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.lp");
-        if (!PackManager.v().hasPhase("jj.ne"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ne");
-        if (!PackManager.v().hasPhase("jj.uce"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.uce");
         if (!PackManager.v().hasPhase("wjpp"))
             G.v().out.println("Warning: Options exist for non-existent phase wjpp");
         if (!PackManager.v().hasPhase("wjpp.cimbt"))

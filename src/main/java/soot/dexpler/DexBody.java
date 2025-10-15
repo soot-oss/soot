@@ -114,7 +114,6 @@ import soot.dexpler.tags.IntOrFloatOpTag;
 import soot.dexpler.tags.LongOpTag;
 import soot.dexpler.tags.LongOrDoubleOpTag;
 import soot.dexpler.tags.ShortOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;
@@ -564,10 +563,6 @@ public class DexBody {
       PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
     }
 
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().clear();
-    }
-
     // process method parameters and generate Jimple locals from Dalvik
     // registers
     List<Local> paramLocals = new LinkedList<Local>();
@@ -581,9 +576,6 @@ public class DexBody {
       JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(thisLocal, jimple.newThisRef(declaringClassType));
       add(idStmt);
       paramLocals.add(thisLocal);
-      if (IDalvikTyper.ENABLE_DVKTYPER) {
-        DalvikTyper.v().setType(idStmt.getLeftOpBox(), jBody.getMethod().getDeclaringClass().getType(), false);
-      }
     }
     {
       int i = 0; // index of parameter type
@@ -620,9 +612,6 @@ public class DexBody {
         JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(gen, jimple.newParameterRef(t, i++));
         add(idStmt);
         paramLocals.add(gen);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().setType(idStmt.getLeftOpBox(), t, false);
-        }
 
         // some parameters may be encoded on two registers.
         // in Jimple only the first Dalvik register name is used
@@ -775,52 +764,27 @@ public class DexBody {
     // }
     // }
 
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
+    // t_num.start();
+    DexNumTransformer.v().transform(jBody);
+    // t_num.end();
 
-      DexReturnValuePropagator.v().transform(jBody);
-      getCopyPopagator().transform(jBody);
-      DexNullThrowTransformer.v().transform(jBody);
-      DalvikTyper.v().typeUntypedConstrantInDiv(jBody);
-      DeadAssignmentEliminator.v().transform(jBody);
-      UnusedLocalEliminator.v().transform(jBody);
+    DexReturnValuePropagator.v().transform(jBody);
+    getCopyPopagator().transform(jBody);
 
-      DalvikTyper.v().assignType(jBody);
-      // jBody.validate();
-      jBody.validateUses();
-      jBody.validateValueBoxes();
-      // jBody.checkInit();
-      // Validate.validateArrays(jBody);
-      // jBody.checkTypes();
-      // jBody.checkLocals();
+    DexNullThrowTransformer.v().transform(jBody);
 
-    } else {
-      // t_num.start();
-      DexNumTransformer.v().transform(jBody);
-      // t_num.end();
+    // t_null.start();
+    DexNullTransformer.v().transform(jBody);
+    // t_null.end();
 
-      DexReturnValuePropagator.v().transform(jBody);
-      getCopyPopagator().transform(jBody);
+    DexIfTransformer.v().transform(jBody);
 
-      DexNullThrowTransformer.v().transform(jBody);
+    DeadAssignmentEliminator.v().transform(jBody);
+    UnusedLocalEliminator.v().transform(jBody);
 
-      // t_null.start();
-      DexNullTransformer.v().transform(jBody);
-      // t_null.end();
-
-      DexIfTransformer.v().transform(jBody);
-
-      DeadAssignmentEliminator.v().transform(jBody);
-      UnusedLocalEliminator.v().transform(jBody);
-
-      // DexRefsChecker.v().transform(jBody);
-      DexNullArrayRefTransformer.v().transform(jBody);
-    }
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      for (Local l : jBody.getLocals()) {
-        l.setType(unknownType);
-      }
-    }
+    // DexRefsChecker.v().transform(jBody);
+    DexNullArrayRefTransformer.v().transform(jBody);
+  
 
     // Remove "instanceof" checks on the null constant
     DexNullInstanceofTransformer.v().transform(jBody);
@@ -1053,93 +1017,6 @@ public class DexBody {
     DexArrayInitReducer.v().transform(jBody);
 
     final RefType objectType = RefType.v("java.lang.Object");
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      for (Unit u : jBody.getUnits()) {
-        if (u instanceof IfStmt) {
-          ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
-          if (((expr instanceof EqExpr) || (expr instanceof NeExpr))) {
-            Value op1 = expr.getOp1();
-            Value op2 = expr.getOp2();
-            if (op1 instanceof Constant && op2 instanceof Local) {
-              Local l = (Local) op2;
-              Type ltype = l.getType();
-              if ((ltype instanceof PrimType) || !(op1 instanceof IntConstant)) {
-                // null is
-                // IntConstant(0)
-                // in Dalvik
-                continue;
-              }
-              IntConstant icst = (IntConstant) op1;
-              int val = icst.value;
-              if (val != 0) {
-                continue;
-              }
-              expr.setOp1(nullConstant);
-            } else if (op1 instanceof Local && op2 instanceof Constant) {
-              Local l = (Local) op1;
-              Type ltype = l.getType();
-              if ((ltype instanceof PrimType) || !(op2 instanceof IntConstant)) {
-                // null is
-                // IntConstant(0)
-                // in Dalvik
-                continue;
-              }
-              IntConstant icst = (IntConstant) op2;
-              int val = icst.value;
-              if (val != 0) {
-                continue;
-              }
-              expr.setOp2(nullConstant);
-            } else if (op1 instanceof Local && op2 instanceof Local) {
-              // nothing to do
-            } else if (op1 instanceof Constant && op2 instanceof Constant) {
-
-              if (op1 instanceof NullConstant && op2 instanceof NumericConstant) {
-                IntConstant nc = (IntConstant) op2;
-                if (nc.value != 0) {
-                  throw new RuntimeException("expected value 0 for int constant. Got " + expr);
-                }
-                expr.setOp2(NullConstant.v());
-              } else if (op2 instanceof NullConstant && op1 instanceof NumericConstant) {
-                IntConstant nc = (IntConstant) op1;
-                if (nc.value != 0) {
-                  throw new RuntimeException("expected value 0 for int constant. Got " + expr);
-                }
-                expr.setOp1(nullConstant);
-              }
-            } else {
-              throw new RuntimeException("error: do not handle if: " + u);
-            }
-          }
-        }
-      }
-
-      // For null_type locals: replace their use by NullConstant()
-      List<ValueBox> uses = jBody.getUseBoxes();
-      // List<ValueBox> defs = jBody.getDefBoxes();
-      List<ValueBox> toNullConstantify = new ArrayList<ValueBox>();
-      List<Local> toRemove = new ArrayList<Local>();
-      for (Local l : jBody.getLocals()) {
-
-        if (l.getType() instanceof NullType) {
-          toRemove.add(l);
-          for (ValueBox vb : uses) {
-            Value v = vb.getValue();
-            if (v == l) {
-              toNullConstantify.add(vb);
-            }
-          }
-        }
-      }
-      for (ValueBox vb : toNullConstantify) {
-        System.out.println("replace valuebox '" + vb + " with null constant");
-        vb.setValue(nullConstant);
-      }
-      for (Local l : toRemove) {
-        System.out.println("removing null_type local " + l);
-        l.setType(objectType);
-      }
-    }
 
     // We pack locals that are not used in overlapping regions. This may
     // again lead to unused locals which we have to remove.
