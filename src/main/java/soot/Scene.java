@@ -803,8 +803,7 @@ public class Scene {
       }
     }
 
-    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple()
-        || Options.v().output_format() == Options.output_format_dava)) {
+    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple())) {
       // add jce.jar, which is necessary for whole program mode
       // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
       sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib").append(File.separatorChar)

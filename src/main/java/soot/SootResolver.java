@@ -115,8 +115,7 @@ public class SootResolver {
     if (opts.on_the_fly()) {
       return false;
     } else {
-      return (opts.whole_program() || opts.whole_shimple() || opts.full_resolver()
-          || opts.output_format() == Options.output_format_dava);
+      return (opts.whole_program() || opts.whole_shimple() || opts.full_resolver());
     }
   }
 

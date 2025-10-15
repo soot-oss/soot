@@ -33,7 +33,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.Chain;
@@ -917,21 +916,9 @@ public class SootClass extends AbstractHost {
 
   /**
    * Returns the full name of this class (including package).
-   * 
-   * Considers Dava {@link PackageNamer} fixed names.
    */
   public String getJavaStyleName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedShortName == null) {
-        fixedShortName = PackageNamer.v().get_FixedClassName(name);
-      }
-      if (!PackageNamer.v().use_ShortName(getJavaPackageName(), fixedShortName)) {
-        return getJavaPackageName() + '.' + fixedShortName;
-      }
-      return getPackageName() + '.' + fixedShortName;
-    } else {
-      return name;
-    }
+    return name;
   }
 
   /**
@@ -940,14 +927,7 @@ public class SootClass extends AbstractHost {
    * Considers Dava {@link PackageNamer} fixed names.
    */
   public String getShortJavaStyleName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedShortName == null) {
-        fixedShortName = PackageNamer.v().get_FixedClassName(name);
-      }
-      return fixedShortName;
-    } else {
-      return shortName;
-    }
+    return shortName;
   }
 
   /**
@@ -967,19 +947,10 @@ public class SootClass extends AbstractHost {
   /**
    * Get package name of this class.
    * 
-   * Considers Dava {@link PackageNamer} fixed names.
-   * 
    * @return
    */
   public String getJavaPackageName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedPackageName == null) {
-        fixedPackageName = PackageNamer.v().get_FixedPackageName(packageName);
-      }
-      return fixedPackageName;
-    } else {
-      return packageName;
-    }
+    return packageName;
   }
 
   /**
