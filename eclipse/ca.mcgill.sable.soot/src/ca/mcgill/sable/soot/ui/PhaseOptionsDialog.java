@@ -80,7 +80,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite gopChild = gopCreate(getPageContainer());
 		Composite bbChild = bbCreate(getPageContainer());
 		Composite bopChild = bopCreate(getPageContainer());
-		Composite dbChild = dbCreate(getPageContainer());
 		Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
 		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
 		Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
@@ -165,10 +164,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
 		Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
 		Composite bbbb_neChild = bbbb_neCreate(getPageContainer());
-		Composite dbdb_transformationsChild = dbdb_transformationsCreate(getPageContainer());
-		Composite dbdb_renamerChild = dbdb_renamerCreate(getPageContainer());
-		Composite dbdb_deobfuscateChild = dbdb_deobfuscateCreate(getPageContainer());
-		Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContainer());
 
 		addOtherPages(getPageContainer());
 		initializeRadioGroups();
@@ -826,28 +821,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("bop");
 		addToEnableGroup("bop", getbopenabled_widget(), "enabled");
 		getbopenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db");
-		addToEnableGroup("db", getdbenabled_widget(), "enabled");
-		addToEnableGroup("db", getdbsource_is_javac_widget(), "source-is-javac");
-		getdbenabled_widget().getButton().addSelectionListener(this);
-		getdbsource_is_javac_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.transformations");
-		addToEnableGroup("db", "db.transformations", getdbdb_transformationsenabled_widget(), "enabled");
-		getdbdb_transformationsenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.renamer");
-		addToEnableGroup("db", "db.renamer", getdbdb_renamerenabled_widget(), "enabled");
-		getdbdb_renamerenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.deobfuscate");
-		addToEnableGroup("db", "db.deobfuscate", getdbdb_deobfuscateenabled_widget(), "enabled");
-		getdbdb_deobfuscateenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.force-recompile");
-		addToEnableGroup("db", "db.force-recompile", getdbdb_force_recompileenabled_widget(), "enabled");
-		getdbdb_force_recompileenabled_widget().getButton().addSelectionListener(this);
 
 		updateAllEnableGroups();
 	}
@@ -2912,42 +2885,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getdbenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbsource_is_javac_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbsource_is_javac_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_transformationsenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_transformationsenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_renamerenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_renamerenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_deobfuscateenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_deobfuscateenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_force_recompileenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_force_recompileenabled_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getApplication_Mode_Optionsinclude_all_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4001,53 +3938,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subParent = bop_branch;
 
 
-			
-			//Dava Body Creation
-			SootOption db_branch = new SootOption("Dava Body Creation", "db");
-			parent.addChild(db_branch);
-			subParent = db_branch;
-
-
-			
-			SootOption db_db_transformations_branch = new SootOption("Transformations", "dbdb_transformations");
-			subParent.addChild(db_db_transformations_branch);
-
-
-			
-
-			
-			subSectParent = db_db_transformations_branch;
-			
-			
-			SootOption db_db_renamer_branch = new SootOption("Renamer", "dbdb_renamer");
-			subParent.addChild(db_db_renamer_branch);
-
-
-			
-
-			
-			subSectParent = db_db_renamer_branch;
-			
-			
-			SootOption db_db_deobfuscate_branch = new SootOption("De-obfuscate", "dbdb_deobfuscate");
-			subParent.addChild(db_db_deobfuscate_branch);
-
-
-			
-
-			
-			subSectParent = db_db_deobfuscate_branch;
-			
-			
-			SootOption db_db_force_recompile_branch = new SootOption("Force Recompilability", "dbdb_force_recompile");
-			subParent.addChild(db_db_force_recompile_branch);
-
-
-			
-
-			
-			subSectParent = db_db_force_recompile_branch;
-			
 			
 		SootOption Application_Mode_Options_branch = new SootOption("Application Mode Options", "Application_Mode_Options");
 		root.addChild(Application_Mode_Options_branch);
@@ -7580,66 +7470,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return bopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget dbenabled_widget;
-	
-	private void setdbenabled_widget(BooleanOptionWidget widget) {
-		dbenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbenabled_widget() {
-		return dbenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbsource_is_javac_widget;
-	
-	private void setdbsource_is_javac_widget(BooleanOptionWidget widget) {
-		dbsource_is_javac_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbsource_is_javac_widget() {
-		return dbsource_is_javac_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_transformationsenabled_widget;
-	
-	private void setdbdb_transformationsenabled_widget(BooleanOptionWidget widget) {
-		dbdb_transformationsenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_transformationsenabled_widget() {
-		return dbdb_transformationsenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_renamerenabled_widget;
-	
-	private void setdbdb_renamerenabled_widget(BooleanOptionWidget widget) {
-		dbdb_renamerenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_renamerenabled_widget() {
-		return dbdb_renamerenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_deobfuscateenabled_widget;
-	
-	private void setdbdb_deobfuscateenabled_widget(BooleanOptionWidget widget) {
-		dbdb_deobfuscateenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_deobfuscateenabled_widget() {
-		return dbdb_deobfuscateenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_force_recompileenabled_widget;
-	
-	private void setdbdb_force_recompileenabled_widget(BooleanOptionWidget widget) {
-		dbdb_force_recompileenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_force_recompileenabled_widget() {
-		return dbdb_force_recompileenabled_widget;
-	}	
-	
 	private BooleanOptionWidget Application_Mode_Optionsinclude_all_widget;
 	
 	private void setApplication_Mode_Optionsinclude_all_widget(BooleanOptionWidget widget) {
@@ -8582,10 +8412,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"c class",
 						"\nProduce Java .class files, executable by any Java Virtual \nMachine.",
 						true),
-				new OptionData("Dava Decompiled File",
-						"d dava",
-						"\nProduce .java files generated by the Dava decompiler.",
-						false),
 				new OptionData("Jimle Template File",
 						"t template",
 						"\nProduce .java files with Jimple templates.",
@@ -15510,222 +15336,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupbop;
-	}
-
-
-
-	private Composite dbCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdb = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdb.setLayout(layout);
-	
-	 	editGroupdb.setText("Dava Body Creation");
-	 	
-		editGroupdb.setData("id", "db");
-		
-		String descdb = "Dummy phase to store options for Dava";	
-		if (descdb.length() > 0) {
-			Label descLabeldb = new Label(editGroupdb, SWT.WRAP);
-			descLabeldb.setText(descdb);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbenabled_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Enabled", "p phase-option", "db","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"db"+" "+"source-is-javac";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p phase-option", "db","source-is-javac", "\ncheck out soot.dava.toolkits.base.misc.ThrowFinder In short we \nwant to ensure that if there are throw exception info in the \nclass file dava uses this info.", defaultBool)));
-
-
-		return editGroupdb;
-	}
-
-
-
-	private Composite dbdb_transformationsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_transformations = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_transformations.setLayout(layout);
-	
-	 	editGroupdbdb_transformations.setText("Transformations");
-	 	
-		editGroupdbdb_transformations.setData("id", "dbdb_transformations");
-		
-		String descdbdb_transformations = "The Dava back-end with all its transformations";	
-		if (descdbdb_transformations.length() > 0) {
-			Label descLabeldbdb_transformations = new Label(editGroupdbdb_transformations, SWT.WRAP);
-			descLabeldbdb_transformations.setText(descdbdb_transformations);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.transformations"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbdb_transformationsenabled_widget(new BooleanOptionWidget(editGroupdbdb_transformations, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.transformations","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_transformations;
-	}
-
-
-
-	private Composite dbdb_renamerCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_renamer = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_renamer.setLayout(layout);
-	
-	 	editGroupdbdb_renamer.setText("Renamer");
-	 	
-		editGroupdbdb_renamer.setData("id", "dbdb_renamer");
-		
-		String descdbdb_renamer = "Apply heuristics based naming of local variables";	
-		if (descdbdb_renamer.length() > 0) {
-			Label descLabeldbdb_renamer = new Label(editGroupdbdb_renamer, SWT.WRAP);
-			descLabeldbdb_renamer.setText(descdbdb_renamer);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.renamer"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setdbdb_renamerenabled_widget(new BooleanOptionWidget(editGroupdbdb_renamer, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.renamer","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_renamer;
-	}
-
-
-
-	private Composite dbdb_deobfuscateCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_deobfuscate = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_deobfuscate.setLayout(layout);
-	
-	 	editGroupdbdb_deobfuscate.setText("De-obfuscate");
-	 	
-		editGroupdbdb_deobfuscate.setData("id", "dbdb_deobfuscate");
-		
-		String descdbdb_deobfuscate = "Apply de-obfuscation analyses";	
-		if (descdbdb_deobfuscate.length() > 0) {
-			Label descLabeldbdb_deobfuscate = new Label(editGroupdbdb_deobfuscate, SWT.WRAP);
-			descLabeldbdb_deobfuscate.setText(descdbdb_deobfuscate);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.deobfuscate"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbdb_deobfuscateenabled_widget(new BooleanOptionWidget(editGroupdbdb_deobfuscate, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.deobfuscate","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_deobfuscate;
-	}
-
-
-
-	private Composite dbdb_force_recompileCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_force_recompile = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_force_recompile.setLayout(layout);
-	
-	 	editGroupdbdb_force_recompile.setText("Force Recompilability");
-	 	
-		editGroupdbdb_force_recompile.setData("id", "dbdb_force_recompile");
-		
-		String descdbdb_force_recompile = "Try to get recompilable code.";	
-		if (descdbdb_force_recompile.length() > 0) {
-			Label descLabeldbdb_force_recompile = new Label(editGroupdbdb_force_recompile, SWT.WRAP);
-			descLabeldbdb_force_recompile.setText(descdbdb_force_recompile);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.force-recompile"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbdb_force_recompileenabled_widget(new BooleanOptionWidget(editGroupdbdb_force_recompile, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.force-recompile","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_force_recompile;
 	}
 
 

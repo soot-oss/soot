@@ -24,9 +24,6 @@ package soot.grimp.internal;
 
 import soot.Value;
 import soot.ValueBox;
-import soot.dava.internal.javaRep.DCmpExpr;
-import soot.dava.internal.javaRep.DCmpgExpr;
-import soot.dava.internal.javaRep.DCmplExpr;
 import soot.grimp.Grimp;
 import soot.grimp.Precedence;
 import soot.jimple.DivExpr;
@@ -58,8 +55,7 @@ public abstract class AbstractGrimpIntBinopExpr extends AbstractIntBinopExpr imp
     String rightOp = op2.toString();
     if (op2 instanceof Precedence) {
       int opPrec = ((Precedence) op2).getPrecedence(), myPrec = getPrecedence();
-      if ((opPrec < myPrec) || ((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr)
-          || (this instanceof DCmpExpr) || (this instanceof DCmpgExpr) || (this instanceof DCmplExpr)))) {
+      if ((opPrec < myPrec) || ((opPrec == myPrec) && ((this instanceof SubExpr) || (this instanceof DivExpr)))) {
         rightOp = "(" + rightOp + ")";
       }
     }
