@@ -36,7 +36,6 @@ import java.util.Date;
 
 import soot.options.CGOptions;
 import soot.options.Options;
-import soot.toolkits.astmetrics.ClassData;
 
 /**
  * Main class for Soot; provides Soot's command-line user interface.
@@ -239,29 +238,6 @@ public class Main {
 
       Scene.v().loadNecessaryClasses();
 
-      /*
-       * By this all the java to jimple has occured so we just check ast-metrics flag
-       *
-       * If it is set......print the astMetrics.xml file and stop executing soot
-       */
-      if (Options.v().ast_metrics()) {
-        try (OutputStream streamOut = new FileOutputStream("../astMetrics.xml")) {
-          PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-          writerOut.println("<?xml version='1.0'?>");
-          writerOut.println("<ASTMetrics>");
-
-          for (ClassData cData : G.v().ASTMetricsData) {
-            // each is a classData object
-            writerOut.println(cData);
-          }
-
-          writerOut.println("</ASTMetrics>");
-          writerOut.flush();
-        } catch (IOException e) {
-          throw new CompilationDeathException("Cannot output file astMetrics", e);
-        }
-        return;
-      }
 
       PackManager.v().runPacks();
       if (!Options.v().oaat()) {

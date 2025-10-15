@@ -30,13 +30,13 @@ import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.ClassSource;
+import soot.Dependencies;
 import soot.RefType;
 import soot.SootClass;
 import soot.Type;
 import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.types.DotnetType;
 import soot.dotnet.types.DotnetTypeFactory;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 
 /**
