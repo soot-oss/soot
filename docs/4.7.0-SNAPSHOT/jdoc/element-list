@@ -1,4 +1,3 @@
-beaver
 soot
 soot.asm
 soot.baf
@@ -36,12 +35,6 @@ soot.dotnet.values
 soot.grimp
 soot.grimp.internal
 soot.grimp.toolkits.base
-soot.JastAddJ
-soot.javaToJimple
-soot.javaToJimple.jj
-soot.javaToJimple.jj.ast
-soot.javaToJimple.jj.types
-soot.javaToJimple.toolkits
 soot.jbco
 soot.jbco.bafTransformations
 soot.jbco.jimpleTransformations
@@ -129,7 +122,6 @@ soot.sootify
 soot.tagkit
 soot.toDex
 soot.toDex.instructions
-soot.toolkits.astmetrics
 soot.toolkits.astmetrics.DataHandlingApplication
 soot.toolkits.exceptions
 soot.toolkits.graph
