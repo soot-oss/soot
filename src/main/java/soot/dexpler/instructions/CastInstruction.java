@@ -40,12 +40,10 @@ import soot.LongType;
 import soot.ShortType;
 import soot.Type;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.LongOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
@@ -68,11 +66,6 @@ public class CastInstruction extends TaggedInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().setType(assign.getLeftOpBox(), cast.getType(), false);
-      // DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
-    }
   }
 
   /**

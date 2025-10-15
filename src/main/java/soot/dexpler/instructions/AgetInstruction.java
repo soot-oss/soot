@@ -31,10 +31,8 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
 
-import soot.IntType;
 import soot.Local;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.InvalidDalvikBytecodeException;
 import soot.dexpler.tags.BooleanOpTag;
 import soot.dexpler.tags.ByteOpTag;
@@ -43,7 +41,6 @@ import soot.dexpler.tags.IntOrFloatOpTag;
 import soot.dexpler.tags.LongOrDoubleOpTag;
 import soot.dexpler.tags.ObjectOpTag;
 import soot.dexpler.tags.ShortOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -97,11 +94,6 @@ public class AgetInstruction extends DexlibAbstractInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-      DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
-    }
   }
 
   @Override

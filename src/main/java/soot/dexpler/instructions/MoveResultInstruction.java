@@ -31,15 +31,10 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class MoveResultInstruction extends DexlibAbstractInstruction {
-  // private Local local;
-  // private Expr expr;
 
   public MoveResultInstruction(Instruction instruction, int codeAdress) {
     super(instruction, codeAdress);
@@ -47,34 +42,13 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 
   @Override
   public void jimplify(DexBody body) {
-    // if (local != null && expr != null)
-    // throw new RuntimeException("Both local and expr are set to move.");
-
     int dest = ((OneRegisterInstruction) instruction).getRegisterA();
 
-    // if (local != null)
-    // assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), local);
-    // else if (expr != null)
-    // assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
-    // else
-    // throw new RuntimeException("Neither local and expr are set to move.");
     AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getStoreResultLocal());
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      JAssignStmt jassign = (JAssignStmt) assign;
-      DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-    }
   }
-
-  // public void setLocalToMove(Local l) {
-  // local = l;
-  // }
-  // public void setExpr(Expr e) {
-  // expr = e;
-  // }
 
   @Override
   boolean overridesRegister(int register) {
