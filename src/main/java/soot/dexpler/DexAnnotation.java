@@ -61,12 +61,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
+import soot.Dependencies;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
 import soot.Type;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;

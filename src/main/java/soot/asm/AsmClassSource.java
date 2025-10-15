@@ -28,10 +28,10 @@ import java.io.InputStream;
 import org.objectweb.asm.ClassReader;
 
 import soot.ClassSource;
+import soot.Dependencies;
 import soot.IFoundFile;
 import soot.SootClass;
 import soot.SootResolver;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
  * ASM class source implementation.

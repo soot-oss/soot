@@ -4,7 +4,7 @@ package soot;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2004 Ondrej Lhotak
+ * Copyright (C) 2004 Jennifer Lhotak
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,8 +21,6 @@ package soot;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
  * A class source is responsible for resolving a single class from a particular source format (.class, .jimple, .java, etc.)

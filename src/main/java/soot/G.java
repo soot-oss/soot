@@ -43,7 +43,6 @@ import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.typing.ClassHierarchy;
-import soot.toolkits.astmetrics.ClassData;
 import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
@@ -148,9 +147,6 @@ public class G extends Singletons {
   public boolean SootMethodAddedByDava;
   public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<SootClass>();
   public ArrayList<SootMethod> SootMethodsAdded = new ArrayList<SootMethod>();
-
-  // ASTMetrics Data
-  public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();
 
   public void resetSpark() {
     // We reset SPARK the hard way.
