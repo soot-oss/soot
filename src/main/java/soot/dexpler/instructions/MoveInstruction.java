@@ -31,8 +31,6 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
@@ -53,10 +51,6 @@ public class MoveInstruction extends DexlibAbstractInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-    }
   }
 
   @Override

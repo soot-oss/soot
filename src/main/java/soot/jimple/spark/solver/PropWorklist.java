@@ -68,7 +68,6 @@ public class PropWorklist extends Propagator {
     ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
     boolean ignoreErrors = Options.v().allow_cg_errors();
-    logger.error("Note that we log, but continue in case of SPARK problems");
     for (AllocNode object : pag.allocSources()) {
       try {
         handleAllocNode(object);

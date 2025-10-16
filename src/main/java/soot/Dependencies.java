@@ -22,25 +22,19 @@ package soot;
  * #L%
  */
 
-/**
- * A class source is responsible for resolving a single class from a particular source format (.class, .jimple, .java, etc.)
- */
-public abstract class ClassSource {
+import java.util.HashSet;
+import java.util.Set;
 
-  protected final String className;
+public class Dependencies {
+  public final Set<Type> typesToHierarchy, typesToSignature;
 
-  public ClassSource(String className) {
-    if (className == null) {
-      throw new IllegalStateException("Error: The class name must not be null.");
-    }
-    this.className = className;
+  public Dependencies() {
+    typesToHierarchy = new HashSet<>();
+    typesToSignature = new HashSet<>();
   }
 
-  /**
-   * Resolve the class into the SootClass sc. Returns a list of Strings or Types referenced by the class.
-   */
-  public abstract Dependencies resolve(SootClass sc);
-
-  public void close() {
+  public Dependencies(Set<Type> typesToHierarchy, Set<Type> typesToSignature) {
+    this.typesToHierarchy = typesToHierarchy == null ? new HashSet<>() : typesToHierarchy;
+    this.typesToSignature = typesToSignature == null ? new HashSet<>() : typesToSignature;
   }
 }

@@ -32,8 +32,6 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction11x;
 
 import soot.Local;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
 
@@ -51,12 +49,5 @@ public class ReturnInstruction extends DexlibAbstractInstruction {
     setUnit(returnStmt);
     addTags(returnStmt);
     body.add(returnStmt);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-
-      // DalvikTyper.v().addConstraint(returnStmt.getOpBox(), new
-      // ImmediateBox(Jimple.body.getBody().getMethod().getReturnType()));
-      DalvikTyper.v().setType(returnStmt.getOpBox(), body.getBody().getMethod().getReturnType(), true);
-    }
   }
 }

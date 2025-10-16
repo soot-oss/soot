@@ -54,23 +54,12 @@ import soot.baf.BafBody;
 import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.baf.toolkits.base.PeepholeOptimizer;
 import soot.baf.toolkits.base.StoreChainOptimizer;
-import soot.dava.Dava;
-import soot.dava.DavaBody;
-import soot.dava.DavaBuildFile;
-import soot.dava.DavaPrinter;
-import soot.dava.DavaStaticBlockCleaner;
-import soot.dava.toolkits.base.AST.interProcedural.InterProceduralAnalyses;
-import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
-import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
-import soot.dava.toolkits.base.misc.PackageNamer;
-import soot.dava.toolkits.base.misc.ThrowFinder;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.grimp.toolkits.base.ConstructorFolder;
 import soot.jimple.JimpleBody;
 import soot.jimple.paddle.PaddleHook;
 import soot.jimple.spark.SparkTransformer;
-import soot.jimple.spark.fieldrw.FieldTagAggregator;
 import soot.jimple.spark.fieldrw.FieldTagger;
 import soot.jimple.toolkits.annotation.AvailExprTagger;
 import soot.jimple.toolkits.annotation.DominatorsTagger;
@@ -91,7 +80,6 @@ import soot.jimple.toolkits.annotation.parity.ParityTagger;
 import soot.jimple.toolkits.annotation.profiling.ProfilingGenerator;
 import soot.jimple.toolkits.annotation.purity.PurityAnalysis;
 import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger;
-import soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.base.ArrayWriteAggregator;
 import soot.jimple.toolkits.base.RenameDuplicatedClasses;
@@ -101,7 +89,6 @@ import soot.jimple.toolkits.callgraph.UnreachableMethodTransformer;
 import soot.jimple.toolkits.invoke.StaticInliner;
 import soot.jimple.toolkits.invoke.StaticMethodBinder;
 import soot.jimple.toolkits.pointer.CastCheckEliminatorDumper;
-import soot.jimple.toolkits.pointer.DependenceTagAggregator;
 import soot.jimple.toolkits.pointer.ParameterAliasTagger;
 import soot.jimple.toolkits.pointer.SideEffectTagger;
 import soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer;
@@ -127,7 +114,6 @@ import soot.shimple.ShimpleTransformer;
 import soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder;
 import soot.sootify.TemplatePrinter;
 import soot.tagkit.InnerClassTagAggregator;
-import soot.tagkit.LineNumberTagAggregator;
 import soot.toDex.DexPrinter;
 import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
 import soot.toolkits.exceptions.TrapTightener;
@@ -139,7 +125,6 @@ import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.SharedInitializationLocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.EscapedWriter;
-import soot.util.JasminOutputStream;
 import soot.util.PhaseDumper;
 import soot.xml.TagCollector;
 import soot.xml.XMLPrinter;
@@ -198,26 +183,6 @@ public class PackManager {
       p.add(new Transform("jb.ne", NopEliminator.v()));
       p.add(new Transform("jb.uce", UnreachableCodeEliminator.v()));
       p.add(new Transform("jb.cbf", ConditionalBranchFolder.v()));
-    }
-
-    // Java to Jimple - Jimple body creation
-    addPack(p = new JavaToJimpleBodyPack());
-    {
-      p.add(new Transform("jj.ls", LocalSplitter.v()));
-      p.add(new Transform("jj.sils", SharedInitializationLocalSplitter.v()));
-      p.add(new Transform("jj.a", Aggregator.v()));
-      p.add(new Transform("jj.ule", UnusedLocalEliminator.v()));
-      p.add(new Transform("jj.ne", NopEliminator.v()));
-      p.add(new Transform("jj.tr", TypeAssigner.v()));
-      // p.add(new Transform("jj.ct", CondTransformer.v()));
-      p.add(new Transform("jj.ulp", LocalPacker.v()));
-      p.add(new Transform("jj.lns", LocalNameStandardizer.v()));
-      p.add(new Transform("jj.cp", CopyPropagator.v()));
-      p.add(new Transform("jj.dae", DeadAssignmentEliminator.v()));
-      p.add(new Transform("jj.cp-ule", UnusedLocalEliminator.v()));
-      p.add(new Transform("jj.lp", LocalPacker.v()));
-      p.add(new Transform("jj.uce", UnreachableCodeEliminator.v()));
-
     }
 
     // Whole-Jimple Pre-processing Pack
@@ -356,15 +321,6 @@ public class PackManager {
 
     // Baf optimization pack
     addPack(p = new BodyPack("bop"));
-
-    // Code attribute tag aggregation pack
-    addPack(p = new BodyPack("tag"));
-    {
-      p.add(new Transform("tag.ln", LineNumberTagAggregator.v()));
-      p.add(new Transform("tag.an", ArrayNullTagAggregator.v()));
-      p.add(new Transform("tag.dep", DependenceTagAggregator.v()));
-      p.add(new Transform("tag.fieldrw", FieldTagAggregator.v()));
-    }
 
     // Dummy Dava Phase
     /*
@@ -514,7 +470,6 @@ public class PackManager {
       }
     }
 
-    preProcessDAVA();
     if (Options.v().interactive_mode()) {
       if (InteractionHandler.v().getInteractionListener() == null) {
         logger.debug("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
@@ -541,10 +496,6 @@ public class PackManager {
       PhaseDumper.v().dumpBefore("output");
     }
     switch (Options.v().output_format()) {
-      case Options.output_format_dava:
-        postProcessDAVA();
-        outputDava();
-        break;
       case Options.output_format_dex:
       case Options.output_format_force_dex:
         writeDexOutput();
@@ -599,36 +550,6 @@ public class PackManager {
       getPack("wjap").apply();
     }
     PaddleHook.v().finishPhases();
-  }
-
-  /* preprocess classes for DAVA */
-  private void preProcessDAVA() {
-    if (Options.v().output_format() == Options.output_format_dava) {
-      if (!PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db"), "source-is-javac")) {
-        /*
-         * It turns out that the exception attributes of a method i.e. those exceptions that a method can throw are only
-         * checked by the Java compiler and not the JVM
-         *
-         * Javac does place this information into the attributes but other compilers dont hence if the source is not javac
-         * then we have to do this fancy analysis to find all the potential exceptions that might get thrown
-         *
-         * BY DEFAULT the option javac of db is set to true so we assume that the source is javac
-         *
-         * See ThrowFinder for more details
-         */
-        if (DEBUG) {
-          System.out.println("Source is not Javac hence invoking ThrowFinder");
-        }
-
-        ThrowFinder.v().find();
-      } else {
-        if (DEBUG) {
-          System.out.println("Source is javac hence we dont need to invoke ThrowFinder");
-        }
-      }
-
-      PackageNamer.v().fixNames();
-    }
   }
 
   private void runBodyPacks(final Iterator<SootClass> classes) {
@@ -723,152 +644,12 @@ public class PackManager {
     return Scene.v().getApplicationClasses().snapshotIterator();
   }
 
-  /* post process for DAVA */
-  private void postProcessDAVA() {
-    final boolean transformations
-        = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("db.transformations"), "enabled");
-
-    /*
-     * apply analyses etc
-     */
-    for (SootClass s : Scene.v().getApplicationClasses()) {
-      /*
-       * Nomair A. Naeem 5-Jun-2005 Added to remove the *final* bug in Dava (often seen in AspectJ programs)
-       */
-      DavaStaticBlockCleaner.v().staticBlockInlining(s);
-
-      // remove returns from void methods
-      VoidReturnRemover.cleanClass(s);
-
-      // remove the default constructor if this is the only one present
-      RemoveEmptyBodyDefaultConstructor.checkAndRemoveDefault(s);
-
-      /*
-       * Nomair A. Naeem 1st March 2006 Check if we want to apply transformations one reason we might not want to do this is
-       * when gathering old metrics data!!
-       */
-
-      // debug("analyzeAST","Advanced Analyses ALL DISABLED");
-      logger.debug("Analyzing " + SourceLocator.v().getFileNameFor(s, Options.v().output_format()) + "... ");
-
-      /*
-       * Nomair A. Naeem 29th Jan 2006 Added hook into going through each decompiled method again Need it for all the
-       * implemented AST analyses
-       */
-      for (SootMethod m : s.getMethods()) {
-        /*
-         * 3rd April 2006 Fixing RuntimeException caused when you retrieve an active body when one is not present
-         */
-        if (m.hasActiveBody()) {
-          DavaBody body = (DavaBody) m.getActiveBody();
-          // System.out.println("body"+body.toString());
-          if (transformations) {
-            body.analyzeAST();
-          } else {
-            body.applyBugFixes();
-          }
-        }
-      }
-
-    } // going through all classes
-
-    /*
-     * Nomair A. Naeem March 6th, 2006
-     *
-     * SHOULD BE INVOKED ONLY ONCE!!! If interprocedural analyses are turned off they are checked within this method.
-     *
-     * HAVE TO invoke this analysis since this invokes the renamer!!
-     */
-    if (transformations) {
-      InterProceduralAnalyses.applyInterProceduralAnalyses();
-    }
-  }
-
-  private void outputDava() {
-    /*
-     * Generate decompiled code
-     */
-    String pathForBuild = null;
-    ArrayList<String> decompiledClasses = new ArrayList<String>();
-    for (SootClass s : Scene.v().getApplicationClasses()) {
-      String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
-      decompiledClasses.add(fileName.substring(fileName.lastIndexOf('/') + 1));
-      if (pathForBuild == null) {
-        pathForBuild = fileName.substring(0, fileName.lastIndexOf('/') + 1);
-        // System.out.println(pathForBuild);
-      }
-      if (Options.v().gzip()) {
-        fileName = fileName + ".gz";
-      }
-
-      PrintWriter writerOut = null;
-      try {
-        OutputStream streamOut;
-        if (jarFile != null) {
-          jarFile.putNextEntry(new JarEntry(fileName.replace('\\', '/')));
-          streamOut = jarFile;
-        } else {
-          streamOut = new FileOutputStream(fileName);
-        }
-        if (Options.v().gzip()) {
-          streamOut = new GZIPOutputStream(streamOut);
-        }
-        writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-      } catch (IOException e) {
-        throw new CompilationDeathException("Cannot output file " + fileName, e);
-      }
-
-      logger.debug("Generating " + fileName + "... ");
-
-      DavaPrinter.v().printTo(s, writerOut);
-
-      try {
-        writerOut.flush();
-        if (jarFile == null) {
-          writerOut.close();
-        } else {
-          jarFile.closeEntry();
-        }
-      } catch (IOException e) {
-        throw new CompilationDeathException("Cannot close output file " + fileName);
-      }
-    } // going through all classes
-
-    /*
-     * Create the build.xml for Dava
-     */
-    if (pathForBuild != null) {
-      // path for build is probably ending in sootoutput/dava/src
-      // definetly remove the src
-      if (pathForBuild.endsWith("src/")) {
-        pathForBuild = pathForBuild.substring(0, pathForBuild.length() - 4);
-      }
-
-      String fileName = pathForBuild + "build.xml";
-      try (OutputStream streamOut = new FileOutputStream(fileName)) {
-        PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-        DavaBuildFile.generate(writerOut, decompiledClasses);
-        writerOut.flush();
-      } catch (IOException e) {
-        throw new CompilationDeathException("Cannot open output file " + fileName, e);
-      }
-    }
-  }
-
   @SuppressWarnings("fallthrough")
   private void runBodyPacks(SootClass c) {
     final int format = Options.v().output_format();
-    if (format == Options.output_format_dava) {
-      logger.debug("Decompiling {}...", c.getName());
+    logger.debug("Transforming {}...", c.getName());
 
-      // January 13th, 2006 SootMethodAddedByDava is set to false for
-      // SuperFirstStmtHandler
-      G.v().SootMethodAddedByDava = false;
-    } else {
-      logger.debug("Transforming {}...", c.getName());
-    }
-
-    boolean produceBaf = false, produceGrimp = false, produceDava = false, produceJimple = true, produceShimple = false;
+    boolean produceBaf = false, produceGrimp = false, produceJimple = true, produceShimple = false;
 
     switch (format) {
       case Options.output_format_none:
@@ -885,9 +666,6 @@ public class PackManager {
         // FLIP produceJimple
         produceJimple = false;
         break;
-      case Options.output_format_dava:
-        produceDava = true;
-        // FALL THROUGH
       case Options.output_format_grimp:
       case Options.output_format_grimple:
         produceGrimp = true;
@@ -896,7 +674,6 @@ public class PackManager {
       case Options.output_format_b:
         produceBaf = true;
         break;
-      case Options.output_format_jasmin:
       case Options.output_format_class:
       case Options.output_format_asm:
         produceGrimp = Options.v().via_grimp();
@@ -994,31 +771,6 @@ public class PackManager {
       processXMLForClass(c, tc);
     }
 
-    if (produceDava) {
-      for (SootMethod m : c.getMethods()) {
-        if (!m.isConcrete() || !m.hasActiveBody()) {
-          // note: abnormal class can have a concrete method without body.
-          continue;
-        }
-        // all the work done in decompilation is done in DavaBody which
-        // is invoked from within newBody
-        m.setActiveBody(Dava.v().newBody(m.getActiveBody()));
-      }
-
-      /*
-       * January 13th, 2006 SuperFirstStmtHandler might have set SootMethodAddedByDava if it needs to create a new method.
-       */
-      // could use G to add new method...................
-      if (G.v().SootMethodAddedByDava) {
-        // System.out.println("PACKMANAGER SAYS:----------------Have to
-        // add the new method(s)");
-        for (SootMethod m : G.v().SootMethodsAdded) {
-          c.addMethod(m);
-        }
-        G.v().SootMethodsAdded = new ArrayList<SootMethod>();
-        G.v().SootMethodAddedByDava = false;
-      }
-    } // end if produceDava
   }
 
   public BafBody convertJimpleBodyToBaf(SootMethod m) {
@@ -1030,7 +782,6 @@ public class PackManager {
     // UnusedLocalEliminator.v().transform(body);
     BafBody bafBody = Baf.v().newBody(body);
     getPack("bop").apply(bafBody);
-    getPack("tag").apply(bafBody);
     if (Options.v().validate()) {
       bafBody.validate();
     }
@@ -1041,7 +792,6 @@ public class PackManager {
     final int format = Options.v().output_format();
     switch (format) {
       case Options.output_format_none:
-      case Options.output_format_dava:
         return;
       case Options.output_format_dex:
       case Options.output_format_force_dex:
@@ -1081,11 +831,6 @@ public class PackManager {
       if (Options.v().gzip()) {
         streamOut = new GZIPOutputStream(streamOut);
       }
-      if (format == Options.output_format_class) {
-        if (Options.v().jasmin_backend()) {
-          streamOut = new JasminOutputStream(streamOut);
-        }
-      }
       writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
       logger.debug("Writing to " + fileName);
     } catch (IOException e) {
@@ -1098,12 +843,7 @@ public class PackManager {
 
     switch (format) {
       case Options.output_format_class:
-        if (!Options.v().jasmin_backend()) {
-          createASMBackend(c).generateClassFile(streamOut);
-          break;
-        }
-      case Options.output_format_jasmin:
-        createJasminBackend(c).print(writerOut);
+        createASMBackend(c).generateClassFile(streamOut);
         break;
       case Options.output_format_jimp:
       case Options.output_format_shimp:
@@ -1144,21 +884,6 @@ public class PackManager {
       }
     } catch (IOException e) {
       throw new CompilationDeathException("Cannot close output file " + fileName);
-    }
-  }
-
-  /**
-   * Factory method for creating a new backend on top of Jasmin
-   *
-   * @param c
-   *          The class for which to create a Jasmin-based backend
-   * @return The Jasmin-based backend for writing the given class into bytecode
-   */
-  private AbstractJasminClass createJasminBackend(SootClass c) {
-    if (c.containsBafBody()) {
-      return new soot.baf.JasminClass(c);
-    } else {
-      return new soot.jimple.JasminClass(c);
     }
   }
 

@@ -35,13 +35,11 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.dava.DavaBody;
-import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.dotnet.members.DotnetMethod;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
-import soot.util.IterableSet;
 import soot.util.NumberedString;
+import soot.util.backend.ASMBackendUtils;
 
 /**
  * Soot representation of a Java method. Can be declared to belong to a {@link SootClass}. Does not contain the actual code,
@@ -655,7 +653,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   public String getBytecodeParms() {
     StringBuilder buffer = new StringBuilder();
     for (Type type : getParameterTypes()) {
-      buffer.append(AbstractJasminClass.jasminDescriptorOf(type));
+      buffer.append(ASMBackendUtils.jvmDescriptorOf(type));
     }
     return buffer.toString().intern();
   }
@@ -670,7 +668,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     buffer.append(Scene.v().quotedNameOf(getDeclaringClass().getName()));
     buffer.append(": ");
     buffer.append(getName());
-    buffer.append(AbstractJasminClass.jasminDescriptorOf(makeRef()));
+    buffer.append(ASMBackendUtils.jvmDescriptorOf(makeRef()));
     buffer.append('>');
     return buffer.toString().intern();
   }
@@ -756,126 +754,6 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   @Override
   public String toString() {
     return getSignature();
-  }
-
-  /*
-   * TODO: Nomair A. Naeem .... 8th Feb 2006 This is really messy coding So much for modularization!! Should some day look
-   * into creating the DavaDeclaration from within DavaBody
-   */
-  public String getDavaDeclaration() {
-    if (staticInitializerName.equals(getName())) {
-      return "static";
-    }
-
-    StringBuilder buffer = new StringBuilder();
-
-    // modifiers
-    StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
-    if (st.hasMoreTokens()) {
-      buffer.append(st.nextToken());
-      while (st.hasMoreTokens()) {
-        buffer.append(' ').append(st.nextToken());
-      }
-    }
-
-    if (buffer.length() != 0) {
-      buffer.append(' ');
-    }
-
-    // return type + name
-    if (constructorName.equals(getName())) {
-      buffer.append(getDeclaringClass().getShortJavaStyleName());
-    } else {
-      Type t = this.getReturnType();
-
-      String tempString = t.toString();
-      /*
-       * Added code to handle RuntimeExcepotion thrown by getActiveBody
-       */
-      if (hasActiveBody()) {
-        DavaBody body = (DavaBody) getActiveBody();
-        IterableSet<String> importSet = body.getImportList();
-        if (!importSet.contains(tempString)) {
-          body.addToImportList(tempString);
-        }
-        tempString = RemoveFullyQualifiedName.getReducedName(importSet, tempString, t);
-      }
-
-      buffer.append(tempString).append(' ');
-      buffer.append(Scene.v().quotedNameOf(this.getName()));
-    }
-
-    // parameters
-    int count = 0;
-    buffer.append('(');
-    for (Iterator<Type> typeIt = this.getParameterTypes().iterator(); typeIt.hasNext();) {
-      Type t = typeIt.next();
-      String tempString = t.toString();
-
-      /*
-       * Nomair A. Naeem 7th Feb 2006 It is nice to remove the fully qualified type names of parameters if the package they
-       * belong to have been imported javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported If not
-       * imported WHY NOT..import it!!
-       */
-      if (hasActiveBody()) {
-        DavaBody body = (DavaBody) getActiveBody();
-        IterableSet<String> importSet = body.getImportList();
-        if (!importSet.contains(tempString)) {
-          body.addToImportList(tempString);
-        }
-        tempString = RemoveFullyQualifiedName.getReducedName(importSet, tempString, t);
-      }
-
-      buffer.append(tempString).append(' ');
-      buffer.append(' ');
-      if (hasActiveBody()) {
-        buffer.append(((DavaBody) getActiveBody()).get_ParamMap().get(count++));
-      } else {
-        if (t == BooleanType.v()) {
-          buffer.append('z').append(count++);
-        } else if (t == ByteType.v()) {
-          buffer.append('b').append(count++);
-        } else if (t == ShortType.v()) {
-          buffer.append('s').append(count++);
-        } else if (t == CharType.v()) {
-          buffer.append('c').append(count++);
-        } else if (t == IntType.v()) {
-          buffer.append('i').append(count++);
-        } else if (t == LongType.v()) {
-          buffer.append('l').append(count++);
-        } else if (t == DoubleType.v()) {
-          buffer.append('d').append(count++);
-        } else if (t == FloatType.v()) {
-          buffer.append('f').append(count++);
-        } else if (t == StmtAddressType.v()) {
-          buffer.append('a').append(count++);
-        } else if (t == ErroneousType.v()) {
-          buffer.append('e').append(count++);
-        } else if (t == NullType.v()) {
-          buffer.append('n').append(count++);
-        } else {
-          buffer.append('r').append(count++);
-        }
-      }
-
-      if (typeIt.hasNext()) {
-        buffer.append(", ");
-      }
-    }
-    buffer.append(')');
-
-    // Print exceptions
-    if (exceptions != null) {
-      Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
-      if (exceptionIt.hasNext()) {
-        buffer.append(" throws ").append(exceptionIt.next().getName());
-        while (exceptionIt.hasNext()) {
-          buffer.append(", ").append(exceptionIt.next().getName());
-        }
-      }
-    }
-
-    return buffer.toString().intern();
   }
 
   /**

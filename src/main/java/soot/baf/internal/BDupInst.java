@@ -22,10 +22,10 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.DupInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public abstract class BDupInst extends AbstractInst implements DupInst {
 
@@ -38,10 +38,10 @@ public abstract class BDupInst extends AbstractInst implements DupInst {
   public int getInMachineCount() {
     int count = 0;
     for (Type t : getUnderTypes()) {
-      count += AbstractJasminClass.sizeOfType(t);
+      count += ASMBackendUtils.sizeOfType(t);
     }
     for (Type t : getOpTypes()) {
-      count += AbstractJasminClass.sizeOfType(t);
+      count += ASMBackendUtils.sizeOfType(t);
     }
     return count;
   }
@@ -55,10 +55,10 @@ public abstract class BDupInst extends AbstractInst implements DupInst {
   public int getOutMachineCount() {
     int count = 0;
     for (Type t : getUnderTypes()) {
-      count += AbstractJasminClass.sizeOfType(t);
+      count += ASMBackendUtils.sizeOfType(t);
     }
     for (Type t : getOpTypes()) {
-      count += 2 * AbstractJasminClass.sizeOfType(t);
+      count += 2 * ASMBackendUtils.sizeOfType(t);
     }
     return count;
   }

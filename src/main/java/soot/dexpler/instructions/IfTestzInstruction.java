@@ -31,7 +31,6 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21t;
 
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.jimple.BinopExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
@@ -50,15 +49,6 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
     // setUnit() is called in ConditionalJumpInstruction
 
     addTags(jif);
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      // Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ jif);
-      /*
-       * int op = instruction.getOpcode().value; switch (op) { case 0x38: case 0x39:
-       * //DalvikTyper.v().addConstraint(condition.getOp1Box(), condition.getOp2Box()); break; case 0x3a: case 0x3b: case
-       * 0x3c: case 0x3d: DalvikTyper.v().setType(condition.getOp1Box(), BooleanType.v(), true); break; default: throw new
-       * RuntimeException("error: unknown op: 0x"+ Integer.toHexString(op)); }
-       */
-    }
 
     return jif;
 

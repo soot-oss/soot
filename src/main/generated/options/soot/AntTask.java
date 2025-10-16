@@ -114,10 +114,6 @@ public class AntTask extends MatchingTask {
 
 
 
-        public void setjasmin_backend(boolean arg) {
-            if(arg) addArg("-jasmin-backend");
-        }
-  
         public void sethelp(boolean arg) {
             if(arg) addArg("-help");
         }
@@ -268,10 +264,6 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
-        public void setast_metrics(boolean arg) {
-            if(arg) addArg("-ast-metrics");
-        }
-  
         public void setsrc_prec(String arg) {
             if(false
     
@@ -280,7 +272,6 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "only-class" )
                 || arg.equals( "J" )
                 || arg.equals( "jimple" )
-                || arg.equals( "java" )
                 || arg.equals( "apk" )
                 || arg.equals( "apk-class-jimple" )
                 || arg.equals( "apk-c-j" )
@@ -330,10 +321,6 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
-        public void setpolyglot(boolean arg) {
-            if(arg) addArg("-polyglot");
-        }
-  
         public void setpermissive_resolving(boolean arg) {
             if(arg) addArg("-permissive-resolving");
         }
@@ -375,11 +362,8 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "force-dex" )
                 || arg.equals( "n" )
                 || arg.equals( "none" )
-                || arg.equals( "jasmin" )
                 || arg.equals( "c" )
                 || arg.equals( "class" )
-                || arg.equals( "d" )
-                || arg.equals( "dava" )
                 || arg.equals( "t" )
                 || arg.equals( "template" )
                 || arg.equals( "a" )
@@ -1058,264 +1042,6 @@ public class AntTask extends MatchingTask {
           public void setenabled(boolean arg) {
             addArg("-p");
             addArg("jb.cbf");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj() {
-            Object ret = new PhaseOptjj();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setuse_original_names(boolean arg) {
-            addArg("-p");
-            addArg("jj");
-            addArg("use-original-names:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_ls() {
-            Object ret = new PhaseOptjj_ls();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_ls {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.ls");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_sils() {
-            Object ret = new PhaseOptjj_sils();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_sils {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.sils");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_a() {
-            Object ret = new PhaseOptjj_a();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_a {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.a");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setonly_stack_locals(boolean arg) {
-            addArg("-p");
-            addArg("jj.a");
-            addArg("only-stack-locals:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_ule() {
-            Object ret = new PhaseOptjj_ule();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_ule {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.ule");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_tr() {
-            Object ret = new PhaseOptjj_tr();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_tr {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.tr");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_ulp() {
-            Object ret = new PhaseOptjj_ulp();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_ulp {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.ulp");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setunsplit_original_locals(boolean arg) {
-            addArg("-p");
-            addArg("jj.ulp");
-            addArg("unsplit-original-locals:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_lns() {
-            Object ret = new PhaseOptjj_lns();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_lns {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.lns");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setonly_stack_locals(boolean arg) {
-            addArg("-p");
-            addArg("jj.lns");
-            addArg("only-stack-locals:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_cp() {
-            Object ret = new PhaseOptjj_cp();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_cp {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.cp");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setonly_regular_locals(boolean arg) {
-            addArg("-p");
-            addArg("jj.cp");
-            addArg("only-regular-locals:"+(arg?"true":"false"));
-          }
-      
-          public void setonly_stack_locals(boolean arg) {
-            addArg("-p");
-            addArg("jj.cp");
-            addArg("only-stack-locals:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_dae() {
-            Object ret = new PhaseOptjj_dae();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_dae {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.dae");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setonly_stack_locals(boolean arg) {
-            addArg("-p");
-            addArg("jj.dae");
-            addArg("only-stack-locals:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_cp_ule() {
-            Object ret = new PhaseOptjj_cp_ule();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_cp_ule {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.cp-ule");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_lp() {
-            Object ret = new PhaseOptjj_lp();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_lp {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.lp");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setunsplit_original_locals(boolean arg) {
-            addArg("-p");
-            addArg("jj.lp");
-            addArg("unsplit-original-locals:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_ne() {
-            Object ret = new PhaseOptjj_ne();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_ne {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.ne");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_jj_uce() {
-            Object ret = new PhaseOptjj_uce();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptjj_uce {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("jj.uce");
             addArg("enabled:"+(arg?"true":"false"));
           }
       
@@ -3371,162 +3097,6 @@ public class AntTask extends MatchingTask {
           public void setenabled(boolean arg) {
             addArg("-p");
             addArg("bop");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag() {
-            Object ret = new PhaseOpttag();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_ln() {
-            Object ret = new PhaseOpttag_ln();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_ln {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.ln");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_an() {
-            Object ret = new PhaseOpttag_an();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_an {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.an");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_dep() {
-            Object ret = new PhaseOpttag_dep();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_dep {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.dep");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_tag_fieldrw() {
-            Object ret = new PhaseOpttag_fieldrw();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOpttag_fieldrw {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("tag.fieldrw");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_db() {
-            Object ret = new PhaseOptdb();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptdb {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("db");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setsource_is_javac(boolean arg) {
-            addArg("-p");
-            addArg("db");
-            addArg("source-is-javac:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_db_transformations() {
-            Object ret = new PhaseOptdb_transformations();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptdb_transformations {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("db.transformations");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_db_renamer() {
-            Object ret = new PhaseOptdb_renamer();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptdb_renamer {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("db.renamer");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_db_deobfuscate() {
-            Object ret = new PhaseOptdb_deobfuscate();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptdb_deobfuscate {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("db.deobfuscate");
-            addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-        }
-    
-        public Object createp_db_force_recompile() {
-            Object ret = new PhaseOptdb_force_recompile();
-            phaseopts.add(ret);
-            return ret;
-        }
-        public class PhaseOptdb_force_recompile {
-      
-          public void setenabled(boolean arg) {
-            addArg("-p");
-            addArg("db.force-recompile");
             addArg("enabled:"+(arg?"true":"false"));
           }
       
