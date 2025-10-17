@@ -148,7 +148,8 @@ public class CopyPropagator extends BodyTransformer {
 
       // Perform a local propagation pass.
       for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(graph, false)) {
-        for (ValueBox useBox : u.getUseBoxes()) {
+        for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+          ValueBox useBox = iterator.next();
           Value value = useBox.getValue();
           if (value instanceof Local) {
             Local l = (Local) value;

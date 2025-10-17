@@ -23,6 +23,7 @@ package soot.jimple.toolkits.scalar;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +81,8 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis<Unit
 
     // get list of definitions at this unit
     List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
-    for (ValueBox vb : unit.getDefBoxes()) {
+    for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+      ValueBox vb = iterator.next();
       newDefs.add(new EquivalentValue(vb.getValue()));
     }
 

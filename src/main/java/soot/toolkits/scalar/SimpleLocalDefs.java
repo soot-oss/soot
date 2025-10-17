@@ -28,6 +28,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -173,15 +174,14 @@ public class SimpleLocalDefs implements LocalDefs {
 
     @Override
     protected boolean omissible(Unit u) {
-      final List<ValueBox> defs = u.getDefBoxes();
-      if (!defs.isEmpty()) { // avoid temporary creation of iterators (more like micro-tuning)
-        for (ValueBox vb : defs) {
-          Value v = vb.getValue();
-          if (v instanceof Local) {
-            Local l = (Local) v;
-            int lno = getLocalNumber(l);
-            return (localRange[lno] == localRange[lno + 1]);
-          }
+      final Iterator<ValueBox> defs = u.getDefBoxesIterator();
+      while (defs.hasNext()) {
+        ValueBox vb = defs.next();
+        Value v = vb.getValue();
+        if (v instanceof Local) {
+          Local l = (Local) v;
+          int lno = getLocalNumber(l);
+          return (localRange[lno] == localRange[lno + 1]);
         }
       }
       return true;
@@ -209,8 +209,8 @@ public class SimpleLocalDefs implements LocalDefs {
     protected void flowThrough(FlowBitSet in, Unit unit, FlowBitSet out) {
       copy(in, out);
 
-      // reassign all definitions
-      for (ValueBox vb : unit.getDefBoxes()) {
+      for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
@@ -377,7 +377,8 @@ public class SimpleLocalDefs implements LocalDefs {
 
     // collect all def points
     for (Unit unit : graph) {
-      for (ValueBox box : unit.getDefBoxes()) {
+      for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value v = box.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;

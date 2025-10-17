@@ -1,5 +1,7 @@
 package soot.dotnet.instructions;
 
+import java.util.Iterator;
+
 import soot.Body;
 import soot.Immediate;
 import soot.Local;
@@ -78,7 +80,8 @@ public abstract class AbstractCilnstruction implements CilInstruction {
       }
       return createTempVar(jb, jimple, var);
     } else {
-      for (ValueBox i : var.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = var.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox i = iterator.next();
         i.setValue(simplifyComplexExpression(jb, i.getValue()));
       }
       return createTempVar(jb, jimple, var);

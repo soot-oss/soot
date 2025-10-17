@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,6 +26,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Value;
@@ -67,12 +70,62 @@ public abstract class AbstractDefinitionStmt extends AbstractStmt implements Def
   }
 
   @Override
+  public final Iterator<ValueBox> getDefBoxesIterator() {
+    return Iterators.singletonIterator(leftBox);
+  }
+
+  @Override
   public List<ValueBox> getUseBoxes() {
     List<ValueBox> list = new ArrayList<ValueBox>();
     list.addAll(getLeftOp().getUseBoxes());
     list.add(rightBox);
     list.addAll(getRightOp().getUseBoxes());
     return list;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return new Iterator<ValueBox>() {
+      Iterator<ValueBox> lop = getLeftOp().getUseBoxesIterator();
+      Iterator<ValueBox> rop = getRightOp().getUseBoxesIterator();
+      // 0 = iterator 1
+      // 1 = right box
+      // 2 = iterator 2
+      int state = 0;
+
+      @Override
+      public boolean hasNext() {
+        switch (state) {
+          case 0:
+            boolean b = lop.hasNext();
+            if (b) {
+              return true;
+            } else {
+              state = 1;
+            }
+          case 1:
+            return true;
+          default:
+            return rop.hasNext();
+        }
+      }
+
+      @Override
+      public ValueBox next() {
+        switch (state) {
+          case 0:
+            if (lop.hasNext()) {
+              return lop.next();
+            }
+          case 1:
+            state = 2;
+            return rightBox;
+          default:
+            return rop.next();
+        }
+      }
+    };
+
   }
 
   @Override

@@ -131,8 +131,8 @@ public class EarliestnessComputation {
                   downSafeIt.remove();
                 }
               } else {
-                // iterate over uses in each avail.
-                for (ValueBox useBox : avail.getUseBoxes()) {
+                for (Iterator<ValueBox> iterator = avail.getUseBoxesIterator(); iterator.hasNext();) {
+                  ValueBox useBox = iterator.next();
                   Value use = useBox.getValue();
                   if (sideEffect.unitCanWriteTo(predecessor, use)) {
                     earliest.add(equiVal);

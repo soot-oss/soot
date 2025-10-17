@@ -104,7 +104,8 @@ public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
     Body body = target.getActiveBody();
     Value thisLocal = body.getThisLocal();
     for (Unit u : body.getUnits()) {
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         if (vb.getValue() == thisLocal) {
           return false;
         }

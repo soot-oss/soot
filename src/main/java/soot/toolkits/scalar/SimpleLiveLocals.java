@@ -1,5 +1,7 @@
 package soot.toolkits.scalar;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -34,7 +36,6 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedBodyGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 
 /**
  * Analysis that provides an implementation of the LiveLocals interface.
@@ -101,16 +102,16 @@ public class SimpleLiveLocals implements LiveLocals {
     protected void flowThrough(FlowSet<Local> in, Unit unit, FlowSet<Local> out) {
       in.copy(out);
 
-      // Perform kill
-      for (ValueBox box : unit.getDefBoxes()) {
+      for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value v = box.getValue();
         if (v instanceof Local) {
           out.remove((Local) v);
         }
       }
 
-      // Perform generation
-      for (ValueBox box : unit.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = unit.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value v = box.getValue();
         if (v instanceof Local) {
           out.add((Local) v);

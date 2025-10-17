@@ -34,7 +34,7 @@ import java.util.List;
  */
 public class AbstractHost implements Host {
 
-  protected int line, col;
+  protected int line;
 
   // avoid creating an empty list for each element, when it is not used
   // use lazy instantiation (in addTag) instead
@@ -160,11 +160,7 @@ public class AbstractHost implements Host {
 
   @Override
   public int getJavaSourceStartColumnNumber() {
-    if (col <= 0) {
-      // get line from source
-      SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.NAME);
-      col = (tag == null) ? -1 : tag.startPos();
-    }
-    return col;
+    SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.NAME);
+    return (tag == null) ? -1 : tag.startPos();
   }
 }

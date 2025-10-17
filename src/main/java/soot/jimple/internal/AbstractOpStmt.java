@@ -23,10 +23,13 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Value;
 import soot.ValueBox;
+import soot.util.IteratorConcatElement;
 
 @SuppressWarnings("serial")
 public abstract class AbstractOpStmt extends AbstractStmt {
@@ -47,6 +50,21 @@ public abstract class AbstractOpStmt extends AbstractStmt {
 
   final public ValueBox getOpBox() {
     return opBox;
+  }
+
+  @Override
+  public final Iterator<ValueBox> getDefBoxesIterator() {
+    return Collections.emptyIterator();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    return getUseBoxesIterator();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(opBox.getValue().getUseBoxesIterator(), opBox);
   }
 
   @Override

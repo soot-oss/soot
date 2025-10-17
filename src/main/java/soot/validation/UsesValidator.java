@@ -23,6 +23,7 @@ package soot.validation;
  */
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Body;
@@ -80,7 +81,8 @@ public enum UsesValidator implements BodyValidator {
 
     Collection<Local> locals = body.getLocals();
     for (Unit u : body.getUnits()) {
-      for (ValueBox box : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value v = box.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;

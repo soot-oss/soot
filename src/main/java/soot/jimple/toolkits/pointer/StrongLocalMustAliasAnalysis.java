@@ -23,6 +23,7 @@ package soot.jimple.toolkits.pointer;
  */
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -63,7 +64,8 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
     StronglyConnectedComponentsFast<Unit> sccAnalysis = new StronglyConnectedComponentsFast<Unit>(g);
     for (List<Unit> scc : sccAnalysis.getTrueComponents()) {
       for (Unit unit : scc) {
-        for (ValueBox vb : unit.getDefBoxes()) {
+        for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+          ValueBox vb = iterator.next();
           Value defValue = vb.getValue();
           if (defValue instanceof Local) {
             Local defLocal = (Local) defValue;

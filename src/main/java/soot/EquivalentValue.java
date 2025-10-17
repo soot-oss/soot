@@ -1,5 +1,7 @@
 package soot;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -87,6 +89,11 @@ public class EquivalentValue implements Value {
   @Override
   public List<ValueBox> getUseBoxes() {
     return e.getUseBoxes();
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return e.getUseBoxesIterator();
   }
 
   @Override

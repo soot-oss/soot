@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -131,18 +132,19 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
     }
 
     for (Unit u : graph) {
-      List<Value> defs = localsInBoxes(u.getDefBoxes());
-      switch (defs.size()) {
-        case 0:
-          break;
-        case 1:
-          unitToLocalDefed.put(u, (Local) defs.get(0));
-          break;
-        default:
-          throw new RuntimeException("Locals defed in " + u + ": " + defs.size());
+      Iterator<ValueBox> defs = u.getDefBoxesIterator();
+      if (defs.hasNext()) {
+        ValueBox d = defs.next();
+        if (d != null) {
+          unitToLocalDefed.put(u, (Local) d);
+        }
+        if (defs.hasNext()) {
+          throw new RuntimeException("Multiple locals defined in " + u);
+        }
       }
       ArraySparseSet<ValueBox> localUseBoxes = new ArraySparseSet<ValueBox>();
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if (v instanceof Local) {
           localUseBoxes.add(vb);
@@ -174,18 +176,6 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
     if (Options.v().verbose()) {
       logger.debug("[" + graph.getBody().getMethod().getName() + "]     Finished CombinedDUAnalysis...");
     }
-  }
-
-  private List<Value> localsInBoxes(List<ValueBox> boxes) {
-    List<Value> ret = new ArrayList<Value>();
-    for (ValueBox vb : boxes) {
-      Value v = vb.getValue();
-      if (!(v instanceof Local)) {
-        continue;
-      }
-      ret.add(v);
-    }
-    return ret;
   }
 
   // STEP 1: What are we computing?

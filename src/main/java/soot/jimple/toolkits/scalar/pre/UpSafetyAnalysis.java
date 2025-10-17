@@ -128,8 +128,8 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Equivale
           outIt.remove();
         }
       } else {
-        // iterate over uses in each avail.
-        for (ValueBox useBox : avail.getUseBoxes()) {
+        for (Iterator<ValueBox> iterator = avail.getUseBoxesIterator(); iterator.hasNext();) {
+          ValueBox useBox = iterator.next();
           Value use = useBox.getValue();
           if (sideEffect.unitCanWriteTo(u, use)) {
             outIt.remove();

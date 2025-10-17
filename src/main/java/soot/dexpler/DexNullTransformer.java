@@ -29,6 +29,7 @@ package soot.dexpler;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -336,7 +337,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
         for (Unit u : defs) {
           replaceWithNull(u);
           Set<Value> defLocals = new HashSet<Value>();
-          for (ValueBox vb : u.getDefBoxes()) {
+          for (Iterator<ValueBox> iterator = u.getDefBoxesIterator(); iterator.hasNext();) {
+            ValueBox vb = iterator.next();
             defLocals.add(vb.getValue());
           }
 

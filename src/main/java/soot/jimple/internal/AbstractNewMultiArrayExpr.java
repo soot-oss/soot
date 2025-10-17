@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,7 +25,9 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.ArrayType;
@@ -147,6 +151,11 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
       list.addAll(element.getValue().getUseBoxes());
     }
     return list;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return Iterators.concat(Arrays.asList(sizeBoxes).iterator(), new ValueBoxesUseBoxIterator(sizeBoxes));
   }
 
   @Override

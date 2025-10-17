@@ -25,6 +25,7 @@ package soot.toolkits.scalar;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -173,13 +174,15 @@ public class LocalPacker extends BodyTransformer {
 
     // Go through all valueBoxes of this method and perform changes
     for (Unit s : body.getUnits()) {
-      for (ValueBox box : s.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value val = box.getValue();
         if (val instanceof Local) {
           box.setValue(localToNewLocal.get((Local) val));
         }
       }
-      for (ValueBox box : s.getDefBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getDefBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value val = box.getValue();
         if (val instanceof Local) {
           box.setValue(localToNewLocal.get((Local) val));

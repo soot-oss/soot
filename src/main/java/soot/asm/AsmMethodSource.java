@@ -591,10 +591,10 @@ public class AsmMethodSource implements MethodSource {
         continue;
       }
       if (l != null && !opr.value.equivTo(l)) {
-        List<ValueBox> uses = opr.value.getUseBoxes();
+        Iterator<ValueBox> uses = opr.value.getUseBoxesIterator();
         boolean noref = true;
-        for (ValueBox use : uses) {
-          Value val = use.getValue();
+        while (uses.hasNext()) {
+          Value val = uses.next().getValue();
           if (val.equivTo(l)) {
             noref = false;
             break;
@@ -2415,7 +2415,8 @@ public class AsmMethodSource implements MethodSource {
           // changes should be made.
           IdentityHashMap<ValueBox, Local> boxToNewLoc = new IdentityHashMap<>();
           for (Unit u : jbUnits) {
-            for (ValueBox box : u.getUseAndDefBoxes()) {
+            for (Iterator<ValueBox> iterator = u.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+              ValueBox box = iterator.next();
               Value val = box.getValue();
               if (val == chosen) {
                 Local old = boxToNewLoc.put(box, null);
@@ -2457,7 +2458,8 @@ public class AsmMethodSource implements MethodSource {
               }
               for (Iterator<Unit> it = jbUnits.iterator(uStart, uEnd); it.hasNext();) {
                 Unit u = it.next();
-                for (ValueBox box : u.getUseAndDefBoxes()) {
+                for (Iterator<ValueBox> iterator = u.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+                  ValueBox box = iterator.next();
                   Value val = box.getValue();
                   if (val == chosen) {
                     assert (boxToNewLoc.containsKey(box));// it was found at the start

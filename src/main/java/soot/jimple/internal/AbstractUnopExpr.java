@@ -23,11 +23,13 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.UnopExpr;
+import soot.util.IteratorConcatElement;
 
 @SuppressWarnings("serial")
 public abstract class AbstractUnopExpr implements UnopExpr {
@@ -61,5 +63,10 @@ public abstract class AbstractUnopExpr implements UnopExpr {
     List<ValueBox> list = new ArrayList<ValueBox>(opBox.getValue().getUseBoxes());
     list.add(opBox);
     return list;
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(opBox.getValue().getUseBoxesIterator(), opBox);
   }
 }
