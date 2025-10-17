@@ -97,8 +97,6 @@ public class SootClass extends AbstractHost {
 
   private volatile int resolvingLevel = DANGLING;
 
-  protected volatile int number = 0;
-
   /**
    * Lazy initialized array containing some validators in order to validate the SootClass.
    */
