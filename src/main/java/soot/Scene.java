@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
+
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
@@ -1390,15 +1391,15 @@ public class Scene {
   }
 
   /** Sets the active hierarchy */
-  public synchronized void setFastHierarchy(FastHierarchy hierarchy) {
+  public void setFastHierarchy(FastHierarchy hierarchy) {
     activeFastHierarchy = hierarchy;
   }
 
-  public synchronized boolean hasFastHierarchy() {
+  public boolean hasFastHierarchy() {
     return activeFastHierarchy != null;
   }
 
-  public synchronized void releaseFastHierarchy() {
+  public void releaseFastHierarchy() {
     activeFastHierarchy = null;
   }
 
