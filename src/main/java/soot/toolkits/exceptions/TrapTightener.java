@@ -33,6 +33,7 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Scene;
 import soot.Singletons;
+import soot.SootClass;
 import soot.Trap;
 import soot.Unit;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
@@ -69,9 +70,11 @@ public final class TrapTightener extends TrapTransformer {
     this.throwAnalysis = ta;
   }
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
+    final Scene scene = Scene.v();
     if (this.throwAnalysis == null) {
-      this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+      this.throwAnalysis = scene.getDefaultThrowAnalysis();
     }
 
     if (Options.v().verbose()) {
@@ -80,13 +83,14 @@ public final class TrapTightener extends TrapTransformer {
 
     Chain<Trap> trapChain = body.getTraps();
     Chain<Unit> unitChain = body.getUnits();
+    final SootClass baseException = scene.getBaseExceptionType().getSootClass();
     if (trapChain.size() > 0) {
       ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis);
       Set<Unit> unitsWithMonitor = getUnitsWithMonitor(graph);
 
       for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext();) {
         Trap trap = trapIt.next();
-        boolean isCatchAll = trap.getException().getName().equals(Scene.v().getBaseExceptionType().toString());
+        boolean isCatchAll = trap.getException().equals(baseException);
         Unit firstTrappedUnit = trap.getBeginUnit();
         Unit firstTrappedThrower = null;
         Unit firstUntrappedUnit = trap.getEndUnit();

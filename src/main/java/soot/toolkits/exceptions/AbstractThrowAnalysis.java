@@ -39,6 +39,7 @@ import soot.grimp.NewInvokeExpr;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.NewExpr;
 import soot.jimple.ThrowStmt;
+import soot.toolkits.exceptions.ThrowableSet.Manager;
 
 /**
  * Abstract class implementing parts of the {@link ThrowAnalysis} interface which may be common to multiple concrete
@@ -48,6 +49,7 @@ import soot.jimple.ThrowStmt;
  */
 public abstract class AbstractThrowAnalysis implements ThrowAnalysis {
 
+  @Override
   abstract public ThrowableSet mightThrow(Unit u);
 
   @Override
@@ -64,17 +66,18 @@ public abstract class AbstractThrowAnalysis implements ThrowAnalysis {
   public ThrowableSet mightThrowExplicitly(ThrowStmt t, SootMethod sm) {
     Value thrownExpression = t.getOp();
     Type thrownType = thrownExpression.getType();
+    final Manager mgr = ThrowableSet.Manager.v();
     if (thrownType == null || thrownType instanceof UnknownType) {
       // We can't identify the type of thrownExpression, so...
-      return ThrowableSet.Manager.v().ALL_THROWABLES;
+      return mgr.ALL_THROWABLES;
     } else if (thrownType instanceof NullType) {
-      ThrowableSet result = ThrowableSet.Manager.v().EMPTY;
-      result = result.add(ThrowableSet.Manager.v().NULL_POINTER_EXCEPTION);
+      ThrowableSet result = mgr.EMPTY;
+      result = result.add(mgr.NULL_POINTER_EXCEPTION);
       return result;
     } else if (!(thrownType instanceof RefType)) {
       throw new IllegalStateException("UnitThrowAnalysis StmtSwitch: type of throw argument is not a RefType!");
     } else {
-      ThrowableSet result = ThrowableSet.Manager.v().EMPTY;
+      ThrowableSet result = mgr.EMPTY;
       if (thrownExpression instanceof NewInvokeExpr) {
         // In this case, we know the exact type of the
         // argument exception.
@@ -102,7 +105,9 @@ public abstract class AbstractThrowAnalysis implements ThrowAnalysis {
     }
   }
 
+  @Override
   abstract public ThrowableSet mightThrowImplicitly(ThrowInst t);
 
+  @Override
   abstract public ThrowableSet mightThrowImplicitly(ThrowStmt t);
 }

@@ -294,8 +294,9 @@ public class DeadAssignmentEliminator extends BodyTransformer {
           units.swapWith(s, newInvoke);
 
           // If we have a callgraph, we need to fix it
-          if (Scene.v().hasCallGraph()) {
-            Scene.v().getCallGraph().swapEdgesOutOf(s, newInvoke);
+          Scene scene = Scene.v();
+          if (scene.hasCallGraph()) {
+            scene.getCallGraph().swapEdgesOutOf(s, newInvoke);
           }
         }
       }

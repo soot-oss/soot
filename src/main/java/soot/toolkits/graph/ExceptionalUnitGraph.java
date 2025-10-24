@@ -54,6 +54,7 @@ import soot.jimple.ThrowStmt;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.ThrowableSet;
+import soot.toolkits.exceptions.ThrowableSet.Manager;
 import soot.util.ArraySet;
 import soot.util.Chain;
 
@@ -198,7 +199,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
   protected void initialize(ThrowAnalysis throwAnalysis, boolean omitExceptingUnitEdges) {
     int size = unitChain.size();
 
-    if (Options.v().time()) {
+    boolean time = Options.v().time();
+    if (time) {
       Timers.v().graphTimer.start();
     }
 
@@ -230,7 +232,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     }
     buildHeadsAndTails(trapUnitsThatAreHeads);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().graphTimer.end();
     }
 
@@ -265,7 +267,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     Chain<Unit> units = body.getUnits();
     Map<Unit, ThrowableSet> unitToUncaughtThrowables = new LinkedHashMap<Unit, ThrowableSet>(units.size());
     Map<Unit, Collection<ExceptionDest>> result = null;
-    final ThrowableSet EMPTY = ThrowableSet.Manager.v().EMPTY;
+    final Manager manager = ThrowableSet.Manager.v();
+    final ThrowableSet EMPTY = manager.EMPTY;
 
     // Record the caught exceptions.
     for (Trap trap : body.getTraps()) {
@@ -295,7 +298,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     for (Map.Entry<Unit, ThrowableSet> entry : unitToUncaughtThrowables.entrySet()) {
       Unit unit = entry.getKey();
       ThrowableSet escaping = entry.getValue();
-      if (escaping != ThrowableSet.Manager.v().EMPTY) {
+      if (escaping != manager.EMPTY) {
         result = addDestToMap(result, unit, null, escaping);
       }
     }

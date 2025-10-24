@@ -83,12 +83,13 @@ public class RegionAnalysis {
     this.m_method = m;
     this.m_class = c;
 
-    if (Options.v().verbose()) {
+    boolean verbose = Options.v().verbose();
+    if (verbose) {
       logger.debug(
           "[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
     }
     this.findWeakRegions();
-    if (Options.v().verbose()) {
+    if (verbose) {
       logger.debug("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
     }
   }

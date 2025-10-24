@@ -64,15 +64,16 @@ public class SootASMClassWriter extends ClassWriter {
     String typeName1 = type1.replace('/', '.');
     String typeName2 = type2.replace('/', '.');
 
-    SootClass s1 = Scene.v().getSootClass(typeName1);
-    SootClass s2 = Scene.v().getSootClass(typeName2);
+    final Scene scene = Scene.v();
+    SootClass s1 = scene.getSootClass(typeName1);
+    SootClass s2 = scene.getSootClass(typeName2);
 
     // If these two classes haven't been loaded yet or are phantom, we take
     // java.lang.Object as the common superclass
     final Type mergedType;
     if (s1.isPhantom() || s2.isPhantom() || s1.resolvingLevel() == SootClass.DANGLING
         || s2.resolvingLevel() == SootClass.DANGLING) {
-      mergedType = Scene.v().getObjectType();
+      mergedType = scene.getObjectType();
     } else {
       Type t1 = s1.getType();
       Type t2 = s2.getType();

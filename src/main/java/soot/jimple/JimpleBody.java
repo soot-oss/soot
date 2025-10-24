@@ -126,7 +126,8 @@ public class JimpleBody extends StmtBody {
   @Override
   public void validate(List<ValidationException> exceptionList) {
     super.validate(exceptionList);
-    final boolean runAllValidators = Options.v().debug() || Options.v().validate();
+    final Options o = Options.v();
+    final boolean runAllValidators = o.debug() || o.validate();
     for (BodyValidator validator : LazyValidatorsSingleton.V) {
       if (runAllValidators || validator.isBasicValidator()) {
         validator.validate(this, exceptionList);
