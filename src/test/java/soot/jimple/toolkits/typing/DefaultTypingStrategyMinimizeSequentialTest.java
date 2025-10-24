@@ -48,6 +48,8 @@ import soot.jimple.toolkits.typing.fast.ITyping;
 import soot.jimple.toolkits.typing.fast.MapTyping;
 import soot.options.Options;
 
+import net.bytebuddy.implementation.bytecode.assign.Assigner.Typing;
+
 /**
  * JUnit-Tests for the {@link DefaultTypingStrategy#minimize(List, soot.jimple.toolkits.typing.fast.IHierarchy)} method.
  * 
@@ -159,6 +161,9 @@ public class DefaultTypingStrategyMinimizeSequentialTest {
     o.prepend_classpath();
     o.set_include_all(true);
     o.set_whole_program(true);
+    o.set_allow_phantom_refs(true); // in Java 25 there are classes such as
+    // java.lang.invoke.BoundMethodHandle$Species_J that are being generated at
+    // runtime, thus we need that option
 
     Scene.v().loadNecessaryClasses();
     Scene.v().loadClassAndSupport("java.lang.Object");

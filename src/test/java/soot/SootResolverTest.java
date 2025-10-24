@@ -24,6 +24,7 @@ package soot;
  */
 
 import org.junit.Test;
+
 import soot.options.Options;
 
 /**
@@ -31,42 +32,70 @@ import soot.options.Options;
  *
  * A minimal Test for evaluating the bug in the Method {@link soot.Scene#defaultJavaClassPath}. <br/>
  *
- * When {@link soot.SootResolver} and {@link soot.SourceLocator#getClassSource} resolve classes,
- * they will get default java classPath by call `Scene.v().getSootClassPath()`. <br/>
+ * When {@link soot.SootResolver} and {@link soot.SourceLocator#getClassSource} resolve classes, they will get default java
+ * classPath by call `Scene.v().getSootClassPath()`. <br/>
  *
  * <b>Test under Java 8 environment: </b> <br/>
  *
  * Before fixed the bug, we will get default java class path when <br/>
- * - we set <pre>Options.v().set_whole_program(true);</pre>: `path/to/rt.jar;path/to/jce.jar` <br/>
- * - we set <pre>Options.v().set_whole_shimple(true);</pre>: `path/to/rt.jar` <br/>
+ * - we set
+ * 
+ * <pre>
+ * Options.v().set_whole_program(true);
+ * </pre>
+ * 
+ * : `path/to/rt.jar;path/to/jce.jar` <br/>
+ * - we set
+ * 
+ * <pre>
+ * Options.v().set_whole_shimple(true);
+ * </pre>
+ * 
+ * : `path/to/rt.jar` <br/>
  *
  * After fixed the bug, we will get default java class path when <br/>
- * - we set <pre>Options.v().set_whole_program(true);</pre>: `path/to/rt.jar;path/to/jce.jar` <br/>
- * - we set <pre>Options.v().set_whole_shimple(true);</pre>: `path/to/rt.jar;path/to/jce.jar` <br/>
+ * - we set
+ * 
+ * <pre>
+ * Options.v().set_whole_program(true);
+ * </pre>
+ * 
+ * : `path/to/rt.jar;path/to/jce.jar` <br/>
+ * - we set
+ * 
+ * <pre>
+ * Options.v().set_whole_shimple(true);
+ * </pre>
+ * 
+ * : `path/to/rt.jar;path/to/jce.jar` <br/>
  *
  * @author canliture
  */
 public class SootResolverTest {
 
-    @Test
-    public void test1() {
-        G.reset();
+  @Test
+  public void test1() {
+    G.reset();
 
-        // setting
-        Options.v().set_whole_program(true);
+    // setting
+    Options.v().set_whole_program(true);
+    Options.v().set_allow_phantom_refs(true); // in Java 25 there are classes such as
+                                              // java.lang.invoke.BoundMethodHandle$Species_J that are being generated at
+                                              // runtime, thus we need that option
 
-        // No throw. ^_^
-        Scene.v().loadNecessaryClasses();
-    }
+    // No throw. ^_^
+    Scene.v().loadNecessaryClasses();
+  }
 
-    @Test
-    public void test2() {
-        G.reset();
+  @Test
+  public void test2() {
+    G.reset();
 
-        // setting
-        Options.v().set_whole_shimple(true);
+    // setting
+    Options.v().set_whole_shimple(true);
+    Options.v().set_allow_phantom_refs(true);
 
-        // throw java.lang.AssertionError !!!
-        Scene.v().loadNecessaryClasses();
-    }
+    // throw java.lang.AssertionError !!!
+    Scene.v().loadNecessaryClasses();
+  }
 }
