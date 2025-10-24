@@ -121,26 +121,21 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.CaughtExceptionRef;
-import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
-import soot.jimple.EqExpr;
 import soot.jimple.FloatConstant;
 import soot.jimple.GotoStmt;
-import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.MulExpr;
-import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.NopStmt;
 import soot.jimple.NullConstant;
-import soot.jimple.NumericConstant;
 import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.ShlExpr;
@@ -544,6 +539,7 @@ public class DexBody {
     final UnknownType unknownType = UnknownType.v();
     final NullConstant nullConstant = NullConstant.v();
     final Options options = Options.v();
+    final PhaseOptions phaseOptions = PhaseOptions.v();
 
     /*
      * Timer t_whole_jimplification = new Timer(); Timer t_num = new Timer(); Timer t_null = new Timer();
@@ -551,16 +547,16 @@ public class DexBody {
      * t_whole_jimplification.start();
      */
 
-    JBOptions jbOptions = new JBOptions(PhaseOptions.v().getPhaseOptions("jb"));
+    JBOptions jbOptions = new JBOptions(phaseOptions.getPhaseOptions("jb"));
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
 
     if (jbOptions.use_original_names()) {
-      PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
+      phaseOptions.setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
     }
     if (jbOptions.stabilize_local_names()) {
-      PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
+      phaseOptions.setPhaseOption("jb.lns", "sort-locals:true");
     }
 
     // process method parameters and generate Jimple locals from Dalvik
@@ -784,7 +780,6 @@ public class DexBody {
 
     // DexRefsChecker.v().transform(jBody);
     DexNullArrayRefTransformer.v().transform(jBody);
-  
 
     // Remove "instanceof" checks on the null constant
     DexNullInstanceofTransformer.v().transform(jBody);
@@ -814,9 +809,11 @@ public class DexBody {
     }
 
     new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
+      @Override
       protected soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb,
           ITyping tg) {
         return new TypePromotionUseVisitor(jb, tg) {
+          @Override
           protected boolean allowConversion(Type ancestor, Type child) {
             if (ancestor == child) {
               return true;
@@ -832,6 +829,7 @@ public class DexBody {
             return super.allowConversion(ancestor, child);
           }
 
+          @Override
           public Type promote(Type tlow, Type thigh) {
             if (thigh instanceof BooleanType && tlow instanceof IntegerType) {
               // Well... in Android's dex code, 0 = false and everything else is true
@@ -852,7 +850,7 @@ public class DexBody {
 
       }
 
-
+      @Override
       protected Type getDefiniteType(Local v) {
         Collection<Type> r = definiteConstraints.get(v);
         if (r != null && r.size() == 1) {
@@ -864,8 +862,10 @@ public class DexBody {
         return null;
       }
 
+      @Override
       protected soot.jimple.toolkits.typing.fast.BytecodeHierarchy createBytecodeHierarchy() {
         return new soot.jimple.toolkits.typing.fast.BytecodeHierarchy() {
+          @Override
           public java.util.Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
             Collection<Type> s = super.lcas(a, b, useWeakObjectType);
             if (s.isEmpty()) {
@@ -916,11 +916,13 @@ public class DexBody {
         return res;
       }
 
+      @Override
       protected soot.jimple.toolkits.typing.fast.ITypingStrategy getTypingStrategy() {
         ITypingStrategy useTyping = DexBody.this.getTypingStrategy();
         return useTyping;
       }
 
+      @Override
       protected CastInsertionUseVisitor createCastInsertionUseVisitor(ITyping tg,
           soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly, int maxCasts) {
         return new CastInsertionUseVisitor(countOnly, jBody, tg, h, maxCasts) {
@@ -1025,8 +1027,8 @@ public class DexBody {
 
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
-    if (Options.v().wrong_staticness() == Options.wrong_staticness_fix
-        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
+    if (options.wrong_staticness() == Options.wrong_staticness_fix
+        || options.wrong_staticness() == Options.wrong_staticness_fixstrict) {
       FieldStaticnessCorrector.v().transform(jBody);
       MethodStaticnessCorrector.v().transform(jBody);
     }
@@ -1171,11 +1173,10 @@ public class DexBody {
 
     return jBody;
   }
-  
 
-/**
- * Handles cases where the array types are incompatible (any two different array types)
- */
+  /**
+   * Handles cases where the array types are incompatible (any two different array types)
+   */
   private void handleIncompatibleDexArrayTypes(Body b, MultiMap<Local, Type> maybetypeConstraints,
       Map<Local, Collection<Type>> definiteConstraints) {
     boolean arrayConstraintsNecessary = false;

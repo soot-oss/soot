@@ -29,6 +29,7 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.Scene;
 import soot.Singletons;
+import soot.SootClass;
 import soot.Trap;
 import soot.Unit;
 
@@ -64,13 +65,14 @@ public class DuplicateCatchAllTrapRemover extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     // Find two traps that use java.lang.Throwable as their type and that
     // span the same code region
+    SootClass baseException = Scene.v().getBaseExceptionType().getSootClass();
     for (Iterator<Trap> t1It = b.getTraps().snapshotIterator(); t1It.hasNext();) {
       Trap t1 = t1It.next();
-      if (t1.getException().getName().equals(Scene.v().getBaseExceptionType().toString())) {
+      if (t1.getException().equals(baseException)) {
         for (Iterator<Trap> t2It = b.getTraps().snapshotIterator(); t2It.hasNext();) {
           Trap t2 = t2It.next();
           if (t1 != t2 && t1.getBeginUnit() == t2.getBeginUnit() && t1.getEndUnit() == t2.getEndUnit()
-              && t2.getException().getName().equals(Scene.v().getBaseExceptionType().toString())) {
+              && t2.getException().equals(baseException)) {
             // Both traps (t1, t2) span the same code and catch java.lang.Throwable.
             // Check if one trap jumps to a target that then jumps to the target of
             // the other trap.

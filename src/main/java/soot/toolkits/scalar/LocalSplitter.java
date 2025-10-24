@@ -83,13 +83,15 @@ public class LocalSplitter extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose()) {
+    Options o = Options.v();
+    if (o.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Splitting locals...");
     }
 
-    if (Options.v().time()) {
-      Timers.v().splitTimer.start();
-      Timers.v().splitPhase1Timer.start();
+    if (o.time()) {
+      Timers timers = Timers.v();
+      timers.splitTimer.start();
+      timers.splitPhase1Timer.start();
     }
 
     if (throwAnalysis == null) {
@@ -97,7 +99,7 @@ public class LocalSplitter extends BodyTransformer {
     }
 
     if (!omitExceptingUnitEdges) {
-      omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+      omitExceptingUnitEdges = o.omit_excepting_unit_edges();
     }
 
     // Pack the locals for efficiency
@@ -112,9 +114,10 @@ public class LocalSplitter extends BodyTransformer {
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
     final LocalUses uses = LocalUses.Factory.newLocalUses(graph, defs);
 
-    if (Options.v().time()) {
-      Timers.v().splitPhase1Timer.end();
-      Timers.v().splitPhase2Timer.start();
+    if (o.time()) {
+      Timers timers = Timers.v();
+      timers.splitPhase1Timer.end();
+      timers.splitPhase2Timer.start();
     }
 
     // Collect the set of locals that we need to split
@@ -207,9 +210,10 @@ public class LocalSplitter extends BodyTransformer {
     // Restore the original local numbering
     localPacker.unpack();
 
-    if (Options.v().time()) {
-      Timers.v().splitPhase2Timer.end();
-      Timers.v().splitTimer.end();
+    if (o.time()) {
+      Timers timers = Timers.v();
+      timers.splitPhase2Timer.end();
+      timers.splitTimer.end();
     }
   }
 }

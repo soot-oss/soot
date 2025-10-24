@@ -205,6 +205,7 @@ public class PAG implements PointsToAnalysis {
   }
 
   /** Returns the set of objects pointed to by variable l. */
+  @Override
   public PointsToSet reachingObjects(Local l) {
     VarNode n = findLocalVarNode(l);
     if (n == null) {
@@ -214,6 +215,7 @@ public class PAG implements PointsToAnalysis {
   }
 
   /** Returns the set of objects pointed to by variable l in context c. */
+  @Override
   public PointsToSet reachingObjects(Context c, Local l) {
     VarNode n = findContextVarNode(l, c);
     if (n == null) {
@@ -223,6 +225,7 @@ public class PAG implements PointsToAnalysis {
   }
 
   /** Returns the set of objects pointed to by static field f. */
+  @Override
   public PointsToSet reachingObjects(SootField f) {
     if (!f.isStatic()) {
       throw new RuntimeException("The parameter f must be a *static* field.");
@@ -237,6 +240,7 @@ public class PAG implements PointsToAnalysis {
   /**
    * Returns the set of objects pointed to by instance field f of the objects in the PointsToSet s.
    */
+  @Override
   public PointsToSet reachingObjects(PointsToSet s, final SootField f) {
     if (f.isStatic()) {
       throw new RuntimeException("The parameter f must be an *instance* field.");
@@ -248,6 +252,7 @@ public class PAG implements PointsToAnalysis {
   /**
    * Returns the set of objects pointed to by elements of the arrays in the PointsToSet s.
    */
+  @Override
   public PointsToSet reachingObjectsOfArrayElement(PointsToSet s) {
     return reachingObjectsInternal(s, ArrayElement.v());
   }
@@ -267,6 +272,7 @@ public class PAG implements PointsToAnalysis {
     PointsToSetInternal bases = (PointsToSetInternal) s;
     final PointsToSetInternal ret = setFactory.newSet((f instanceof SootField) ? ((SootField) f).getType() : null, this);
     bases.forall(new P2SetVisitor() {
+      @Override
       public final void visit(Node n) {
         Node nDotF = ((AllocNode) n).dot(f);
         if (nDotF != null) {
@@ -599,6 +605,7 @@ public class PAG implements PointsToAnalysis {
   /**
    * Returns the set of objects pointed to by instance field f of the objects pointed to by l.
    */
+  @Override
   public PointsToSet reachingObjects(Local l, SootField f) {
     return reachingObjects(reachingObjects(l), f);
   }
@@ -606,6 +613,7 @@ public class PAG implements PointsToAnalysis {
   /**
    * Returns the set of objects pointed to by instance field f of the objects pointed to by l in context c.
    */
+  @Override
   public PointsToSet reachingObjects(Context c, Local l, SootField f) {
     return reachingObjects(reachingObjects(c, l), f);
   }
@@ -697,7 +705,7 @@ public class PAG implements PointsToAnalysis {
     if (opts.rta()) {
       value = null;
     } else if (value instanceof Local) {
-      return localToNodeMap.get((Local) value);
+      return localToNodeMap.get(value);
     }
     return valToLocalVarNode.get(value);
   }
@@ -1294,8 +1302,9 @@ public class PAG implements PointsToAnalysis {
       // (1)
       InvokeExpr ie = e.srcStmt().getInvokeExpr();
       Value arg0 = ie.getArg(0);
+      final NullConstant nc = NullConstant.v();
       // if "null" is passed in, omit the edge
-      if (arg0 != NullConstant.v()) {
+      if (arg0 != nc) {
         Node parm0 = srcmpag.nodeFactory().getNode(arg0);
         parm0 = srcmpag.parameterize(parm0, e.srcCtxt());
         parm0 = parm0.getReplacement();
@@ -1317,7 +1326,7 @@ public class PAG implements PointsToAnalysis {
       SootMethod tgt = e.getTgt().method();
       // if "null" is passed in, or target has no parameters, omit the
       // edge
-      if (arg1 != NullConstant.v() && tgt.getParameterCount() > 0) {
+      if (arg1 != nc && tgt.getParameterCount() > 0) {
         Node parm1 = srcmpag.nodeFactory().getNode(arg1);
         parm1 = srcmpag.parameterize(parm1, e.srcCtxt());
         parm1 = parm1.getReplacement();

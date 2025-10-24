@@ -119,7 +119,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose()) {
+    final Options o = Options.v();
+    if (o.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Splitting for shared initialization of locals...");
     }
 
@@ -128,23 +129,26 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     }
 
     if (!omitExceptingUnitEdges) {
-      omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+      omitExceptingUnitEdges = o.omit_excepting_unit_edges();
     }
 
-    DexNullThrowTransformer.v().transform(body);
-    CopyPropagator.v().transform(body);
-    DexNullThrowTransformer.v().transform(body);
+    DexNullThrowTransformer dexNull = DexNullThrowTransformer.v();
+    dexNull.transform(body);
+    CopyPropagator cp = CopyPropagator.v();
+    cp.transform(body);
+    dexNull.transform(body);
     ConstantPropagatorAndFolder.v().transform(body);
 
-    DexNullArrayRefTransformer.v().transform(body);
+    DexNullArrayRefTransformer dexNullArrayRef = DexNullArrayRefTransformer.v();
+    dexNullArrayRef.transform(body);
     FlowSensitiveConstantPropagator.v().transform(body);
-    CopyPropagator.v().transform(body);
+    cp.transform(body);
 
-    DexNullThrowTransformer.v().transform(body);
-    DexNullArrayRefTransformer.v().transform(body);
+    dexNull.transform(body);
+    dexNullArrayRef.transform(body);
 
     DeadAssignmentEliminator.v().transform(body);
-    CopyPropagator.v().transform(body);
+    cp.transform(body);
     transformOnly(body);
   }
 

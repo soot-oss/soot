@@ -206,7 +206,8 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
         {
           List<A> afterFallFlow = unitToAfterFallFlow.get(s);
           List<A> afterBranchFlow = getBranchFlowAfter(s);
-          if (Options.v().interactive_mode()) {
+          boolean interactiveMode = Options.v().interactive_mode();
+          if (interactiveMode) {
             InteractionHandler ih = InteractionHandler.v();
             A savedFlow = newInitialFlow();
             copy(beforeFlow, savedFlow);
@@ -217,7 +218,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
             ih.handleBeforeAnalysisEvent(fi);
           }
           flowThrough(beforeFlow, s, afterFallFlow, afterBranchFlow);
-          if (Options.v().interactive_mode()) {
+          if (interactiveMode) {
             List<A> l = new ArrayList<A>();
             if (!afterFallFlow.isEmpty()) {
               l.addAll(afterFallFlow);
@@ -252,8 +253,9 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
     // " numComputations: " + numComputations + " avg: " +
     // Main.truncatedOf((double) numComputations / numNodes, 2));
 
-    Timers.v().totalFlowNodes += numNodes;
-    Timers.v().totalFlowComputations += numComputations;
+    Timers t = Timers.v();
+    t.totalFlowNodes += numNodes;
+    t.totalFlowComputations += numComputations;
 
   } // end doAnalysis
 

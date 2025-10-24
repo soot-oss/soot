@@ -490,20 +490,21 @@ public class UnconditionalBranchFolder extends BodyTransformer {
   } // Transformer
 
   public static ConditionExpr reverseCondition(ConditionExpr cond) {
+    final Jimple j = Jimple.v();
     // NOTE: Adapted from the private reverseCondition(..) method in JimpleBodyBuilder.
     ConditionExpr newExpr;
     if (cond instanceof soot.jimple.EqExpr) {
-      newExpr = Jimple.v().newNeExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newNeExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.NeExpr) {
-      newExpr = Jimple.v().newEqExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newEqExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.GtExpr) {
-      newExpr = Jimple.v().newLeExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newLeExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.GeExpr) {
-      newExpr = Jimple.v().newLtExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newLtExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.LtExpr) {
-      newExpr = Jimple.v().newGeExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newGeExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.LeExpr) {
-      newExpr = Jimple.v().newGtExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newGtExpr(cond.getOp1(), cond.getOp2());
     } else {
       throw new RuntimeException("Unknown ConditionExpr");
     }

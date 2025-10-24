@@ -203,8 +203,9 @@ public class UseChecker extends AbstractStmtSwitch {
         || be instanceof RemExpr || be instanceof GeExpr || be instanceof GtExpr || be instanceof LeExpr
         || be instanceof LtExpr || be instanceof ShlExpr || be instanceof ShrExpr || be instanceof UshrExpr) {
       if (tlhs instanceof IntegerType) {
-        be.setOp1(this.uv.visit(opl, IntType.v(), stmt, true));
-        be.setOp2(this.uv.visit(opr, IntType.v(), stmt, true));
+        final IntType intType = IntType.v();
+        be.setOp1(this.uv.visit(opl, intType, stmt, true));
+        be.setOp2(this.uv.visit(opr, intType, stmt, true));
       }
     } else if (be instanceof CmpExpr || be instanceof CmpgExpr || be instanceof CmplExpr) {
       // No checks in the original assigner
@@ -215,8 +216,9 @@ public class UseChecker extends AbstractStmtSwitch {
       if (tl instanceof BooleanType && tr instanceof BooleanType) {
       } else if (tl instanceof Integer1Type || tr instanceof Integer1Type) {
       } else if (tl instanceof IntegerType) {
-        be.setOp1(this.uv.visit(opl, IntType.v(), stmt, true));
-        be.setOp2(this.uv.visit(opr, IntType.v(), stmt, true));
+        final IntType intType = IntType.v();
+        be.setOp1(this.uv.visit(opl, intType, stmt, true));
+        be.setOp2(this.uv.visit(opr, intType, stmt, true));
       }
     }
   }
@@ -293,7 +295,7 @@ public class UseChecker extends AbstractStmtSwitch {
           at = tgType.makeArrayType();
         }
       }
-      tlhs = ((ArrayType) at).getElementType();
+      tlhs = at.getElementType();
 
       this.handleArrayRef(aref, stmt);
 
@@ -448,7 +450,7 @@ public class UseChecker extends AbstractStmtSwitch {
 
         at = et.makeArrayType();
       }
-      Type trhs = ((ArrayType) at).getElementType();
+      Type trhs = at.getElementType();
 
       this.handleArrayRef(aref, stmt);
 

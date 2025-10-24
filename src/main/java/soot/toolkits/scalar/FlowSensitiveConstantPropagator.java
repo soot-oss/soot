@@ -106,7 +106,8 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose()) {
+    final Options o = Options.v();
+    if (o.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Splitting for shared initialization of locals...");
     }
 
@@ -115,7 +116,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
     }
 
     if (!omitExceptingUnitEdges) {
-      omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+      omitExceptingUnitEdges = o.omit_excepting_unit_edges();
     }
 
     final LocalBitSetPacker localPacker = new LocalBitSetPacker(body);
@@ -137,7 +138,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
           Constant c = v.getConstant(l);
           if (c != null) {
             List<Tag> oldTags = assign.getRightOpBox().getTags();
-            assign.setRightOp((Constant) c);
+            assign.setRightOp(c);
             assign.getRightOpBox().getTags().addAll(oldTags);
             CopyPropagator.copyLineTags(assign.getUseBoxesIterator().next(), assign);
             continue;
@@ -166,7 +167,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
                   val = DoubleConstant.v(((LongConstant) val).value);
                 }
               }
-              r.setValue((Constant) val);
+              r.setValue(val);
             }
           }
         }
