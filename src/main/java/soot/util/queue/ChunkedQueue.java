@@ -45,7 +45,7 @@ public class ChunkedQueue<E> {
   }
 
   /** Add an object to the queue. */
-  public void add(E o) {
+  public synchronized void add(E o) {
     if (o == null) {
       throw new IllegalArgumentException("Null is not allowed");
     }

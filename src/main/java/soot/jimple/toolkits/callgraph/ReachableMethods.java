@@ -23,11 +23,13 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import soot.MethodOrMethodContext;
+import soot.util.ParallelUtils;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
@@ -39,7 +41,7 @@ import soot.util.queue.QueueReader;
 public class ReachableMethods {
 
   protected final ChunkedQueue<MethodOrMethodContext> reachables = new ChunkedQueue<>();
-  protected final Set<MethodOrMethodContext> set = new HashSet<>();
+  protected final Set<MethodOrMethodContext> set = Collections.newSetFromMap(new ConcurrentHashMap<>());
   protected final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
   protected QueueReader<MethodOrMethodContext> unprocessedMethods;
   protected Iterator<Edge> edgeSource;
@@ -89,24 +91,29 @@ public class ReachableMethods {
       Edge e = edgeSource.next();
       if (e != null) {
         MethodOrMethodContext srcMethod = e.getSrc();
-        if (srcMethod != null && !e.isInvalid() && (allowUnconnectedMethods || set.contains(srcMethod))) {
+        if (srcMethod != null && !e.isInvalid() && (allowUnconnectedMethods || contains(srcMethod))) {
           addMethod(e.getTgt());
         }
       }
     }
-    while (unprocessedMethods.hasNext()) {
-      MethodOrMethodContext m = unprocessedMethods.next();
-      if (m == null) {
-        continue;
+    ParallelUtils.runIteratorParallel(unprocessedMethods, new ParallelUtils.ElementProcessor<MethodOrMethodContext>() {
+
+      @Override
+      public void process(MethodOrMethodContext m) {
+        if (m == null) {
+          return;
+        }
+        Iterator<Edge> targets = cg.edgesOutOf(m);
+        if (filter != null) {
+          targets = filter.wrap(targets);
+        }
+        if (targets.hasNext()) {
+          addMethods(new Targets(targets));
+        }
+
       }
-      Iterator<Edge> targets = cg.edgesOutOf(m);
-      if (filter != null) {
-        targets = filter.wrap(targets);
-      }
-      if (targets.hasNext()) {
-        addMethods(new Targets(targets));
-      }
-    }
+
+    });
   }
 
   /**
