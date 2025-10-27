@@ -1,8 +1,10 @@
 package soot.util;
 
 import java.util.Iterator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*-
@@ -51,6 +53,14 @@ public class ParallelUtils {
   }
 
   private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
+  private static final long KEEP_ALIVE_SECONDS = 60;
+
+  private static final Executor executionService
+      = new ThreadPoolExecutor(NUM_CORES, NUM_CORES, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS, new LinkedBlockingQueue<>()) {
+        {
+          allowCoreThreadTimeOut(true);
+        }
+      };
 
   /**
    * Runs elements of a given iterator in parallel. This implementation can cope with elements being added to the iterator
@@ -66,7 +76,6 @@ public class ParallelUtils {
    *          the processor to pass elements to
    */
   public static <T> void runIteratorParallelUntilEnd(Iterator<T> iterator, ElementProcessor<T> processor) {
-    ExecutorService executionService = Executors.newFixedThreadPool(NUM_CORES);
     try {
       AtomicInteger running = new AtomicInteger();
       while (true) {
@@ -91,7 +100,6 @@ public class ParallelUtils {
           break;
         }
       }
-      executionService.shutdown();
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
