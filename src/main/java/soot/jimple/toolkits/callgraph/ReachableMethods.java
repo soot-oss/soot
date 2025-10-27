@@ -96,7 +96,7 @@ public class ReachableMethods {
         }
       }
     }
-    ParallelUtils.runIteratorParallel(unprocessedMethods, new ParallelUtils.ElementProcessor<MethodOrMethodContext>() {
+    ParallelUtils.runIteratorParallelUntilEnd(unprocessedMethods, new ParallelUtils.ElementProcessor<MethodOrMethodContext>() {
 
       @Override
       public void process(MethodOrMethodContext m) {

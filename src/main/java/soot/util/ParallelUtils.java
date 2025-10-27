@@ -50,13 +50,13 @@ public class ParallelUtils {
     public void process(T e);
   }
 
-  public static int NUM_CORES = Math.max(1, Runtime.getRuntime().availableProcessors());;
+  private static final int NUM_CORES = Runtime.getRuntime().availableProcessors();
 
   /**
-   * Runs elements of a given iterator in parallel, if it's more elements than <i>MIN_ELEMENTS</i>. This implementation can
-   * cope with elements being added to the iterator while the processor is running. This is useful for e.g. reachable
-   * methods, where processing a method can introduce new reachable methods. The method only terminates when the iterator
-   * claims to have no new elements <i>after</i> all elements in the iterator have been processed.
+   * Runs elements of a given iterator in parallel. This implementation can cope with elements being added to the iterator
+   * while the processor is running. This is useful for e.g. reachable methods, where processing a method can introduce new
+   * reachable methods. The method only terminates when the iterator claims to have no new elements <i>after</i> all elements
+   * in the iterator have been processed.
    * 
    * @param <T>
    *          the type
@@ -65,7 +65,7 @@ public class ParallelUtils {
    * @param processor
    *          the processor to pass elements to
    */
-  public static <T> void runIteratorParallel(Iterator<T> iterator, ElementProcessor<T> processor) {
+  public static <T> void runIteratorParallelUntilEnd(Iterator<T> iterator, ElementProcessor<T> processor) {
     ExecutorService executionService = Executors.newFixedThreadPool(NUM_CORES);
     try {
       AtomicInteger running = new AtomicInteger();
