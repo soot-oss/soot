@@ -96,24 +96,25 @@ public class ReachableMethods {
         }
       }
     }
-    ParallelUtils.runIteratorParallelUntilEnd(unprocessedMethods, new ParallelUtils.ElementProcessor<MethodOrMethodContext>() {
+    ParallelUtils.runIteratorParallelUntilEnd(unprocessedMethods,
+        new ParallelUtils.ElementProcessor<MethodOrMethodContext>() {
 
-      @Override
-      public void process(MethodOrMethodContext m) {
-        if (m == null) {
-          return;
-        }
-        Iterator<Edge> targets = cg.edgesOutOf(m);
-        if (filter != null) {
-          targets = filter.wrap(targets);
-        }
-        if (targets.hasNext()) {
-          addMethods(new Targets(targets));
-        }
+          @Override
+          public void process(MethodOrMethodContext m) {
+            if (m == null) {
+              return;
+            }
+            Iterator<Edge> targets = cg.edgesOutOf(m);
+            if (filter != null) {
+              targets = filter.wrap(targets);
+            }
+            if (targets.hasNext()) {
+              addMethods(new Targets(targets));
+            }
 
-      }
+          }
 
-    });
+        });
   }
 
   /**
