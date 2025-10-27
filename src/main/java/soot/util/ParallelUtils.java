@@ -1,11 +1,9 @@
 package soot.util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /*-
  * #%L
@@ -36,8 +34,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class ParallelUtils {
 
-  private static final int TIMEOUT_HOURS = 24;
-
   /**
    * Is used to process elements in parallel
    * 
@@ -54,15 +50,13 @@ public class ParallelUtils {
     public void process(T e);
   }
 
-  public static int NUM_CORES = Math.max(1, Runtime.getRuntime().availableProcessors());
+  public static int NUM_CORES = Math.max(1, Runtime.getRuntime().availableProcessors());;
 
   /**
-   * Minimum number of elements for running in parallel
-   */
-  private static final int MIN_ELEMENTS = NUM_CORES;
-
-  /**
-   * Runs elements of a given iterator in parallel, if it's more elements than <i>MIN_ELEMENTS</i>.
+   * Runs elements of a given iterator in parallel, if it's more elements than <i>MIN_ELEMENTS</i>. This implementation can
+   * cope with elements being added to the iterator while the processor is running. This is useful for e.g. reachable
+   * methods, where processing a method can introduce new reachable methods. The method only terminates when the iterator
+   * claims to have no new elements <i>after</i> all elements in the iterator have been processed.
    * 
    * @param <T>
    *          the type
@@ -72,49 +66,34 @@ public class ParallelUtils {
    *          the processor to pass elements to
    */
   public static <T> void runIteratorParallel(Iterator<T> iterator, ElementProcessor<T> processor) {
-    List<T> checkElements = new ArrayList<>(MIN_ELEMENTS);
-    for (int i = 0; i < MIN_ELEMENTS; i++) {
-      if (iterator.hasNext()) {
-        checkElements.add(iterator.next());
-      } else {
-        break;
-      }
-    }
-    // one more is sufficient
-    if (iterator.hasNext()) {
-      ExecutorService executionService = Executors.newFixedThreadPool(NUM_CORES);
-      for (T e : checkElements) {
-        executionService.execute(new Runnable() {
+    ExecutorService executionService = Executors.newFixedThreadPool(NUM_CORES);
+    try {
+      AtomicInteger running = new AtomicInteger();
+      while (true) {
+        while (iterator.hasNext()) {
+          final T e = iterator.next();
+          running.incrementAndGet();
+          executionService.execute(new Runnable() {
 
-          @Override
-          public void run() {
-            processor.process(e);
-          }
-        });
-      }
-      while (iterator.hasNext()) {
-        final T e = iterator.next();
-        executionService.execute(new Runnable() {
-
-          @Override
-          public void run() {
-            processor.process(e);
-          }
-        });
+            @Override
+            public void run() {
+              try {
+                processor.process(e);
+              } finally {
+                running.decrementAndGet();
+              }
+            }
+          });
+        }
+        if (running.get() != 0) {
+          Thread.sleep(5);
+        } else {
+          break;
+        }
       }
       executionService.shutdown();
-      try {
-        if (!executionService.awaitTermination(TIMEOUT_HOURS, TimeUnit.HOURS)) {
-          throw new RuntimeException(String.format("Timeout after %d hours", TIMEOUT_HOURS));
-        }
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
-    } else {
-      // Not worth the effort; do it in our thread.
-      for (T e : checkElements) {
-        processor.process(e);
-      }
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
     }
   }
 
