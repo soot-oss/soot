@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.jf.dexlib2.analysis.ClassPath;
@@ -797,9 +798,10 @@ public class DexBody {
     getLocalSplitter().transform(jBody);
 
     MultiMap<Local, Type> maybetypeConstraints = new HashMultiMap<>();
-    handleKnownDexTypes(b, jimple);
-    handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
     Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
+    handleKnownDexTypes(b, jimple, definiteConstraints);
+    handleAgreegingTypes(b, definiteConstraints);
+    handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
     handleIncompatibleDexArrayTypes(b, maybetypeConstraints, definiteConstraints);
     for (Local l : b.getLocals()) {
       Type type = l.getType();
@@ -1175,6 +1177,66 @@ public class DexBody {
   }
 
   /**
+   * We try to find locals where all definitions agree on the type already. Since this can cause more local types to be
+   * known, we do it until a fixed point is reached. This helps the type assigner in some cases massively
+   * 
+   * @param b
+   *          the body
+   * @param definiteConstraints
+   *          the map containing definite constraints
+   */
+  private void handleAgreegingTypes(Body b, Map<Local, Collection<Type>> definiteConstraints) {
+
+    BiFunction<Type, Type, Type> merge = new BiFunction<Type, Type, Type>() {
+
+      final BottomType bot = BottomType.v();
+
+      @Override
+      public Type apply(Type t, Type u) {
+        if (t instanceof UnknownType || u instanceof UnknownType) {
+          return bot;
+        }
+        if (t.equals(u)) {
+          return t;
+        }
+        return bot;
+      }
+
+    };
+
+    final UnitPatchingChain units = b.getUnits();
+    boolean changed = true;
+    while (changed == true) {
+      changed = false;
+      Map<Local, Type> type = new HashMap<>();
+      for (Unit u1 : units) {
+        if (u1 instanceof DefinitionStmt) {
+          DefinitionStmt assign = (DefinitionStmt) u1;
+          Value lop = assign.getLeftOp();
+          if (lop instanceof Local) {
+            Value rop = assign.getRightOp();
+            Type ropT = rop.getType();
+            if (!(rop instanceof NullConstant)) {
+              type.merge((Local) lop, ropT, merge);
+            }
+          }
+        }
+      }
+      for (Entry<Local, Type> e : type.entrySet()) {
+        Type etype = e.getValue();
+        if (!(etype instanceof BottomType) && !(etype instanceof UnknownType)) {
+          Local lcl = e.getKey();
+          if (lcl.getType() != etype) {
+            lcl.setType(etype);
+            changed = true;
+            definiteConstraints.put(lcl, Collections.singleton(etype));
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Handles cases where the array types are incompatible (any two different array types)
    */
   private void handleIncompatibleDexArrayTypes(Body b, MultiMap<Local, Type> maybetypeConstraints,
@@ -1350,7 +1412,7 @@ public class DexBody {
    * @param jimple
    *          the jimple instance to use (caching is slightly faster)
    */
-  private void handleKnownDexTypes(Body b, final Jimple jimple) {
+  private void handleKnownDexTypes(Body b, final Jimple jimple, Map<Local, Collection<Type>> definiteConstraints) {
     UnitPatchingChain units = jBody.getUnits();
     Unit u = units.getFirst();
     while (u != null) {
@@ -1490,6 +1552,7 @@ public class DexBody {
         }
       }
     }
+
   }
 
   /**
