@@ -57,7 +57,7 @@ public class CallGraph implements Iterable<Edge> {
   /**
    * Used to add an edge to the call graph. Returns true iff the edge was not already present.
    */
-  public boolean addEdge(Edge e) {
+  public synchronized boolean addEdge(Edge e) {
     if (!edges.add(e)) {
       return false;
     }
@@ -94,7 +94,7 @@ public class CallGraph implements Iterable<Edge> {
    *          The unit from which to remove all outgoing edges
    * @return True if at least one edge has been removed, otherwise false
    */
-  public boolean removeAllEdgesOutOf(Unit u) {
+  public synchronized boolean removeAllEdgesOutOf(Unit u) {
     boolean hasRemoved = false;
     Set<Edge> edgesToRemove = new HashSet<>();
     for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext();) {
@@ -123,7 +123,7 @@ public class CallGraph implements Iterable<Edge> {
    *          The new statement
    * @return True if at least one edge was affected by this operation
    */
-  public boolean swapEdgesOutOf(Stmt out, Stmt in) {
+  public synchronized boolean swapEdgesOutOf(Stmt out, Stmt in) {
     boolean hasSwapped = false;
     for (Iterator<Edge> edgeRdr = edgesOutOf(out); edgeRdr.hasNext();) {
       Edge e = edgeRdr.next();
@@ -153,7 +153,7 @@ public class CallGraph implements Iterable<Edge> {
    *          when true (recommended), it is ensured that the edge reader is informed about the removal
    * @return whether the removal was successful.
    */
-  public boolean removeEdge(Edge e, boolean removeInEdgeList) {
+  public synchronized boolean removeEdge(Edge e, boolean removeInEdgeList) {
     if (!edges.remove(e)) {
       return false;
     }
@@ -196,7 +196,7 @@ public class CallGraph implements Iterable<Edge> {
    *          the edges
    * @return whether the removal was successful.
    */
-  public boolean removeEdges(Collection<Edge> edges) {
+  public synchronized boolean removeEdges(Collection<Edge> edges) {
     if (!this.edges.removeAll(edges)) {
       return false;
     }
