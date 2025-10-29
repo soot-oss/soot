@@ -799,7 +799,7 @@ public class DexBody {
 
     MultiMap<Local, Type> maybetypeConstraints = new HashMultiMap<>();
     Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
-    handleKnownDexTypes(b, jimple, definiteConstraints);
+    handleKnownDexTypes(b, jimple);
     handleAgreegingTypes(b, definiteConstraints);
     handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
     handleIncompatibleDexArrayTypes(b, maybetypeConstraints, definiteConstraints);
@@ -1412,7 +1412,7 @@ public class DexBody {
    * @param jimple
    *          the jimple instance to use (caching is slightly faster)
    */
-  private void handleKnownDexTypes(Body b, final Jimple jimple, Map<Local, Collection<Type>> definiteConstraints) {
+  private void handleKnownDexTypes(Body b, final Jimple jimple) {
     UnitPatchingChain units = jBody.getUnits();
     Unit u = units.getFirst();
     while (u != null) {
