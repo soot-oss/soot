@@ -40,6 +40,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.Expr;
 import soot.jimple.IdentityRef;
 import soot.jimple.IdentityStmt;
@@ -135,7 +136,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   final public void handleStmt(Stmt s) {
     if (s.hasTag(ExpectedTypeTag.NAME)) {
       ExpectedTypeTag tag = (ExpectedTypeTag) s.getTag(ExpectedTypeTag.NAME);
-      Local l = (Local) ((AssignStmt) s).getLeftOp();
+      Local l = (Local) ((DefinitionStmt) s).getLeftOp();
       AllocNode src = pag.makeAllocNode(tag, tag.getExpectedType(), method);
       LocalVarNode dest = pag.makeLocalVarNode(l, l.getType(), method);
       mpag.addInternalEdge(src, dest);
