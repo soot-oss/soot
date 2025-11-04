@@ -60,8 +60,4 @@ public class NumOpTag implements Tag, DexplerTag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
-  }
 }

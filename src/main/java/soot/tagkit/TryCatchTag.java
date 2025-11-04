@@ -46,8 +46,4 @@ public class TryCatchTag implements Tag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() throws AttributeValueException {
-    throw new UnsupportedOperationException();
-  }
 }

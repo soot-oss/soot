@@ -34,11 +34,6 @@ public abstract class ConstantValueTag implements Tag {
     this.bytes = bytes;
   }
 
-  @Override
-  public byte[] getValue() {
-    return bytes;
-  }
-
   public abstract Constant getConstant();
 
   @Override

@@ -65,7 +65,6 @@ import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.internal.JTableSwitchStmt;
-import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
 public class DelegateHandler {
@@ -104,11 +103,6 @@ public class DelegateHandler {
     @Override
     public String getName() {
       return DELEGATE_NAME;
-    }
-
-    @Override
-    public byte[] getValue() throws AttributeValueException {
-      return null;
     }
 
     public SootMethodRef getListMethod(Type retType, String methodName, Type... paramTypes) {

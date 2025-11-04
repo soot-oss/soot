@@ -31,4 +31,9 @@ public interface Attribute extends Tag {
    * Sets the value of the attribute from a byte[].
    */
   public void setValue(byte[] v);
+
+  /**
+   * Returns the tag raw data.
+   */
+  public byte[] getValue() throws AttributeValueException;
 }

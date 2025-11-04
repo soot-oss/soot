@@ -46,8 +46,4 @@ public class SyntheticParamTag implements Tag {
     return "SyntheticParam";
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("SyntheticParamTag has no value for bytecode");
-  }
 }

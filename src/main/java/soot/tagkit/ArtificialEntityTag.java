@@ -38,8 +38,4 @@ public class ArtificialEntityTag implements Tag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() throws AttributeValueException {
-    throw new RuntimeException("ArtificialEntityTag has no value for bytecode");
-  }
 }

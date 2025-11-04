@@ -77,9 +77,4 @@ public class SpecialInvokeTypeTag implements Tag, DexplerTag {
   public String getName() {
     return NAME;
   }
-
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
-  }
 }

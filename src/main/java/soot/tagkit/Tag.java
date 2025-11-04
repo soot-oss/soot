@@ -31,8 +31,4 @@ public interface Tag {
    */
   public String getName();
 
-  /**
-   * Returns the tag raw data.
-   */
-  public byte[] getValue() throws AttributeValueException;
 }

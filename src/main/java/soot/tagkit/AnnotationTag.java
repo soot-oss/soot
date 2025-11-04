@@ -120,11 +120,6 @@ public class AnnotationTag implements Tag {
     return type;
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("AnnotationTag has no value for bytecode");
-  }
-
   /**
    * Adds one element to the list
    *

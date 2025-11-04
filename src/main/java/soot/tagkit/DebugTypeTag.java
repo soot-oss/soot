@@ -47,9 +47,4 @@ public class DebugTypeTag extends SignatureTag {
   public String getInfo() {
     return "DebugType";
   }
-
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("DebugTypeTag has no value for bytecode");
-  }
 }

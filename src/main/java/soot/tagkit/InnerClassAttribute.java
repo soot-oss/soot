@@ -70,11 +70,6 @@ public class InnerClassAttribute implements Tag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() throws AttributeValueException {
-    return new byte[1];
-  }
-
   public List<InnerClassTag> getSpecs() {
     return list == null ? Collections.<InnerClassTag>emptyList() : list;
   }
