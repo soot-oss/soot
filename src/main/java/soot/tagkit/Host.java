@@ -23,6 +23,7 @@ package soot.tagkit;
  */
 
 import java.util.List;
+import java.util.function.Supplier;
 
 // implemented by SootClass, SootField, SootMethod, Scene
 
@@ -42,6 +43,18 @@ public interface Host {
 
   /** Returns the tag with the given name. */
   public Tag getTag(String aName);
+
+  /**
+   * Returns an existing tag with a given name. When there is no existing tag, the supplier is called to compute the tag, and
+   * the computed tag is added and returned.
+   * 
+   * @param aName
+   *          the name
+   * @param supplier
+   *          the supplier to compute the tag
+   * @return the existing tag or the computed tag.
+   */
+  public Tag getOrComputeTag(String aName, Supplier<Tag> supplier);
 
   /** Adds a tag. */
   public void addTag(Tag t);
