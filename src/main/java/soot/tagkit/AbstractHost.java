@@ -25,6 +25,7 @@ package soot.tagkit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 // extended by SootClass, SootField, SootMethod, Scene
 
@@ -162,5 +163,21 @@ public class AbstractHost implements Host {
   public int getJavaSourceStartColumnNumber() {
     SourceLnPosTag tag = (SourceLnPosTag) getTag(SourceLnPosTag.NAME);
     return (tag == null) ? -1 : tag.startPos();
+  }
+
+  @Override
+  public Tag getOrComputeTag(String aName, Supplier<Tag> supplier) {
+    if (mTagList == null) {
+      mTagList = new ArrayList<Tag>(1);
+    }
+    for (int i = 0; i < mTagList.size(); i++) {
+      Tag p = mTagList.get(i);
+      if (p != null && p.getName().equals(aName)) {
+        return p;
+      }
+    }
+    Tag newTag = supplier.get();
+    mTagList.add(newTag);
+    return newTag;
   }
 }
