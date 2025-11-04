@@ -23,6 +23,7 @@ package soot.asm;
  */
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import soot.Unit;
 import soot.UnitBox;
@@ -151,6 +152,11 @@ class UnitContainer implements Unit {
 
   @Override
   public int getJavaSourceStartColumnNumber() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Tag getOrComputeTag(String aName, Supplier<Tag> supplier) {
     throw new UnsupportedOperationException();
   }
 }
