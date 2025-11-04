@@ -21,7 +21,6 @@ package soot.dotnet.types;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
 /**
@@ -34,11 +33,6 @@ public class StructTag implements Tag {
   @Override
   public String getName() {
     return NAME;
-  }
-
-  @Override
-  public byte[] getValue() throws AttributeValueException {
-    return null;
   }
 
 }

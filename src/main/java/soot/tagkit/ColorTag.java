@@ -163,11 +163,6 @@ public class ColorTag implements Tag {
   }
 
   @Override
-  public byte[] getValue() {
-    return new byte[2];
-  }
-
-  @Override
   public String toString() {
     return "" + red + " " + green + " " + blue;
   }

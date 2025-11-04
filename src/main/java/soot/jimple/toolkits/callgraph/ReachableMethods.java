@@ -38,7 +38,7 @@ import soot.util.queue.QueueReader;
  */
 public class ReachableMethods {
 
-  protected final ChunkedQueue<MethodOrMethodContext> reachables = new ChunkedQueue<>();
+  protected final ChunkedQueue<MethodOrMethodContext> reachables = createChunkedQueue();
   protected final Set<MethodOrMethodContext> set = new HashSet<>();
   protected final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
   protected QueueReader<MethodOrMethodContext> unprocessedMethods;
@@ -49,6 +49,10 @@ public class ReachableMethods {
 
   public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter) {
     this(graph, entryPoints, filter, false);
+  }
+
+  protected ChunkedQueue<MethodOrMethodContext> createChunkedQueue() {
+    return new ChunkedQueue<>();
   }
 
   public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter,

@@ -39,7 +39,6 @@ public class InitialFieldTagValue implements Tag {
     return NAME;
   }
 
-  @Override
   public byte[] getValue() throws AttributeValueException {
     return content;
   }

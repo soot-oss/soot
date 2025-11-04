@@ -68,8 +68,4 @@ public class DeprecatedTag implements Tag {
     return since;
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("DeprecatedTag has no value for bytecode");
-  }
 }

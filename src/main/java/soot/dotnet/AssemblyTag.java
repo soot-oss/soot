@@ -22,7 +22,6 @@ package soot.dotnet;
  * #L%
  */
 
-import soot.tagkit.AttributeValueException;
 import soot.tagkit.Tag;
 
 /**
@@ -44,11 +43,6 @@ public class AssemblyTag implements Tag {
   @Override
   public String getName() {
     return ASSEMBLY;
-  }
-
-  @Override
-  public byte[] getValue() throws AttributeValueException {
-    return null;
   }
 
 }

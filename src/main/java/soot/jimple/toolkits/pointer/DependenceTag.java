@@ -52,17 +52,6 @@ public class DependenceTag implements Tag {
   }
 
   @Override
-  public byte[] getValue() {
-    byte[] ret = new byte[5];
-    ret[0] = (byte) ((read >> 8) & 0xff);
-    ret[1] = (byte) (read & 0xff);
-    ret[2] = (byte) ((write >> 8) & 0xff);
-    ret[3] = (byte) (write & 0xff);
-    ret[4] = (byte) (callsNative ? 1 : 0);
-    return ret;
-  }
-
-  @Override
   public String toString() {
     StringBuilder buf = new StringBuilder();
     if (callsNative) {

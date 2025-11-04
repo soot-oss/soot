@@ -21,9 +21,6 @@ package soot.tagkit;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import java.nio.charset.StandardCharsets;
-
 public class SourceFileTag implements Tag {
 
   public static final String NAME = "SourceFileTag";
@@ -46,11 +43,6 @@ public class SourceFileTag implements Tag {
   @Override
   public String getName() {
     return NAME;
-  }
-
-  @Override
-  public byte[] getValue() {
-    return sourceFile.getBytes(StandardCharsets.UTF_8);
   }
 
   public void setSourceFile(String srcFile) {

@@ -43,11 +43,6 @@ public class CastCheckTag implements Tag {
   }
 
   @Override
-  public byte[] getValue() {
-    return new byte[] { (byte) (eliminateCheck ? 1 : 0) };
-  }
-
-  @Override
   public String toString() {
     if (eliminateCheck) {
       return "This cast check can be eliminated.";

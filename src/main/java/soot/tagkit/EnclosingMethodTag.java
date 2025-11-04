@@ -66,8 +66,4 @@ public class EnclosingMethodTag implements Tag {
     return enclosingMethodSig;
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("EnclosingMethodTag has no value for bytecode");
-  }
 }

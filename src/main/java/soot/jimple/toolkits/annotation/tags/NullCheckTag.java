@@ -45,11 +45,6 @@ public class NullCheckTag implements OneByteCodeTag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    return new byte[] { value };
-  }
-
   public boolean needCheck() {
     return (value != 0);
   }

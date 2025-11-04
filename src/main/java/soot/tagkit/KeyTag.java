@@ -118,8 +118,4 @@ public class KeyTag implements Tag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    return new byte[4];
-  }
 }
