@@ -213,8 +213,12 @@ public class Hierarchy {
         }
         l.addAll(getSubclassesOfIncluding(cls));
       }
-      l.trimToSize();
-      retVal = Collections.unmodifiableList(l);
+      if (l.isEmpty()) {
+        retVal = Collections.emptyList();
+      } else {
+        l.trimToSize();
+        retVal = Collections.unmodifiableList(l);
+      }
     }
 
     classToSubclasses.put(c, retVal);
@@ -323,8 +327,12 @@ public class Hierarchy {
       for (SootClass si : directSubInterfaces) {
         l.addAll(getSubinterfacesOfIncluding(si));
       }
-      l.trimToSize();
-      retVal = Collections.unmodifiableList(l);
+      if (l.isEmpty()) {
+        retVal = Collections.emptyList();
+      } else {
+        l.trimToSize();
+        retVal = Collections.unmodifiableList(l);
+      }
     }
 
     interfaceToSubinterfaces.put(sootClass, retVal);
@@ -363,8 +371,12 @@ public class Hierarchy {
       for (SootClass si : interfaceToDirSuperinterfaces.get(c)) {
         l.addAll(getSuperinterfacesOfIncluding(si));
       }
-      l.trimToSize();
-      retVal = Collections.unmodifiableList(l);
+      if (l.isEmpty()) {
+        retVal = Collections.emptyList();
+      } else {
+        l.trimToSize();
+        retVal = Collections.unmodifiableList(l);
+      }
     }
 
     interfaceToSuperinterfaces.put(c, retVal);
@@ -697,7 +709,7 @@ public class Hierarchy {
      * This is a bizarre condition! Hopefully the implementation is correct. See VM Spec, 2nd Edition, Chapter 6, in the
      * definition of invokespecial.
      */
-    if ("<init>".equals(target.getName()) || target.isPrivate()) {
+    if (target.isConstructor() || target.isPrivate()) {
       return target;
     } else if (isClassSubclassOf(targetClass, containerClass)) {
       return resolveConcreteDispatch(containerClass, target);

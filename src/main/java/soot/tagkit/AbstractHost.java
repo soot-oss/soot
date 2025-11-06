@@ -69,12 +69,11 @@ public class AbstractHost implements Host {
    */
   private int searchForTag(String aName) {
     if (mTagList != null) {
-      int i = 0;
-      for (Tag tag : mTagList) {
+      for (int i = 0; i < mTagList.size(); i++) {
+        Tag tag = mTagList.get(i);
         if (tag != null && tag.getName().equals(aName)) {
           return i;
         }
-        i++;
       }
     }
     return -1;
@@ -90,8 +89,15 @@ public class AbstractHost implements Host {
    */
   @Override
   public Tag getTag(String aName) {
-    int tagIndex = searchForTag(aName);
-    return (tagIndex == -1) ? null : mTagList.get(tagIndex);
+    if (mTagList != null) {
+      for (int i = 0; i < mTagList.size(); i++) {
+        Tag tag = mTagList.get(i);
+        if (tag != null && tag.getName().equals(aName)) {
+          return tag;
+        }
+      }
+    }
+    return null;
   }
 
   /**
