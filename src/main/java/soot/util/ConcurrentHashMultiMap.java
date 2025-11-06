@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 /**
  * A concurrent version of the {@link HashMultiMap}
@@ -41,6 +42,16 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   private static final long serialVersionUID = -3182515910302586044L;
 
   private final Map<K, ConcurrentMap<V, V>> m = new ConcurrentHashMap<K, ConcurrentMap<V, V>>(0);
+
+  private final Function<? super K, ? extends ConcurrentMap<V, V>> createNewSet
+      = new Function<Object, ConcurrentMap<V, V>>() {
+
+        @Override
+        public ConcurrentMap<V, V> apply(Object t) {
+          return newSet();
+        }
+
+      };
 
   public ConcurrentHashMultiMap() {
   }
@@ -74,18 +85,7 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   private ConcurrentMap<V, V> findSet(K key) {
-    ConcurrentMap<V, V> s = m.get(key);
-    if (s == null) {
-      synchronized (this) {
-        // Better check twice, another thread may have created a set in
-        // the meantime
-        s = m.get(key);
-        if (s == null) {
-          s = newSet();
-          m.put(key, s);
-        }
-      }
-    }
+    ConcurrentMap<V, V> s = m.computeIfAbsent(key, createNewSet);
     return s;
   }
 
@@ -98,34 +98,43 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
     return findSet(key).putIfAbsent(value, value);
   }
 
+  private class PutAllCreate implements Function<Object, ConcurrentMap<V, V>> {
+
+    private Collection<V> values;
+    private Boolean result;
+
+    public PutAllCreate(Collection<V> values) {
+      this.values = values;
+    }
+
+    @Override
+    public ConcurrentMap<V, V> apply(Object t) {
+      ConcurrentMap<V, V> newSet = newSet();
+      result = false;
+      for (V v : values) {
+        if (newSet.put(v, v) != null) {
+          result = true;
+        }
+      }
+      return newSet;
+    }
+
+  }
+
   @Override
   public boolean putAll(K key, Collection<V> values) {
     if (values == null || values.isEmpty()) {
       return false;
     }
 
-    ConcurrentMap<V, V> s = m.get(key);
-    if (s == null) {
-      synchronized (this) {
-        // We atomically create a new set, and add the data, before
-        // making the new set visible to the outside. Therefore,
-        // concurrent threads will only either see the empty set from
-        // before or the full set from after the add, but never anything
-        // in between.
-        s = m.get(key);
-        if (s == null) {
-          ConcurrentMap<V, V> newSet = newSet();
-          for (V v : values) {
-            newSet.put(v, v);
-          }
-          m.put(key, newSet);
-          return true;
-        }
-      }
-    }
+    PutAllCreate create = new PutAllCreate(values);
+    ConcurrentMap<V, V> s = m.computeIfAbsent(key, create);
 
-    // No "else", we can fall through if the set was created between first
-    // check and obtaining the lock.
+    Boolean r = create.result;
+    if (r != null) {
+      return r;
+    }
+    // We need to add the elements to the already existing set
     boolean ok = false;
     for (V v : values) {
       if (s.put(v, v) == null) {
