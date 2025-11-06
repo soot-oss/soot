@@ -213,8 +213,12 @@ public class Hierarchy {
         }
         l.addAll(getSubclassesOfIncluding(cls));
       }
-      l.trimToSize();
-      retVal = Collections.unmodifiableList(l);
+      if (l.isEmpty()) {
+        retVal = Collections.emptyList();
+      } else {
+        l.trimToSize();
+        retVal = Collections.unmodifiableList(l);
+      }
     }
 
     classToSubclasses.put(c, retVal);
