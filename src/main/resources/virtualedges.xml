@@ -1742,4 +1742,34 @@
 				target-position="argument" index="1" />
 		</targets>
 	</edge>
+	<edge type="GENERIC_FAKE">
+		<source invoketype="instance"
+			declaringclass="android.webkit.WebView"
+			subsignature="void setWebViewClient(android.webkit.WebViewClient)" />
+		<targets>
+			<direct subsignature="android.webkit.WebResourceResponse shouldInterceptRequest(android.webkit.WebView,android.webkit.WebResourceRequest)>" target-position="argument" index="0" />
+			<direct subsignature="android.webkit.WebResourceResponse shouldInterceptRequest(android.webkit.WebView,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="boolean onRenderProcessGone(android.webkit.WebView,android.webkit.RenderProcessGoneDetail)>" target-position="argument" index="0" />
+			<direct subsignature="boolean shouldOverrideKeyEvent(android.webkit.WebView,android.view.KeyEvent)>" target-position="argument" index="0" />
+			<direct subsignature="boolean shouldOverrideUrlLoading(android.webkit.WebView,android.webkit.WebResourceRequest)>" target-position="argument" index="0" />
+			<direct subsignature="boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="void doUpdateVisitedHistory(android.webkit.WebView,java.lang.String,boolean)>" target-position="argument" index="0" />
+			<direct subsignature="void onFormResubmission(android.webkit.WebView,android.os.Message,android.os.Message)>" target-position="argument" index="0" />
+			<direct subsignature="void onLoadResource(android.webkit.WebView,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="void onPageCommitVisible(android.webkit.WebView,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="void onPageFinished(android.webkit.WebView,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="void onPageStarted(android.webkit.WebView,java.lang.String,android.graphics.Bitmap)>" target-position="argument" index="0" />
+			<direct subsignature="void onReceivedClientCertRequest(android.webkit.WebView,android.webkit.ClientCertRequest)>" target-position="argument" index="0" />
+			<direct subsignature="void onReceivedError(android.webkit.WebView,android.webkit.WebResourceRequest,android.webkit.WebResourceError)>" target-position="argument" index="0" />
+			<direct subsignature="void onReceivedError(android.webkit.WebView,int,java.lang.String,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="void onReceivedHttpAuthRequest(android.webkit.WebView,android.webkit.HttpAuthHandler,java.lang.String,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="void onReceivedHttpError(android.webkit.WebView,android.webkit.WebResourceRequest,android.webkit.WebResourceResponse)>" target-position="argument" index="0" />
+			<direct subsignature="void onReceivedLoginRequest(android.webkit.WebView,java.lang.String,java.lang.String,java.lang.String)>" target-position="argument" index="0" />
+			<direct subsignature="void onReceivedSslError(android.webkit.WebView,android.webkit.SslErrorHandler,android.net.http.SslError)>" target-position="argument" index="0" />
+			<direct subsignature="void onSafeBrowsingHit(android.webkit.WebView,android.webkit.WebResourceRequest,int,android.webkit.SafeBrowsingResponse)>" target-position="argument" index="0" />
+			<direct subsignature="void onScaleChanged(android.webkit.WebView,float,float)>" target-position="argument" index="0" />
+			<direct subsignature="void onTooManyRedirects(android.webkit.WebView,android.os.Message,android.os.Message)>" target-position="argument" index="0" />
+			<direct subsignature="void onUnhandledKeyEvent(android.webkit.WebView,android.view.KeyEvent)>" target-position="argument" index="0" />
+		</targets>
+	</edge>
 </virtualedges>
