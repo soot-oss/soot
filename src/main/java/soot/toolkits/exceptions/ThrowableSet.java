@@ -115,6 +115,8 @@ public class ThrowableSet {
    */
   protected Map<Object, ThrowableSet> memoizedAdds;
 
+  protected Integer savedHashCode;
+
   /**
    * Constructs a <code>ThrowableSet</code> which contains the exception types represented in <code>include</code>, except
    * for those which are also in <code>exclude</code>. The constructor is private to ensure that the only way to get a new
@@ -982,11 +984,16 @@ public class ThrowableSet {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = (prime * result) + exceptionsIncluded.hashCode();
-    result = (prime * result) + exceptionsExcluded.hashCode();
-    return result;
+    Integer hc = savedHashCode;
+    if (hc == null) {
+      final int prime = 31;
+      int result = 1;
+      result = (prime * result) + exceptionsIncluded.hashCode();
+      result = (prime * result) + exceptionsExcluded.hashCode();
+      hc = result;
+      return result;
+    }
+    return hc;
   }
 
   @Override
