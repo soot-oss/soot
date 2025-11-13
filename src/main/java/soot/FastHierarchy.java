@@ -57,7 +57,8 @@ import soot.util.NumberedString;
 public class FastHierarchy {
 
   protected static final int USE_INTERVALS_BOUNDARY = 100;
-  private final boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
+  protected final boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
+  protected final int java_version = Options.v().java_version();
 
   protected Table<SootClass, NumberedString, SootMethod> typeToVtbl = HashBasedTable.create();
 
@@ -316,7 +317,7 @@ public class FastHierarchy {
       } else if (parent instanceof ArrayType) {
         Type base = ((AnySubType) child).getBase();
         // System.Array base class of arrays in CIL
-        if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        if (isDotNet) {
           return base == cilArray;
         }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
@@ -355,7 +356,7 @@ public class FastHierarchy {
     } else if (child instanceof ArrayType) {
       if (parent instanceof RefType) {
         // base class System.Array for all arrays
-        if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        if (isDotNet) {
           return parent == cilArray;
         }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
@@ -377,7 +378,7 @@ public class FastHierarchy {
           }
         } else if (achild.numDimensions > aparent.numDimensions) {
           final Type pBaseType = aparent.baseType;
-          if (Options.v().src_prec() == Options.src_prec_dotnet) {
+          if (isDotNet) {
             return pBaseType == cilArray;
           }
           return pBaseType == rtObject || pBaseType == rtSerializable || pBaseType == rtCloneable;
@@ -387,7 +388,7 @@ public class FastHierarchy {
       } else {
         return false;
       }
-    } else if (Options.v().src_prec() == Options.src_prec_dotnet && child instanceof PrimType && parent instanceof RefType) {
+    } else if (isDotNet && child instanceof PrimType && parent instanceof RefType) {
       // only dotnet
       // if right type prim type struct which implements these interfaces
       // if generic, base class System.Object is possible
@@ -978,7 +979,7 @@ public class FastHierarchy {
   }
 
   protected boolean isHandleDefaultMethods() {
-    int version = Options.v().java_version();
+    int version = java_version;
     return version == 0 || version > 7;
   }
 
