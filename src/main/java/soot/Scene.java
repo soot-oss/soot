@@ -96,6 +96,7 @@ public class Scene {
   protected final Set<String> reservedNames = new HashSet<String>();
   @SuppressWarnings("unchecked")
   protected final Set<String>[] basicclasses = new Set[4];
+  protected final Options options = Options.v();
 
   protected Chain<SootClass> classes = new HashChain<SootClass>();
   protected Chain<SootClass> applicationClasses = new HashChain<SootClass>();
@@ -163,7 +164,7 @@ public class Scene {
       setSootClassPath(scp);
     }
 
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+    if (options.src_prec() == Options.src_prec_dotnet) {
       addSootBasicDotnetClasses();
     } else {
       addSootBasicClasses();
@@ -181,7 +182,6 @@ public class Scene {
   }
 
   private void determineExcludedPackages() {
-    final Options options = Options.v();
     LinkedList<String> excludedPackages;
     {
       List<String> exclude = options.exclude();
@@ -308,7 +308,7 @@ public class Scene {
       throw new RuntimeException("There is no main class set!");
     }
 
-    SootMethod mainMethod = Options.v().src_prec() != Options.src_prec_dotnet
+    SootMethod mainMethod = options.src_prec() != Options.src_prec_dotnet
         ? mainClass.getMethodUnsafe("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
             VoidType.v())
         : mainClass.getMethodUnsafe("Main",
@@ -340,18 +340,18 @@ public class Scene {
   public String getSootClassPath() {
     if (sootClassPath == null) {
       // First, check Options for a classpath
-      String cp = Options.v().soot_classpath();
+      String cp = options.soot_classpath();
       // If no classpath is given via Options, just use the default.
       // Otherwise, if the prepend flag is set, append the default.
       if (cp == null || cp.isEmpty()) {
         cp = defaultClassPath();
-      } else if (Options.v().prepend_classpath()) {
+      } else if (options.prepend_classpath()) {
         cp += File.pathSeparatorChar + defaultClassPath();
       }
       List<String> dirs = new LinkedList<String>();
-      dirs.addAll(Options.v().process_dir());
+      dirs.addAll(options.process_dir());
       // Add process-jar-dirs
-      List<String> jarDirs = Options.v().process_jar_dir();
+      List<String> jarDirs = options.process_jar_dir();
       if (!jarDirs.isEmpty()) {
         for (String jarDirName : jarDirs) {
           File jarDir = new File(jarDirName);
@@ -439,7 +439,7 @@ public class Scene {
 
   public int getAndroidAPIVersion() {
     return androidAPIVersion > 0 ? androidAPIVersion
-        : (Options.v().android_api_version() > 0 ? Options.v().android_api_version() : defaultSdkVersion);
+        : (options.android_api_version() > 0 ? options.android_api_version() : defaultSdkVersion);
   }
 
   private int getAndroidAPIVersion(String jars, String apk) {
@@ -462,8 +462,8 @@ public class Scene {
     androidAPIVersion = defaultSdkVersion;
 
     // Do we have an explicit API version?
-    if (Options.v().android_api_version() > 0) {
-      androidAPIVersion = Options.v().android_api_version();
+    if (options.android_api_version() > 0) {
+      androidAPIVersion = options.android_api_version();
     } else if (apk != null) {
       if (apk.toLowerCase().endsWith(".apk")) {
         androidAPIVersion = getTargetSDKVersion(apk, jars);
@@ -610,10 +610,10 @@ public class Scene {
   }
 
   public String defaultClassPath() {
-    if (Options.v().src_prec() != Options.src_prec_apk) {
+    if (options.src_prec() != Options.src_prec_apk) {
       // If we have an apk file on the process dir and do not have a src-prec
       // option that loads APK files, we give a warning
-      for (String entry : Options.v().process_dir()) {
+      for (String entry : options.process_dir()) {
         if (entry.toLowerCase().endsWith(".apk")) {
           System.err.println("APK file on process dir, but chosen src-prec does not support loading APKs");
           break;
@@ -631,8 +631,8 @@ public class Scene {
 
   private String defaultAndroidClassPath() {
     // check that android.jar is not in classpath
-    String androidJars = Options.v().android_jars();
-    String forceAndroidJar = Options.v().force_android_jar();
+    String androidJars = options.android_jars();
+    String forceAndroidJar = options.force_android_jar();
     if ((androidJars == null || androidJars.isEmpty()) && (forceAndroidJar == null || forceAndroidJar.isEmpty())) {
       throw new RuntimeException("You are analyzing an Android application but did "
           + "not define android.jar. Options -android-jars or -force-android-jar should be used.");
@@ -645,8 +645,8 @@ public class Scene {
     if (forceAndroidJar != null && !forceAndroidJar.isEmpty()) {
       jarPath = forceAndroidJar;
 
-      if (Options.v().android_api_version() > 0) {
-        androidAPIVersion = Options.v().android_api_version();
+      if (options.android_api_version() > 0) {
+        androidAPIVersion = options.android_api_version();
       } else if (forceAndroidJar.contains("android-")) {
         Pattern pt = Pattern.compile("\\" + File.separatorChar + "android-(\\d+)" + "\\" + File.separatorChar);
         Matcher m = pt.matcher(forceAndroidJar);
@@ -658,8 +658,8 @@ public class Scene {
       }
     } else if (androidJars != null && !androidJars.isEmpty()) {
       List<String> classPathEntries
-          = new ArrayList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
-      classPathEntries.addAll(Options.v().process_dir());
+          = new ArrayList<String>(Arrays.asList(options.soot_classpath().split(File.pathSeparator)));
+      classPathEntries.addAll(options.process_dir());
 
       String targetApk = "";
       Set<String> targetDexs = new HashSet<String>();
@@ -803,11 +803,14 @@ public class Scene {
       }
     }
 
-    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple())) {
-      // add jce.jar, which is necessary for whole program mode
-      // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
-      sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib").append(File.separatorChar)
-          .append("jce.jar");
+    if (!javaGEQ9) {
+      final Options options = Options.v();
+      if (options.whole_program() || options.whole_shimple()) {
+        // add jce.jar, which is necessary for whole program mode
+        // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
+        sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib")
+            .append(File.separatorChar).append("jce.jar");
+      }
     }
 
     return sb.toString();
@@ -980,7 +983,7 @@ public class Scene {
    */
   public SootClass tryLoadClass(String className, int desiredLevel) {
     /*
-     * if(Options.v().time()) Main.v().resolveTimer.start();
+     * if(options.time()) Main.v().resolveTimer.start();
      */
 
     setPhantomRefs(true);
@@ -1000,7 +1003,7 @@ public class Scene {
     return toReturn;
 
     /*
-     * if(Options.v().time()) Main.v().resolveTimer.end();
+     * if(options.time()) Main.v().resolveTimer.end();
      */
   }
 
@@ -1015,7 +1018,7 @@ public class Scene {
 
   public SootClass loadClass(String className, int desiredLevel) {
     /*
-     * if(Options.v().time()) Main.v().resolveTimer.start();
+     * if(options.time()) Main.v().resolveTimer.start();
      */
 
     setPhantomRefs(true);
@@ -1025,7 +1028,7 @@ public class Scene {
     return toReturn;
 
     /*
-     * if(Options.v().time()) Main.v().resolveTimer.end();
+     * if(options.time()) Main.v().resolveTimer.end();
      */
   }
 
@@ -1111,7 +1114,7 @@ public class Scene {
           result = UByteType.v();
           break;
         case "byte":
-          if (Options.v().src_prec() == Options.src_prec_dotnet) {
+          if (options.src_prec() == Options.src_prec_dotnet) {
             result = UByteType.v();
           } else {
             result = ByteType.v();
@@ -1167,7 +1170,7 @@ public class Scene {
 
   /** Returns the {@link RefType} for {@link Object}. */
   public RefType getObjectType() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+    if (options.src_prec() == Options.src_prec_dotnet) {
       return getRefType(DotNetBasicTypes.SYSTEM_OBJECT);
     }
     return getRefType("java.lang.Object");
@@ -1179,7 +1182,7 @@ public class Scene {
    * @return RefType with the given className
    */
   public RefType getBaseExceptionType() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+    if (options.src_prec() == Options.src_prec_dotnet) {
       return getRefType(DotNetBasicTypes.SYSTEM_EXCEPTION);
     }
     return getRefType("java.lang.Throwable");
@@ -1503,9 +1506,9 @@ public class Scene {
   }
 
   public boolean getPhantomRefs() {
-    // if( !Options.v().allow_phantom_refs() ) return false;
+    // if( !options.allow_phantom_refs() ) return false;
     // return allowsPhantomRefs;
-    return Options.v().allow_phantom_refs();
+    return options.allow_phantom_refs();
   }
 
   public void setPhantomRefs(boolean value) {
@@ -1531,7 +1534,7 @@ public class Scene {
    */
   public ThrowAnalysis getDefaultThrowAnalysis() {
     if (defaultThrowAnalysis == null) {
-      switch (Options.v().throw_analysis()) {
+      switch (options.throw_analysis()) {
         case Options.throw_analysis_pedantic:
           defaultThrowAnalysis = PedanticThrowAnalysis.v();
           break;
@@ -1546,16 +1549,16 @@ public class Scene {
           break;
 
         case Options.throw_analysis_auto_select:
-          if (Options.v().src_prec() == Options.src_prec_apk) {
+          if (options.src_prec() == Options.src_prec_apk) {
             defaultThrowAnalysis = DalvikThrowAnalysis.v();
-          } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
+          } else if (options.src_prec() == Options.src_prec_dotnet) {
             defaultThrowAnalysis = DotnetThrowAnalysis.v();
           } else {
             defaultThrowAnalysis = UnitThrowAnalysis.v();
           }
           break;
         default:
-          throw new IllegalStateException("Options.v().throw_analysis() == " + Options.v().throw_analysis());
+          throw new IllegalStateException("options.throw_analysis() == " + options.throw_analysis());
       }
     }
     return defaultThrowAnalysis;
@@ -1932,7 +1935,7 @@ public class Scene {
   public void loadNecessaryClasses() {
     loadBasicClasses();
 
-    final Options opts = Options.v();
+    final Options opts = options;
     for (String name : opts.classes()) {
       loadNecessaryClass(name);
     }
@@ -1960,7 +1963,7 @@ public class Scene {
 
   public void loadDynamicClasses() {
     final ArrayList<SootClass> dynamicClasses = new ArrayList<SootClass>();
-    final Options opts = Options.v();
+    final Options opts = options;
 
     final HashSet<String> temp = new HashSet<String>(opts.dynamic_class());
 
@@ -1994,7 +1997,7 @@ public class Scene {
    * Generate classes to process, adding or removing package marked by command line options.
    */
   protected void prepareClasses() {
-    final List<String> optionsClasses = Options.v().classes();
+    final List<String> optionsClasses = options.classes();
     // Remove/add all classes from packageInclusionMask as per -i option
     Chain<SootClass> processedClasses = new HashChain<SootClass>();
     while (true) {
@@ -2008,7 +2011,7 @@ public class Scene {
         if (s.isPhantom()) {
           continue;
         }
-        if (Options.v().app()) {
+        if (options.app()) {
           s.setApplicationClass();
         }
         if (optionsClasses.contains(s.getName())) {
@@ -2051,7 +2054,7 @@ public class Scene {
   }
 
   public boolean isIncluded(String className) {
-    for (String pkg : Options.v().include()) {
+    for (String pkg : options.include()) {
       if (className.equals(pkg)
           || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
         return true;
@@ -2137,18 +2140,18 @@ public class Scene {
 
   public void setMainClassFromOptions() {
     if (mainClass == null) {
-      String optsMain = Options.v().main_class();
+      String optsMain = options.main_class();
       if (optsMain != null && !optsMain.isEmpty()) {
         setMainClass(getSootClass(optsMain));
       } else {
         final List<Type> mainArgs = Collections.singletonList(
-            ArrayType.v(Options.v().src_prec() == Options.src_prec_dotnet ? RefType.v(DotNetBasicTypes.SYSTEM_STRING)
+            ArrayType.v(options.src_prec() == Options.src_prec_dotnet ? RefType.v(DotNetBasicTypes.SYSTEM_STRING)
                 : RefType.v("java.lang.String"), 1));
         // try to infer a main class from the command line if none is given
-        for (String next : Options.v().classes()) {
+        for (String next : options.classes()) {
           SootClass c = getSootClass(next);
           boolean declaresMethod
-              = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+              = options.src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
                   : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
@@ -2160,7 +2163,7 @@ public class Scene {
         // try to infer a main class from the usual classpath if none is given
         for (SootClass c : getApplicationClasses()) {
           boolean declaresMethod
-              = Options.v().src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+              = options.src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
                   : c.declaresMethod("Main", mainArgs, VoidType.v());
           if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
