@@ -641,7 +641,8 @@ public class ThrowableSet {
       Manager.v().catchableAsQueries++;
     }
 
-    FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
+    final Scene scene = Scene.v();
+    FastHierarchy h = scene.getOrMakeFastHierarchy();
     /**
      * Originally this implementation had checked if the catcher.getSootClass() is a phantom class. However this makes
      * problems in case the soot option no_bodies_for_excluded==true because certain library classes will be marked as
@@ -693,7 +694,7 @@ public class ThrowableSet {
         } else {
           RefType thrownBase = ((AnySubType) thrownType).getBase();
           if (catcherHasNoHierarchy) {
-            if (thrownBase.equals(catcher) || thrownBase.equals(Scene.v().getBaseExceptionType())) {
+            if (thrownBase.equals(catcher) || thrownBase.equals(scene.getBaseExceptionType())) {
               return true;
             }
           }
@@ -725,7 +726,8 @@ public class ThrowableSet {
       mgr.removesOfAnySubType++;
     }
 
-    FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
+    final Scene scene = Scene.v();
+    FastHierarchy h = scene.getOrMakeFastHierarchy();
     Set<RefLikeType> caughtIncluded = null;
     Set<AnySubType> caughtExcluded = null;
     Set<RefLikeType> uncaughtIncluded = null;
@@ -760,7 +762,6 @@ public class ThrowableSet {
       }
     }
 
-    Scene scene = null;
     for (RefLikeType inclusion : exceptionsIncluded) {
       if (inclusion instanceof RefType) {
         // If the current type is has no hierarchy, we catch it if and
@@ -784,9 +785,6 @@ public class ThrowableSet {
           if (base.equals(catcher)) {
             caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
           } else {
-            if (scene == null) {
-              scene = Scene.v();
-            }
             if (base.equals(scene.getBaseExceptionType())) {
               caughtIncluded = addExceptionToSet(catcher, caughtIncluded);
             }
