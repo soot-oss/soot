@@ -69,19 +69,26 @@ public class DexFileProvider {
 
           // "classes.dex" has highest priority
           if (s1.equals("classes.dex")) {
-            return 1;
-          } else if (s2.equals("classes.dex")) {
             return -1;
+          } else if (s2.equals("classes.dex")) {
+            return 1;
           }
 
-          // if one of the strings starts with "classes", we give it the edge right here
-          boolean s1StartsClasses = s1.startsWith("classes");
-          boolean s2StartsClasses = s2.startsWith("classes");
+          // if only one of the string is a valide dex file name, we give it the edge right here
+          boolean s1IsValidDexName = s1.matches("classes[1-9]\\d*.dex") && !s1.equals("classes1.dex");
+          boolean s2IsValidDexName = s2.matches("classes[1-9]\\d*.dex") && !s2.equals("classes1.dex");
 
-          if (s1StartsClasses && !s2StartsClasses) {
-            return 1;
-          } else if (s2StartsClasses && !s1StartsClasses) {
+          if (s1IsValidDexName && !s2IsValidDexName) {
             return -1;
+          } else if (s2IsValidDexName && !s1IsValidDexName) {
+            return 1;
+          }
+
+          // if both are valid, compare the dexfiles numbers as numbers ("classes9.dex" has priority over "classes10.dex")
+          if (s1IsValidDexName && s2IsValidDexName) {
+              Long d1 = new Long(s1.substring(7, s1.length() - 4));
+              Long d2 = new Long(s2.substring(7, s2.length() - 4));
+              return d1.compareTo(d2);
           }
 
           // otherwise, use natural string ordering
