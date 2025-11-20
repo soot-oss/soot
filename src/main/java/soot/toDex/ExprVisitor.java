@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,15 +20,17 @@ package soot.toDex;
  * #L%
  */
 
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
+import com.android.tools.smali.dexlib2.iface.reference.Reference;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableMethodProtoReference;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.reference.Reference;
-import org.jf.dexlib2.iface.reference.TypeReference;
-import org.jf.dexlib2.immutable.reference.ImmutableMethodProtoReference;
 
 import soot.ArrayType;
 import soot.DoubleType;
@@ -106,6 +106,7 @@ import soot.toDex.instructions.Insn45cc;
 import soot.toDex.instructions.Insn4rcc;
 import soot.toDex.instructions.InsnWithOffset;
 import soot.util.NumberedString;
+import soot.util.Switchable;
 
 /**
  * A visitor that builds a list of instructions from the Jimple expressions it visits.<br>

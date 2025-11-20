@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -21,6 +19,59 @@ package soot.toDex;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.AnnotationVisibility;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.BuilderOffsetInstruction;
+import com.android.tools.smali.dexlib2.builder.Label;
+import com.android.tools.smali.dexlib2.builder.MethodImplementationBuilder;
+import com.android.tools.smali.dexlib2.iface.Annotation;
+import com.android.tools.smali.dexlib2.iface.AnnotationElement;
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.iface.ExceptionHandler;
+import com.android.tools.smali.dexlib2.iface.Field;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.MethodImplementation;
+import com.android.tools.smali.dexlib2.iface.MethodParameter;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
+import com.android.tools.smali.dexlib2.iface.reference.StringReference;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.iface.value.EncodedValue;
+import com.android.tools.smali.dexlib2.immutable.ImmutableAnnotation;
+import com.android.tools.smali.dexlib2.immutable.ImmutableAnnotationElement;
+import com.android.tools.smali.dexlib2.immutable.ImmutableClassDef;
+import com.android.tools.smali.dexlib2.immutable.ImmutableExceptionHandler;
+import com.android.tools.smali.dexlib2.immutable.ImmutableField;
+import com.android.tools.smali.dexlib2.immutable.ImmutableMethod;
+import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableFieldReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableMethodReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableStringReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableTypeReference;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableAnnotationEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableArrayEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableBooleanEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableByteEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableCharEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableDoubleEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableEnumEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableFieldEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableFloatEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableIntEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableLongEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableMethodEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableNullEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableShortEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableStringEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableTypeEncodedValue;
+import com.android.tools.smali.dexlib2.writer.builder.BuilderEncodedValues;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -55,56 +106,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.jf.dexlib2.AnnotationVisibility;
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.builder.BuilderOffsetInstruction;
-import org.jf.dexlib2.builder.Label;
-import org.jf.dexlib2.builder.MethodImplementationBuilder;
-import org.jf.dexlib2.iface.Annotation;
-import org.jf.dexlib2.iface.AnnotationElement;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.ExceptionHandler;
-import org.jf.dexlib2.iface.Field;
-import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MethodImplementation;
-import org.jf.dexlib2.iface.MethodParameter;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.reference.StringReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
-import org.jf.dexlib2.iface.value.EncodedValue;
-import org.jf.dexlib2.immutable.ImmutableAnnotation;
-import org.jf.dexlib2.immutable.ImmutableAnnotationElement;
-import org.jf.dexlib2.immutable.ImmutableClassDef;
-import org.jf.dexlib2.immutable.ImmutableExceptionHandler;
-import org.jf.dexlib2.immutable.ImmutableField;
-import org.jf.dexlib2.immutable.ImmutableMethod;
-import org.jf.dexlib2.immutable.ImmutableMethodParameter;
-import org.jf.dexlib2.immutable.reference.ImmutableFieldReference;
-import org.jf.dexlib2.immutable.reference.ImmutableMethodReference;
-import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
-import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
-import org.jf.dexlib2.immutable.value.ImmutableAnnotationEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableArrayEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableBooleanEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableByteEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableCharEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableDoubleEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableEnumEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableFieldEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableFloatEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableIntEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableLongEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableMethodEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableNullEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableShortEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableStringEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableTypeEncodedValue;
-import org.jf.dexlib2.writer.builder.BuilderEncodedValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

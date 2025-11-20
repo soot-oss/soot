@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,11 +25,13 @@ package soot.dexpler.instructions;
  * #L%
  */
 
+package soot.dexpler.instructions;
+
 import static soot.dexpler.Util.isFloatLike;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
-import org.jf.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction3rc;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.Local;
@@ -73,8 +73,7 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
     for (int i = 0; i < usedRegister; i++) {
       ArrayRef arrayRef = j.newArrayRef(arrayLocal, IntConstant.v(i));
 
-      AssignStmt assign
-          = j.newAssignStmt(arrayRef, body.getRegisterLocal(i + filledNewArrayInstr.getStartRegister()));
+      AssignStmt assign = j.newAssignStmt(arrayRef, body.getRegisterLocal(i + filledNewArrayInstr.getStartRegister()));
       if (elementType instanceof RefLikeType) {
         assign.addTag(new ObjectOpTag());
       }

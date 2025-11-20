@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,6 +20,15 @@ package soot.dexpler;
  * #L%
  */
 
+package soot.dexpler;
+
+import com.android.tools.smali.dexlib2.DexFileFactory;
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer.DexEntry;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -37,12 +44,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.jf.dexlib2.DexFileFactory;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.MultiDexContainer;
-import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,9 +87,9 @@ public class DexFileProvider {
 
           // if both are valid, compare the dexfiles numbers as numbers ("classes9.dex" has priority over "classes10.dex")
           if (s1IsValidDexName && s2IsValidDexName) {
-              Long d1 = new Long(s1.substring(7, s1.length() - 4));
-              Long d2 = new Long(s2.substring(7, s2.length() - 4));
-              return d1.compareTo(d2);
+            Long d1 = new Long(s1.substring(7, s1.length() - 4));
+            Long d2 = new Long(s2.substring(7, s2.length() - 4));
+            return d1.compareTo(d2);
           }
 
           // otherwise, use natural string ordering

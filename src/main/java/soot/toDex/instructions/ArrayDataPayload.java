@@ -1,5 +1,3 @@
-package soot.toDex.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,10 +20,12 @@ package soot.toDex.instructions;
  * #L%
  */
 
-import java.util.List;
+package soot.toDex.instructions;
 
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.builder.instruction.BuilderArrayPayload;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderArrayPayload;
+
+import java.util.List;
 
 import soot.toDex.LabelAssigner;
 

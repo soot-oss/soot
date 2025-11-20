@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,17 +20,19 @@ package soot.toDex;
  * #L%
  */
 
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.reference.FieldReference;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -101,6 +101,7 @@ import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
+import soot.util.Switchable;
 
 /**
  * A visitor that builds a list of instructions from the Jimple statements it visits.<br>

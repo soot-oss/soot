@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,6 +24,8 @@ package soot.dexpler.instructions;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+package soot.dexpler.instructions;
 
 import soot.Body;
 import soot.Type;

@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,10 +25,12 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
-import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
-import org.jf.dexlib2.iface.reference.FieldReference;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
 
 import soot.Local;
 import soot.Type;

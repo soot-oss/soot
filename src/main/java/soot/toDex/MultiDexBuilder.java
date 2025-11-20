@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,16 +20,18 @@ package soot.toDex;
  * #L%
  */
 
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.writer.io.FileDataStore;
+import com.android.tools.smali.dexlib2.writer.pool.DexPool;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.writer.io.FileDataStore;
-import org.jf.dexlib2.writer.pool.DexPool;
 
 /**
  * @author Manuel Benz created on 26.09.17

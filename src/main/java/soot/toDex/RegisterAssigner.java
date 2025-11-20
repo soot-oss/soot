@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,13 +20,15 @@ package soot.toDex;
  * #L%
  */
 
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.Opcode;
+
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-
-import org.jf.dexlib2.Opcode;
 
 import soot.jimple.Stmt;
 import soot.toDex.instructions.AddressInsn;

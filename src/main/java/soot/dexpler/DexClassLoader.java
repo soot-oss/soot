@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,13 +20,15 @@ package soot.dexpler;
  * #L%
  */
 
-import java.util.Iterator;
+package soot.dexpler;
 
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.Field;
-import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.android.tools.smali.dexlib2.iface.Field;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer.DexEntry;
+
+import java.util.Iterator;
 
 import soot.Dependencies;
 import soot.Modifier;

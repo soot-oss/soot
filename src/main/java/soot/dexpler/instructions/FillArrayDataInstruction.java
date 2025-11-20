@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,16 +25,21 @@ package soot.dexpler.instructions;
  * #L%
  */
 
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.ArrayPayload;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction31t;
+
 import java.util.List;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
-import org.jf.dexlib2.iface.instruction.formats.Instruction31t;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.Local;
 import soot.dexpler.DexBody;
+import soot.dexpler.DexFillArrayDataTransformer;
+import soot.dexpler.typing.UntypedConstant;
 import soot.dexpler.typing.UntypedIntOrFloatConstant;
 import soot.dexpler.typing.UntypedLongOrDoubleConstant;
 import soot.jimple.ArrayRef;
