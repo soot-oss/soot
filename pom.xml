@@ -373,7 +373,6 @@
                 <configuration>
                     <propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
                     <configLocation>${checkstyle.file.path}</configLocation>
-                    <encoding>UTF-8</encoding>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
                     <violationSeverity>warning</violationSeverity>
@@ -447,9 +446,9 @@
             <version>2.17.0</version>
         </dependency>
         <dependency>
-            <groupId>org.smali</groupId>
-            <artifactId>dexlib2</artifactId>
-            <version>2.5.2</version>
+            <groupId>com.android.tools.smali</groupId>
+            <artifactId>smali-dexlib2</artifactId>
+            <version>3.0.9</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -581,6 +580,13 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <id>google</id>
+            <url>https://maven.google.com/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>sonatype-snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>

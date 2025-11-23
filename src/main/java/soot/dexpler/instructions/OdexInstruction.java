@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,9 +20,11 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.analysis.ClassPath;
-import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.Method;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.analysis.ClassPath;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.android.tools.smali.dexlib2.iface.Method;
 
 /**
  * Interface for instructions that are only valid in optimized dex files (ODEX). These instructions require special handling

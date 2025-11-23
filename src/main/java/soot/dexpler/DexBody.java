@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -20,15 +18,35 @@ package soot.dexpler;
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
+package soot.dexpler;
+
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
+import com.android.tools.smali.dexlib2.analysis.ClassPath;
+import com.android.tools.smali.dexlib2.analysis.ClassPathResolver;
+import com.android.tools.smali.dexlib2.analysis.ClassProvider;
+import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.android.tools.smali.dexlib2.iface.ExceptionHandler;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.MethodImplementation;
+import com.android.tools.smali.dexlib2.iface.MethodParameter;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer.DexEntry;
+import com.android.tools.smali.dexlib2.iface.TryBlock;
+import com.android.tools.smali.dexlib2.iface.debug.DebugItem;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.immutable.debug.ImmutableEndLocal;
+import com.android.tools.smali.dexlib2.immutable.debug.ImmutableLineNumber;
+import com.android.tools.smali.dexlib2.immutable.debug.ImmutableRestartLocal;
+import com.android.tools.smali.dexlib2.immutable.debug.ImmutableStartLocal;
+import com.android.tools.smali.dexlib2.util.MethodUtil;
 import com.google.common.collect.ArrayListMultimap;
 
 import java.io.File;
@@ -49,24 +67,6 @@ import java.util.TreeMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import org.jf.dexlib2.analysis.ClassPath;
-import org.jf.dexlib2.analysis.ClassPathResolver;
-import org.jf.dexlib2.analysis.ClassProvider;
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.ExceptionHandler;
-import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MethodImplementation;
-import org.jf.dexlib2.iface.MethodParameter;
-import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
-import org.jf.dexlib2.iface.TryBlock;
-import org.jf.dexlib2.iface.debug.DebugItem;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.immutable.debug.ImmutableEndLocal;
-import org.jf.dexlib2.immutable.debug.ImmutableLineNumber;
-import org.jf.dexlib2.immutable.debug.ImmutableRestartLocal;
-import org.jf.dexlib2.immutable.debug.ImmutableStartLocal;
-import org.jf.dexlib2.util.MethodUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

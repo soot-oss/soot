@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import soot.tagkit.Host;
+import soot.util.Chain;
 import soot.util.Switchable;
 
 /**

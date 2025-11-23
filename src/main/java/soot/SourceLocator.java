@@ -1,5 +1,3 @@
-package soot;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,6 +20,9 @@ package soot;
  * #L%
  */
 
+package soot;
+
+import com.android.tools.smali.dexlib2.iface.DexFile;
 import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -54,7 +55,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.jf.dexlib2.iface.DexFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
