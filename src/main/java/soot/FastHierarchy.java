@@ -36,10 +36,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.spark.internal.TypeManager;
 import soot.options.Options;
+import soot.toolkits.scalar.Pair;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
 import soot.util.NumberedString;
@@ -99,6 +102,9 @@ public class FastHierarchy {
    */
   protected Map<SootClass, Interval> classToInterval = new HashMap<SootClass, Interval>();
 
+  protected Map<Pair<SootClass, SootMethodRef>, Set<SootMethod>> methodRefToAbstractMethods
+      = new ConcurrentHashMap<Pair<SootClass, SootMethodRef>, Set<SootMethod>>();
+
   protected final Scene sc;
   protected final RefType rtObject;
   protected final RefType rtSerializable;
@@ -109,6 +115,15 @@ public class FastHierarchy {
   protected final RefType cilIconvertible;
   protected final RefType cilIequatable1;
   protected final RefType cilIformattable;
+  private Function<Pair<SootClass, SootMethodRef>, Set<SootMethod>> abstractMethodComputation
+      = new Function<Pair<SootClass, SootMethodRef>, Set<SootMethod>>() {
+
+        @Override
+        public Set<SootMethod> apply(Pair<SootClass, SootMethodRef> arg0) {
+          return doResolveAbstractDispatch(arg0.getO1(), arg0.getO2());
+        }
+
+      };
 
   public static class Interval {
     public int lower;
@@ -670,6 +685,11 @@ public class FastHierarchy {
    *          The declared type C
    */
   public Set<SootMethod> resolveAbstractDispatch(SootClass baseType, SootMethodRef m) {
+    Pair<SootClass, SootMethodRef> pair = new Pair<>(baseType, m);
+    return methodRefToAbstractMethods.computeIfAbsent(pair, abstractMethodComputation);
+  }
+
+  protected Set<SootMethod> doResolveAbstractDispatch(SootClass baseType, SootMethodRef m) {
     HashSet<SootClass> resolved = new HashSet<>();
     HashSet<SootMethod> ret = new HashSet<>();
 
@@ -913,7 +933,7 @@ public class FastHierarchy {
       }
 
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
-      if (candidate != null) {
+      if (candidate != null && !candidate.isStatic()) {
         if (!calleeExist || isVisible(concreteType, declaringClass, candidate.getModifiers())) {
           if (!allowAbstract && candidate.isAbstract()) {
             candidate = null;
@@ -934,7 +954,7 @@ public class FastHierarchy {
     // look for default methods:
     // https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
     if (isHandleDefaultMethods()) {
-      // keep our own ignorelist here so we are not restricted to already hit suinterfaces when
+      // keep our own ignorelist here so we are not restricted to already hit super interfaces when
       // determining the most specific super interface
       HashSet<SootClass> interfaceIgnoreList = new HashSet<>();
       for (SootClass concreteType = baseType; concreteType != null;) {
@@ -949,8 +969,8 @@ public class FastHierarchy {
 
           SootMethod method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
           if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
-            if (!allowAbstract && method.isAbstract()) {
-              // abstract method cannot be dispatched
+            if ((!allowAbstract && method.isAbstract()) || method.isStatic()) {
+              // abstract/static method cannot be dispatched
             } else if (candidate == null || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {
               // the found method is more specific than our current candidate
               candidate = method;

@@ -90,8 +90,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   public Body getBodyOf(Unit u) {
-    assert unitToOwner.containsKey(u) : "Statement " + u + " not in unit-to-owner mapping";
-    Body b = unitToOwner.get(u);
+    Body b = ((Stmt) u).getContainingBody();
     return b;
   }
 

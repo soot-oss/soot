@@ -25,6 +25,7 @@ package soot.jimple.internal;
 import java.util.List;
 
 import soot.AbstractUnit;
+import soot.Body;
 import soot.Unit;
 import soot.ValueBox;
 import soot.baf.Baf;
@@ -37,6 +38,8 @@ import soot.jimple.Stmt;
 
 @SuppressWarnings("serial")
 public abstract class AbstractStmt extends AbstractUnit implements Stmt, ConvertToBaf {
+
+  private Body body;
 
   @Override
   public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
@@ -103,5 +106,15 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
   @Override
   public ValueBox getFieldRefBox() {
     throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
+  }
+
+  @Override
+  public Body getContainingBody() {
+    return body;
+  }
+
+  @Override
+  public void setContainingBody(Body body) {
+    this.body = body;
   }
 }

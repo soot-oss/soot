@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
+import soot.jimple.Stmt;
 import soot.jimple.ThisRef;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
@@ -90,7 +91,7 @@ public abstract class Body extends AbstractHost implements Serializable {
   /**
    * The chain of units for this Body.
    */
-  protected UnitPatchingChain unitChain = new UnitPatchingChain(new HashChain<>());
+  protected UnitPatchingChain unitChain = new UnitPatchingChain(createHashChain());
 
   /**
    * Lazy initialized array containing some validators in order to validate the Body.
@@ -112,6 +113,27 @@ public abstract class Body extends AbstractHost implements Serializable {
   @Override
   public Object clone() {
     return clone(true);
+  }
+
+  protected Chain<Unit> createHashChain() {
+    return new HashChain<Unit>() {
+      @Override
+      protected void elementAdded(Unit added) {
+        if (added instanceof Stmt) {
+          Stmt stmt = (Stmt) added;
+          stmt.setContainingBody(Body.this);
+        }
+      }
+
+      @Override
+      protected void elementRemoved(Unit removed) {
+        if (removed instanceof Stmt) {
+          Stmt stmt = (Stmt) removed;
+          stmt.setContainingBody(null);
+        }
+      }
+
+    };
   }
 
   abstract public Object clone(boolean noLocalsClone);
@@ -587,7 +609,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see Value
    */
   public Iterator<ValueBox> getUseBoxesIterator() {
-    Iterator<ValueBox>[] vb = (Iterator<ValueBox>[]) new Iterator[unitChain.size()];
+    Iterator<ValueBox>[] vb = new Iterator[unitChain.size()];
     int i = 0;
     for (Unit item : unitChain) {
       vb[i] = item.getUseBoxesIterator();
@@ -608,7 +630,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see Value
    */
   public Iterator<ValueBox> getDefBoxesIterator() {
-    Iterator<ValueBox>[] vb = (Iterator<ValueBox>[]) new Iterator[unitChain.size()];
+    Iterator<ValueBox>[] vb = new Iterator[unitChain.size()];
     int i = 0;
     for (Unit item : unitChain) {
       vb[i] = item.getDefBoxesIterator();
@@ -628,7 +650,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @see Value
    */
   public Iterator<ValueBox> getUseAndDefBoxesIterator() {
-    Iterator<ValueBox>[] vb = (Iterator<ValueBox>[]) new Iterator[unitChain.size()];
+    Iterator<ValueBox>[] vb = new Iterator[unitChain.size()];
     int i = 0;
     for (Unit item : unitChain) {
       vb[i] = item.getUseAndDefBoxesIterator();
