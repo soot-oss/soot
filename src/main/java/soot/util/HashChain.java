@@ -304,6 +304,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     } else {
       newLink = new Link<E>(item);
       firstItem = lastItem = item;
+      elementAdded(item);
     }
     map.put(item, newLink);
   }
@@ -325,6 +326,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     } else {
       newLink = new Link<E>(item);
       firstItem = lastItem = item;
+      elementAdded(item);
     }
     map.put(item, newLink);
   }
@@ -451,7 +453,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   }
 
   @Override
-  public synchronized int size() {
+  public int size() {
     return map.size();
   }
 
@@ -502,10 +504,12 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     }
 
     public void unlinkSelf() {
+      elementRemoved(item);
       bind(previousLink, nextLink);
     }
 
     public Link<X> insertAfter(X item) {
+      elementAdded(item);
       Link<X> newLink = new Link<X>(item);
 
       bind(newLink, nextLink);
@@ -514,6 +518,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     }
 
     public Link<X> insertBefore(X item) {
+      elementAdded(item);
       Link<X> newLink = new Link<X>(item);
 
       bind(previousLink, newLink);
@@ -626,7 +631,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
         throw new IllegalStateException();
       } else {
         currentLink.unlinkSelf();
-        map.remove(currentLink.getItem());
+        E it = currentLink.getItem();
+        map.remove(it);
         state = false;
       }
     }
@@ -646,4 +652,25 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
   public long getModificationCount() {
     return stateCount;
   }
+
+  /**
+   * Notifies the chain when an element was added
+   * 
+   * @param added
+   *          the added element
+   */
+  protected void elementAdded(E added) {
+
+  }
+
+  /**
+   * Notifies the chain when an element was removed
+   * 
+   * @param removed
+   *          the removed element
+   */
+  protected void elementRemoved(E removed) {
+
+  }
+
 }

@@ -33,6 +33,9 @@ import java.util.List;
  * @param <E>
  *          element type
  */
+/**
+ * @param <E>
+ */
 public interface Chain<E> extends Collection<E>, Serializable {
 
   /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */

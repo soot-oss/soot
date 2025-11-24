@@ -1,5 +1,7 @@
 package soot.jimple;
 
+import soot.Body;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -174,5 +176,20 @@ public interface Stmt extends Unit {
    * @return the field reference box
    */
   public ValueBox getFieldRefBox() throws RuntimeException;
+
+  /**
+   * Returns the body the statement is part of, or null if there is no containing body
+   * 
+   * @return the containing body (or null)
+   */
+  public Body getContainingBody();
+
+  /**
+   * Sets the containing body
+   * 
+   * @param body
+   *          the new body (or null if the statement was removed)
+   */
+  public void setContainingBody(Body body);
 
 }
