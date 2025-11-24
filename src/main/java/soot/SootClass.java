@@ -29,6 +29,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +98,7 @@ public class SootClass extends AbstractHost {
   private RefType refType;
 
   private volatile int resolvingLevel = DANGLING;
+  protected ConcurrentMap<NameAndNumber, List<SootMethod>> methodParameterMap = new ConcurrentHashMap<>();
 
   /**
    * Lazy initialized array containing some validators in order to validate the SootClass.
@@ -682,8 +685,18 @@ public class SootClass extends AbstractHost {
     }
     this.subSigToMethods.put(m.getNumberedSubSignature(), m);
     this.methodList.add(m);
+    addToNameAndParamMap(m);
     m.setDeclared(true);
     m.setDeclaringClass(this);
+  }
+
+  protected void addToNameAndParamMap(SootMethod m) {
+    List<SootMethod> newList = new ArrayList<>();
+    List<SootMethod> use = methodParameterMap.putIfAbsent(new NameAndNumber(m.getName(), m.getParameterCount()), newList);
+    if (use == null) {
+      use = newList;
+    }
+    use.add(m);
   }
 
   public synchronized SootMethod getOrAddMethod(SootMethod m) {
@@ -701,6 +714,7 @@ public class SootClass extends AbstractHost {
     if (old != null) {
       return old;
     }
+    addToNameAndParamMap(m);
     this.subSigToMethods.put(m.getNumberedSubSignature(), m);
     this.methodList.add(m);
     m.setDeclared(true);
@@ -746,6 +760,12 @@ public class SootClass extends AbstractHost {
     m.setDeclaringClass(null);
     Scene scene = Scene.v();
 
+    List<SootMethod> l = methodParameterMap.get(new NameAndNumber(m.getName(), m.getParameterCount()));
+    if (l != null) {
+      synchronized (l) {
+        l.remove(m);
+      }
+    }
     // We have caches for resolving default methods in the FastHierarchy, which are no longer valid
     scene.modifyHierarchy();
   }
@@ -1291,19 +1311,10 @@ public class SootClass extends AbstractHost {
    * @return the methods
    */
   public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
-    List<SootMethod> result = null;
-    for (SootMethod m : getMethods()) {
-      if (m.getParameterCount() == paramCount && m.getName().equals(name)) {
-        if (result == null) {
-          result = new ArrayList<>();
-        }
-        result.add(m);
-      }
-    }
-
-    if (result == null) {
+    List<SootMethod> l = methodParameterMap.get(new NameAndNumber(name, paramCount));
+    if (l == null) {
       return Collections.emptyList();
     }
-    return result;
+    return l;
   }
 }
