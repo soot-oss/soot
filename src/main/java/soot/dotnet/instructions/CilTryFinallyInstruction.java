@@ -27,7 +27,7 @@ import java.util.Map;
  */
 import soot.Body;
 import soot.RefType;
-import soot.SootMethod;
+import soot.Scene;
 import soot.Trap;
 import soot.Unit;
 import soot.Value;
@@ -73,7 +73,7 @@ public class CilTryFinallyInstruction extends AbstractCilnstruction {
     }
     for (Unit unit : tmpUnits) {
       // Set dummy method
-      finallyBlockContainerBody.setMethod(new SootMethod("", new ArrayList<>(), RefType.v("")));
+      finallyBlockContainerBody.setMethod(Scene.v().makeSootMethod("", new ArrayList<>(), RefType.v("")));
       Body cloneFinallyBlock = (Body) finallyBlockContainerBody.clone(true);
       tryContainerBlock.getUnits().insertBefore(cloneFinallyBlock.getUnits(), unit);
       // tryContainerBlock.getLocals().addAll(cloneFinallyBlock.getLocals());
