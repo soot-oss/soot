@@ -210,22 +210,26 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
     final long wl = lock.writeLock();
     try {
-      if (map.containsKey(toInsert)) {
-        throw new RuntimeException("Chain already contains object.");
-      }
-
-      Link<E> temp = map.get(point);
-      if (temp == null) {
-        throw new RuntimeException("Insertion point not found in chain!");
-      }
-
-      stateCount++;
-
-      Link<E> newLink = temp.insertAfter(toInsert);
-      map.put(toInsert, newLink);
+      insertAfterNoLock(toInsert, point);
     } finally {
       lock.unlockWrite(wl);
     }
+  }
+
+  private void insertAfterNoLock(E toInsert, E point) {
+    if (map.containsKey(toInsert)) {
+      throw new RuntimeException("Chain already contains object.");
+    }
+
+    Link<E> temp = map.get(point);
+    if (temp == null) {
+      throw new RuntimeException("Insertion point not found in chain!");
+    }
+
+    stateCount++;
+
+    Link<E> newLink = temp.insertAfter(toInsert);
+    map.put(toInsert, newLink);
   }
 
   @Override
@@ -241,7 +245,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
     try {
       E previousPoint = point;
       for (E o : toInsert) {
-        insertAfter(o, previousPoint);
+        insertAfterNoLock(o, previousPoint);
         previousPoint = o;
       }
     } finally {
@@ -300,8 +304,13 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
       throw new RuntimeException("Insertion point cannot be null!");
     }
 
-    for (E o : toInsert) {
-      insertBefore(o, point);
+    final long wl = lock.writeLock();
+    try {
+      for (E o : toInsert) {
+        insertBeforeNoLock(o, point);
+      }
+    } finally {
+      lock.unlockWrite(wl);
     }
   }
 
