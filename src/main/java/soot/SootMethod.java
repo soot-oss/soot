@@ -334,7 +334,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   /**
    * Sets the {@link MethodSource} of the current {@link SootMethod}.
    */
-  public synchronized void setSource(MethodSource ms) {
+  public void setSource(MethodSource ms) {
     this.ms = ms;
   }
 
@@ -475,7 +475,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   /**
    * Releases the active body associated with this method.
    */
-  public synchronized void releaseActiveBody() {
+  public void releaseActiveBody() {
     this.activeBody = null;
   }
 
