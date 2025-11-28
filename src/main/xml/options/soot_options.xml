@@ -1692,6 +1692,16 @@
                     <short_desc>Splits primitive locals used as different types</short_desc>
                 </sub_phase>
                 <sub_phase>
+                    <name>Array Writer Aggregregator</name>
+                    <alias>jb.awa</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Reorder array writes to save local variables</short_desc>
+                </sub_phase>
+                <sub_phase>
                     <name>Jimple Local Aggregator</name>
                     <alias>jb.a</alias>
                     <short_desc>Aggregator: removes some unnecessary copies</short_desc>

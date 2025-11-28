@@ -321,20 +321,6 @@ public class PackManager {
 
     // Baf optimization pack
     addPack(p = new BodyPack("bop"));
-
-    // Dummy Dava Phase
-    /*
-     * Nomair A. Naeem 13th Feb 2006 Added so that Dava Options can be added as phase options rather than main soot options
-     * since they only make sense when decompiling The db phase options are added in soot_options.xml
-     */
-    addPack(p = new BodyPack("db"));
-    {
-      p.add(new Transform("db.transformations", null));
-      p.add(new Transform("db.renamer", null));
-      p.add(new Transform("db.deobfuscate", null));
-      p.add(new Transform("db.force-recompile", null));
-    }
-
     onlyStandardPacks = true;
   }
 
