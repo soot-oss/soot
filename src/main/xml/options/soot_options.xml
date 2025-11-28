@@ -516,6 +516,7 @@
         <boolopt>
             <name>Process all DEX files in APK</name>
             <alias>process-multiple-dex</alias>
+            <default>true</default>
             <short_desc>Process all DEX files found in APK.</short_desc>
             <long_desc>
                 <p>
