@@ -371,7 +371,7 @@ public class SimpleLocalDefs implements LocalDefs {
     Arrays.fill(unitList, Collections.emptyList());
 
     final boolean omitSSA = (mode == FlowAnalysisMode.OmitSSA);
-    boolean doFlowAnalysis = omitSSA;
+    boolean doFlowAnalsis = omitSSA;
 
     int units = 0;
 
@@ -384,8 +384,7 @@ public class SimpleLocalDefs implements LocalDefs {
           Local l = (Local) v;
           int lno = getLocalNumber(l);
 
-          List<Unit> crtList = unitList[lno];
-          switch (crtList.size()) {
+          switch (unitList[lno].size()) {
             case 0:
               unitList[lno] = Collections.singletonList(unit);
               if (omitSSA) {
@@ -396,15 +395,11 @@ public class SimpleLocalDefs implements LocalDefs {
               if (!omitSSA) {
                 units++;
               }
-              ArrayList<Unit> ar = new ArrayList<Unit>(4);
-              ar.addAll(crtList);
-              unitList[lno] = ar;
-              crtList = ar;
-
-              doFlowAnalysis = true;
+              unitList[lno] = new ArrayList<Unit>(unitList[lno]);
+              doFlowAnalsis = true;
               // fallthrough
             default:
-              crtList.add(unit);
+              unitList[lno].add(unit);
               units++;
               break;
           }
@@ -412,7 +407,7 @@ public class SimpleLocalDefs implements LocalDefs {
       }
     }
 
-    if (doFlowAnalysis && mode != FlowAnalysisMode.FlowInsensitive) {
+    if (doFlowAnalsis && mode != FlowAnalysisMode.FlowInsensitive) {
       return new FlowAssignment(graph, locals, unitList, units, omitSSA);
     } else {
       return new StaticSingleAssignment(locals, unitList);

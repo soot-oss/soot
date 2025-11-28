@@ -257,12 +257,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
       Iterator<Cluster> it = clusters.iterator();
       // First, remove all invalid clusters (so that we know when there is at least one valid cluster)
+      int validCount = 0;
       while (it.hasNext()) {
-        if (it.next().invalid) {
-          it.remove();
+        if (!it.next().invalid) {
+          validCount++;
+          if (validCount > 1) {
+            break;
+          }
         }
       }
-      if (clusters.size() == 1) {
+      if (validCount <= 1) {
         // Not interesting
         continue;
       }
