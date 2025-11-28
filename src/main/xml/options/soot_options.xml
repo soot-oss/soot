@@ -516,6 +516,7 @@
         <boolopt>
             <name>Process all DEX files in APK</name>
             <alias>process-multiple-dex</alias>
+            <default>true</default>
             <short_desc>Process all DEX files found in APK.</short_desc>
             <long_desc>
                 <p>
@@ -1690,6 +1691,16 @@
                         <default>true</default>
                     </boolopt>
                     <short_desc>Splits primitive locals used as different types</short_desc>
+                </sub_phase>
+                <sub_phase>
+                    <name>Array Writer Aggregregator</name>
+                    <alias>jb.awa</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Reorder array writes to save local variables</short_desc>
                 </sub_phase>
                 <sub_phase>
                     <name>Jimple Local Aggregator</name>
