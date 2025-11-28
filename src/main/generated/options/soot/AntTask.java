@@ -780,6 +780,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jb_awa() {
+            Object ret = new PhaseOptjb_awa();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_awa {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.awa");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_jb_a() {
             Object ret = new PhaseOptjb_a();
             phaseopts.add(ret);
