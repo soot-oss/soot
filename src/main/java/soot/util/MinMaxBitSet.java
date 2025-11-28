@@ -26,10 +26,8 @@ import java.util.BitSet;
 
 /**
  * This bitset keeps record about the lowest and the highest set bit. This can come in handy when comparing bitsets.
- * 
- * The bitset is comparing itself using the minimum value.
  */
-public class MinMaxBitSet extends BitSet implements Comparable<MinMaxBitSet> {
+public class MinMaxBitSet extends BitSet {
 
   private int max = -1;
   private int min = -1;
@@ -87,14 +85,15 @@ public class MinMaxBitSet extends BitSet implements Comparable<MinMaxBitSet> {
 
   @Override
   public void set(int bitIndex, boolean value) {
-    if (!value)
+    if (!value) {
       throw new IllegalArgumentException("Not supporting unsetting");
+    }
     this.set(bitIndex);
   }
 
   @Override
   public void clear(int bitIndex) {
-    throw new IllegalArgumentException("Not supporting unsetting");
+    throw new IllegalArgumentException("Not supporting clearing");
   }
 
   @Override
@@ -106,19 +105,7 @@ public class MinMaxBitSet extends BitSet implements Comparable<MinMaxBitSet> {
 
   @Override
   public void clear(int fromIndex, int toIndex) {
-    throw new IllegalArgumentException("Not supporting unsetting");
-  }
-
-  @Override
-  public int compareTo(MinMaxBitSet o) {
-    int res = Integer.compare(this.min, o.min);
-    if (res == 0) {
-      res = Integer.compare(this.max, o.max);
-      if (res == 0) {
-        return super.equals(o) ? 0 : 1;
-      }
-    }
-    return res;
+    throw new IllegalArgumentException("Not supporting clearing");
   }
 
   public int getMin() {

@@ -104,7 +104,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     return G.v().soot_toolkits_scalar_SharedInitializationLocalSplitter();
   }
 
-  private static final class Cluster implements Comparable<Cluster> {
+  private static final class Cluster {
 
     protected final MinMaxBitSet constantInitializers;
     protected final MinMaxBitSet uses;
@@ -115,19 +115,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       this.uses = uses;
       this.constantInitializers = constantDefs;
       this.nonConstantDefs = nonConstantDefs;
-    }
-
-    @Override
-    public int compareTo(Cluster o) {
-      MinMaxBitSet myNC = nonConstantDefs;
-      if (myNC == null) {
-        return -1;
-      }
-      MinMaxBitSet otherNC = o.nonConstantDefs;
-      if (otherNC == null) {
-        return 1;
-      }
-      return myNC.compareTo(otherNC);
     }
 
     @Override
@@ -268,6 +255,13 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     int w = 0;
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
+      Iterator<Cluster> it = clusters.iterator();
+      // First, remove all invalid clusters (so that we know when there is at least one valid cluster)
+      while (it.hasNext()) {
+        if (it.next().invalid) {
+          it.remove();
+        }
+      }
       if (clusters.size() == 1) {
         // Not interesting
         continue;
