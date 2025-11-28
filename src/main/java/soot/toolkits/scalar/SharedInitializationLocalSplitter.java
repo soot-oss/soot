@@ -56,6 +56,7 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
+import soot.util.MinMaxBitSet;
 import soot.util.MultiMap;
 
 //@formatter:off
@@ -103,16 +104,35 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     return G.v().soot_toolkits_scalar_SharedInitializationLocalSplitter();
   }
 
-  private static final class Cluster {
+  private static final class Cluster implements Comparable<Cluster> {
 
-    protected final BitSet constantInitializers;
-    protected final BitSet uses;
-    protected final BitSet nonConstantDefs;
+    protected final MinMaxBitSet constantInitializers;
+    protected final MinMaxBitSet uses;
+    protected final MinMaxBitSet nonConstantDefs;
+    public boolean invalid;
 
-    public Cluster(BitSet uses, BitSet constantDefs, BitSet nonConstantDefs) {
+    public Cluster(MinMaxBitSet uses, MinMaxBitSet constantDefs, MinMaxBitSet nonConstantDefs) {
       this.uses = uses;
       this.constantInitializers = constantDefs;
       this.nonConstantDefs = nonConstantDefs;
+    }
+
+    @Override
+    public int compareTo(Cluster o) {
+      MinMaxBitSet myNC = nonConstantDefs;
+      if (myNC == null) {
+        return -1;
+      }
+      MinMaxBitSet otherNC = o.nonConstantDefs;
+      if (otherNC == null) {
+        return 1;
+      }
+      return myNC.compareTo(otherNC);
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(nonConstantDefs);
     }
 
   }
@@ -169,6 +189,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
     final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
+    final MultiMap<Local, Cluster> nonConstantClustersPerLocal = new HashMultiMap<Local, Cluster>();
 
     final Map<Unit, Integer> stmtToIndex = new HashMap<>();
     final Map<Integer, Unit> indexToStmt = new HashMap<>();
@@ -189,8 +210,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           Local luse = (Local) v;
           List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
 
-          BitSet constantDefs = new BitSet(idx);
-          BitSet nonConstantDefs = null;
+          MinMaxBitSet constantDefs = new MinMaxBitSet(idx);
+          MinMaxBitSet nonConstantDefs = null;
 
           for (Unit affect : allAffectingDefs) {
             if (affect instanceof DefinitionStmt) {
@@ -200,22 +221,23 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                 constantDefs.set(actualidx);
               } else {
                 if (nonConstantDefs == null) {
-                  nonConstantDefs = new BitSet(idx);
+                  nonConstantDefs = new MinMaxBitSet(idx);
                 }
                 nonConstantDefs.set(actualidx);
               }
             }
           }
           int useidx = stmtToIndex.get(s);
-          BitSet useset = new BitSet(useidx);
+          MinMaxBitSet useset = new MinMaxBitSet(useidx);
           useset.set(useidx);
           if (nonConstantDefs != null) {
-            Iterator<Cluster> it = clustersPerLocal.get(luse).iterator();
+            Set<Cluster> c = nonConstantClustersPerLocal.get(luse);
+            // enable search mode so that the search cluster is always lower than
+            // all other existing clusters with the same minimum
+
+            Iterator<Cluster> it = c.iterator();
             while (it.hasNext()) {
               Cluster existing = it.next();
-              if (existing.nonConstantDefs == null) {
-                continue;
-              }
 
               // the idea is: When there is an overlap in any non-constant definition units,
               // we need to merge them, since two different usages have overlapping definitions,
@@ -228,10 +250,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
                 // we only keep the new definition with an overlap
                 it.remove();
+                existing.invalid = true;
               }
+
             }
           }
-          clustersPerLocal.put(luse, new Cluster(useset, constantDefs, nonConstantDefs));
+          Cluster c = new Cluster(useset, constantDefs, nonConstantDefs);
+          clustersPerLocal.put(luse, c);
+          if (nonConstantDefs != null) {
+            nonConstantClustersPerLocal.put(luse, c);
+          }
         }
       }
     }
@@ -245,6 +273,9 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         continue;
       }
       for (Cluster cluster : clusters) {
+        if (cluster.invalid) {
+          continue;
+        }
         // we have an overlap, we need to split.
         Local newLocal = (Local) lcl.clone();
         newLocal.setName(newLocal.getName() + '_' + ++w);
