@@ -36,7 +36,6 @@ import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
-import soot.jimple.JimpleBody;
 import soot.jimple.NopStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
@@ -65,7 +64,7 @@ public class CatchFilterHandlerBody {
 
   public Body getFilterHandlerBody(Value generalExceptionVariable) {
 
-    Body jb = new JimpleBody();
+    Body jb = Jimple.v().newBody();
 
     // Exception object / class - add as identity stmt to jimple body
 
@@ -95,7 +94,7 @@ public class CatchFilterHandlerBody {
       IfStmt ifRetCondStmt = Jimple.v().newIfStmt(cond, filterCondFalseNop); // if ret==0 ignore handler
       // jump to end of filter instructions - cond true
       if (!handlerBody.getUnits().isEmpty()) {
-        //this may happen when there is an empty handler
+        // this may happen when there is an empty handler
         GotoStmt gotoHandlerBodyCondTrueStmt = Jimple.v().newGotoStmt(handlerBody.getUnits().getFirst());
 
         handlerFilterContainerBlockBody.getUnits().insertAfter(gotoHandlerBodyCondTrueStmt, returnStmt);

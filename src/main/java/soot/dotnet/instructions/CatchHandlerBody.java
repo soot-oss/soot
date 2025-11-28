@@ -34,7 +34,6 @@ import soot.dotnet.members.method.DotnetBody;
 import soot.dotnet.proto.ProtoIlInstructions;
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.Jimple;
-import soot.jimple.JimpleBody;
 import soot.jimple.NopStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
@@ -71,7 +70,7 @@ public class CatchHandlerBody {
   }
 
   public Body getBody() {
-    Body jb = new JimpleBody();
+    Body jb = Jimple.v().newBody();
 
     // handler body
     Unit excStmt = Jimple.v().newIdentityStmt(exceptionVariable, Jimple.v().newCaughtExceptionRef());
