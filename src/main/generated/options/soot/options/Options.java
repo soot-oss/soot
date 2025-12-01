@@ -283,9 +283,9 @@ public class Options extends OptionsBase {
             )
                 ignore_classpath_errors = true;
             else if (false
-                    || option.equals("process-multiple-dex")
+                    || option.equals("no-process-multiple-dex")
             )
-                process_multiple_dex = true;
+                process_multiple_dex = false;
             else if (false
                     || option.equals("search-dex-in-archives")
             )
@@ -1511,7 +1511,7 @@ public class Options extends OptionsBase {
     public void set_ignore_classpath_errors(boolean setting) { ignore_classpath_errors = setting; }
 
     public boolean process_multiple_dex() { return process_multiple_dex; }
-    private boolean process_multiple_dex = false;
+    private boolean process_multiple_dex = true;
     public void set_process_multiple_dex(boolean setting) { process_multiple_dex = setting; }
 
     public boolean search_dex_in_archives() { return search_dex_in_archives; }
@@ -1945,6 +1945,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.ese", "Removes empty switch statements")
                     + padVal("jb.ls", "Local splitter: one local per DU-UD web")
                     + padVal("jb.sils", "Splits primitive locals used as different types")
+                    + padVal("jb.awa", "Reorder array writes to save local variables")
                     + padVal("jb.a", "Aggregator: removes some unnecessary copies")
                     + padVal("jb.ule", "Unused local eliminator")
                     + padVal("jb.tr", "Assigns types to locals")
@@ -2063,6 +2064,12 @@ public class Options extends OptionsBase {
                     + padOpt("enabled (true)", "");
 
         if (phaseName.equals("jb.sils"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
+        if (phaseName.equals("jb.awa"))
             return "Phase " + phaseName + ":\n"
                     + "\n"
                     + "\n\nRecognized options (with default values):\n"
@@ -2886,6 +2893,11 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("jb.awa"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("jb.a"))
             return String.join(" ", 
                     "enabled",
@@ -3517,6 +3529,10 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true ";
 
+        if (phaseName.equals("jb.awa"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("jb.a"))
             return ""
                     + "enabled:true "
@@ -4043,6 +4059,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.ese")
                 || phaseName.equals("jb.ls")
                 || phaseName.equals("jb.sils")
+                || phaseName.equals("jb.awa")
                 || phaseName.equals("jb.a")
                 || phaseName.equals("jb.ule")
                 || phaseName.equals("jb.tr")
@@ -4145,6 +4162,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.ls");
         if (!PackManager.v().hasPhase("jb.sils"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.sils");
+        if (!PackManager.v().hasPhase("jb.awa"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.awa");
         if (!PackManager.v().hasPhase("jb.a"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.a");
         if (!PackManager.v().hasPhase("jb.ule"))
