@@ -122,20 +122,6 @@
                             </fileMappers>
                         </transformationSet>
                         <transformationSet>
-                            <outputDir>${basedir}/src/main/generated/options/soot/</outputDir>
-                            <dir>${basedir}/src/main/xml/options/</dir>
-                            <includes>
-                                <include>soot_options.xml</include>
-                            </includes>
-                            <stylesheet>${basedir}/src/main/xml/options/ant-task.xsl</stylesheet>
-                            <fileMappers>
-                                <fileMapper
-                                        implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
-                                    <targetName>AntTask.java</targetName>
-                                </fileMapper>
-                            </fileMappers>
-                        </transformationSet>
-                        <transformationSet>
                             <outputDir>${basedir}/eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/</outputDir>
                             <dir>${basedir}/src/main/xml/options/</dir>
                             <includes>
