@@ -732,7 +732,7 @@ public class FastHierarchy {
 
       if (!resolved.contains(concreteType)) {
         SootMethod resolvedMethod = resolveMethod(concreteType, m.getDeclaringClass(), m.getName(), m.getParameterTypes(),
-            m.getReturnType(), false, resolved, m.getSubSignature());
+            m.getReturnType(), false, false, resolved, m.getSubSignature());
         if (resolvedMethod != null) {
           ret.add(resolvedMethod);
         }
@@ -829,7 +829,7 @@ public class FastHierarchy {
    */
   private SootMethod resolveMethod(SootClass baseType, SootMethodRef m, boolean allowAbstract, Set<SootClass> ignoreList) {
     return resolveMethod(baseType, m.getDeclaringClass(), m.getName(), m.getParameterTypes(), m.getReturnType(),
-        allowAbstract, ignoreList, m.getSubSignature());
+        allowAbstract, false, ignoreList, m.getSubSignature());
   }
 
   /**
@@ -851,7 +851,8 @@ public class FastHierarchy {
    */
   public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
       Type returnType, boolean allowAbstract) {
-    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(), null);
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, false, new HashSet<>(),
+        null);
   }
 
   /**
@@ -875,8 +876,35 @@ public class FastHierarchy {
    */
   public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
       Type returnType, boolean allowAbstract, NumberedString subsignature) {
-    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, new HashSet<>(),
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, false, new HashSet<>(),
         subsignature);
+  }
+
+  /**
+   * Conducts the actual dispatch by searching up the baseType's superclass hierarchy and interface hierarchy if the
+   * sourcecode level is beyond Java 7 (due to default interface methods.) Given an object of actual type C (o = new C()),
+   * returns the method which will be called on an o.f() invocation.
+   *
+   * <p>
+   * If abstract methods are allowed, it will just resolve to the first method found according to javas method resolution
+   * process: https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-5.html#jvms-5.4.3.3
+   *
+   * @param baseType
+   *          The type C
+   * @param declaringClass
+   *          declaring class of the method to resolve
+   * @param name
+   *          Name of the method to resolve
+   * @param subsignature
+   *          The subsignature (can be null) to speed up the resolving process.
+   * @param allowStatic
+   *          Whether static methods are allowed as result
+   * @return The concrete method o.f() to call
+   */
+  public SootMethod resolveMethod(SootClass baseType, SootClass declaringClass, String name, List<Type> parameterTypes,
+      Type returnType, boolean allowAbstract, boolean allowStatic, NumberedString subsignature) {
+    return resolveMethod(baseType, declaringClass, name, parameterTypes, returnType, allowAbstract, allowStatic,
+        new HashSet<>(), subsignature);
   }
 
   /**
@@ -898,13 +926,15 @@ public class FastHierarchy {
    *          A set of classes that should be ignored during dispatch. This set will also be modified since every traversed
    *          class/interface will be added. This is required for the abstract dispatch to not do additional resolving effort
    *          by resolving the same classes multiple times.
+   * @param allowStatic
+   *          Whether static methods are allowed as result
    * @param subsignature
    *          The subsignature (can be null) to speed up the resolving process.
    * @return The concrete method o.f() to call
    */
   protected SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
-      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList,
-      NumberedString subsignature) {
+      final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final boolean allowStatic,
+      final Set<SootClass> ignoreList, NumberedString subsignature) {
     final NumberedString methodSignature;
     if (subsignature == null) {
       methodSignature
@@ -933,7 +963,7 @@ public class FastHierarchy {
       }
 
       candidate = getSignaturePolymorphicMethod(concreteType, name, parameterTypes, returnType);
-      if (candidate != null && !candidate.isStatic()) {
+      if (candidate != null && (allowStatic || !candidate.isStatic())) {
         if (!calleeExist || isVisible(concreteType, declaringClass, candidate.getModifiers())) {
           if (!allowAbstract && candidate.isAbstract()) {
             candidate = null;
@@ -969,7 +999,7 @@ public class FastHierarchy {
 
           SootMethod method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
           if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
-            if ((!allowAbstract && method.isAbstract()) || method.isStatic()) {
+            if ((!allowAbstract && method.isAbstract()) || (allowStatic || method.isStatic())) {
               // abstract/static method cannot be dispatched
             } else if (candidate == null || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {
               // the found method is more specific than our current candidate
@@ -992,7 +1022,7 @@ public class FastHierarchy {
     if (candidate != null &&
     // We cannot use it in the vtable, since others might ask for
     // concrete methods
-        !candidate.isAbstract()) {
+        !candidate.isAbstract() && !allowStatic) {
       typeToVtbl.put(baseType, methodSignature, candidate);
     }
     return candidate;
