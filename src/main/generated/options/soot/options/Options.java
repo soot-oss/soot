@@ -51,6 +51,7 @@ public class Options extends OptionsBase {
     public static final int src_prec_apk_class_jimple = 5;
     public static final int src_prec_apk_c_j = 5;
     public static final int src_prec_dotnet = 6;
+    public static final int src_prec_MAX = 6;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -78,6 +79,7 @@ public class Options extends OptionsBase {
     public static final int output_format_template = 14;
     public static final int output_format_a = 15;
     public static final int output_format_asm = 15;
+    public static final int output_format_MAX = 15;
     public static final int java_version_default = 1;
     public static final int java_version_1_1 = 2;
     public static final int java_version_1 = 2;
@@ -103,23 +105,28 @@ public class Options extends OptionsBase {
     public static final int java_version_11 = 12;
     public static final int java_version_1_12 = 13;
     public static final int java_version_12 = 13;
+    public static final int java_version_MAX = 13;
     public static final int wrong_staticness_fail = 1;
     public static final int wrong_staticness_ignore = 2;
     public static final int wrong_staticness_fix = 3;
     public static final int wrong_staticness_fixstrict = 4;
+    public static final int wrong_staticness_MAX = 4;
     public static final int field_type_mismatches_fail = 1;
     public static final int field_type_mismatches_ignore = 2;
     public static final int field_type_mismatches_null = 3;
+    public static final int field_type_mismatches_MAX = 3;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
     public static final int throw_analysis_dotnet = 4;
     public static final int throw_analysis_auto_select = 5;
+    public static final int throw_analysis_MAX = 5;
     public static final int check_init_throw_analysis_auto = 1;
     public static final int check_init_throw_analysis_pedantic = 2;
     public static final int check_init_throw_analysis_unit = 3;
     public static final int check_init_throw_analysis_dalvik = 4;
     public static final int check_init_throw_analysis_dotnet = 5;
+    public static final int check_init_throw_analysis_MAX = 5;
 
     @SuppressWarnings("unused")
     public boolean parse(String[] argv) {
