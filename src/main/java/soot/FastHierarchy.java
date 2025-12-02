@@ -999,7 +999,7 @@ public class FastHierarchy {
 
           SootMethod method = getSignaturePolymorphicMethod(iFace, name, parameterTypes, returnType);
           if (method != null && isVisible(declaringClass, iFace, method.getModifiers())) {
-            if ((!allowAbstract && method.isAbstract()) || (allowStatic || method.isStatic())) {
+            if ((!allowAbstract && method.isAbstract()) || (!allowStatic && method.isStatic())) {
               // abstract/static method cannot be dispatched
             } else if (candidate == null || canStoreClass(method.getDeclaringClass(), candidate.getDeclaringClass())) {
               // the found method is more specific than our current candidate
