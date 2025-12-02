@@ -179,12 +179,12 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     final MultiMap<Local, Cluster> nonConstantClustersPerLocal = new HashMultiMap<Local, Cluster>();
 
     final Map<Unit, Integer> stmtToIndex = new HashMap<>();
-    final Map<Integer, Unit> indexToStmt = new HashMap<>();
     final Chain<Unit> units = body.getUnits();
+    final Unit[] indexToStmt = new Unit[units.size()];
     int idx = 0;
     for (Unit s : units) {
       stmtToIndex.put(s, idx);
-      indexToStmt.put(idx, s);
+      indexToStmt[idx] = s;
       idx++;
 
     }
@@ -283,7 +283,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           continue;
         }
         for (int i = constantInit.nextSetBit(0); i != -1; i = constantInit.nextSetBit(i + 1)) {
-          AssignStmt assign = (AssignStmt) indexToStmt.get(i);
+          AssignStmt assign = (AssignStmt) indexToStmt[i];
           if (assign == null) {
             throw new AssertionError("Wrong indice");
           }
@@ -294,7 +294,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
         BitSet uses = cluster.uses;
         for (int i = uses.nextSetBit(0); i != -1; i = uses.nextSetBit(i + 1)) {
-          Unit use = indexToStmt.get(i);
+          Unit use = indexToStmt[i];
           if (use == null) {
             throw new AssertionError("Wrong indice");
           }
@@ -303,12 +303,13 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         BitSet nonConstantDefs = cluster.nonConstantDefs;
         if (nonConstantDefs != null) {
           for (int i = nonConstantDefs.nextSetBit(0); i != -1; i = nonConstantDefs.nextSetBit(i + 1)) {
-            DefinitionStmt def = (DefinitionStmt) indexToStmt.get(i);
+            DefinitionStmt def = (DefinitionStmt) indexToStmt[i];
             if (def == null) {
               throw new AssertionError("Wrong indice");
             }
-            if (def.getLeftOp() == lcl) {
-              def.getLeftOpBox().setValue(newLocal);
+            final ValueBox box = def.getLeftOpBox();
+            if (box.getValue() == lcl) {
+              box.setValue(newLocal);
             }
           }
         }
