@@ -240,13 +240,10 @@ public abstract class AbstractTestingFramework {
     return sootClass;
   }
 
-  private String classFromSignature(String targetMethod) {
-    return targetMethod.substring(1, targetMethod.indexOf(':'));
-  }
-
-  private SootMethod getMethodForSig(String sig) {
-    Scene.v().forceResolve(classFromSignature(sig), SootClass.BODIES);
-    return Scene.v().getMethod(sig);
+  private static SootMethod getMethodForSig(String sig) {
+    final Scene scene = Scene.v();
+    scene.forceResolve(Scene.signatureToClass(sig), SootClass.BODIES);
+    return scene.getMethod(sig);
   }
 
   /**
