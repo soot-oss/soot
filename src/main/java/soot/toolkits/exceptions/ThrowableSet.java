@@ -91,11 +91,12 @@ public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
 
+  protected final Scene scene;
   /**
    * A reference to java.lang.Object. Not final to allow subclasses to use a different class here, e.g., when analyzing .net
    * programs.
    */
-  protected SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
+  protected SootClass JAVA_LANG_OBJECT_CLASS;
 
   /**
    * Set of exception types included within the set.
@@ -127,7 +128,9 @@ public class ThrowableSet {
    * @param exclude
    *          The set of {@link AnySubType} objects representing the types to be excluded from the set.
    */
-  protected ThrowableSet(Set<RefLikeType> include, Set<AnySubType> exclude) {
+  protected ThrowableSet(Set<RefLikeType> include, Set<AnySubType> exclude, Scene scene, SootClass object) {
+    this.scene = scene;
+    this.JAVA_LANG_OBJECT_CLASS = object;
     exceptionsIncluded = getImmutable(include);
     exceptionsExcluded = getImmutable(exclude);
     // We don't need to clone include and exclude to guarantee
@@ -244,7 +247,7 @@ public class ThrowableSet {
       }
     }
 
-    FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
+    FastHierarchy hierarchy = scene.getOrMakeFastHierarchy();
     boolean eHasNoHierarchy = hasNoHierarchy(e);
 
     for (AnySubType excludedType : excluded) {
@@ -336,7 +339,7 @@ public class ThrowableSet {
       }
       return result;
     }
-    final Scene scene = Scene.v();
+    final Scene scene = this.scene;
     // java.lang.Object is managed by the Scene -> guaranteed to only have one instance of the Object class
     final SootClass objectClass = scene.getObjectType().getSootClass();
 
@@ -492,7 +495,7 @@ public class ThrowableSet {
   private ThrowableSet add(Set<RefLikeType> addedExceptions) {
     Set<RefLikeType> resultSet = new HashSet<>(this.exceptionsIncluded);
     int changes = 0;
-    FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
+    FastHierarchy hierarchy = this.scene.getOrMakeFastHierarchy();
 
     // This algorithm is O(n m), where n and m are the sizes of the
     // two sets, so hope that the sets are small.
@@ -641,7 +644,7 @@ public class ThrowableSet {
       Manager.v().catchableAsQueries++;
     }
 
-    final Scene scene = Scene.v();
+    final Scene scene = this.scene;
     FastHierarchy h = scene.getOrMakeFastHierarchy();
     /**
      * Originally this implementation had checked if the catcher.getSootClass() is a phantom class. However this makes
@@ -726,7 +729,7 @@ public class ThrowableSet {
       mgr.removesOfAnySubType++;
     }
 
-    final Scene scene = Scene.v();
+    final Scene scene = this.scene;
     FastHierarchy h = scene.getOrMakeFastHierarchy();
     Set<RefLikeType> caughtIncluded = null;
     Set<AnySubType> caughtExcluded = null;
@@ -1081,6 +1084,9 @@ public class ThrowableSet {
     private int catchableAsFromMap = 0;
     private int catchableAsFromSearch = 0;
 
+    private final Scene scene = Scene.v();
+    private final SootClass objectType = scene.getObjectType().getSootClass();
+
     /**
      * Constructs a <code>ThrowableSet.Manager</code> for inclusion in Soot's global variable manager, {@link G}.
      *
@@ -1090,7 +1096,6 @@ public class ThrowableSet {
     public Manager(Singletons.Global g) {
       // First ensure the Exception classes are represented in Soot. Note that Soot supports multiple target platforms such
       // as .net, which may use different exception classes. In that case, we just use null for the Java exception types.
-      final Scene scene = Scene.v();
 
       if (Options.v().src_prec() == Options.src_prec_dotnet) {
         // TODO check if all types set right and refactor
@@ -1239,7 +1244,7 @@ public class ThrowableSet {
       if (INSTRUMENTING) {
         registrationCalls++;
       }
-      ThrowableSet result = new ThrowableSet(include, exclude);
+      ThrowableSet result = new ThrowableSet(include, exclude, scene, objectType);
       ThrowableSet ref = registry.get(result);
       if (null != ref) {
         return ref;
