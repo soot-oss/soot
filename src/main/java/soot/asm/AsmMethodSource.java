@@ -1149,7 +1149,12 @@ public class AsmMethodSource implements MethodSource {
       if (!stack.isEmpty()) {
         Operand o1 = pop();
         if (!units.containsKey(o1.insn)) {
-          InvokeExpr iexpr = (InvokeExpr) getFrame(o1.insn).out()[0].value;
+          Value p = getFrame(o1.insn).out()[0].value;
+          if (!(p instanceof InvokeExpr)) {
+            // we don't care.
+            return;
+          }
+          InvokeExpr iexpr = (InvokeExpr) p;
           setUnit(o1, Jimple.v().newInvokeStmt(iexpr));
         }
       }
