@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,8 +83,6 @@ public class CopyPropagator extends BodyTransformer {
   public static CopyPropagator v() {
     return G.v().soot_jimple_toolkits_scalar_CopyPropagator();
   }
-
-  AtomicInteger hit = new AtomicInteger();
 
   /**
    * Cascaded copy propagator.

@@ -28,9 +28,11 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import soot.IdentityUnit;
 import soot.Local;
@@ -135,6 +137,7 @@ public class SimpleLocalDefs implements LocalDefs {
     final List<Unit>[] unitList;
     final int[] localRange;
     final Unit[] universe;
+    final Map<Unit, Set<Unit>> fromUnitToHandler;
 
     private Map<Unit, Integer> indexOfUnit;
 
@@ -167,6 +170,28 @@ public class SimpleLocalDefs implements LocalDefs {
       }
       assert (localRange[N] == units);
 
+      Map<Unit, Set<Unit>> fromUnitToHandler = null;
+      if (graph instanceof ExceptionalGraph) {
+        ExceptionalGraph<Unit> g = (ExceptionalGraph<Unit>) graph;
+        for (java.util.Map.Entry<Unit, Collection<ExceptionDest<? extends Unit>>> e : g.getAllExceptionDests().entrySet()) {
+          Unit from = e.getKey();
+          for (ExceptionDest<? extends Unit> ext : e.getValue()) {
+            Trap trap = ext.getTrap();
+            if (trap != null) {
+              if (fromUnitToHandler == null) {
+                fromUnitToHandler = new HashMap<>();
+              }
+              Set<Unit> s = fromUnitToHandler.get(from);
+              if (s == null) {
+                s = new HashSet<>();
+                fromUnitToHandler.put(from, s);
+              }
+              s.add(trap.getHandlerUnit());
+            }
+          }
+        }
+      }
+      this.fromUnitToHandler = fromUnitToHandler;
       doAnalysis();
 
       this.indexOfUnit = null;// release memory
@@ -189,17 +214,10 @@ public class SimpleLocalDefs implements LocalDefs {
 
     @Override
     protected Flow getFlow(Unit from, Unit to) {
-      // QND
-      if (to instanceof IdentityUnit && graph instanceof ExceptionalGraph) {
-        ExceptionalGraph<Unit> g = (ExceptionalGraph<Unit>) graph;
-        if (!g.getExceptionalPredsOf(to).isEmpty()) {
-          // look if there is a real exception edge
-          for (ExceptionDest<Unit> exd : g.getExceptionDests(from)) {
-            Trap trap = exd.getTrap();
-            if (trap != null && trap.getHandlerUnit() == to) {
-              return Flow.IN;
-            }
-          }
+      if (to instanceof IdentityUnit && fromUnitToHandler != null) {
+        Set<Unit> f = fromUnitToHandler.get(from);
+        if (f != null && f.contains(to)) {
+          return Flow.IN;
         }
       }
       return Flow.OUT;
