@@ -382,4 +382,9 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
       return buf.toString();
     }
   }
+
+  @Override
+  public Map<Block, Collection<soot.toolkits.graph.ExceptionalGraph.ExceptionDest<? extends Block>>> getAllExceptionDests() {
+    return (Map) blockToExceptionDests;
+  }
 }
