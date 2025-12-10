@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,8 @@ public class CopyPropagator extends BodyTransformer {
   public static CopyPropagator v() {
     return G.v().soot_jimple_toolkits_scalar_CopyPropagator();
   }
+
+  AtomicInteger hit = new AtomicInteger();
 
   /**
    * Cascaded copy propagator.
@@ -184,7 +187,10 @@ public class CopyPropagator extends BodyTransformer {
                     }
                   }
                 }
-                agrees &= defAgrees;
+                if (!defAgrees) {
+                  agrees = false;
+                  break;
+                }
               }
               propagateDef = agrees;
             }
@@ -228,14 +234,15 @@ public class CopyPropagator extends BodyTransformer {
                     fastCopyPropagationCount++;
                     continue;
                   }
-
-                  List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, u);
-                  if (path == null) {
-                    // no path in the extended basic block
-                    continue;
-                  }
-
-                  {
+                  List<Unit> d1 = localDefs.getDefsOfAt(m, u);
+                  List<Unit> d2;
+                  if (d1.isEmpty() || (d2 = localDefs.getDefsOfAt(m, def)).isEmpty()) {
+                    // Use the slow approach
+                    List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, u);
+                    if (path == null) {
+                      // no path in the extended basic block
+                      continue;
+                    }
                     boolean isRedefined = false;
 
                     Iterator<Unit> pathIt = path.iterator();
@@ -259,6 +266,11 @@ public class CopyPropagator extends BodyTransformer {
                     }
 
                     if (isRedefined) {
+                      continue;
+                    }
+                  } else {
+                    if (!d1.equals(d2)) {
+                      // definitions disagree, there must be a definition in-between
                       continue;
                     }
                   }
