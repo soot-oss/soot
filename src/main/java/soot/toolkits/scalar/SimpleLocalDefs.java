@@ -131,6 +131,37 @@ public class SimpleLocalDefs implements LocalDefs {
         }
         return elements;
       }
+
+      public boolean doesAgree(FlowBitSet fb, int fromIndex, int toIndex) {
+        if (fromIndex < 0 || toIndex < fromIndex || universe.length < toIndex) {
+          throw new IndexOutOfBoundsException();
+        }
+        if (fromIndex == toIndex) {
+          return true;
+        }
+
+        if (fromIndex == toIndex - 1) {
+          return this.get(fromIndex) == fb.get(fromIndex);
+        }
+
+        int i = fromIndex - 1;
+        // compare the bitsets in the requested interval
+        for (;;) {
+          int my = this.nextSetBit(i + 1);
+          int other = fb.nextSetBit(i + 1);
+          if (my < 0 || my >= toIndex) {
+            if (other > 0 && other < toIndex) {
+              return false;
+            }
+            break;
+          }
+          if (other != my) {
+            return false;
+          }
+          i = my;
+        }
+        return true;
+      }
     }
 
     final Map<Local, Integer> locals;
@@ -296,6 +327,47 @@ public class SimpleLocalDefs implements LocalDefs {
     }
 
     @Override
+    public boolean doDefsAgreeAt(Local l, Unit a, Unit b) {
+      Integer lno = locals.get(l);
+      if (lno == null) {
+        return false;
+      }
+
+      int from = localRange[lno];
+      int to = localRange[lno + 1];
+      assert (from <= to);
+
+      if (from == to) {
+        assert (unitList[lno].size() == 1);
+        // both singletonList is immutable
+        return true;
+      } else {
+        FlowBitSet fa = getFlowBefore(a);
+        FlowBitSet fb = getFlowBefore(b);
+        return fa.doesAgree(fb, from, to);
+      }
+    }
+
+    @Override
+    public boolean hasDefsOfAt(Local l, Unit s) {
+      Integer lno = locals.get(l);
+      if (lno == null) {
+        return false;
+      }
+
+      int from = localRange[lno];
+      int to = localRange[lno + 1];
+      assert (from <= to);
+
+      if (from == to) {
+        assert (unitList[lno].size() == 1);
+        return true;
+      } else {
+        return !getFlowBefore(s).isEmpty();
+      }
+    }
+
+    @Override
     public List<Unit> getDefsOf(Local l) {
       List<Unit> defs = new ArrayList<Unit>();
       for (Unit u : graph) {
@@ -445,5 +517,15 @@ public class SimpleLocalDefs implements LocalDefs {
   @Override
   public List<Unit> getDefsOf(Local l) {
     return def.getDefsOf(l);
+  }
+
+  @Override
+  public boolean hasDefsOfAt(Local l, Unit s) {
+    return def.hasDefsOfAt(l, s);
+  }
+
+  @Override
+  public boolean doDefsAgreeAt(Local l, Unit a, Unit b) {
+    return def.doDefsAgreeAt(l, a, b);
   }
 }

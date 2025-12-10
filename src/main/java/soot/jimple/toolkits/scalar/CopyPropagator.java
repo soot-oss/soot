@@ -231,9 +231,8 @@ public class CopyPropagator extends BodyTransformer {
                     fastCopyPropagationCount++;
                     continue;
                   }
-                  List<Unit> d1 = localDefs.getDefsOfAt(m, u);
-                  List<Unit> d2;
-                  if (d1.isEmpty() || (d2 = localDefs.getDefsOfAt(m, def)).isEmpty()) {
+
+                  if (!localDefs.hasDefsOfAt(m, u) || !localDefs.hasDefsOfAt(m, def)) {
                     // Use the slow approach
                     List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, u);
                     if (path == null) {
@@ -266,7 +265,8 @@ public class CopyPropagator extends BodyTransformer {
                       continue;
                     }
                   } else {
-                    if (!d1.equals(d2)) {
+                    boolean agree = localDefs.doDefsAgreeAt(m, def, u);
+                    if (!agree) {
                       // definitions disagree, there must be a definition in-between
                       continue;
                     }
