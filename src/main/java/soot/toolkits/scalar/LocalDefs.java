@@ -47,6 +47,31 @@ public interface LocalDefs {
   public List<Unit> getDefsOfAt(Local l, Unit s);
 
   /**
+   * Returns true when there are definition sites for a Local at a certain point (Unit) in a method.
+   *
+   * @param l
+   *          the Local in question.
+   * @param s
+   *          a unit that specifies the method context (location) to query for the definitions of the Local.
+   * @return true when there are definitions
+   */
+  public default boolean hasDefsOfAt(Local l, Unit s) {
+    return !getDefsOfAt(l, s).isEmpty();
+  }
+
+  /**
+   * @param l
+   * @param a
+   * @param b
+   * @return
+   */
+  public default boolean doDefsAgreeAt(Local l, Unit a, Unit b) {
+    List<Unit> la = getDefsOfAt(l, a);
+    List<Unit> lb = getDefsOfAt(l, b);
+    return la.equals(lb);
+  }
+
+  /**
    * Returns the definition sites for a Local merged over all points in a method.
    *
    * You can assume this method never returns {@code null}.

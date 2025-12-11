@@ -24,6 +24,7 @@ package soot.toolkits.graph;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import soot.Body;
 import soot.Trap;
@@ -147,4 +148,13 @@ public interface ExceptionalGraph<N> extends DirectedBodyGraph<N> {
    *         exceptions which may be thrown by <code>n</code>.
    */
   public Collection<? extends ExceptionDest<N>> getExceptionDests(N n);
+
+  /**
+   * Returns all nodes and corresponding {@link ExceptionalGraph.ExceptionDest ExceptionDest} objects.
+   * 
+   * @return a map of <code>ExceptionDest</code> objects describing the traps and handlers, if any, which catch the
+   *         exceptions which may be thrown by each key in the map.
+   */
+  public Map<N, Collection<ExceptionDest<? extends N>>> getAllExceptionDests();
+
 }

@@ -184,7 +184,10 @@ public class CopyPropagator extends BodyTransformer {
                     }
                   }
                 }
-                agrees &= defAgrees;
+                if (!defAgrees) {
+                  agrees = false;
+                  break;
+                }
               }
               propagateDef = agrees;
             }
@@ -229,13 +232,13 @@ public class CopyPropagator extends BodyTransformer {
                     continue;
                   }
 
-                  List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, u);
-                  if (path == null) {
-                    // no path in the extended basic block
-                    continue;
-                  }
-
-                  {
+                  if (!localDefs.hasDefsOfAt(m, u) || !localDefs.hasDefsOfAt(m, def)) {
+                    // Use the slow approach
+                    List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, u);
+                    if (path == null) {
+                      // no path in the extended basic block
+                      continue;
+                    }
                     boolean isRedefined = false;
 
                     Iterator<Unit> pathIt = path.iterator();
@@ -259,6 +262,12 @@ public class CopyPropagator extends BodyTransformer {
                     }
 
                     if (isRedefined) {
+                      continue;
+                    }
+                  } else {
+                    boolean agree = localDefs.doDefsAgreeAt(m, def, u);
+                    if (!agree) {
+                      // definitions disagree, there must be a definition in-between
                       continue;
                     }
                   }

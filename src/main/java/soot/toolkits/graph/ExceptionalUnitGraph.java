@@ -823,4 +823,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     }
     return buf.toString();
   }
+
+  @Override
+  public Map<Unit, Collection<soot.toolkits.graph.ExceptionalGraph.ExceptionDest<? extends Unit>>> getAllExceptionDests() {
+    return (Map) unitToExceptionDests;
+  }
 }
