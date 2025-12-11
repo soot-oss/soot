@@ -71,6 +71,7 @@ import soot.jimple.NopStmt;
 import soot.jimple.NullConstant;
 import soot.jimple.RemExpr;
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.options.Options;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
@@ -115,6 +116,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
     boolean checkInvoke = false;
 
     Local thisLocal = null;
+    Set<Unit> trapEnds = null;
 
     for (Iterator<Unit> it = units.iterator(); it.hasNext();) {
       Unit s = it.next();
@@ -127,11 +129,14 @@ public class DeadAssignmentEliminator extends BodyTransformer {
 
         if (!removeNop) {
           removeNop = true;
-          for (Trap t : b.getTraps()) {
-            if (t.getEndUnit() == s) {
-              removeNop = false;
-              break;
+          if (trapEnds == null) {
+            trapEnds = new HashSet<>();
+            for (Trap t : b.getTraps()) {
+              trapEnds.add(t.getEndUnit());
             }
+          }
+          if (trapEnds.contains(s)) {
+            removeNop = false;
           }
         }
 
@@ -287,6 +292,11 @@ public class DeadAssignmentEliminator extends BodyTransformer {
         }
 
         final Jimple jimple = Jimple.v();
+        Scene scene = Scene.v();
+        CallGraph cg = null;
+        if (scene.hasCallGraph()) {
+          cg = scene.getCallGraph();
+        }
         for (AssignStmt s : postProcess) {
           // Transform it into a simple invoke.
           Stmt newInvoke = jimple.newInvokeStmt(s.getInvokeExpr());
@@ -294,9 +304,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
           units.swapWith(s, newInvoke);
 
           // If we have a callgraph, we need to fix it
-          Scene scene = Scene.v();
-          if (scene.hasCallGraph()) {
-            scene.getCallGraph().swapEdgesOutOf(s, newInvoke);
+          if (cg != null) {
+            cg.swapEdgesOutOf(s, newInvoke);
           }
         }
       }
