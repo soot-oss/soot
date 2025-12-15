@@ -95,21 +95,11 @@ public class CallGraph implements Iterable<Edge> {
    * @return True if at least one edge has been removed, otherwise false
    */
   public boolean removeAllEdgesOutOf(Unit u) {
-    boolean hasRemoved = false;
     Set<Edge> edgesToRemove = new HashSet<>();
-    for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext();) {
-      Edge e = edgeRdr.next();
-      if (e != null && e.srcUnit() == u) {
-        e.remove();
-        removeEdge(e, false);
-        edgesToRemove.add(e);
-        hasRemoved = true;
-      }
+    for (Iterator<Edge> it = edgesOutOf(u); it.hasNext(); ) {
+      edgesToRemove.add(it.next());
     }
-    if (hasRemoved) {
-      reader.remove(edgesToRemove);
-    }
-    return hasRemoved;
+    return removeEdges(edgesToRemove);
   }
 
   /**
@@ -197,14 +187,12 @@ public class CallGraph implements Iterable<Edge> {
    * @return whether the removal was successful.
    */
   public boolean removeEdges(Collection<Edge> edges) {
-    if (!this.edges.removeAll(edges)) {
-      return false;
-    }
+    boolean removedEdges = false;
     for (Edge e : edges) {
-      removeEdge(e, false);
+      removedEdges |= removeEdge(e, false);
     }
     reader.remove(edges);
-    return true;
+    return removedEdges;
   }
 
   /**
