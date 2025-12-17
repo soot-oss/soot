@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -351,18 +352,7 @@ public class Scene {
       List<String> dirs = new LinkedList<String>();
       dirs.addAll(options.process_dir());
       // Add process-jar-dirs
-      List<String> jarDirs = options.process_jar_dir();
-      if (!jarDirs.isEmpty()) {
-        for (String jarDirName : jarDirs) {
-          File jarDir = new File(jarDirName);
-          File[] contents = jarDir.listFiles();
-          for (File f : contents) {
-            if (f.getAbsolutePath().endsWith(".jar")) {
-              dirs.add(f.getAbsolutePath());
-            }
-          }
-        }
-      }
+      dirs.addAll(getJarsFromDirs(options.process_jar_dir()));
       // Add process-dirs (if applicable)
       if (!dirs.isEmpty()) {
         StringBuilder pds = new StringBuilder();
@@ -380,6 +370,12 @@ public class Scene {
     }
 
     return sootClassPath;
+  }
+
+  private List<String> getJarsFromDirs(List<String> dirs) {
+    return dirs.stream().flatMap(d ->
+      Arrays.stream(new File(d).listFiles())
+    ).map(f -> f.getAbsolutePath()).filter(n -> n.endsWith(".jar")).collect(Collectors.toList());
   }
 
   /**
@@ -1947,7 +1943,9 @@ public class Scene {
         throw new IllegalArgumentException("If switch -oaat is used, then also -process-dir must be given.");
       }
     } else {
-      for (String path : opts.process_dir()) {
+      List<String> todo = new ArrayList<>(opts.process_dir());
+      todo.addAll(getJarsFromDirs(opts.process_jar_dir()));
+      for (String path : todo) {
         for (String cl : SourceLocator.v().getClassesUnder(path)) {
           SootClass theClass = loadClassAndSupport(cl);
           if (!theClass.isPhantom) {
