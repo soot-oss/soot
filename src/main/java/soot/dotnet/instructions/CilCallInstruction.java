@@ -257,7 +257,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
         afterCallUnits.add(ByReferenceWrapperGenerator.getUnwrapCall(wrapped, modifiedArg, originalArg));
         FieldRef fieldRef = byRefField[i];
         if (fieldRef != null) {
-          //by field reference
+          // by field reference
           afterCallUnits.add(Jimple.v().newAssignStmt(fieldRef, originalArg));
         }
       } else {

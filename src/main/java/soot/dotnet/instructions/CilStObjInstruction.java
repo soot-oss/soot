@@ -108,6 +108,9 @@ public class CilStObjInstruction extends AbstractCilnstruction {
       Local l = (Local) target;
       Local ref = dotnetBody.variableManager.getReferenceLocal(l);
       if (ref != null) {
+        if (!(value instanceof Immediate)) {
+          value = simplifyComplexExpression(jb, value);
+        }
         jb.getUnits().add(ArrayByReferenceWrapperGenerator.createSet(ref, value));
       }
     }
