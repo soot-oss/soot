@@ -55,7 +55,7 @@ public class CilLdVirtualFtnInstruction extends AbstractCilnstruction {
    */
   @Override
   public Value jimplifyExpr(Body jb) {
-    SootClass clazz = Scene.v().getSootClass(instruction.getMethod().getDeclaringType().getFullname());
+    SootClass clazz = Scene.v().forceResolve(instruction.getMethod().getDeclaringType().getFullname(), SootClass.SIGNATURES);
     DotnetMethod method = new DotnetMethod(instruction.getMethod(), clazz);
     return new FunctionPointerConstant(method, true);
   }

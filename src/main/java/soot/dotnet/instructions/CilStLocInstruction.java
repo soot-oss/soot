@@ -68,6 +68,7 @@ public class CilStLocInstruction extends AbstractCilnstruction {
       CilInstruction cilExpr
           = CilInstructionFactory.fromInstructionMsg(instruction.getValueInstruction(), dotnetBody, cilBlock);
       value = cilExpr.jimplifyExpr(jb);
+      value = simplifyComplexExpression(jb, value);
     }
 
     Local ref = dotnetBody.variableManager.getReferenceLocal(variable);
@@ -77,7 +78,7 @@ public class CilStLocInstruction extends AbstractCilnstruction {
 
     if (value.getType() instanceof IntType
         && Scene.v().getOrMakeFastHierarchy().canStoreType(variable.getType(), RefType.v(DotNetBasicTypes.SYSTEM_ENUM))) {
-      //we need a cast
+      // we need a cast
       value = Jimple.v().newCastExpr(value, variable.getType());
     } else if (value instanceof Local && variable.getType() != value.getType()
         && dotnetBody.variableManager.localsToCastContains(((Local) value).getName())) {

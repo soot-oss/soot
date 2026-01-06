@@ -210,8 +210,8 @@ public class CilCallInstruction extends AbstractCilnstruction {
         CilInstruction inst = CilInstructionFactory.fromInstructionMsg(arg, dotnetBody, cilBlock);
         Value argValue = inst.jimplifyExpr(jb);
         if (arg.getOpCode() == IlOpCode.LDFLDA || arg.getOpCode() == IlOpCode.LDSFLDA) {
-          //by reference a field
-          if (!ByReferenceWrapperGenerator.needsWrapper(instruction.getMethod().getParameterList().get(z))) {
+          // by reference a field
+          if (!ByReferenceWrapperGenerator.needsWrapper(instruction.getMethod().getParameterList().get(z - startIdx))) {
             throw new IllegalStateException(
                 "We load an address of a field, but apparently this is not a by-reference paramter?");
           }
@@ -257,7 +257,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
         afterCallUnits.add(ByReferenceWrapperGenerator.getUnwrapCall(wrapped, modifiedArg, originalArg));
         FieldRef fieldRef = byRefField[i];
         if (fieldRef != null) {
-          //by field reference
+          // by field reference
           afterCallUnits.add(Jimple.v().newAssignStmt(fieldRef, originalArg));
         }
       } else {
