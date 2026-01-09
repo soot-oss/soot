@@ -296,5 +296,10 @@ public class BytecodeHierarchy implements IHierarchy {
       this.next = next;
       this.type = type;
     }
+
+    @Override
+    public String toString() {
+      return "Type: " + type + " Next: " + next;
+    }
   }
 }

@@ -121,12 +121,12 @@ public class TypeAssigner extends BodyTransformer {
     // In a final release this guard, and anything in the first branch, would probably be removed.
     //
     if (opt.compare_type_assigners()) {
-      compareTypeAssigners(jb, opt.use_older_type_assigner());
+      compareTypeAssigners(jb, opt.use_older_type_assigner(), opt);
     } else {
       if (opt.use_older_type_assigner()) {
         soot.jimple.toolkits.typing.TypeResolver.resolve(jb, Scene.v());
       } else {
-        (new soot.jimple.toolkits.typing.fast.TypeResolver(jb)).inferTypes();
+        (new soot.jimple.toolkits.typing.fast.TypeResolver(jb, opt)).inferTypes();
       }
     }
 
@@ -229,7 +229,7 @@ public class TypeAssigner extends BodyTransformer {
 
   }
 
-  private void compareTypeAssigners(JimpleBody jb, boolean useOlderTypeAssigner) {
+  private void compareTypeAssigners(JimpleBody jb, boolean useOlderTypeAssigner, JBTROptions opt) {
     int size = jb.getUnits().size();
     JimpleBody oldJb, newJb;
     long oldTime, newTime;
@@ -237,7 +237,7 @@ public class TypeAssigner extends BodyTransformer {
       // Use old type assigner last
       newJb = (JimpleBody) jb.clone();
       newTime = System.currentTimeMillis();
-      (new soot.jimple.toolkits.typing.fast.TypeResolver(newJb)).inferTypes();
+      (new soot.jimple.toolkits.typing.fast.TypeResolver(newJb, opt)).inferTypes();
       newTime = System.currentTimeMillis() - newTime;
       oldTime = System.currentTimeMillis();
       soot.jimple.toolkits.typing.TypeResolver.resolve(jb, Scene.v());
@@ -250,7 +250,7 @@ public class TypeAssigner extends BodyTransformer {
       soot.jimple.toolkits.typing.TypeResolver.resolve(oldJb, Scene.v());
       oldTime = System.currentTimeMillis() - oldTime;
       newTime = System.currentTimeMillis();
-      (new soot.jimple.toolkits.typing.fast.TypeResolver(jb)).inferTypes();
+      (new soot.jimple.toolkits.typing.fast.TypeResolver(jb, opt)).inferTypes();
       newTime = System.currentTimeMillis() - newTime;
       newJb = jb;
     }

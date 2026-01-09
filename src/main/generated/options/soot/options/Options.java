@@ -2101,6 +2101,7 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "")
                     + padOpt("use-older-type-assigner (false)", "Enables the older type assigner")
+                    + padOpt("use-precise-typing (false)", "Uses a more precise type assigner, which is much slower")
                     + padOpt("compare-type-assigners (false)", "Compares Ben Bellamy's and the older type assigner")
                     + padOpt("ignore-nullpointer-dereferences (false)", "Ignores virtual method calls on base objects that may only be null");
 
@@ -2920,6 +2921,7 @@ public class Options extends OptionsBase {
             return String.join(" ", 
                     "enabled",
                     "use-older-type-assigner",
+                    "use-precise-typing",
                     "compare-type-assigners",
                     "ignore-nullpointer-dereferences"
             );
@@ -3553,6 +3555,7 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true "
                     + "use-older-type-assigner:false "
+                    + "use-precise-typing:false "
                     + "compare-type-assigners:false "
                     + "ignore-nullpointer-dereferences:false ";
 
