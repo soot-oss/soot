@@ -213,7 +213,7 @@ public class CilCallInstruction extends AbstractCilnstruction {
           // by reference a field
           if (!ByReferenceWrapperGenerator.needsWrapper(instruction.getMethod().getParameterList().get(z - startIdx))) {
             throw new IllegalStateException(
-                "We load an address of a field, but apparently this is not a by-reference paramter?");
+                "We load an address of a field, but apparently this is not a by-reference parameter?");
           }
           if (!(argValue instanceof FieldRef)) {
             throw new IllegalStateException("Expected a field reference");

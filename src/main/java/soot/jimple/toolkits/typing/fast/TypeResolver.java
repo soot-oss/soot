@@ -721,8 +721,6 @@ public class TypeResolver {
         Type told = tg.get(v);
 
         boolean isFirstType = true;
-        if (stmt.getRightOp().toString().equals("$u68"))
-          System.out.println();
         for (Type t_ : ef.eval(tg, stmt.getRightOp(), stmt)) {
           if (lhs instanceof ArrayRef) {
             /*
@@ -802,8 +800,8 @@ public class TypeResolver {
                     newLCAS.add(t);
                   }
                 }
-                lcas = newLCAS;
               }
+              lcas = newLCAS;
             }
 
           }
