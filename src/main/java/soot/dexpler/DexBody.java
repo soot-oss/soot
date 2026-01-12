@@ -592,10 +592,12 @@ public class DexBody {
             logger.error("Exception while reading original parameter names.", ex);
           }
         }
-        if (localName == null && localDebugs.containsKey(parameterRegister)) {
-          localName = localDebugs.get(parameterRegister).get(0).name;
-        } else {
-          localName = "$u" + parameterRegister;
+        if (localName == null) {
+          if (localDebugs.containsKey(parameterRegister)) {
+            localName = localDebugs.get(parameterRegister).get(0).name;
+          } else {
+            localName = "$u" + parameterRegister;
+          }
         }
         if (localType == null) {
           // may only use UnknownType here because the local may be
