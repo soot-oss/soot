@@ -1783,6 +1783,17 @@
                         </long_desc>
                     </boolopt>
                     <boolopt>
+                        <name>Use precise typing</name>
+                        <alias>use-precise-typing</alias>
+                        <default>false</default>
+                        <short_desc>Uses a more precise type assigner, which is much slower</short_desc>
+                        <long_desc>
+                            When precise typing is enabled, Soot try to find the global best typing, i.e., 
+                            the typing with the least amount of assignments. This might cause Soot 
+                            require excessive amounts of computation resources (memory and CPU runtime).
+                        </long_desc>
+                    </boolopt>
+                    <boolopt>
                         <name>Compare type assigners</name>
                         <alias>compare-type-assigners</alias>
                         <default>false</default>

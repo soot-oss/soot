@@ -71,7 +71,7 @@ class PartialConstantTyping implements ITyping {
 
   @Override
   public Map<Local, Type> getMap() {
-    //This is expensive, so we try to avoid it
+    // This is expensive, so we try to avoid it
     final Map<Local, Type> innerMap = inner.getMap();
     Map<Local, Type> m = new HashMap<>(constantTypings.size() + innerMap.size());
     m.putAll(constantTypings);
@@ -86,7 +86,7 @@ class PartialConstantTyping implements ITyping {
   @Override
   public ITyping createCloneTyping() {
     PartialConstantTyping clone = new PartialConstantTyping(inner.createCloneTyping());
-    //we share the constant typings.
+    // we share the constant typings.
     clone.constantTypings = constantTypings;
     return clone;
   }

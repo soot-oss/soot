@@ -31,6 +31,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -58,6 +60,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
@@ -75,7 +78,10 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.typing.Util;
 import soot.jimple.toolkits.typing.fast.UseChecker.UseCheckerCache;
+import soot.options.JBTROptions;
 import soot.toolkits.scalar.LocalDefs;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 /**
  * New Type Resolver by Ben Bellamy (see 'Efficient Local Type Inference' at OOPSLA 08).
@@ -90,6 +96,15 @@ import soot.toolkits.scalar.LocalDefs;
  */
 public class TypeResolver {
   private static final int SINGLE_THREAD_LIMIT = 100000;
+  private static final Function<? super Local, ? extends Collection<Unit>> CREATE_NEW_SET
+      = new Function<Local, Collection<Unit>>() {
+
+        @Override
+        public Collection<Unit> apply(Local t) {
+          return new HashSet<>();
+        }
+
+      };
   private static int NUM_CORES = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
 
   protected final JimpleBody jb;
@@ -100,11 +115,15 @@ public class TypeResolver {
   private BitSet simple;
   private final LocalGenerator localGenerator;
   private final UseCheckerCache useCheckerCache;
+  private final JBTROptions opt;
 
-  public TypeResolver(JimpleBody jb) {
+  private MultiMap<Local, Unit> localToUses;
+
+  public TypeResolver(JimpleBody jb, JBTROptions opt) {
     this.jb = jb;
     this.localGenerator = Scene.v().createLocalGenerator(jb);
     this.useCheckerCache = new UseCheckerCache(jb);
+    this.opt = opt;
 
   }
 
@@ -736,6 +755,56 @@ public class TypeResolver {
           boolean addFirstDecision = false;
 
           lcas = reduceToAllowedTypesForLocal(lcas, v);
+          if (!opt.use_precise_typing() && lcas.size() > 1) {
+            BitSet dependsV = this.depends.get(v);
+            if (dependsV == null) {
+              if (localToUses == null) {
+                localToUses = new HashMultiMap<>();
+                for (Unit sstmt : this.jb.getUnits()) {
+                  Iterator<ValueBox> it = sstmt.getUseBoxesIterator();
+                  while (it.hasNext()) {
+                    ValueBox vb = it.next();
+                    Value b = vb.getValue();
+                    if (b instanceof Local) {
+                      Local l = (Local) b;
+                      localToUses.put(l, sstmt);
+                    }
+                  }
+                }
+
+              }
+              // no other local is dependent on our local, meaning that we can reduce the lcas set immediately
+              int castCount = Integer.MAX_VALUE;
+              Collection<Type> newLCAS = null;
+              Collection<Unit> uses = localToUses.get(v);
+              if (uses.isEmpty()) {
+                newLCAS = Collections.singletonList(lcas.iterator().next());
+              } else {
+                for (Type t : lcas) {
+                  UseChecker uc = createUseChecker(this.jb);
+                  CastInsertionUseVisitor uv = createCastInsertionUseVisitor(tg, h, true, castCount);
+                  uc.check(tg, uv, uses.iterator());
+                  int g = uv.getCount();
+                  if (g < castCount) {
+                    castCount = g;
+
+                    if (castCount == 0) {
+                      // We can't be better than this
+                      newLCAS = Collections.singletonList(t);
+                      break;
+                    }
+                    newLCAS = new ArrayList<>();
+                    newLCAS.add(t);
+                  } else if (g == castCount && newLCAS != null) {
+                    // tie break
+                    newLCAS.add(t);
+                  }
+                }
+              }
+              lcas = newLCAS;
+            }
+
+          }
           for (Type t : lcas) {
             if (!typesEqual(t, told)) {
               BitSet dependsV = this.depends.get(v);
