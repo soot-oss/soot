@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-package soot;
+package soot.jimple.toolkit.callgraph;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,9 +32,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import soot.Local;
+import soot.Modifier;
+import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Unit;
+import soot.VoidType;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.Stmt;
