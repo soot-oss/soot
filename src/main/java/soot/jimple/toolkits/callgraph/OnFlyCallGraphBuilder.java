@@ -206,7 +206,7 @@ public class OnFlyCallGraphBuilder {
         this.sigFinalize = nmbr.findOrAdd(JavaMethods.SIG_FINALIZE);
       }
       this.sigInit = nmbr.findOrAdd(JavaMethods.SIG_INIT);
-      this.sigForName = nmbr.findOrAdd(JavaMethods.SIG_INIT);
+      this.sigForName = nmbr.findOrAdd(JavaMethods.SIG_FOR_NAME);
     }
     {
       this.receiverToSites = new HashMap<Local, List<VirtualCallSite>>();
