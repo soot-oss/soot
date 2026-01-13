@@ -87,6 +87,10 @@ public class TypePromotionUseVisitor implements IUseVisitor {
         throw new RuntimeException();
       }
     } else {
+      if (tlow instanceof WeakObjectType) {
+        // We don't care that much about the weak object types.
+        return tlow;
+      }
       throw new RuntimeException();
     }
   }
@@ -100,7 +104,7 @@ public class TypePromotionUseVisitor implements IUseVisitor {
     final Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
     final boolean eqType = TypeResolver.typesEqual(t, useType);
     if (eqType) {
-      //shortcut
+      // shortcut
       return op;
     }
 
