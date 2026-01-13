@@ -1972,6 +1972,7 @@ public class AsmMethodSource implements MethodSource {
     worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
     conversionWorklist = worklist;
     edges = HashBasedTable.create(instructions.size(), 1);
+    setLineNumberMap();
 
     do {
       Edge edge = worklist.pollLast();
@@ -1985,9 +1986,6 @@ public class AsmMethodSource implements MethodSource {
       edge.stack = null;
       insnLoop: do {
         int type = insn.getType();
-        if (type != LINE) {
-          lineNumberMap.put(insn, lastLineNumber);
-        }
         switch (type) {
           case FIELD_INSN:
             convertFieldInsn((FieldInsnNode) insn);
@@ -2069,6 +2067,21 @@ public class AsmMethodSource implements MethodSource {
     } while (!worklist.isEmpty());
     conversionWorklist = null;
     edges = null;
+  }
+
+  private void setLineNumberMap() {
+    AbstractInsnNode current = instructions.getFirst();
+
+    int lastNumber = -1;
+    while (current != null) {
+      if (current.getType() == LINE) {
+        LineNumberNode ln = (LineNumberNode) current;
+        lastNumber = ln.line;
+      } else if (lastNumber >= 0) {
+        lineNumberMap.put(current, lastNumber);
+      }
+      current = current.getNext();
+    }
   }
 
   private void handleInlineExceptionHandler(LabelNode ln, ArrayDeque<Edge> worklist) {
