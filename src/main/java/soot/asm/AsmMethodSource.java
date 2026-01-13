@@ -185,6 +185,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -339,6 +340,7 @@ public class AsmMethodSource implements MethodSource {
   private int lastLineNumber = -1;
   private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
   private ArrayDeque<Edge> conversionWorklist;
+  private Map<AbstractInsnNode, Integer> lineNumberMap;
 
   public AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars,
       List<TryCatchBlockNode> tryCatchBlocks, String module) {
@@ -540,8 +542,9 @@ public class AsmMethodSource implements MethodSource {
   }
 
   protected void setUnit(AbstractInsnNode insn, Unit u) {
-    if (lastLineNumber >= 0) {
-      setLineNumber(u, lastLineNumber);
+    int ln = lineNumberMap.getOrDefault(insn, lastLineNumber);
+    if (ln >= 0) {
+      setLineNumber(u, ln);
     }
 
     Unit o = units.put(insn, u);
@@ -1982,6 +1985,9 @@ public class AsmMethodSource implements MethodSource {
       edge.stack = null;
       insnLoop: do {
         int type = insn.getType();
+        if (type != LINE) {
+          lineNumberMap.put(insn, lastLineNumber);
+        }
         switch (type) {
           case FIELD_INSN:
             convertFieldInsn((FieldInsnNode) insn);
@@ -2298,6 +2304,7 @@ public class AsmMethodSource implements MethodSource {
     labels = LinkedListMultimap.create(4);
     units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
+    lineNumberMap = new HashMap<>(nrInsn);
     trapHandlers = LinkedListMultimap.create(tryCatchBlocks.size());
     body = jb;
     /* retrieve all trap handlers */
@@ -2327,6 +2334,7 @@ public class AsmMethodSource implements MethodSource {
     stack = null;
     frames = null;
     body = null;
+    lineNumberMap = null;
 
     // Make sure to inline patterns of the form to enable proper variable
     // splitting and type assignment:
