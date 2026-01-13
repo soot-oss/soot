@@ -74,27 +74,29 @@ public class CastAndReturnInliner extends BodyTransformer {
               if (retStmt.getOp() == assign.getLeftOp()) {
                 // We need to replace the GOTO with the return
                 ReturnStmt newStmt = (ReturnStmt) retStmt.clone();
-                Local a = (Local) ce.getOp();
+                if (ce.getOp() instanceof Local) {
+                  Local a = (Local) ce.getOp();
 
-                for (Trap t : body.getTraps()) {
-                  for (UnitBox ubox : t.getUnitBoxes()) {
-                    if (ubox.getUnit() == gtStmt) {
-                      ubox.setUnit(newStmt);
+                  for (Trap t : body.getTraps()) {
+                    for (UnitBox ubox : t.getUnitBoxes()) {
+                      if (ubox.getUnit() == gtStmt) {
+                        ubox.setUnit(newStmt);
+                      }
                     }
                   }
-                }
-                Jimple j = Jimple.v();
-                Local n = j.newLocal(a.getName() + "_ret", ce.getCastType());
-                body.getLocals().add(n);
-                newStmt.setOp(n);
+                  Jimple j = Jimple.v();
+                  Local n = j.newLocal(a.getName() + "_ret", ce.getCastType());
+                  body.getLocals().add(n);
+                  newStmt.setOp(n);
 
-                final List<UnitBox> boxesRefGtStmt = gtStmt.getBoxesPointingToThis();
-                while (!boxesRefGtStmt.isEmpty()) {
-                  boxesRefGtStmt.get(0).setUnit(newStmt);
+                  final List<UnitBox> boxesRefGtStmt = gtStmt.getBoxesPointingToThis();
+                  while (!boxesRefGtStmt.isEmpty()) {
+                    boxesRefGtStmt.get(0).setUnit(newStmt);
+                  }
+                  units.swapWith(gtStmt, newStmt);
+                  ce = (CastExpr) ce.clone();
+                  units.insertBefore(j.newAssignStmt(n, ce), newStmt);
                 }
-                units.swapWith(gtStmt, newStmt);
-                ce = (CastExpr) ce.clone();
-                units.insertBefore(j.newAssignStmt(n, ce), newStmt);
               }
             }
           }
