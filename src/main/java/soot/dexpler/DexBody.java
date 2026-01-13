@@ -587,7 +587,6 @@ public class DexBody {
           // Attempt to read original parameter name.
           try {
             localName = parameterNames.get(argIdx);
-            localType = parameterTypes.get(argIdx);
           } catch (Exception ex) {
             logger.error("Exception while reading original parameter names.", ex);
           }
