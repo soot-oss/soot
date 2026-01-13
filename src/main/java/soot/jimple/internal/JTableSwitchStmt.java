@@ -72,7 +72,7 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
 
   @Override
   public String toString() {
-    final char endOfLine = ' ';
+    final char endOfLine = '\n';
     StringBuilder buf = new StringBuilder(Jimple.TABLESWITCH + "(");
 
     buf.append(keyBox.getValue().toString()).append(')').append(endOfLine);
@@ -84,17 +84,17 @@ public class JTableSwitchStmt extends AbstractSwitchStmt implements TableSwitchS
     for (int i = low; i < high; i++) {
       buf.append("    " + Jimple.CASE + " ").append(i).append(": " + Jimple.GOTO + " ");
       Unit target = getTarget(i - low);
-      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+      appendTarget(endOfLine, buf, target);
     }
     {
       buf.append("    " + Jimple.CASE + " ").append(high).append(": " + Jimple.GOTO + " ");
       Unit target = getTarget(high - low);
-      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+      appendTarget(endOfLine, buf, target);
     }
     {
       Unit target = getDefaultTarget();
       buf.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " ");
-      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+      appendTarget(endOfLine, buf, target);
     }
     buf.append('}');
 

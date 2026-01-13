@@ -163,6 +163,19 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
     }
   }
 
+  protected void appendTarget(final char endOfLine, StringBuilder buf, Unit target) {
+    if (target == this) {
+      buf.append("self");
+    } else {
+      if (target instanceof AbstractSwitchStmt) {
+        buf.append("another-switch-statement");
+      } else {
+        buf.append(target);
+      }
+    }
+    buf.append(';').append(endOfLine);
+  }
+
   @Override
   final public List<UnitBox> getUnitBoxes() {
     return stmtBoxes;
