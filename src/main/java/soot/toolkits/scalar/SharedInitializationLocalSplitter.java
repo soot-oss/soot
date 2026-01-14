@@ -110,16 +110,30 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     protected final MinMaxBitSet uses;
     protected final MinMaxBitSet nonConstantDefs;
     public boolean invalid;
+    private final Unit[] indexToStmt;
 
-    public Cluster(MinMaxBitSet uses, MinMaxBitSet constantDefs, MinMaxBitSet nonConstantDefs) {
+    public Cluster(MinMaxBitSet uses, MinMaxBitSet constantDefs, MinMaxBitSet nonConstantDefs, Unit[] indexToStmt) {
       this.uses = uses;
       this.constantInitializers = constantDefs;
       this.nonConstantDefs = nonConstantDefs;
+      this.indexToStmt = indexToStmt;
     }
 
     @Override
     public String toString() {
-      return String.valueOf(nonConstantDefs);
+      StringBuilder sb = new StringBuilder("Constant Initializers:\n");
+      uses.getIntIterator().forEach((x) -> {
+        sb.append("\t").append(indexToStmt[x]).append("\n");
+      });
+      sb.append("Non-Constant Definitions:\n");
+      nonConstantDefs.getIntIterator().forEach((x) -> {
+        sb.append("\t").append(indexToStmt[x]).append("\n");
+      });
+      sb.append("Uses:\n");
+      uses.getIntIterator().forEach((x) -> {
+        sb.append("\t").append(indexToStmt[x]).append("\n");
+      });
+      return sb.toString();
     }
 
   }
@@ -266,6 +280,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                     constantDefs.or(existing.constantInitializers);
                     nonConstantDefs.or(existing.nonConstantDefs);
 
+                    clustersPerLocal.remove(luse, existing);
                     // we only keep the new definition with an overlap
                     it.remove();
                     existing.invalid = true;
@@ -275,7 +290,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
               }
             }
           }
-          Cluster c = new Cluster(useset, constantDefs, nonConstantDefs);
+          Cluster c = new Cluster(useset, constantDefs, nonConstantDefs, indexToStmt);
           clustersPerLocal.put(luse, c);
           if (nonConstantDefs != null) {
             nonConstantClustersPerLocal.put(luse, c);
@@ -288,18 +303,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     int w = 0;
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
-      Iterator<Cluster> it = clusters.iterator();
-      // First, remove all invalid clusters (so that we know when there is at least one valid cluster)
-      int validCount = 0;
-      while (it.hasNext()) {
-        if (!it.next().invalid) {
-          validCount++;
-          if (validCount > 1) {
-            break;
-          }
-        }
-      }
-      if (validCount <= 1) {
+      if (clusters.size() <= 1) {
         // Not interesting
         continue;
       }
