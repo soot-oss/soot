@@ -220,11 +220,14 @@ public class ModuleUtil {
   private static List<String> parseJavaBasePackage() {
     List<String> packages = new ArrayList<>();
     Path excludeFile = Paths.get(JAVABASEFILE);
-    try (BufferedReader reader
-        = new BufferedReader(new InputStreamReader(Files.exists(excludeFile) ? Files.newInputStream(excludeFile)
-            : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)))) {
-      for (String line; (line = reader.readLine()) != null;) {
-        packages.add(line);
+    try (InputStream is = Files.exists(excludeFile) ? Files.newInputStream(excludeFile)
+        : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)) {
+      if (is != null) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+          for (String line; (line = reader.readLine()) != null;) {
+            packages.add(line);
+          }
+        }
       }
     } catch (IOException x) {
       logger.warn("Cannot open file specifying the packages of module 'java.base'", x);
