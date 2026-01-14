@@ -89,10 +89,11 @@ public class SimpleLocalUses implements LocalUses {
           // Add this statement to the uses of the definition of the local
           Local l = (Local) v;
 
-          List<Unit> defs = localDefs.getDefsOfAt(l, unit);
-          if (defs != null) {
+          Iterator<Unit> defs = localDefs.getDefsOfAtIterator(l, unit);
+          if (defs.hasNext()) {
             UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
-            for (Unit def : defs) {
+            while (defs.hasNext()) {
+              Unit def = defs.next();
               List<UnitValueBoxPair> lst = unitToUses.get(def);
               if (lst == null) {
                 unitToUses.put(def, lst = new ArrayList<UnitValueBoxPair>());

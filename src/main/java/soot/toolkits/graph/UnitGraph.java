@@ -228,19 +228,28 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   protected Map<Unit, List<Unit>> combineMapValues(Map<Unit, List<Unit>> mapA, Map<Unit, List<Unit>> mapB) {
     // The duplicate screen
     Map<Unit, List<Unit>> result = new LinkedHashMap<Unit, List<Unit>>(mapA.size() * 2 + 1, 0.7f);
+    final List<Unit> emptyList = Collections.<Unit>emptyList();
     for (Unit unit : unitChain) {
       List<Unit> listA = mapA.get(unit);
-      if (listA == null) {
-        listA = Collections.emptyList();
-      }
       List<Unit> listB = mapB.get(unit);
+      if (listA == null) {
+        List<Unit> toAdd;
+        if (listB == null) {
+          toAdd = emptyList;
+        } else {
+          toAdd = listB;
+        }
+        result.put(unit, toAdd);
+        continue;
+      }
       if (listB == null) {
-        listB = Collections.emptyList();
+        result.put(unit, listA);
+        continue;
       }
 
       int resultSize = listA.size() + listB.size();
       if (resultSize == 0) {
-        result.put(unit, Collections.<Unit>emptyList());
+        result.put(unit, emptyList);
       } else {
         List<Unit> resultList = new ArrayList<Unit>(resultSize);
         List<Unit> list;

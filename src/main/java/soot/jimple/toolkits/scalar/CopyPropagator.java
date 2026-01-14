@@ -166,34 +166,46 @@ public class CopyPropagator extends BodyTransformer {
             // We can propagate the definition if we either only have one definition
             // or all definitions are side-effect free and equal. For starters, we
             // only support constants in the case of multiple definitions.
-            List<Unit> defsOfUse = localDefs.getDefsOfAt(l, u);
-            boolean propagateDef = defsOfUse.size() == 1;
-            if (!propagateDef && defsOfUse.size() > 0) {
-              boolean agrees = true;
+            Iterator<Unit> defsOfUse = localDefs.getDefsOfAtIterator(l, u);
+            Unit firstElement = defsOfUse.hasNext() ? defsOfUse.next() : null;
+            boolean propagateDef = !defsOfUse.hasNext() && firstElement != null;
+            if (!propagateDef && firstElement != null) {
+              boolean agrees = false;
               Constant constVal = null;
-              for (Unit defUnit : defsOfUse) {
-                boolean defAgrees = false;
-                if (defUnit instanceof AssignStmt) {
-                  Value rightOp = ((AssignStmt) defUnit).getRightOp();
-                  if (rightOp instanceof Constant) {
-                    if (constVal == null) {
-                      constVal = (Constant) rightOp;
-                      defAgrees = true;
-                    } else if (constVal.equals(rightOp)) {
-                      defAgrees = true;
+              if (firstElement instanceof AssignStmt) {
+                Value rightOp = ((AssignStmt) firstElement).getRightOp();
+                if (rightOp instanceof Constant) {
+                  constVal = (Constant) rightOp;
+                  agrees = true;
+                }
+
+              }
+              if (agrees) {
+                while (defsOfUse.hasNext()) {
+                  Unit defUnit = defsOfUse.next();
+                  boolean defAgrees = false;
+                  if (defUnit instanceof AssignStmt) {
+                    Value rightOp = ((AssignStmt) defUnit).getRightOp();
+                    if (rightOp instanceof Constant) {
+                      if (constVal == null) {
+                        constVal = (Constant) rightOp;
+                        defAgrees = true;
+                      } else if (constVal.equals(rightOp)) {
+                        defAgrees = true;
+                      }
                     }
                   }
-                }
-                if (!defAgrees) {
-                  agrees = false;
-                  break;
+                  if (!defAgrees) {
+                    agrees = false;
+                    break;
+                  }
                 }
               }
               propagateDef = agrees;
             }
 
             if (propagateDef) {
-              final DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
+              final DefinitionStmt def = (DefinitionStmt) firstElement;
               final Value rightOp = def.getRightOp();
 
               if (rightOp instanceof Constant) {

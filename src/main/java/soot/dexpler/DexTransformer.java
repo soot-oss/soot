@@ -44,6 +44,7 @@ package soot.dexpler;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -151,8 +152,8 @@ public abstract class DexTransformer extends BodyTransformer {
       aBase = (Local) aRef.getBase();
     }
 
-    List<Unit> defsOfaBaseList = localDefs.getDefsOfAt(aBase, arrayStmt);
-    if (defsOfaBaseList == null || defsOfaBaseList.isEmpty()) {
+    final Iterator<Unit> defsOfaBaseList = localDefs.getDefsOfAtIterator(aBase, arrayStmt);
+    if (defsOfaBaseList == null || !defsOfaBaseList.hasNext()) {
       throw new RuntimeException("ERROR: no def statement found for array base local " + arrayStmt);
     }
 
@@ -160,7 +161,10 @@ public abstract class DexTransformer extends BodyTransformer {
     // list
     Type aType = null;
     int nullDefCount = 0;
-    for (Unit baseDef : defsOfaBaseList) {
+    int countDefs = 0;
+    while (defsOfaBaseList.hasNext()) {
+      countDefs++;
+      Unit baseDef = defsOfaBaseList.next();
       if (alreadyVisitedDefs.contains(baseDef)) {
         continue;
       }
@@ -298,7 +302,7 @@ public abstract class DexTransformer extends BodyTransformer {
     } // loop
 
     if (depth == 0 && aType == null) {
-      if (nullDefCount == defsOfaBaseList.size()) {
+      if (nullDefCount == countDefs) {
         return NullType.v();
       } else {
         throw new RuntimeException("ERROR: could not find type of array from statement '" + arrayStmt + "'");
