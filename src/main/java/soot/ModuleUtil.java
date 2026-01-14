@@ -223,7 +223,9 @@ public class ModuleUtil {
     Path excludeFile = Paths.get(JAVABASEFILE);
     try (InputStream is = Files.exists(excludeFile) ? Files.newInputStream(excludeFile)
         : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)) {
-      if (is != null) {
+      if (is == null) {
+        logger.warn("Cannot get input stream for file specifying the packages of module 'java.base'");
+      } else {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
           for (String line; (line = reader.readLine()) != null;) {
             packages.add(line);
