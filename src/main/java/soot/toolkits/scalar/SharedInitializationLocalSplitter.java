@@ -24,8 +24,8 @@ package soot.toolkits.scalar;
 
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -170,13 +170,43 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     return this;
   }
 
+  static class ClusterSet extends HashSet<Cluster> { // AbstractSet<Cluster> {
+
+    private int max = -1;
+    private int min = -1;
+
+    @Override
+    public boolean add(Cluster e) {
+      min = Math.min(min, e.nonConstantDefs.getMin());
+      max = Math.max(max, e.nonConstantDefs.getMax());
+      return super.add(e);
+    }
+
+    public boolean mayOverlapWith(MinMaxBitSet s) {
+      int myMax = max;
+      int myMin = min;
+      int otherMax = s.getMax();
+      int otherMin = s.getMin();
+      if (myMax < otherMin || otherMax < myMin || myMin > otherMax || otherMin > myMax) {
+        return false;
+      }
+      return true;
+    }
+
+  }
+
   public void transformOnly(Body body) {
 
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
     final MultiMap<Local, Cluster> clustersPerLocal = new HashMultiMap<Local, Cluster>();
-    final MultiMap<Local, Cluster> nonConstantClustersPerLocal = new HashMultiMap<Local, Cluster>();
+    final MultiMap<Local, Cluster> nonConstantClustersPerLocal = new HashMultiMap<Local, Cluster>() {
+      @Override
+      protected Set<Cluster> newSet() {
+        return new ClusterSet();
+      }
+    };
 
     final Map<Unit, Integer> stmtToIndex = new HashMap<>();
     final Chain<Unit> units = body.getUnits();
@@ -195,12 +225,13 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         Value v = useBox.getValue();
         if (v instanceof Local) {
           Local luse = (Local) v;
-          List<Unit> allAffectingDefs = defs.getDefsOfAt(luse, s);
+          Iterator<Unit> allAffectingDefs = defs.getDefsOfAtIterator(luse, s);
 
           MinMaxBitSet constantDefs = new MinMaxBitSet(idx);
           MinMaxBitSet nonConstantDefs = null;
 
-          for (Unit affect : allAffectingDefs) {
+          while (allAffectingDefs.hasNext()) {
+            Unit affect = allAffectingDefs.next();
             if (affect instanceof DefinitionStmt) {
               DefinitionStmt def = (DefinitionStmt) affect;
               int actualidx = stmtToIndex.get(def);
@@ -218,28 +249,30 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           MinMaxBitSet useset = new MinMaxBitSet(useidx);
           useset.set(useidx);
           if (nonConstantDefs != null) {
-            Set<Cluster> c = nonConstantClustersPerLocal.get(luse);
-            // enable search mode so that the search cluster is always lower than
-            // all other existing clusters with the same minimum
+            Set<Cluster> set = nonConstantClustersPerLocal.get(luse);
+            if (set instanceof ClusterSet) {
+              ClusterSet c = (ClusterSet) set;
+              if (c.mayOverlapWith(nonConstantDefs)) {
+                Iterator<Cluster> it = c.iterator();
+                while (it.hasNext()) {
+                  Cluster existing = it.next();
 
-            Iterator<Cluster> it = c.iterator();
-            while (it.hasNext()) {
-              Cluster existing = it.next();
+                  // the idea is: When there is an overlap in any non-constant definition units,
+                  // we need to merge them, since two different usages have overlapping definitions,
+                  // i.e. we can only change all these uses
+                  if (!existing.invalid && existing.nonConstantDefs.intersects(nonConstantDefs)) {
+                    // we have an overlap
+                    useset.or(existing.uses);
+                    constantDefs.or(existing.constantInitializers);
+                    nonConstantDefs.or(existing.nonConstantDefs);
 
-              // the idea is: When there is an overlap in any non-constant definition units,
-              // we need to merge them, since two different usages have overlapping definitions,
-              // i.e. we can only change all these uses
-              if (!existing.invalid && existing.nonConstantDefs.intersects(nonConstantDefs)) {
-                // we have an overlap
-                useset.or(existing.uses);
-                constantDefs.or(existing.constantInitializers);
-                nonConstantDefs.or(existing.nonConstantDefs);
+                    // we only keep the new definition with an overlap
+                    it.remove();
+                    existing.invalid = true;
+                  }
 
-                // we only keep the new definition with an overlap
-                it.remove();
-                existing.invalid = true;
+                }
               }
-
             }
           }
           Cluster c = new Cluster(useset, constantDefs, nonConstantDefs);

@@ -29,7 +29,6 @@ import heros.solver.Pair;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -274,7 +273,9 @@ public class UseChecker extends AbstractStmtSwitch {
 
             // Check the original type of the array from the alloc site
             boolean hasDefs = false;
-            for (Unit defU : defs.getDefsOfAt(base, stmt)) {
+            Iterator<Unit> it = defs.getDefsOfAtIterator(base, stmt);
+            while (it.hasNext()) {
+              Unit defU = it.next();
               if (defU instanceof AssignStmt) {
                 AssignStmt defUas = (AssignStmt) defU;
                 if (defUas.getRightOp() instanceof NewArrayExpr) {
@@ -355,16 +356,17 @@ public class UseChecker extends AbstractStmtSwitch {
                 continue;
               }
 
-              List<Unit> d = defs.getDefsOfAt(r.getO2(), r.getO1());
-              if (d.isEmpty()) {
+              Iterator<Unit> d = defs.getDefsOfAtIterator(r.getO2(), r.getO1());
+              if (!d.hasNext()) {
                 // In this case, probably we are asking for some variable which got casted. Since the local defs and uses are
                 // cached
                 // they might not reflect this.
                 defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(jb);
                 uses = LocalUses.Factory.newLocalUses(jb, defs);
-                d = defs.getDefsOfAt(r.getO2(), r.getO1());
+                d = defs.getDefsOfAtIterator(r.getO2(), r.getO1());
               }
-              for (Unit u : d) {
+              while (d.hasNext()) {
+                Unit u = d.next();
                 if (u instanceof AssignStmt) {
                   AssignStmt assign = (AssignStmt) u;
                   Value rop = assign.getRightOp();

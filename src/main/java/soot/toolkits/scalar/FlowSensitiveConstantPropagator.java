@@ -66,6 +66,7 @@ import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
+import soot.util.EmptyDevNullMap;
 import soot.util.LocalBitSetPacker;
 
 //@formatter:off
@@ -324,6 +325,11 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     public BetterConstantPropagator(DirectedGraph<Unit> graph) {
       super(graph);
+    }
+
+    @Override
+    protected void doAnalysis() {
+      doAnalysis(GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, EmptyDevNullMap.v());
     }
 
     @Override

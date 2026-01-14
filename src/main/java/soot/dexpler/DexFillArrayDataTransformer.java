@@ -44,7 +44,6 @@ import soot.Local;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
-import soot.dexpler.instructions.FillArrayDataInstruction;
 import soot.dexpler.typing.UntypedConstant;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -78,6 +77,7 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
     return new DexFillArrayDataTransformer();
   }
 
+  @Override
   protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
     final ExceptionalUnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
@@ -136,8 +136,9 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
       logger.warn("Recursion depth limit reached - aborting");
       return;
     }
-    List<Unit> assDefs = defs.getDefsOfAt(l, u);
-    for (Unit d : assDefs) {
+    Iterator<Unit> assDefs = defs.getDefsOfAtIterator(l, u);
+    while (assDefs.hasNext()) {
+      Unit d = assDefs.next();
       if (d instanceof AssignStmt) {
         AssignStmt arrayAssign = (AssignStmt) d;
         Value source = arrayAssign.getRightOp();

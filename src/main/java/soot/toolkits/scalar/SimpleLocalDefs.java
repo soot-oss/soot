@@ -1,5 +1,7 @@
 package soot.toolkits.scalar;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -46,6 +48,7 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalGraph;
 import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
 import soot.toolkits.graph.UnitGraph;
+import soot.util.EmptyDevNullMap;
 
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
@@ -129,6 +132,10 @@ public class SimpleLocalDefs implements LocalDefs {
             break;
           }
         }
+
+        Iterator<Unit> it = asIterator(fromIndex, toIndex);
+        if (!Iterators.elementsEqual(it, elements.iterator()))
+          System.out.println();
         return elements;
       }
 
@@ -161,6 +168,67 @@ public class SimpleLocalDefs implements LocalDefs {
           i = my;
         }
         return true;
+      }
+
+      public Iterator<Unit> asIterator(int fromIndex, int toIndex) {
+        if (fromIndex < 0 || toIndex < fromIndex || universe.length < toIndex) {
+          throw new IndexOutOfBoundsException();
+        }
+        if (fromIndex == toIndex) {
+          return Collections.emptyIterator();
+        }
+
+        if (fromIndex == toIndex - 1) {
+          if (this.get(fromIndex)) {
+            return Iterators.singletonIterator(universe[fromIndex]);
+          } else {
+            return Collections.emptyIterator();
+          }
+        }
+
+        int i = this.nextSetBit(fromIndex);
+        if (i < 0 || i >= toIndex) {
+          return Collections.emptyIterator();
+        }
+        if (i == toIndex - 1) {
+          return Iterators.singletonIterator(universe[i]);
+        }
+
+        final int startEndOfRun = Math.min(toIndex, this.nextClearBit(i + 1));
+        final int startI = i;
+        return new Iterator<Unit>() {
+
+          private boolean isAtEnd;
+          private int i = startI;
+          private int endOfRun = startEndOfRun;
+
+          @Override
+          public boolean hasNext() {
+            if (i < endOfRun) {
+              return true;
+            }
+            if (isAtEnd) {
+              return false;
+            }
+            i = nextSetBit(i + 1);
+            if (i < 0 || i >= toIndex) {
+              isAtEnd = true;
+              return false;
+            }
+            endOfRun = Math.min(toIndex, nextClearBit(i + 1));
+            return true;
+          }
+
+          @Override
+          public Unit next() {
+            if (!hasNext()) {
+              throw new IllegalStateException("Has no more elements");
+            }
+            return universe[i++];
+
+          }
+
+        };
       }
     }
 
@@ -223,7 +291,7 @@ public class SimpleLocalDefs implements LocalDefs {
         }
       }
       this.fromUnitToHandler = fromUnitToHandler;
-      doAnalysis();
+      doAnalysis(GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, EmptyDevNullMap.v());
 
       this.indexOfUnit = null;// release memory
     }
@@ -292,6 +360,7 @@ public class SimpleLocalDefs implements LocalDefs {
       }
     }
 
+    @Override
     protected FlowBitSet newInitialFlow() {
       return new FlowBitSet();
     }
@@ -323,6 +392,26 @@ public class SimpleLocalDefs implements LocalDefs {
         return unitList[lno];
       } else {
         return getFlowBefore(s).asList(from, to);
+      }
+    }
+
+    @Override
+    public Iterator<Unit> getDefsOfAtIterator(Local l, Unit s) {
+      Integer lno = locals.get(l);
+      if (lno == null) {
+        return Collections.emptyIterator();
+      }
+
+      int from = localRange[lno];
+      int to = localRange[lno + 1];
+      assert (from <= to);
+
+      if (from == to) {
+        assert (unitList[lno].size() == 1);
+        // both singletonList is immutable
+        return unitList[lno].iterator();
+      } else {
+        return getFlowBefore(s).asIterator(from, to);
       }
     }
 
@@ -512,6 +601,11 @@ public class SimpleLocalDefs implements LocalDefs {
   @Override
   public List<Unit> getDefsOfAt(Local l, Unit s) {
     return def.getDefsOfAt(l, s);
+  }
+
+  @Override
+  public Iterator<Unit> getDefsOfAtIterator(Local l, Unit s) {
+    return def.getDefsOfAtIterator(l, s);
   }
 
   @Override

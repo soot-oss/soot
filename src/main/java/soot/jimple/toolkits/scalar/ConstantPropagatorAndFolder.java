@@ -1,7 +1,5 @@
 package soot.jimple.toolkits.scalar;
 
-import java.util.Iterator;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,7 +22,7 @@ import java.util.Iterator;
  * #L%
  */
 
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -118,20 +116,23 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
       Value value = useBox.getValue();
       if (value instanceof Local) {
         Local local = (Local) value;
-        List<Unit> defsOfUse = localDefs.getDefsOfAt(local, u);
-        if (defsOfUse.size() == 1) {
-          DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
-          Value rhs = defStmt.getRightOp();
-          if (rhs instanceof NumericConstant || rhs instanceof StringConstant || rhs instanceof NullConstant) {
-            if (useBox.canContainValue(rhs)) {
-              useBox.setValue(rhs);
-              numPropagated++;
-            }
-          } else if (rhs instanceof CastExpr) {
-            CastExpr ce = (CastExpr) rhs;
-            if (ce.getCastType() instanceof RefType && ce.getOp() instanceof NullConstant) {
-              defStmt.getRightOpBox().setValue(NullConstant.v());
-              numPropagated++;
+        Iterator<Unit> defsOfUse = localDefs.getDefsOfAtIterator(local, u);
+        if (defsOfUse.hasNext()) {
+          Unit first = defsOfUse.next();
+          if (!defsOfUse.hasNext()) { // Only one definition site
+            DefinitionStmt defStmt = (DefinitionStmt) first;
+            Value rhs = defStmt.getRightOp();
+            if (rhs instanceof NumericConstant || rhs instanceof StringConstant || rhs instanceof NullConstant) {
+              if (useBox.canContainValue(rhs)) {
+                useBox.setValue(rhs);
+                numPropagated++;
+              }
+            } else if (rhs instanceof CastExpr) {
+              CastExpr ce = (CastExpr) rhs;
+              if (ce.getCastType() instanceof RefType && ce.getOp() instanceof NullConstant) {
+                defStmt.getRightOpBox().setValue(NullConstant.v());
+                numPropagated++;
+              }
             }
           }
         }
