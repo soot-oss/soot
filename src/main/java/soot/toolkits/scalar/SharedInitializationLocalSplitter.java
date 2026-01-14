@@ -36,8 +36,10 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
+import soot.RefLikeType;
 import soot.Scene;
 import soot.Singletons;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -122,7 +124,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     @Override
     public String toString() {
       StringBuilder sb = new StringBuilder("Constant Initializers:\n");
-      uses.getIntIterator().forEach((x) -> {
+      constantInitializers.getIntIterator().forEach((x) -> {
         sb.append("\t").append(indexToStmt[x]).append("\n");
       });
       sb.append("Non-Constant Definitions:\n");
@@ -184,7 +186,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     return this;
   }
 
-  static class ClusterSet extends HashSet<Cluster> { // AbstractSet<Cluster> {
+  static class ClusterSet extends HashSet<Cluster> {
 
     private int max = -1;
     private int min = -1;
@@ -232,12 +234,12 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       idx++;
 
     }
-
+    Set<Local> ignoredLocals = new HashSet<>();
     for (Unit s : units) {
       nextUse: for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
         ValueBox useBox = iterator.next();
         Value v = useBox.getValue();
-        if (v instanceof Local) {
+        if (v instanceof Local && !ignoredLocals.contains(v)) {
           Local luse = (Local) v;
           Iterator<Unit> allAffectingDefs = defs.getDefsOfAtIterator(luse, s);
 
@@ -249,9 +251,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
             if (affect instanceof DefinitionStmt) {
               DefinitionStmt def = (DefinitionStmt) affect;
               int actualidx = stmtToIndex.get(def);
-              if (def.getRightOp() instanceof Constant) {
+              Value rop = def.getRightOp();
+              if (rop instanceof Constant) {
                 constantDefs.set(actualidx);
               } else {
+                Type t = rop.getType();
+                if (t instanceof RefLikeType) {
+                  // we are only interested in anything that can be potentially primitive
+                  ignoredLocals.add(luse);
+                  continue nextUse;
+                }
                 if (nonConstantDefs == null) {
                   nonConstantDefs = new MinMaxBitSet(idx);
                 }
