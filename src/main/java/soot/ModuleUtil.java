@@ -30,6 +30,7 @@ import com.google.common.cache.LoadingCache;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -220,11 +221,16 @@ public class ModuleUtil {
   private static List<String> parseJavaBasePackage() {
     List<String> packages = new ArrayList<>();
     Path excludeFile = Paths.get(JAVABASEFILE);
-    try (BufferedReader reader
-        = new BufferedReader(new InputStreamReader(Files.exists(excludeFile) ? Files.newInputStream(excludeFile)
-            : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)))) {
-      for (String line; (line = reader.readLine()) != null;) {
-        packages.add(line);
+    try (InputStream is = Files.exists(excludeFile) ? Files.newInputStream(excludeFile)
+        : ModuleUtil.class.getResourceAsStream('/' + JAVABASEFILE)) {
+      if (is == null) {
+        logger.warn("Cannot get input stream for file specifying the packages of module 'java.base'");
+      } else {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+          for (String line; (line = reader.readLine()) != null;) {
+            packages.add(line);
+          }
+        }
       }
     } catch (IOException x) {
       logger.warn("Cannot open file specifying the packages of module 'java.base'", x);
