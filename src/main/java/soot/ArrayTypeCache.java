@@ -24,8 +24,8 @@ package soot;
 
 import heros.solver.Pair;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import soot.Singletons.Global;
@@ -36,36 +36,17 @@ import soot.Singletons.Global;
  * @author Marc Miltenberger
  */
 public class ArrayTypeCache {
-  protected final Map<Pair<Type, Integer>, ArrayType> cache = new HashMap<>();
+  protected final Map<Pair<Type, Integer>, ArrayType> cache = new ConcurrentHashMap<>();
 
-  protected final Function<Pair<Type, Integer>, ArrayType> mapping = new Function<Pair<Type, Integer>, ArrayType>() {
+  protected final Function<Pair<Type, Integer>, ArrayType> createNewArrayType
+      = new Function<Pair<Type, Integer>, ArrayType>() {
 
-    @Override
-    public ArrayType apply(Pair<Type, Integer> t) {
-      final Type baseType = t.getO1();
-      int numDimensions = t.getO2();
-      final int orgDimensions = numDimensions;
-      Type elementType = baseType;
-      while (numDimensions > 0) {
-        ArrayType ret = elementType.getArrayType();
-        if (ret == null) {
-          int n = orgDimensions - numDimensions + 1;
-          if (n != orgDimensions) {
-            ret = getArrayType(baseType, n);
-          } else {
-            ret = new ArrayType(baseType, n);
-          }
-          elementType.setArrayType(ret);
+        @Override
+        public ArrayType apply(Pair<Type, Integer> t) {
+          return new ArrayType(t.getO1(), t.getO2());
         }
-        elementType = ret;
-        numDimensions--;
-      }
 
-      return (ArrayType) elementType;
-
-    }
-
-  };
+      };
 
   public ArrayTypeCache(Global g) {
   }
@@ -84,19 +65,26 @@ public class ArrayTypeCache {
   // the same array type twice. Furthermore, the ConcurrentHashMap's computeIfAbsent
   // method does not allow the update of other keys in while a value is computed.
   public ArrayType getArrayType(Type baseType, int numDimensions) {
-    Pair<Type, Integer> pairSearch = new Pair<>(baseType, numDimensions);
-    ArrayType res = cache.get(pairSearch);
-    if (res == null) {
-      synchronized (cache) {
-        res = cache.get(pairSearch);
-        if (res == null) {
-          res = mapping.apply(pairSearch);
-          cache.put(pairSearch, res);
-        }
-      }
+    if (numDimensions < 1) {
+      throw new IllegalArgumentException(
+          String.format("Number of dimensions has to be at least 1, but was %d", numDimensions));
     }
 
-    return res;
+    final Pair<Type, Integer> pairSearch = new Pair<>(baseType, numDimensions);
+    final ArrayType result = cache.get(pairSearch);
+    if (result != null) {
+      return result;
+    }
+
+    // Slight performance improvement by eortega-pjr
+    Type elementType = baseType;
+    for (int i = 1; i <= numDimensions; i++) {
+      final ArrayType ret = cache.computeIfAbsent(new Pair<>(baseType, i), createNewArrayType);
+      elementType.setArrayType(ret);
+      elementType = ret;
+    }
+
+    return (ArrayType) elementType;
 
   }
 

@@ -169,6 +169,7 @@ import soot.jimple.toolkits.typing.fast.NeedCastResult;
 import soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor;
 import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.options.JBOptions;
+import soot.options.JBTROptions;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
@@ -586,15 +587,16 @@ public class DexBody {
           // Attempt to read original parameter name.
           try {
             localName = parameterNames.get(argIdx);
-            localType = parameterTypes.get(argIdx);
           } catch (Exception ex) {
             logger.error("Exception while reading original parameter names.", ex);
           }
         }
-        if (localName == null && localDebugs.containsKey(parameterRegister)) {
-          localName = localDebugs.get(parameterRegister).get(0).name;
-        } else {
-          localName = "$u" + parameterRegister;
+        if (localName == null) {
+          if (localDebugs.containsKey(parameterRegister)) {
+            localName = localDebugs.get(parameterRegister).get(0).name;
+          } else {
+            localName = "$u" + parameterRegister;
+          }
         }
         if (localType == null) {
           // may only use UnknownType here because the local may be
@@ -809,8 +811,9 @@ public class DexBody {
         definiteConstraints.put(l, Collections.singleton(type));
       }
     }
+    JBTROptions jbtrOptions = new JBTROptions(phaseOptions.getPhaseOptions("jb.tr"));
 
-    new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
+    new soot.jimple.toolkits.typing.fast.TypeResolver(jBody, jbtrOptions) {
       @Override
       protected soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb,
           ITyping tg) {

@@ -84,6 +84,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
 		Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
 		Composite jbjb_silsChild = jbjb_silsCreate(getPageContainer());
+		Composite jbjb_awaChild = jbjb_awaCreate(getPageContainer());
 		Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
 		Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
 		Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
@@ -233,6 +234,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", "jb.sils", getjbjb_silsenabled_widget(), "enabled");
 		getjbjb_silsenabled_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("jb", "jb.awa");
+		addToEnableGroup("jb", "jb.awa", getjbjb_awaenabled_widget(), "enabled");
+		getjbjb_awaenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("jb", "jb.a");
 		addToEnableGroup("jb", "jb.a", getjbjb_aenabled_widget(), "enabled");
 		addToEnableGroup("jb", "jb.a", getjbjb_aonly_stack_locals_widget(), "only-stack-locals");
@@ -246,10 +251,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jb", "jb.tr");
 		addToEnableGroup("jb", "jb.tr", getjbjb_trenabled_widget(), "enabled");
 		addToEnableGroup("jb", "jb.tr", getjbjb_truse_older_type_assigner_widget(), "use-older-type-assigner");
+		addToEnableGroup("jb", "jb.tr", getjbjb_truse_precise_typing_widget(), "use-precise-typing");
 		addToEnableGroup("jb", "jb.tr", getjbjb_trcompare_type_assigners_widget(), "compare-type-assigners");
 		addToEnableGroup("jb", "jb.tr", getjbjb_trignore_nullpointer_dereferences_widget(), "ignore-nullpointer-dereferences");
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
 		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
+		getjbjb_truse_precise_typing_widget().getButton().addSelectionListener(this);
 		getjbjb_trcompare_type_assigners_widget().getButton().addSelectionListener(this);
 		getjbjb_trignore_nullpointer_dereferences_widget().getButton().addSelectionListener(this);
 
@@ -967,7 +974,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			getConfig().put(getInput_Optionsignore_classpath_errors_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getInput_Optionsprocess_multiple_dex_widget().getButton().getSelection();
-		defBoolRes = false;
+		defBoolRes = true;
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
@@ -1337,6 +1344,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_silsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getjbjb_awaenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_awaenabled_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getjbjb_aenabled_widget().getButton().getSelection();
 		defBoolRes = true;
 
@@ -1366,6 +1379,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_truse_older_type_assigner_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjbjb_truse_precise_typing_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_truse_precise_typing_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjbjb_trcompare_type_assigners_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -3083,6 +3102,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jb_jb_sils_branch;
+			
+			
+			SootOption jb_jb_awa_branch = new SootOption("Array Writer Aggregregator", "jbjb_awa");
+			subParent.addChild(jb_jb_awa_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_awa_branch;
 			
 			
 			SootOption jb_jb_a_branch = new SootOption("Jimple Local Aggregator", "jbjb_a");
@@ -4814,6 +4843,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return jbjb_silsenabled_widget;
 	}	
 	
+	private BooleanOptionWidget jbjb_awaenabled_widget;
+	
+	private void setjbjb_awaenabled_widget(BooleanOptionWidget widget) {
+		jbjb_awaenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_awaenabled_widget() {
+		return jbjb_awaenabled_widget;
+	}	
+	
 	private BooleanOptionWidget jbjb_aenabled_widget;
 	
 	private void setjbjb_aenabled_widget(BooleanOptionWidget widget) {
@@ -4862,6 +4901,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbjb_truse_older_type_assigner_widget() {
 		return jbjb_truse_older_type_assigner_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_truse_precise_typing_widget;
+	
+	private void setjbjb_truse_precise_typing_widget(BooleanOptionWidget widget) {
+		jbjb_truse_precise_typing_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_truse_precise_typing_widget() {
+		return jbjb_truse_precise_typing_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_trcompare_type_assigners_widget;
@@ -7910,7 +7959,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
 		} else {
-			defaultBool = false;
+			defaultBool = true;
 		}
 
 		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK.", defaultBool)));
@@ -9056,6 +9105,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 
+	private Composite jbjb_awaCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_awa = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_awa.setLayout(layout);
+	
+	 	editGroupjbjb_awa.setText("Array Writer Aggregregator");
+	 	
+		editGroupjbjb_awa.setData("id", "jbjb_awa");
+		
+		String descjbjb_awa = "Reorder array writes to save local variables";	
+		if (descjbjb_awa.length() > 0) {
+			Label descLabeljbjb_awa = new Label(editGroupjbjb_awa, SWT.WRAP);
+			descLabeljbjb_awa.setText(descjbjb_awa);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.awa"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_awaenabled_widget(new BooleanOptionWidget(editGroupjbjb_awa, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.awa","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_awa;
+	}
+
+
+
 	private Composite jbjb_aCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -9194,6 +9284,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p phase-option", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. If \ncompare-type-assigners is on, this option causes the older type \nassigner to execute first. (Otherwise the newer one is executed \nfirst.)", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.tr"+" "+"use-precise-typing";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setjbjb_truse_precise_typing_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use precise typing", "p phase-option", "jb.tr","use-precise-typing", "\nWhen precise typing is enabled, Soot try to find the global best \ntyping, i.e., the typing with the least amount of assignments. \nThis might cause Soot require excessive amounts of computation \nresources (memory and CPU runtime).", defaultBool)));
 
 		defKey = "p phase-option"+" "+"jb.tr"+" "+"compare-type-assigners";
 		defKey = defKey.trim();

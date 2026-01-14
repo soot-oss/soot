@@ -60,6 +60,19 @@ public class JBTROptions {
     }
 
     /**
+     * Use precise typing --
+     * Uses a more precise type assigner, which is much slower.
+     *
+     * When precise typing is enabled, Soot try to find the global best 
+     * typing, i.e., the typing with the least amount of assignments. 
+     * This might cause Soot require excessive amounts of computation 
+     * resources (memory and CPU runtime).
+     */
+    public boolean use_precise_typing() {
+        return soot.PhaseOptions.getBoolean(options, "use-precise-typing");
+    }
+
+    /**
      * Compare type assigners --
      * Compares Ben Bellamy's and the older type assigner.
      *
