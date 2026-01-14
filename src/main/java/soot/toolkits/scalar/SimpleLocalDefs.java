@@ -132,10 +132,6 @@ public class SimpleLocalDefs implements LocalDefs {
             break;
           }
         }
-
-        Iterator<Unit> it = asIterator(fromIndex, toIndex);
-        if (!Iterators.elementsEqual(it, elements.iterator()))
-          System.out.println();
         return elements;
       }
 
