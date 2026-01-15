@@ -23,11 +23,26 @@ package soot.util;
  */
 
 import java.util.BitSet;
+import java.util.Collection;
+import java.util.Set;
+import java.util.function.IntConsumer;
 
 /**
  * This bitset keeps record about the lowest and the highest set bit. This can come in handy when comparing bitsets.
  */
 public class MinMaxBitSet extends BitSet {
+
+  public static interface IntIterator {
+    public abstract int next();
+
+    public abstract boolean hasNext();
+
+    public default void forEach(IntConsumer cons) {
+      while (hasNext()) {
+        cons.accept(next());
+      }
+    }
+  }
 
   private int max = -1;
   private int min = -1;
@@ -35,8 +50,34 @@ public class MinMaxBitSet extends BitSet {
   public MinMaxBitSet() {
   }
 
+  public MinMaxBitSet(Collection<Integer> toAdd) {
+    super();
+    for (int i : toAdd) {
+      set(i);
+    }
+  }
+
   public MinMaxBitSet(int nbits) {
     super(nbits);
+  }
+
+  public IntIterator getIntIterator() {
+    return new IntIterator() {
+      int i = nextSetBit(0);
+
+      @Override
+      public int next() {
+        int x = i;
+        i = nextSetBit(i + 1);
+        return x;
+      }
+
+      @Override
+      public boolean hasNext() {
+        return i >= 0 && i != Integer.MAX_VALUE;
+      }
+
+    };
   }
 
   @Override
@@ -54,6 +95,18 @@ public class MinMaxBitSet extends BitSet {
     this.min = Math.min(min, other.min);
     this.max = Math.max(max, other.max);
     super.or(set);
+  }
+
+  public boolean intersects(Set<Integer> set) {
+    for (int i : set) {
+      if (i < min || i > max) {
+        continue;
+      }
+      if (super.get(i)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

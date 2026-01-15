@@ -298,7 +298,12 @@ public class UseChecker extends AbstractStmtSwitch {
         }
 
         if (at == null) {
-          at = tgType.makeArrayType();
+          if (tgType instanceof BottomType) {
+            // Incomplete typing
+            return;
+          } else {
+            at = tgType.makeArrayType();
+          }
         }
       }
       tlhs = at.getElementType();

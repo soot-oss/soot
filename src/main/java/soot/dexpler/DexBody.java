@@ -737,8 +737,6 @@ public class DexBody {
     // Make sure that we don't have any overlapping uses due to returns
     DexReturnInliner.v().transform(jBody);
 
-    new SharedInitializationLocalSplitter(DalvikThrowAnalysis.v()).transform(jBody);
-
     getLocalSplitter().transform(jBody);
     // Remove dead code and the corresponding locals before assigning types
     getUnreachableCodeEliminator().transform(jBody);
@@ -796,6 +794,7 @@ public class DexBody {
       UnconditionalBranchFolder.v().transform(jBody);
     }
     DexFillArrayDataTransformer.v().transform(jBody);
+    new SharedInitializationLocalSplitter(DalvikThrowAnalysis.v()).transform(jBody);
     // SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
     getLocalSplitter().transform(jBody);
 
