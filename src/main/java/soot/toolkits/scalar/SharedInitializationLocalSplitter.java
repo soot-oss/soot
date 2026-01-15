@@ -378,8 +378,9 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         larger = t1;
       }
       for (Integer i : smaller) {
-        if (larger.contains(i))
+        if (larger.contains(i)) {
           return true;
+        }
       }
       return false;
     }
