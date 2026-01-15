@@ -35,6 +35,7 @@ import soot.Scene;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
+import soot.UnitPatchingChain;
 import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
@@ -118,10 +119,19 @@ public class DexNullThrowTransformer extends BodyTransformer {
     body.getUnits().insertBefore(newExStmt, oldStmt);
     Stmt invConsStmt = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(lcEx, constructorRef,
         Collections.singletonList(StringConstant.v("Null throw statement replaced by Soot"))));
-    body.getUnits().insertBefore(invConsStmt, oldStmt);
+    UnitPatchingChain units = body.getUnits();
+    units.insertBefore(invConsStmt, oldStmt);
+    Unit succ = units.getSuccOf(oldStmt);
+    if (succ instanceof ThrowStmt && succ.getBoxesPointingToThis().isEmpty()) {
+      // we have a weird case were we would end up with
+      // throw x
+      // throw y
+      // with no jump target to throw y, so it cannot be reached. This would confuse subsequent analyses
+      units.remove(succ);
+    }
 
     // Throw the exception
-    body.getUnits().swapWith(oldStmt, Jimple.v().newThrowStmt(lcEx));
+    units.swapWith(oldStmt, Jimple.v().newThrowStmt(lcEx));
   }
 
 }

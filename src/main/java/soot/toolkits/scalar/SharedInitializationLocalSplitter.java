@@ -190,8 +190,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
     @Override
     public boolean add(Cluster e) {
-      min = Math.min(min, e.nonConstantDefs.first());
-      max = Math.max(max, e.nonConstantDefs.last());
+      updateMinMax(e.nonConstantDefs);
       return super.add(e);
     }
 
@@ -206,10 +205,14 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       return true;
     }
 
+    public void updateMinMax(TreeSet<Integer> nonConstantDefs) {
+      min = Math.min(min, nonConstantDefs.first());
+      max = Math.max(max, nonConstantDefs.last());
+    }
+
   }
 
   public void transformOnly(Body body) {
-
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
@@ -279,6 +282,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                     use.uses.add(s);
                     use.constantInitializers.addAll(constantDefs);
                     use.nonConstantDefs.addAll(nonConstantDefs);
+                    c.updateMinMax(nonConstantDefs);
 
                     if (use != existing) {
                       clustersPerLocal.remove(luse, existing);
