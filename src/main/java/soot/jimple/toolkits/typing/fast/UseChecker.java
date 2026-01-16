@@ -291,6 +291,10 @@ public class UseChecker extends AbstractStmtSwitch {
                 ArrayType atB = (ArrayType) rhsType;
                 at = ArrayType.v(atB.baseType, atB.numDimensions + 1);
               } else {
+                if (rhsType instanceof BottomType) {
+                  // Incomplete typing
+                  return;
+                }
                 at = ArrayType.v(rhsType, 1);
               }
             }

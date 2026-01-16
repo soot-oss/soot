@@ -56,6 +56,7 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.thread.mhp.SCC;
 import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.DominatorsFinder;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.MHGDominatorsFinder;
@@ -124,6 +125,12 @@ public class ArrayWriteAggregator extends BodyTransformer {
    * practice.
    */
   private static final int THRESHOLD_MEMORY = 100000;
+
+  /**
+   * Maximum method size for which to attempt this analysis. The problem is that a large method size requires a lot of memory
+   * due to the MHGDominatorsFinder analysis.
+   */
+  private static final int MAX_METHOD_SIZE = 100000;
 
   public ArrayWriteAggregator(Singletons.Global g) {
   }
@@ -278,7 +285,7 @@ public class ArrayWriteAggregator extends BodyTransformer {
     }
 
     public Runnable getReorderAction(Body body, ExceptionalUnitGraph graph, LocalDefs ld, SimpleLocalUses uses,
-        MHGDominatorsFinder<Unit> dom) {
+        DominatorsFinder<Unit> dom) {
       UnitPatchingChain units = body.getUnits();
       // now, let's check whether we can factor out the array into it's own local.
       // this is necessary to prevent any other unrelated defs/uses using the same local to become problematic
@@ -453,7 +460,7 @@ public class ArrayWriteAggregator extends BodyTransformer {
 
     private Set<Unit> loopParticipants = new HashSet<>();
 
-    public ArraySafetyAnalysis(Body body, DirectedGraph<Unit> graph, MHGDominatorsFinder<Unit> mhg) {
+    public ArraySafetyAnalysis(Body body, DirectedGraph<Unit> graph, DominatorsFinder<Unit> mhg) {
       super(graph);
       this.body = body;
       calcLoopInformation(graph);
@@ -605,12 +612,15 @@ public class ArrayWriteAggregator extends BodyTransformer {
     if (!hasInterestingArrayWrites || !hasInterestingNewArray) {
       return;
     }
+    if (b.getUnits().size() > MAX_METHOD_SIZE) {
+      return;
+    }
 
     ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
 
     LocalDefs ld = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, false);
     SimpleLocalUses uses = new SimpleLocalUses(b, ld);
-    MHGDominatorsFinder<Unit> mhg = new MHGDominatorsFinder<Unit>(graph);
+    DominatorsFinder<Unit> mhg = new MHGDominatorsFinder<Unit>(graph);
 
     // tries to figure out
     // whether it is safe to move an array initializer and the setter upward, i.e.
