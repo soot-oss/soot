@@ -1039,6 +1039,7 @@ public class DexBody {
 
     checkUnrealizableCasts();
 
+    CopyPropagator.v().transform(jBody);
     // Shortcut: Reduce array initializations
     // We need to do this after typing, because otherwise we run into problems
     // when float constants (saved as int in dex code) are saved in the array.

@@ -28,9 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import soot.ArrayType;
 import soot.Body;
 import soot.BodyTransformer;
@@ -42,7 +39,9 @@ import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -66,7 +65,6 @@ import soot.util.Chain;
  * This analysis will split the locals and merge the different locals right before the join.
  */
 public class DifferentArrayTypeSplitter extends BodyTransformer {
-  private static final Logger logger = LoggerFactory.getLogger(DifferentArrayTypeSplitter.class);
 
   protected ThrowAnalysis throwAnalysis;
   protected boolean omitExceptingUnitEdges;
@@ -154,7 +152,15 @@ public class DifferentArrayTypeSplitter extends BodyTransformer {
               newLocal.setName(newLocal.getName() + '_' + ++w);
               locals.add(newLocal);
               DefinitionStmt d = (DefinitionStmt) def;
-              body.getUnits().insertAfter(Jimple.v().newAssignStmt(lcl, newLocal), def);
+              Unit pos = d;
+              while (pos instanceof IdentityStmt) {
+                IdentityStmt ipos = (IdentityStmt) pos;
+                if (!(ipos.getRightOp() instanceof CaughtExceptionRef)) {
+                  // we cannot place this at the parameter identity statement
+                  pos = body.getUnits().getSuccOf(pos);
+                }
+              }
+              body.getUnits().insertAfter(Jimple.v().newAssignStmt(lcl, newLocal), pos);
               for (Unit useStmt : allUses) {
                 replaceLocalsInUnitUses(useStmt, lcl, newLocal);
               }

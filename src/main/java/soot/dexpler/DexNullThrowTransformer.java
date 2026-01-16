@@ -75,6 +75,11 @@ public class DexNullThrowTransformer extends BodyTransformer {
     final LongConstant llc = LongConstant.v(0);
     for (Iterator<Unit> unitIt = b.getUnits().snapshotIterator(); unitIt.hasNext();) {
       Unit u = unitIt.next();
+      Stmt stmt = (Stmt) u;
+      if (stmt.getContainingBody() == null) {
+        // Has been removed
+        continue;
+      }
 
       // Check for a null exception
       if (u instanceof ThrowStmt) {
@@ -122,12 +127,13 @@ public class DexNullThrowTransformer extends BodyTransformer {
     UnitPatchingChain units = body.getUnits();
     units.insertBefore(invConsStmt, oldStmt);
     Unit succ = units.getSuccOf(oldStmt);
-    if (succ instanceof ThrowStmt && succ.getBoxesPointingToThis().isEmpty()) {
+    while (succ instanceof ThrowStmt && succ.getBoxesPointingToThis().isEmpty()) {
       // we have a weird case were we would end up with
       // throw x
       // throw y
       // with no jump target to throw y, so it cannot be reached. This would confuse subsequent analyses
       units.remove(succ);
+      succ = units.getSuccOf(oldStmt);
     }
 
     // Throw the exception
