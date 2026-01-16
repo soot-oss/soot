@@ -99,16 +99,25 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
         // initialize to the "neutral element" for the intersection
         // this clone() is fast on BitSets (opposed to on HashSets)
-        BitSet predsIntersect = (BitSet) fullSet.clone();
+        BitSet predsIntersect = null;
 
         // intersect over all predecessors
         for (N next : graph.getPredsOf(o)) {
-          predsIntersect.and(getDominatorsBitSet(next));
+          BitSet s = getDominatorsBitSet(next);
+          if (predsIntersect == null) {
+            predsIntersect = (BitSet) s.clone();
+          } else {
+            predsIntersect.and(s);
+          }
         }
 
         BitSet oldSet = getDominatorsBitSet(o);
         // each node dominates itself
-        predsIntersect.set(indexOf(o));
+        if (predsIntersect != null) {
+          predsIntersect.set(indexOf(o));
+        } else {
+          predsIntersect = fullSet;
+        }
         if (!predsIntersect.equals(oldSet)) {
           nodeToFlowSet.put(o, predsIntersect);
           changed = true;
