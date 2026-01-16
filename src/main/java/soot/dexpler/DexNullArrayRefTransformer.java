@@ -143,9 +143,6 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
    */
   private boolean isAlwaysNullBefore(Stmt s, Local base, LocalDefs defs) {
     Iterator<Unit> baseDefs = defs.getDefsOfAtIterator(base, s);
-    if (!baseDefs.hasNext()) {
-      return true;
-    }
 
     while (baseDefs.hasNext()) {
       Unit u = baseDefs.next();
