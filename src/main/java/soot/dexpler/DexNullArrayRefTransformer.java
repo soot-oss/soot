@@ -44,7 +44,6 @@ package soot.dexpler;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import soot.Body;
@@ -88,6 +87,7 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
     return new DexNullArrayRefTransformer();
   }
 
+  @Override
   protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
     final ExceptionalUnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
@@ -142,12 +142,13 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
    * @return True if the given local is guaranteed to always be null at the given statement, otherwise false
    */
   private boolean isAlwaysNullBefore(Stmt s, Local base, LocalDefs defs) {
-    List<Unit> baseDefs = defs.getDefsOfAt(base, s);
-    if (baseDefs.isEmpty()) {
+    Iterator<Unit> baseDefs = defs.getDefsOfAtIterator(base, s);
+    if (!baseDefs.hasNext()) {
       return true;
     }
 
-    for (Unit u : baseDefs) {
+    while (baseDefs.hasNext()) {
+      Unit u = baseDefs.next();
       if (!(u instanceof DefinitionStmt)) {
         return false;
       }

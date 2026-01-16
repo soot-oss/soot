@@ -105,6 +105,7 @@ public class TypeResolver {
         }
 
       };
+  private static final int MAX_ITERATION_COUNT = 10000;
   private static int NUM_CORES = Math.max(1, Runtime.getRuntime().availableProcessors() - 2);
 
   protected final JimpleBody jb;
@@ -401,11 +402,10 @@ public class TypeResolver {
   final ByteType byteType = ByteType.v();
   final ShortType shortType = ShortType.v();
 
-  private ITyping typePromotion(ITyping tg) {
-    int conversionsPending = Integer.MAX_VALUE;
-    int lastConversionsPending;
+  protected ITyping typePromotion(ITyping tg) {
+    boolean conversionsPending;
+    int iterations = 0;
     do {
-      lastConversionsPending = conversionsPending;
       AugEvalFunction ef = createAugEvalFunction(this.jb);
       AugHierarchy h = new AugHierarchy();
       UseChecker uc = createUseChecker(this.jb);
@@ -424,19 +424,19 @@ public class TypeResolver {
 
       } while (uv.typingChanged);
 
-      conversionsPending = 0;
+      conversionsPending = false;
       for (Local v : this.jb.getLocals()) {
         Type t = tg.get(v);
         Type r = convert(t);
         if (r != null) {
           tg.set(v, r);
-          conversionsPending++;
+          conversionsPending = true;
         }
       }
-      if (lastConversionsPending <= conversionsPending) {
-        throw new RuntimeException("typePromotion failed: conversionsPending was not reduced " + jb.getMethod());
+      if (iterations > MAX_ITERATION_COUNT) {
+        throw new RuntimeException(String.format("Maximum number of iterations (%s) reached", MAX_ITERATION_COUNT));
       }
-    } while (conversionsPending > 0);
+    } while (conversionsPending);
 
     return tg;
   }

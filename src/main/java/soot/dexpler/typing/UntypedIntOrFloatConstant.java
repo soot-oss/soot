@@ -64,6 +64,11 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
     return (int) (value ^ (value >>> 32));
   }
 
+  @Override
+  public String toString() {
+    return "Untyped int or float constant " + value;
+  }
+
   public FloatConstant toFloatConstant() {
     return FloatConstant.v(Float.intBitsToFloat((int) value));
   }

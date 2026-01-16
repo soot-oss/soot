@@ -175,6 +175,7 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLineNumberTag;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.TrapTightener;
+import soot.toolkits.scalar.DifferentArrayTypeSplitter;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.SharedInitializationLocalSplitter;
@@ -737,8 +738,6 @@ public class DexBody {
     // Make sure that we don't have any overlapping uses due to returns
     DexReturnInliner.v().transform(jBody);
 
-    new SharedInitializationLocalSplitter(DalvikThrowAnalysis.v()).transform(jBody);
-
     getLocalSplitter().transform(jBody);
     // Remove dead code and the corresponding locals before assigning types
     getUnreachableCodeEliminator().transform(jBody);
@@ -796,8 +795,10 @@ public class DexBody {
       UnconditionalBranchFolder.v().transform(jBody);
     }
     DexFillArrayDataTransformer.v().transform(jBody);
+    new SharedInitializationLocalSplitter(DalvikThrowAnalysis.v()).transform(jBody);
     // SharedInitializationLocalSplitter destroys the inserted casts, so we have to reintroduce them
     getLocalSplitter().transform(jBody);
+    new DifferentArrayTypeSplitter().transform(jBody);
 
     MultiMap<Local, Type> maybetypeConstraints = new HashMultiMap<>();
     Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
@@ -814,6 +815,26 @@ public class DexBody {
     JBTROptions jbtrOptions = new JBTROptions(phaseOptions.getPhaseOptions("jb.tr"));
 
     new soot.jimple.toolkits.typing.fast.TypeResolver(jBody, jbtrOptions) {
+      @Override
+      protected ITyping typePromotion(ITyping tg) {
+        // remove weak object types prior to type promotion
+        Collection<Collection<Type>> values = definiteConstraints.values();
+        Iterator<Collection<Type>> it = values.iterator();
+        while (it.hasNext()) {
+          Collection<Type> i = it.next();
+          Iterator<Type> typeIt = i.iterator();
+          while (typeIt.hasNext()) {
+            if (typeIt.next() instanceof WeakObjectType) {
+              typeIt.remove();
+            }
+          }
+          if (i.isEmpty()) {
+            it.remove();
+          }
+        }
+        return super.typePromotion(tg);
+      }
+
       @Override
       protected soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb,
           ITyping tg) {
@@ -1018,6 +1039,7 @@ public class DexBody {
 
     checkUnrealizableCasts();
 
+    getCopyPopagator().transform(jBody);
     // Shortcut: Reduce array initializations
     // We need to do this after typing, because otherwise we run into problems
     // when float constants (saved as int in dex code) are saved in the array.
@@ -1703,7 +1725,11 @@ public class DexBody {
       // the definition of the local.
       // Therefore, want the traps as tight as possible.
       while (!s.getInstruction().getOpcode().canThrow()) {
-        startAddress = instructionAtAddress.navigableKeySet().ceiling(startAddress + 1);
+        Integer ceiling = instructionAtAddress.navigableKeySet().ceiling(startAddress + 1);
+        if (ceiling == null) {
+          break;
+        }
+        startAddress = ceiling;
         s = instructionAtAddress(startAddress);
       }
       Unit beginStmt = s.getUnit();

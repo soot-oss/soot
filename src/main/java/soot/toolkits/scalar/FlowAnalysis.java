@@ -549,7 +549,9 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
       // Update queue appropriately
       if (hasChanged) {
-        q.addAll(Arrays.asList(e.out));
+        for (Entry<N, A> i : e.out) {
+          q.add(i);
+        }
       }
     }
   }

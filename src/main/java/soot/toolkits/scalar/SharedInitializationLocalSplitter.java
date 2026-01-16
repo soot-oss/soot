@@ -4,7 +4,7 @@ package soot.toolkits.scalar;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1999 Phong Co
+ * Copyright (C) 2021 Marc Miltenberger
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,12 +22,12 @@ package soot.toolkits.scalar;
  * #L%
  */
 
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
-import soot.util.MinMaxBitSet;
 import soot.util.MultiMap;
 
 //@formatter:off
@@ -106,20 +105,34 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
   private static final class Cluster {
 
-    protected final MinMaxBitSet constantInitializers;
-    protected final MinMaxBitSet uses;
-    protected final MinMaxBitSet nonConstantDefs;
+    protected final Set<AssignStmt> constantInitializers;
+    protected final Set<Unit> uses;
+    protected final TreeSet<Integer> nonConstantDefs;
     public boolean invalid;
+    private Unit[] indexToStmt;
 
-    public Cluster(MinMaxBitSet uses, MinMaxBitSet constantDefs, MinMaxBitSet nonConstantDefs) {
+    public Cluster(Set<Unit> uses, Set<AssignStmt> constantDefs, TreeSet<Integer> nonConstantDefs, Unit[] indexToStmt) {
       this.uses = uses;
       this.constantInitializers = constantDefs;
       this.nonConstantDefs = nonConstantDefs;
+      this.indexToStmt = indexToStmt;
     }
 
     @Override
     public String toString() {
-      return String.valueOf(nonConstantDefs);
+      StringBuilder sb = new StringBuilder("Constant Initializers:\n");
+      for (Unit i : constantInitializers) {
+        sb.append("\t").append(i).append("\n");
+      }
+      sb.append("Non-Constant Definitions:\n");
+      for (Integer i : nonConstantDefs) {
+        sb.append("\t").append(indexToStmt[i]).append("\n");
+      }
+      sb.append("Uses:\n");
+      for (Unit i : uses) {
+        sb.append("\t").append(i).append("\n");
+      }
+      return sb.toString();
     }
 
   }
@@ -170,33 +183,36 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     return this;
   }
 
-  static class ClusterSet extends HashSet<Cluster> { // AbstractSet<Cluster> {
+  static class ClusterSet extends HashSet<Cluster> {
 
     private int max = -1;
     private int min = -1;
 
     @Override
     public boolean add(Cluster e) {
-      min = Math.min(min, e.nonConstantDefs.getMin());
-      max = Math.max(max, e.nonConstantDefs.getMax());
+      updateMinMax(e.nonConstantDefs);
       return super.add(e);
     }
 
-    public boolean mayOverlapWith(MinMaxBitSet s) {
+    public boolean mayOverlapWith(TreeSet<Integer> s) {
       int myMax = max;
       int myMin = min;
-      int otherMax = s.getMax();
-      int otherMin = s.getMin();
+      int otherMax = s.last();
+      int otherMin = s.first();
       if (myMax < otherMin || otherMax < myMin || myMin > otherMax || otherMin > myMax) {
         return false;
       }
       return true;
     }
 
+    public void updateMinMax(TreeSet<Integer> nonConstantDefs) {
+      min = Math.min(min, nonConstantDefs.first());
+      max = Math.max(max, nonConstantDefs.last());
+    }
+
   }
 
   public void transformOnly(Body body) {
-
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
@@ -218,7 +234,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       idx++;
 
     }
-
     for (Unit s : units) {
       nextUse: for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
         ValueBox useBox = iterator.next();
@@ -227,27 +242,26 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           Local luse = (Local) v;
           Iterator<Unit> allAffectingDefs = defs.getDefsOfAtIterator(luse, s);
 
-          MinMaxBitSet constantDefs = new MinMaxBitSet(idx);
-          MinMaxBitSet nonConstantDefs = null;
+          Set<AssignStmt> constantDefs = new HashSet<>();
+          TreeSet<Integer> nonConstantDefs = null;
 
           while (allAffectingDefs.hasNext()) {
             Unit affect = allAffectingDefs.next();
             if (affect instanceof DefinitionStmt) {
               DefinitionStmt def = (DefinitionStmt) affect;
-              int actualidx = stmtToIndex.get(def);
-              if (def.getRightOp() instanceof Constant) {
-                constantDefs.set(actualidx);
+              Value rop = def.getRightOp();
+              if (rop instanceof Constant) {
+                constantDefs.add((AssignStmt) def);
               } else {
                 if (nonConstantDefs == null) {
-                  nonConstantDefs = new MinMaxBitSet(idx);
+                  nonConstantDefs = new TreeSet<>();
                 }
-                nonConstantDefs.set(actualidx);
+                int actualidx = stmtToIndex.get(def);
+                nonConstantDefs.add(actualidx);
               }
             }
           }
-          int useidx = stmtToIndex.get(s);
-          MinMaxBitSet useset = new MinMaxBitSet(useidx);
-          useset.set(useidx);
+          Cluster use = null;
           if (nonConstantDefs != null) {
             Set<Cluster> set = nonConstantClustersPerLocal.get(luse);
             if (set instanceof ClusterSet) {
@@ -260,25 +274,36 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                   // the idea is: When there is an overlap in any non-constant definition units,
                   // we need to merge them, since two different usages have overlapping definitions,
                   // i.e. we can only change all these uses
-                  if (!existing.invalid && existing.nonConstantDefs.intersects(nonConstantDefs)) {
+                  if (!existing.invalid && intersects(existing.nonConstantDefs, nonConstantDefs)) {
+                    if (use == null) {
+                      use = existing;
+                    }
                     // we have an overlap
-                    useset.or(existing.uses);
-                    constantDefs.or(existing.constantInitializers);
-                    nonConstantDefs.or(existing.nonConstantDefs);
+                    use.uses.add(s);
+                    use.constantInitializers.addAll(constantDefs);
+                    use.nonConstantDefs.addAll(nonConstantDefs);
+                    c.updateMinMax(nonConstantDefs);
 
-                    // we only keep the new definition with an overlap
-                    it.remove();
-                    existing.invalid = true;
+                    if (use != existing) {
+                      clustersPerLocal.remove(luse, existing);
+                      // we only keep the new definition with an overlap
+                      it.remove();
+                      existing.invalid = true;
+                    }
                   }
 
                 }
               }
             }
           }
-          Cluster c = new Cluster(useset, constantDefs, nonConstantDefs);
-          clustersPerLocal.put(luse, c);
-          if (nonConstantDefs != null) {
-            nonConstantClustersPerLocal.put(luse, c);
+          if (use == null) {
+            Set<Unit> useset = new HashSet<>();
+            useset.add(s);
+            Cluster c = new Cluster(useset, constantDefs, nonConstantDefs, indexToStmt);
+            clustersPerLocal.put(luse, c);
+            if (nonConstantDefs != null) {
+              nonConstantClustersPerLocal.put(luse, c);
+            }
           }
         }
       }
@@ -288,18 +313,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     int w = 0;
     for (Local lcl : clustersPerLocal.keySet()) {
       Set<Cluster> clusters = clustersPerLocal.get(lcl);
-      Iterator<Cluster> it = clusters.iterator();
-      // First, remove all invalid clusters (so that we know when there is at least one valid cluster)
-      int validCount = 0;
-      while (it.hasNext()) {
-        if (!it.next().invalid) {
-          validCount++;
-          if (validCount > 1) {
-            break;
-          }
-        }
-      }
-      if (validCount <= 1) {
+      if (clusters.size() <= 1) {
         // Not interesting
         continue;
       }
@@ -307,16 +321,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         if (cluster.invalid) {
           continue;
         }
+        Set<AssignStmt> constantInit = cluster.constantInitializers;
+        if (!actAsNormalLocalSplitter && constantInit.isEmpty()) {
+          continue;
+        }
         // we have an overlap, we need to split.
         Local newLocal = (Local) lcl.clone();
         newLocal.setName(newLocal.getName() + '_' + ++w);
         locals.add(newLocal);
-        BitSet constantInit = cluster.constantInitializers;
-        if (!actAsNormalLocalSplitter && constantInit.isEmpty()) {
-          continue;
-        }
-        for (int i = constantInit.nextSetBit(0); i != -1; i = constantInit.nextSetBit(i + 1)) {
-          AssignStmt assign = (AssignStmt) indexToStmt[i];
+        for (Unit assignS : constantInit) {
+          AssignStmt assign = (AssignStmt) assignS;
           if (assign == null) {
             throw new AssertionError("Wrong indice");
           }
@@ -325,17 +339,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           CopyPropagator.copyLineTags(newAssign.getUseBoxesIterator().next(), assign);
         }
 
-        BitSet uses = cluster.uses;
-        for (int i = uses.nextSetBit(0); i != -1; i = uses.nextSetBit(i + 1)) {
-          Unit use = indexToStmt[i];
+        Set<Unit> uses = cluster.uses;
+        for (Unit use : uses) {
           if (use == null) {
             throw new AssertionError("Wrong indice");
           }
           replaceLocalsInUnitUses(use, lcl, newLocal);
         }
-        BitSet nonConstantDefs = cluster.nonConstantDefs;
+        TreeSet<Integer> nonConstantDefs = cluster.nonConstantDefs;
         if (nonConstantDefs != null) {
-          for (int i = nonConstantDefs.nextSetBit(0); i != -1; i = nonConstantDefs.nextSetBit(i + 1)) {
+          for (int i : nonConstantDefs) {
             DefinitionStmt def = (DefinitionStmt) indexToStmt[i];
             if (def == null) {
               throw new AssertionError("Wrong indice");
@@ -349,6 +362,32 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       }
     }
     UnusedLocalEliminator.v().transform(body);
+  }
+
+  private boolean intersects(TreeSet<Integer> t1, TreeSet<Integer> t2) {
+    int m1Min = t1.first();
+    int m2Min = t2.first();
+    int m1Max = t1.last();
+    int m2Max = t2.last();
+    if (m1Max < m2Min || m2Max < m1Min || m1Min > m2Max || m2Min > m1Max) {
+      return false;
+    } else {
+      Set<Integer> smaller;
+      Set<Integer> larger;
+      if (t1.size() < t2.size()) {
+        smaller = t1;
+        larger = t2;
+      } else {
+        smaller = t2;
+        larger = t1;
+      }
+      for (Integer i : smaller) {
+        if (larger.contains(i)) {
+          return true;
+        }
+      }
+      return false;
+    }
   }
 
   private void replaceLocalsInUnitUses(Unit change, Value oldLocal, Local newLocal) {
