@@ -227,7 +227,16 @@ public class BytecodeHierarchy implements IHierarchy {
     } else if (ancestor instanceof NullType) {
       return false;
     } else {
+      makeSureTypeIsLoaded(ancestor);
+      makeSureTypeIsLoaded(child);
       return Scene.v().getOrMakeFastHierarchy().canStoreType(child, ancestor);
+    }
+  }
+
+  private static void makeSureTypeIsLoaded(Type t) {
+    if (t instanceof RefType) {
+      RefType rt = (RefType) t;
+      Scene.v().forceResolve(rt.getClassName(), SootClass.HIERARCHY);
     }
   }
 

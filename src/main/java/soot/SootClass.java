@@ -109,7 +109,6 @@ public class SootClass extends AbstractHost {
         }
       };
 
-
   /**
    * Lazy initialized array containing some validators in order to validate the SootClass.
    */
@@ -213,7 +212,7 @@ public class SootClass extends AbstractHost {
     int currentLevel = resolvingLevel();
     if (currentLevel < level) {
       String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n"
-          + "Scene.v().addBasicClass(" + getName() + "," + levelToString(level) + ");\n"
+          + "Scene.v().addBasicClass(\"" + getName() + "\"," + levelToString(level) + ");\n"
           + "Otherwise, try whole-program mode (-w).";
       throw new RuntimeException("This operation requires resolving level " + levelToString(level) + " but " + name
           + " is at resolving level " + levelToString(currentLevel) + hint);
