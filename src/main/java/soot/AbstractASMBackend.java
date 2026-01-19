@@ -81,6 +81,7 @@ import soot.tagkit.SourceFileTag;
 import soot.tagkit.SyntheticTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.VisibilityLocalVariableAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 import soot.util.backend.ASMBackendUtils;
 import soot.util.backend.SootASMClassWriter;
@@ -394,7 +395,16 @@ public abstract class AbstractASMBackend {
       if (mv != null) {
         // Visit parameter annotations
         for (Tag t : sm.getTags()) {
-          if (t instanceof VisibilityParameterAnnotationTag) {
+          if (t instanceof VisibilityLocalVariableAnnotationTag) {
+            // Actually supporting this feature would require quite a bit of work.
+            // The problem is that we do not retain all relevant information yet;
+            // these annotations have a start and end statement. Since Soot can optimize
+            // away these statements, we would need to be sure that we update the start and end statements
+            // accordingly.
+            logger.warn(String.format(
+                "Local variable annotation found in %s. Writing out of these annotations is not supported yet.",
+                sm.getSignature()));
+          } else if (t instanceof VisibilityParameterAnnotationTag) {
             VisibilityParameterAnnotationTag vpt = (VisibilityParameterAnnotationTag) t;
             ArrayList<VisibilityAnnotationTag> tags = vpt.getVisibilityAnnotations();
             if (tags != null) {

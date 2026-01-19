@@ -948,7 +948,7 @@ public class FastHierarchy {
     boolean calleeExist = declaringClass.getMethodUnsafe(subsignature) != null;
     for (SootClass concreteType = baseType; concreteType != null;) {
       SootMethod previouslyResolvedMethod = typeToVtbl.get(concreteType, methodSignature);
-      if (previouslyResolvedMethod != null) {
+      if (previouslyResolvedMethod != null && previouslyResolvedMethod.getDeclaringClass() != null) {
         if (!previouslyResolvedMethod.getDeclaringClass().isInterface()) {
           if (baseType != concreteType) {
             typeToVtbl.put(baseType, methodSignature, previouslyResolvedMethod);

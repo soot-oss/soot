@@ -337,7 +337,6 @@ public class AsmMethodSource implements MethodSource {
   private Map<AbstractInsnNode, StackFrame> frames;
   private Multimap<LabelNode, UnitBox> trapHandlers;
   private JimpleBody body;
-  private int lastLineNumber = -1;
   private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
   private ArrayDeque<Edge> conversionWorklist;
   private Map<AbstractInsnNode, Integer> lineNumberMap;
@@ -542,9 +541,11 @@ public class AsmMethodSource implements MethodSource {
   }
 
   protected void setUnit(AbstractInsnNode insn, Unit u) {
-    int ln = lineNumberMap.getOrDefault(insn, lastLineNumber);
-    if (ln >= 0) {
-      setLineNumber(u, ln);
+    if (lineNumberMap != null) {
+      Integer ln = lineNumberMap.get(insn);
+      if (ln != null && ln >= 0) {
+        setLineNumber(u, ln);
+      }
     }
 
     Unit o = units.put(insn, u);
@@ -554,14 +555,12 @@ public class AsmMethodSource implements MethodSource {
   }
 
   protected void setLineNumber(Unit u, int lineNumber) {
-    if (Options.v().keep_line_number()) {
-      Tag lineTag = u.getTag(LineNumberTag.NAME);
-      if (lineTag == null) {
-        lineTag = new LineNumberTag(lineNumber);
-        u.addTag(lineTag);
-      } else if (((LineNumberTag) lineTag).getLineNumber() != lineNumber) {
-        throw new RuntimeException("Line tag mismatch");
-      }
+    Tag lineTag = u.getTag(LineNumberTag.NAME);
+    if (lineTag == null) {
+      lineTag = new LineNumberTag(lineNumber);
+      u.addTag(lineTag);
+    } else if (((LineNumberTag) lineTag).getLineNumber() != lineNumber) {
+      throw new RuntimeException("Line tag mismatch");
     }
   }
 
@@ -1878,10 +1877,6 @@ public class AsmMethodSource implements MethodSource {
     push(opr);
   }
 
-  private void convertLine(LineNumberNode ln) {
-    lastLineNumber = ln.line;
-  }
-
   private void addEdges(AbstractInsnNode cur, AbstractInsnNode tgt1, List<LabelNode> tgts) {
     int lastIdx = tgts == null ? -1 : tgts.size() - 1;
     Operand[] stackss = stack.toArray(new Operand[stack.size()]);
@@ -1891,9 +1886,7 @@ public class AsmMethodSource implements MethodSource {
     tgt_loop: do {
       Edge edge = edges.get(cur, tgt);
       if (edge == null) {
-        // make sure to store last line number to stay sound if the branch that comes later in
-        // bytecode is processed first
-        edge = new Edge(tgt, lastLineNumber);
+        edge = new Edge(tgt);
         edge.prevStacks.add(stackssL);
         edges.put(cur, tgt, edge);
         conversionWorklist.add(edge);
@@ -1920,7 +1913,7 @@ public class AsmMethodSource implements MethodSource {
         continue tgt_loop;
       }
       edge.stack = new ArrayList<Operand>(stack);
-      conversionWorklist.add(edge);
+      conversionWorklist.addLast(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
   }
 
@@ -1972,17 +1965,14 @@ public class AsmMethodSource implements MethodSource {
     worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
     conversionWorklist = worklist;
     edges = HashBasedTable.create(instructions.size(), 1);
-    setLineNumberMap();
+    if (Options.v().keep_line_number()) {
+      setLineNumberMap();
+    }
 
     do {
       Edge edge = worklist.pollLast();
       AbstractInsnNode insn = edge.insn;
       stack = edge.stack;
-      // restore line. this is important since we might have traversed the edge that leads to
-      // bytecode far away from the branch statement first and are now processing the statement
-      // right after the branch which should start with the lastLineNumber as it was for the branch
-      // statement
-      lastLineNumber = edge.lastLineNumber == -1 ? lastLineNumber : edge.lastLineNumber;
       edge.stack = null;
       insnLoop: do {
         int type = insn.getType();
@@ -2055,7 +2045,7 @@ public class AsmMethodSource implements MethodSource {
             convertLabel((LabelNode) insn);
             continue;
           case LINE:
-            convertLine((LineNumberNode) insn);
+            // was already handled in setLineNumberMap()
             continue;
           case FRAME:
             // we can ignore it
@@ -2070,6 +2060,7 @@ public class AsmMethodSource implements MethodSource {
   }
 
   private void setLineNumberMap() {
+    lineNumberMap = new HashMap<>(instructions.size() * 2 + 1);
     AbstractInsnNode current = instructions.getFirst();
 
     int lastNumber = -1;
@@ -2317,7 +2308,6 @@ public class AsmMethodSource implements MethodSource {
     labels = LinkedListMultimap.create(4);
     units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
-    lineNumberMap = new HashMap<>(nrInsn);
     trapHandlers = LinkedListMultimap.create(tryCatchBlocks.size());
     body = jb;
     /* retrieve all trap handlers */
@@ -2537,7 +2527,6 @@ public class AsmMethodSource implements MethodSource {
     final AbstractInsnNode insn;
     /* previous stacks at edge */
     final Set<List<Operand>> prevStacks;
-    private int lastLineNumber = -1;
     /* current stack at edge */
     ArrayList<Operand> stack;
 
@@ -2547,9 +2536,20 @@ public class AsmMethodSource implements MethodSource {
       this.stack = stack;
     }
 
-    Edge(AbstractInsnNode insn, int lastLineNumber) {
+    Edge(AbstractInsnNode insn) {
       this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
-      this.lastLineNumber = lastLineNumber;
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder(insn.toString());
+      if (stack != null) {
+        sb.append("\nCurrent stack:");
+        for (Operand i : stack) {
+          sb.append("\n").append(i.toString());
+        }
+      }
+      return sb.toString();
     }
   }
 }

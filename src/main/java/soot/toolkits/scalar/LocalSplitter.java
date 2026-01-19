@@ -44,7 +44,9 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.LocalBitSetPacker;
@@ -96,6 +98,67 @@ public class LocalSplitter extends BodyTransformer {
 
     if (throwAnalysis == null) {
       throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+      if (throwAnalysis instanceof UnitThrowAnalysis
+          && o.throw_analysis() == Options.throw_analysis_auto_select) {
+        /*
+         * Sadly, the JVM is not smart
+         See https://github.com/soot-oss/soot/issues/1951
+         
+         With the standard UnitThrowAnalysis, soot knows that the definition at (1) is only used at (2), since
+         the event handler at (3) cannot be reached before overwriting a at (2).
+         Thus, the local splitter splits the variable and 
+         uses the split variable at (1) and at the right side of (2), but not at (3).
+         
+         Input: 
+    public static void m1(int)
+    {
+        unknown a, $stack2, $stack3, $stack4, A, $stack5, a#1;
+
+        a := @parameter0: int; (1)
+
+     label1:
+        a = a * 2; (2)
+        ...
+      
+     label2:
+        $stack4 := @caughtexception;
+
+        virtualinvoke $stack5.<java.io.PrintStream: void println(int)>(a); (3)
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label2;
+    }
+    
+    
+    Output with UnitThrowAnalysis:
+        
+    public static void m1(int)
+    {
+        unknown a, $stack2, $stack3, $stack4, A, $stack5, a#1;
+
+        a#1 := @parameter0: int;
+
+     label1:
+        a = a#1 * 2;
+        ...
+      
+     label2:
+        $stack4 := @caughtexception;
+
+        virtualinvoke $stack5.<java.io.PrintStream: void println(int)>(a);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label2;
+    }
+    
+    Now, the JVM assumes conservatively that the exception handler could be reached
+    prior to the definition of a. Thus, we use the pedantic throw analysis which is conservative. 
+         */
+        
+        throwAnalysis = PedanticThrowAnalysis.v();
+      }
     }
 
     if (!omitExceptingUnitEdges) {
