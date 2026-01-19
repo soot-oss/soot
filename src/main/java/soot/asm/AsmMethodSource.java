@@ -542,8 +542,8 @@ public class AsmMethodSource implements MethodSource {
 
   protected void setUnit(AbstractInsnNode insn, Unit u) {
     if (lineNumberMap != null) {
-      int ln = lineNumberMap.get(insn);
-      if (ln >= 0) {
+      Integer ln = lineNumberMap.get(insn);
+      if (ln != null && ln >= 0) {
         setLineNumber(u, ln);
       }
     }
