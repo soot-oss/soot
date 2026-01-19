@@ -21,7 +21,6 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -174,6 +173,7 @@ import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
+
 
 import com.google.common.base.Optional;
 import com.google.common.collect.HashBasedTable;
@@ -1914,7 +1914,7 @@ public class AsmMethodSource implements MethodSource {
         continue tgt_loop;
       }
       edge.stack = new ArrayList<Operand>(stack);
-      conversionWorklist.add(edge);
+      conversionWorklist.addFirst(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
   }
 
@@ -2539,6 +2539,18 @@ public class AsmMethodSource implements MethodSource {
 
     Edge(AbstractInsnNode insn) {
       this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder(insn.toString());
+      if (stack != null) {
+        sb.append("\nCurrent stack:");
+        for (Operand i : stack) {
+          sb.append("\n").append(i.toString());
+        }
+      }
+      return sb.toString();
     }
   }
 }
