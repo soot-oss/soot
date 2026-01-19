@@ -1913,7 +1913,7 @@ public class AsmMethodSource implements MethodSource {
         continue tgt_loop;
       }
       edge.stack = new ArrayList<Operand>(stack);
-      conversionWorklist.addFirst(edge);
+      conversionWorklist.addLast(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
   }
 
