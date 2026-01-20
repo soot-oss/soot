@@ -36,7 +36,6 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
-import soot.Scene;
 import soot.Singletons;
 import soot.Unit;
 import soot.Value;
@@ -145,7 +144,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     }
 
     if (throwAnalysis == null) {
-      throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+      throwAnalysis = LocalSplitter.getThrowableAnalysis();
     }
 
     if (!omitExceptingUnitEdges) {

@@ -300,9 +300,13 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
+import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
+import soot.toolkits.exceptions.TrapTightener;
 import soot.util.Chain;
 
 /**
@@ -1934,8 +1938,8 @@ public class AsmMethodSource implements MethodSource {
     if (secondOp.stack != null) {
       if (firstOp.stack == null) {
         Local stack = secondOp.stack;
-        firstOp.stack = stack;
         AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
+        firstOp.stack = stack;
         setUnit(firstOp, as);
       } else {
         // Both operands have a stack local. We need to create an assignment to a temporary variable.
@@ -1948,8 +1952,8 @@ public class AsmMethodSource implements MethodSource {
     } else {
       if (firstOp.stack != null) {
         Local stack = firstOp.stack;
-        secondOp.stack = stack;
         AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
+        secondOp.stack = stack;
         setUnit(secondOp, as);
       } else {
         Local stack = newStackLocal();
@@ -2367,6 +2371,31 @@ public class AsmMethodSource implements MethodSource {
     body = null;
     lineNumberMap = null;
 
+    // We want to have somewhat correct ordering of the locals
+    // (the asm backend's code depends on this)
+    Set<Local> seenLocals = new HashSet<>();
+    jb.getLocals().clear();
+    for (Unit i : jb.getUnits()) {
+      Iterator<ValueBox> it = i.getUseAndDefBoxesIterator();
+      while (it.hasNext()) {
+        ValueBox vb = it.next();
+        Value v = vb.getValue();
+        if (v instanceof Local && seenLocals.add((Local) v)) {
+          Local l = (Local) v;
+          jb.getLocals().add(l);
+        }
+      }
+    }
+
+    if (!"false".equalsIgnoreCase(PhaseOptions.v().getPhaseOptions("jb.cp").get("enabled"))) {
+      CopyPropagator.v().transform(jb);
+      ConditionalBranchFolder.v().transform(jb);
+    }
+
+    // We can have cases where the Java compiler inserts unnecessary traps, which might cause problems later in typing
+    TrapTightener.v().transform(jb);
+    UnreachableCodeEliminator.v().transform(jb);
+
     // Make sure to inline patterns of the form to enable proper variable
     // splitting and type assignment:
     // a = new A();
@@ -2381,6 +2410,7 @@ public class AsmMethodSource implements MethodSource {
     } catch (Throwable t) {
       throw new RuntimeException("Failed to apply jb to " + m, t);
     }
+    TrapTightener.removeInvalidTraps(jb);
 
     return jb;
   }

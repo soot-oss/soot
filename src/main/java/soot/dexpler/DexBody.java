@@ -728,6 +728,10 @@ public class DexBody {
      * unreachable. Dead code yields problems during local splitting because locals within dead code will not be split. Hence
      * we remove all dead code here.
      */
+    UnitPatchingChain chain = jBody.getUnits();
+    if (chain.isEmpty()) {
+      throw new RuntimeException(String.format("%s: No units found; dex instructions: %s", m.getSignature(), instructions));
+    }
 
     // Fix traps that do not catch exceptions
     DexTrapStackFixer.v().transform(jBody);
@@ -1047,10 +1051,17 @@ public class DexBody {
 
     final RefType objectType = RefType.v("java.lang.Object");
 
-    // We pack locals that are not used in overlapping regions. This may
-    // again lead to unused locals which we have to remove.
-    LocalPacker.v().transform(jBody);
-    UnusedLocalEliminator.v().transform(jBody);
+    Unit last = chain.getLast();
+    if (last.fallsThrough()) {
+      logger.warn(String.format(
+          "%s: Last statement is neither a throw, return or goto statement. This is likely the result of a packer.",
+          m.getSignature(), instructions));
+    } else {
+      // We pack locals that are not used in overlapping regions. This may
+      // again lead to unused locals which we have to remove.
+      LocalPacker.v().transform(jBody);
+      UnusedLocalEliminator.v().transform(jBody);
+    }
 
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
@@ -1175,6 +1186,8 @@ public class DexBody {
         l.setType(objectType);
       }
     }
+
+    TrapTightener.removeInvalidTraps(jBody);
 
     // Must be last to ensure local ordering does not change
     PackManager.v().getTransform("jb.lns").apply(jBody);
