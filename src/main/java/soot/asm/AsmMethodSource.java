@@ -180,6 +180,9 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -217,6 +220,8 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1889,7 +1894,7 @@ public class AsmMethodSource implements MethodSource {
         edge = new Edge(tgt);
         edge.prevStacks.add(stackssL);
         edges.put(cur, tgt, edge);
-        conversionWorklist.add(edge);
+        conversionWorklist.addLast(edge);
         continue;
       }
       if (edge.stack != null) {
@@ -1909,9 +1914,11 @@ public class AsmMethodSource implements MethodSource {
         }
         continue;
       }
+
       if (!edge.prevStacks.add(stackssL)) {
         continue tgt_loop;
       }
+
       edge.stack = new ArrayList<Operand>(stack);
       conversionWorklist.addLast(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
@@ -1945,7 +1952,15 @@ public class AsmMethodSource implements MethodSource {
         AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
         setUnit(secondOp, as);
       } else {
-        throw new RuntimeException("Cannot merge operands, since neither has a stack local. Bummer.");
+        Local stack = newStackLocal();
+        AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
+        firstOp.stack = stack;
+        mergeUnits(firstOp.insn, as);
+        firstOp.addBox(as.getRightOpBox());
+        AssignStmt as2 = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
+        mergeUnits(secondOp.insn, as2);
+        secondOp.addBox(as2.getRightOpBox());
+        secondOp.stack = stack;
       }
     }
   }
@@ -1970,7 +1985,7 @@ public class AsmMethodSource implements MethodSource {
     }
 
     do {
-      Edge edge = worklist.pollLast();
+      Edge edge = worklist.pollFirst();
       AbstractInsnNode insn = edge.insn;
       stack = edge.stack;
       edge.stack = null;
@@ -2057,6 +2072,19 @@ public class AsmMethodSource implements MethodSource {
     } while (!worklist.isEmpty());
     conversionWorklist = null;
     edges = null;
+  }
+
+  // For potential future debugging efforts
+  private static String getInstructionAsString(AbstractInsnNode n) {
+    Textifier textifier = new Textifier();
+    TraceMethodVisitor tm = new TraceMethodVisitor(textifier);
+    n.accept(tm);
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    try (PrintWriter pw = new PrintWriter(bos)) {
+      textifier.print(pw);
+    }
+    return new String(bos.toByteArray(), StandardCharsets.UTF_8).trim();
   }
 
   private void setLineNumberMap() {
