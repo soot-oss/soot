@@ -123,7 +123,8 @@ public class DexNullThrowTransformer extends BodyTransformer {
     Stmt newExStmt = Jimple.v().newAssignStmt(lcEx, Jimple.v().newNewExpr(tp));
     body.getUnits().insertBefore(newExStmt, oldStmt);
     Stmt invConsStmt = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(lcEx, constructorRef,
-        Collections.singletonList(StringConstant.v("Null throw statement replaced by Soot"))));
+        Collections.singletonList(StringConstant.v("Attempt to get length of null array")))); // be consistent with the
+                                                                                              // behavior of Dalvik
     UnitPatchingChain units = body.getUnits();
     units.insertBefore(invConsStmt, oldStmt);
     Unit succ = units.getSuccOf(oldStmt);

@@ -247,6 +247,13 @@ public class TypeResolver {
         v.setType(type);
       }
     }
+    RefType obj = Scene.v().getObjectType();
+    for (Local v : this.jb.getLocals()) {
+      Type type = v.getType();
+      if (type instanceof WeakObjectType) {
+        v.setType(obj);
+      }
+    }
   }
 
   protected BytecodeHierarchy createBytecodeHierarchy() {

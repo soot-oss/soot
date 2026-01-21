@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Scene;
 import soot.Singletons;
 import soot.SootClass;
@@ -160,5 +159,27 @@ public final class TrapTightener extends TrapTransformer {
       }
     }
     return false;
+  }
+
+  /**
+   * Removes traps with the same beginning and end unit, effectively useless
+   * 
+   * @param jBody
+   *          the body
+   */
+  public static void removeInvalidTraps(Body body) {
+    Iterator<Trap> t = body.getTraps().iterator();
+    boolean changed = false;
+    while (t.hasNext()) {
+      Trap trap = t.next();
+      if (trap.getBeginUnit().equals(trap.getEndUnit())) {
+        t.remove();
+        changed = true;
+      }
+    }
+    if (changed) {
+      UnreachableCodeEliminator.v().transform(body);
+    }
+
   }
 }

@@ -242,6 +242,8 @@ public class BafASMBackend extends AbstractASMBackend {
           localToSlot.put(l, slot);
           assignedLocals.add(l);
         }
+      } else {
+        break;
       }
     }
 
@@ -502,7 +504,7 @@ public class BafASMBackend extends AbstractASMBackend {
         Value l = i.getLeftOp();
         Value r = i.getRightOp();
         if (r instanceof CaughtExceptionRef && l instanceof Local) {
-          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get((Local) l));
+          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get(l));
           // asm handles constant opcodes automatically here
         }
       }
