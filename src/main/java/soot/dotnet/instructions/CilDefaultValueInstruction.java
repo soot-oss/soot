@@ -52,7 +52,8 @@ public class CilDefaultValueInstruction extends AbstractNewObjInstanceInstructio
     // RefType refType = RefType.v(i.getType().getFullname());
     // return Jimple.v().newNewExpr(refType);
 
-    SootClass clazz = Scene.v().getSootClass(instruction.getType().getFullname());
+    SootClass clazz = Scene.v().forceResolve(instruction.getType().getFullname(), SootClass.SIGNATURES);
+
     NewExpr newExpr = Jimple.v().newNewExpr(clazz.getType());
 
     methodRef = Scene.v().makeConstructorRef(clazz, new ArrayList<>());
