@@ -18,13 +18,13 @@ This is _very_ important. In many cases, a bug triggers only on certain input fi
 
 **To reproduce**
 Steps to reproduce the behavior:
-Please include soot options you used or supply a code snippet to ease reproduction of the problem.
+Please include soot options you used or supply a code snippet to ease reproduction of the problem. **Please do not supply code snippets as _Screenshots_**.
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
 **Stacktrace**
-If applicable, add complete stacktraces. In case your stack trace contains a line starting with "Caused by:", that line as well as the following lines are still part of the original stacktrace, so please include them as well.
+If applicable, add complete stacktraces. In case your stack trace contains a line starting with "Caused by:", that line as well as the following lines are still part of the original stacktrace, so please include them as well. **Please do not supply stack traces as _Screenshots_**, copy and paste the stacktrace instead.
 
 **Additional context**
 Add any other context about the problem here, which might help us to understand or solve your problem better.
