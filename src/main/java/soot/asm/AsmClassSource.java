@@ -24,14 +24,18 @@ package soot.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.Opcodes;
 
 import soot.ClassSource;
 import soot.Dependencies;
 import soot.IFoundFile;
 import soot.SootClass;
 import soot.SootResolver;
+import soot.UserInputException;
 
 /**
  * ASM class source implementation.
@@ -40,6 +44,8 @@ import soot.SootResolver;
  */
 public class AsmClassSource extends ClassSource {
 
+  private static final String UNSUPPORTED_CLASS_FILE = "Unsupported class file major version (\\d+)";
+  private static final String MANIFEST_IMPL_VERSION = "Implementation-Version: (.*)";
   protected IFoundFile foundFile;
 
   /**
@@ -86,6 +92,27 @@ public class AsmClassSource extends ClassSource {
         sc.setOuterClass(SootResolver.v().makeClassRef(outerClassName));
       }
       return deps;
+    } catch (IllegalArgumentException e) {
+      Pattern pattern = Pattern.compile(UNSUPPORTED_CLASS_FILE);
+      Matcher matcher = pattern.matcher(e.getMessage());
+      if (matcher.matches()) {
+        String m = matcher.group(1);
+        int version = Integer.parseInt(m);
+        if (version <= Opcodes.V25) {
+          throw new UserInputException("You are *NOT* using the version of ASM supplied by Soot. Soot normally"
+              + " uses a version of Soot that supports" + " class file major version " + version + "."
+              + "\nTo see which ASM Soot uses in your case, start the JVM with the -verbose:class parameter"
+              + "\nThe JVM will output the source where it loads ASM from, e.g.\n"
+              + "org.objectweb.asm.ClassReader source: file:/home/foo/asm-9.0.jar\nIn this case, this would "
+              + "reveal that the old version 9.0 is used.\n" + "\nCheck your JVM's class path!\n"
+              + System.getProperty("java.class.path"));
+        } else {
+          throw new IllegalStateException(e.getMessage() + "; ASM is probably out of date. "
+              + "You might want to look whether there is a issue in Soot's "
+              + "issue tracker for this yet, and if not, open a new issue.");
+        }
+      }
+      throw e;
     } catch (IOException e) {
       throw new RuntimeException("Error: Failed to create class reader from class source.", e);
     } finally {
