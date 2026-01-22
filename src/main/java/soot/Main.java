@@ -186,6 +186,8 @@ public class Main {
           sb.append("    Please also supply the files you used as input files for your analysis. Thanks!");
           System.err.println(sb);
         } catch (UnsupportedEncodingException e1) {
+          // So that the Checkstyle checker is happy. This cannot really happen.
+          throw new RuntimeException(e1);
         } finally {
           // Exit with an exit code 1
           System.exit(1);

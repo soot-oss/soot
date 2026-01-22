@@ -652,7 +652,8 @@ public class Scene {
         msgSuffix = "Options.v().set_android_jars or Options.v().set_force_android_jar should be used";
       }
       throw new UserInputException("You are analyzing an Android application but did not define android.jar. " + msgSuffix
-          + "\nUse android-jars to specify the Android SDK's platform path and force-android-jar to supply a direct path to a specific android.jar file");
+          + "\nUse android-jars to specify the Android SDK's platform path "
+          + "and force-android-jar to supply a direct path to a specific android.jar file");
     }
 
     // Get the platform JAR file. It either directly specified, or

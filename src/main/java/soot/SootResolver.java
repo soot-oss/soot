@@ -233,9 +233,9 @@ public class SootResolver {
           if (!Scene.isUsingAndroid() && Scene.isUsingJava() && !Options.v().prepend_classpath()
           // for java.* classes, we are relatively certain that these are probably part of the core JRE
               && className.startsWith("java.")) {
-            suffix
-                += "\nAlternatively, you can use the --prepend-classpath option to let Soot utilize the Java runtime of the current JVM, which is Java "
-                    + System.getProperty("java.version");
+            suffix += "\nAlternatively, you can use the --prepend-classpath option to"
+                + " let Soot utilize the Java runtime of the current JVM, which is Java "
+                + System.getProperty("java.version");
           }
           List<String> possibleInputs = new LinkedList<>();
           if (Scene.isUsingJava()) {
@@ -257,13 +257,16 @@ public class SootResolver {
             classPathSuggestion += "Since you seem to use Soot as a library, use Options.v().set_soot_classpath.";
             phantomRefsSuggestion = "Use Options.v().set_allow_phantom_refs(true);";
           }
-          throw new SootClassNotFoundException("Couldn't find class " + className
-              + ".\nYou've got two options: \nEither specify Soot's classpath correctly: " + classPathSuggestion
-              + "\nThe soot class path should contain all files that contain classes/bytecode the application depends on. Each file should be separated by "
-              + separator + ", e.g. \"File1" + separator + "File2\"" + suffix
-              + "\nAlternatively, you can instruct soot to use phantom references. This causes Soot to treat missing classes as placeholders,\n"
-              + "which can be useful if the origin of the missing classes is unknown or if the application would run even with these missing classes. Note that this may cause some analyses to fail."
-              + "\nEnable phantom references like this: " + phantomRefsSuggestion);
+          throw new SootClassNotFoundException(
+              "Couldn't find class " + className + ".\nYou've got two options: \nEither specify Soot's classpath correctly: "
+                  + classPathSuggestion + "\nThe soot class path should contain all files that contain classes/bytecode"
+                  + " the application depends on. Each file should be separated by " + separator + ", e.g. \"File1"
+                  + separator + "File2\"" + suffix + "\nAlternatively, you can instruct soot to use phantom references. "
+                  + "This causes Soot to treat missing classes as placeholders,\n"
+                  + "which can be useful if the origin of the missing classes is "
+                  + "unknown or if the application would run even with these missing classes."
+                  + "Note that this may cause some analyses to fail." + "\nEnable phantom references like this: "
+                  + phantomRefsSuggestion);
         } else {
           // logger.warn(className + " is a phantom class!");
           sc.setPhantomClass();
