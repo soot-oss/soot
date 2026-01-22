@@ -31,7 +31,6 @@ import java.util.HashMap;
 import java.util.Set;
 
 import soot.Body;
-import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
@@ -125,11 +124,7 @@ public class JimpleAST {
 
     Walker w = new BodyExtractorWalker(sc, SootResolver.v(), methodToBodyMap);
 
-    boolean oldPhantomValue = Scene.v().getPhantomRefs();
-
-    Scene.v().setPhantomRefs(true);
     mTree.apply(w);
-    Scene.v().setPhantomRefs(oldPhantomValue);
 
     methodToParsedBodyMap = methodToBodyMap;
   }

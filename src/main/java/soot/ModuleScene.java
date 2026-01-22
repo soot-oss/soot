@@ -225,11 +225,9 @@ public class ModuleScene extends Scene {
    * or null otherwise.
    */
   public SootClass tryLoadClass(String className, int desiredLevel, Optional<String> moduleName) {
-    setPhantomRefs(true);
     ClassSource source = ModulePathSourceLocator.v().getClassSource(className, moduleName);
     try {
       if (!getPhantomRefs() && source == null) {
-        setPhantomRefs(false);
         return null;
       }
     } finally {
@@ -238,7 +236,6 @@ public class ModuleScene extends Scene {
       }
     }
     SootClass toReturn = SootModuleResolver.v().resolveClass(className, desiredLevel, moduleName);
-    setPhantomRefs(false);
     return toReturn;
   }
 
@@ -266,16 +263,8 @@ public class ModuleScene extends Scene {
   }
 
   public SootClass loadClass(String className, int desiredLevel, Optional<String> moduleName) {
-    /*
-     * if(Options.v().time()) Main.v().resolveTimer.start();
-     */
-    setPhantomRefs(true);
     SootClass toReturn = SootModuleResolver.v().resolveClass(className, desiredLevel, moduleName);
-    setPhantomRefs(false);
     return toReturn;
-    /*
-     * if(Options.v().time()) Main.v().resolveTimer.end();
-     */
   }
 
   /**
