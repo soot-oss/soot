@@ -603,8 +603,25 @@ public class Scene {
     return androidSDKVersionInfo;
   }
 
+  static boolean isUsingAndroid() {
+    int srcprec = Options.v().src_prec();
+    return srcprec == Options.src_prec_apk || srcprec == Options.src_prec_apk_c_j
+        || srcprec == Options.src_prec_apk_class_jimple;
+  }
+
+  static boolean isUsingJava() {
+    int srcprec = Options.v().src_prec();
+    return srcprec == Options.src_prec_c || srcprec == Options.src_prec_class || srcprec == Options.src_prec_only_class
+        || srcprec == Options.src_prec_apk_c_j || srcprec == Options.src_prec_apk_class_jimple;
+  }
+
+  static boolean isUsingDotNet() {
+    int srcprec = Options.v().src_prec();
+    return srcprec == Options.src_prec_dotnet;
+  }
+
   public String defaultClassPath() {
-    if (options.src_prec() != Options.src_prec_apk) {
+    if (!isUsingAndroid()) {
       // If we have an apk file on the process dir and do not have a src-prec
       // option that loads APK files, we give a warning
       for (String entry : options.process_dir()) {
@@ -615,7 +632,7 @@ public class Scene {
       }
       String path = defaultJavaClassPath();
       if (path == null) {
-        throw new RuntimeException("Error: cannot find rt.jar.");
+        throw new UserInputException("Error: Cannot find rt.jar.");
       }
       return path;
     } else {
@@ -628,8 +645,15 @@ public class Scene {
     String androidJars = options.android_jars();
     String forceAndroidJar = options.force_android_jar();
     if ((androidJars == null || androidJars.isEmpty()) && (forceAndroidJar == null || forceAndroidJar.isEmpty())) {
-      throw new RuntimeException("You are analyzing an Android application but did "
-          + "not define android.jar. Options -android-jars or -force-android-jar should be used.");
+      String msgSuffix;
+      if (Main.usedAsCommandLineApp) {
+        msgSuffix = "Options --android-jars or --force-android-jar should be used.";
+      } else {
+        msgSuffix = "Options.v().set_android_jars or Options.v().set_force_android_jar should be used";
+      }
+      throw new UserInputException("You are analyzing an Android application but did not define android.jar. " + msgSuffix
+          + "\nUse android-jars to specify the Android SDK's platform path "
+          + "and force-android-jar to supply a direct path to a specific android.jar file");
     }
 
     // Get the platform JAR file. It either directly specified, or
@@ -660,7 +684,7 @@ public class Scene {
       for (String entry : classPathEntries) {
         if (isApk(new File(entry))) {
           if (targetApk != null && !targetApk.isEmpty()) {
-            throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
+            throw new UserInputException("Only one Android application can be analyzed when using option -android-jars.");
           }
           targetApk = entry;
         }
@@ -673,7 +697,7 @@ public class Scene {
       // We need at least one file to process
       if (targetApk == null || targetApk.isEmpty()) {
         if (targetDexs.isEmpty()) {
-          throw new RuntimeException("no apk file given");
+          throw new UserInputException("No apk file given");
         }
         jarPath = getAndroidJarPath(androidJars, null);
       } else {
@@ -683,13 +707,13 @@ public class Scene {
 
     // We must have a platform JAR file when analyzing Android apps
     if (jarPath.isEmpty()) {
-      throw new RuntimeException("android.jar not found.");
+      throw new UserInputException("android.jar not found.");
     }
 
     // Check the platform JAR file
     File f = new File(jarPath);
     if (!f.exists()) {
-      throw new RuntimeException("file '" + jarPath + "' does not exist!");
+      throw new UserInputException("File '" + jarPath + "' does not exist!");
     } else {
       logger.debug("Using '" + jarPath + "' as android.jar");
     }

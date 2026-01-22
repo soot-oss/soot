@@ -1,5 +1,3 @@
-package soot;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -11,23 +9,27 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.io.IOException;
-import java.io.InputStream;
+package soot;
+
+import com.google.common.base.Joiner;
+
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -50,7 +52,6 @@ public class SootResolver {
   /** SootClasses waiting to be resolved. */
   @SuppressWarnings("unchecked")
   private final Deque<SootClass>[] worklist = new Deque[4];
-
 
   public SootResolver(Singletons.Global g) {
     worklist[SootClass.HIERARCHY] = new ArrayDeque<SootClass>();
@@ -214,16 +215,58 @@ public class SootResolver {
       boolean modelAsPhantomRef = (is == null);
       if (modelAsPhantomRef) {
         if (!Scene.v().allowsPhantomRefs()) {
+          String separator = File.pathSeparator;
           String suffix = "";
-          if ("java.lang.Object".equals(className)) {
-            suffix = " Try adding rt.jar to Soot's classpath, e.g.:\n" + "java -cp sootclasses.jar soot.Main -cp "
-                + ".:/path/to/jdk/jre/lib/rt.jar <other options>";
-          } else if ("javax.crypto.Cipher".equals(className)) {
-            suffix = " Try adding jce.jar to Soot's classpath, e.g.:\n" + "java -cp sootclasses.jar soot.Main -cp "
-                + ".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
+          if (Scene.isUsingJava()) {
+            String start = "";
+            if (!Options.v().soot_classpath().isEmpty()) {
+              start = Options.v().soot_classpath() + separator;
+            }
+            if ("java.lang.Object".equals(className)) {
+              suffix = "\nTry adding the Java runtime (rt.jar) to Soot's classpath, e.g.:\n" + start
+                  + "/path/to/jdk/jre/lib/rt.jar";
+            } else if ("javax.crypto.Cipher".equals(className)) {
+              suffix = "\nTry adding jce.jar to Soot's classpath, e.g.:\n" + start + "/path/to/jdk/jre/lib/rt.jar"
+                  + separator + "/path/to/jdk/jre/lib/jce.jar";
+            }
+          }
+          if (!Scene.isUsingAndroid() && Scene.isUsingJava() && !Options.v().prepend_classpath()
+          // for java.* classes, we are relatively certain that these are probably part of the core JRE
+              && className.startsWith("java.")) {
+            suffix += "\nAlternatively, you can use the --prepend-classpath option to"
+                + " let Soot utilize the Java runtime of the current JVM, which is Java "
+                + System.getProperty("java.version");
+          }
+          List<String> possibleInputs = new LinkedList<>();
+          if (Scene.isUsingJava()) {
+            possibleInputs.add("JAR file/class folder");
+          }
+          if (Scene.isUsingAndroid()) {
+            possibleInputs.add("APK/DEX file");
+          }
+          if (Scene.isUsingDotNet()) {
+            possibleInputs.add(".NET CIL DLL or executable (.exe) file");
+          }
+          String classPathSuggestion
+              = "Add the " + Joiner.on(", ").join(possibleInputs) + " containing the class to the soot class path. ";
+          String phantomRefsSuggestion;
+          if (Main.usedAsCommandLineApp) {
+            classPathSuggestion += "Use the command line argument -cp for that.";
+            phantomRefsSuggestion = "Use the command line argument --allow-phantom-refs for that.";
+          } else {
+            classPathSuggestion += "Since you seem to use Soot as a library, use Options.v().set_soot_classpath.";
+            phantomRefsSuggestion = "Use Options.v().set_allow_phantom_refs(true);";
           }
           throw new SootClassNotFoundException(
-              "couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
+              "Couldn't find class " + className + ".\nYou've got two options: \nEither specify Soot's classpath correctly: "
+                  + classPathSuggestion + "\nThe soot class path should contain all files that contain classes/bytecode"
+                  + " the application depends on. Each file should be separated by " + separator + ", e.g. \"File1"
+                  + separator + "File2\"" + suffix + "\nAlternatively, you can instruct soot to use phantom references. "
+                  + "This causes Soot to treat missing classes as placeholders,\n"
+                  + "which can be useful if the origin of the missing classes is "
+                  + "unknown or if the application would run even with these missing classes."
+                  + "Note that this may cause some analyses to fail." + "\nEnable phantom references like this: "
+                  + phantomRefsSuggestion);
         } else {
           // logger.warn(className + " is a phantom class!");
           sc.setPhantomClass();
@@ -355,7 +398,7 @@ public class SootResolver {
     reResolve(cl, SootClass.HIERARCHY);
   }
 
-  public class SootClassNotFoundException extends RuntimeException {
+  public class SootClassNotFoundException extends UserInputException {
     /**
      *
      */
