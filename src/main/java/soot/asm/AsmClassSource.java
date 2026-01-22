@@ -100,7 +100,7 @@ public class AsmClassSource extends ClassSource {
         int version = Integer.parseInt(m);
         if (version <= Opcodes.V25) {
           throw new UserInputException("You are *NOT* using the version of ASM supplied by Soot. Soot normally"
-              + " uses a version of Soot that supports" + " class file major version " + version + "."
+              + " uses a version of ASM that supports" + " class file major version " + version + "."
               + "\nTo see which ASM Soot uses in your case, start the JVM with the -verbose:class parameter"
               + "\nThe JVM will output the source where it loads ASM from, e.g.\n"
               + "org.objectweb.asm.ClassReader source: file:/home/foo/asm-9.0.jar\nIn this case, this would "
