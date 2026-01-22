@@ -120,7 +120,6 @@ public class Scene {
   protected String sootClassPath;
   protected List<SootClass> dynamicClasses;
   protected LinkedList<String> excludedPackages;
-  protected boolean allowsPhantomRefs = false;
   protected SootClass mainClass;
 
   protected boolean incrementalBuild = false;
@@ -373,9 +372,8 @@ public class Scene {
   }
 
   private List<String> getJarsFromDirs(List<String> dirs) {
-    return dirs.stream().flatMap(d ->
-      Arrays.stream(new File(d).listFiles())
-    ).map(f -> f.getAbsolutePath()).filter(n -> n.endsWith(".jar")).collect(Collectors.toList());
+    return dirs.stream().flatMap(d -> Arrays.stream(new File(d).listFiles())).map(f -> f.getAbsolutePath())
+        .filter(n -> n.endsWith(".jar")).collect(Collectors.toList());
   }
 
   /**
@@ -981,12 +979,9 @@ public class Scene {
     /*
      * if(options.time()) Main.v().resolveTimer.start();
      */
-
-    setPhantomRefs(true);
     ClassSource source = SourceLocator.v().getClassSource(className);
     try {
       if (!getPhantomRefs() && source == null) {
-        setPhantomRefs(false);
         return null;
       }
     } finally {
@@ -995,7 +990,6 @@ public class Scene {
       }
     }
     SootClass toReturn = SootResolver.v().resolveClass(className, desiredLevel);
-    setPhantomRefs(false);
     return toReturn;
 
     /*
@@ -1013,19 +1007,8 @@ public class Scene {
   }
 
   public SootClass loadClass(String className, int desiredLevel) {
-    /*
-     * if(options.time()) Main.v().resolveTimer.start();
-     */
-
-    setPhantomRefs(true);
     SootClass toReturn = SootResolver.v().resolveClass(className, desiredLevel);
-    setPhantomRefs(false);
-
     return toReturn;
-
-    /*
-     * if(options.time()) Main.v().resolveTimer.end();
-     */
   }
 
   /**
@@ -1502,13 +1485,7 @@ public class Scene {
   }
 
   public boolean getPhantomRefs() {
-    // if( !options.allow_phantom_refs() ) return false;
-    // return allowsPhantomRefs;
     return options.allow_phantom_refs();
-  }
-
-  public void setPhantomRefs(boolean value) {
-    allowsPhantomRefs = value;
   }
 
   public boolean allowsPhantomRefs() {
