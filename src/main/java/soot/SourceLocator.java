@@ -61,6 +61,7 @@ import org.slf4j.LoggerFactory;
 import soot.asm.AsmClassProvider;
 import soot.asm.AsmClassSource;
 import soot.asm.AsmJava9ClassProvider;
+import soot.asm.AsmUtil;
 import soot.dexpler.DexFileProvider;
 import soot.dotnet.AssemblyFile;
 import soot.dotnet.DotnetClassProvider;
@@ -137,6 +138,8 @@ public class SourceLocator {
             }
           });
 
+  private final Map<String, String> classToEntry = new ConcurrentHashMap<String, String>();
+
   // NOTE: Considering that the uses of this cache hold a reference to the
   // returned value in a very limited scope combined with the softValues
   // directive means that the values will almost always be softly
@@ -150,7 +153,13 @@ public class SourceLocator {
               try (SharedCloseable<ZipFile> archive = archivePathToZip.getRef(archivePath)) {
                 Set<String> ret = new HashSet<String>();
                 for (Enumeration<? extends ZipEntry> it = archive.get().entries(); it.hasMoreElements();) {
-                  ret.add(it.nextElement().getName());
+                  String n = it.nextElement().getName();
+                  String actualClassFileName = AsmUtil.removeWebPaths(n);
+                  if (actualClassFileName != n) {
+                    classToEntry.put(actualClassFileName, n);
+                    ret.add(actualClassFileName);
+                  }
+                  ret.add(n);
                 }
                 return Collections.unmodifiableSet(ret);
               }
@@ -367,7 +376,10 @@ public class SourceLocator {
         for (Enumeration<? extends ZipEntry> entries = archive.get().entries(); entries.hasMoreElements();) {
           ZipEntry entry = entries.nextElement();
           String entryName = entry.getName();
-          if (entryName.endsWith(".class") || entryName.endsWith(".jimple")) {
+          if (entryName.endsWith(".class")) {
+            classes
+                .add(prefix + AsmUtil.removeWebPaths(entryName.substring(0, entryName.lastIndexOf('.'))).replace('/', '.'));
+          } else if (entryName.endsWith(".jimple")) {
             classes.add(prefix + entryName.substring(0, entryName.lastIndexOf('.')).replace('/', '.'));
           }
         }
@@ -451,7 +463,7 @@ public class SourceLocator {
         } else {
           String fileName = element.getName();
           if (fileName.endsWith(".class")) {
-            classes.add(prefix + fileName.substring(0, fileName.lastIndexOf(".class")));
+            classes.add(prefix + AsmUtil.removeWebPaths(fileName.substring(0, fileName.lastIndexOf(".class"))));
           } else if (fileName.endsWith(".jimple")) {
             classes.add(prefix + fileName.substring(0, fileName.lastIndexOf(".jimple")));
           } else if (fileName.endsWith(".java")) {
@@ -664,7 +676,7 @@ public class SourceLocator {
       throw new RuntimeException(
           "Error: Failed to retrieve the archive entries list for the archive at path '" + archivePath + "'.", e);
     }
-    return entryNames.contains(fileName) ? new FoundFile(archivePath, fileName) : null;
+    return entryNames.contains(fileName) ? new FoundFile(archivePath, classToEntry.getOrDefault(fileName, fileName)) : null;
   }
 
   /**
