@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
@@ -105,7 +106,7 @@ public class SootClass extends AbstractHost {
       = new Function<NameAndNumber, Collection<SootMethod>>() {
         @Override
         public Collection<SootMethod> apply(NameAndNumber t) {
-          return Collections.newSetFromMap(new ConcurrentHashMap<SootMethod, Boolean>());
+          return new ConcurrentLinkedDeque<SootMethod>();
         }
       };
 
