@@ -90,7 +90,8 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     final Date start;
-    if (Options.v().verbose()) {
+    final boolean verbose = Options.v().verbose();
+    if (verbose) {
       start = new Date();
       logger.debug("[TypeAssigner] typing system started on " + start);
     } else {
@@ -130,7 +131,7 @@ public class TypeAssigner extends BodyTransformer {
       }
     }
 
-    if (Options.v().verbose()) {
+    if (verbose) {
       Date finish = new Date();
       long runtime = finish.getTime() - start.getTime();
       long mins = runtime / 60000;

@@ -2048,6 +2048,7 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "")
                     + padOpt("use-original-names (false)", "")
+                    + padOpt("use-original-types (false)", "")
                     + padOpt("preserve-source-annotations (false)", "")
                     + padOpt("stabilize-local-names (false)", "")
                     + padOpt("model-lambdametafactory (true)", "Replace dynamic invoke instructions to the LambdaMetafactory by static invokes to a synthetic LambdaMetafactory implementation.");
@@ -2876,6 +2877,7 @@ public class Options extends OptionsBase {
             return String.join(" ", 
                     "enabled",
                     "use-original-names",
+                    "use-original-types",
                     "preserve-source-annotations",
                     "stabilize-local-names",
                     "model-lambdametafactory"
@@ -3518,6 +3520,7 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true "
                     + "use-original-names:false "
+                    + "use-original-types:false "
                     + "preserve-source-annotations:false "
                     + "stabilize-local-names:false "
                     + "model-lambdametafactory:true ";

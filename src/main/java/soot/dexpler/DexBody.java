@@ -257,6 +257,7 @@ public class DexBody {
 
   // the set of names used by Jimple locals
   protected Set<String> takenLocalNames;
+  private JBOptions jbOptions = new JBOptions(PhaseOptions.v().getPhaseOptions("jb"));
 
   /**
    * Allocate a fresh name for Jimple local
@@ -366,7 +367,9 @@ public class DexBody {
           signature = sl.getSignature();
         }
         if (name != null && type != null) {
-          localDebugs.put(reg, new RegDbgEntry(codeAddr, -1 /* endAddress */, reg, name, type, signature));
+          if (jbOptions.use_original_names()) {
+            localDebugs.put(reg, new RegDbgEntry(codeAddr, -1 /* endAddress */, reg, name, type, signature));
+          }
         }
       } else if (di instanceof ImmutableEndLocal) {
         ImmutableEndLocal el = (ImmutableEndLocal) di;
@@ -550,7 +553,6 @@ public class DexBody {
      * t_whole_jimplification.start();
      */
 
-    JBOptions jbOptions = new JBOptions(phaseOptions.getPhaseOptions("jb"));
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
@@ -588,6 +590,9 @@ public class DexBody {
           // Attempt to read original parameter name.
           try {
             localName = parameterNames.get(argIdx);
+            if (jbOptions.use_original_types()) {
+              localType = parameterTypes.get(argIdx);
+            }
           } catch (Exception ex) {
             logger.error("Exception while reading original parameter names.", ex);
           }
@@ -639,13 +644,19 @@ public class DexBody {
     }
 
     for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic ? 0 : 1)); i++) {
+      Type type = unknownType;
       String name;
-      if (localDebugs.containsKey(i)) {
-        name = localDebugs.get(i).get(0).name;
+      List<RegDbgEntry> dbg = localDebugs.get(i);
+      if (!dbg.isEmpty()) {
+        RegDbgEntry n = dbg.get(0);
+        name = n.name;
+        if (jbOptions.use_original_types()) {
+          type = n.type;
+        }
       } else {
         name = "$u" + i;
       }
-      registerLocals[i] = jimple.newLocal(freshLocalName(name), unknownType);
+      registerLocals[i] = jimple.newLocal(freshLocalName(name), type);
       jBody.getLocals().add(registerLocals[i]);
     }
 

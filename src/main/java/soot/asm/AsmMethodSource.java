@@ -21,6 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -395,6 +396,9 @@ public class AsmMethodSource implements MethodSource {
     return result;
   }
 
+  private final boolean useOriginalTypes
+      = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-types");
+
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
       throw new IllegalArgumentException("Invalid local index: " + idx);
@@ -403,31 +407,44 @@ public class AsmMethodSource implements MethodSource {
     Local l = locals.get(i);
     if (l == null) {
       String name = getLocalName(idx);
-      l = Jimple.v().newLocal(name, UnknownType.v());
+      Type type = UnknownType.v();
+      if (useOriginalTypes) {
+        LocalVariableNode local = getLocale(i);
+        if (local != null && local.desc != null) {
+          type = AsmUtil.toJimpleType(local.desc, Optional.absent());
+        }
+      }
+      l = Jimple.v().newLocal(name, type);
       locals.put(i, l);
     }
     return l;
   }
 
   protected String getLocalName(int idx) {
-    String name;
+    String name = null;
     if (localVars != null) {
-      name = null;
-      for (LocalVariableNode lvn : localVars) {
-        // Ignore LocalVariableNode which don't cover any real units
-        if (lvn.index == idx && lvn.start != lvn.end) {
-          name = lvn.name;
-          break;
-        }
-      }
+      LocalVariableNode n = getLocale(idx);
       /* normally for try-catch blocks */
-      if (name == null) {
+      if (n != null) {
+        name = n.name;
+      }
+      if (n == null) {
         name = "l" + idx;
       }
     } else {
       name = "l" + idx;
     }
     return name;
+  }
+
+  private LocalVariableNode getLocale(int idx) {
+    for (LocalVariableNode lvn : localVars) {
+      // Ignore LocalVariableNode which don't cover any real units
+      if (lvn.index == idx && lvn.start != lvn.end) {
+        return lvn;
+      }
+    }
+    return null;
   }
 
   private void push(Operand opr) {
