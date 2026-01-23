@@ -457,12 +457,12 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
         boolean useOriginalTypes = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-types");
         String potentialFailureReasons = "";
         if (useOriginalNames) {
-          potentialFailureReasons
-              = "Using original names is enabled! This causes Soot to disable some optimizations. Consider disabling this option!\n";
+          potentialFailureReasons = "Using original names is enabled! This causes Soot to disable some optimizations."
+              + "Consider disabling this option!\n";
         }
         if (useOriginalTypes) {
-          potentialFailureReasons
-              += "Using original types is enabled! In case of obfuscated or broken applications, this might cause problems when typing. Consider disabling this option!\n";
+          potentialFailureReasons += "Using original types is enabled! In case of obfuscated or broken applications,"
+              + " this might cause problems when typing. Consider disabling this option!\n";
         }
         if (!potentialFailureReasons.isEmpty()) {
           throw new RuntimeException("An error occurred while retrieving the method body of " + getSignature()
