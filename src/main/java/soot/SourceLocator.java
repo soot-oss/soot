@@ -154,7 +154,7 @@ public class SourceLocator {
                 Set<String> ret = new HashSet<String>();
                 for (Enumeration<? extends ZipEntry> it = archive.get().entries(); it.hasMoreElements();) {
                   String n = it.nextElement().getName();
-                  String actualClassFileName = AsmUtil.removeWebPaths(n);
+                  String actualClassFileName = removeWebPaths(n);
                   if (actualClassFileName != n) {
                     classToEntry.put(actualClassFileName, n);
                     ret.add(actualClassFileName);
@@ -167,6 +167,10 @@ public class SourceLocator {
           });
 
   public SourceLocator(Singletons.Global g) {
+  }
+
+  protected String removeWebPaths(String n) {
+    return AsmUtil.removeWebPaths(n);
   }
 
   public void invalidateCaches() {

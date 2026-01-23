@@ -21,143 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.ATHROW;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.D2F;
-import static org.objectweb.asm.Opcodes.D2I;
-import static org.objectweb.asm.Opcodes.D2L;
-import static org.objectweb.asm.Opcodes.DADD;
-import static org.objectweb.asm.Opcodes.DALOAD;
-import static org.objectweb.asm.Opcodes.DASTORE;
-import static org.objectweb.asm.Opcodes.DCMPG;
-import static org.objectweb.asm.Opcodes.DCMPL;
-import static org.objectweb.asm.Opcodes.DCONST_0;
-import static org.objectweb.asm.Opcodes.DCONST_1;
-import static org.objectweb.asm.Opcodes.DDIV;
-import static org.objectweb.asm.Opcodes.DLOAD;
-import static org.objectweb.asm.Opcodes.DMUL;
-import static org.objectweb.asm.Opcodes.DNEG;
-import static org.objectweb.asm.Opcodes.DREM;
-import static org.objectweb.asm.Opcodes.DRETURN;
-import static org.objectweb.asm.Opcodes.DSTORE;
-import static org.objectweb.asm.Opcodes.DSUB;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.DUP2;
-import static org.objectweb.asm.Opcodes.DUP2_X1;
-import static org.objectweb.asm.Opcodes.DUP2_X2;
-import static org.objectweb.asm.Opcodes.DUP_X1;
-import static org.objectweb.asm.Opcodes.DUP_X2;
-import static org.objectweb.asm.Opcodes.F2D;
-import static org.objectweb.asm.Opcodes.F2I;
-import static org.objectweb.asm.Opcodes.F2L;
-import static org.objectweb.asm.Opcodes.FCMPG;
-import static org.objectweb.asm.Opcodes.FCMPL;
-import static org.objectweb.asm.Opcodes.FCONST_0;
-import static org.objectweb.asm.Opcodes.FCONST_2;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.I2B;
-import static org.objectweb.asm.Opcodes.I2C;
-import static org.objectweb.asm.Opcodes.I2D;
-import static org.objectweb.asm.Opcodes.I2F;
-import static org.objectweb.asm.Opcodes.I2L;
-import static org.objectweb.asm.Opcodes.I2S;
-import static org.objectweb.asm.Opcodes.IADD;
-import static org.objectweb.asm.Opcodes.IALOAD;
-import static org.objectweb.asm.Opcodes.IAND;
-import static org.objectweb.asm.Opcodes.IASTORE;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_5;
-import static org.objectweb.asm.Opcodes.ICONST_M1;
-import static org.objectweb.asm.Opcodes.IDIV;
-import static org.objectweb.asm.Opcodes.IFEQ;
-import static org.objectweb.asm.Opcodes.IFGE;
-import static org.objectweb.asm.Opcodes.IFGT;
-import static org.objectweb.asm.Opcodes.IFLE;
-import static org.objectweb.asm.Opcodes.IFLT;
-import static org.objectweb.asm.Opcodes.IFNE;
-import static org.objectweb.asm.Opcodes.IFNONNULL;
-import static org.objectweb.asm.Opcodes.IFNULL;
-import static org.objectweb.asm.Opcodes.IF_ACMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ACMPNE;
-import static org.objectweb.asm.Opcodes.IF_ICMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ICMPGE;
-import static org.objectweb.asm.Opcodes.IF_ICMPGT;
-import static org.objectweb.asm.Opcodes.IF_ICMPLE;
-import static org.objectweb.asm.Opcodes.IF_ICMPLT;
-import static org.objectweb.asm.Opcodes.IF_ICMPNE;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.IMUL;
-import static org.objectweb.asm.Opcodes.INEG;
-import static org.objectweb.asm.Opcodes.INSTANCEOF;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IOR;
-import static org.objectweb.asm.Opcodes.IREM;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.ISHL;
-import static org.objectweb.asm.Opcodes.ISHR;
-import static org.objectweb.asm.Opcodes.ISTORE;
-import static org.objectweb.asm.Opcodes.ISUB;
-import static org.objectweb.asm.Opcodes.IUSHR;
-import static org.objectweb.asm.Opcodes.IXOR;
-import static org.objectweb.asm.Opcodes.JSR;
-import static org.objectweb.asm.Opcodes.L2D;
-import static org.objectweb.asm.Opcodes.L2F;
-import static org.objectweb.asm.Opcodes.L2I;
-import static org.objectweb.asm.Opcodes.LADD;
-import static org.objectweb.asm.Opcodes.LALOAD;
-import static org.objectweb.asm.Opcodes.LAND;
-import static org.objectweb.asm.Opcodes.LASTORE;
-import static org.objectweb.asm.Opcodes.LCMP;
-import static org.objectweb.asm.Opcodes.LCONST_0;
-import static org.objectweb.asm.Opcodes.LCONST_1;
-import static org.objectweb.asm.Opcodes.LDIV;
-import static org.objectweb.asm.Opcodes.LLOAD;
-import static org.objectweb.asm.Opcodes.LMUL;
-import static org.objectweb.asm.Opcodes.LNEG;
-import static org.objectweb.asm.Opcodes.LOR;
-import static org.objectweb.asm.Opcodes.LREM;
-import static org.objectweb.asm.Opcodes.LRETURN;
-import static org.objectweb.asm.Opcodes.LSHL;
-import static org.objectweb.asm.Opcodes.LSHR;
-import static org.objectweb.asm.Opcodes.LSTORE;
-import static org.objectweb.asm.Opcodes.LSUB;
-import static org.objectweb.asm.Opcodes.LUSHR;
-import static org.objectweb.asm.Opcodes.LXOR;
-import static org.objectweb.asm.Opcodes.MONITORENTER;
-import static org.objectweb.asm.Opcodes.MONITOREXIT;
-import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.NEWARRAY;
-import static org.objectweb.asm.Opcodes.NOP;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.POP2;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RET;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.SALOAD;
-import static org.objectweb.asm.Opcodes.SASTORE;
-import static org.objectweb.asm.Opcodes.SIPUSH;
-import static org.objectweb.asm.Opcodes.SWAP;
-import static org.objectweb.asm.Opcodes.T_BOOLEAN;
-import static org.objectweb.asm.Opcodes.T_BYTE;
-import static org.objectweb.asm.Opcodes.T_CHAR;
-import static org.objectweb.asm.Opcodes.T_DOUBLE;
-import static org.objectweb.asm.Opcodes.T_FLOAT;
-import static org.objectweb.asm.Opcodes.T_INT;
-import static org.objectweb.asm.Opcodes.T_LONG;
-import static org.objectweb.asm.Opcodes.T_SHORT;
+import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -301,6 +165,7 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
+import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
@@ -308,6 +173,7 @@ import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.TrapTightener;
+import soot.toolkits.scalar.LocalPacker;
 import soot.util.Chain;
 
 /**
@@ -340,7 +206,7 @@ public class AsmMethodSource implements MethodSource {
 
   /* -state fields- */
   protected int nextLocal;
-  protected Map<Integer, Local> locals;
+  protected Map<Integer, JimpleLocal> locals;
   private Multimap<LabelNode, UnitBox> labels;
   private Map<AbstractInsnNode, Unit> units;
   private ArrayList<Operand> stack;
@@ -404,17 +270,18 @@ public class AsmMethodSource implements MethodSource {
       throw new IllegalArgumentException("Invalid local index: " + idx);
     }
     Integer i = idx;
-    Local l = locals.get(i);
+    JimpleLocal l = locals.get(i);
     if (l == null) {
       String name = getLocalName(idx);
       Type type = UnknownType.v();
       if (useOriginalTypes) {
-        LocalVariableNode local = getLocale(i);
+        LocalVariableNode local = getLocalVarNode(i);
         if (local != null && local.desc != null) {
           type = AsmUtil.toJimpleType(local.desc, Optional.absent());
         }
       }
       l = Jimple.v().newLocal(name, type);
+      l.setUserDefinedLocal();
       locals.put(i, l);
     }
     return l;
@@ -423,7 +290,7 @@ public class AsmMethodSource implements MethodSource {
   protected String getLocalName(int idx) {
     String name = null;
     if (localVars != null) {
-      LocalVariableNode n = getLocale(idx);
+      LocalVariableNode n = getLocalVarNode(idx);
       /* normally for try-catch blocks */
       if (n != null) {
         name = n.name;
@@ -437,7 +304,7 @@ public class AsmMethodSource implements MethodSource {
     return name;
   }
 
-  private LocalVariableNode getLocale(int idx) {
+  private LocalVariableNode getLocalVarNode(int idx) {
     for (LocalVariableNode lvn : localVars) {
       // Ignore LocalVariableNode which don't cover any real units
       if (lvn.index == idx && lvn.start != lvn.end) {
@@ -600,7 +467,7 @@ public class AsmMethodSource implements MethodSource {
 
   protected Local newStackLocal() {
     Integer idx = nextLocal++;
-    Local l = Jimple.v().newLocal("$stack" + idx, UnknownType.v());
+    JimpleLocal l = Jimple.v().newLocal("$stack" + idx, UnknownType.v());
     locals.put(idx, l);
     return l;
   }
@@ -2353,7 +2220,7 @@ public class AsmMethodSource implements MethodSource {
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
-    locals = new LinkedHashMap<Integer, Local>(maxLocals + (maxLocals / 2));
+    locals = new LinkedHashMap<Integer, JimpleLocal>(maxLocals + (maxLocals / 2));
     labels = LinkedListMultimap.create(4);
     units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
@@ -2428,6 +2295,9 @@ public class AsmMethodSource implements MethodSource {
       throw new RuntimeException("Failed to apply jb to " + m, t);
     }
     TrapTightener.removeInvalidTraps(jb);
+    LocalPacker.v().transform(jb);
+
+    ensureUniqueNames(jb.getLocals());
 
     return jb;
   }
@@ -2474,7 +2344,7 @@ public class AsmMethodSource implements MethodSource {
       // the LocalVariableTable allows multiple local variable indices to
       // have the same name simultaneously but they must be distinguished here.
       final Chain<Unit> jbUnits = jb.getUnits();
-      Table<Integer, String, Local> newLocals = null;
+      Table<Integer, String, JimpleLocal> newLocals = null;
       for (Map.Entry<Integer, Collection<LocalVariableNode>> e : groups.asMap().entrySet()) {
         Collection<LocalVariableNode> lvns = e.getValue();
         if (lvns.size() > 1) {
@@ -2485,7 +2355,7 @@ public class AsmMethodSource implements MethodSource {
             continue;
           }
 
-          final Local chosen = this.locals.get(localNum);
+          final JimpleLocal chosen = this.locals.get(localNum);
           final String chosenName = chosen.getName();
           final Type chosenType = chosen.getType();
           // Detect inconsistencies in the LocalVariableTable.
@@ -2541,9 +2411,10 @@ public class AsmMethodSource implements MethodSource {
               if (newLocals == null) {
                 newLocals = HashBasedTable.create(this.maxLocals, 1);
               }
-              Local newLocal = newLocals.get(localNum, name);
+              JimpleLocal newLocal = newLocals.get(localNum, name);
               if (newLocal == null) {
                 newLocal = jimp.newLocal(name, chosenType);
+                newLocal.setUserDefinedLocal();
                 Local old = newLocals.put(localNum, name, newLocal);
                 assert (old == null);
               }
@@ -2582,7 +2453,7 @@ public class AsmMethodSource implements MethodSource {
   /**
    * If any locals have the same name, append a unique id so that each is different.
    */
-  private void ensureUniqueNames(Chain<Local> jbLocals) {
+  public static void ensureUniqueNames(Chain<Local> jbLocals) {
     Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
     for (Local l : jbLocals) {
       nameToLocal.put(l.getName(), l);

@@ -1106,9 +1106,25 @@
             )
             
             <p>
-               Retain the original names for local variables when the source
+               Retain the original names for local variables when the bytecode
                includes those names. Otherwise, Soot gives variables generic
                names based on their types.
+               
+            </p>
+         </li>
+         <li><b>Use Original Types</b>
+            (use-original-types)
+            <br>
+            (default value:
+            <span class="value">false</span>
+            )
+            
+            <p>
+               Retain the original types for local variables when the bytecode
+               includes those types. Note that this can cause problems when the
+               bytecode is obfuscated and the types are deliberately wrong!
+               Otherwise, Soot assigns types automatically based on the context.
+               Note that this option only makes sense when use-original-names is set. 
                
             </p>
          </li>
