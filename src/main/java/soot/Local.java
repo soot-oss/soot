@@ -39,4 +39,5 @@ public interface Local extends Value, Numberable, Immediate {
   public void setType(Type t);
 
   public boolean isStackLocal();
+
 }

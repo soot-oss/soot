@@ -1696,6 +1696,16 @@
                     </long_desc>
                 </sub_phase>
                 <sub_phase>
+                    <name>Remove Useless Aliases</name>
+                    <alias>jb.rua</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Removes useless aliases that are defined only once</short_desc>
+                </sub_phase>
+                <sub_phase>
                     <name>Shared Initialization Local Splitter</name>
                     <alias>jb.sils</alias>
                     <boolopt>

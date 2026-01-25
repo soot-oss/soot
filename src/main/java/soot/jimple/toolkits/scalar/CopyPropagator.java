@@ -316,6 +316,7 @@ public class CopyPropagator extends BodyTransformer {
         if (src.isUserDefinedLocal() && !dest.isUserDefinedLocal()) {
           // Resolving duplicates is done later (AsmMethodSource.ensureUniqueNames)
           dest.setName(src.getName());
+          dest.setUserDefinedLocal();
         }
       }
     }

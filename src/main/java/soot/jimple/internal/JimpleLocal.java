@@ -74,6 +74,7 @@ public class JimpleLocal implements Local, ConvertToBaf {
     // do not intern the name again
     JimpleLocal local = new JimpleLocal(null, type);
     local.name = name;
+    local.userDefinedLocal = userDefinedLocal;
     return local;
   }
 
@@ -157,4 +158,11 @@ public class JimpleLocal implements Local, ConvertToBaf {
     return userDefinedLocal;
   }
 
+  
+  public static boolean isUserDefinedLocal(Local l) {
+    if (l instanceof JimpleLocal) {
+      return ((JimpleLocal) l).isUserDefinedLocal();
+    }
+    return false;
+  }
 }

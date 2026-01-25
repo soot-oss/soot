@@ -53,6 +53,7 @@ public class AsmMethodSourceTest extends AbstractTestingFramework {
     final Options opts = Options.v();
     opts.setPhaseOption("jb", "use-original-names:true");
     opts.setPhaseOption("jb.sils", "enabled:false");
+    opts.setPhaseOption("jb.cp", "enabled:false");
     opts.setPhaseOption("jb.tr", "ignore-nullpointer-dereferences:true");
     opts.setPhaseOption("cg", "enabled:false");
     opts.set_keep_line_number(true);

@@ -26,7 +26,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -80,7 +79,8 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
     // Run Soot and print output to .asm-files.
     Main.main(new String[] { "-cp", classpath, "-src-prec", "only-class", "-output-format", "asm", "-allow-phantom-refs",
-        "-java-version", getRequiredJavaVersion(), "-no-derive-java-version", getTargetClass() });
+        "-java-version", getRequiredJavaVersion(), "-no-derive-java-version", getTargetClass(),
+        "-no-writeout-body-releasing" });
   }
 
   /** Generates the textual output and saves it for later for comparison */

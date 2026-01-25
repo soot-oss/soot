@@ -1951,6 +1951,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.dtr", "Reduces chains of catch-all traps")
                     + padVal("jb.ese", "Removes empty switch statements")
                     + padVal("jb.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jb.rua", "Removes useless aliases that are defined only once")
                     + padVal("jb.sils", "Splits primitive locals used as different types")
                     + padVal("jb.awa", "Reorder array writes to save local variables")
                     + padVal("jb.a", "Aggregator: removes some unnecessary copies")
@@ -2068,6 +2069,12 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jb.ls"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
+        if (phaseName.equals("jb.rua"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "");
 
@@ -2898,6 +2905,11 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("jb.rua"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
         if (phaseName.equals("jb.sils"))
             return String.join(" ", 
                     "enabled"
@@ -3537,6 +3549,10 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true ";
 
+        if (phaseName.equals("jb.rua"))
+            return ""
+                    + "enabled:true ";
+
         if (phaseName.equals("jb.sils"))
             return ""
                     + "enabled:true ";
@@ -4071,6 +4087,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.dtr")
                 || phaseName.equals("jb.ese")
                 || phaseName.equals("jb.ls")
+                || phaseName.equals("jb.rua")
                 || phaseName.equals("jb.sils")
                 || phaseName.equals("jb.awa")
                 || phaseName.equals("jb.a")
@@ -4173,6 +4190,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.ese");
         if (!PackManager.v().hasPhase("jb.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.ls");
+        if (!PackManager.v().hasPhase("jb.rua"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.rua");
         if (!PackManager.v().hasPhase("jb.sils"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.sils");
         if (!PackManager.v().hasPhase("jb.awa"))

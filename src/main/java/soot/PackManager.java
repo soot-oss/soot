@@ -122,6 +122,7 @@ import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
 import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
+import soot.toolkits.scalar.RemoveUselessAliases;
 import soot.toolkits.scalar.SharedInitializationLocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.EscapedWriter;
@@ -178,6 +179,7 @@ public class PackManager {
       p.add(new Transform("jb.lns", LocalNameStandardizer.v()));
       p.add(new Transform("jb.cp", CopyPropagator.v()));
       p.add(new Transform("jb.dae", DeadAssignmentEliminator.v()));
+      p.add(new Transform("jb.rua", RemoveUselessAliases.v()));
       p.add(new Transform("jb.cp-ule", UnusedLocalEliminator.v()));
       p.add(new Transform("jb.lp", LocalPacker.v()));
       p.add(new Transform("jb.ne", NopEliminator.v()));

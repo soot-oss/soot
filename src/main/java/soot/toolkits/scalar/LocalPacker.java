@@ -45,6 +45,7 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.GroupIntPair;
+import soot.jimple.internal.JimpleLocal;
 import soot.options.Options;
 import soot.util.Chain;
 import soot.util.DeterministicHashMap;
@@ -149,23 +150,24 @@ public class LocalPacker extends BodyTransformer {
           //
           // If we have a split local, let's find a better name for it
           String name = newLocal.getName();
-          if (name != null) {
-            int signIndex = name.indexOf('#');
-            if (signIndex >= 0) {
-              String newName = name.substring(0, signIndex);
-              if (usedLocalNames.add(newName)) {
-                newLocal.setName(newName);
-              } else {
-                // just leave it alone for now
-              }
-            } else {
-              usedLocalNames.add(name);
-
-            }
-          }
+          setNewName(usedLocalNames, newLocal, name);
 
           groupIntToLocal.put(pair, newLocal);
           bodyLocalsRef.add(newLocal);
+        } else {
+          if (JimpleLocal.isUserDefinedLocal(newLocal)) {
+            if (JimpleLocal.isUserDefinedLocal(original)) {
+              //we should keep the locals split since both are user defined.
+              newLocal = original;
+              bodyLocalsRef.add(original);
+            } else {
+              // Our new local is a made-up name by soot, while the original is not.
+              // rename:
+              usedLocalNames.remove(newLocal.getName());
+              setNewName(usedLocalNames, newLocal, original.getName());
+            }
+          }
+          
         }
 
         localToNewLocal.put(original, newLocal);
@@ -187,6 +189,23 @@ public class LocalPacker extends BodyTransformer {
         if (val instanceof Local) {
           box.setValue(localToNewLocal.get((Local) val));
         }
+      }
+    }
+  }
+
+  private void setNewName(final Set<String> usedLocalNames, Local newLocal, String name) {
+    if (name != null) {
+      int signIndex = name.indexOf('#');
+      if (signIndex >= 0) {
+        String newName = name.substring(0, signIndex);
+        if (usedLocalNames.add(newName)) {
+          newLocal.setName(newName);
+        } else {
+          // just leave it alone for now
+        }
+      } else {
+        usedLocalNames.add(name);
+
       }
     }
   }
