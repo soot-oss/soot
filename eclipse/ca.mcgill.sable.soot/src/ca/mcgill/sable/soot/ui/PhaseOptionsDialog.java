@@ -83,6 +83,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
 		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
 		Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
+		Composite jbjb_ruaChild = jbjb_ruaCreate(getPageContainer());
 		Composite jbjb_silsChild = jbjb_silsCreate(getPageContainer());
 		Composite jbjb_awaChild = jbjb_awaCreate(getPageContainer());
 		Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
@@ -209,11 +210,13 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jb");
 		addToEnableGroup("jb", getjbenabled_widget(), "enabled");
 		addToEnableGroup("jb", getjbuse_original_names_widget(), "use-original-names");
+		addToEnableGroup("jb", getjbuse_original_types_widget(), "use-original-types");
 		addToEnableGroup("jb", getjbpreserve_source_annotations_widget(), "preserve-source-annotations");
 		addToEnableGroup("jb", getjbstabilize_local_names_widget(), "stabilize-local-names");
 		addToEnableGroup("jb", getjbmodel_lambdametafactory_widget(), "model-lambdametafactory");
 		getjbenabled_widget().getButton().addSelectionListener(this);
 		getjbuse_original_names_widget().getButton().addSelectionListener(this);
+		getjbuse_original_types_widget().getButton().addSelectionListener(this);
 		getjbpreserve_source_annotations_widget().getButton().addSelectionListener(this);
 		getjbstabilize_local_names_widget().getButton().addSelectionListener(this);
 		getjbmodel_lambdametafactory_widget().getButton().addSelectionListener(this);
@@ -229,6 +232,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jb", "jb.ls");
 		addToEnableGroup("jb", "jb.ls", getjbjb_lsenabled_widget(), "enabled");
 		getjbjb_lsenabled_widget().getButton().addSelectionListener(this);
+
+		makeNewEnableGroup("jb", "jb.rua");
+		addToEnableGroup("jb", "jb.rua", getjbjb_ruaenabled_widget(), "enabled");
+		getjbjb_ruaenabled_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jb", "jb.sils");
 		addToEnableGroup("jb", "jb.sils", getjbjb_silsenabled_widget(), "enabled");
@@ -1302,6 +1309,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbuse_original_names_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getjbuse_original_types_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbuse_original_types_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getjbpreserve_source_annotations_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1337,6 +1350,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjbjb_ruaenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_ruaenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjbjb_silsenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -3094,6 +3113,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = jb_jb_ls_branch;
 			
 			
+			SootOption jb_jb_rua_branch = new SootOption("Remove Useless Aliases", "jbjb_rua");
+			subParent.addChild(jb_jb_rua_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_rua_branch;
+			
+			
 			SootOption jb_jb_sils_branch = new SootOption("Shared Initialization Local Splitter", "jbjb_sils");
 			subParent.addChild(jb_jb_sils_branch);
 
@@ -4773,6 +4802,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return jbuse_original_names_widget;
 	}	
 	
+	private BooleanOptionWidget jbuse_original_types_widget;
+	
+	private void setjbuse_original_types_widget(BooleanOptionWidget widget) {
+		jbuse_original_types_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbuse_original_types_widget() {
+		return jbuse_original_types_widget;
+	}	
+	
 	private BooleanOptionWidget jbpreserve_source_annotations_widget;
 	
 	private void setjbpreserve_source_annotations_widget(BooleanOptionWidget widget) {
@@ -4831,6 +4870,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbjb_lsenabled_widget() {
 		return jbjb_lsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_ruaenabled_widget;
+	
+	private void setjbjb_ruaenabled_widget(BooleanOptionWidget widget) {
+		jbjb_ruaenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_ruaenabled_widget() {
+		return jbjb_ruaenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_silsenabled_widget;
@@ -8900,7 +8949,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p phase-option", "jb","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types.", defaultBool)));
+		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p phase-option", "jb","use-original-names", "\nRetain the original names for local variables when the bytecode \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb"+" "+"use-original-types";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setjbuse_original_types_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Types", "p phase-option", "jb","use-original-types", "\nRetain the original types for local variables when the bytecode \nincludes those types. Note that this can cause problems when the \nbytecode is obfuscated and the types are deliberately wrong! \nOtherwise, Soot assigns types automatically based on the \ncontext. Note that this option only makes sense when \nuse-original-names is set.", defaultBool)));
 
 		defKey = "p phase-option"+" "+"jb"+" "+"preserve-source-annotations";
 		defKey = defKey.trim();
@@ -9060,6 +9120,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjbjb_ls;
+	}
+
+
+
+	private Composite jbjb_ruaCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_rua = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_rua.setLayout(layout);
+	
+	 	editGroupjbjb_rua.setText("Remove Useless Aliases");
+	 	
+		editGroupjbjb_rua.setData("id", "jbjb_rua");
+		
+		String descjbjb_rua = "Removes useless aliases that are defined only once";	
+		if (descjbjb_rua.length() > 0) {
+			Label descLabeljbjb_rua = new Label(editGroupjbjb_rua, SWT.WRAP);
+			descLabeljbjb_rua.setText(descjbjb_rua);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.rua"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_ruaenabled_widget(new BooleanOptionWidget(editGroupjbjb_rua, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.rua","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_rua;
 	}
 
 

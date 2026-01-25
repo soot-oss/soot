@@ -238,10 +238,9 @@ public class ArithmeticTest extends AbstractASMBackendTest {
       mv.visitInsn(IADD);
       mv.visitInsn(I2L);
       mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ArithmeticLib", "rLong", "J");
+      mv.visitIincInsn(1, -2);
       mv.visitVarInsn(ALOAD, 0);
       mv.visitVarInsn(ILOAD, 1);
-      mv.visitInsn(ICONST_2);
-      mv.visitInsn(ISUB);
       mv.visitInsn(I2D);
       mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ArithmeticLib", "rDouble", "D");
       mv.visitVarInsn(ALOAD, 0);

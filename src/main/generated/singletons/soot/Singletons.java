@@ -720,6 +720,20 @@ public class Singletons {
     	instance_soot_toolkits_scalar_LocalPacker = null;
     }
 
+    private soot.toolkits.scalar.RemoveUselessAliases instance_soot_toolkits_scalar_RemoveUselessAliases;
+    public soot.toolkits.scalar.RemoveUselessAliases soot_toolkits_scalar_RemoveUselessAliases() {
+        if (instance_soot_toolkits_scalar_RemoveUselessAliases == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_scalar_RemoveUselessAliases == null)
+	        		instance_soot_toolkits_scalar_RemoveUselessAliases = new soot.toolkits.scalar.RemoveUselessAliases(g);
+	       	}
+       	}
+        return instance_soot_toolkits_scalar_RemoveUselessAliases;
+    }
+    protected void release_soot_toolkits_scalar_RemoveUselessAliases() {
+    	instance_soot_toolkits_scalar_RemoveUselessAliases = null;
+    }
+
     private soot.toolkits.scalar.LocalSplitter instance_soot_toolkits_scalar_LocalSplitter;
     public soot.toolkits.scalar.LocalSplitter soot_toolkits_scalar_LocalSplitter() {
         if (instance_soot_toolkits_scalar_LocalSplitter == null) {
