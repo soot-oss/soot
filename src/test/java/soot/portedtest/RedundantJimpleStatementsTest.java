@@ -144,27 +144,20 @@ public class RedundantJimpleStatementsTest {
   public void test05() {
     loadClasses(resourcePath, "java6", "bin");
 
-    List<String> expectedBodyStmts = Stream.of("r00 := @this: GenTypeParam\n"
-        + "r11 = new java.util.ArrayList\n"
-        + "specialinvoke r11.<java.util.ArrayList: void <init>(int)>(3)\n"
-        + "$r09 = newarray (java.lang.Integer)[3]\n"
-        + "$r03 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1)\n"
-        + "$r09[0] = $r03\n"
-        + "$r03 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2)\n"
-        + "$r09[1] = $r03\n"
-        + "$r03 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(3)\n"
-        + "$r09[2] = $r03\n"
+    List<String> expectedBodyStmts = Stream.of("r00 := @this: GenTypeParam\n" + "r11 = new java.util.ArrayList\n"
+        + "specialinvoke r11.<java.util.ArrayList: void <init>(int)>(3)\n" + "$r09 = newarray (java.lang.Integer)[3]\n"
+        + "$r03 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1)\n" + "$r09[0] = $r03\n"
+        + "$r03 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2)\n" + "$r09[1] = $r03\n"
+        + "$r03 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(3)\n" + "$r09[2] = $r03\n"
         + "r12 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r09)\n"
-        + "r01 = new GenTypeParam\n"
-        + "specialinvoke r01.<GenTypeParam: void <init>()>()\n"
+        + "r01 = new GenTypeParam\n" + "specialinvoke r01.<GenTypeParam: void <init>()>()\n"
         + "virtualinvoke r01.<GenTypeParam: void copy(java.util.List,java.util.List)>(r11, r12)\n"
         + "$r02 = <java.lang.System: java.io.PrintStream out>\n"
         + "$r03 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2)\n"
         + "$r07 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(8)\n"
         + "$r08 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(3)\n"
         + "$r10 = virtualinvoke r01.<GenTypeParam: java.lang.Number largestNum(java.lang.Number,java.lang.Number,java.lang.Number)>($r03, $r07, $r08)\n"
-        + "virtualinvoke $r02.<java.io.PrintStream: void println(java.lang.Object)>($r10)\n"
-        + "return")
+        + "virtualinvoke $r02.<java.io.PrintStream: void println(java.lang.Object)>($r10)\n" + "return")
         .collect(Collectors.toCollection(ArrayList::new));
     SootMethod method = Scene.v().getMethod("<GenTypeParam: void geneTypeParamDisplay()>");
     assertJimpleStmts(method, expectedBodyStmts);
@@ -229,10 +222,10 @@ public class RedundantJimpleStatementsTest {
     List<String> expectedBodyStmts
         = Stream.of("r0 := @this: AnonymousDiamondOperator\n" + "r1 = new AnonymousDiamondOperator$1\n"
             + "specialinvoke r1.<AnonymousDiamondOperator$1: void <init>(AnonymousDiamondOperator)>(r0)\n"
-            + "$r3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(22)\n"
+            + "r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(22)\n"
             + "$r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(23)\n" + "$r2 = (MyClass) r1\n"
-            + "$r6 = virtualinvoke $r2.<MyClass: java.lang.Object add(java.lang.Object,java.lang.Object)>($r3, $r4)\n"
-            + "$r3 = (java.lang.Integer) $r6\n" + "$i0 = virtualinvoke $r3.<java.lang.Integer: int intValue()>()\n"
+            + "$r6 = virtualinvoke $r2.<MyClass: java.lang.Object add(java.lang.Object,java.lang.Object)>(r5, $r4)\n"
+            + "r5 = (java.lang.Integer) $r6\n" + "$i0 = virtualinvoke r5.<java.lang.Integer: int intValue()>()\n"
             + "return $i0").collect(Collectors.toCollection(ArrayList::new));
     SootMethod method = Scene.v().getMethod("<AnonymousDiamondOperator: int innerClassDiamond()>");
     assertJimpleStmts(method, expectedBodyStmts);
