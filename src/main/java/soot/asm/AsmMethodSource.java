@@ -304,6 +304,8 @@ import soot.jimple.UnopExpr;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
@@ -2431,7 +2433,10 @@ public class AsmMethodSource implements MethodSource {
       throw new RuntimeException("Failed to apply jb to " + m, t);
     }
     TrapTightener.removeInvalidTraps(jb);
+
     LocalPacker.v().transform(jb);
+    DeadAssignmentEliminator.v().transform(jb);
+    UnconditionalBranchFolder.v().transform(jb);
 
     ensureUniqueNames(jb.getLocals());
 
