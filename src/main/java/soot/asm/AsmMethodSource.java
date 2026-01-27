@@ -261,6 +261,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
 import soot.asm.Operand.OperandType;
+import soot.dexpler.Util;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
@@ -307,6 +308,7 @@ import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
+import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
@@ -2353,12 +2355,17 @@ public class AsmMethodSource implements MethodSource {
     if (!m.isConcrete()) {
       return null;
     }
-    if (instructions == null || instructions.size() == 0) {
-      logger.warn(m.getSignature() + " has no instructions");
-      return null;
-    }
     final Jimple jimp = Jimple.v();
     final JimpleBody jb = jimp.newBody(m);
+    if (instructions == null || instructions.size() == 0) {
+      logger.warn(m.getSignature() + " has no instructions");
+
+      Util.emptyBody(jb);
+      Util.addExceptionAfterUnit(jb, "java.lang.RuntimeException", jb.getUnits().getLast(),
+          "Soot has detected that this method has no instructions. The JVM would throw an exception when loading the class");
+      TypeAssigner.v().transform(jb);
+      return jb;
+    }
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
