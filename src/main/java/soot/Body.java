@@ -38,6 +38,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.jimple.BranchableStmt;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
@@ -86,7 +87,22 @@ public abstract class Body extends AbstractHost implements Serializable {
   /**
    * The chain of traps for this Body.
    */
-  protected Chain<Trap> trapChain = new HashChain<>();
+  protected Chain<Trap> trapChain = new HashChain<>() { 
+    protected void elementRemoved(Trap removed) {
+      Unit u = removed.getBeginUnit();
+      if (u != null) {
+        u.removeBoxPointingToThis(removed.getBeginUnitBox());
+      }
+      u = removed.getEndUnit();
+      if (u != null) {
+        u.removeBoxPointingToThis(removed.getEndUnitBox());
+      }
+      u = removed.getHandlerUnit();
+      if (u != null) {
+        u.removeBoxPointingToThis(removed.getHandlerUnitBox());
+      }
+    }
+  };
 
   /**
    * The chain of units for this Body.
@@ -130,6 +146,15 @@ public abstract class Body extends AbstractHost implements Serializable {
         if (removed instanceof Stmt) {
           Stmt stmt = (Stmt) removed;
           stmt.setContainingBody(null);
+          if (stmt instanceof BranchableStmt)
+          {
+            BranchableStmt b = ((BranchableStmt) stmt);
+            UnitBox box = b.getTargetBox();
+            Unit target = box.getUnit();
+            if (target != null) {
+              target.removeBoxPointingToThis(box);
+            }
+          }
         }
       }
 
