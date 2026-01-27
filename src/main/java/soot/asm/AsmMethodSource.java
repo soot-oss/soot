@@ -2350,7 +2350,11 @@ public class AsmMethodSource implements MethodSource {
 
   @Override
   public Body getBody(SootMethod m, String phaseName) {
-    if (!m.isConcrete() || instructions == null || instructions.size() == 0) {
+    if (!m.isConcrete()) {
+      return null;
+    }
+    if (instructions == null || instructions.size() == 0) {
+      logger.warn(m.getSignature() + " has no instructions");
       return null;
     }
     final Jimple jimp = Jimple.v();

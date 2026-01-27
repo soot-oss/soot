@@ -725,21 +725,22 @@ public class PackManager {
 
       if (produceJimple) {
         Body body = m.retrieveActiveBody();
-
-        getTransform("jb.cp").apply(body); // CopyPropagator
-        getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
-        getTransform("jb.uce").apply(body); // UnreachableCodeEliminator
-        getTransform("jb.dae").apply(body); // DeadAssignmentEliminator
-        getTransform("jb.cp-ule").apply(body); // UnusedLocalEliminator
-        getPack("jtp").apply(body);
-
-        if (Options.v().validate()) {
-          body.validate();
-        }
-        getPack("jop").apply(body);
-        getPack("jap").apply(body);
-        if (tc != null) {
-          tc.collectBodyTags(body);
+        if (body != null) {
+          getTransform("jb.cp").apply(body); // CopyPropagator
+          getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
+          getTransform("jb.uce").apply(body); // UnreachableCodeEliminator
+          getTransform("jb.dae").apply(body); // DeadAssignmentEliminator
+          getTransform("jb.cp-ule").apply(body); // UnusedLocalEliminator
+          getPack("jtp").apply(body);
+  
+          if (Options.v().validate()) {
+            body.validate();
+          }
+          getPack("jop").apply(body);
+          getPack("jap").apply(body);
+          if (tc != null) {
+            tc.collectBodyTags(body);
+          }
         }
       }
 
