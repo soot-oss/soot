@@ -60,13 +60,11 @@ public class SharedInitializationLocalSplitterTest {
 
   @Before
   public void initialize() {
-    // load necessary classes
     G.reset();
-    final Options opts = Options.v();
-    opts.set_whole_program(true);
-    final Scene sc = Scene.v();
-    sc.loadNecessaryClasses();
-  }
+    Scene.v().addBasicClass("java.io.PrintStream", SootClass.SIGNATURES);
+    Scene.v().addBasicClass("java.lang.System", SootClass.SIGNATURES);
+    Scene.v().loadNecessaryClasses();
+   }
 
   @Test
   public void testSingleInitUsedAsBoolAndInt() {
@@ -81,8 +79,8 @@ public class SharedInitializationLocalSplitterTest {
     method.setActiveBody(body);
 
     final Scene sc = Scene.v();
-    final SootClass clPrtStrm = sc.loadClassAndSupport("java.io.PrintStream");
-    final SootClass clSystem = sc.loadClassAndSupport("java.lang.System");
+    final SootClass clPrtStrm = sc.forceResolve("java.io.PrintStream", SootClass.SIGNATURES);
+    final SootClass clSystem = sc.forceResolve("java.lang.System", SootClass.SIGNATURES);;
 
     // create locals
     final Chain<Local> locals = body.getLocals();
