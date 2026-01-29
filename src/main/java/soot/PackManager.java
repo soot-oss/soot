@@ -197,7 +197,7 @@ public class PackManager {
     addPack(p = new ScenePack("wspp"));
 
     // Call graph pack
-    addPack(p = new CallGraphPack("cg"));
+    addPack(p = createCallGraphPack("cg"));
     {
       p.add(new Transform("cg.cha", CHATransformer.v()));
       p.add(new Transform("cg.spark", SparkTransformer.v()));
@@ -324,6 +324,10 @@ public class PackManager {
     // Baf optimization pack
     addPack(p = new BodyPack("bop"));
     onlyStandardPacks = true;
+  }
+
+  protected Pack createCallGraphPack(String name) {
+    return new CallGraphPack(name);
   }
 
   private void addPack(Pack p) {
@@ -732,7 +736,7 @@ public class PackManager {
           getTransform("jb.dae").apply(body); // DeadAssignmentEliminator
           getTransform("jb.cp-ule").apply(body); // UnusedLocalEliminator
           getPack("jtp").apply(body);
-  
+
           if (Options.v().validate()) {
             body.validate();
           }
