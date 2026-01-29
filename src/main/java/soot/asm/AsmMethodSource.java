@@ -2444,7 +2444,6 @@ public class AsmMethodSource implements MethodSource {
       throw new RuntimeException("Failed to apply jb to " + m, t);
     }
     TrapTightener.removeInvalidTraps(jb);
-
     LocalPacker.v().transform(jb);
     DeadAssignmentEliminator.v().transform(jb);
     UnconditionalBranchFolder.v().transform(jb);
