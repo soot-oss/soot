@@ -134,7 +134,7 @@ public class UnitPatchingChain extends PatchingChain<Unit> {
       innerChain.insertBefore(toInsert, point_tgt);
 
       if (originalPred != point_src) {
-        if (originalPred instanceof GotoStmt) {
+        if (!originalPred.fallsThrough()) {
           return;
         }
 
