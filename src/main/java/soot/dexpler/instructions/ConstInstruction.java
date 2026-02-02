@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,18 +25,15 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
-import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
-import org.jf.dexlib2.iface.instruction.WideLiteralInstruction;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.NarrowLiteralInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.WideLiteralInstruction;
 
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
-import soot.dexpler.typing.UntypedConstant;
-import soot.dexpler.typing.UntypedIntOrFloatConstant;
-import soot.dexpler.typing.UntypedLongOrDoubleConstant;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.IntConstant;
@@ -60,14 +55,6 @@ public class ConstInstruction extends DexlibAbstractInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      if (cst instanceof UntypedConstant) {
-        DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-      } else {
-        DalvikTyper.v().setType(assign.getLeftOpBox(), cst.getType(), false);
-      }
-    }
   }
 
   /**
@@ -96,41 +83,19 @@ public class ConstInstruction extends DexlibAbstractInstruction {
       case CONST:
       case CONST_4:
       case CONST_16:
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          return UntypedIntOrFloatConstant.v((int) literal);
-        } else {
-          return IntConstant.v((int) literal);
-        }
+        return IntConstant.v((int) literal);
 
       case CONST_HIGH16:
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          //
-          // return UntypedIntOrFloatConstant.v((int)literal<<16).toFloatConstant();
-          // seems that dexlib correctly puts the 16bits into the topmost bits.
-          //
-          return UntypedIntOrFloatConstant.v((int) literal);// .toFloatConstant();
-        } else {
-          return IntConstant.v((int) literal);
-        }
+        return IntConstant.v((int) literal);
 
       case CONST_WIDE_HIGH16:
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          // return UntypedLongOrDoubleConstant.v((long)literal<<48).toDoubleConstant();
-          // seems that dexlib correctly puts the 16bits into the topmost bits.
-          //
-          return UntypedLongOrDoubleConstant.v(literal);// .toDoubleConstant();
-        } else {
-          return LongConstant.v(literal);
-        }
+        return LongConstant.v(literal);
 
       case CONST_WIDE:
       case CONST_WIDE_16:
       case CONST_WIDE_32:
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          return UntypedLongOrDoubleConstant.v(literal);
-        } else {
-          return LongConstant.v(literal);
-        }
+        return LongConstant.v(literal);
+
       default:
         throw new IllegalArgumentException("Expected a const or a const-wide instruction, got neither.");
     }

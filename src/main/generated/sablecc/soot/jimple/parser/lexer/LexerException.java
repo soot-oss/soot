@@ -2,11 +2,21 @@
 
 package soot.jimple.parser.lexer;
 
+import soot.jimple.parser.node.*;
+
 @SuppressWarnings("serial")
 public class LexerException extends Exception
 {
-    public LexerException(String message)
+    private InvalidToken invalidToken;
+    
+    public LexerException(@SuppressWarnings("hiding") InvalidToken invalidToken, String message)
     {
         super(message);
+        this.invalidToken = invalidToken;
+    }
+
+    public InvalidToken getToken()
+    {
+        return this.invalidToken;
     }
 }

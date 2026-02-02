@@ -58,6 +58,16 @@ interface ITypeSwitch extends soot.util.Switch {
 
   void defaultCase(Type t);
 
+  void caseUByteType(UByteType t);
+
+  void caseULongType(ULongType t);
+
+  void caseUShortType(UShortType t);
+
+  void caseUIntType(UIntType t);
+
+  void caseDecimalType(DecimalType t);
+
   /**
    * @deprecated Replaced by defaultCase(Type)
    * @see #defaultCase(Type)

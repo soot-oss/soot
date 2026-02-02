@@ -28,7 +28,6 @@ import java.util.Set;
 
 import soot.SootMethod;
 import soot.Unit;
-import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 
 /**
@@ -137,12 +136,6 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
   @Override
   public DirectedGraph<Unit> getOrCreateUnitGraph(SootMethod m) {
     return delegate.getOrCreateUnitGraph(m);
-  }
-
-  // same
-  @Override
-  public List<Value> getParameterRefs(SootMethod m) {
-    return delegate.getParameterRefs(m);
   }
 
   @Override

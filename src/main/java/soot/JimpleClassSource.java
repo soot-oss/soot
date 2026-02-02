@@ -29,7 +29,6 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.jimple.JimpleMethodSource;
 import soot.jimple.parser.lexer.LexerException;
 import soot.jimple.parser.parser.ParserException;
@@ -41,9 +40,9 @@ import soot.options.Options;
 public class JimpleClassSource extends ClassSource {
   private static final Logger logger = LoggerFactory.getLogger(JimpleClassSource.class);
 
-  private FoundFile foundFile;
+  private IFoundFile foundFile;
 
-  public JimpleClassSource(String className, FoundFile foundFile) {
+  public JimpleClassSource(String className, IFoundFile foundFile) {
     super(className);
     if (foundFile == null) {
       throw new IllegalStateException("Error: The FoundFile must not be null.");

@@ -46,6 +46,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
+import soot.dotnet.members.DotnetMethod;
 import soot.jimple.spark.ondemand.genericutil.ArraySet;
 import soot.jimple.spark.ondemand.genericutil.ArraySetMultiMap;
 import soot.jimple.spark.ondemand.genericutil.ImmutableStack;
@@ -395,15 +396,14 @@ public class SootUtil {
   }
 
   public static SootMethod getMainMethod() {
-    return Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])"));
+    return Options.v().src_prec() != Options.src_prec_dotnet
+        ? Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))
+        : Scene.v().getMainClass().getMethod(Scene.v().getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE));
   }
 
   public static boolean isResolvableCall(SootMethod invokedMethod) {
     // TODO make calls through invokespecial resolvable
-    if (invokedMethod.isStatic()) {
-      return true;
-    }
-    if (isConstructor(invokedMethod)) {
+    if (invokedMethod.isStatic() || isConstructor(invokedMethod)) {
       return true;
     }
     return false;

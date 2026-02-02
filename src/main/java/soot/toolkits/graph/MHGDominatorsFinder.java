@@ -99,16 +99,25 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
         // initialize to the "neutral element" for the intersection
         // this clone() is fast on BitSets (opposed to on HashSets)
-        BitSet predsIntersect = (BitSet) fullSet.clone();
+        BitSet predsIntersect = null;
 
         // intersect over all predecessors
         for (N next : graph.getPredsOf(o)) {
-          predsIntersect.and(getDominatorsBitSet(next));
+          BitSet s = getDominatorsBitSet(next);
+          if (predsIntersect == null) {
+            predsIntersect = (BitSet) s.clone();
+          } else {
+            predsIntersect.and(s);
+          }
         }
 
         BitSet oldSet = getDominatorsBitSet(o);
         // each node dominates itself
-        predsIntersect.set(indexOf(o));
+        if (predsIntersect != null) {
+          predsIntersect.set(indexOf(o));
+        } else {
+          predsIntersect = fullSet;
+        }
         if (!predsIntersect.equals(oldSet)) {
           nodeToFlowSet.put(o, predsIntersect);
           changed = true;
@@ -210,5 +219,28 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
       }
     }
     return true;
+  }
+
+  @Override
+  public boolean isDominatingAllGiven(N node, Collection<N> given) {
+    int c = indexOfAssert(node);
+    for (N n : given) {
+      BitSet s1 = getDominatorsBitSet(n);
+      if (!s1.get(c)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public boolean isDominatedByAny(N node, Collection<N> dominators) {
+    BitSet s1 = getDominatorsBitSet(node);
+    for (N n : dominators) {
+      if (s1.get(indexOfAssert(n))) {
+        return true;
+      }
+    }
+    return false;
   }
 }

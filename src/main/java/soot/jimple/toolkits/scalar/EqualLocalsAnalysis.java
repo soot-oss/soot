@@ -23,6 +23,7 @@ package soot.jimple.toolkits.scalar;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.EquivalentValue;
@@ -79,7 +80,8 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Objec
 
     // get list of definitions at this unit
     List<EquivalentValue> newDefs = new ArrayList<EquivalentValue>();
-    for (ValueBox next : unit.getDefBoxes()) {
+    for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+      ValueBox next = iterator.next();
       newDefs.add(new EquivalentValue(next.getValue()));
     }
 
@@ -106,7 +108,8 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Objec
 
       for (Stmt def : existingDefStmts) {
         List<Value> sNewDefs = new ArrayList<Value>();
-        for (ValueBox next : def.getDefBoxes()) {
+        for (Iterator<ValueBox> iterator = def.getDefBoxesIterator(); iterator.hasNext();) {
+          ValueBox next = iterator.next();
           sNewDefs.add(next.getValue());
         }
         if (def instanceof DefinitionStmt) {

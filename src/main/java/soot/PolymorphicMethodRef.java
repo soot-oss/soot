@@ -116,8 +116,8 @@ public class PolymorphicMethodRef extends SootMethodRefImpl {
   }
 
   private SootMethod addPolyMorphicMethod(SootMethod originalPolyMorphicMethod) {
-    SootMethod newMethod =
-        new SootMethod(getName(), getParameterTypes(), getReturnType(), originalPolyMorphicMethod.modifiers);
+    SootMethod newMethod
+        = new SootMethod(getName(), getParameterTypes(), getReturnType(), originalPolyMorphicMethod.modifiers);
     getDeclaringClass().addMethod(newMethod);
     return newMethod;
   }

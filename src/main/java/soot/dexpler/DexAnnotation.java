@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,49 +20,54 @@ package soot.dexpler;
  * #L%
  */
 
+package soot.dexpler;
+
+import com.android.tools.smali.dexlib2.AnnotationVisibility;
+import com.android.tools.smali.dexlib2.iface.Annotation;
+import com.android.tools.smali.dexlib2.iface.AnnotationElement;
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.iface.Field;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.MethodParameter;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
+import com.android.tools.smali.dexlib2.iface.value.AnnotationEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.ArrayEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.BooleanEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.ByteEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.CharEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.DoubleEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.EncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.EnumEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.FieldEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.FloatEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.IntEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.LongEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.MethodEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.ShortEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.StringEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.TypeEncodedValue;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.jf.dexlib2.AnnotationVisibility;
-import org.jf.dexlib2.iface.Annotation;
-import org.jf.dexlib2.iface.AnnotationElement;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.Field;
-import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MethodParameter;
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.value.AnnotationEncodedValue;
-import org.jf.dexlib2.iface.value.ArrayEncodedValue;
-import org.jf.dexlib2.iface.value.BooleanEncodedValue;
-import org.jf.dexlib2.iface.value.ByteEncodedValue;
-import org.jf.dexlib2.iface.value.CharEncodedValue;
-import org.jf.dexlib2.iface.value.DoubleEncodedValue;
-import org.jf.dexlib2.iface.value.EncodedValue;
-import org.jf.dexlib2.iface.value.EnumEncodedValue;
-import org.jf.dexlib2.iface.value.FieldEncodedValue;
-import org.jf.dexlib2.iface.value.FloatEncodedValue;
-import org.jf.dexlib2.iface.value.IntEncodedValue;
-import org.jf.dexlib2.iface.value.LongEncodedValue;
-import org.jf.dexlib2.iface.value.MethodEncodedValue;
-import org.jf.dexlib2.iface.value.ShortEncodedValue;
-import org.jf.dexlib2.iface.value.StringEncodedValue;
-import org.jf.dexlib2.iface.value.TypeEncodedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
+import soot.Dependencies;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
 import soot.Type;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
@@ -80,6 +83,7 @@ import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.DeprecatedTag;
+import soot.tagkit.DexInnerClassTag;
 import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
@@ -112,6 +116,18 @@ public class DexAnnotation {
   private final Type ARRAY_TYPE = RefType.v("Array");
   private final SootClass clazz;
   private final Dependencies deps;
+
+  protected static Set<String> isHandled = new HashSet<>();
+
+  static {
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_DEFAULT));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_SIGNATURE));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_MEMBERCLASSES));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_INNERCLASS));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_ENCLOSINGMETHOD));
+    isHandled.add(SootToDexUtils.getDexClassName(DALVIK_ANNOTATION_ENCLOSINGCLASS));
+    isHandled.add(SootToDexUtils.getDexClassName(JAVA_DEPRECATED));
+  }
 
   public DexAnnotation(SootClass clazz, Dependencies deps) {
     this.clazz = clazz;
@@ -161,8 +177,14 @@ public class DexAnnotation {
           // to methods through the creation of new
           // AnnotationDefaultTag.
           VisibilityAnnotationTag vt = (VisibilityAnnotationTag) t;
-          for (AnnotationTag a : vt.getAnnotations()) {
+          if (!vt.hasAnnotations()) {
+            continue;
+          }
+          Iterator<AnnotationTag> it = vt.getAnnotations().iterator();
+          while (it.hasNext()) {
+            AnnotationTag a = it.next();
             if (a.getType().equals("Ldalvik/annotation/AnnotationDefault;")) {
+              it.remove();
               for (AnnotationElem ae : a.getElems()) {
                 if (ae instanceof AnnotationAnnotationElem) {
                   AnnotationAnnotationElem aae = (AnnotationAnnotationElem) ae;
@@ -228,14 +250,29 @@ public class DexAnnotation {
               }
             }
           }
-          if (!(vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE)) {
+          if (vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE) {
             clazz.addTag(vt);
+          } else {
+            // filter out the tags we handle explicitly
+            VisibilityAnnotationTag vbCopy = new VisibilityAnnotationTag(vt.getVisibility());
+            for (AnnotationTag tf : vt.getAnnotations()) {
+              if (!isHandled(tf)) {
+                vbCopy.addAnnotation(tf);
+              }
+            }
+            if (vbCopy.getAnnotations() != null && !vbCopy.getAnnotations().isEmpty()) {
+              clazz.addTag(vbCopy);
+            }
           }
         } else {
           clazz.addTag(t);
         }
       }
     }
+  }
+
+  private boolean isHandled(AnnotationTag tf) {
+    return isHandled.contains(tf.getType());
   }
 
   private Type getSootType(AnnotationElem e) {
@@ -335,7 +372,9 @@ public class DexAnnotation {
     for (MethodParameter p : method.getParameters()) {
       String name = p.getName();
       if (name != null) {
-        parameterNames = new String[method.getParameters().size()];
+        if (parameterNames == null) {
+          parameterNames = new String[method.getParameters().size()];
+        }
         parameterNames[i] = name;
       }
       i++;
@@ -355,8 +394,8 @@ public class DexAnnotation {
     }
 
     if (doParam) {
-      VisibilityParameterAnnotationTag tag =
-          new VisibilityParameterAnnotationTag(parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
+      VisibilityParameterAnnotationTag tag
+          = new VisibilityParameterAnnotationTag(parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
       for (MethodParameter p : parameters) {
         List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
 
@@ -429,7 +468,8 @@ public class DexAnnotation {
    * @param annotations
    * @return
    */
-  private List<Tag> handleAnnotation(Set<? extends org.jf.dexlib2.iface.Annotation> annotations, String classType) {
+  private List<Tag> handleAnnotation(Set<? extends com.android.tools.smali.dexlib2.iface.Annotation> annotations,
+      String classType) {
     if (annotations == null || annotations.size() == 0) {
       return null;
     }
@@ -577,8 +617,8 @@ public class DexAnnotation {
           // annotation is broken and does not end in $nn.
           outerClass = null;
         }
-        Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
-            outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
+        Tag innerTag = new DexInnerClassTag(DexType.toSootICAT(classType),
+            outerClass == null ? null : DexType.toSootICAT(outerClass), name, name, accessFlags);
         tags.add(innerTag);
         if (outerClass != null && !clazz.hasOuterClass()) {
           String sootOuterClass = Util.dottedClassName(outerClass);
@@ -633,7 +673,8 @@ public class DexAnnotation {
         return;
       case DALVIK_ANNOTATION_SIGNATURE:
         if (eSize != 1) {
-          throw new RuntimeException("error: expected 1 element for annotation Signature. Got " + eSize + " instead.");
+          throw new RuntimeException(
+              "error: expected 1 element for annotation Signature. Got " + eSize + " instead. Class " + classType);
         }
         arre = (AnnotationArrayElem) getElements(a.getElements()).get(0);
         String sig = "";
@@ -647,10 +688,23 @@ public class DexAnnotation {
         // Do not add annotation tag
         return;
       case JAVA_DEPRECATED:
-        if (eSize != 0) {
-          throw new RuntimeException("error: expected 1 element for annotation Deprecated. Got " + eSize + " instead.");
+        if (eSize > 2) {
+          throw new RuntimeException(
+              "error: expected up to 2 attributes for annotation Deprecated. Got " + eSize + " instead. Class " + classType);
         }
-        t = new DeprecatedTag();
+        Boolean forRemoval = null;
+        String since = null;
+        for (AnnotationElem elem : getElements(a.getElements())) {
+          if ((elem instanceof AnnotationBooleanElem) && "forRemoval".equals(elem.getName())) {
+            forRemoval = ((AnnotationBooleanElem) elem).getValue();
+          } else if ((elem instanceof AnnotationStringElem) && "since".equals(elem.getName())) {
+            since = ((AnnotationStringElem) elem).getValue();
+          } else {
+            throw new RuntimeException(
+                "Unsupported attribute in Deprecated annotation found in class " + classType + " " + elem);
+          }
+        }
+        t = new DeprecatedTag(forRemoval, since);
         AnnotationTag deprecated = new AnnotationTag("Ljava/lang/Deprecated;");
         if (vatg[v] == null) {
           vatg[v] = new VisibilityAnnotationTag(v);
@@ -688,11 +742,10 @@ public class DexAnnotation {
   }
 
   private ArrayList<AnnotationElem> getElements(Set<? extends AnnotationElement> set) {
-    ArrayList<AnnotationElem> aelemList = new ArrayList<AnnotationElem>();
+    ArrayList<AnnotationElem> aelemList = new ArrayList<>();
     for (AnnotationElement ae : set) {
 
-      // Debug.printDbg("element: ", ae.getName() ," ", ae.getValue() ,"
-      // type: ", ae.getClass());
+      logger.trace("element: {}={} type: {}", ae.getName(), ae.getValue(), ae.getClass());
       // Debug.printDbg("value type: ", ae.getValue().getValueType() ,"
       // class: ", ae.getValue().getClass());
 

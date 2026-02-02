@@ -421,6 +421,11 @@ public class EnhancedUnitGraph extends UnitGraph {
             succsOfA = new ArrayList<Unit>();
             this.unitToSuccs.put(a, succsOfA);
           } else {
+            if (!(succsOfA instanceof ArrayList)) {
+              // make sure we can modify the list
+              succsOfA = new ArrayList<>(succsOfA);
+              this.unitToSuccs.put(a, succsOfA);
+            }
             succsOfA.remove(b);
           }
           succsOfA.add((Unit) ehnop);

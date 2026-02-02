@@ -27,9 +27,9 @@ import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
+import soot.Scene;
 import soot.Trap;
 import soot.Unit;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
@@ -62,7 +62,7 @@ public class DexTrapStackFixer extends BodyTransformer {
       }
 
       // Add the exception reference
-      Local l = new LocalGenerator(b).generateLocal(t.getException().getType());
+      Local l = Scene.v().createLocalGenerator(b).generateLocal(t.getException().getType());
       Stmt caughtStmt = Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef());
       b.getUnits().add(caughtStmt);
       b.getUnits().add(Jimple.v().newGotoStmt(t.getHandlerUnit()));

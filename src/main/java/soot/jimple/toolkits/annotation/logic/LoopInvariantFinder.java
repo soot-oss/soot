@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,16 +114,14 @@ public class LoopInvariantFinder extends BodyTransformer {
     }
 
     // ignore goto stmts
-    if (s instanceof GotoStmt) {
-      return;
-    }
-
     // ignore invoke stmts
-    if (s instanceof InvokeStmt) {
+    if ((s instanceof GotoStmt) || (s instanceof InvokeStmt)) {
       return;
     }
 
-    logger.debug("s : " + s + " use boxes: " + s.getUseBoxes() + " def boxes: " + s.getDefBoxes());
+    if (logger.isDebugEnabled()) {
+      logger.debug("s : " + s + " use boxes: " + s.getUseBoxes() + " def boxes: " + s.getDefBoxes());
+    }
     // just use boxes here
     Iterator useBoxesIt = s.getUseBoxes().iterator();
     boolean result = true;
@@ -163,7 +162,7 @@ public class LoopInvariantFinder extends BodyTransformer {
 
     }
 
-    Iterator defBoxesIt = s.getDefBoxes().iterator();
+    Iterator defBoxesIt = s.getDefBoxesIterator();
     defs: while (defBoxesIt.hasNext()) {
       ValueBox vb = (ValueBox) defBoxesIt.next();
       Value v = vb.getValue();

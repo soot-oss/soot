@@ -41,7 +41,7 @@ import soot.tagkit.ColorTag;
 import soot.tagkit.KeyTag;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 
 public class NullPointerColorer extends BodyTransformer {
@@ -56,7 +56,8 @@ public class NullPointerColorer extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(new ExceptionalUnitGraph(b));
+    BranchedRefVarsAnalysis analysis
+        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
 
     for (Unit s : b.getUnits()) {
       FlowSet<RefIntPair> beforeSet = analysis.getFlowBefore(s);

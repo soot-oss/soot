@@ -76,7 +76,7 @@ public class NaiveSideEffectTester implements SideEffectTester {
     }
 
     // otherwise, use boxes tell all.
-    Iterator useIt = u.getUseBoxes().iterator();
+    Iterator useIt = u.getUseBoxesIterator();
     while (useIt.hasNext()) {
       Value use = (Value) useIt.next();
 
@@ -84,7 +84,7 @@ public class NaiveSideEffectTester implements SideEffectTester {
         return true;
       }
 
-      Iterator vUseIt = v.getUseBoxes().iterator();
+      Iterator vUseIt = v.getUseBoxesIterator();
       while (vUseIt.hasNext()) {
         if (use.equivTo(vUseIt.next())) {
           return true;
@@ -116,7 +116,7 @@ public class NaiveSideEffectTester implements SideEffectTester {
     Iterator defIt = u.getDefBoxes().iterator();
     while (defIt.hasNext()) {
       Value def = ((ValueBox) (defIt.next())).getValue();
-      Iterator useIt = v.getUseBoxes().iterator();
+      Iterator useIt = v.getUseBoxesIterator();
       while (useIt.hasNext()) {
         Value use = ((ValueBox) useIt.next()).getValue();
         if (def.equivTo(use)) {

@@ -95,21 +95,11 @@ public class CallGraph implements Iterable<Edge> {
    * @return True if at least one edge has been removed, otherwise false
    */
   public boolean removeAllEdgesOutOf(Unit u) {
-    boolean hasRemoved = false;
     Set<Edge> edgesToRemove = new HashSet<>();
-    for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext();) {
-      Edge e = edgeRdr.next();
-      if (e.srcUnit() == u) {
-        e.remove();
-        removeEdge(e, false);
-        edgesToRemove.add(e);
-        hasRemoved = true;
-      }
+    for (Iterator<Edge> it = edgesOutOf(u); it.hasNext(); ) {
+      edgesToRemove.add(it.next());
     }
-    if (hasRemoved) {
-      reader.remove(edgesToRemove);
-    }
-    return hasRemoved;
+    return removeEdges(edgesToRemove);
   }
 
   /**
@@ -197,14 +187,12 @@ public class CallGraph implements Iterable<Edge> {
    * @return whether the removal was successful.
    */
   public boolean removeEdges(Collection<Edge> edges) {
-    if (!edges.removeAll(edges)) {
-      return false;
-    }
+    boolean removedEdges = false;
     for (Edge e : edges) {
-      removeEdge(e, false);
+      removedEdges |= removeEdge(e, false);
     }
     reader.remove(edges);
-    return true;
+    return removedEdges;
   }
 
   /**
@@ -228,11 +216,13 @@ public class CallGraph implements Iterable<Edge> {
    */
   public Edge findEdge(Unit u, SootMethod callee) {
     Edge e = srcUnitToEdge.get(u);
-    while (e.srcUnit() == u && e.kind() != Kind.INVALID) {
-      if (e.tgt() == callee) {
-        return e;
+    if (e != null) {
+      while (e.srcUnit() == u && e.kind() != Kind.INVALID) {
+        if (e.tgt() == callee) {
+          return e;
+        }
+        e = e.nextByUnit();
       }
-      e = e.nextByUnit();
     }
     return null;
   }
@@ -393,7 +383,9 @@ public class CallGraph implements Iterable<Edge> {
     StringBuilder out = new StringBuilder();
     for (QueueReader<Edge> reader = listener(); reader.hasNext();) {
       Edge e = reader.next();
-      out.append(e.toString()).append('\n');
+      if (e != null) {
+        out.append(e.toString()).append('\n');
+      }
     }
     return out.toString();
   }

@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.ArrayType;
@@ -37,6 +38,7 @@ import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.NewArrayExpr;
+import soot.util.IteratorConcatElement;
 import soot.util.Switch;
 
 @SuppressWarnings("serial")
@@ -118,6 +120,11 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
     List<ValueBox> useBoxes = new ArrayList<ValueBox>(sizeBox.getValue().getUseBoxes());
     useBoxes.add(sizeBox);
     return useBoxes;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(sizeBox.getValue().getUseBoxesIterator(), sizeBox);
   }
 
   @Override

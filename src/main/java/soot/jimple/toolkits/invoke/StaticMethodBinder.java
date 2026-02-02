@@ -97,10 +97,7 @@ public class StaticMethodBinder extends SceneTransformer {
 
       while (!methodsList.isEmpty()) {
         SootMethod container = methodsList.removeFirst();
-        if (!container.isConcrete()) {
-          continue;
-        }
-        if (!instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
+        if (!container.isConcrete() || !instanceInvokesFilter.wrap(cg.edgesOutOf(container)).hasNext()) {
           continue;
         }
 
@@ -122,12 +119,8 @@ public class StaticMethodBinder extends SceneTransformer {
             continue;
           }
           final SootMethod target = (SootMethod) targets.next();
-          if (targets.hasNext()) {
-            continue;
-          }
-
           // Ok, we have an Interface or VirtualInvoke going to 1.
-          if (!AccessManager.ensureAccess(container, target, modifierOptions)) {
+          if (targets.hasNext() || !AccessManager.ensureAccess(container, target, modifierOptions)) {
             continue;
           }
           final SootClass targetDeclClass = target.getDeclaringClass();
@@ -136,7 +129,7 @@ public class StaticMethodBinder extends SceneTransformer {
           }
 
           // Don't modify java.lang.Object
-          if (targetDeclClass == scene.getSootClass("java.lang.Object")) {
+          if (targetDeclClass == scene.getSootClass(Scene.v().getObjectType().toString())) {
             continue;
           }
 

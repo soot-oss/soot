@@ -31,10 +31,25 @@ package soot;
 @SuppressWarnings("serial")
 public abstract class PrimType extends Type {
 
-  public abstract RefType boxedType();
+  public PrimType(boolean b) {
+    super(b);
+  }
+
+  public PrimType() {
+  }
+
+  public RefType boxedType() {
+    return RefType.v(getTypeAsString());
+  }
+
+  public abstract Class<?> getJavaBoxedType();
+
+  public abstract Class<?> getJavaPrimitiveType();
 
   @Override
   public boolean isAllowedInFinalCode() {
     return true;
   }
+
+  public abstract String getTypeAsString();
 }

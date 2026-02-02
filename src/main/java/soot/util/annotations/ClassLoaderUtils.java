@@ -28,11 +28,10 @@ import java.lang.reflect.Array;
 /**
  * Loads classes without relying on JBoss.
  * 
- * A general note on dynamically loading classes based on information from
- * target programs: You don't want that. It's a horrible idea, can lead to
- * severe security vulnerabilities, and is bad style. Trust me. But people seem
- * to need it, so this class makes it at least slightly less horrible than the
- * old way. It's still insane, but now it's insanity with style. Somehow.
+ * A general note on dynamically loading classes based on information from target programs: You don't want that. It's a
+ * horrible idea, can lead to severe security vulnerabilities, and is bad style. Trust me. But people seem to need it, so
+ * this class makes it at least slightly less horrible than the old way. It's still insane, but now it's insanity with style.
+ * Somehow.
  * 
  * @author Steven Arzt
  *

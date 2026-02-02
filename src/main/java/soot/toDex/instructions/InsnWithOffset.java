@@ -1,5 +1,3 @@
-package soot.toDex.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,7 +20,9 @@ package soot.toDex.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
+package soot.toDex.instructions;
+
+import com.android.tools.smali.dexlib2.Opcode;
 
 import soot.jimple.Stmt;
 

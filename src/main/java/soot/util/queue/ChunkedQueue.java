@@ -33,7 +33,6 @@ package soot.util.queue;
 @SuppressWarnings("unchecked")
 public class ChunkedQueue<E> {
 
-  protected static final Object NULL_CONST = new Object();
   protected static final Object DELETED_CONST = new Object();
 
   protected static final int LENGTH = 60;
@@ -48,7 +47,7 @@ public class ChunkedQueue<E> {
   /** Add an object to the queue. */
   public void add(E o) {
     if (o == null) {
-      o = (E) NULL_CONST;
+      throw new IllegalArgumentException("Null is not allowed");
     }
     if (index == LENGTH - 1) {
       Object[] temp = new Object[LENGTH];

@@ -46,8 +46,4 @@ public class SyntheticTag implements Tag {
     return "Synthetic";
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("SyntheticTag has no value for bytecode");
-  }
 }

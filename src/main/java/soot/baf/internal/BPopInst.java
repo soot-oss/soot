@@ -22,11 +22,11 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.InstSwitch;
 import soot.baf.PopInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BPopInst extends AbstractInst implements PopInst {
 
@@ -78,7 +78,7 @@ public class BPopInst extends AbstractInst implements PopInst {
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(mType);
+    return ASMBackendUtils.sizeOfType(mType);
   }
 
   @Override

@@ -36,6 +36,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.options.Options;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -224,11 +225,9 @@ public class ModuleScene extends Scene {
    * or null otherwise.
    */
   public SootClass tryLoadClass(String className, int desiredLevel, Optional<String> moduleName) {
-    setPhantomRefs(true);
     ClassSource source = ModulePathSourceLocator.v().getClassSource(className, moduleName);
     try {
       if (!getPhantomRefs() && source == null) {
-        setPhantomRefs(false);
         return null;
       }
     } finally {
@@ -237,7 +236,6 @@ public class ModuleScene extends Scene {
       }
     }
     SootClass toReturn = SootModuleResolver.v().resolveClass(className, desiredLevel, moduleName);
-    setPhantomRefs(false);
     return toReturn;
   }
 
@@ -265,16 +263,8 @@ public class ModuleScene extends Scene {
   }
 
   public SootClass loadClass(String className, int desiredLevel, Optional<String> moduleName) {
-    /*
-     * if(Options.v().time()) Main.v().resolveTimer.start();
-     */
-    setPhantomRefs(true);
     SootClass toReturn = SootModuleResolver.v().resolveClass(className, desiredLevel, moduleName);
-    setPhantomRefs(false);
     return toReturn;
-    /*
-     * if(Options.v().time()) Main.v().resolveTimer.end();
-     */
   }
 
   /**
@@ -350,6 +340,9 @@ public class ModuleScene extends Scene {
 
   @Override
   public RefType getObjectType() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return getRefType(DotNetBasicTypes.SYSTEM_OBJECT);
+    }
     return getRefType("java.lang.Object", Optional.of("java.base"));
   }
 
@@ -583,8 +576,8 @@ public class ModuleScene extends Scene {
       if (optsMain != null && !optsMain.isEmpty()) {
         setMainClass(getSootClass(optsMain, null));
       } else {
-        final List<Type> mainArgs =
-            Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1));
+        final List<Type> mainArgs
+            = Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1));
         // try to infer a main class from the command line if none is given
         for (String s : Options.v().classes()) {
           SootClass c = getSootClass(s, null);

@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,17 +20,19 @@ package soot.toDex;
  * #L%
  */
 
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.reference.FieldReference;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -244,10 +244,7 @@ public class StmtVisitor implements StmtSwitch {
     for (int i = 0; i < this.insns.size() - 1; i++) {
       Insn curInsn = this.insns.get(i);
       // Only consider real instructions
-      if (curInsn instanceof AddressInsn) {
-        continue;
-      }
-      if (!isReducableMoveInstruction(curInsn.getOpcode())) {
+      if ((curInsn instanceof AddressInsn) || !isReducableMoveInstruction(curInsn.getOpcode())) {
         continue;
       }
 
@@ -263,14 +260,10 @@ public class StmtVisitor implements StmtSwitch {
         nextIndex = j;
         break;
       }
-      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode())) {
-        continue;
-      }
-
       // Do not remove the last instruction in the body as we need to
       // remap
       // jump targets to the successor
-      if (nextIndex == this.insns.size() - 1) {
+      if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode()) || (nextIndex == this.insns.size() - 1)) {
         continue;
       }
 
@@ -334,7 +327,7 @@ public class StmtVisitor implements StmtSwitch {
   }
 
   public List<BuilderInstruction> getRealInsns(LabelAssigner labelAssigner) {
-    List<BuilderInstruction> finalInsns = new ArrayList<>();
+    List<BuilderInstruction> finalInsns = new ArrayList<>(insns.size());
     for (Insn i : insns) {
       if (i instanceof AddressInsn) {
         continue; // skip non-insns
@@ -611,10 +604,12 @@ public class StmtVisitor implements StmtSwitch {
         numbers.add(((LongConstant) val).value);
       } else if (val instanceof FloatConstant) {
         elementSize = Math.max(elementSize, 4);
-        numbers.add(((FloatConstant) val).value);
+        int num = Float.floatToIntBits(((FloatConstant) val).value);
+        numbers.add(num);
       } else if (val instanceof DoubleConstant) {
         elementSize = Math.max(elementSize, 8);
-        numbers.add(((DoubleConstant) val).value);
+        long num = Double.doubleToLongBits(((DoubleConstant) val).value);
+        numbers.add(num);
       } else {
         return null;
       }
@@ -790,9 +785,6 @@ public class StmtVisitor implements StmtSwitch {
     // create sparse-switch instruction that references the payload
     Value key = stmt.getKey();
     Stmt defaultTarget = (Stmt) stmt.getDefaultTarget();
-    if (defaultTarget == stmt) {
-      throw new RuntimeException("Looping switch block detected");
-    }
     addInsn(buildSwitchInsn(Opcode.SPARSE_SWITCH, key, defaultTarget, payload, stmt), stmt);
   }
 

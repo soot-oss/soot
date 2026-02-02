@@ -25,7 +25,6 @@ package soot.baf.internal;
 import java.util.Collections;
 import java.util.List;
 
-import soot.AbstractJasminClass;
 import soot.Local;
 import soot.Type;
 import soot.UnitPrinter;
@@ -33,6 +32,7 @@ import soot.ValueBox;
 import soot.baf.InstSwitch;
 import soot.baf.StoreInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
 
@@ -57,7 +57,7 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst {
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(getOpType());
+    return ASMBackendUtils.sizeOfType(getOpType());
   }
 
   @Override

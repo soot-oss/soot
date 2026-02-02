@@ -25,14 +25,17 @@ package soot.jimple.toolkits.callgraph;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
 import soot.G;
 import soot.NullType;
 import soot.PhaseOptions;
+import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.Singletons;
@@ -123,13 +126,13 @@ public class VirtualCalls {
   public void resolve(Type t, Type declaredType, Type sigType, SootMethodRef callee, SootMethod container,
       ChunkedQueue<SootMethod> targets, boolean appOnly) {
     if (declaredType instanceof ArrayType) {
-      declaredType = RefType.v("java.lang.Object");
+      declaredType = Scene.v().getObjectType();
     }
     if (sigType instanceof ArrayType) {
-      sigType = RefType.v("java.lang.Object");
+      sigType = Scene.v().getObjectType();
     }
     if (t instanceof ArrayType) {
-      t = RefType.v("java.lang.Object");
+      t = Scene.v().getObjectType();
     }
     FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
     if (declaredType != null && !fastHierachy.canStoreType(t, declaredType)) {
@@ -165,6 +168,8 @@ public class VirtualCalls {
       }
     } else if (t instanceof NullType) {
       return;
+    } else if (t instanceof PrimType) {
+      return;
     } else {
       throw new RuntimeException("oops " + t);
     }
@@ -176,10 +181,10 @@ public class VirtualCalls {
       return;
     }
     if (declaredType instanceof ArrayType) {
-      declaredType = RefType.v("java.lang.Object");
+      declaredType = Scene.v().getObjectType();
     }
     if (t instanceof ArrayType) {
-      t = RefType.v("java.lang.Object");
+      t = Scene.v().getObjectType();
     }
     if (declaredType instanceof RefType) {
       RefType child;
@@ -240,13 +245,9 @@ public class VirtualCalls {
       for (SootMethod sm : sc.getMethods()) {
         if (!sm.isAbstract()) {
           // method name has to match
-          if (!sm.getName().equals(declaredName)) {
-            continue;
-          }
-
           // the return type has to be a the declared return
           // type or a sub type of it
-          if (!fh.canStoreType(sm.getReturnType(), declaredReturnType)) {
+          if (!sm.getName().equals(declaredName) || !fh.canStoreType(sm.getReturnType(), declaredReturnType)) {
             continue;
           }
           List<Type> paramTypes = sm.getParameterTypes();

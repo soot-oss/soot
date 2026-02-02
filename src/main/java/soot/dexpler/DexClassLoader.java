@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,20 +20,22 @@ package soot.dexpler;
  * #L%
  */
 
+package soot.dexpler;
+
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.android.tools.smali.dexlib2.iface.Field;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer.DexEntry;
+
 import java.util.Iterator;
 
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.Field;
-import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
-
+import soot.Dependencies;
 import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.SootResolver;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
@@ -181,7 +181,7 @@ public class DexClassLoader {
           }
 
           // Transfer the tag from the inner class to the outer class
-          icat.add(new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags()));
+          icat.add(ict);
 
           // Remove the tag from the inner class as inner classes do
           // not have these tags in the Java / Soot semantics. The

@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,7 +25,10 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.iface.instruction.Instruction;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+
 import soot.dexpler.DexBody;
 
 public class InvokeStaticInstruction extends MethodInvocationInstruction {
@@ -50,5 +51,5 @@ public class InvokeStaticInstruction extends MethodInvocationInstruction {
   boolean isUsedAsFloatingPoint(DexBody body, int register) {
     return isUsedAsFloatingPoint(body, register, true);
   }
-  
+
 }

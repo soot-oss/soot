@@ -77,7 +77,8 @@ public class UnusedLocalEliminator extends BodyTransformer {
 
     // Traverse statements noting all the uses and defs
     for (Unit s : body.getUnits()) {
-      for (ValueBox vb : s.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
@@ -85,7 +86,8 @@ public class UnusedLocalEliminator extends BodyTransformer {
           usedLocals.set(l.getNumber());
         }
       }
-      for (ValueBox vb : s.getDefBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getDefBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;

@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,15 +25,16 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction12x;
 
 import soot.Local;
 import soot.Value;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
@@ -69,15 +68,6 @@ public class UnopInstruction extends TaggedInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      /*
-       * int op = (int)instruction.getOpcode().value; //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); JAssignStmt
-       * jass = (JAssignStmt)assign; DalvikTyper.v().setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() :
-       * ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b], true); DalvikTyper.v().setType(jass.leftBox, resUnType[op -
-       * 0x7b], false);
-       */
-    }
   }
 
   /**
@@ -87,22 +77,22 @@ public class UnopInstruction extends TaggedInstruction {
     Opcode opcode = instruction.getOpcode();
     switch (opcode) {
       case NEG_INT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NEG_LONG:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NEG_FLOAT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NEG_DOUBLE:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return Jimple.v().newNegExpr(source);
       case NOT_LONG:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return getNotLongExpr(source);
       case NOT_INT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return getNotIntExpr(source);
       default:
         throw new RuntimeException("Invalid Opcode: " + opcode);

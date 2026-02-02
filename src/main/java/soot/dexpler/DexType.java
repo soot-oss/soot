@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,8 +25,10 @@ package soot.dexpler;
  * #L%
  */
 
-import org.jf.dexlib2.iface.reference.TypeReference;
-import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
+package soot.dexpler;
+
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableTypeReference;
 
 import soot.BooleanType;
 import soot.ByteType;
@@ -37,6 +37,7 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
+import soot.PrimType;
 import soot.RefType;
 import soot.ShortType;
 import soot.Type;
@@ -225,5 +226,15 @@ public class DexType {
   @Override
   public String toString() {
     return name;
+  }
+
+  public static PrimType[] getWiderTypes(PrimType tp) {
+    if (tp instanceof ByteType) {
+      return new PrimType[] { tp, IntType.v(), ShortType.v() };
+    }
+    if (tp instanceof ShortType) {
+      return new PrimType[] { tp, IntType.v() };
+    }
+    return new PrimType[] { tp };
   }
 }

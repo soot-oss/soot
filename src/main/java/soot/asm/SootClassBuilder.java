@@ -80,7 +80,7 @@ public class SootClassBuilder extends ClassVisitor {
    *          Soot class to build.
    */
   protected SootClassBuilder(SootClass klass) {
-    super(Opcodes.ASM8);
+    super(Opcodes.ASM9);
     this.klass = klass;
     this.deps = new HashSet<>();
   }
@@ -97,7 +97,7 @@ public class SootClassBuilder extends ClassVisitor {
     return klass;
   }
 
-  void addDep(String s) {
+  protected void addDep(String s) {
     addDep(makeRefType(AsmUtil.baseTypeName(s)));
   }
 
@@ -107,7 +107,7 @@ public class SootClassBuilder extends ClassVisitor {
    * @param s
    *          name, or type of class.
    */
-  void addDep(Type s) {
+  protected void addDep(Type s) {
     deps.add(s);
   }
 
@@ -151,7 +151,7 @@ public class SootClassBuilder extends ClassVisitor {
     }
   }
 
-  private void setJavaVersion(int version) {
+  protected void setJavaVersion(int version) {
     final Options opts = Options.v();
     if (opts.derive_java_version()) {
       opts.set_java_version(Math.max(opts.java_version(), AsmUtil.byteCodeToJavaVersion(version)));
@@ -213,7 +213,11 @@ public class SootClassBuilder extends ClassVisitor {
     if (signature != null) {
       method.addTag(new SignatureTag(signature));
     }
-    return new MethodBuilder(klass.getOrAddMethod(method), this, desc, exceptions);
+    return createMethodBuilder(klass.getOrAddMethod(method), desc, exceptions);
+  }
+
+  protected MethodVisitor createMethodBuilder(SootMethod sootMethod, String desc, String[] exceptions) {
+    return new MethodBuilder(sootMethod, this, desc, exceptions);
   }
 
   @Override

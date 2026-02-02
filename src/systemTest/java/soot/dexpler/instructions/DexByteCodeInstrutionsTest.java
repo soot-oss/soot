@@ -53,7 +53,7 @@ public class DexByteCodeInstrutionsTest extends AbstractTestingFramework {
 
   private static final String METHOD_HANDLE_CLASS = "java.lang.invoke.MethodHandle";
   private static final String TARGET_CLASS = "soot.dexpler.instructions.DexBytecodeTarget";
-  private static final String METHOD_HANDLE_INVOKE_SUBSIG = "java.lang.Object invoke(java.lang.Object[])";
+  private static final String METHOD_HANDLE_INVOKE_SUBSIG = "void invoke(java.lang.String,java.lang.String)";
   private static final String SUPPLIER_GET_SUBSIG = "java.util.function.Supplier get()";
 
   @Override

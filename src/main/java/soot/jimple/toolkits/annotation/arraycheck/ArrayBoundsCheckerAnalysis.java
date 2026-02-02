@@ -73,7 +73,7 @@ import soot.options.Options;
 import soot.toolkits.graph.ArrayRefBlockGraph;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.SlowPseudoTopologicalOrderer;
 
 class ArrayBoundsCheckerAnalysis {
@@ -124,7 +124,8 @@ class ArrayBoundsCheckerAnalysis {
       logger.debug("ArrayBoundsCheckerAnalysis started on  " + thismethod.getName());
     }
 
-    ailanalysis = new ArrayIndexLivenessAnalysis(new ExceptionalUnitGraph(body), fieldin, arrayin, csin, rectarray);
+    ailanalysis = new ArrayIndexLivenessAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body), fieldin,
+        arrayin, csin, rectarray);
 
     if (fieldin) {
       this.localToFieldRef = ailanalysis.getLocalToFieldRef();
@@ -773,12 +774,8 @@ class ArrayBoundsCheckerAnalysis {
       }
     }
 
-    if (!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) {
-      return;
-    }
-
     // i = i;
-    if (rightOp.equals(leftOp)) {
+    if ((!livelocals.contains(leftOp) && !livelocals.contains(rightOp)) || rightOp.equals(leftOp)) {
       return;
     }
 
@@ -999,12 +996,8 @@ class ArrayBoundsCheckerAnalysis {
     // take out the condition.
     Value cmpcond = ifstmt.getCondition();
 
-    if (!(cmpcond instanceof ConditionExpr)) {
-      return false;
-    }
-
     // how may succs?
-    if (succs.size() != 2) {
+    if (!(cmpcond instanceof ConditionExpr) || (succs.size() != 2)) {
       return false;
     }
 

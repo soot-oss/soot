@@ -108,6 +108,31 @@ public class TypeSwitch<T> implements ITypeSwitch {
   }
 
   @Override
+  public void caseUByteType(UByteType t) {
+    defaultCase(t);
+  }
+
+  @Override
+  public void caseULongType(ULongType t) {
+    defaultCase(t);
+  }
+
+  @Override
+  public void caseUShortType(UShortType t) {
+    defaultCase(t);
+  }
+
+  @Override
+  public void caseUIntType(UIntType t) {
+    defaultCase(t);
+  }
+
+  @Override
+  public void caseDecimalType(DecimalType t) {
+    defaultCase(t);
+  }
+
+  @Override
   public void defaultCase(Type t) {
   }
 

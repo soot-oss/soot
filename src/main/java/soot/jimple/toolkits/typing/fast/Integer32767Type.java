@@ -4,8 +4,8 @@ package soot.jimple.toolkits.typing.fast;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2008 Ben Bellamy 
- * 
+ * Copyright (C) 2008 Ben Bellamy
+ *
  * All rights reserved.
  * %%
  * This program is free software: you can redistribute it and/or modify
@@ -24,22 +24,22 @@ package soot.jimple.toolkits.typing.fast;
  * #L%
  */
 
-import soot.G;
 import soot.IntegerType;
 import soot.PrimType;
-import soot.RefType;
-import soot.Singletons;
+import soot.ShortType;
+import soot.Type;
 
 /**
  * @author Ben Bellamy
  */
 public class Integer32767Type extends PrimType implements IntegerType {
+  public static final Integer32767Type INSTANCE = new Integer32767Type();
 
   public static Integer32767Type v() {
-    return G.v().soot_jimple_toolkits_typing_fast_Integer32767Type();
+    return INSTANCE;
   }
 
-  public Integer32767Type(Singletons.Global g) {
+  private Integer32767Type() {
   }
 
   @Override
@@ -53,12 +53,28 @@ public class Integer32767Type extends PrimType implements IntegerType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Integer");
-  }
-
-  @Override
   public boolean isAllowedInFinalCode() {
     return false;
   }
+
+  @Override
+  public String getTypeAsString() {
+    return "java.lang.Integer";
+  }
+
+  @Override
+  public Type getDefaultFinalType() {
+    return ShortType.v();
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Integer.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return int.class;
+  }
+
 }

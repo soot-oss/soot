@@ -235,7 +235,7 @@ public class ArrayBoundsChecker extends BodyTransformer {
 
       if (addColorTags && takeRectArray) {
         RectangularArrayFinder raf = RectangularArrayFinder.v();
-        for (Iterator vbIt = body.getUseAndDefBoxes().iterator(); vbIt.hasNext();) {
+        for (Iterator vbIt = body.getUseAndDefBoxesIterator(); vbIt.hasNext();) {
           final ValueBox vb = (ValueBox) vbIt.next();
           Value v = vb.getValue();
           if (!(v instanceof Local)) {

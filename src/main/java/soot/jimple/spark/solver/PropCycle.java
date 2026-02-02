@@ -24,7 +24,9 @@ package soot.jimple.spark.solver;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +38,6 @@ import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
-import soot.util.LargeNumberedMap;
 
 /**
  * Propagates points-to sets using an on-line cycle detection algorithm based on Heintze and Tardieu, PLDI 2000.
@@ -49,7 +50,7 @@ public class PropCycle extends Propagator {
 
   public PropCycle(PAG pag) {
     this.pag = pag;
-    varNodeToIteration = new LargeNumberedMap<VarNode, Integer>(pag.getVarNodeNumberer());
+    varNodeToIteration = new HashMap<VarNode, Integer>();
   }
 
   /** Actually does the propagation. */
@@ -163,5 +164,5 @@ public class PropCycle extends Propagator {
   private PAG pag;
   private OnFlyCallGraph ofcg;
   private Integer currentIteration;
-  private final LargeNumberedMap<VarNode, Integer> varNodeToIteration;
+  private final Map<VarNode, Integer> varNodeToIteration;
 }

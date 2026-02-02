@@ -31,9 +31,34 @@ public class AnnotationIntElem extends AnnotationElem {
 
   private final int value;
 
+  /**
+   * Annotation int element
+   * 
+   * @param v
+   *          value of type int
+   * @param kind
+   *          I: int; B: byte; Z: boolean; C: char; S: short;
+   * @param name
+   */
   public AnnotationIntElem(int v, char kind, String name) {
     super(kind, name);
     this.value = v;
+  }
+
+  public AnnotationIntElem(int v, String name) {
+    this(v, 'I', name);
+  }
+
+  public AnnotationIntElem(Byte v, String name) {
+    this(v, 'B', name);
+  }
+
+  public AnnotationIntElem(Character v, String name) {
+    this(v, 'C', name);
+  }
+
+  public AnnotationIntElem(Short v, String name) {
+    this(v, 'S', name);
   }
 
   @Override
@@ -63,10 +88,7 @@ public class AnnotationIntElem extends AnnotationElem {
     if (this == obj) {
       return true;
     }
-    if (!super.equals(obj)) {
-      return false;
-    }
-    if (this.getClass() != obj.getClass()) {
+    if (!super.equals(obj) || (this.getClass() != obj.getClass())) {
       return false;
     }
     AnnotationIntElem other = (AnnotationIntElem) obj;

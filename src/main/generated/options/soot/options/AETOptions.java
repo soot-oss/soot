@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Available Expressions Tagger. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class AETOptions {
 
     private Map<String, String> options;

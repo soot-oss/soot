@@ -23,6 +23,7 @@ package soot.tagkit;
  */
 
 import java.awt.Color;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,11 +160,6 @@ public class ColorTag implements Tag {
   @Override
   public String getName() {
     return NAME;
-  }
-
-  @Override
-  public byte[] getValue() {
-    return new byte[2];
   }
 
   @Override

@@ -92,15 +92,14 @@ Output Options:
      g grimp                     Produce .grimp (abbreviated Grimp) files 
      X xml                       Produce .xml Files 
      n none                      Produce no output 
-     jasmin                      Produce .jasmin files 
      c class (default)           Produce .class Files 
      d dava                      Produce dava-decompiled .java files 
   -xml-attributes              Save tags to XML attributes for Eclipse 
 <...snip...>
 \end{verbatim}
 
-There are six intermediate representations currently being used in Soot: baf,
-jimple, shimple, grimp, jasmin, and classfiles.  A brief explanation of each form
+There are five intermediate representations currently being used in Soot: baf,
+jimple, shimple, grimp, and classfiles.  A brief explanation of each form
 follows:
 
 \begin{enumerate}
@@ -119,9 +118,6 @@ representations ({\tt .shimp} files, and {\tt .shimple} files.)
 \item[grimp] aggregated (with respect to expression trees) jimple.  The best
 intermediate representation for inspecting dissassembled code. Has two textual
 representations ({\tt .grimp} files, and {\tt .grimple} files.)
-
-\item[jasmin] a messy assembler format.  Used mainly for debugging 
-Soot.  Jasmin files end with "{\tt .jasmin}".
 
 \item[classfiles] the original Java bytecode format.  A binary (non-textual)
 representation.  The usual {\tt .class} files.

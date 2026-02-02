@@ -24,6 +24,7 @@ package soot.toolkits.scalar;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -87,7 +88,8 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>> {
     for (Unit s : graph) {
       FlowSet<Value> genSet = EMPTY_SET.clone();
       for (Unit dom : df.getDominators(s)) {
-        for (ValueBox box : dom.getDefBoxes()) {
+        for (Iterator<ValueBox> iterator = dom.getDefBoxesIterator(); iterator.hasNext();) {
+          ValueBox box = iterator.next();
           Value val = box.getValue();
           if (val instanceof Local) {
             genSet.add(val, genSet);

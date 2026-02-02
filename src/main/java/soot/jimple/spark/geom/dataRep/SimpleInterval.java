@@ -109,10 +109,7 @@ public class SimpleInterval implements Comparable<SimpleInterval> {
   public boolean intersect(SimpleInterval o) {
     SimpleInterval osi = (SimpleInterval) o;
 
-    if (L <= osi.L && osi.L < R) {
-      return true;
-    }
-    if (osi.L <= L && L < osi.R) {
+    if ((L <= osi.L && osi.L < R) || (osi.L <= L && L < osi.R)) {
       return true;
     }
     return false;

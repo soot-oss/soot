@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,12 +20,16 @@ package soot.toDex;
  * #L%
  */
 
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.builder.Label;
+import com.android.tools.smali.dexlib2.builder.MethodImplementationBuilder;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.jf.dexlib2.builder.Label;
-import org.jf.dexlib2.builder.MethodImplementationBuilder;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import soot.jimple.Stmt;
 import soot.toDex.instructions.AbstractPayload;
@@ -118,6 +120,10 @@ public class LabelAssigner {
 
   public Collection<Label> getAllLabels() {
     return stmtToLabel.values();
+  }
+
+  public Set<Entry<Stmt, Label>> getAllStmtsToLabels() {
+    return stmtToLabel.entrySet();
   }
 
 }

@@ -44,7 +44,6 @@ package soot.dexpler;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import soot.Body;
@@ -68,6 +67,7 @@ import soot.jimple.StringConstant;
 import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.LocalDefs;
 
 /**
@@ -87,10 +87,11 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
     return new DexNullArrayRefTransformer();
   }
 
+  @Override
   protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
-    final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
+    final ExceptionalUnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
-    final LocalCreation lc = new LocalCreation(body.getLocals(), "ex");
+    final LocalCreation lc = Scene.v().createLocalCreation(body.getLocals(), "ex");
 
     boolean changed = false;
     for (Iterator<Unit> unitIt = body.getUnits().snapshotIterator(); unitIt.hasNext();) {
@@ -141,12 +142,10 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
    * @return True if the given local is guaranteed to always be null at the given statement, otherwise false
    */
   private boolean isAlwaysNullBefore(Stmt s, Local base, LocalDefs defs) {
-    List<Unit> baseDefs = defs.getDefsOfAt(base, s);
-    if (baseDefs.isEmpty()) {
-      return true;
-    }
+    Iterator<Unit> baseDefs = defs.getDefsOfAtIterator(base, s);
 
-    for (Unit u : baseDefs) {
+    while (baseDefs.hasNext()) {
+      Unit u = baseDefs.next();
       if (!(u instanceof DefinitionStmt)) {
         return false;
       }

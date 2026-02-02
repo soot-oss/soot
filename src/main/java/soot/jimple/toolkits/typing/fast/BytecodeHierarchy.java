@@ -57,7 +57,7 @@ public class BytecodeHierarchy implements IHierarchy {
     leafs.add(new AncestryTreeNode(null, root));
 
     LinkedList<AncestryTreeNode> r = new LinkedList<AncestryTreeNode>();
-    final RefType objectType = RefType.v("java.lang.Object");
+    final RefType objectType = Scene.v().getObjectType();
     while (!leafs.isEmpty()) {
       AncestryTreeNode node = leafs.remove();
       if (TypeResolver.typesEqual(node.type, objectType)) {
@@ -132,10 +132,10 @@ public class BytecodeHierarchy implements IHierarchy {
       LinkedList<Type> r = new LinkedList<Type>();
       if (ts.isEmpty()) {
         if (useWeakObjectType) {
-          r.add(new WeakObjectType("java.lang.Object"));
+          r.add(new WeakObjectType(Scene.v().getObjectType().toString()));
         } else {
           // From Java Language Spec 2nd ed., Chapter 10, Arrays
-          r.add(RefType.v("java.lang.Object"));
+          r.add(RefType.v(Scene.v().getObjectType().toString()));
           r.add(RefType.v("java.io.Serializable"));
           r.add(RefType.v("java.lang.Cloneable"));
         }
@@ -156,7 +156,7 @@ public class BytecodeHierarchy implements IHierarchy {
        * Do not consider Object to be a subtype of Serializable or Cloneable (it can appear this way if phantom-refs is
        * enabled and rt.jar is not available) otherwise an infinite loop can result.
        */
-      if (!TypeResolver.typesEqual(RefType.v("java.lang.Object"), rt)) {
+      if (!TypeResolver.typesEqual(Scene.v().getObjectType(), rt)) {
         RefType refSerializable = RefType.v("java.io.Serializable");
         if (ancestor_(refSerializable, rt)) {
           r.add(refSerializable);
@@ -168,7 +168,7 @@ public class BytecodeHierarchy implements IHierarchy {
       }
 
       if (r.isEmpty()) {
-        r.add(RefType.v("java.lang.Object"));
+        r.add(Scene.v().getObjectType());
       }
       return r;
     } else {
@@ -205,7 +205,7 @@ public class BytecodeHierarchy implements IHierarchy {
       // kludge on a kludge on a kludge...
       // syed - 05/06/2009
       if (r.isEmpty()) {
-        r.add(RefType.v("java.lang.Object"));
+        r.add(Scene.v().getObjectType());
       }
       return r;
     }
@@ -227,7 +227,16 @@ public class BytecodeHierarchy implements IHierarchy {
     } else if (ancestor instanceof NullType) {
       return false;
     } else {
+      makeSureTypeIsLoaded(ancestor);
+      makeSureTypeIsLoaded(child);
       return Scene.v().getOrMakeFastHierarchy().canStoreType(child, ancestor);
+    }
+  }
+
+  private static void makeSureTypeIsLoaded(Type t) {
+    if (t instanceof RefType) {
+      RefType rt = (RefType) t;
+      Scene.v().forceResolve(rt.getClassName(), SootClass.HIERARCHY);
     }
   }
 
@@ -260,7 +269,7 @@ public class BytecodeHierarchy implements IHierarchy {
   }
 
   public static RefType lcsc(RefType a, RefType b) {
-    return lcsc(a, b, null);
+    return lcsc(a, b, Scene.v().getObjectType());
   }
 
   public static RefType lcsc(RefType a, RefType b, RefType anchor) {
@@ -295,6 +304,11 @@ public class BytecodeHierarchy implements IHierarchy {
     public AncestryTreeNode(AncestryTreeNode next, RefType type) {
       this.next = next;
       this.type = type;
+    }
+
+    @Override
+    public String toString() {
+      return "Type: " + type + " Next: " + next;
     }
   }
 }

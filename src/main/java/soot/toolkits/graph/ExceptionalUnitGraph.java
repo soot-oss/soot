@@ -54,6 +54,7 @@ import soot.jimple.ThrowStmt;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.ThrowableSet;
+import soot.toolkits.exceptions.ThrowableSet.Manager;
 import soot.util.ArraySet;
 import soot.util.Chain;
 
@@ -198,7 +199,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
   protected void initialize(ThrowAnalysis throwAnalysis, boolean omitExceptingUnitEdges) {
     int size = unitChain.size();
 
-    if (Options.v().time()) {
+    boolean time = Options.v().time();
+    if (time) {
       Timers.v().graphTimer.start();
     }
 
@@ -230,7 +232,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     }
     buildHeadsAndTails(trapUnitsThatAreHeads);
 
-    if (Options.v().time()) {
+    if (time) {
       Timers.v().graphTimer.end();
     }
 
@@ -265,6 +267,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     Chain<Unit> units = body.getUnits();
     Map<Unit, ThrowableSet> unitToUncaughtThrowables = new LinkedHashMap<Unit, ThrowableSet>(units.size());
     Map<Unit, Collection<ExceptionDest>> result = null;
+    final Manager manager = ThrowableSet.Manager.v();
+    final ThrowableSet EMPTY = manager.EMPTY;
 
     // Record the caught exceptions.
     for (Trap trap : body.getTraps()) {
@@ -278,7 +282,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
         }
 
         ThrowableSet.Pair catchableAs = thrownSet.whichCatchableAs(catcher);
-        if (!catchableAs.getCaught().equals(ThrowableSet.Manager.v().EMPTY)) {
+        if (!catchableAs.getCaught().equals(EMPTY)) {
           result = addDestToMap(result, unit, trap, catchableAs.getCaught());
           unitToUncaughtThrowables.put(unit, catchableAs.getUncaught());
         } else {
@@ -294,7 +298,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     for (Map.Entry<Unit, ThrowableSet> entry : unitToUncaughtThrowables.entrySet()) {
       Unit unit = entry.getKey();
       ThrowableSet escaping = entry.getValue();
-      if (escaping != ThrowableSet.Manager.v().EMPTY) {
+      if (escaping != manager.EMPTY) {
         result = addDestToMap(result, unit, null, escaping);
       }
     }
@@ -564,7 +568,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       return (i.containsInvokeExpr() || (i instanceof StaticPutInst) || (i instanceof StaticGetInst)
           || (i instanceof NewInst));
     } else if (u instanceof Stmt) {
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if ((v instanceof StaticFieldRef) || (v instanceof InvokeExpr) || (v instanceof NewExpr)) {
           return true;
@@ -692,6 +697,41 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
     }
 
     @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((throwables == null) ? 0 : throwables.hashCode());
+      result = prime * result + ((trap == null) ? 0 : trap.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if ((obj == null) || (getClass() != obj.getClass())) {
+        return false;
+      }
+      ExceptionDest other = (ExceptionDest) obj;
+      if (throwables == null) {
+        if (other.throwables != null) {
+          return false;
+        }
+      } else if (!throwables.equals(other.throwables)) {
+        return false;
+      }
+      if (trap == null) {
+        if (other.trap != null) {
+          return false;
+        }
+      } else if (!trap.equals(other.trap)) {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
     public Trap getTrap() {
       return trap;
     }
@@ -782,5 +822,10 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph<
       buf.append("  succs ").append(getSuccsOf(u)).append("\n\n");
     }
     return buf.toString();
+  }
+
+  @Override
+  public Map<Unit, Collection<soot.toolkits.graph.ExceptionalGraph.ExceptionDest<? extends Unit>>> getAllExceptionDests() {
+    return (Map) unitToExceptionDests;
   }
 }

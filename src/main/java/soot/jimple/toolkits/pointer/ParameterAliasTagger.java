@@ -38,7 +38,6 @@ import soot.Scene;
 import soot.Singletons;
 import soot.Unit;
 import soot.Value;
-import soot.ValueBox;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
 import soot.tagkit.ColorTag;

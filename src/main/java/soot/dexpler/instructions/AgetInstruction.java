@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,18 +25,22 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+package soot.dexpler.instructions;
 
-import soot.IntType;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction23x;
+
 import soot.Local;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.InvalidDalvikBytecodeException;
+import soot.dexpler.tags.BooleanOpTag;
+import soot.dexpler.tags.ByteOpTag;
+import soot.dexpler.tags.CharOpTag;
+import soot.dexpler.tags.IntOrFloatOpTag;
+import soot.dexpler.tags.LongOrDoubleOpTag;
 import soot.dexpler.tags.ObjectOpTag;
-import soot.dexpler.typing.DalvikTyper;
+import soot.dexpler.tags.ShortOpTag;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -65,18 +67,33 @@ public class AgetInstruction extends DexlibAbstractInstruction {
     Local l = body.getRegisterLocal(dest);
 
     AssignStmt assign = Jimple.v().newAssignStmt(l, arrayRef);
-    if (aGetInstr.getOpcode() == Opcode.AGET_OBJECT) {
-      assign.addTag(new ObjectOpTag());
+    switch (aGetInstr.getOpcode()) {
+      case AGET_OBJECT:
+        assign.addTag(ObjectOpTag.INSTANCE);
+        break;
+      case AGET:
+        assign.addTag(IntOrFloatOpTag.INSTANCE);
+        break;
+      case AGET_WIDE:
+        assign.addTag(LongOrDoubleOpTag.INSTANCE);
+        break;
+      case AGET_BYTE:
+        assign.addTag(ByteOpTag.INSTANCE);
+        break;
+      case AGET_CHAR:
+        assign.addTag(CharOpTag.INSTANCE);
+        break;
+      case AGET_SHORT:
+        assign.addTag(ShortOpTag.INSTANCE);
+        break;
+      case AGET_BOOLEAN:
+        assign.addTag(BooleanOpTag.INSTANCE);
+        break;
     }
 
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-      DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
-    }
   }
 
   @Override

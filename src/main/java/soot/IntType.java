@@ -22,19 +22,27 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.jimple.internal.IIntLikeType;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
  * Soot representation of the Java built-in type 'int'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class IntType extends PrimType implements IntegerType {
+public class IntType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
-  public IntType(Singletons.Global g) {
+  public static final int HASHCODE = 0xB747239F;
+  public static final IntType INSTANCE = new IntType();
+
+  private IntType() {
+    super(false);
   }
 
   public static IntType v() {
-    return G.v().soot_IntType();
+    return INSTANCE;
   }
 
   @Override
@@ -44,7 +52,7 @@ public class IntType extends PrimType implements IntegerType {
 
   @Override
   public int hashCode() {
-    return 0xB747239F;
+    return HASHCODE;
   }
 
   @Override
@@ -58,7 +66,21 @@ public class IntType extends PrimType implements IntegerType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Integer");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotNetBasicTypes.SYSTEM_INT32;
+    }
+    return JavaBasicTypes.JAVA_LANG_INTEGER;
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Integer.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return int.class;
+  }
+
 }

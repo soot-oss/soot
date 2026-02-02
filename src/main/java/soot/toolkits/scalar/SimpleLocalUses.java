@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,16 +82,18 @@ public class SimpleLocalUses implements LocalUses {
 
     // Traverse units and associate uses with definitions
     for (Unit unit : body.getUnits()) {
-      for (ValueBox useBox : unit.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = unit.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox useBox = iterator.next();
         Value v = useBox.getValue();
         if (v instanceof Local) {
           // Add this statement to the uses of the definition of the local
           Local l = (Local) v;
 
-          List<Unit> defs = localDefs.getDefsOfAt(l, unit);
-          if (defs != null) {
+          Iterator<Unit> defs = localDefs.getDefsOfAtIterator(l, unit);
+          if (defs.hasNext()) {
             UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
-            for (Unit def : defs) {
+            while (defs.hasNext()) {
+              Unit def = defs.next();
               List<UnitValueBoxPair> lst = unitToUses.get(def);
               if (lst == null) {
                 unitToUses.put(def, lst = new ArrayList<UnitValueBoxPair>());

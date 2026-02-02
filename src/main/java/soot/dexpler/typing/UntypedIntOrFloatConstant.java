@@ -1,5 +1,7 @@
 package soot.dexpler.typing;
 
+import soot.BooleanConstant;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -62,12 +64,24 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
     return (int) (value ^ (value >>> 32));
   }
 
+  @Override
+  public String toString() {
+    return "Untyped int or float constant " + value;
+  }
+
   public FloatConstant toFloatConstant() {
     return FloatConstant.v(Float.intBitsToFloat((int) value));
   }
 
   public IntConstant toIntConstant() {
     return IntConstant.v(value);
+  }
+
+  public IntConstant toBooleanConstant() {
+    if (value != 0) {
+      return BooleanConstant.v(1);
+    }
+    return BooleanConstant.v(value);
   }
 
   @Override
@@ -77,6 +91,8 @@ public class UntypedIntOrFloatConstant extends UntypedConstant {
     } else if (t instanceof IntType || t instanceof CharType || t instanceof BooleanType || t instanceof ByteType
         || t instanceof ShortType) {
       return this.toIntConstant();
+    } else if (t instanceof BooleanType) {
+      return toBooleanConstant();
     } else {
       if (value == 0 && t instanceof RefLikeType) {
         return NullConstant.v();

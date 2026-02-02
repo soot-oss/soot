@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,14 +25,13 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction;
 
 import soot.Local;
-import soot.RefType;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.Jimple;
 
@@ -52,10 +49,5 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
     setUnit(enterMonitorStmt);
     addTags(enterMonitorStmt);
     body.add(enterMonitorStmt);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      // Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ enterMonitorStmt);
-      DalvikTyper.v().setType(enterMonitorStmt.getOpBox(), RefType.v("java.lang.Object"), true);
-    }
   }
 }

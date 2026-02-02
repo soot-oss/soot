@@ -22,24 +22,32 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.jimple.internal.IIntLikeType;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
- * Soot representation of the Java built-in type 'byte'. Implemented as a singleton.
+ * Soot representation of the Java built-in type 'byte' and .NETs built-in type 'sbyte'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class ByteType extends PrimType implements IntegerType {
+public class ByteType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
-  public ByteType(Singletons.Global g) {
+  public static final int HASHCODE = 0x813D1329;
+  public static final ByteType INSTANCE = new ByteType();
+
+  private ByteType() {
+    super(false);
   }
 
   public static ByteType v() {
-    return G.v().soot_ByteType();
+    return INSTANCE;
   }
 
   @Override
   public int hashCode() {
-    return 0x813D1329;
+    return HASHCODE;
   }
 
   @Override
@@ -49,7 +57,11 @@ public class ByteType extends PrimType implements IntegerType {
 
   @Override
   public String toString() {
-    return "byte";
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return "sbyte";
+    } else {
+      return "byte";
+    }
   }
 
   @Override
@@ -58,7 +70,20 @@ public class ByteType extends PrimType implements IntegerType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Byte");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotNetBasicTypes.SYSTEM_SBYTE;
+    }
+    return JavaBasicTypes.JAVA_LANG_BYTE;
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Byte.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return byte.class;
   }
 }

@@ -212,4 +212,9 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
     }
     up.literal(")");
   }
+
+  @Override
+  public boolean hasDefiniteMethodTarget() {
+    return false;
+  }
 }

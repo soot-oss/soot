@@ -74,8 +74,8 @@ public class RenameDuplicatedClasses extends SceneTransformer {
       return;
     }
 
-    final Set<String> fixedClassNames =
-        new HashSet<>(Arrays.asList(PhaseOptions.getString(options, "fixedClassNames").split(FIXED_CLASS_NAME_SPERATOR)));
+    final Set<String> fixedClassNames
+        = new HashSet<>(Arrays.asList(PhaseOptions.getString(options, "fixedClassNames").split(FIXED_CLASS_NAME_SPERATOR)));
     duplicatedCheck(fixedClassNames);
 
     if (Options.v().verbose()) {

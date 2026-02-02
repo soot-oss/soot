@@ -583,7 +583,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 
       // make it equal to the right value
       Stmt baseAssign = Jimple.v().newAssignStmt(baseLocal, newBase);
-      if (redirect == true) {
+      if (redirect) {
         units.insertBefore(baseAssign, insertBefore);
       } else {
         units.insertBeforeNoRedirect(baseAssign, insertBefore);

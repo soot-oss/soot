@@ -113,6 +113,28 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N> {
     }
     return true;
   }
+
+  @Override
+  public boolean isDominatedByAny(N node, Collection<N> dominators) {
+    FlowSet<N> f = nodeToDominators.get(node);
+    for (N n : dominators) {
+      if (f.contains(n)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean isDominatingAllGiven(N node, Collection<N> given) {
+    for (N n : given) {
+      FlowSet<N> f = nodeToDominators.get(n);
+      if (!f.contains(node)) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
 
 /**

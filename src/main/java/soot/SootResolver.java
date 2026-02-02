@@ -1,5 +1,3 @@
-package soot;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -11,34 +9,32 @@ package soot;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
 
-import java.io.IOException;
-import java.io.InputStream;
+package soot;
+
+import com.google.common.base.Joiner;
+
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.JastAddJ.BytecodeParser;
-import soot.JastAddJ.CompilationUnit;
-import soot.JastAddJ.JastAddJavaParser;
-import soot.JastAddJ.JavaParser;
-import soot.JastAddJ.Program;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
@@ -57,54 +53,18 @@ public class SootResolver {
   @SuppressWarnings("unchecked")
   private final Deque<SootClass>[] worklist = new Deque[4];
 
-  private Program program = null;
-
   public SootResolver(Singletons.Global g) {
     worklist[SootClass.HIERARCHY] = new ArrayDeque<SootClass>();
     worklist[SootClass.SIGNATURES] = new ArrayDeque<SootClass>();
     worklist[SootClass.BODIES] = new ArrayDeque<SootClass>();
   }
 
-  protected void initializeProgram() {
-    if (Options.v().src_prec() != Options.src_prec_apk_c_j) {
-      program = new Program();
-      program.state().reset();
-
-      program.initBytecodeReader(new BytecodeParser());
-      program.initJavaParser(new JavaParser() {
-        @Override
-        public CompilationUnit parse(InputStream is, String fileName) throws IOException, beaver.Parser.Exception {
-          return new JastAddJavaParser().parse(is, fileName);
-        }
-      });
-
-      final soot.JastAddJ.Options options = program.options();
-      options.initOptions();
-      options.addKeyValueOption("-classpath");
-      options.setValueForOption(Scene.v().getSootClassPath(), "-classpath");
-
-      switch (Options.v().src_prec()) {
-        case Options.src_prec_java:
-          program.setSrcPrec(Program.SRC_PREC_JAVA);
-          break;
-        case Options.src_prec_class:
-          program.setSrcPrec(Program.SRC_PREC_CLASS);
-          break;
-        case Options.src_prec_only_class:
-          program.setSrcPrec(Program.SRC_PREC_CLASS);
-          break;
-        default:
-          break;
-      }
-      program.initPaths();
-    }
-  }
-
   public static SootResolver v() {
-    if (ModuleUtil.module_mode()) {
-      return G.v().soot_SootModuleResolver();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_SootModuleResolver();
     } else {
-      return G.v().soot_SootResolver();
+      return g.soot_SootResolver();
     }
   }
 
@@ -114,8 +74,7 @@ public class SootResolver {
     if (opts.on_the_fly()) {
       return false;
     } else {
-      return (opts.whole_program() || opts.whole_shimple() || opts.full_resolver()
-          || opts.output_format() == Options.output_format_dava);
+      return (opts.whole_program() || opts.whole_shimple() || opts.full_resolver());
     }
   }
 
@@ -124,6 +83,9 @@ public class SootResolver {
    * will be resolved into this SootClass.
    */
   public SootClass makeClassRef(String className) {
+    if (className.length() == 0) {
+      throw new RuntimeException("Classname must not be empty!");
+    }
     final Scene scene = Scene.v();
     if (scene.containsClass(className)) {
       return scene.getSootClass(className);
@@ -172,8 +134,8 @@ public class SootResolver {
         SootClass sc = currWorklist.pop();
         if (resolveEverything) {
           // Whole program mode
-          boolean onlySignatures = sc.isPhantom()
-              || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.isBasicClass(sc.getName()));
+          boolean onlySignatures
+              = sc.isPhantom() || (no_bodies_for_excluded && scene.isExcluded(sc) && !scene.isBasicClass(sc.getName()));
           if (onlySignatures) {
             bringToSignatures(sc);
             sc.setPhantomClass();
@@ -253,16 +215,58 @@ public class SootResolver {
       boolean modelAsPhantomRef = (is == null);
       if (modelAsPhantomRef) {
         if (!Scene.v().allowsPhantomRefs()) {
+          String separator = File.pathSeparator;
           String suffix = "";
-          if ("java.lang.Object".equals(className)) {
-            suffix = " Try adding rt.jar to Soot's classpath, e.g.:\n" + "java -cp sootclasses.jar soot.Main -cp "
-                + ".:/path/to/jdk/jre/lib/rt.jar <other options>";
-          } else if ("javax.crypto.Cipher".equals(className)) {
-            suffix = " Try adding jce.jar to Soot's classpath, e.g.:\n" + "java -cp sootclasses.jar soot.Main -cp "
-                + ".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
+          if (Scene.isUsingJava()) {
+            String start = "";
+            if (!Options.v().soot_classpath().isEmpty()) {
+              start = Options.v().soot_classpath() + separator;
+            }
+            if ("java.lang.Object".equals(className)) {
+              suffix = "\nTry adding the Java runtime (rt.jar) to Soot's classpath, e.g.:\n" + start
+                  + "/path/to/jdk/jre/lib/rt.jar";
+            } else if ("javax.crypto.Cipher".equals(className)) {
+              suffix = "\nTry adding jce.jar to Soot's classpath, e.g.:\n" + start + "/path/to/jdk/jre/lib/rt.jar"
+                  + separator + "/path/to/jdk/jre/lib/jce.jar";
+            }
+          }
+          if (!Scene.isUsingAndroid() && Scene.isUsingJava() && !Options.v().prepend_classpath()
+          // for java.* classes, we are relatively certain that these are probably part of the core JRE
+              && className.startsWith("java.")) {
+            suffix += "\nAlternatively, you can use the --prepend-classpath option to"
+                + " let Soot utilize the Java runtime of the current JVM, which is Java "
+                + System.getProperty("java.version");
+          }
+          List<String> possibleInputs = new LinkedList<>();
+          if (Scene.isUsingJava()) {
+            possibleInputs.add("JAR file/class folder");
+          }
+          if (Scene.isUsingAndroid()) {
+            possibleInputs.add("APK/DEX file");
+          }
+          if (Scene.isUsingDotNet()) {
+            possibleInputs.add(".NET CIL DLL or executable (.exe) file");
+          }
+          String classPathSuggestion
+              = "Add the " + Joiner.on(", ").join(possibleInputs) + " containing the class to the soot class path. ";
+          String phantomRefsSuggestion;
+          if (Main.usedAsCommandLineApp) {
+            classPathSuggestion += "Use the command line argument -cp for that.";
+            phantomRefsSuggestion = "Use the command line argument --allow-phantom-refs for that.";
+          } else {
+            classPathSuggestion += "Since you seem to use Soot as a library, use Options.v().set_soot_classpath.";
+            phantomRefsSuggestion = "Use Options.v().set_allow_phantom_refs(true);";
           }
           throw new SootClassNotFoundException(
-              "couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
+              "Couldn't find class " + className + ".\nYou've got two options: \nEither specify Soot's classpath correctly: "
+                  + classPathSuggestion + "\nThe soot class path should contain all files that contain classes/bytecode"
+                  + " the application depends on. Each file should be separated by " + separator + ", e.g. \"File1"
+                  + separator + "File2\"" + suffix + "\nAlternatively, you can instruct soot to use phantom references. "
+                  + "This causes Soot to treat missing classes as placeholders,\n"
+                  + "which can be useful if the origin of the missing classes is "
+                  + "unknown or if the application would run even with these missing classes."
+                  + "Note that this may cause some analyses to fail." + "\nEnable phantom references like this: "
+                  + phantomRefsSuggestion);
         } else {
           // logger.warn(className + " is a phantom class!");
           sc.setPhantomClass();
@@ -394,14 +398,7 @@ public class SootResolver {
     reResolve(cl, SootClass.HIERARCHY);
   }
 
-  public Program getProgram() {
-    if (program == null) {
-      initializeProgram();
-    }
-    return program;
-  }
-
-  public class SootClassNotFoundException extends RuntimeException {
+  public class SootClassNotFoundException extends UserInputException {
     /**
      *
      */

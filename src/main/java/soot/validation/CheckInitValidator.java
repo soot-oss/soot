@@ -1,5 +1,7 @@
 package soot.validation;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -31,6 +33,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.toolkits.exceptions.ThrowAnalysisFactory;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.InitAnalysis;
 
@@ -43,12 +46,14 @@ public enum CheckInitValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exception) {
-    ExceptionalUnitGraph g = new ExceptionalUnitGraph(body, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
+    ExceptionalUnitGraph g
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
 
     InitAnalysis analysis = new InitAnalysis(g);
     for (Unit s : body.getUnits()) {
       FlowSet<Local> init = analysis.getFlowBefore(s);
-      for (ValueBox vBox : s.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vBox = iterator.next();
         Value v = vBox.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;

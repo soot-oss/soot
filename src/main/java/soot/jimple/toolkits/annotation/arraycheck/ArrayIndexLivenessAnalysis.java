@@ -252,7 +252,8 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
         }
       }
 
-      for (ValueBox vbox : stmt.getUseAndDefBoxes()) {
+      for (Iterator<ValueBox> iterator = stmt.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+        ValueBox vbox = iterator.next();
         Value v = vbox.getValue();
 
         if (fieldin) {

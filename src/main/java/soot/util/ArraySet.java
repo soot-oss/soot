@@ -118,8 +118,8 @@ public class ArraySet<E> extends AbstractSet<E> {
     if (s instanceof ArraySet) {
       boolean ret = false;
       ArraySet<? extends E> as = (ArraySet<? extends E>) s;
-      for (E elem : as.elements) {
-        ret |= add(elem);
+      for (int i = 0; i < as.numElements; i++) {
+        ret |= add(as.elements[i]);
       }
       return ret;
     } else {

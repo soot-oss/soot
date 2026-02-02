@@ -26,7 +26,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import heros.DontSynchronize;
-import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
@@ -39,10 +38,16 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.FastHierarchy;
 import soot.MethodOrMethodContext;
+import soot.RefType;
 import soot.Scene;
 import soot.SootMethod;
+import soot.Type;
 import soot.Unit;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
@@ -62,6 +67,23 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
   protected boolean includeReflectiveCalls = false;
   protected boolean includePhantomCallees = false;
 
+  public enum Fallback {
+    /**
+     * Do utilize any callee.
+     */
+    NONE,
+    /**
+     * Use the immediate callee if the callgraph does not contain any edges for the respective call site.
+     */
+    IMMEDIATE_CALLEES,
+    /**
+     * Assume Class-Hierarchy Analysis style that all subclasses are possible. 
+     */
+    CHA
+  }
+
+  protected Fallback fallback = Fallback.NONE;
+
   // retains only callers that are explicit call sites or Thread.start()
   public class EdgeFilter extends Filter {
     protected EdgeFilter() {
@@ -72,6 +94,10 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
               || (includeReflectiveCalls && e.kind().isReflection());
         }
       });
+    }
+
+    public EdgeFilter(EdgePredicate p) {
+      super(p);
     }
   }
 
@@ -84,7 +110,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
       ArrayList<SootMethod> res = null;
       // only retain callers that are explicit call sites or
       // Thread.start()
-      Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));
+      Iterator<Edge> edgeIter = createEdgeFilter().wrap(cg.edgesOutOf(u));
       while (edgeIter.hasNext()) {
         Edge edge = edgeIter.next();
         SootMethod m = edge.getTgt().method();
@@ -102,9 +128,29 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         res.trimToSize();
         return res;
       } else {
+        if (fallback != Fallback.NONE && u instanceof Stmt) {
+          Stmt s = (Stmt) u;
+          if (s.containsInvokeExpr()) {
+            InvokeExpr invExpr = s.getInvokeExpr();
+            SootMethod immediate = invExpr.getMethod();
+            if (fallback == Fallback.CHA && invExpr instanceof InstanceInvokeExpr) {
+              InstanceInvokeExpr instinv = (InstanceInvokeExpr) invExpr;
+              FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+              Type t = instinv.getBase().getType();
+              if (t instanceof RefType) {
+                RefType rt = (RefType) t;
+                return fh.resolveAbstractDispatch(rt.getSootClass(), instinv.getMethodRef());
+              }
+            }
+            if (includePhantomCallees || immediate.hasActiveBody()) {
+              return Collections.singleton(immediate);
+            }
+          }
+        }
         return Collections.emptySet();
       }
     }
+
   };
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
@@ -118,7 +164,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
           ArrayList<Unit> res = new ArrayList<Unit>();
           // only retain callers that are explicit call sites or
           // Thread.start()
-          Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));
+          Iterator<Edge> edgeIter = createEdgeFilter().wrap(cg.edgesInto(m));
           while (edgeIter.hasNext()) {
             Edge edge = edgeIter.next();
             res.add(edge.srcUnit());
@@ -174,4 +220,16 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
     this.includePhantomCallees = includePhantomCallees;
   }
 
+  /**
+   * Sets the fallback mode. The fallback is used when the call graph reports no outgoing edges.
+   * 
+   * @param fallbackMode the fallback mode to use
+   */
+  public void setFallbackMode(Fallback fallbackMode) {
+    this.fallback = fallbackMode;
+  }
+
+  protected EdgeFilter createEdgeFilter() {
+    return new EdgeFilter();
+  }
 }

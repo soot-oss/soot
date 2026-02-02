@@ -44,11 +44,6 @@ public class SignatureTag implements Tag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException(NAME + " has no value for bytecode");
-  }
-
   public String getInfo() {
     return "Signature";
   }

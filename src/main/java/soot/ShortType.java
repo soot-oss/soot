@@ -22,24 +22,32 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.jimple.internal.IIntLikeType;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
  * Soot representation of the Java built-in type 'short'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class ShortType extends PrimType implements IntegerType {
+public class ShortType extends PrimType implements IJavaType, IntegerType, DotNetINumber, IIntLikeType {
 
-  public ShortType(Singletons.Global g) {
+  public static final int HASHCODE = 0x8B817DD3;
+  public static final ShortType INSTANCE = new ShortType();
+
+  private ShortType() {
+    super(false);
   }
 
   public static ShortType v() {
-    return G.v().soot_ShortType();
+    return INSTANCE;
   }
 
   @Override
   public int hashCode() {
-    return 0x8B817DD3;
+    return HASHCODE;
   }
 
   @Override
@@ -58,7 +66,21 @@ public class ShortType extends PrimType implements IntegerType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Short");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotNetBasicTypes.SYSTEM_INT16;
+    }
+    return JavaBasicTypes.JAVA_LANG_SHORT;
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Short.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return short.class;
+  }
+
 }

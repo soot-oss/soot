@@ -52,6 +52,7 @@ import soot.jimple.Stmt;
 import soot.jimple.StmtBody;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
@@ -89,7 +90,8 @@ public class Aggregator extends BodyTransformer {
       Zonation zonation = new Zonation(body);
       for (Unit u : body.getUnits()) {
         Zone zone = zonation.getZoneOf(u);
-        for (ValueBox box : u.getUseAndDefBoxes()) {
+        for (Iterator<ValueBox> iterator = u.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+          ValueBox box = iterator.next();
           boxToZone.put(box, zone);
         }
       }
@@ -113,7 +115,7 @@ public class Aggregator extends BodyTransformer {
     boolean hadAggregation = false;
 
     final Chain<Unit> units = body.getUnits();
-    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
+    final ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body);
     final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph);
     final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
 
@@ -128,8 +130,7 @@ public class Aggregator extends BodyTransformer {
       }
       final Local lhsLocal = (Local) lhs;
       if (onlyStackVars) {
-        String lhsLocalName = lhsLocal.getName();
-        if (lhsLocalName.isEmpty() || lhsLocalName.charAt(0) != '$') {
+        if (!lhsLocal.isStackLocal()) {
           continue;
         }
       }
@@ -146,12 +147,9 @@ public class Aggregator extends BodyTransformer {
         usepairValueBox = usepair.valueBox;
       }
 
-      if (localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1) {
-        continue;
-      }
-
       // Check to make sure aggregation pair in the same zone
-      if (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox)) {
+      if ((localDefs.getDefsOfAt(lhsLocal, usepairUnit).size() != 1)
+          || (boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepairValueBox))) {
         continue;
       }
 
@@ -173,7 +171,8 @@ public class Aggregator extends BodyTransformer {
         boolean propagatingArrayRef = false;
         ArrayList<FieldRef> fieldRefList = new ArrayList<FieldRef>();// iteration
         HashSet<Value> localsUsed = new HashSet<Value>();// fast contains check
-        for (ValueBox vb : s.getUseBoxes()) {
+        for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+          ValueBox vb = iterator.next();
           Value v = vb.getValue();
           if (v instanceof Local) {
             localsUsed.add(v);
@@ -199,8 +198,8 @@ public class Aggregator extends BodyTransformer {
               continue NEXT_UNIT;// give up: can't aggregate.
             }
 
-            // Check for killing definitions
-            for (ValueBox vb : between.getDefBoxes()) {
+            for (Iterator<ValueBox> iterator = between.getDefBoxesIterator(); iterator.hasNext();) {
+              ValueBox vb = iterator.next();
               Value v = vb.getValue();
               if (localsUsed.contains(v)) {
                 continue NEXT_UNIT;// give up: can't aggregate.
@@ -231,7 +230,8 @@ public class Aggregator extends BodyTransformer {
 
           // Check for intervening side effects due to method calls
           if (propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef) {
-            for (ValueBox box : between.getUseBoxes()) {
+            for (Iterator<ValueBox> iterator = between.getUseBoxesIterator(); iterator.hasNext();) {
+              ValueBox box = iterator.next();
               if (between == usepairUnit && box == usepairValueBox) {
                 // Reached use point, stop looking for side effects
                 break;

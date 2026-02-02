@@ -30,15 +30,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.Scene;
 import soot.Singletons;
+import soot.SootClass;
 import soot.Trap;
 import soot.Unit;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 
 /**
@@ -68,9 +69,11 @@ public final class TrapTightener extends TrapTransformer {
     this.throwAnalysis = ta;
   }
 
+  @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
+    final Scene scene = Scene.v();
     if (this.throwAnalysis == null) {
-      this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+      this.throwAnalysis = scene.getDefaultThrowAnalysis();
     }
 
     if (Options.v().verbose()) {
@@ -79,13 +82,14 @@ public final class TrapTightener extends TrapTransformer {
 
     Chain<Trap> trapChain = body.getTraps();
     Chain<Unit> unitChain = body.getUnits();
+    final SootClass baseException = scene.getBaseExceptionType().getSootClass();
     if (trapChain.size() > 0) {
-      ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis);
+      ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis);
       Set<Unit> unitsWithMonitor = getUnitsWithMonitor(graph);
 
       for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext();) {
         Trap trap = trapIt.next();
-        boolean isCatchAll = trap.getException().getName().equals("java.lang.Throwable");
+        boolean isCatchAll = trap.getException().equals(baseException);
         Unit firstTrappedUnit = trap.getBeginUnit();
         Unit firstTrappedThrower = null;
         Unit firstUntrappedUnit = trap.getEndUnit();
@@ -109,14 +113,9 @@ public final class TrapTightener extends TrapTransformer {
         }
         if (firstTrappedThrower != null) {
           for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {
-            if (mightThrowTo(graph, u, trap)) {
-              lastTrappedThrower = u;
-              break;
-            }
-
             // If this is the catch-all block and the current unit
             // has an, active monitor, we need to keep the block
-            if (isCatchAll && unitsWithMonitor.contains(u)) {
+            if (mightThrowTo(graph, u, trap) || (isCatchAll && unitsWithMonitor.contains(u))) {
               lastTrappedThrower = u;
               break;
             }
@@ -160,5 +159,27 @@ public final class TrapTightener extends TrapTransformer {
       }
     }
     return false;
+  }
+
+  /**
+   * Removes traps with the same beginning and end unit, effectively useless
+   * 
+   * @param jBody
+   *          the body
+   */
+  public static void removeInvalidTraps(Body body) {
+    Iterator<Trap> t = body.getTraps().iterator();
+    boolean changed = false;
+    while (t.hasNext()) {
+      Trap trap = t.next();
+      if (trap.getBeginUnit().equals(trap.getEndUnit())) {
+        t.remove();
+        changed = true;
+      }
+    }
+    if (changed) {
+      UnreachableCodeEliminator.v().transform(body);
+    }
+
   }
 }

@@ -27,6 +27,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,22 +58,23 @@ import soot.util.LocalBitSetPacker;
 public class SmartLocalDefs implements LocalDefs {
   private static final Logger logger = LoggerFactory.getLogger(SmartLocalDefs.class);
 
-  private final UnitGraph graph;
-  private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
-  private final Map<Unit, BitSet> liveLocalsAfter;
-  private final Map<Cons<Unit, Local>, List<Unit>> answer;
+  protected final UnitGraph graph;
+  protected Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
+  protected Map<Unit, BitSet> liveLocalsAfter;
+  protected final Map<Cons<Unit, Local>, List<Unit>> answer;
 
   public SmartLocalDefs(UnitGraph g, LiveLocals live) {
     this.graph = g;
-    this.localToDefs = new HashMap<Local, Set<Unit>>();
-    this.liveLocalsAfter = new HashMap<Unit, BitSet>();
+    this.localToDefs = new HashMap<Local, Set<Unit>>(2 * g.getBody().getLocalCount() + 1);
+    this.liveLocalsAfter = new HashMap<Unit, BitSet>(2 * g.getBody().getUnits().size() + 1);
     this.answer = new HashMap<Cons<Unit, Local>, List<Unit>>();
 
-    if (Options.v().verbose()) {
+    final Options op = Options.v();
+    if (op.verbose()) {
       logger.debug("[" + g.getBody().getMethod().getName() + "]     Constructing SmartLocalDefs...");
     }
 
-    if (Options.v().time()) {
+    if (op.time()) {
       Timers.v().defsTimer.start();
     }
 
@@ -92,18 +94,20 @@ public class SmartLocalDefs implements LocalDefs {
         addDefOf(l, u);
       }
     }
-    if (Options.v().verbose()) {
+    if (op.verbose()) {
       logger.debug("[" + g.getBody().getMethod().getName() + "]        done localToDefs map...");
     }
 
     LocalDefsAnalysis analysis = new LocalDefsAnalysis(g);
+    liveLocalsAfter = null;
     for (Unit u : g) {
       Set<Unit> s1 = analysis.getFlowBefore(u);
       if (s1 == null || s1.isEmpty()) {
         continue;
       }
 
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value v = vb.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;
@@ -120,14 +124,15 @@ public class SmartLocalDefs implements LocalDefs {
         }
       }
     }
+    localToDefs = null;
 
     localPacker.unpack();
 
-    if (Options.v().time()) {
+    if (op.time()) {
       Timers.v().defsTimer.end();
     }
 
-    if (Options.v().verbose()) {
+    if (op.verbose()) {
       logger.debug("[" + g.getBody().getMethod().getName() + "]     SmartLocalDefs finished.");
     }
   }
@@ -158,16 +163,15 @@ public class SmartLocalDefs implements LocalDefs {
   }
 
   private Local localDef(Unit u) {
-    List<ValueBox> defBoxes = u.getDefBoxes();
-    switch (defBoxes.size()) {
-      case 0:
-        return null;
-      case 1:
-        Value v = defBoxes.get(0).getValue();
-        return (v instanceof Local) ? (Local) v : null;
-      default:
-        throw new RuntimeException();
+    Iterator<ValueBox> defBoxes = u.getDefBoxesIterator();
+    if (!defBoxes.hasNext()) {
+      return null;
     }
+    Value v = defBoxes.next().getValue();
+    if (defBoxes.hasNext()) {
+      throw new RuntimeException();
+    }
+    return (v instanceof Local) ? (Local) v : null;
   }
 
   private Set<Unit> defsOf(Local l) {

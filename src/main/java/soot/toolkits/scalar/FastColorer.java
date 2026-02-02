@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.ArraySet;
 
 /**
@@ -60,10 +62,10 @@ public class FastColorer {
 
     // To understand why a pedantic throw analysis is required, see comment
     // in assignColorsToLocals method
-    final ExceptionalUnitGraph unitGraph =
-        new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
-    final UnitInterferenceGraph intGraph =
-        new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
+    final ExceptionalUnitGraph unitGraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(unitBody,
+        PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    final UnitInterferenceGraph intGraph
+        = new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
 
     Map<Local, String> localToOriginalName = new HashMap<Local, String>();
 
@@ -152,10 +154,10 @@ public class FastColorer {
 
     // Build a CFG using a pedantic throw analysis to prevent JVM
     // "java.lang.VerifyError: Incompatible argument to function" errors.
-    final ExceptionalUnitGraph unitGraph =
-        new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
-    final UnitInterferenceGraph intGraph =
-        new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
+    final ExceptionalUnitGraph unitGraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(unitBody,
+        PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
+    final UnitInterferenceGraph intGraph
+        = new UnitInterferenceGraph(unitBody, localToGroup, new SimpleLiveLocals(unitGraph), unitGraph);
 
     // Sort the locals first to maximize the locals per color. We first
     // assign those locals that have many conflicts and then assign the
@@ -214,26 +216,25 @@ public class FastColorer {
   /** Implementation of a unit interference graph. */
   private static class UnitInterferenceGraph {
 
+    private static final int THESHOLD_HASHSET = 15;
     // Maps a local to its interfering locals.
     final Map<Local, Set<Local>> localToLocals;
     final List<Local> locals;
+    private boolean useArraySet;
 
     public UnitInterferenceGraph(Body body, Map<Local, ? extends Object> localToGroup, LiveLocals liveLocals,
         ExceptionalUnitGraph unitGraph) {
 
       this.locals = new ArrayList<Local>(body.getLocals());
+      this.useArraySet = locals.size() <= THESHOLD_HASHSET;
       this.localToLocals = new HashMap<Local, Set<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
       // Go through code, noting interferences
       for (Unit unit : body.getUnits()) {
-        List<ValueBox> defBoxes = unit.getDefBoxes();
+        Iterator<ValueBox> defBoxes = unit.getDefBoxesIterator();
 
         // Note interferences if this stmt is a definition
-        if (!defBoxes.isEmpty()) {
-          // Only one def box is supported
-          if (defBoxes.size() != 1) {
-            throw new RuntimeException("invalid number of def boxes");
-          }
+        if (defBoxes.hasNext()) {
 
           // Remove those locals that are only live on exceptional flows.
           // If we have code like this:
@@ -258,7 +259,12 @@ public class FastColorer {
           // throw the exception). We may want to have a more complex
           // reasoning here some day, but I'll leave it as is for now.
 
-          Value defValue = defBoxes.get(0).getValue();
+          Value defValue = defBoxes.next().getValue();
+          if (defBoxes.hasNext()) {
+            // Only one def box is supported
+            throw new RuntimeException("invalid number of def boxes");
+          }
+
           if (defValue instanceof Local) {
             Local defLocal = (Local) defValue;
 
@@ -286,7 +292,7 @@ public class FastColorer {
       // l1 -> l2
       Set<Local> locals = localToLocals.get(l1);
       if (locals == null) {
-        locals = new ArraySet<Local>();
+        locals = createLocalSet();
         localToLocals.put(l1, locals);
       }
       locals.add(l2);
@@ -294,10 +300,18 @@ public class FastColorer {
       // l2 -> l1
       locals = localToLocals.get(l2);
       if (locals == null) {
-        locals = new ArraySet<Local>();
+        locals = createLocalSet();
         localToLocals.put(l2, locals);
       }
       locals.add(l1);
+    }
+
+    protected Set<Local> createLocalSet() {
+      if (useArraySet) {
+        return new ArraySet<>();
+      } else {
+        return new HashSet<>();
+      }
     }
 
     public int getInterferenceCount(Local l) {

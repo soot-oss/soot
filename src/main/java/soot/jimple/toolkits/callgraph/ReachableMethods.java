@@ -38,19 +38,30 @@ import soot.util.queue.QueueReader;
  */
 public class ReachableMethods {
 
-  protected final ChunkedQueue<MethodOrMethodContext> reachables = new ChunkedQueue<>();
+  protected final ChunkedQueue<MethodOrMethodContext> reachables = createChunkedQueue();
   protected final Set<MethodOrMethodContext> set = new HashSet<>();
   protected final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
   protected QueueReader<MethodOrMethodContext> unprocessedMethods;
   protected Iterator<Edge> edgeSource;
   protected CallGraph cg;
   protected Filter filter;
+  private boolean allowUnconnectedMethods;
 
   public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter) {
+    this(graph, entryPoints, filter, false);
+  }
+
+  protected ChunkedQueue<MethodOrMethodContext> createChunkedQueue() {
+    return new ChunkedQueue<>();
+  }
+
+  public ReachableMethods(CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter,
+      boolean allowUnconnectedMethods) {
     this.filter = filter;
     this.cg = graph;
-    addMethods(entryPoints);
+    this.allowUnconnectedMethods = allowUnconnectedMethods;
     this.unprocessedMethods = reachables.reader();
+    addMethods(entryPoints);
     this.edgeSource = (filter == null) ? graph.listener() : filter.wrap(graph.listener());
   }
 
@@ -82,18 +93,23 @@ public class ReachableMethods {
       Edge e = edgeSource.next();
       if (e != null) {
         MethodOrMethodContext srcMethod = e.getSrc();
-        if (srcMethod != null && !e.isInvalid() && set.contains(srcMethod)) {
+        if (srcMethod != null && !e.isInvalid() && (allowUnconnectedMethods || set.contains(srcMethod))) {
           addMethod(e.getTgt());
         }
       }
     }
     while (unprocessedMethods.hasNext()) {
       MethodOrMethodContext m = unprocessedMethods.next();
+      if (m == null) {
+        continue;
+      }
       Iterator<Edge> targets = cg.edgesOutOf(m);
       if (filter != null) {
         targets = filter.wrap(targets);
       }
-      addMethods(new Targets(targets));
+      if (targets.hasNext()) {
+        addMethods(new Targets(targets));
+      }
     }
   }
 

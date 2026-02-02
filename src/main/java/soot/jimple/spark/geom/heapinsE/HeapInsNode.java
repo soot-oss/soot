@@ -277,7 +277,7 @@ public class HeapInsNode extends IVarAbstraction {
             break;
           }
 
-          if (objn.willUpdate == false) {
+          if (!objn.willUpdate) {
             // This must be a store constraint
             // This object field is not need for computing
             // the points-to information of the seed pointers
@@ -329,10 +329,7 @@ public class HeapInsNode extends IVarAbstraction {
         obj = entry2.getKey();
         him2 = entry2.getValue();
 
-        if (him2 == deadManager) {
-          continue;
-        }
-        if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
+        if ((him2 == deadManager) || !ptAnalyzer.castNeverFails(obj.getType(), qn.getWrappedNode().getType())) {
           continue;
         }
 
@@ -426,10 +423,7 @@ public class HeapInsNode extends IVarAbstraction {
 
     for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
       AllocNode an = it.next();
-      if (an instanceof ClassConstantNode) {
-        continue;
-      }
-      if (an instanceof StringConstantNode) {
+      if ((an instanceof ClassConstantNode) || (an instanceof StringConstantNode)) {
         continue;
       }
       qt = qn.find_points_to(an);
@@ -529,7 +523,7 @@ public class HeapInsNode extends IVarAbstraction {
       SegmentNode[] int_entry = im.getFigures();
       for (int i = 0; i < HeapInsIntervalManager.Divisions; ++i) {
         SegmentNode p = int_entry[i];
-        while (p != null && p.is_new == true) {
+        while (p != null && p.is_new) {
           ++ans;
           p = p.next;
         }

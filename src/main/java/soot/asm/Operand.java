@@ -30,6 +30,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
+import soot.tagkit.Tag;
 
 /**
  * Stack operand.
@@ -38,8 +39,16 @@ import soot.ValueBox;
  */
 final class Operand {
 
+  public static enum OperandType {
+    INT, LONG, FLOAT, DOUBLE
+  }
+
   final AbstractInsnNode insn;
   final Value value;
+
+  OperandType type;
+  Tag tag;
+
   Local stack;
   private Object boxes;
 
@@ -54,6 +63,7 @@ final class Operand {
   Operand(AbstractInsnNode insn, Value value) {
     this.insn = insn;
     this.value = value;
+    this.type = null;
   }
 
   /**

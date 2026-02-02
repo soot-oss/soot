@@ -1,5 +1,7 @@
 package soot.jimple.toolkits.annotation.defs;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -49,8 +51,8 @@ public class ReachingDefsTagger extends BodyTransformer {
     LocalDefs ld = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(b);
 
     for (Unit s : b.getUnits()) {
-      // System.out.println("stmt: "+s);
-      for (ValueBox vbox : s.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vbox = iterator.next();
         Value v = vbox.getValue();
         if (v instanceof Local) {
           Local l = (Local) v;

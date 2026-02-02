@@ -22,19 +22,26 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
  * Soot representation of the Java built-in type 'long'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class LongType extends PrimType {
+public class LongType extends PrimType implements IJavaType, DotNetINumber {
 
-  public LongType(Singletons.Global g) {
+  public static final int HASHCODE = 0x023DA077;
+  public static final LongType INSTANCE = new LongType();
+
+  private LongType() {
+    super(false);
   }
 
   public static LongType v() {
-    return G.v().soot_LongType();
+    return INSTANCE;
   }
 
   @Override
@@ -44,7 +51,7 @@ public class LongType extends PrimType {
 
   @Override
   public int hashCode() {
-    return 0x023DA077;
+    return HASHCODE;
   }
 
   @Override
@@ -58,7 +65,21 @@ public class LongType extends PrimType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Long");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotNetBasicTypes.SYSTEM_INT64;
+    }
+    return JavaBasicTypes.JAVA_LANG_LONG;
   }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Long.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return long.class;
+  }
+
 }

@@ -28,14 +28,16 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
 import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.toolkits.scalar.HashSparseSet;
 
 public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMethod>> {
 
   private final CallGraph cg = Scene.v().getCallGraph();
   private final UnitGraph g;
+
+  private FlowSet<SootMethod> cachedFlowSet = null;
 
   public ClinitElimAnalysis(UnitGraph g) {
     super(g);
@@ -54,6 +56,11 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
     src.copy(dest);
   }
 
+  @Override
+  protected void copyFreshToExisting(FlowSet<SootMethod> in, FlowSet<SootMethod> dest) {
+    in.copyFreshToExisting(dest);
+  }
+
   // out(s) = in(s) intersect { target methods of s where edge kind is clinit}
   @Override
   protected void flowThrough(FlowSet<SootMethod> inVal, Unit stmt, FlowSet<SootMethod> outVal) {
@@ -69,18 +76,28 @@ public class ClinitElimAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<SootMe
 
   @Override
   protected FlowSet<SootMethod> entryInitialFlow() {
-    return new ArraySparseSet<SootMethod>();
+    return new HashSparseSet<SootMethod>();
   }
 
   @Override
   protected FlowSet<SootMethod> newInitialFlow() {
-    ArraySparseSet<SootMethod> set = new ArraySparseSet<SootMethod>();
+    HashSparseSet<SootMethod> returnedFlowSet = new HashSparseSet<>();
+    if (cachedFlowSet == null) {
+      cachedFlowSet = calculateInitialFlow();
+    }
+    cachedFlowSet.copy(returnedFlowSet);
+    return returnedFlowSet;
+  }
+
+  protected FlowSet<SootMethod> calculateInitialFlow() {
+    HashSparseSet<SootMethod> newFlowSet = new HashSparseSet<>();
     for (Iterator<Edge> mIt = cg.edgesOutOf(g.getBody().getMethod()); mIt.hasNext();) {
       Edge edge = mIt.next();
       if (edge.isClinit()) {
-        set.add(edge.tgt());
+        newFlowSet.add(edge.tgt());
       }
     }
-    return set;
+    return newFlowSet;
   }
+
 }

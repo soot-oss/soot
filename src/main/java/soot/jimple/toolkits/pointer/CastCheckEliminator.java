@@ -23,6 +23,7 @@ package soot.jimple.toolkits.pointer;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Body;
@@ -126,8 +127,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
     final LocalTypeSet out = (LocalTypeSet) in.clone();
     LocalTypeSet outBranch = out; // aliased to out unless unit is IfStmt
 
-    // First kill all locals defined in this statement
-    for (ValueBox b : unit.getDefBoxes()) {
+    for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+      ValueBox b = iterator.next();
       Value v = b.getValue();
       if (v instanceof Local && v.getType() instanceof RefType) {
         out.killLocal((Local) v);
@@ -193,10 +194,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
           break;
         }
         final Value conditionOp2 = c.getOp2();
-        if (!(conditionOp2 instanceof IntConstant)) {
-          break;
-        }
-        if (((IntConstant) conditionOp2).value != 0) {
+        if (!(conditionOp2 instanceof IntConstant) || (((IntConstant) conditionOp2).value != 0)) {
           break;
         }
         if (c instanceof NeExpr) {

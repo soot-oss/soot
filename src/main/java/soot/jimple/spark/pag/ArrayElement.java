@@ -23,7 +23,6 @@ package soot.jimple.spark.pag;
  */
 
 import soot.G;
-import soot.RefType;
 import soot.Scene;
 import soot.Singletons;
 import soot.Type;
@@ -42,7 +41,6 @@ public class ArrayElement implements SparkField {
   }
 
   public ArrayElement() {
-    Scene.v().getFieldNumberer().add(this);
   }
 
   public final int getNumber() {
@@ -54,7 +52,7 @@ public class ArrayElement implements SparkField {
   }
 
   public Type getType() {
-    return RefType.v("java.lang.Object");
+    return Scene.v().getObjectType();
   }
 
   private int number = 0;

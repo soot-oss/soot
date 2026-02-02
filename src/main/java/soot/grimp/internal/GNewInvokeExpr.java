@@ -153,4 +153,9 @@ public class GNewInvokeExpr extends AbstractInvokeExpr implements NewInvokeExpr,
   public int equivHashCode() {
     return getMethod().equivHashCode();
   }
+
+  @Override
+  public boolean hasDefiniteMethodTarget() {
+    return true;
+  }
 }

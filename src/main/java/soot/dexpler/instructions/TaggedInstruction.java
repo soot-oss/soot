@@ -17,9 +17,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -42,7 +39,9 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.iface.instruction.Instruction;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
 
 import soot.tagkit.Tag;
 

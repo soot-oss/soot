@@ -23,6 +23,7 @@ package soot.jimple;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Immediate;
@@ -38,6 +39,11 @@ public abstract class Constant implements Value, ConvertToBaf, Immediate {
   @Override
   public final List<ValueBox> getUseBoxes() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+    return Collections.emptyIterator();
   }
 
   /** Adds a Baf instruction pushing this constant to the stack onto <code>out</code>. */

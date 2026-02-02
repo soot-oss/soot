@@ -52,4 +52,6 @@ public abstract class NumericConstant extends Constant {
   public abstract NumericConstant greaterThanOrEqual(NumericConstant c);
 
   public abstract NumericConstant negate();
+
+  public abstract Number getNumericValue();
 }

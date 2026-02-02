@@ -1,5 +1,9 @@
 package soot.toolkits.scalar;
 
+import com.google.common.collect.Iterators;
+
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -45,6 +49,49 @@ public interface LocalDefs {
    *         will returned.
    */
   public List<Unit> getDefsOfAt(Local l, Unit s);
+
+  /**
+   * Returns the definition sites for a Local at a certain point (Unit) in a method.
+   *
+   * You can assume this method never returns {@code null}.
+   * 
+   * Potentially more efficient than getDefsOfAt.
+   *
+   * @param l
+   *          the Local in question.
+   * @param s
+   *          a unit that specifies the method context (location) to query for the definitions of the Local.
+   * @return an iterator iterating over all Units where the local is defined in the current method context. If there are no
+   *         uses an empty list will returned.
+   */
+  public default Iterator<Unit> getDefsOfAtIterator(Local l, Unit s) {
+    return getDefsOfAt(l, s).iterator();
+  }
+
+  /**
+   * Returns true when there are definition sites for a Local at a certain point (Unit) in a method.
+   *
+   * @param l
+   *          the Local in question.
+   * @param s
+   *          a unit that specifies the method context (location) to query for the definitions of the Local.
+   * @return true when there are definitions
+   */
+  public default boolean hasDefsOfAt(Local l, Unit s) {
+    return !getDefsOfAt(l, s).isEmpty();
+  }
+
+  /**
+   * @param l
+   * @param a
+   * @param b
+   * @return
+   */
+  public default boolean doDefsAgreeAt(Local l, Unit a, Unit b) {
+    Iterator<Unit> la = getDefsOfAtIterator(l, a);
+    Iterator<Unit> lb = getDefsOfAtIterator(l, b);
+    return Iterators.elementsEqual(la, lb);
+  }
 
   /**
    * Returns the definition sites for a Local merged over all points in a method.

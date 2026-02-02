@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -10,17 +8,70 @@ package soot.toDex;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.AnnotationVisibility;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.BuilderOffsetInstruction;
+import com.android.tools.smali.dexlib2.builder.Label;
+import com.android.tools.smali.dexlib2.builder.MethodImplementationBuilder;
+import com.android.tools.smali.dexlib2.iface.Annotation;
+import com.android.tools.smali.dexlib2.iface.AnnotationElement;
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.iface.ExceptionHandler;
+import com.android.tools.smali.dexlib2.iface.Field;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.MethodImplementation;
+import com.android.tools.smali.dexlib2.iface.MethodParameter;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
+import com.android.tools.smali.dexlib2.iface.reference.StringReference;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.iface.value.EncodedValue;
+import com.android.tools.smali.dexlib2.immutable.ImmutableAnnotation;
+import com.android.tools.smali.dexlib2.immutable.ImmutableAnnotationElement;
+import com.android.tools.smali.dexlib2.immutable.ImmutableClassDef;
+import com.android.tools.smali.dexlib2.immutable.ImmutableExceptionHandler;
+import com.android.tools.smali.dexlib2.immutable.ImmutableField;
+import com.android.tools.smali.dexlib2.immutable.ImmutableMethod;
+import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableFieldReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableMethodReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableStringReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableTypeReference;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableAnnotationEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableArrayEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableBooleanEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableByteEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableCharEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableDoubleEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableEnumEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableFieldEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableFloatEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableIntEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableLongEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableMethodEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableNullEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableShortEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableStringEncodedValue;
+import com.android.tools.smali.dexlib2.immutable.value.ImmutableTypeEncodedValue;
+import com.android.tools.smali.dexlib2.writer.builder.BuilderEncodedValues;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -44,6 +95,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -54,56 +106,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.jf.dexlib2.AnnotationVisibility;
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.builder.BuilderOffsetInstruction;
-import org.jf.dexlib2.builder.Label;
-import org.jf.dexlib2.builder.MethodImplementationBuilder;
-import org.jf.dexlib2.iface.Annotation;
-import org.jf.dexlib2.iface.AnnotationElement;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.ExceptionHandler;
-import org.jf.dexlib2.iface.Field;
-import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MethodImplementation;
-import org.jf.dexlib2.iface.MethodParameter;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.reference.StringReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
-import org.jf.dexlib2.iface.value.EncodedValue;
-import org.jf.dexlib2.immutable.ImmutableAnnotation;
-import org.jf.dexlib2.immutable.ImmutableAnnotationElement;
-import org.jf.dexlib2.immutable.ImmutableClassDef;
-import org.jf.dexlib2.immutable.ImmutableExceptionHandler;
-import org.jf.dexlib2.immutable.ImmutableField;
-import org.jf.dexlib2.immutable.ImmutableMethod;
-import org.jf.dexlib2.immutable.ImmutableMethodParameter;
-import org.jf.dexlib2.immutable.reference.ImmutableFieldReference;
-import org.jf.dexlib2.immutable.reference.ImmutableMethodReference;
-import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
-import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
-import org.jf.dexlib2.immutable.value.ImmutableAnnotationEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableArrayEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableBooleanEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableByteEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableCharEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableDoubleEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableEnumEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableFieldEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableFloatEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableIntEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableLongEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableMethodEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableNullEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableShortEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableStringEncodedValue;
-import org.jf.dexlib2.immutable.value.ImmutableTypeEncodedValue;
-import org.jf.dexlib2.writer.builder.BuilderEncodedValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,6 +157,7 @@ import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.ConstantValueTag;
 import soot.tagkit.DeprecatedTag;
+import soot.tagkit.DexInnerClassTag;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.FloatConstantValueTag;
@@ -185,9 +188,10 @@ import soot.util.Chain;
  * classes.
  * </p>
  * <p>
- * If the printer has found the original {@code APK} of an added class (via {@link SourceLocator#dexClassIndex()}), the files
- * in the {@code APK} are copied to a new one, replacing it's {@code classes.dex} and excluding the signature files. Note
- * that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.
+ * If the printer has found the original {@code APK} of an added class (via
+ * {@link SourceLocator#classContainerFileClassIndex()}), the files in the {@code APK} are copied to a new one, replacing
+ * it's {@code classes.dex} and excluding the signature files. Note that you have to sign and align the APK yourself, with
+ * jarsigner and zipalign, respectively.
  * </p>
  * <p>
  * If {@link Options#output_jar} flag is set, the printer produces {@code JAR} file.
@@ -286,7 +290,7 @@ public class DexPrinter {
   private void printZip() throws IOException {
     try (ZipOutputStream outputZip = getZipOutputStream()) {
       LOGGER.info("Do not forget to sign the .apk file with jarsigner and to align it with zipalign");
-	
+
       if (originalApk != null) {
         // Copy over additional resources from original APK
         try (ZipFile original = new ZipFile(originalApk)) {
@@ -311,7 +315,7 @@ public class DexPrinter {
       }
 
       if (Options.v().output_jar()) {
-        // if we create JAR file, MANIFEST.MF is preferred
+        // if we create JAR file, MANIFEST.MF is preferred.
         addManifest(outputZip, files);
       }
 
@@ -322,7 +326,7 @@ public class DexPrinter {
           Files.delete(file);
           return FileVisitResult.CONTINUE;
         }
-	  
+
         @Override
         public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
           Files.delete(dir);
@@ -402,8 +406,8 @@ public class DexPrinter {
     try (BufferedOutputStream bufOut = new BufferedOutputStream(destination)) {
       manifest.write(bufOut);
       bufOut.flush();
+      destination.closeEntry();
     }
-    destination.closeEntry();
   }
 
   /**
@@ -495,9 +499,9 @@ public class DexPrinter {
         Collection<AnnotationElem> elems = e.getValue().getElems();
         if (!elems.isEmpty()) {
           elements = new ArrayList<AnnotationElement>();
-          Set<String> alreadyWritten = new HashSet<String>();
+          Set<AnnotationElem> alreadyWritten = new HashSet<AnnotationElem>();
           for (AnnotationElem ae : elems) {
-            if (!alreadyWritten.add(ae.getName())) {
+            if (!alreadyWritten.add(ae)) {
               throw new DexPrinterException("Duplicate annotation attribute: " + ae.getName());
             }
             elements.add(new ImmutableAnnotationElement(ae.getName(), buildEncodedValueForAnnotation(ae)));
@@ -660,10 +664,16 @@ public class DexPrinter {
 
     ClassDef classDef = new ImmutableClassDef(classType, accessFlags, superClass, interfaces, sourceFile,
         buildClassAnnotations(c), fields, methods);
-    dexBuilder.internClass(classDef);
+    addClassDefinition(classDef);
   }
 
-  private Set<Annotation> buildClassAnnotations(SootClass c) {
+  protected void addClassDefinition(ClassDef classDef) {
+    synchronized (dexBuilder) {
+      dexBuilder.internClass(classDef);
+    }
+  }
+
+  protected Set<Annotation> buildClassAnnotations(SootClass c) {
     Set<String> skipList = new HashSet<String>();
     Set<Annotation> annotations = buildCommonAnnotations(c, skipList);
 
@@ -848,7 +858,7 @@ public class DexPrinter {
     return annotations;
   }
 
-  private List<ImmutableAnnotation> buildVisibilityAnnotationTag(VisibilityAnnotationTag t, Set<String> skipList) {
+  protected List<ImmutableAnnotation> buildVisibilityAnnotationTag(VisibilityAnnotationTag t, Set<String> skipList) {
     if (t.getAnnotations() == null) {
       return Collections.emptyList();
     }
@@ -930,11 +940,7 @@ public class DexPrinter {
   }
 
   private Annotation buildEnclosingMethodTag(EnclosingMethodTag t, Set<String> skipList) {
-    if (!skipList.add("Ldalvik/annotation/EnclosingMethod;")) {
-      return null;
-    }
-
-    if (t.getEnclosingMethod() == null) {
+    if (!skipList.add("Ldalvik/annotation/EnclosingMethod;") || (t.getEnclosingMethod() == null)) {
       return null;
     }
 
@@ -999,15 +1005,23 @@ public class DexPrinter {
         // InnerClass annotation
         List<AnnotationElement> elements = new ArrayList<AnnotationElement>();
 
-        ImmutableAnnotationElement flagsElement =
-            new ImmutableAnnotationElement("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
+        ImmutableAnnotationElement flagsElement
+            = new ImmutableAnnotationElement("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
         elements.add(flagsElement);
 
-        ImmutableEncodedValue nameValue;
-        if (icTag.getShortName() != null && !icTag.getShortName().isEmpty()) {
-          nameValue = new ImmutableStringEncodedValue(icTag.getShortName());
-        } else {
-          nameValue = ImmutableNullEncodedValue.INSTANCE;
+        ImmutableEncodedValue nameValue = null;
+        if (icTag instanceof DexInnerClassTag) {
+          DexInnerClassTag dx = (DexInnerClassTag) icTag;
+          if (dx.getOriginalName() != null) {
+            nameValue = new ImmutableStringEncodedValue(dx.getOriginalName());
+          }
+        }
+        if (nameValue == null) {
+          if (icTag.getShortName() != null && !icTag.getShortName().isEmpty()) {
+            nameValue = new ImmutableStringEncodedValue(icTag.getShortName());
+          } else {
+            nameValue = ImmutableNullEncodedValue.INSTANCE;
+          }
         }
 
         elements.add(new ImmutableAnnotationElement("name", nameValue));
@@ -1104,7 +1118,7 @@ public class DexPrinter {
 
   /**
    * Checks whether the given method shall be ignored, i.e., not written out to dex
-   * 
+   *
    * @param sm
    *          The method to check
    * @return True to ignore the method while writing the dex file, false to write it out as normal
@@ -1115,7 +1129,7 @@ public class DexPrinter {
 
   /**
    * Checks whether the given field shall be ignored, i.e., not written out to dex
-   * 
+   *
    * @param sf
    *          The field to check
    * @return True to ignore the field while writing the dex file, false to write it out as normal
@@ -1270,9 +1284,9 @@ public class DexPrinter {
     toTries(activeBody.getTraps(), builder, labelAssigner);
 
     // Make sure that all labels have been placed by now
-    for (Label lbl : labelAssigner.getAllLabels()) {
-      if (!lbl.isPlaced()) {
-        throw new DexPrinterException("Label not placed: " + lbl);
+    for (Entry<Stmt, Label> lbl : labelAssigner.getAllStmtsToLabels()) {
+      if (!lbl.getValue().isPlaced()) {
+        throw new DexPrinterException("Label not placed for statement " + lbl.getKey());
       }
     }
 
@@ -1281,9 +1295,9 @@ public class DexPrinter {
 
   /**
    * Creates a statement visitor to build code for each statement.
-   * 
+   *
    * Allows subclasses to use own implementations
-   * 
+   *
    * @param belongingMethod
    *          the method
    * @param arrayInitDetector
@@ -1296,7 +1310,7 @@ public class DexPrinter {
 
   /**
    * Writes out the information stored in the tags associated with the given statement
-   * 
+   *
    * @param builder
    *          The builder used to generate the Dalvik method implementation
    * @param stmt
@@ -1385,7 +1399,7 @@ public class DexPrinter {
                 /*
                  * Assuming every instruction between this instruction and the jump target is a CONST_STRING instruction, how
                  * much could the distance increase?
-                 * 
+                 *
                  * Because we only spend the effort to count the number of CONST_STRING instructions if there is a real
                  * chance that it changes the distance to overflow the allowed maximum.
                  */

@@ -62,7 +62,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite Annotation_OptionsChild = Annotation_OptionsCreate(getPageContainer());
 		Composite Miscellaneous_OptionsChild = Miscellaneous_OptionsCreate(getPageContainer());
 		Composite jbChild = jbCreate(getPageContainer());
-		Composite jjChild = jjCreate(getPageContainer());
 		Composite wjppChild = wjppCreate(getPageContainer());
 		Composite wsppChild = wsppCreate(getPageContainer());
 		Composite cgChild = cgCreate(getPageContainer());
@@ -81,12 +80,11 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite gopChild = gopCreate(getPageContainer());
 		Composite bbChild = bbCreate(getPageContainer());
 		Composite bopChild = bopCreate(getPageContainer());
-		Composite tagChild = tagCreate(getPageContainer());
-		Composite dbChild = dbCreate(getPageContainer());
 		Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
 		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
 		Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
 		Composite jbjb_silsChild = jbjb_silsCreate(getPageContainer());
+		Composite jbjb_awaChild = jbjb_awaCreate(getPageContainer());
 		Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
 		Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
 		Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
@@ -100,19 +98,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
 		Composite jbjb_ttChild = jbjb_ttCreate(getPageContainer());
 		Composite jbjb_cbfChild = jbjb_cbfCreate(getPageContainer());
-		Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
-		Composite jjjj_silsChild = jjjj_silsCreate(getPageContainer());
-		Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
-		Composite jjjj_uleChild = jjjj_uleCreate(getPageContainer());
-		Composite jjjj_trChild = jjjj_trCreate(getPageContainer());
-		Composite jjjj_ulpChild = jjjj_ulpCreate(getPageContainer());
-		Composite jjjj_lnsChild = jjjj_lnsCreate(getPageContainer());
-		Composite jjjj_cpChild = jjjj_cpCreate(getPageContainer());
-		Composite jjjj_daeChild = jjjj_daeCreate(getPageContainer());
-		Composite jjjj_cp_uleChild = jjjj_cp_uleCreate(getPageContainer());
-		Composite jjjj_lpChild = jjjj_lpCreate(getPageContainer());
-		Composite jjjj_neChild = jjjj_neCreate(getPageContainer());
-		Composite jjjj_uceChild = jjjj_uceCreate(getPageContainer());
 		Composite wjppwjpp_cimbtChild = wjppwjpp_cimbtCreate(getPageContainer());
 		Composite cgcg_chaChild = cgcg_chaCreate(getPageContainer());
 		Composite cgcg_sparkChild = cgcg_sparkCreate(getPageContainer());
@@ -180,14 +165,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
 		Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
 		Composite bbbb_neChild = bbbb_neCreate(getPageContainer());
-		Composite tagtag_lnChild = tagtag_lnCreate(getPageContainer());
-		Composite tagtag_anChild = tagtag_anCreate(getPageContainer());
-		Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
-		Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
-		Composite dbdb_transformationsChild = dbdb_transformationsCreate(getPageContainer());
-		Composite dbdb_renamerChild = dbdb_renamerCreate(getPageContainer());
-		Composite dbdb_deobfuscateChild = dbdb_deobfuscateCreate(getPageContainer());
-		Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContainer());
 
 		addOtherPages(getPageContainer());
 		initializeRadioGroups();
@@ -257,6 +234,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", "jb.sils", getjbjb_silsenabled_widget(), "enabled");
 		getjbjb_silsenabled_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("jb", "jb.awa");
+		addToEnableGroup("jb", "jb.awa", getjbjb_awaenabled_widget(), "enabled");
+		getjbjb_awaenabled_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("jb", "jb.a");
 		addToEnableGroup("jb", "jb.a", getjbjb_aenabled_widget(), "enabled");
 		addToEnableGroup("jb", "jb.a", getjbjb_aonly_stack_locals_widget(), "only-stack-locals");
@@ -270,10 +251,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jb", "jb.tr");
 		addToEnableGroup("jb", "jb.tr", getjbjb_trenabled_widget(), "enabled");
 		addToEnableGroup("jb", "jb.tr", getjbjb_truse_older_type_assigner_widget(), "use-older-type-assigner");
+		addToEnableGroup("jb", "jb.tr", getjbjb_truse_precise_typing_widget(), "use-precise-typing");
 		addToEnableGroup("jb", "jb.tr", getjbjb_trcompare_type_assigners_widget(), "compare-type-assigners");
 		addToEnableGroup("jb", "jb.tr", getjbjb_trignore_nullpointer_dereferences_widget(), "ignore-nullpointer-dereferences");
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
 		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
+		getjbjb_truse_precise_typing_widget().getButton().addSelectionListener(this);
 		getjbjb_trcompare_type_assigners_widget().getButton().addSelectionListener(this);
 		getjbjb_trignore_nullpointer_dereferences_widget().getButton().addSelectionListener(this);
 
@@ -332,78 +315,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jb", "jb.cbf");
 		addToEnableGroup("jb", "jb.cbf", getjbjb_cbfenabled_widget(), "enabled");
 		getjbjb_cbfenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj");
-		addToEnableGroup("jj", getjjenabled_widget(), "enabled");
-		addToEnableGroup("jj", getjjuse_original_names_widget(), "use-original-names");
-		getjjenabled_widget().getButton().addSelectionListener(this);
-		getjjuse_original_names_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.ls");
-		addToEnableGroup("jj", "jj.ls", getjjjj_lsenabled_widget(), "enabled");
-		getjjjj_lsenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.sils");
-		addToEnableGroup("jj", "jj.sils", getjjjj_silsenabled_widget(), "enabled");
-		getjjjj_silsenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.a");
-		addToEnableGroup("jj", "jj.a", getjjjj_aenabled_widget(), "enabled");
-		addToEnableGroup("jj", "jj.a", getjjjj_aonly_stack_locals_widget(), "only-stack-locals");
-		getjjjj_aenabled_widget().getButton().addSelectionListener(this);
-		getjjjj_aonly_stack_locals_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.ule");
-		addToEnableGroup("jj", "jj.ule", getjjjj_uleenabled_widget(), "enabled");
-		getjjjj_uleenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.tr");
-		addToEnableGroup("jj", "jj.tr", getjjjj_trenabled_widget(), "enabled");
-		getjjjj_trenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.ulp");
-		addToEnableGroup("jj", "jj.ulp", getjjjj_ulpenabled_widget(), "enabled");
-		addToEnableGroup("jj", "jj.ulp", getjjjj_ulpunsplit_original_locals_widget(), "unsplit-original-locals");
-		getjjjj_ulpenabled_widget().getButton().addSelectionListener(this);
-		getjjjj_ulpunsplit_original_locals_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.lns");
-		addToEnableGroup("jj", "jj.lns", getjjjj_lnsenabled_widget(), "enabled");
-		addToEnableGroup("jj", "jj.lns", getjjjj_lnsonly_stack_locals_widget(), "only-stack-locals");
-		getjjjj_lnsenabled_widget().getButton().addSelectionListener(this);
-		getjjjj_lnsonly_stack_locals_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.cp");
-		addToEnableGroup("jj", "jj.cp", getjjjj_cpenabled_widget(), "enabled");
-		addToEnableGroup("jj", "jj.cp", getjjjj_cponly_regular_locals_widget(), "only-regular-locals");
-		addToEnableGroup("jj", "jj.cp", getjjjj_cponly_stack_locals_widget(), "only-stack-locals");
-		getjjjj_cpenabled_widget().getButton().addSelectionListener(this);
-		getjjjj_cponly_regular_locals_widget().getButton().addSelectionListener(this);
-		getjjjj_cponly_stack_locals_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.dae");
-		addToEnableGroup("jj", "jj.dae", getjjjj_daeenabled_widget(), "enabled");
-		addToEnableGroup("jj", "jj.dae", getjjjj_daeonly_stack_locals_widget(), "only-stack-locals");
-		getjjjj_daeenabled_widget().getButton().addSelectionListener(this);
-		getjjjj_daeonly_stack_locals_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.cp-ule");
-		addToEnableGroup("jj", "jj.cp-ule", getjjjj_cp_uleenabled_widget(), "enabled");
-		getjjjj_cp_uleenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.lp");
-		addToEnableGroup("jj", "jj.lp", getjjjj_lpenabled_widget(), "enabled");
-		addToEnableGroup("jj", "jj.lp", getjjjj_lpunsplit_original_locals_widget(), "unsplit-original-locals");
-		getjjjj_lpenabled_widget().getButton().addSelectionListener(this);
-		getjjjj_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.ne");
-		addToEnableGroup("jj", "jj.ne", getjjjj_neenabled_widget(), "enabled");
-		getjjjj_neenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jj", "jj.uce");
-		addToEnableGroup("jj", "jj.uce", getjjjj_uceenabled_widget(), "enabled");
-		getjjjj_uceenabled_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("wjpp");
 		addToEnableGroup("wjpp", getwjppenabled_widget(), "enabled");
@@ -918,48 +829,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("bop", getbopenabled_widget(), "enabled");
 		getbopenabled_widget().getButton().addSelectionListener(this);
 
-		makeNewEnableGroup("tag");
-		addToEnableGroup("tag", gettagenabled_widget(), "enabled");
-		gettagenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.ln");
-		addToEnableGroup("tag", "tag.ln", gettagtag_lnenabled_widget(), "enabled");
-		gettagtag_lnenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.an");
-		addToEnableGroup("tag", "tag.an", gettagtag_anenabled_widget(), "enabled");
-		gettagtag_anenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.dep");
-		addToEnableGroup("tag", "tag.dep", gettagtag_depenabled_widget(), "enabled");
-		gettagtag_depenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("tag", "tag.fieldrw");
-		addToEnableGroup("tag", "tag.fieldrw", gettagtag_fieldrwenabled_widget(), "enabled");
-		gettagtag_fieldrwenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db");
-		addToEnableGroup("db", getdbenabled_widget(), "enabled");
-		addToEnableGroup("db", getdbsource_is_javac_widget(), "source-is-javac");
-		getdbenabled_widget().getButton().addSelectionListener(this);
-		getdbsource_is_javac_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.transformations");
-		addToEnableGroup("db", "db.transformations", getdbdb_transformationsenabled_widget(), "enabled");
-		getdbdb_transformationsenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.renamer");
-		addToEnableGroup("db", "db.renamer", getdbdb_renamerenabled_widget(), "enabled");
-		getdbdb_renamerenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.deobfuscate");
-		addToEnableGroup("db", "db.deobfuscate", getdbdb_deobfuscateenabled_widget(), "enabled");
-		getdbdb_deobfuscateenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("db", "db.force-recompile");
-		addToEnableGroup("db", "db.force-recompile", getdbdb_force_recompileenabled_widget(), "enabled");
-		getdbdb_force_recompileenabled_widget().getButton().addSelectionListener(this);
-
 		updateAllEnableGroups();
 	}
 
@@ -996,18 +865,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		String nextListToken;
 
 	
-		boolRes = getGeneral_Optionscoffi_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getGeneral_Optionsjasmin_backend_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionsjasmin_backend_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1117,7 +974,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			getConfig().put(getInput_Optionsignore_classpath_errors_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getInput_Optionsprocess_multiple_dex_widget().getButton().getSelection();
-		defBoolRes = false;
+		defBoolRes = true;
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
@@ -1140,17 +997,23 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsoaat_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getInput_Optionsast_metrics_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionsast_metrics_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getInput_Optionsfull_resolver_widget().getButton().getSelection();
 		defBoolRes = false;
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsfull_resolver_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getInput_Optionsignore_methodsource_error_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsignore_methodsource_error_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getInput_Optionsresolve_all_dotnet_methods_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsresolve_all_dotnet_methods_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -1182,12 +1045,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsj2me_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getInput_Optionspolyglot_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionspolyglot_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getInput_Optionspermissive_resolving_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -1199,6 +1056,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsdrop_bodies_after_load_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getInput_Optionsnative_code_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsnative_code_widget().getAlias(), new Boolean(boolRes));
 		}
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
 		defStringRes = "";
@@ -1212,6 +1075,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionssoot_modulepath_widget().getAlias(), stringRes);
 		}
+		stringRes = getInput_Optionsdotnet_nativehost_path_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsdotnet_nativehost_path_widget().getAlias(), stringRes);
+		}
 		stringRes = getInput_Optionsprocess_dir_widget().getText().getText();
 		defStringRes = "";
 
@@ -1223,6 +1092,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsprocess_jar_dir_widget().getAlias(), stringRes);
+		}
+		stringRes = getInput_Optionsvirtualedges_path_widget().getText().getText();
+		defStringRes = "";
+
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsvirtualedges_path_widget().getAlias(), stringRes);
 		}
 		stringRes = getInput_Optionsandroid_jars_widget().getText().getText();
 		defStringRes = "";
@@ -1469,6 +1344,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_silsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getjbjb_awaenabled_widget().getButton().getSelection();
+		defBoolRes = true;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_awaenabled_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getjbjb_aenabled_widget().getButton().getSelection();
 		defBoolRes = true;
 
@@ -1498,6 +1379,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_truse_older_type_assigner_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getjbjb_truse_precise_typing_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_truse_precise_typing_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjbjb_trcompare_type_assigners_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -1618,138 +1505,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_cbfenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjuse_original_names_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjuse_original_names_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_lsenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_lsenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_silsenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_silsenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_aenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_aenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_aonly_stack_locals_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_aonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_uleenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_uleenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_trenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_trenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_ulpenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_ulpenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_ulpunsplit_original_locals_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_ulpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_lnsenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_lnsenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_lnsonly_stack_locals_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_cpenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_cpenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_cponly_regular_locals_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_cponly_regular_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_cponly_stack_locals_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_daeenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_daeenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_daeonly_stack_locals_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_cp_uleenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_cp_uleenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_lpenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_lpenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_lpunsplit_original_locals_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_neenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_neenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjjjj_uceenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjjjj_uceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getwjppenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -3149,72 +2904,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = gettagenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_lnenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_lnenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_anenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_anenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_depenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_depenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = gettagtag_fieldrwenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbsource_is_javac_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbsource_is_javac_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_transformationsenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_transformationsenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_renamerenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_renamerenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_deobfuscateenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_deobfuscateenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getdbdb_force_recompileenabled_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getdbdb_force_recompileenabled_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getApplication_Mode_Optionsinclude_all_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -3415,6 +3104,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = jb_jb_sils_branch;
 			
 			
+			SootOption jb_jb_awa_branch = new SootOption("Array Writer Aggregregator", "jbjb_awa");
+			subParent.addChild(jb_jb_awa_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_awa_branch;
+			
+			
 			SootOption jb_jb_a_branch = new SootOption("Jimple Local Aggregator", "jbjb_a");
 			subParent.addChild(jb_jb_a_branch);
 
@@ -3543,143 +3242,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jb_jb_cbf_branch;
-			
-			
-			//Java To Jimple Body Creation
-			SootOption jj_branch = new SootOption("Java To Jimple Body Creation", "jj");
-			parent.addChild(jj_branch);
-			subParent = jj_branch;
-
-
-			
-			SootOption jj_jj_ls_branch = new SootOption("Local Splitter", "jjjj_ls");
-			subParent.addChild(jj_jj_ls_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_ls_branch;
-			
-			
-			SootOption jj_jj_sils_branch = new SootOption("Shared Initialization Local Splitter", "jjjj_sils");
-			subParent.addChild(jj_jj_sils_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_sils_branch;
-			
-			
-			SootOption jj_jj_a_branch = new SootOption("Jimple Local Aggregator", "jjjj_a");
-			subParent.addChild(jj_jj_a_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_a_branch;
-			
-			
-			SootOption jj_jj_ule_branch = new SootOption("Unused Local Eliminator", "jjjj_ule");
-			subParent.addChild(jj_jj_ule_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_ule_branch;
-			
-			
-			SootOption jj_jj_tr_branch = new SootOption("Type Assigner", "jjjj_tr");
-			subParent.addChild(jj_jj_tr_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_tr_branch;
-			
-			
-			SootOption jj_jj_ulp_branch = new SootOption("Unsplit-originals Local Packer", "jjjj_ulp");
-			subParent.addChild(jj_jj_ulp_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_ulp_branch;
-			
-			
-			SootOption jj_jj_lns_branch = new SootOption("Local Name Standardizer", "jjjj_lns");
-			subParent.addChild(jj_jj_lns_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_lns_branch;
-			
-			
-			SootOption jj_jj_cp_branch = new SootOption("Copy Propagator", "jjjj_cp");
-			subParent.addChild(jj_jj_cp_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_cp_branch;
-			
-			
-			SootOption jj_jj_dae_branch = new SootOption("Dead Assignment Eliminator", "jjjj_dae");
-			subParent.addChild(jj_jj_dae_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_dae_branch;
-			
-			
-			SootOption jj_jj_cp_ule_branch = new SootOption("Post-copy propagation Unused Local Eliminator", "jjjj_cp_ule");
-			subParent.addChild(jj_jj_cp_ule_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_cp_ule_branch;
-			
-			
-			SootOption jj_jj_lp_branch = new SootOption("Local Packer", "jjjj_lp");
-			subParent.addChild(jj_jj_lp_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_lp_branch;
-			
-			
-			SootOption jj_jj_ne_branch = new SootOption("Nop Eliminator", "jjjj_ne");
-			subParent.addChild(jj_jj_ne_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_ne_branch;
-			
-			
-			SootOption jj_jj_uce_branch = new SootOption("Unreachable Code Eliminator", "jjjj_uce");
-			subParent.addChild(jj_jj_uce_branch);
-
-
-			
-
-			
-			subSectParent = jj_jj_uce_branch;
 			
 			
 			//Whole Jimple Pre-processing Pack
@@ -4406,100 +3968,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 			
-			//Tag Aggregator
-			SootOption tag_branch = new SootOption("Tag Aggregator", "tag");
-			parent.addChild(tag_branch);
-			subParent = tag_branch;
-
-
-			
-			SootOption tag_tag_ln_branch = new SootOption("Line Number Tag Aggregator", "tagtag_ln");
-			subParent.addChild(tag_tag_ln_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_ln_branch;
-			
-			
-			SootOption tag_tag_an_branch = new SootOption("Array Bounds and Null Pointer Check Tag Aggregator", "tagtag_an");
-			subParent.addChild(tag_tag_an_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_an_branch;
-			
-			
-			SootOption tag_tag_dep_branch = new SootOption("Dependence Tag Aggregator", "tagtag_dep");
-			subParent.addChild(tag_tag_dep_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_dep_branch;
-			
-			
-			SootOption tag_tag_fieldrw_branch = new SootOption("Field Read/Write Tag Aggregator", "tagtag_fieldrw");
-			subParent.addChild(tag_tag_fieldrw_branch);
-
-
-			
-
-			
-			subSectParent = tag_tag_fieldrw_branch;
-			
-			
-			//Dava Body Creation
-			SootOption db_branch = new SootOption("Dava Body Creation", "db");
-			parent.addChild(db_branch);
-			subParent = db_branch;
-
-
-			
-			SootOption db_db_transformations_branch = new SootOption("Transformations", "dbdb_transformations");
-			subParent.addChild(db_db_transformations_branch);
-
-
-			
-
-			
-			subSectParent = db_db_transformations_branch;
-			
-			
-			SootOption db_db_renamer_branch = new SootOption("Renamer", "dbdb_renamer");
-			subParent.addChild(db_db_renamer_branch);
-
-
-			
-
-			
-			subSectParent = db_db_renamer_branch;
-			
-			
-			SootOption db_db_deobfuscate_branch = new SootOption("De-obfuscate", "dbdb_deobfuscate");
-			subParent.addChild(db_db_deobfuscate_branch);
-
-
-			
-
-			
-			subSectParent = db_db_deobfuscate_branch;
-			
-			
-			SootOption db_db_force_recompile_branch = new SootOption("Force Recompilability", "dbdb_force_recompile");
-			subParent.addChild(db_db_force_recompile_branch);
-
-
-			
-
-			
-			subSectParent = db_db_force_recompile_branch;
-			
-			
 		SootOption Application_Mode_Options_branch = new SootOption("Application Mode Options", "Application_Mode_Options");
 		root.addChild(Application_Mode_Options_branch);
 		parent = Application_Mode_Options_branch;		
@@ -4529,26 +3997,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		
 		
-	private BooleanOptionWidget General_Optionscoffi_widget;
-	
-	private void setGeneral_Optionscoffi_widget(BooleanOptionWidget widget) {
-		General_Optionscoffi_widget = widget;
-	}
-	
-	public BooleanOptionWidget getGeneral_Optionscoffi_widget() {
-		return General_Optionscoffi_widget;
-	}	
-	
-	private BooleanOptionWidget General_Optionsjasmin_backend_widget;
-	
-	private void setGeneral_Optionsjasmin_backend_widget(BooleanOptionWidget widget) {
-		General_Optionsjasmin_backend_widget = widget;
-	}
-	
-	public BooleanOptionWidget getGeneral_Optionsjasmin_backend_widget() {
-		return General_Optionsjasmin_backend_widget;
-	}	
-	
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -4771,16 +4219,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return Input_Optionsoaat_widget;
 	}	
 	
-	private BooleanOptionWidget Input_Optionsast_metrics_widget;
-	
-	private void setInput_Optionsast_metrics_widget(BooleanOptionWidget widget) {
-		Input_Optionsast_metrics_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Optionsast_metrics_widget() {
-		return Input_Optionsast_metrics_widget;
-	}	
-	
 	private BooleanOptionWidget Input_Optionsfull_resolver_widget;
 	
 	private void setInput_Optionsfull_resolver_widget(BooleanOptionWidget widget) {
@@ -4789,6 +4227,26 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getInput_Optionsfull_resolver_widget() {
 		return Input_Optionsfull_resolver_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsignore_methodsource_error_widget;
+	
+	private void setInput_Optionsignore_methodsource_error_widget(BooleanOptionWidget widget) {
+		Input_Optionsignore_methodsource_error_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsignore_methodsource_error_widget() {
+		return Input_Optionsignore_methodsource_error_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsresolve_all_dotnet_methods_widget;
+	
+	private void setInput_Optionsresolve_all_dotnet_methods_widget(BooleanOptionWidget widget) {
+		Input_Optionsresolve_all_dotnet_methods_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsresolve_all_dotnet_methods_widget() {
+		return Input_Optionsresolve_all_dotnet_methods_widget;
 	}	
 	
 	private BooleanOptionWidget Input_Optionsallow_phantom_refs_widget;
@@ -4841,16 +4299,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return Input_Optionsj2me_widget;
 	}	
 	
-	private BooleanOptionWidget Input_Optionspolyglot_widget;
-	
-	private void setInput_Optionspolyglot_widget(BooleanOptionWidget widget) {
-		Input_Optionspolyglot_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Optionspolyglot_widget() {
-		return Input_Optionspolyglot_widget;
-	}	
-	
 	private BooleanOptionWidget Input_Optionspermissive_resolving_widget;
 	
 	private void setInput_Optionspermissive_resolving_widget(BooleanOptionWidget widget) {
@@ -4869,6 +4317,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getInput_Optionsdrop_bodies_after_load_widget() {
 		return Input_Optionsdrop_bodies_after_load_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionsnative_code_widget;
+	
+	private void setInput_Optionsnative_code_widget(BooleanOptionWidget widget) {
+		Input_Optionsnative_code_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsnative_code_widget() {
+		return Input_Optionsnative_code_widget;
 	}	
 	
 
@@ -4916,6 +4374,30 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public StringOptionWidget getInput_Optionssoot_modulepath_widget() {
 		return Input_Optionssoot_modulepath_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionsdotnet_nativehost_path_widget;
+	
+	private void setInput_Optionsdotnet_nativehost_path_widget(StringOptionWidget widget) {
+		Input_Optionsdotnet_nativehost_path_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsdotnet_nativehost_path_widget() {
+		return Input_Optionsdotnet_nativehost_path_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionsvirtualedges_path_widget;
+	
+	private void setInput_Optionsvirtualedges_path_widget(StringOptionWidget widget) {
+		Input_Optionsvirtualedges_path_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsvirtualedges_path_widget() {
+		return Input_Optionsvirtualedges_path_widget;
 	}
 	
 	
@@ -5361,6 +4843,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return jbjb_silsenabled_widget;
 	}	
 	
+	private BooleanOptionWidget jbjb_awaenabled_widget;
+	
+	private void setjbjb_awaenabled_widget(BooleanOptionWidget widget) {
+		jbjb_awaenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_awaenabled_widget() {
+		return jbjb_awaenabled_widget;
+	}	
+	
 	private BooleanOptionWidget jbjb_aenabled_widget;
 	
 	private void setjbjb_aenabled_widget(BooleanOptionWidget widget) {
@@ -5409,6 +4901,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbjb_truse_older_type_assigner_widget() {
 		return jbjb_truse_older_type_assigner_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_truse_precise_typing_widget;
+	
+	private void setjbjb_truse_precise_typing_widget(BooleanOptionWidget widget) {
+		jbjb_truse_precise_typing_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_truse_precise_typing_widget() {
+		return jbjb_truse_precise_typing_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_trcompare_type_assigners_widget;
@@ -5609,226 +5111,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjbjb_cbfenabled_widget() {
 		return jbjb_cbfenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjenabled_widget;
-	
-	private void setjjenabled_widget(BooleanOptionWidget widget) {
-		jjenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjenabled_widget() {
-		return jjenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjuse_original_names_widget;
-	
-	private void setjjuse_original_names_widget(BooleanOptionWidget widget) {
-		jjuse_original_names_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjuse_original_names_widget() {
-		return jjuse_original_names_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_lsenabled_widget;
-	
-	private void setjjjj_lsenabled_widget(BooleanOptionWidget widget) {
-		jjjj_lsenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_lsenabled_widget() {
-		return jjjj_lsenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_silsenabled_widget;
-	
-	private void setjjjj_silsenabled_widget(BooleanOptionWidget widget) {
-		jjjj_silsenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_silsenabled_widget() {
-		return jjjj_silsenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_aenabled_widget;
-	
-	private void setjjjj_aenabled_widget(BooleanOptionWidget widget) {
-		jjjj_aenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_aenabled_widget() {
-		return jjjj_aenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_aonly_stack_locals_widget;
-	
-	private void setjjjj_aonly_stack_locals_widget(BooleanOptionWidget widget) {
-		jjjj_aonly_stack_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_aonly_stack_locals_widget() {
-		return jjjj_aonly_stack_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_uleenabled_widget;
-	
-	private void setjjjj_uleenabled_widget(BooleanOptionWidget widget) {
-		jjjj_uleenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_uleenabled_widget() {
-		return jjjj_uleenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_trenabled_widget;
-	
-	private void setjjjj_trenabled_widget(BooleanOptionWidget widget) {
-		jjjj_trenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_trenabled_widget() {
-		return jjjj_trenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_ulpenabled_widget;
-	
-	private void setjjjj_ulpenabled_widget(BooleanOptionWidget widget) {
-		jjjj_ulpenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_ulpenabled_widget() {
-		return jjjj_ulpenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_ulpunsplit_original_locals_widget;
-	
-	private void setjjjj_ulpunsplit_original_locals_widget(BooleanOptionWidget widget) {
-		jjjj_ulpunsplit_original_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_ulpunsplit_original_locals_widget() {
-		return jjjj_ulpunsplit_original_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_lnsenabled_widget;
-	
-	private void setjjjj_lnsenabled_widget(BooleanOptionWidget widget) {
-		jjjj_lnsenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_lnsenabled_widget() {
-		return jjjj_lnsenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_lnsonly_stack_locals_widget;
-	
-	private void setjjjj_lnsonly_stack_locals_widget(BooleanOptionWidget widget) {
-		jjjj_lnsonly_stack_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_lnsonly_stack_locals_widget() {
-		return jjjj_lnsonly_stack_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_cpenabled_widget;
-	
-	private void setjjjj_cpenabled_widget(BooleanOptionWidget widget) {
-		jjjj_cpenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_cpenabled_widget() {
-		return jjjj_cpenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_cponly_regular_locals_widget;
-	
-	private void setjjjj_cponly_regular_locals_widget(BooleanOptionWidget widget) {
-		jjjj_cponly_regular_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_cponly_regular_locals_widget() {
-		return jjjj_cponly_regular_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_cponly_stack_locals_widget;
-	
-	private void setjjjj_cponly_stack_locals_widget(BooleanOptionWidget widget) {
-		jjjj_cponly_stack_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_cponly_stack_locals_widget() {
-		return jjjj_cponly_stack_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_daeenabled_widget;
-	
-	private void setjjjj_daeenabled_widget(BooleanOptionWidget widget) {
-		jjjj_daeenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_daeenabled_widget() {
-		return jjjj_daeenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_daeonly_stack_locals_widget;
-	
-	private void setjjjj_daeonly_stack_locals_widget(BooleanOptionWidget widget) {
-		jjjj_daeonly_stack_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_daeonly_stack_locals_widget() {
-		return jjjj_daeonly_stack_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_cp_uleenabled_widget;
-	
-	private void setjjjj_cp_uleenabled_widget(BooleanOptionWidget widget) {
-		jjjj_cp_uleenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_cp_uleenabled_widget() {
-		return jjjj_cp_uleenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_lpenabled_widget;
-	
-	private void setjjjj_lpenabled_widget(BooleanOptionWidget widget) {
-		jjjj_lpenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_lpenabled_widget() {
-		return jjjj_lpenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_lpunsplit_original_locals_widget;
-	
-	private void setjjjj_lpunsplit_original_locals_widget(BooleanOptionWidget widget) {
-		jjjj_lpunsplit_original_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_lpunsplit_original_locals_widget() {
-		return jjjj_lpunsplit_original_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_neenabled_widget;
-	
-	private void setjjjj_neenabled_widget(BooleanOptionWidget widget) {
-		jjjj_neenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_neenabled_widget() {
-		return jjjj_neenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jjjj_uceenabled_widget;
-	
-	private void setjjjj_uceenabled_widget(BooleanOptionWidget widget) {
-		jjjj_uceenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjjjj_uceenabled_widget() {
-		return jjjj_uceenabled_widget;
 	}	
 	
 	private BooleanOptionWidget wjppenabled_widget;
@@ -8237,116 +7519,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return bopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget tagenabled_widget;
-	
-	private void settagenabled_widget(BooleanOptionWidget widget) {
-		tagenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagenabled_widget() {
-		return tagenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_lnenabled_widget;
-	
-	private void settagtag_lnenabled_widget(BooleanOptionWidget widget) {
-		tagtag_lnenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_lnenabled_widget() {
-		return tagtag_lnenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_anenabled_widget;
-	
-	private void settagtag_anenabled_widget(BooleanOptionWidget widget) {
-		tagtag_anenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_anenabled_widget() {
-		return tagtag_anenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_depenabled_widget;
-	
-	private void settagtag_depenabled_widget(BooleanOptionWidget widget) {
-		tagtag_depenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_depenabled_widget() {
-		return tagtag_depenabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagtag_fieldrwenabled_widget;
-	
-	private void settagtag_fieldrwenabled_widget(BooleanOptionWidget widget) {
-		tagtag_fieldrwenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagtag_fieldrwenabled_widget() {
-		return tagtag_fieldrwenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbenabled_widget;
-	
-	private void setdbenabled_widget(BooleanOptionWidget widget) {
-		dbenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbenabled_widget() {
-		return dbenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbsource_is_javac_widget;
-	
-	private void setdbsource_is_javac_widget(BooleanOptionWidget widget) {
-		dbsource_is_javac_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbsource_is_javac_widget() {
-		return dbsource_is_javac_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_transformationsenabled_widget;
-	
-	private void setdbdb_transformationsenabled_widget(BooleanOptionWidget widget) {
-		dbdb_transformationsenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_transformationsenabled_widget() {
-		return dbdb_transformationsenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_renamerenabled_widget;
-	
-	private void setdbdb_renamerenabled_widget(BooleanOptionWidget widget) {
-		dbdb_renamerenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_renamerenabled_widget() {
-		return dbdb_renamerenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_deobfuscateenabled_widget;
-	
-	private void setdbdb_deobfuscateenabled_widget(BooleanOptionWidget widget) {
-		dbdb_deobfuscateenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_deobfuscateenabled_widget() {
-		return dbdb_deobfuscateenabled_widget;
-	}	
-	
-	private BooleanOptionWidget dbdb_force_recompileenabled_widget;
-	
-	private void setdbdb_force_recompileenabled_widget(BooleanOptionWidget widget) {
-		dbdb_force_recompileenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getdbdb_force_recompileenabled_widget() {
-		return dbdb_force_recompileenabled_widget;
-	}	
-	
 	private BooleanOptionWidget Application_Mode_Optionsinclude_all_widget;
 	
 	private void setApplication_Mode_Optionsinclude_all_widget(BooleanOptionWidget widget) {
@@ -8551,28 +7723,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		
 		
 		
-
-		defKey = ""+" "+""+" "+"coffi";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setGeneral_Optionscoffi_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Coffi Frontend", "", "","coffi", "\n", defaultBool)));
-
-		defKey = ""+" "+""+" "+"jasmin-backend";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setGeneral_Optionsjasmin_backend_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Jasmin Backend", "", "","jasmin-backend", "\n", defaultBool)));
 
 		defKey = ""+" "+""+" "+"h help";
 		defKey = defKey.trim();
@@ -8809,7 +7959,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
 		} else {
-			defaultBool = false;
+			defaultBool = true;
 		}
 
 		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK.", defaultBool)));
@@ -8847,17 +7997,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption low. If enabled, \nthe -process-dir option must be used as well. From the \nprocess-dir, Soot will process one class at a time. Only body \npacks are run, no whole-program packs.", defaultBool)));
 
-		defKey = ""+" "+""+" "+"ast-metrics";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setInput_Optionsast_metrics_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Compute AST Metrics", "", "","ast-metrics", "\nIf this flag is set and soot converts java to jimple then AST \nmetrics will be computed.", defaultBool)));
-
 		defKey = ""+" "+""+" "+"full-resolver";
 		defKey = defKey.trim();
 
@@ -8868,6 +8007,28 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application classes and any \nclasses that they refer to, along with any classes it needs for \nthe Jimple typing, but it does not transitively resolve \nreferences in these additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all classes that are \nresolved, regardless of why they were resolved. In whole-program \nmode, class resolution is always fully transitive. Therefore, in \nwhole-program mode, this switch has no effect, and class \nresolution is always performed as if it were turned on.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"ignore-methodsource-error";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setInput_Optionsignore_methodsource_error_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore MethodSource Error", "", "","ignore-methodsource-error", "\nAllow to ignore thrown exceptions and return an empty jimple \nbody instead.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"resolve-all-dotnet-methods";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setInput_Optionsresolve_all_dotnet_methods_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Resolve all Dotnet Methods", "", "","resolve-all-dotnet-methods", "\nResolve all dotnet methods, such as unsafe methods or methods \nwith pointers as parameter.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"allow-phantom-refs";
 		defKey = defKey.trim();
@@ -8924,17 +8085,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class Cloneable nor \nSerializable, so we have to change type assignment to not refer \nto those classes.", defaultBool)));
 
-		defKey = ""+" "+""+" "+"polyglot";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of JastAdd, which \nsupports Java 5 syntax.", defaultBool)));
-
 		defKey = ""+" "+""+" "+"permissive-resolving";
 		defKey = defKey.trim();
 
@@ -8957,6 +8107,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setInput_Optionsdrop_bodies_after_load_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Drop method source after loading bodies", "", "","drop-bodies-after-load", "\nEach method is associated with a method source for loading its \nbody. When this option is disabled, a reference to this source \nis kept around even after the body has already been loaded. This \nis a waste of memory for most use cases. When this option is \nenabled, the reference is dropped, allowing for garbage \ncollection of the method source. On the other hand, if the body \nis ever released, it cannot easily be recovered (i.e., loaded \nagain) easily.", defaultBool)));
 
+		defKey = ""+" "+""+" "+"nc native-code";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setInput_Optionsnative_code_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Enable native code", "", "","nc native-code", "\nThis option is needed, when analyzing native code. Particularly \nwhen using the Java Native Interface (JNI). If this option is \nenabled (set true), it allows native methods to be concrete. \nThis flag will be checked in the SootMethod.isConcrete() method, \nallowing native methods to have a body.", defaultBool)));
+
 		data = new OptionData [] {
 		
 				new OptionData("Class File",
@@ -8971,10 +8132,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"J jimple",
 						"\nTry to resolve classes first from .jimple files found in the \nSoot classpath. Fall back to .class files only when unable to \nfind a .jimple file.",
 						false),
-				new OptionData("Java File",
-						"java",
-						"\nTry to resolve classes first from .java files found in the Soot \nclasspath. Fall back to .class files only when unable to find a \n.java file.",
-						false),
 				new OptionData("APK File",
 						"apk",
 						"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, .java or \n.jimple files only when unable to find a class in .apk files.",
@@ -8982,6 +8139,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("APK File",
 						"apk-class-jimple apk-c-j",
 						"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk files. Never load \na .java file.",
+						false),
+				new OptionData("Dotnet Assembly",
+						"dotnet",
+						"\nTry to resolve classes from .dll and .exe files found in the \nSoot classpath.",
 						false),
 		};
 
@@ -9043,6 +8204,30 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionssoot_modulepath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Modulepath",  "", "","soot-modulepath", "\nUse MODULEPATH as the list of directories in which Soot should \nsearch for classes. MODULEPATH should be a series of \ndirectories, separated by the path separator character for your \nsystem. If no modulepath is set on the command line, but the \nsystem property soot.module.path has been set, Soot uses its \nvalue as the modulepath. If neither the command line nor the \nsystem properties specify a Soot classpath, Soot falls back on a \ndefault modulepath jrt:.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"dotnet-nativehost-path";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setInput_Optionsdotnet_nativehost_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Dotnet NativeHost Path",  "", "","dotnet-nativehost-path", "\nUse dotnet-nativehost-path to load the NativeHost library which \nis needed for soot.dotnet.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"virtualedges-path";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		} else {
+			defaultString = "";
+		}
+
+		setInput_Optionsvirtualedges_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("VirtualEdges Path",  "", "","virtualedges-path", "\nUse virtual edges configuration file from location used in call \ngraph algorithms.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"android-jars";
@@ -9272,18 +8457,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"n none",
 						"\nProduce no output files.",
 						false),
-				new OptionData("Jasmin File",
-						"jasmin",
-						"\nProduce .jasmin files, suitable as input to the jasmin bytecode \nassembler.",
-						false),
 				new OptionData("Class File",
 						"c class",
 						"\nProduce Java .class files, executable by any Java Virtual \nMachine.",
 						true),
-				new OptionData("Dava Decompiled File",
-						"d dava",
-						"\nProduce .java files generated by the Dava decompiler.",
-						false),
 				new OptionData("Jimle Template File",
 						"t template",
 						"\nProduce .java files with Jimple templates.",
@@ -9591,6 +8768,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"dalvik",
 						"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
 						false),
+				new OptionData("Dotnet",
+						"dotnet",
+						"\nSpecialized throw analysis implementation that covers the \nsemantics of .NET and CLR",
+						false),
 				new OptionData("AutoSelect",
 						"auto-select",
 						"\nWhen processing DEX or APK files, choose the Dalvik throw \nanalysis. Otherwise, choose the unit throw analysis.",
@@ -9626,6 +8807,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 				new OptionData("Dalvik",
 						"dalvik",
 						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. This is the equivalent of Unit \nabove, but targeting the Dalvik VM semantics as opposed to those \nof the JVM.",
+						false),
+				new OptionData("Dotnet",
+						"dotnet",
+						"\nSpecialized throw analysis implementation that covers the \nsemantics of .NET and CLR",
 						false),
 		};
 
@@ -9920,6 +9105,47 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 
+	private Composite jbjb_awaCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_awa = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_awa.setLayout(layout);
+	
+	 	editGroupjbjb_awa.setText("Array Writer Aggregregator");
+	 	
+		editGroupjbjb_awa.setData("id", "jbjb_awa");
+		
+		String descjbjb_awa = "Reorder array writes to save local variables";	
+		if (descjbjb_awa.length() > 0) {
+			Label descLabeljbjb_awa = new Label(editGroupjbjb_awa, SWT.WRAP);
+			descLabeljbjb_awa.setText(descjbjb_awa);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"jb.awa"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = true;
+		}
+
+		setjbjb_awaenabled_widget(new BooleanOptionWidget(editGroupjbjb_awa, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.awa","enabled", "\n", defaultBool)));
+
+
+		return editGroupjbjb_awa;
+	}
+
+
+
 	private Composite jbjb_aCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -10058,6 +9284,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p phase-option", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. If \ncompare-type-assigners is on, this option causes the older type \nassigner to execute first. (Otherwise the newer one is executed \nfirst.)", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.tr"+" "+"use-precise-typing";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setjbjb_truse_precise_typing_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use precise typing", "p phase-option", "jb.tr","use-precise-typing", "\nWhen precise typing is enabled, Soot try to find the global best \ntyping, i.e., the typing with the least amount of assignments. \nThis might cause Soot require excessive amounts of computation \nresources (memory and CPU runtime).", defaultBool)));
 
 		defKey = "p phase-option"+" "+"jb.tr"+" "+"compare-type-assigners";
 		defKey = defKey.trim();
@@ -10581,668 +9818,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjbjb_cbf;
-	}
-
-
-
-	private Composite jjCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjj = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjj.setLayout(layout);
-	
-	 	editGroupjj.setText("Java To Jimple Body Creation");
-	 	
-		editGroupjj.setData("id", "jj");
-		
-		String descjj = "Creates a JimpleBody for each method directly from source\n                ";	
-		if (descjj.length() > 0) {
-			Label descLabeljj = new Label(editGroupjj, SWT.WRAP);
-			descLabeljj.setText(descjj);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjenabled_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj"+" "+"use-original-names";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjuse_original_names_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Use Original Names", "p phase-option", "jj","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types.", defaultBool)));
-
-
-		return editGroupjj;
-	}
-
-
-
-	private Composite jjjj_lsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_ls = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_ls.setLayout(layout);
-	
-	 	editGroupjjjj_ls.setText("Local Splitter");
-	 	
-		editGroupjjjj_ls.setData("id", "jjjj_ls");
-		
-		String descjjjj_ls = "Local splitter: one local per DU-UD web";	
-		if (descjjjj_ls.length() > 0) {
-			Label descLabeljjjj_ls = new Label(editGroupjjjj_ls, SWT.WRAP);
-			descLabeljjjj_ls.setText(descjjjj_ls);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.ls"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_lsenabled_widget(new BooleanOptionWidget(editGroupjjjj_ls, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ls","enabled", "\n", defaultBool)));
-
-
-		return editGroupjjjj_ls;
-	}
-
-
-
-	private Composite jjjj_silsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_sils = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_sils.setLayout(layout);
-	
-	 	editGroupjjjj_sils.setText("Shared Initialization Local Splitter");
-	 	
-		editGroupjjjj_sils.setData("id", "jjjj_sils");
-		
-		String descjjjj_sils = "Splits primitive locals used as different types";	
-		if (descjjjj_sils.length() > 0) {
-			Label descLabeljjjj_sils = new Label(editGroupjjjj_sils, SWT.WRAP);
-			descLabeljjjj_sils.setText(descjjjj_sils);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.sils"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_silsenabled_widget(new BooleanOptionWidget(editGroupjjjj_sils, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.sils","enabled", "\n", defaultBool)));
-
-
-		return editGroupjjjj_sils;
-	}
-
-
-
-	private Composite jjjj_aCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_a = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_a.setLayout(layout);
-	
-	 	editGroupjjjj_a.setText("Jimple Local Aggregator");
-	 	
-		editGroupjjjj_a.setData("id", "jjjj_a");
-		
-		String descjjjj_a = "Aggregator: removes some unnecessary copies";	
-		if (descjjjj_a.length() > 0) {
-			Label descLabeljjjj_a = new Label(editGroupjjjj_a, SWT.WRAP);
-			descLabeljjjj_a.setText(descjjjj_a);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.a"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_aenabled_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.a","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj.a"+" "+"only-stack-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.)", defaultBool)));
-
-
-		return editGroupjjjj_a;
-	}
-
-
-
-	private Composite jjjj_uleCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_ule = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_ule.setLayout(layout);
-	
-	 	editGroupjjjj_ule.setText("Unused Local Eliminator");
-	 	
-		editGroupjjjj_ule.setData("id", "jjjj_ule");
-		
-		String descjjjj_ule = "Unused local eliminator";	
-		if (descjjjj_ule.length() > 0) {
-			Label descLabeljjjj_ule = new Label(editGroupjjjj_ule, SWT.WRAP);
-			descLabeljjjj_ule.setText(descjjjj_ule);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.ule"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ule","enabled", "\n", defaultBool)));
-
-
-		return editGroupjjjj_ule;
-	}
-
-
-
-	private Composite jjjj_trCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_tr = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_tr.setLayout(layout);
-	
-	 	editGroupjjjj_tr.setText("Type Assigner");
-	 	
-		editGroupjjjj_tr.setData("id", "jjjj_tr");
-		
-		String descjjjj_tr = "Assigns types to locals";	
-		if (descjjjj_tr.length() > 0) {
-			Label descLabeljjjj_tr = new Label(editGroupjjjj_tr, SWT.WRAP);
-			descLabeljjjj_tr.setText(descjjjj_tr);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.tr"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_trenabled_widget(new BooleanOptionWidget(editGroupjjjj_tr, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.tr","enabled", "\n", defaultBool)));
-
-
-		return editGroupjjjj_tr;
-	}
-
-
-
-	private Composite jjjj_ulpCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_ulp = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_ulp.setLayout(layout);
-	
-	 	editGroupjjjj_ulp.setText("Unsplit-originals Local Packer");
-	 	
-		editGroupjjjj_ulp.setData("id", "jjjj_ulp");
-		
-		String descjjjj_ulp = "Local packer: minimizes number of locals";	
-		if (descjjjj_ulp.length() > 0) {
-			Label descLabeljjjj_ulp = new Label(editGroupjjjj_ulp, SWT.WRAP);
-			descLabeljjjj_ulp.setText(descjjjj_ulp);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.ulp"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_ulpenabled_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ulp","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj.ulp"+" "+"unsplit-original-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p phase-option", "jj.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter.", defaultBool)));
-
-
-		return editGroupjjjj_ulp;
-	}
-
-
-
-	private Composite jjjj_lnsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_lns = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_lns.setLayout(layout);
-	
-	 	editGroupjjjj_lns.setText("Local Name Standardizer");
-	 	
-		editGroupjjjj_lns.setData("id", "jjjj_lns");
-		
-		String descjjjj_lns = "Local name standardizer";	
-		if (descjjjj_lns.length() > 0) {
-			Label descLabeljjjj_lns = new Label(editGroupjjjj_lns, SWT.WRAP);
-			descLabeljjjj_lns.setText(descjjjj_lns);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.lns"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_lnsenabled_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.lns","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj.lns"+" "+"only-stack-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase.", defaultBool)));
-
-
-		return editGroupjjjj_lns;
-	}
-
-
-
-	private Composite jjjj_cpCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_cp = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_cp.setLayout(layout);
-	
-	 	editGroupjjjj_cp.setText("Copy Propagator");
-	 	
-		editGroupjjjj_cp.setData("id", "jjjj_cp");
-		
-		String descjjjj_cp = "Copy propagator";	
-		if (descjjjj_cp.length() > 0) {
-			Label descLabeljjjj_cp = new Label(editGroupjjjj_cp, SWT.WRAP);
-			descLabeljjjj_cp.setText(descjjjj_cp);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.cp"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_cpenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.cp","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj.cp"+" "+"only-regular-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Regular Locals", "p phase-option", "jj.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, those \ndeclared in the source bytecode.", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj.cp"+" "+"only-stack-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode.", defaultBool)));
-
-
-		return editGroupjjjj_cp;
-	}
-
-
-
-	private Composite jjjj_daeCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_dae = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_dae.setLayout(layout);
-	
-	 	editGroupjjjj_dae.setText("Dead Assignment Eliminator");
-	 	
-		editGroupjjjj_dae.setData("id", "jjjj_dae");
-		
-		String descjjjj_dae = "Dead assignment eliminator";	
-		if (descjjjj_dae.length() > 0) {
-			Label descLabeljjjj_dae = new Label(editGroupjjjj_dae, SWT.WRAP);
-			descLabeljjjj_dae.setText(descjjjj_dae);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.dae"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_daeenabled_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.dae","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj.dae"+" "+"only-stack-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode.", defaultBool)));
-
-
-		return editGroupjjjj_dae;
-	}
-
-
-
-	private Composite jjjj_cp_uleCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_cp_ule = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_cp_ule.setLayout(layout);
-	
-	 	editGroupjjjj_cp_ule.setText("Post-copy propagation Unused Local Eliminator");
-	 	
-		editGroupjjjj_cp_ule.setData("id", "jjjj_cp_ule");
-		
-		String descjjjj_cp_ule = "Post-copy propagation unused local eliminator";	
-		if (descjjjj_cp_ule.length() > 0) {
-			Label descLabeljjjj_cp_ule = new Label(editGroupjjjj_cp_ule, SWT.WRAP);
-			descLabeljjjj_cp_ule.setText(descjjjj_cp_ule);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.cp-ule"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.cp-ule","enabled", "\n", defaultBool)));
-
-
-		return editGroupjjjj_cp_ule;
-	}
-
-
-
-	private Composite jjjj_lpCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_lp = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_lp.setLayout(layout);
-	
-	 	editGroupjjjj_lp.setText("Local Packer");
-	 	
-		editGroupjjjj_lp.setData("id", "jjjj_lp");
-		
-		String descjjjj_lp = "Local packer: minimizes number of locals";	
-		if (descjjjj_lp.length() > 0) {
-			Label descLabeljjjj_lp = new Label(editGroupjjjj_lp, SWT.WRAP);
-			descLabeljjjj_lp.setText(descjjjj_lp);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.lp"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_lpenabled_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.lp","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jj.lp"+" "+"unsplit-original-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjjjj_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p phase-option", "jj.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter.", defaultBool)));
-
-
-		return editGroupjjjj_lp;
-	}
-
-
-
-	private Composite jjjj_neCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_ne = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_ne.setLayout(layout);
-	
-	 	editGroupjjjj_ne.setText("Nop Eliminator");
-	 	
-		editGroupjjjj_ne.setData("id", "jjjj_ne");
-		
-		String descjjjj_ne = "Nop eliminator";	
-		if (descjjjj_ne.length() > 0) {
-			Label descLabeljjjj_ne = new Label(editGroupjjjj_ne, SWT.WRAP);
-			descLabeljjjj_ne.setText(descjjjj_ne);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.ne"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_neenabled_widget(new BooleanOptionWidget(editGroupjjjj_ne, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ne","enabled", "\n", defaultBool)));
-
-
-		return editGroupjjjj_ne;
-	}
-
-
-
-	private Composite jjjj_uceCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjjjj_uce = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjjjj_uce.setLayout(layout);
-	
-	 	editGroupjjjj_uce.setText("Unreachable Code Eliminator");
-	 	
-		editGroupjjjj_uce.setData("id", "jjjj_uce");
-		
-		String descjjjj_uce = "Unreachable code eliminator";	
-		if (descjjjj_uce.length() > 0) {
-			Label descLabeljjjj_uce = new Label(editGroupjjjj_uce, SWT.WRAP);
-			descLabeljjjj_uce.setText(descjjjj_uce);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jj.uce"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setjjjj_uceenabled_widget(new BooleanOptionWidget(editGroupjjjj_uce, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.uce","enabled", "\n", defaultBool)));
-
-
-		return editGroupjjjj_uce;
 	}
 
 
@@ -16862,427 +15437,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupbop;
-	}
-
-
-
-	private Composite tagCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptag = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptag.setLayout(layout);
-	
-	 	editGrouptag.setText("Tag Aggregator");
-	 	
-		editGrouptag.setData("id", "tag");
-		
-		String desctag = "Tag aggregator: turns tags into attributes";	
-		if (desctag.length() > 0) {
-			Label descLabeltag = new Label(editGrouptag, SWT.WRAP);
-			descLabeltag.setText(desctag);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		settagenabled_widget(new BooleanOptionWidget(editGrouptag, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag","enabled", "\n", defaultBool)));
-
-
-		return editGrouptag;
-	}
-
-
-
-	private Composite tagtag_lnCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_ln = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_ln.setLayout(layout);
-	
-	 	editGrouptagtag_ln.setText("Line Number Tag Aggregator");
-	 	
-		editGrouptagtag_ln.setData("id", "tagtag_ln");
-		
-		String desctagtag_ln = "Line number aggregator";	
-		if (desctagtag_ln.length() > 0) {
-			Label descLabeltagtag_ln = new Label(editGrouptagtag_ln, SWT.WRAP);
-			descLabeltagtag_ln.setText(desctagtag_ln);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.ln"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		settagtag_lnenabled_widget(new BooleanOptionWidget(editGrouptagtag_ln, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.ln","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_ln;
-	}
-
-
-
-	private Composite tagtag_anCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_an = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_an.setLayout(layout);
-	
-	 	editGrouptagtag_an.setText("Array Bounds and Null Pointer Check Tag Aggregator");
-	 	
-		editGrouptagtag_an.setData("id", "tagtag_an");
-		
-		String desctagtag_an = "Array bounds and null pointer check aggregator";	
-		if (desctagtag_an.length() > 0) {
-			Label descLabeltagtag_an = new Label(editGrouptagtag_an, SWT.WRAP);
-			descLabeltagtag_an.setText(desctagtag_an);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.an"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		settagtag_anenabled_widget(new BooleanOptionWidget(editGrouptagtag_an, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.an","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_an;
-	}
-
-
-
-	private Composite tagtag_depCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_dep = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_dep.setLayout(layout);
-	
-	 	editGrouptagtag_dep.setText("Dependence Tag Aggregator");
-	 	
-		editGrouptagtag_dep.setData("id", "tagtag_dep");
-		
-		String desctagtag_dep = "Dependence aggregator";	
-		if (desctagtag_dep.length() > 0) {
-			Label descLabeltagtag_dep = new Label(editGrouptagtag_dep, SWT.WRAP);
-			descLabeltagtag_dep.setText(desctagtag_dep);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.dep"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		settagtag_depenabled_widget(new BooleanOptionWidget(editGrouptagtag_dep, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.dep","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_dep;
-	}
-
-
-
-	private Composite tagtag_fieldrwCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGrouptagtag_fieldrw = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGrouptagtag_fieldrw.setLayout(layout);
-	
-	 	editGrouptagtag_fieldrw.setText("Field Read/Write Tag Aggregator");
-	 	
-		editGrouptagtag_fieldrw.setData("id", "tagtag_fieldrw");
-		
-		String desctagtag_fieldrw = "Field read/write aggregator";	
-		if (desctagtag_fieldrw.length() > 0) {
-			Label descLabeltagtag_fieldrw = new Label(editGrouptagtag_fieldrw, SWT.WRAP);
-			descLabeltagtag_fieldrw.setText(desctagtag_fieldrw);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"tag.fieldrw"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		settagtag_fieldrwenabled_widget(new BooleanOptionWidget(editGrouptagtag_fieldrw, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.fieldrw","enabled", "\n", defaultBool)));
-
-
-		return editGrouptagtag_fieldrw;
-	}
-
-
-
-	private Composite dbCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdb = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdb.setLayout(layout);
-	
-	 	editGroupdb.setText("Dava Body Creation");
-	 	
-		editGroupdb.setData("id", "db");
-		
-		String descdb = "Dummy phase to store options for Dava";	
-		if (descdb.length() > 0) {
-			Label descLabeldb = new Label(editGroupdb, SWT.WRAP);
-			descLabeldb.setText(descdb);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbenabled_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Enabled", "p phase-option", "db","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"db"+" "+"source-is-javac";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p phase-option", "db","source-is-javac", "\ncheck out soot.dava.toolkits.base.misc.ThrowFinder In short we \nwant to ensure that if there are throw exception info in the \nclass file dava uses this info.", defaultBool)));
-
-
-		return editGroupdb;
-	}
-
-
-
-	private Composite dbdb_transformationsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_transformations = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_transformations.setLayout(layout);
-	
-	 	editGroupdbdb_transformations.setText("Transformations");
-	 	
-		editGroupdbdb_transformations.setData("id", "dbdb_transformations");
-		
-		String descdbdb_transformations = "The Dava back-end with all its transformations";	
-		if (descdbdb_transformations.length() > 0) {
-			Label descLabeldbdb_transformations = new Label(editGroupdbdb_transformations, SWT.WRAP);
-			descLabeldbdb_transformations.setText(descdbdb_transformations);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.transformations"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbdb_transformationsenabled_widget(new BooleanOptionWidget(editGroupdbdb_transformations, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.transformations","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_transformations;
-	}
-
-
-
-	private Composite dbdb_renamerCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_renamer = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_renamer.setLayout(layout);
-	
-	 	editGroupdbdb_renamer.setText("Renamer");
-	 	
-		editGroupdbdb_renamer.setData("id", "dbdb_renamer");
-		
-		String descdbdb_renamer = "Apply heuristics based naming of local variables";	
-		if (descdbdb_renamer.length() > 0) {
-			Label descLabeldbdb_renamer = new Label(editGroupdbdb_renamer, SWT.WRAP);
-			descLabeldbdb_renamer.setText(descdbdb_renamer);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.renamer"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setdbdb_renamerenabled_widget(new BooleanOptionWidget(editGroupdbdb_renamer, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.renamer","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_renamer;
-	}
-
-
-
-	private Composite dbdb_deobfuscateCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_deobfuscate = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_deobfuscate.setLayout(layout);
-	
-	 	editGroupdbdb_deobfuscate.setText("De-obfuscate");
-	 	
-		editGroupdbdb_deobfuscate.setData("id", "dbdb_deobfuscate");
-		
-		String descdbdb_deobfuscate = "Apply de-obfuscation analyses";	
-		if (descdbdb_deobfuscate.length() > 0) {
-			Label descLabeldbdb_deobfuscate = new Label(editGroupdbdb_deobfuscate, SWT.WRAP);
-			descLabeldbdb_deobfuscate.setText(descdbdb_deobfuscate);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.deobfuscate"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbdb_deobfuscateenabled_widget(new BooleanOptionWidget(editGroupdbdb_deobfuscate, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.deobfuscate","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_deobfuscate;
-	}
-
-
-
-	private Composite dbdb_force_recompileCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupdbdb_force_recompile = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupdbdb_force_recompile.setLayout(layout);
-	
-	 	editGroupdbdb_force_recompile.setText("Force Recompilability");
-	 	
-		editGroupdbdb_force_recompile.setData("id", "dbdb_force_recompile");
-		
-		String descdbdb_force_recompile = "Try to get recompilable code.";	
-		if (descdbdb_force_recompile.length() > 0) {
-			Label descLabeldbdb_force_recompile = new Label(editGroupdbdb_force_recompile, SWT.WRAP);
-			descLabeldbdb_force_recompile.setText(descdbdb_force_recompile);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"db.force-recompile"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setdbdb_force_recompileenabled_widget(new BooleanOptionWidget(editGroupdbdb_force_recompile, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.force-recompile","enabled", "\n", defaultBool)));
-
-
-		return editGroupdbdb_force_recompile;
 	}
 
 

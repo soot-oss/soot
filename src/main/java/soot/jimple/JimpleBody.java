@@ -24,6 +24,7 @@ package soot.jimple;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,6 +98,13 @@ public class JimpleBody extends StmtBody {
     return b;
   }
 
+  @Override
+  public Object clone(boolean noLocalsClone) {
+    Body b = new JimpleBody(getMethod());
+    b.importBodyContentsFrom(this, noLocalsClone);
+    return b;
+  }
+
   /**
    * Make sure that the JimpleBody is well formed. If not, throw an exception. Right now, performs only a handful of checks.
    */
@@ -118,7 +126,8 @@ public class JimpleBody extends StmtBody {
   @Override
   public void validate(List<ValidationException> exceptionList) {
     super.validate(exceptionList);
-    final boolean runAllValidators = Options.v().debug() || Options.v().validate();
+    final Options o = Options.v();
+    final boolean runAllValidators = o.debug() || o.validate();
     for (BodyValidator validator : LazyValidatorsSingleton.V) {
       if (runAllValidators || validator.isBasicValidator()) {
         validator.validate(this, exceptionList);
@@ -186,16 +195,11 @@ public class JimpleBody extends StmtBody {
    * @return
    */
   public Stmt getFirstNonIdentityStmt() {
-    Unit r = null;
     for (Unit u : getUnits()) {
-      r = u;
-      if (!(r instanceof IdentityStmt)) {
-        break;
+      if (!(u instanceof IdentityStmt)) {
+        return (Stmt) u;
       }
     }
-    if (r == null) {
-      throw new RuntimeException("no non-id statements!");
-    }
-    return (Stmt) r;
+    throw new RuntimeException("no non-id statements!");
   }
 }

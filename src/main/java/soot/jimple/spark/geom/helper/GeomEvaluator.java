@@ -243,7 +243,7 @@ public class GeomEvaluator {
         } else if (t instanceof AnySubType) {
           t = ((AnySubType) t).getBase();
         } else if (t instanceof ArrayType) {
-          t = RefType.v("java.lang.Object");
+          t = Scene.v().getObjectType();
         }
 
         try {
@@ -347,10 +347,7 @@ public class GeomEvaluator {
     Value[] values = new Value[2];
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) {
-        continue;
-      }
-      if (!sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -381,11 +378,7 @@ public class GeomEvaluator {
               }
 
               LocalVarNode vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
-              if (vn == null) {
-                continue;
-              }
-
-              if (ptsProvider.isExceptionPointer(vn)) {
+              if ((vn == null) || ptsProvider.isExceptionPointer(vn)) {
                 continue;
               }
 
@@ -450,10 +443,7 @@ public class GeomEvaluator {
   public void checkCastsSafety() {
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) {
-        continue;
-      }
-      if (!sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -496,7 +486,7 @@ public class GeomEvaluator {
             Set<AllocNode> set = pn.get_all_points_to_objects();
             for (AllocNode obj : set) {
               solved = ptsProvider.castNeverFails(obj.getType(), targetType);
-              if (solved == false) {
+              if (!solved) {
                 break;
               }
             }
@@ -509,7 +499,7 @@ public class GeomEvaluator {
             solved = true;
             node.getP2Set().forall(new P2SetVisitor() {
               public void visit(Node arg0) {
-                if (solved == false) {
+                if (!solved) {
                   return;
                 }
                 solved = ptsProvider.castNeverFails(arg0.getType(), targetType);
@@ -540,10 +530,7 @@ public class GeomEvaluator {
     Date begin = new Date();
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod()) {
-        continue;
-      }
-      if (!sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
         continue;
       }
       if (!sm.hasActiveBody()) {

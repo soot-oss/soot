@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import soot.jimple.Stmt;
 import soot.util.NumberedString;
 
 /**
- * Allows one-time parsing of method subsignatures.
- * Note that these method sub signatures are resolved, i.e. 
- * we resolve the complete types upon construction.
+ * Allows one-time parsing of method subsignatures. Note that these method sub signatures are resolved, i.e. we resolve the
+ * complete types upon construction.
  * 
  * @author Marc Miltenberger
  */
@@ -62,14 +62,14 @@ public class MethodSubSignature {
 
     Scene sc = Scene.v();
     methodName = m.group(2);
-    returnType = sc.getTypeUnsafe(m.group(1));
+    returnType = sc.getTypeUnsafe(m.group(1), true);
     String parameters = m.group(3);
     String[] spl = parameters.split(",");
     parameterTypes = new ArrayList<>(spl.length);
 
     if (parameters != null && !parameters.isEmpty()) {
       for (String p : spl) {
-        parameterTypes.add(sc.getTypeUnsafe(p.trim()));
+        parameterTypes.add(sc.getTypeUnsafe(p.trim(), true));
       }
     }
   }
@@ -78,8 +78,19 @@ public class MethodSubSignature {
     this.methodName = methodName;
     this.returnType = returnType;
     this.parameterTypes = parameterTypes;
-    this.numberedSubSig
-        = new NumberedString(returnType + " " + methodName + "(" + Joiner.on(',').join(parameterTypes) + ")");
+    this.numberedSubSig = Scene.v().getSubSigNumberer()
+        .findOrAdd(returnType + " " + methodName + "(" + Joiner.on(',').join(parameterTypes) + ")");
+  }
+
+  /**
+   * Creates a new instance of the {@link MethodSubSignature} class based on a call site. The subsignature of the callee will
+   * be taken from the method referenced at the call site.
+   * 
+   * @param callSite
+   *          The call site
+   */
+  public MethodSubSignature(Stmt callSite) {
+    this(callSite.getInvokeExpr().getMethodRef().getSubSignature());
   }
 
   public String getMethodName() {
@@ -99,9 +110,10 @@ public class MethodSubSignature {
   }
 
   /**
-   * Tries to find the exact method in a class. Returns null
-   * if cannot be found
-   * @param c the class
+   * Tries to find the exact method in a class. Returns null if cannot be found
+   * 
+   * @param c
+   *          the class
    * @return the method (or null)
    */
   public SootMethod getInClassUnsafe(SootClass c) {
@@ -112,9 +124,7 @@ public class MethodSubSignature {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
-    result = prime * result + ((parameterTypes == null) ? 0 : parameterTypes.hashCode());
-    result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
+    result = prime * result + ((numberedSubSig == null) ? 0 : numberedSubSig.hashCode());
     return result;
   }
 
@@ -123,28 +133,15 @@ public class MethodSubSignature {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     MethodSubSignature other = (MethodSubSignature) obj;
-    if (methodName == null) {
-      if (other.methodName != null) {
+    if (numberedSubSig == null) {
+      if (other.numberedSubSig != null) {
         return false;
       }
-    } else if (!methodName.equals(other.methodName)) {
-      return false;
-    }
-    if (!parameterTypes.equals(other.parameterTypes)) {
-      return false;
-    }
-    if (returnType == null) {
-      if (other.returnType != null) {
-        return false;
-      }
-    } else if (!returnType.equals(other.returnType)) {
+    } else if (!numberedSubSig.equals(other.numberedSubSig)) {
       return false;
     }
     return true;

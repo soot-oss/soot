@@ -55,7 +55,9 @@ public final class MethodToContexts {
   public void add(Iterator<MethodOrMethodContext> it) {
     while (it.hasNext()) {
       MethodOrMethodContext momc = it.next();
-      add(momc);
+      if (momc != null) {
+        add(momc);
+      }
     }
   }
 

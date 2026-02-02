@@ -24,6 +24,7 @@ package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Function;
@@ -33,25 +34,29 @@ import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.SwitchStmt;
+import soot.util.IteratorConcatElement;
 
 @SuppressWarnings("serial")
 public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
 
   protected final ValueBox keyBox;
   protected final UnitBox defaultTargetBox;
-  protected final UnitBox[] targetBoxes;
+  protected final List<UnitBox> targetBoxes;
   protected final List<UnitBox> stmtBoxes;
 
   protected AbstractSwitchStmt(ValueBox keyBox, UnitBox defaultTargetBox, UnitBox... targetBoxes) {
     this.keyBox = keyBox;
     this.defaultTargetBox = defaultTargetBox;
-    this.targetBoxes = targetBoxes;
+    this.targetBoxes = new ArrayList<>(targetBoxes.length);
+    for (UnitBox t : targetBoxes) {
+      this.targetBoxes.add(t);
+    }
 
     // Build up stmtBoxes
-    List<UnitBox> list = new ArrayList<UnitBox>();
+    List<UnitBox> list = new ArrayList<UnitBox>(targetBoxes.length + 1);
     Collections.addAll(list, targetBoxes);
     list.add(defaultTargetBox);
-    this.stmtBoxes = Collections.unmodifiableList(list);
+    this.stmtBoxes = list;
   }
 
   // This method is necessary to deal with constructor-must-be-first-ism.
@@ -101,29 +106,44 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
     return list;
   }
 
+  @Override
+  public final Iterator<ValueBox> getDefBoxesIterator() {
+    return Collections.emptyIterator();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    return getUseBoxesIterator();
+  }
+
+  @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(keyBox.getValue().getUseBoxesIterator(), keyBox);
+  }
+
   final public int getTargetCount() {
-    return targetBoxes.length;
+    return targetBoxes.size();
   }
 
   @Override
   final public Unit getTarget(int index) {
-    return targetBoxes[index].getUnit();
+    return targetBoxes.get(index).getUnit();
   }
 
   @Override
   final public UnitBox getTargetBox(int index) {
-    return targetBoxes[index];
+    return targetBoxes.get(index);
   }
 
   @Override
   final public void setTarget(int index, Unit target) {
-    targetBoxes[index].setUnit(target);
+    targetBoxes.get(index).setUnit(target);
   }
 
   @Override
   final public List<Unit> getTargets() {
-    final UnitBox[] boxes = this.targetBoxes;
-    List<Unit> targets = new ArrayList<Unit>(boxes.length);
+    final List<UnitBox> boxes = this.targetBoxes;
+    List<Unit> targets = new ArrayList<Unit>(boxes.size());
     for (UnitBox element : boxes) {
       targets.add(element.getUnit());
     }
@@ -133,14 +153,27 @@ public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchS
   final public void setTargets(List<? extends Unit> targets) {
     for (ListIterator<? extends Unit> it = targets.listIterator(); it.hasNext();) {
       Unit u = it.next();
-      targetBoxes[it.previousIndex()].setUnit(u);
+      targetBoxes.get(it.previousIndex()).setUnit(u);
     }
   }
 
   final public void setTargets(Unit[] targets) {
     for (int i = 0, e = targets.length; i < e; i++) {
-      targetBoxes[i].setUnit(targets[i]);
+      targetBoxes.get(i).setUnit(targets[i]);
     }
+  }
+
+  protected void appendTarget(final char endOfLine, StringBuilder buf, Unit target) {
+    if (target == this) {
+      buf.append("self");
+    } else {
+      if (target instanceof AbstractSwitchStmt) {
+        buf.append("another-switch-statement");
+      } else {
+        buf.append(target);
+      }
+    }
+    buf.append(';').append(endOfLine);
   }
 
   @Override

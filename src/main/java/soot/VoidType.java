@@ -29,12 +29,14 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class VoidType extends Type {
+  public static final VoidType INSTANCE = new VoidType();
 
-  public VoidType(Singletons.Global g) {
+  private VoidType() {
+    super(false);
   }
 
   public static VoidType v() {
-    return G.v().soot_VoidType();
+    return INSTANCE;
   }
 
   @Override

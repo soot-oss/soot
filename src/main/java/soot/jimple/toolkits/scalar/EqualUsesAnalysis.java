@@ -170,7 +170,8 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Object>
 
     // get list of definitions at this unit
     List<Value> newDefs = new ArrayList<Value>();
-    for (ValueBox vb : stmt.getDefBoxes()) {
+    for (Iterator<ValueBox> iterator = stmt.getDefBoxesIterator(); iterator.hasNext();) {
+      ValueBox vb = iterator.next();
       newDefs.add(vb.getValue());
     }
 

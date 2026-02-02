@@ -25,7 +25,7 @@ package soot.toolkits.graph;
  */
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class TestDominance {
 
         Set<Integer> kids = kid_ids(head);
         assertThat(kids.size(), is(3));
-        assertThat(kids, contains(2, 3, 4));
+        assertThat(kids, containsInAnyOrder(2, 3, 4));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class TestDominance {
         assertThat(n.getGode().id, is(1));
         Set<Integer> kids = kid_ids(n);
         assertThat(kids.size(), is(4));
-        assertThat(kids, contains(2, 3, 9, 11));
+        assertThat(kids, containsInAnyOrder(2, 3, 9, 11));
 
         Map<Integer, DominatorNode<Node>> KM = kid_map(n);
         DominatorNode<Node> m = KM.get(2);
@@ -130,7 +130,7 @@ public class TestDominance {
         n = KM.get(3);
         kids = kid_ids(n);
         assertThat(kids.size(), is(2));
-        assertThat(kids, contains(4, 5));
+        assertThat(kids, containsInAnyOrder(4, 5));
 
         KM = kid_map(n);
         m = KM.get(4);
@@ -140,7 +140,7 @@ public class TestDominance {
         n = KM.get(5);
         kids = kid_ids(n);
         assertThat(kids.size(), is(2));
-        assertThat(kids, contains(6, 10));
+        assertThat(kids, containsInAnyOrder(6, 10));
 
         KM = kid_map(n);
         m = KM.get(10);
@@ -150,7 +150,7 @@ public class TestDominance {
         n = KM.get(6);
         kids = kid_ids(n);
         assertThat(kids.size(), is(2));
-        assertThat(kids, contains(7, 8));
+        assertThat(kids, containsInAnyOrder(7, 8));
 
         KM = kid_map(n);
         m = KM.get(7);
@@ -184,7 +184,7 @@ public class TestDominance {
         assertThat(n.getGode().id, is(1));
         Set<Integer> kids = kid_ids(n);
         assertThat(kids.size(), is(2));
-        assertThat(kids, contains(2, 3));
+        assertThat(kids, containsInAnyOrder(2, 3));
 
         Map<Integer, DominatorNode<Node>> KM = kid_map(n);
         DominatorNode<Node> m = KM.get(2);
@@ -194,7 +194,7 @@ public class TestDominance {
         n = KM.get(3);
         kids = kid_ids(n);
         assertThat(kids.size(), is(3));
-        assertThat(kids, contains(4, 5, 6));
+        assertThat(kids, containsInAnyOrder(4, 5, 6));
 
         KM = kid_map(n);
         m = KM.get(4);
@@ -222,7 +222,7 @@ public class TestDominance {
 
         Set<Integer> head_ids = heads.keySet();
         assertThat(head_ids.size(), is(3));
-        assertThat(head_ids, contains(1, 2, 6));
+        assertThat(head_ids, containsInAnyOrder(1, 2, 6));
 
         m = heads.get(1);
         kids = kid_ids(m);
@@ -235,7 +235,7 @@ public class TestDominance {
         n = heads.get(6);
         kids = kid_ids(n);
         assertThat(kids.size(), is(3));
-        assertThat(kids, contains(3, 4, 5));
+        assertThat(kids, containsInAnyOrder(3, 4, 5));
 
         KM = kid_map(n);
         m = KM.get(3);

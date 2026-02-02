@@ -22,31 +22,36 @@ package soot;
  * #L%
  */
 
-import static soot.util.backend.ASMBackendUtils.createASMAttribute;
-import static soot.util.backend.ASMBackendUtils.getDefaultValue;
-import static soot.util.backend.ASMBackendUtils.slashify;
-import static soot.util.backend.ASMBackendUtils.toTypeDesc;
-import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.asm.AsmUtil;
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
@@ -76,8 +81,11 @@ import soot.tagkit.SourceFileTag;
 import soot.tagkit.SyntheticTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.VisibilityLocalVariableAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
+import soot.util.backend.ASMBackendUtils;
 import soot.util.backend.SootASMClassWriter;
+import soot.validation.ValidationException;
 
 /**
  * Abstract super-class for ASM-based back-ends. Generates byte-code for everything except the method bodies, as they are
@@ -86,14 +94,17 @@ import soot.util.backend.SootASMClassWriter;
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  */
 public abstract class AbstractASMBackend {
+  private static final Logger logger = LoggerFactory.getLogger(AbstractASMBackend.class);
 
-  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<SootMethod, BafBody>();
+  private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<>();
   // The SootClass that is to be converted into bytecode
   protected final SootClass sc;
   // The Java version to be used for generating this class
   protected final int javaVersion;
   // An ASM ClassVisitor that is used to emit the bytecode to
   protected ClassVisitor cv;
+  // A ClassLoader used by the ASM validator (if validation is enabled) to load classes from the Soot classpath
+  protected ClassLoader sootClassLoader;
 
   /**
    * Creates a new ASM backend
@@ -112,20 +123,58 @@ public abstract class AbstractASMBackend {
     }
     int minVersion = getMinJavaVersion(sc);
     if (javaVersion != Options.java_version_default && javaVersion < minVersion) {
-      throw new IllegalArgumentException("Enforced Java version " + translateJavaVersion(javaVersion)
-          + " too low to support required features (" + translateJavaVersion(minVersion) + " required)");
+      throw new IllegalArgumentException("Enforced Java version " + ASMBackendUtils.translateJavaVersion(javaVersion)
+          + " too low to support required features (" + ASMBackendUtils.translateJavaVersion(minVersion) + " required)");
     }
 
-    this.javaVersion = AsmUtil.javaToBytecodeVersion(Math.max(javaVersion, minVersion));
+    this.javaVersion = getByteCodeVersion(javaVersion, minVersion);
   }
 
   /**
-   * Gets the baf body for the given SootMethod. This method will first check whether the method already has a baf body. If
-   * not, it will query the local cache. If this fails as well, it will construct a new baf body.
+   * Returns the bytecode version to use based on a computed minimum java version, which is based on features used by the
+   * methods in this class and the default minimum version
+   * 
+   * @param javaVersion
+   *          the default minimum version specified in the options
+   * @param minVersion
+   *          the version computed by the used features in this class
+   * @return the bytecode version
+   */
+  protected int getByteCodeVersion(int optionsMinJavaVersion, int computedMinVersion) {
+    return AsmUtil.javaToBytecodeVersion(Math.max(optionsMinJavaVersion, computedMinVersion));
+  }
+
+  /**
+   * Return a {@link ClassLoader} that loads classes from the Soot classpath.
+   *
+   * @return
+   */
+  private ClassLoader getSootClasspathLoader() {
+    ClassLoader retVal = this.sootClassLoader;
+    if (retVal == null) {
+      List<String> classPath = SourceLocator.v().classPath();
+      URL[] urls = new URL[classPath.size()];
+      for (ListIterator<String> it = classPath.listIterator(); it.hasNext();) {
+        String cp = it.next();
+        try {
+          URL url = Paths.get(cp).toUri().toURL();
+          urls[it.previousIndex()] = url;
+        } catch (MalformedURLException ex) {
+          logger.warn("Cannot get URL for " + cp, ex);
+        }
+      }
+      this.sootClassLoader = retVal = URLClassLoader.newInstance(urls);
+    }
+    return retVal;
+  }
+
+  /**
+   * Gets the {@link BafBody} for the given SootMethod. This method will first check whether the method already has a
+   * {@link BafBody}. If not, it will query the local cache. If this fails as well, it will construct a new {@link BafBody}.
    *
    * @param method
-   *          The method for which to obtain a baf body
-   * @return The baf body for the given method
+   *          The method for which to obtain a {@link BafBody}
+   * @return The {@link BafBody} for the given method
    */
   protected BafBody getBafBody(SootMethod method) {
     final Body activeBody = method.getActiveBody();
@@ -134,18 +183,15 @@ public abstract class AbstractASMBackend {
     }
 
     BafBody body = bafBodyCache.get(method);
-    if (body != null) {
-      return body;
+    if (body == null) {
+      if (activeBody instanceof JimpleBody) {
+        body = PackManager.v().convertJimpleBodyToBaf(method);
+        bafBodyCache.put(method, body);
+      } else {
+        throw new RuntimeException("ASM-backend can only translate Baf and Jimple bodies! Found "
+            + (activeBody == null ? "null" : activeBody.getClass().getName()) + '.');
+      }
     }
-
-    if (activeBody instanceof JimpleBody) {
-      body = PackManager.v().convertJimpleBodyToBaf(method);
-    } else {
-      throw new RuntimeException("ASM-backend can only translate Baf and Jimple bodies! Found "
-          + (activeBody == null ? "null" : activeBody.getClass().getName()) + '.');
-    }
-
-    bafBodyCache.put(method, body);
     return body;
   }
 
@@ -156,7 +202,7 @@ public abstract class AbstractASMBackend {
    *          The SootClass the minimum Java version is to be determined for
    * @return The minimum Java version required for the given SootClass
    */
-  private int getMinJavaVersion(SootClass sc) {
+  protected int getMinJavaVersion(SootClass sc) {
     int minVersion = Options.java_version_1_1;
 
     if (Modifier.isAnnotation(sc.getModifiers()) || sc.hasTag(VisibilityAnnotationTag.NAME)) {
@@ -181,13 +227,12 @@ public abstract class AbstractASMBackend {
     // that we need to split methods, which are longer than the JVM spec allows.
     // This feature is work in progress.
     for (SootMethod sm : new ArrayList<>(sc.getMethods())) {
-      if (minVersion >= Options.java_version_1_8) {
+      if (minVersion >= Options.java_version_MAX) {
+        // Stop early if the max supported version has been reached
         break;
       }
-      if (sm.hasTag(VisibilityAnnotationTag.NAME) || sm.hasTag(VisibilityParameterAnnotationTag.NAME)) {
-        minVersion = Math.max(minVersion, Options.java_version_1_5);
-      }
-      if (containsGenericSignatureTag(sm)) {
+      if (sm.hasTag(VisibilityAnnotationTag.NAME) || sm.hasTag(VisibilityParameterAnnotationTag.NAME)
+          || containsGenericSignatureTag(sm)) {
         minVersion = Math.max(minVersion, Options.java_version_1_5);
       }
       if (sm.hasActiveBody()) {
@@ -222,10 +267,29 @@ public abstract class AbstractASMBackend {
    */
   public void generateClassFile(OutputStream os) {
     ClassWriter cw = new SootASMClassWriter(ClassWriter.COMPUTE_FRAMES);
-    cv = cw;
+    this.cv = cw;
     generateByteCode();
+    byte[] bytecode = cw.toByteArray();
+    if (Options.v().validate()) {
+      String verifyMsg;
+      try {
+        // Run ASM verifier and ensure the message is empty (i.e. there are no VerifyErrors).
+        StringWriter strWriter = new StringWriter();
+        CheckClassAdapter.verify(new ClassReader(bytecode), getSootClasspathLoader(), false, new PrintWriter(strWriter));
+        verifyMsg = strWriter.toString();
+      } catch (LinkageError e) {
+        // Just print a warning rather than throwing a ValidationException
+        // because this doesn't necessarily mean the bytecode is invalid,
+        // it just means some dependency may not be on the Soot classpath.
+        logger.warn("Failed to load " + this.sc + " for ASM verifier.", e);
+        verifyMsg = null;
+      }
+      if (verifyMsg != null && !verifyMsg.isEmpty()) {
+        throw new ValidationException(this.sc, "VerifyError(s) in bytecode:\n" + verifyMsg, "VerifyError(s) in bytecode.");
+      }
+    }
     try {
-      os.write(cw.toByteArray());
+      os.write(bytecode);
     } catch (IOException e) {
       throw new RuntimeException("Could not write class file in the ASM-backend!", e);
     }
@@ -238,7 +302,7 @@ public abstract class AbstractASMBackend {
    *          The PrintWriter the textual representation is written to
    */
   public void generateTextualRepresentation(PrintWriter pw) {
-    cv = new TraceClassVisitor(pw);
+    this.cv = new TraceClassVisitor(pw);
     generateByteCode();
   }
 
@@ -297,44 +361,50 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for all methods of the class
    */
   protected void generateMethods() {
-    List<SootMethod> sortedMethods = new ArrayList<SootMethod>(sc.getMethods());
+    List<SootMethod> sortedMethods = new ArrayList<>(sc.getMethods());
     Collections.sort(sortedMethods, new SootMethodComparator());
     for (SootMethod sm : sortedMethods) {
       if (sm.isPhantom()) {
         continue;
       }
 
-      final int access = getModifiers(sm.getModifiers(), sm);
-      final String name = sm.getName();
-
       StringBuilder descBuilder = new StringBuilder(5);
       descBuilder.append('(');
       for (Type t : sm.getParameterTypes()) {
-        descBuilder.append(toTypeDesc(t));
+        descBuilder.append(ASMBackendUtils.toTypeDesc(t));
       }
       descBuilder.append(')');
-      descBuilder.append(toTypeDesc(sm.getReturnType()));
+      descBuilder.append(ASMBackendUtils.toTypeDesc(sm.getReturnType()));
 
       SignatureTag sigTag = (SignatureTag) sm.getTag(SignatureTag.NAME);
       String sig = sigTag == null ? null : sigTag.getSignature();
 
       List<SootClass> exceptionList = sm.getExceptionsUnsafe();
       String[] exceptions;
-      if (exceptionList != null) {
-        exceptions = new String[exceptionList.size()];
-        int i = 0;
-        for (SootClass exc : exceptionList) {
-          exceptions[i] = slashify(exc.getName());
-          ++i;
-        }
-      } else {
+      if (exceptionList == null) {
         exceptions = new String[0];
+      } else {
+        exceptions = new String[exceptionList.size()];
+        for (ListIterator<SootClass> it = exceptionList.listIterator(); it.hasNext();) {
+          SootClass exc = it.next();
+          exceptions[it.previousIndex()] = ASMBackendUtils.slashify(exc.getName());
+        }
       }
-      MethodVisitor mv = cv.visitMethod(access, name, descBuilder.toString(), sig, exceptions);
+      int access = getModifiers(sm.getModifiers(), sm);
+      MethodVisitor mv = cv.visitMethod(access, sm.getName(), descBuilder.toString(), sig, exceptions);
       if (mv != null) {
         // Visit parameter annotations
         for (Tag t : sm.getTags()) {
-          if (t instanceof VisibilityParameterAnnotationTag) {
+          if (t instanceof VisibilityLocalVariableAnnotationTag) {
+            // Actually supporting this feature would require quite a bit of work.
+            // The problem is that we do not retain all relevant information yet;
+            // these annotations have a start and end statement. Since Soot can optimize
+            // away these statements, we would need to be sure that we update the start and end statements
+            // accordingly.
+            logger.warn(String.format(
+                "Local variable annotation found in %s. Writing out of these annotations is not supported yet.",
+                sm.getSignature()));
+          } else if (t instanceof VisibilityParameterAnnotationTag) {
             VisibilityParameterAnnotationTag vpt = (VisibilityParameterAnnotationTag) t;
             ArrayList<VisibilityAnnotationTag> tags = vpt.getVisibilityAnnotations();
             if (tags != null) {
@@ -343,10 +413,12 @@ public abstract class AbstractASMBackend {
                 if (va == null) {
                   continue;
                 }
-                for (AnnotationTag at : va.getAnnotations()) {
-                  AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
-                      (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
-                  generateAnnotationElems(av, at.getElems(), true);
+                if (va.hasAnnotations()) {
+                  for (AnnotationTag at : va.getAnnotations()) {
+                    AnnotationVisitor av = mv.visitParameterAnnotation(j, at.getType(),
+                        (va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
+                    generateAnnotationElems(av, at.getElems(), true);
+                  }
                 }
               }
             }
@@ -359,9 +431,7 @@ public abstract class AbstractASMBackend {
         if (sm.hasActiveBody()) {
           mv.visitCode();
           generateMethodBody(mv, sm);
-          /*
-           * Correct values are computed automatically by ASM, but we need the call anyways.
-           */
+          // Correct values are computed automatically by ASM, but we need the call anyway.
           mv.visitMaxs(0, 0);
         }
         mv.visitEnd();
@@ -377,15 +447,14 @@ public abstract class AbstractASMBackend {
       if (f.isPhantom()) {
         continue;
       }
-      String name = f.getName();
-      String desc = toTypeDesc(f.getType());
+      String desc = ASMBackendUtils.toTypeDesc(f.getType());
 
       SignatureTag sigTag = (SignatureTag) f.getTag(SignatureTag.NAME);
       String sig = sigTag == null ? null : sigTag.getSignature();
 
-      Object value = getDefaultValue(f);
+      Object value = ASMBackendUtils.getDefaultValue(f);
       int access = getModifiers(f.getModifiers(), f);
-      FieldVisitor fv = cv.visitField(access, name, desc, sig, value);
+      FieldVisitor fv = cv.visitField(access, f.getName(), desc, sig, value);
       if (fv != null) {
         generateAnnotations(fv, f);
         generateAttributes(fv, f);
@@ -415,7 +484,7 @@ public abstract class AbstractASMBackend {
     if (!Options.v().no_output_inner_classes_attribute()) {
       InnerClassAttribute ica = (InnerClassAttribute) sc.getTag(InnerClassAttribute.NAME);
       if (ica != null) {
-        List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
+        List<InnerClassTag> sortedTags = new ArrayList<>(ica.getSpecs());
         Collections.sort(sortedTags, new SootInnerClassComparator());
         writeInnerClassTags(sortedTags);
       } else {
@@ -437,9 +506,9 @@ public abstract class AbstractASMBackend {
    */
   protected void writeInnerClassTags(List<InnerClassTag> sortedTags) {
     for (InnerClassTag ict : sortedTags) {
-      String name = slashify(ict.getInnerClass());
-      String outerClassName = slashify(ict.getOuterClass());
-      String innerName = slashify(ict.getShortName());
+      String name = ASMBackendUtils.slashify(ict.getInnerClass());
+      String outerClassName = ASMBackendUtils.slashify(ict.getOuterClass());
+      String innerName = ASMBackendUtils.slashify(ict.getShortName());
       int access = ict.getAccessFlags();
       cv.visitInnerClass(name, outerClassName, innerName, access);
     }
@@ -451,7 +520,7 @@ public abstract class AbstractASMBackend {
   protected void generateAttributes() {
     for (Tag t : sc.getTags()) {
       if (t instanceof Attribute) {
-        cv.visitAttribute(createASMAttribute((Attribute) t));
+        cv.visitAttribute(ASMBackendUtils.createASMAttribute((Attribute) t));
       }
     }
   }
@@ -467,7 +536,7 @@ public abstract class AbstractASMBackend {
   protected void generateAttributes(FieldVisitor fv, SootField f) {
     for (Tag t : f.getTags()) {
       if (t instanceof Attribute) {
-        fv.visitAttribute(createASMAttribute((Attribute) t));
+        fv.visitAttribute(ASMBackendUtils.createASMAttribute((Attribute) t));
       }
     }
   }
@@ -483,7 +552,7 @@ public abstract class AbstractASMBackend {
   protected void generateAttributes(MethodVisitor mv, SootMethod m) {
     for (Tag t : m.getTags()) {
       if (t instanceof Attribute) {
-        mv.visitAttribute(createASMAttribute((Attribute) t));
+        mv.visitAttribute(ASMBackendUtils.createASMAttribute((Attribute) t));
       }
     }
   }
@@ -502,17 +571,19 @@ public abstract class AbstractASMBackend {
         // Find all VisibilityAnnotationTags
         VisibilityAnnotationTag vat = (VisibilityAnnotationTag) t;
         boolean runTimeVisible = (vat.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE);
-        for (AnnotationTag at : vat.getAnnotations()) {
-          AnnotationVisitor av = null;
-          if (visitor instanceof ClassVisitor) {
-            av = ((ClassVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
-          } else if (visitor instanceof FieldVisitor) {
-            av = ((FieldVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
-          } else if (visitor instanceof MethodVisitor) {
-            av = ((MethodVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
-          }
+        if (vat.hasAnnotations()) {
+          for (AnnotationTag at : vat.getAnnotations()) {
+            AnnotationVisitor av = null;
+            if (visitor instanceof ClassVisitor) {
+              av = ((ClassVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
+            } else if (visitor instanceof FieldVisitor) {
+              av = ((FieldVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
+            } else if (visitor instanceof MethodVisitor) {
+              av = ((MethodVisitor) visitor).visitAnnotation(at.getType(), runTimeVisible);
+            }
 
-          generateAnnotationElems(av, at.getElems(), true);
+            generateAnnotationElems(av, at.getElems(), true);
+          }
         }
       } else if (t instanceof AnnotationDefaultTag && host instanceof SootMethod) {
         // Visit AnnotationDefault on methods
@@ -610,13 +681,13 @@ public abstract class AbstractASMBackend {
    * Emits the bytecode for a reference to an outer class if necessary
    */
   protected void generateOuterClassReference() {
-    String outerClassName = slashify(sc.getOuterClass().getName());
+    String outerClassName = ASMBackendUtils.slashify(sc.getOuterClass().getName());
     String enclosingMethod = null;
     String enclosingMethodSig = null;
     EnclosingMethodTag emTag = (EnclosingMethodTag) sc.getTag(EnclosingMethodTag.NAME);
     if (emTag != null) {
       if (!sc.hasOuterClass()) {
-        outerClassName = slashify(emTag.getEnclosingClass());
+        outerClassName = ASMBackendUtils.slashify(emTag.getEnclosingClass());
       }
       enclosingMethod = emTag.getEnclosingMethod();
       enclosingMethodSig = emTag.getEnclosingMethodSig();
@@ -624,7 +695,7 @@ public abstract class AbstractASMBackend {
     if (!sc.hasOuterClass()) {
       OuterClassTag oct = (OuterClassTag) sc.getTag(OuterClassTag.NAME);
       if (oct != null) {
-        outerClassName = slashify(oct.getName());
+        outerClassName = ASMBackendUtils.slashify(oct.getName());
       }
     }
     cv.visitOuterClass(outerClassName, enclosingMethod, enclosingMethodSig);
@@ -640,7 +711,7 @@ public abstract class AbstractASMBackend {
     int modifier = getModifiers(sc.getModifiers(), sc);
 
     // Retrieve class-name
-    String className = slashify(sc.getName());
+    String className = ASMBackendUtils.slashify(sc.getName());
     // Retrieve generics
     SignatureTag sigTag = (SignatureTag) sc.getTag(SignatureTag.NAME);
     String sig = sigTag == null ? null : sigTag.getSignature();
@@ -652,14 +723,14 @@ public abstract class AbstractASMBackend {
     String superClass = "java/lang/Object".equals(className) ? null : "java/lang/Object";
     SootClass csuperClass = sc.getSuperclassUnsafe();
     if (csuperClass != null) {
-      superClass = slashify(csuperClass.getName());
+      superClass = ASMBackendUtils.slashify(csuperClass.getName());
     }
 
     // Retrieve directly implemented interfaces
     String[] interfaces = new String[sc.getInterfaceCount()];
     int i = 0;
     for (SootClass interf : sc.getInterfaces()) {
-      interfaces[i] = slashify(interf.getName());
+      interfaces[i] = ASMBackendUtils.slashify(interf.getName());
       ++i;
     }
 

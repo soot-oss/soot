@@ -44,10 +44,7 @@ public class TargetMethodsFinder {
     while (it.hasNext()) {
       Edge edge = it.next();
       SootMethod targetMethod = edge.tgt();
-      if (targetMethod.isNative() && !canBeNative) {
-        continue;
-      }
-      if (edge.kind() == Kind.CLINIT) {
+      if ((targetMethod.isNative() && !canBeNative) || (edge.kind() == Kind.CLINIT)) {
         continue;
       }
       target.add(targetMethod);

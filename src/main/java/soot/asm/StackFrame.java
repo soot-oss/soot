@@ -30,6 +30,7 @@ import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Jimple;
+import soot.jimple.internal.JNopStmt;
 
 /**
  * Frame of stack for an instruction.
@@ -186,10 +187,12 @@ final class StackFrame {
             src.setUnit(newOp.insn, as);
           } else {
             Unit u = src.getUnit(newOp.insn);
-            DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
-            ValueBox lvb = as.getLeftOpBox();
-            assert lvb.getValue() == newOp.stack : "Invalid stack local!";
-            lvb.setValue(stack);
+            if (!(u instanceof JNopStmt)) {
+              DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
+              ValueBox lvb = as.getLeftOpBox();
+              assert lvb.getValue() == newOp.stack : "Invalid stack local!";
+              lvb.setValue(stack);
+            }
             newOp.stack = stack;
           }
           newOp.updateBoxes();

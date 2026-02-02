@@ -24,6 +24,7 @@ package soot.jimple.toolkits.scalar;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import soot.SideEffectTester;
@@ -119,7 +120,8 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, 
           out.remove(avail, out);
         }
       } else {
-        for (ValueBox vb : avail.getUseBoxes()) {
+        for (Iterator<ValueBox> iterator = avail.getUseBoxesIterator(); iterator.hasNext();) {
+          ValueBox vb = iterator.next();
           Value use = vb.getValue();
           if (st.unitCanWriteTo(u, use)) {
             out.remove(avail, out);

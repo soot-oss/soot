@@ -23,6 +23,7 @@ package soot;
  */
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.util.Switchable;
@@ -38,6 +39,15 @@ public interface Value extends Switchable, EquivTo, Serializable {
    * Returns a List of boxes corresponding to Values which are used by (ie contained within) this Value.
    */
   public List<ValueBox> getUseBoxes();
+
+  /**
+   * Returns an iterator over all use boxes. Potentially more efficient than <i>getUseBoxes</i>
+   * 
+   * @return iterator over all use boxes
+   */
+  public default Iterator<ValueBox> getUseBoxesIterator() {
+    return getUseBoxes().iterator();
+  }
 
   /**
    * Returns the Soot type of this Value.

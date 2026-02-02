@@ -35,6 +35,7 @@ import soot.baf.PushInst;
 import soot.baf.StoreInst;
 import soot.jbco.IJbcoTransform;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 
 /**
@@ -66,7 +67,7 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
     while (changed) {
       changed = false;
       Unit prevprevprev = null, prevprev = null, prev = null;
-      ExceptionalUnitGraph eug = new ExceptionalUnitGraph(b);
+      ExceptionalUnitGraph eug = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
       Iterator<Unit> it = units.snapshotIterator();
       while (it.hasNext()) {
         Unit u = it.next();

@@ -1,5 +1,10 @@
 package soot.jimple;
 
+import soot.jimple.internal.JCheckedAddExpr;
+import soot.jimple.internal.JCheckedCastExpr;
+import soot.jimple.internal.JCheckedMulExpr;
+import soot.jimple.internal.JCheckedSubExpr;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -88,4 +93,21 @@ public interface ExprSwitch extends soot.util.Switch {
   public abstract void caseNegExpr(NegExpr v);
 
   public abstract void defaultCase(Object obj);
+
+  public default void caseCheckedAddExpr(JCheckedAddExpr v) {
+    caseAddExpr(v);
+  }
+
+  public default void caseCheckedSubExpr(JCheckedSubExpr v) {
+    caseSubExpr(v);
+  }
+
+  public default void caseCheckedMulExpr(JCheckedMulExpr v) {
+    caseMulExpr(v);
+  }
+
+  public default void caseCheckedCastExpr(JCheckedCastExpr v) {
+    caseCastExpr(v);
+  }
+
 }

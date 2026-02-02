@@ -55,4 +55,14 @@ public interface DominatorsFinder<N> {
    * True if "node" is dominated by all nodes in "dominators" in the graph.
    **/
   public boolean isDominatedByAll(N node, Collection<N> dominators);
+
+  /**
+   * True if "node" is dominated by any node in "dominators" in the graph.
+   **/
+  public boolean isDominatedByAny(N node, Collection<N> dominators);
+
+  /**
+   * True if "node" dominates all given nodes in the graph.
+   **/
+  boolean isDominatingAllGiven(N node, Collection<N> given);
 }

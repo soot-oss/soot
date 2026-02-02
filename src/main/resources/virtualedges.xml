@@ -1,453 +1,1775 @@
 <?xml version="1.0"?>
 <virtualedges>
-	<!-- Thread.start()  -->
-	<edge type="THREAD">
-		<source invoketype="instance" subsignature="void start()" />
+	<!-- Thread.start() -->
+	<edge>
+		<source declaringclass="java.lang.Thread" invoketype="instance"
+			subsignature="void start()" />
 		<targets>
-			<direct subsignature="void run()" target="base"/>
+			<direct subsignature="void run()" target-position="base" />
+			<indirect
+				subsignature="void &lt;init&gt;(java.lang.Runnable)"
+				target-position="base">
+				<direct subsignature="void run()" target-position="argument"
+					index="0" />
+			</indirect>
+			<indirect
+				subsignature="void &lt;init&gt;(java.lang.Runnable,java.lang.String)"
+				target-position="base">
+				<direct subsignature="void run()" target-position="argument"
+					index="0" />
+			</indirect>
+			<indirect
+				subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.Runnable)"
+				target-position="base">
+				<direct subsignature="void run()" target-position="argument"
+					index="1" />
+			</indirect>
+			<indirect
+				subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.Runnable,java.lang.String)"
+				target-position="base">
+				<direct subsignature="void run()" target-position="argument"
+					index="1" />
+			</indirect>
+			<indirect
+				subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.Runnable,java.lang.String,long)"
+				target-position="base">
+				<direct subsignature="void run()" target-position="argument"
+					index="1" />
+			</indirect>
 		</targets>
 	</edge>
-	
+
 	<!-- execute and post methods -->
 	<edge type="EXECUTOR">
-		<source invoketype="instance" subsignature="void execute(java.lang.Runnable)" />
+		<source invoketype="instance"
+			declaringclass="java.util.concurrent.Executor"
+			subsignature="void execute(java.lang.Runnable)" />
 		<targets>
-			<direct subsignature="void run()" target-position="argument" index="0"/>
+			<direct subsignature="void run()" target-position="argument"
+				index="0" />
 		</targets>
 	</edge>
 	<edge type="EXECUTOR">
-		<source invoketype="instance" subsignature="boolean post(java.lang.Runnable)" />
+		<source invoketype="instance"
+			declaringclass="java.util.concurrent.Executor"
+			subsignature="boolean post(java.lang.Runnable)" />
 		<targets>
-			<direct subsignature="void run()" target-position="argument" index="0"/>
+			<direct subsignature="void run()" target-position="argument"
+				index="0" />
 		</targets>
 	</edge>
 	<edge type="EXECUTOR">
-		<source invoketype="instance" subsignature="boolean postAtFrontOfQueue(java.lang.Runnable)" />
+		<source invoketype="instance"
+			declaringclass="java.util.concurrent.Executor"
+			subsignature="boolean postAtFrontOfQueue(java.lang.Runnable)" />
 		<targets>
-			<direct subsignature="void run()" target-position="argument" index="0"/>
+			<direct subsignature="void run()" target-position="argument"
+				index="0" />
 		</targets>
 	</edge>
 	<edge type="EXECUTOR">
-		<source invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,long)" />
+		<source invoketype="instance"
+			declaringclass="java.util.concurrent.Executor"
+			subsignature="boolean postAtTime(java.lang.Runnable,long)" />
 		<targets>
-			<direct subsignature="void run()" target-position="argument" index="0"/>
+			<direct subsignature="void run()" target-position="argument"
+				index="0" />
 		</targets>
 	</edge>
 	<edge type="EXECUTOR">
-		<source invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,java.lang.Object,long)" />
+		<source invoketype="instance"
+			declaringclass="java.util.concurrent.Executor"
+			subsignature="boolean postAtTime(java.lang.Runnable,java.lang.Object,long)" />
 		<targets>
-			<direct subsignature="void run()" target-position="argument" index="0"/>
+			<direct subsignature="void run()" target-position="argument"
+				index="0" />
 		</targets>
 	</edge>
 	<edge type="EXECUTOR">
-		<source invoketype="instance" subsignature="boolean postDelayed(java.lang.Runnable,long)" />
+		<source invoketype="instance"
+			declaringclass="java.util.concurrent.Executor"
+			subsignature="boolean postDelayed(java.lang.Runnable,long)" />
 		<targets>
-			<direct subsignature="void run()" target-position="argument" index="0"/>
+			<direct subsignature="void run()" target-position="argument"
+				index="0" />
 		</targets>
 	</edge>
-	
+
 	<!-- Android runOnUIThread -->
 	<edge type="EXECUTOR">
-		<source invoketype="instance" subsignature="void runOnUiThread(java.lang.Runnable)" />
+		<source invoketype="instance"
+			declaringclass="android.app.Activity"
+			subsignature="void runOnUiThread(java.lang.Runnable)" />
 		<targets>
-			<direct subsignature="void run()" target-position="argument" index="0"/>
+			<direct subsignature="void run()" target-position="argument"
+				index="0" />
 		</targets>
 	</edge>
-	
+
 	<!-- Handlers -->
 	<edge type="HANDLER">
-		<source invoketype="instance" subsignature="boolean sendEmptyMessage(int)" />
+		<source invoketype="instance"
+			declaringclass="android.os.Handler"
+			subsignature="boolean sendEmptyMessage(int)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)"
+				target-position="base" />
 		</targets>
 	</edge>
 	<edge type="HANDLER">
-		<source invoketype="instance" subsignature="boolean sendEmptyMessageAtTime(int,long)" />
+		<source invoketype="instance"
+			declaringclass="android.os.Handler"
+			subsignature="boolean sendEmptyMessageAtTime(int,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)"
+				target-position="base" />
 		</targets>
 	</edge>
 	<edge type="HANDLER">
-		<source invoketype="instance" subsignature="boolean sendEmptyMessageDelayed(int,long)" />
+		<source invoketype="instance"
+			subsignature="boolean sendEmptyMessageDelayed(int,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)"
+				target-position="base" />
 		</targets>
 	</edge>
 	<edge type="HANDLER">
-		<source invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,long)" />
+		<source invoketype="instance"
+			declaringclass="android.os.Handler"
+			subsignature="boolean postAtTime(java.lang.Runnable,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)"
+				target-position="base" />
 		</targets>
 	</edge>
 	<edge type="HANDLER">
-		<source invoketype="instance" subsignature="boolean sendMessageAtFrontOfQueue(android.os.Message)" />
+		<source invoketype="instance"
+			declaringclass="android.os.Handler"
+			subsignature="boolean sendMessageAtFrontOfQueue(android.os.Message)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)"
+				target-position="base" />
 		</targets>
 	</edge>
 	<edge type="HANDLER">
-		<source invoketype="instance" subsignature="boolean sendMessageAtTime(android.os.Message,long)" />
+		<source invoketype="instance"
+			declaringclass="android.os.Handler"
+			subsignature="boolean sendMessageAtTime(android.os.Message,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)"
+				target-position="base" />
 		</targets>
 	</edge>
 	<edge type="HANDLER">
-		<source invoketype="instance" subsignature="boolean sendMessageDelayed(android.os.Message,long)" />
+		<source invoketype="instance"
+			declaringclass="android.os.Handler"
+			subsignature="boolean sendMessageDelayed(android.os.Message,long)" />
 		<targets>
-			<direct subsignature="void handleMessage(android.os.Message)" target="base"/>
+			<direct subsignature="void handleMessage(android.os.Message)"
+				target-position="base" />
 		</targets>
 	</edge>
 	<edge>
-		<source invoketype="instance" subsignature="void send(org.eclipse.jetty.client.api.Response$CompleteListener)" />
+		<source invoketype="instance"
+			declaringclass="org.eclipse.jetty.client.api.Request"
+			subsignature="void send(org.eclipse.jetty.client.api.Response$CompleteListener)" />
 		<targets>
-			<direct subsignature="void onComplete(org.eclipse.jetty.client.api.Result)" target-position="argument" index="0"/>
+			<direct
+				subsignature="void onComplete(org.eclipse.jetty.client.api.Result)"
+				target-position="argument" index="0" />
 		</targets>
 	</edge>
 	<edge>
-		<source invoketype="instance" subsignature="java.util.concurrent.Future execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.concurrent.FutureCallback)>($r2, $r3)" />
+		<source invoketype="instance"
+			declaringclass="org.apache.http.nio.client.HttpAsyncClient"
+			subsignature="java.util.concurrent.Future execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.concurrent.FutureCallback)" />
 		<targets>
-			<direct subsignature="void completed(org.apache.http.HttpResponse)" target-position="argument" index="1"/>
+			<direct
+				subsignature="void completed(org.apache.http.HttpResponse)"
+				target-position="argument" index="1" />
 		</targets>
 	</edge>
-	
-	
+
+
 	<!-- Android AsyncTask -->
-    <edge type="ASYNCTASK">
-        <source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
-        <targets>
-            <direct subsignature="java.lang.Object doInBackground(java.lang.Object[])" target="base"/>
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
-        <targets>
-            <direct subsignature="void onPreExecute()" target="base"/>
-            <direct subsignature="void onProgressUpdate(java.lang.Object[])" target="base"/>
-            <direct subsignature="void onPostExecute(java.lang.Object)" target="base"/>
-        </targets>
-    </edge>
+	<edge type="ASYNCTASK">
+		<source invoketype="instance"
+			declaringclass="android.os.AsyncTask"
+			subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object doInBackground(java.lang.Object[])"
+				target-position="base">
+				<parameterMappings>
+					<direct sourceIdx="0" targetIdx="0" />
+				</parameterMappings>
+			</direct>
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.os.AsyncTask"
+			subsignature="android.os.AsyncTask execute(java.lang.Object[])" />
+		<targets>
+			<direct subsignature="void onPreExecute()"
+				target-position="base" />
+			<direct
+				subsignature="void onProgressUpdate(java.lang.Object[])"
+				target-position="base">
+				<parameterMappings>
+					<direct sourceIdx="0" targetIdx="0" />
+				</parameterMappings>
+			</direct>
+			<direct subsignature="void onPostExecute(java.lang.Object)"
+				target-position="base">
+				<parameterMappings>
+					<direct sourceIdx="0" targetIdx="0" />
+				</parameterMappings>
+			</direct>
+		</targets>
+	</edge>
 	<!-- doPrivileged -->
 	<edge type="PRIVILEGED">
-		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)&gt;" />
+		<source invoketype="static"
+			signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)&gt;" />
 		<targets>
-			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
+			<direct subsignature="java.lang.Object run()"
+				target-position="argument" index="0" />
 		</targets>
 	</edge>
 	<edge type="PRIVILEGED">
-		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)&gt;" />
+		<source invoketype="static"
+			signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)&gt;" />
 		<targets>
-			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
+			<direct subsignature="java.lang.Object run()"
+				target-position="argument" index="0" />
 		</targets>
 	</edge>
 	<edge type="PRIVILEGED">
-		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)&gt;" />
+		<source invoketype="static"
+			signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)&gt;" />
 		<targets>
-			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
+			<direct subsignature="java.lang.Object run()"
+				target-position="argument" index="0" />
 		</targets>
 	</edge>
 	<edge type="PRIVILEGED">
-		<source invoketype="static" signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)&gt;" />
+		<source invoketype="static"
+			signature="&lt;java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)&gt;" />
 		<targets>
-			<direct subsignature="java.lang.Object run()" target-position="argument" index="0" />
+			<direct subsignature="java.lang.Object run()"
+				target-position="argument" index="0" />
 		</targets>
 	</edge>
-	
-	<!-- An example for a callback called through indirection. onResponse() will not be called if it is only passed to a request constructor, but when the Request is scheduled to a RequestQueue. -->
-	
 	<edge>
-		<source invoketype="instance" subsignature="com.android.volley.Request add(com.android.volley.Request)" />
+		<source invoketype="instance"
+			declaringclass="java.lang.Thread"
+			subsignature="void setUncaughtExceptionHandler(java.lang.Thread$UncaughtExceptionHandler)" />
 		<targets>
-			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(int,java.lang.String,com.android.volley.Response$ErrorListener)">
-				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="2" />
+			<direct subsignature="void uncaughtException(java.lang.Thread,java.lang.Throwable)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="java.lang.ThreadGroup"
+			subsignature="void &lt;init&gt;(java.lang.String)" />
+		<targets>
+			<direct subsignature="void uncaughtException(java.lang.Thread,java.lang.Throwable)"
+				target-position="base" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="java.lang.ThreadGroup"
+			subsignature="void &lt;init&gt;(java.lang.ThreadGroup,java.lang.String)" />
+		<targets>
+			<direct subsignature="void uncaughtException(java.lang.Thread,java.lang.Throwable)"
+				target-position="base" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+			signature="&lt;java.lang.Thread: void setDefaultUncaughtExceptionHandler(java.lang.Thread$UncaughtExceptionHandler)&gt;" />
+		<targets>
+			<direct subsignature="void uncaughtException(java.lang.Thread,java.lang.Throwable)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- An example for a callback called through indirection. onResponse() 
+		will not be called if it is only passed to a request constructor, but when 
+		the Request is scheduled to a RequestQueue. -->
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.android.volley.RequestQueue"
+			subsignature="com.android.volley.Request add(com.android.volley.Request)" />
+		<targets>
+			<indirect target-position="argument" index="0"
+				subsignature="void &lt;init&gt;(int,java.lang.String,com.android.volley.Response$ErrorListener)">
+				<direct
+					subsignature="void onErrorResponse(com.android.volley.VolleyError)"
+					target-position="argument" index="2" />
 			</indirect>
-			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(java.lang.String,com.android.volley.Response$ErrorListener)">
-				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="2" />
+			<indirect target-position="argument" index="0"
+				subsignature="void &lt;init&gt;(java.lang.String,com.android.volley.Response$ErrorListener)">
+				<direct
+					subsignature="void onErrorResponse(com.android.volley.VolleyError)"
+					target-position="argument" index="2" />
 			</indirect>
-			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(int,java.lang.String,com.android.volley.Response$Listener,com.android.volley.Response$ErrorListener)">
-				<direct subsignature="void onResponse(java.lang.Object)" target-position="argument" index="2" />
-				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="3" />
+			<indirect target-position="argument" index="0"
+				subsignature="void &lt;init&gt;(int,java.lang.String,com.android.volley.Response$Listener,com.android.volley.Response$ErrorListener)">
+				<direct subsignature="void onResponse(java.lang.Object)"
+					target-position="argument" index="2" />
+				<direct
+					subsignature="void onErrorResponse(com.android.volley.VolleyError)"
+					target-position="argument" index="3" />
 			</indirect>
-			<indirect target-position="argument" index="0" subsignature="void &lt;init&gt;(java.lang.String,com.android.volley.Response$Listener,com.android.volley.Response$ErrorListener)">
-				<direct subsignature="void onResponse(java.lang.Object)" target-position="argument" index="1" />
-				<direct subsignature="void onErrorResponse(com.android.volley.VolleyError)" target-position="argument" index="2" />
+			<indirect target-position="argument" index="0"
+				subsignature="void &lt;init&gt;(java.lang.String,com.android.volley.Response$Listener,com.android.volley.Response$ErrorListener)">
+				<direct subsignature="void onResponse(java.lang.Object)"
+					target-position="argument" index="1" />
+				<direct
+					subsignature="void onErrorResponse(com.android.volley.VolleyError)"
+					target-position="argument" index="2" />
 			</indirect>
 		</targets>
 	</edge>
-	
-	<!-- callback summaries automatically detected from real-world applications. previously, soot failed to add any edges into these callback functions. -->
-	
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="java.io.ObjectInputStream"
+			subsignature="void registerValidation(java.io.ObjectInputValidation,int)" />
+		<targets>
+			<direct
+				subsignature="void validateObject()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<!-- callback summaries automatically detected from real-world applications. 
+		previously, soot failed to add any edges into these callback functions. -->
+
 	<!-- java.io.Files list predicate -->
 	<edge>
-        <source invoketype="instance" subsignature="java.lang.String[] list(java.io.FilenameFilter)" />
-        <targets>
-            <direct subsignature="boolean accept(java.io.File,java.lang.String)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="java.io.File[] listFiles(java.io.FilenameFilter)" />
-        <targets>
-            <direct subsignature="boolean accept(java.io.File,java.lang.String)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="java.io.File[] listFiles(java.io.FileFilter)" />
-        <targets>
-            <direct subsignature="boolean accept(java.io.File)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- Java reflection  -->
-    <edge>
-        <source invoketype="instance" subsignature="java.lang.Object newProxyInstance(java.lang.ClassLoader,java.lang.Class[],java.lang.reflect.InvocationHandler)" />
-        <targets>
-            <direct subsignature="java.lang.Object invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])" target-position="argument" index="2" />
-        </targets>
-    </edge>
-    
-    <!-- java.net.URLStreamHandler -->
-    <edge>
-        <source invoketype="instance" subsignature="void setURLStreamHandlerFactory(java.net.URLStreamHandlerFactory)" />
-        <targets>
-            <direct subsignature="java.net.URLStreamHandler createURLStreamHandler(java.lang.String)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- Android Tasks API -->
-    <edge>
-        <source invoketype="instance" subsignature="com.google.android.gms.tasks.Task addOnCompleteListener(com.google.android.gms.tasks.OnCompleteListener)" />
-        <targets>
-            <direct subsignature="void onComplete(com.google.android.gms.tasks.Task)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="com.google.android.gms.tasks.Task addOnCompleteListener(android.app.Activity,com.google.android.gms.tasks.OnCompleteListener)" />
-        <targets>
-            <direct subsignature="void onComplete(com.google.android.gms.tasks.Task)" target-position="argument" index="1" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="com.google.android.gms.tasks.Task addOnFailureListener(com.google.android.gms.tasks.OnFailureListener)" />
-        <targets>
-            <direct subsignature="void onFailure(java.lang.Exception)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="com.google.android.gms.tasks.Task continueWithTask(java.util.concurrent.Executor,com.google.android.gms.tasks.Continuation)" />
-        <targets>
-            <direct subsignature="java.lang.Object then(com.google.android.gms.tasks.Task)" target-position="argument" index="1" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="com.google.android.gms.tasks.Task call(java.util.concurrent.Executor,java.util.concurrent.Callable)" />
-        <targets>
-            <direct subsignature="java.lang.Object call()" target-position="argument" index="1" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="com.google.android.gms.tasks.Task addOnCompleteListener(java.util.concurrent.Executor,com.google.android.gms.tasks.OnCompleteListener)" />
-        <targets>
-            <direct subsignature="void onComplete(com.google.android.gms.tasks.Task)" target-position="argument" index="1" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="void setResultCallback(com.google.android.gms.common.api.ResultCallback,long,java.util.concurrent.TimeUnit)" />
-        <targets>
-            <direct subsignature="void onResult(com.google.android.gms.common.api.Result)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-   
-    <!-- Android Misc. -->
-    <edge>
-        <source invoketype="instance" subsignature="void startConnection(com.android.installreferrer.api.InstallReferrerStateListener)" />
-        <targets>
-            <direct subsignature="void onInstallReferrerSetupFinished(int)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- Kotlin Lazy Evaluation -->
-    <edge>
-        <source invoketype="instance" subsignature="kotlin.Lazy lazy(kotlin.jvm.functions.Function0)" />
-        <targets>
-            <direct subsignature="java.lang.Object invoke()" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- Google Ads -->
-    <edge>
-        <source invoketype="instance" subsignature="com.google.android.gms.ads.AdLoader$Builder forUnifiedNativeAd(com.google.android.gms.ads.formats.UnifiedNativeAd$OnUnifiedNativeAdLoadedListener)" />
-        <targets>
-            <direct subsignature="void onUnifiedNativeAdLoaded(com.google.android.gms.ads.formats.UnifiedNativeAd)" target-position="argument" index="0" />
-        </targets>
-    </edge>
+		<source invoketype="instance" declaringclass="java.io.File"
+			subsignature="java.lang.String[] list(java.io.FilenameFilter)" />
+		<targets>
+			<direct
+				subsignature="boolean accept(java.io.File,java.lang.String)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
 	<edge>
-        <source invoketype="instance" subsignature="void requestConsentInfoUpdate(java.lang.String[],com.google.ads.consent.ConsentInfoUpdateListener)" />
-        <targets>
-            <direct subsignature="void onFailedToUpdateConsentInfo(java.lang.String)" target-position="argument" index="1" />
-            <direct subsignature="void onConsentInfoUpdated(com.google.ads.consent.ConsentStatus)" target-position="argument" index="1" />
-        </targets>
-    </edge>
-     <edge>
-        <source invoketype="instance" subsignature="void openContainer(com.google.tagmanager.TagManager,java.lang.String,com.google.tagmanager.ContainerOpener$OpenType,java.lang.Long,com.google.tagmanager.ContainerOpener$Notifier)" />
-        <targets>
-            <direct subsignature="void containerAvailable(com.google.tagmanager.Container)" target-position="argument" index="4" />
-        </targets>
-    </edge>
-    
-	<!-- Android IAB -->
-    <edge>
-        <source invoketype="instance" subsignature="void startSetup(com.android.vending.billing.util.IabHelper$OnIabSetupFinishedListener)" />
-        <targets>
-            <direct subsignature="void onIabSetupFinished(com.android.vending.billing.util.IabResult)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="void startConnection(com.android.billingclient.api.BillingClientStateListener)" />
-        <targets>
-            <direct subsignature="void onBillingSetupFinished(int)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- Dagger -->
-    <edge>
-        <source invoketype="instance" subsignature="dagger.internal.Binding contributeProvidesBinding(java.lang.String,dagger.internal.ProvidesBinding)" />
-        <targets>
-            <direct subsignature="java.lang.Object get()" target-position="argument" index="1" />
-        </targets>
-    </edge>
-    
-     <!-- Apache Http -->
-    <edge>
-        <source invoketype="instance" subsignature="java.lang.Object execute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.client.ResponseHandler)" />
-        <targets>
-            <direct subsignature="java.lang.Object handleResponse(org.apache.http.HttpResponse)" target-position="argument" index="2" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="void addRequestInterceptor(org.apache.http.HttpRequestInterceptor)" />
-        <targets>
-            <direct subsignature="void process(org.apache.http.HttpRequest,org.apache.http.protocol.HttpContext)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="void addResponseInterceptor(org.apache.http.HttpResponseInterceptor)" />
-        <targets>
-            <direct subsignature="void process(org.apache.http.HttpResponse,org.apache.http.protocol.HttpContext)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="void setEntity(org.apache.http.HttpEntity)" />
-        <targets>
-            <direct subsignature="org.apache.http.Header getContentType()" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="java.lang.Object execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.client.ResponseHandler)" />
-        <targets>
-            <direct subsignature="java.lang.Object handleResponse(org.apache.http.HttpResponse)" target-position="argument" index="1" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="void setRedirectHandler(org.apache.http.client.RedirectHandler)" />
-        <targets>
-            <direct subsignature="boolean isRedirectRequested(org.apache.http.HttpResponse,org.apache.http.protocol.HttpContext)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="java.lang.Object execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.client.ResponseHandler)" />
-        <targets>
-            <direct subsignature="java.lang.Object handleResponse(org.apache.http.HttpResponse)" target-position="argument" index="1" />
-        </targets>
-    </edge>
-    
-    <!-- ReactiveX -->
-    <edge>
-        <source invoketype="instance" subsignature="io.reactivex.Observable filter(io.reactivex.functions.Predicate)" />
-        <targets>
-            <direct subsignature="boolean test(java.lang.Object)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="io.reactivex.disposables.Disposable subscribe(io.reactivex.functions.Consumer)" />
-        <targets>
-            <direct subsignature="void accept(java.lang.Object)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="io.reactivex.Single fromCallable(java.util.concurrent.Callable)" />
-        <targets>
-            <direct subsignature="java.lang.Object call()" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="io.reactivex.Single create(io.reactivex.SingleOnSubscribe)" />
-        <targets>
-            <direct subsignature="void subscribe(io.reactivex.SingleEmitter)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="io.reactivex.Maybe filter(io.reactivex.functions.Predicate)" />
-        <targets>
-            <direct subsignature="boolean test(java.lang.Object)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- OkHttp -->
-    <edge>
-        <source invoketype="instance" subsignature="okhttp3.OkHttpClient$Builder addInterceptor(okhttp3.Interceptor)" />
-        <targets>
-            <direct subsignature="okhttp3.Response intercept(okhttp3.Interceptor$Chain)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- actionbarsherlock -->
-    <edge>
-        <source invoketype="instance" subsignature="void setOnQueryTextListener(com.actionbarsherlock.widget.SearchView$OnQueryTextListener)" />
-        <targets>
-            <direct subsignature="boolean onQueryTextChange(java.lang.String)" target-position="argument" index="0" />
-        </targets>
-    </edge>
+		<source invoketype="instance" declaringclass="java.io.File"
+			subsignature="java.io.File[] listFiles(java.io.FilenameFilter)" />
+		<targets>
+			<direct
+				subsignature="boolean accept(java.io.File,java.lang.String)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance" declaringclass="java.io.File"
+			subsignature="java.io.File[] listFiles(java.io.FileFilter)" />
+		<targets>
+			<direct subsignature="boolean accept(java.io.File)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
 
-    <!-- GSON -->
-    <edge>
-        <source invoketype="instance" subsignature="com.google.gson.GsonBuilder registerTypeAdapterFactory(com.google.gson.TypeAdapterFactory)" />
-        <targets>
-            <direct subsignature="com.google.gson.TypeAdapter create(com.google.gson.Gson,com.google.gson.reflect.TypeToken)" target-position="argument" index="0" />
-        </targets>
-    </edge>
+	<!-- Java reflection -->
 	<edge>
-        <source invoketype="instance" subsignature="com.google.gson.GsonBuilder setFieldNamingStrategy(com.google.gson.FieldNamingStrategy)" />
-        <targets>
-            <direct subsignature="java.lang.String translateName(java.lang.reflect.Field)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
+		<source invoketype="instance"
+			declaringclass="java.lang.reflect.Proxy"
+			subsignature="java.lang.Object newProxyInstance(java.lang.ClassLoader,java.lang.Class[],java.lang.reflect.InvocationHandler)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+
+	<!-- java.net.URLStreamHandler -->
+	<edge>
+		<source invoketype="instance" declaringclass="java.net.URL"
+			subsignature="void setURLStreamHandlerFactory(java.net.URLStreamHandlerFactory)" />
+		<targets>
+			<direct
+				subsignature="java.net.URLStreamHandler createURLStreamHandler(java.lang.String)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- Android Tasks API -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.android.gms.tasks.Task"
+			subsignature="com.google.android.gms.tasks.Task addOnCompleteListener(com.google.android.gms.tasks.OnCompleteListener)" />
+		<targets>
+			<direct
+				subsignature="void onComplete(com.google.android.gms.tasks.Task)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.android.gms.tasks.Task"
+			subsignature="com.google.android.gms.tasks.Task addOnCompleteListener(android.app.Activity,com.google.android.gms.tasks.OnCompleteListener)" />
+		<targets>
+			<direct
+				subsignature="void onComplete(com.google.android.gms.tasks.Task)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.android.gms.tasks.Task"
+			subsignature="com.google.android.gms.tasks.Task addOnFailureListener(com.google.android.gms.tasks.OnFailureListener)" />
+		<targets>
+			<direct subsignature="void onFailure(java.lang.Exception)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.android.gms.tasks.Task"
+			subsignature="com.google.android.gms.tasks.Task continueWithTask(java.util.concurrent.Executor,com.google.android.gms.tasks.Continuation)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object then(com.google.android.gms.tasks.Task)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			subsignature="com.google.android.gms.tasks.Task call(java.util.concurrent.Executor,java.util.concurrent.Callable)" />
+		<targets>
+			<direct subsignature="java.lang.Object call()"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.android.gms.tasks.Task"
+			subsignature="com.google.android.gms.tasks.Task addOnCompleteListener(java.util.concurrent.Executor,com.google.android.gms.tasks.OnCompleteListener)" />
+		<targets>
+			<direct
+				subsignature="void onComplete(com.google.android.gms.tasks.Task)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.android.gms.common.api.PendingResult"
+			subsignature="void setResultCallback(com.google.android.gms.common.api.ResultCallback,long,java.util.concurrent.TimeUnit)" />
+		<targets>
+			<direct
+				subsignature="void onResult(com.google.android.gms.common.api.Result)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- Android Misc. -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.android.installreferrer.api.InstallReferrerClient"
+			subsignature="void startConnection(com.android.installreferrer.api.InstallReferrerStateListener)" />
+		<targets>
+			<direct
+				subsignature="void onInstallReferrerSetupFinished(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- Kotlin Lazy Evaluation -->
+	<edge>
+		<source invoketype="instance"
+			subsignature="kotlin.Lazy lazy(kotlin.jvm.functions.Function0)" />
+		<targets>
+			<direct subsignature="java.lang.Object invoke()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- Google Ads -->
+	<edge>
+		<source invoketype="instance"
+			subsignature="com.google.android.gms.ads.AdLoader$Builder forUnifiedNativeAd(com.google.android.gms.ads.formats.UnifiedNativeAd$OnUnifiedNativeAdLoadedListener)" />
+		<targets>
+			<direct
+				subsignature="void onUnifiedNativeAdLoaded(com.google.android.gms.ads.formats.UnifiedNativeAd)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.ads.consent.ConsentInformation"
+			subsignature="void requestConsentInfoUpdate(java.lang.String[],com.google.ads.consent.ConsentInfoUpdateListener)" />
+		<targets>
+			<direct
+				subsignature="void onFailedToUpdateConsentInfo(java.lang.String)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void onConsentInfoUpdated(com.google.ads.consent.ConsentStatus)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.tagmanager.ContainerOpener"
+			subsignature="void openContainer(com.google.tagmanager.TagManager,java.lang.String,com.google.tagmanager.ContainerOpener$OpenType,java.lang.Long,com.google.tagmanager.ContainerOpener$Notifier)" />
+		<targets>
+			<direct
+				subsignature="void containerAvailable(com.google.tagmanager.Container)"
+				target-position="argument" index="4" />
+		</targets>
+	</edge>
+
+	<!-- Android IAB -->
+	<edge>
+		<source invoketype="instance"
+			subsignature="void startSetup(com.android.vending.billing.util.IabHelper$OnIabSetupFinishedListener)" />
+		<targets>
+			<direct
+				subsignature="void onIabSetupFinished(com.android.vending.billing.util.IabResult)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.android.billingclient.api.BillingClient"
+			subsignature="void startConnection(com.android.billingclient.api.BillingClientStateListener)" />
+		<targets>
+			<direct subsignature="void onBillingSetupFinished(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- Dagger -->
+	<edge>
+		<source invoketype="instance"
+			subsignature="dagger.internal.Binding contributeProvidesBinding(java.lang.String,dagger.internal.ProvidesBinding)" />
+		<targets>
+			<direct subsignature="java.lang.Object get()"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
+	<!-- Apache Http -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="org.apache.http.impl.client.CloseableHttpClient"
+			subsignature="java.lang.Object execute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.client.ResponseHandler)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object handleResponse(org.apache.http.HttpResponse)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="org.apache.http.protocol.BasicHttpProcessor"
+			subsignature="void addRequestInterceptor(org.apache.http.HttpRequestInterceptor)" />
+		<targets>
+			<direct
+				subsignature="void process(org.apache.http.HttpRequest,org.apache.http.protocol.HttpContext)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="org.apache.http.protocol.BasicHttpProcessor"
+			subsignature="void addResponseInterceptor(org.apache.http.HttpResponseInterceptor)" />
+		<targets>
+			<direct
+				subsignature="void process(org.apache.http.HttpResponse,org.apache.http.protocol.HttpContext)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="org.apache.http.client.methods.HttpEntityEnclosingRequestBase"
+			subsignature="void setEntity(org.apache.http.HttpEntity)" />
+		<targets>
+			<direct subsignature="org.apache.http.Header getContentType()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="org.apache.http.impl.client.CloseableHttpClient"
+			subsignature="java.lang.Object execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.client.ResponseHandler)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object handleResponse(org.apache.http.HttpResponse)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			subsignature="void setRedirectHandler(org.apache.http.client.RedirectHandler)" />
+		<targets>
+			<direct
+				subsignature="boolean isRedirectRequested(org.apache.http.HttpResponse,org.apache.http.protocol.HttpContext)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="org.apache.http.impl.client.CloseableHttpClient"
+			subsignature="java.lang.Object execute(org.apache.http.client.methods.HttpUriRequest,org.apache.http.client.ResponseHandler)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object handleResponse(org.apache.http.HttpResponse)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
+	<!-- ReactiveX -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="io.reactivex.rxjava3.core.Observable"
+			subsignature="io.reactivex.Observable filter(io.reactivex.functions.Predicate)" />
+		<targets>
+			<direct subsignature="boolean test(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="io.reactivex.rxjava3.core.Single"
+			subsignature="io.reactivex.disposables.Disposable subscribe(io.reactivex.functions.Consumer)" />
+		<targets>
+			<direct subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="io.reactivex.rxjava3.core.Single"
+			subsignature="io.reactivex.Single fromCallable(java.util.concurrent.Callable)" />
+		<targets>
+			<direct subsignature="java.lang.Object call()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="io.reactivex.rxjava3.core.Single"
+			subsignature="io.reactivex.Single create(io.reactivex.SingleOnSubscribe)" />
+		<targets>
+			<direct
+				subsignature="void subscribe(io.reactivex.SingleEmitter)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="io.reactivex.rxjava3.core.Maybe"
+			subsignature="io.reactivex.Maybe filter(io.reactivex.functions.Predicate)" />
+		<targets>
+			<direct subsignature="boolean test(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- OkHttp -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="okhttp3.OkHttpClient.Builder"
+			subsignature="okhttp3.OkHttpClient$Builder addInterceptor(okhttp3.Interceptor)" />
+		<targets>
+			<direct
+				subsignature="okhttp3.Response intercept(okhttp3.Interceptor$Chain)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge type="GENERIC_FAKE">
+		<source declaringclass="okhttp3.Call" invoketype="instance"
+			subsignature="void enqueue(okhttp3.Callback)" />
+		<targets>
+			<direct declaringclass="okhttp3.Callback" index="0"
+				subsignature="void onFailure(okhttp3.Call,java.io.IOException)"
+				target-position="argument" />
+			<direct declaringclass="okhttp3.Callback" index="0"
+				subsignature="void onResponse(okhttp3.Call,okhttp3.Response)"
+				target-position="argument" />
+		</targets>
+	</edge>
+	<!-- actionbarsherlock -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="androidx.appcompat.widget.SearchView"
+			subsignature="void setOnQueryTextListener(com.actionbarsherlock.widget.SearchView$OnQueryTextListener)" />
+		<targets>
+			<direct
+				subsignature="boolean onQueryTextChange(java.lang.String)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void getCurrentLocation(java.lang.String,android.os.CancellationSignal,java.util.concurrent.Executor,java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void getCurrentLocation(java.lang.String,android.location.LocationRequest,android.os.CancellationSignal,java.util.concurrent.Executor,java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="4" />
+		</targets>
+	</edge>
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestSingleUpdate(java.lang.String,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestSingleUpdate(android.location.Criteria,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="2" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="2" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="2" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,long,float,java.util.concurrent.Executor,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="4" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(long,float,android.location.Criteria,android.location.LocationListener,android.os.Looper)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(long,float,android.location.Criteria,java.util.concurrent.Executor,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="4" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="4" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestLocationUpdates(java.lang.String,android.location.LocationRequest,java.util.concurrent.Executor,android.location.LocationListener)" />
+		<targets>
+			<direct
+				subsignature="void onLocationChanged(android.location.Location)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onLocationChanged(java.util.List)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderEnabled(java.lang.String)"
+				target-position="argument" index="3" />
+			<direct
+				subsignature="void onProviderDisabled(java.lang.String)"
+				target-position="argument" index="3" />
+		</targets>
+	</edge>
+
+	<edge>
+		<source invoketype="instance"
+			declaringclass="android.location.LocationManager"
+			subsignature="void requestFlush(java.lang.String,android.location.LocationListener,int)" />
+		<targets>
+			<direct
+				subsignature="void onFlushComplete(int)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
+	<!-- GSON -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.gson.GsonBuilder"
+			subsignature="com.google.gson.GsonBuilder registerTypeAdapterFactory(com.google.gson.TypeAdapterFactory)" />
+		<targets>
+			<direct
+				subsignature="com.google.gson.TypeAdapter create(com.google.gson.Gson,com.google.gson.reflect.TypeToken)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.google.gson.GsonBuilder"
+			subsignature="com.google.gson.GsonBuilder setFieldNamingStrategy(com.google.gson.FieldNamingStrategy)" />
+		<targets>
+			<direct
+				subsignature="java.lang.String translateName(java.lang.reflect.Field)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
 	<!-- React -->
-    <edge>
-        <source invoketype="instance" subsignature="void addUIBlock(com.facebook.react.uimanager.UIBlock)" />
-        <targets>
-            <direct subsignature="void execute(com.facebook.react.uimanager.NativeViewHierarchyManager)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-   	<!-- Google Inject -->
-    <edge>
-        <source invoketype="instance" subsignature="void register(com.google.inject.spi.InjectionListener)" />
-        <targets>
-            <direct subsignature="void afterInjection(java.lang.Object)" target-position="argument" index="0" />
-        </targets>
-    </edge>
-    
-    <!-- Bumptech Glide UI Framework -->
-    <edge>
-        <source invoketype="instance" subsignature="void register(java.lang.Class,java.lang.Class,com.bumptech.glide.load.model.ModelLoaderFactory)" />
-        <targets>
-            <direct subsignature="com.bumptech.glide.load.model.ModelLoader build(android.content.Context,com.bumptech.glide.load.model.GenericLoaderFactory)" target-position="argument" index="2" />
-        </targets>
-    </edge>
-    <edge>
-        <source invoketype="instance" subsignature="com.bumptech.glide.BitmapRequestBuilder listener(com.bumptech.glide.request.RequestListener)" />
-        <targets>
-            <direct subsignature="boolean onResourceReady(java.lang.Object,java.lang.Object,com.bumptech.glide.request.target.Target,boolean,boolean)" target-position="argument" index="0" />
-        </targets>
-    </edge>
+	<edge>
+		<source invoketype="instance"
+			declaringclass="com.facebook.react.uimanager.UIManagerModule"
+			subsignature="void addUIBlock(com.facebook.react.uimanager.UIBlock)" />
+		<targets>
+			<direct
+				subsignature="void execute(com.facebook.react.uimanager.NativeViewHierarchyManager)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- Google Inject -->
+	<edge>
+		<source invoketype="instance"
+			subsignature="void register(com.google.inject.spi.InjectionListener)" />
+		<targets>
+			<direct subsignature="void afterInjection(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- Bumptech Glide UI Framework -->
+	<edge>
+		<source invoketype="instance"
+			subsignature="void register(java.lang.Class,java.lang.Class,com.bumptech.glide.load.model.ModelLoaderFactory)" />
+		<targets>
+			<direct
+				subsignature="com.bumptech.glide.load.model.ModelLoader build(android.content.Context,com.bumptech.glide.load.model.GenericLoaderFactory)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	
+	<edge>
+		<source invoketype="instance"
+		declaringclass="com.bumptech.glide.BitmapRequestBuilder"
+			subsignature="com.bumptech.glide.BitmapRequestBuilder listener(com.bumptech.glide.request.RequestListener)" />
+		<targets>
+			<direct
+				subsignature="boolean onResourceReady(java.lang.Object,java.lang.Object,com.bumptech.glide.request.target.Target,boolean,boolean)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- java.util.Map -->
+	<edge>
+		<source invoketype="instance" declaringclass="java.util.Map"
+			subsignature="java.lang.Object compute(java.lang.Object,java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance" declaringclass="java.util.Map"
+			subsignature="java.lang.Object computeIfAbsent(java.lang.Object,java.util.function.Function)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance" declaringclass="java.util.Map"
+			subsignature="java.lang.Object computeIfPresent(java.lang.Object,java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance" declaringclass="java.util.Map"
+			subsignature="java.lang.Object merge(java.lang.Object,java.lang.Object,java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance" declaringclass="java.util.Map"
+			subsignature="void replaceAll(java.util.function.BiFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+
+	<!-- java.util.List -->
+	<edge>
+		<source invoketype="instance" declaringclass="java.util.List"
+			subsignature="void replaceAll(java.util.function.UnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance" declaringclass="java.util.List"
+			subsignature="java.util.Spliterator spliterator()" />
+		<targets>
+			<deferred position="return" />
+		</targets>
+	</edge>
+
+	<!-- java.util.Spliterator -->
+	<edge>
+		<source invoketype="instance"
+			declaringclass="java.util.Spliterator"
+			subsignature="void forEachRemaining(java.util.function.Consumer)" />
+		<targets>
+			<direct subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	
+	<!-- java.util.stream.Stream -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean allMatch(java.util.function.Predicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean anyMatch(java.util.function.Predicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<!-- Special case
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.stream.Collector)" />
+		<targets>
+			<direct
+				subsignature="boolean test(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	-->
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.function.Supplier,java.util.function.BiConsumer,java.util.function.BiConsumer)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream filter(java.util.function.Predicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream map(java.util.function.Function)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream mapToDouble(java.util.function.ToDoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream mapToInt(java.util.function.ToIntFunction)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream mapToLong(java.util.function.ToLongFunction)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.Optional max(java.util.Comparator)" />
+		<targets>
+			<direct
+				subsignature="int compare(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.Optional min(java.util.Comparator)" />
+		<targets>
+			<direct
+				subsignature="int compare(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean noneMatch(java.util.function.Predicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream peek(java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.Optional reduce(java.util.function.BinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object reduce(java.lang.Object,java.util.function.BinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object reduce(java.lang.Object,java.util.function.BiFunction,java.util.function.BinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream flatMap(java.util.function.Function)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream flatMapToDouble(java.util.function.Function)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream flatMapToInt(java.util.function.Function)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream flatMapToLong(java.util.function.Function)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEach(java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.Consumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.Stream: java.util.stream.Stream generate(java.util.function.Supplier)&gt;" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.Stream: java.util.stream.Stream iterate(java.lang.Object,java.util.function.UnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(java.lang.Object)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream sorted(java.util.Comparator)" />
+		<targets>
+			<direct
+				subsignature="int compare(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	
+	<!-- java.util.stream.DoubleStream -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean allMatch(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean anyMatch(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.function.Supplier,java.util.function.ObjDoubleConsumer,java.util.function.BiConsumer)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+			<direct
+				subsignature="void accept(java.lang.Object,double)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream filter(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream flatMap(java.util.function.DoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEach(java.util.function.DoubleConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.DoubleConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.DoubleStream: java.util.stream.DoubleStream generate(java.util.function.DoubleSupplier)&gt;" />
+		<targets>
+			<direct
+				subsignature="double getAsDouble()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.DoubleStream: java.util.stream.DoubleStream iterate(java.lang.Object,java.util.function.DoubleUnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream map(java.util.function.DoubleUnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToInt(java.util.function.DoubleToIntFunction)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToLong(java.util.function.DoubleToLongFunction)" />
+		<targets>
+			<direct
+				subsignature="long applyAsInt(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToObj(java.util.function.DoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean noneMatch(java.util.function.DoublePredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream peek(java.util.function.DoubleConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.OptionalDouble reduce(java.util.function.DoubleBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double,double)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="double reduce(double,java.util.function.DoubleBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(double,double)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
+	<!-- java.util.stream.IntStream -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean allMatch(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean anyMatch(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.function.Supplier,java.util.function.ObjIntConsumer,java.util.function.BiConsumer)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+			<direct
+				subsignature="void accept(java.lang.Object,int)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream filter(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream flatMap(java.util.function.IntFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEach(java.util.function.IntConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.IntConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.IntStream: java.util.stream.IntStream generate(java.util.function.IntSupplier)&gt;" />
+		<targets>
+			<direct
+				subsignature="int getAsInt()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.IntStream: java.util.stream.IntStream iterate(java.lang.Object,java.util.function.IntUnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(int)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream map(java.util.function.IntUnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream mapToDouble(java.util.function.IntToDoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream mapToLong(java.util.function.IntToLongFunction)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToObj(java.util.function.IntFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean noneMatch(java.util.function.IntPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream peek(java.util.function.IntConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.OptionalInt reduce(java.util.function.IntBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(int,int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="int reduce(int,java.util.function.IntBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="int applyAsDouble(int,int)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+
+	<!-- java.util.stream.LongStream -->
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean allMatch(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean anyMatch(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.lang.Object collect(java.util.function.Supplier,java.util.function.ObjLongConsumer,java.util.function.BiConsumer)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object get()"
+				target-position="argument" index="0" />
+			<direct
+				subsignature="void accept(java.lang.Object,long)"
+				target-position="argument" index="1" />
+			<direct
+				subsignature="void accept(java.lang.Object,java.lang.Object)"
+				target-position="argument" index="2" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream filter(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream flatMap(java.util.function.LongFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEach(java.util.function.LongConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="void forEachOrdered(java.util.function.LongConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.LongStream: java.util.stream.LongStream generate(java.util.function.LongSupplier)&gt;" />
+		<targets>
+			<direct
+				subsignature="long getAsLong()"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="static"
+				signature="&lt;java.util.stream.LongStream: java.util.stream.LongStream iterate(java.lang.Object,java.util.function.LongUnaryOperator)&gt;" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream map(java.util.function.LongUnaryOperator)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.DoubleStream mapToDouble(java.util.function.IntToDoubleFunction)" />
+		<targets>
+			<direct
+				subsignature="double applyAsDouble(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.IntStream mapToInt(java.util.function.LongToIntFunction)" />
+		<targets>
+			<direct
+				subsignature="int applyAsInt(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.Stream mapToObj(java.util.function.LongFunction)" />
+		<targets>
+			<direct
+				subsignature="java.lang.Object apply(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="boolean noneMatch(java.util.function.LongPredicate)" />
+		<targets>
+			<direct
+				subsignature="boolean test(long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.stream.LongStream peek(java.util.function.LongConsumer)" />
+		<targets>
+			<direct
+				subsignature="void accept(int)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="java.util.OptionalLong reduce(java.util.function.LongBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long,long)"
+				target-position="argument" index="0" />
+		</targets>
+	</edge>
+	<edge>
+		<source invoketype="instance"
+				subsignature="long reduce(long,java.util.function.LongBinaryOperator)" />
+		<targets>
+			<direct
+				subsignature="long applyAsLong(long,long)"
+				target-position="argument" index="1" />
+		</targets>
+	</edge>
+	<edge type="GENERIC_FAKE">
+		<source invoketype="instance"
+			declaringclass="android.webkit.WebView"
+			subsignature="void setWebViewClient(android.webkit.WebViewClient)" />
+		<targets>
+		    <direct subsignature="android.webkit.WebResourceResponse shouldInterceptRequest(android.webkit.WebView,android.webkit.WebResourceRequest)" target-position="argument" index="0" />
+		    <direct subsignature="android.webkit.WebResourceResponse shouldInterceptRequest(android.webkit.WebView,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="boolean onRenderProcessGone(android.webkit.WebView,android.webkit.RenderProcessGoneDetail)" target-position="argument" index="0" />
+		    <direct subsignature="boolean shouldOverrideKeyEvent(android.webkit.WebView,android.view.KeyEvent)" target-position="argument" index="0" />
+		    <direct subsignature="boolean shouldOverrideUrlLoading(android.webkit.WebView,android.webkit.WebResourceRequest)" target-position="argument" index="0" />
+		    <direct subsignature="boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="void doUpdateVisitedHistory(android.webkit.WebView,java.lang.String,boolean)" target-position="argument" index="0" />
+		    <direct subsignature="void onFormResubmission(android.webkit.WebView,android.os.Message,android.os.Message)" target-position="argument" index="0" />
+		    <direct subsignature="void onLoadResource(android.webkit.WebView,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="void onPageCommitVisible(android.webkit.WebView,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="void onPageFinished(android.webkit.WebView,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="void onPageStarted(android.webkit.WebView,java.lang.String,android.graphics.Bitmap)" target-position="argument" index="0" />
+		    <direct subsignature="void onReceivedClientCertRequest(android.webkit.WebView,android.webkit.ClientCertRequest)" target-position="argument" index="0" />
+		    <direct subsignature="void onReceivedError(android.webkit.WebView,android.webkit.WebResourceRequest,android.webkit.WebResourceError)" target-position="argument" index="0" />
+		    <direct subsignature="void onReceivedError(android.webkit.WebView,int,java.lang.String,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="void onReceivedHttpAuthRequest(android.webkit.WebView,android.webkit.HttpAuthHandler,java.lang.String,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="void onReceivedHttpError(android.webkit.WebView,android.webkit.WebResourceRequest,android.webkit.WebResourceResponse)" target-position="argument" index="0" />
+		    <direct subsignature="void onReceivedLoginRequest(android.webkit.WebView,java.lang.String,java.lang.String,java.lang.String)" target-position="argument" index="0" />
+		    <direct subsignature="void onReceivedSslError(android.webkit.WebView,android.webkit.SslErrorHandler,android.net.http.SslError)" target-position="argument" index="0" />
+		    <direct subsignature="void onSafeBrowsingHit(android.webkit.WebView,android.webkit.WebResourceRequest,int,android.webkit.SafeBrowsingResponse)" target-position="argument" index="0" />
+		    <direct subsignature="void onScaleChanged(android.webkit.WebView,float,float)" target-position="argument" index="0" />
+		    <direct subsignature="void onTooManyRedirects(android.webkit.WebView,android.os.Message,android.os.Message)" target-position="argument" index="0" />
+		    <direct subsignature="void onUnhandledKeyEvent(android.webkit.WebView,android.view.KeyEvent)" target-position="argument" index="0" />
+		</targets>
+	</edge>
 </virtualedges>

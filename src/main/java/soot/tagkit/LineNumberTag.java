@@ -38,14 +38,6 @@ public class LineNumberTag implements Tag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    byte[] v = new byte[2];
-    v[0] = (byte) (line_number / 256);
-    v[1] = (byte) (line_number % 256);
-    return v;
-  }
-
   public int getLineNumber() {
     return line_number;
   }

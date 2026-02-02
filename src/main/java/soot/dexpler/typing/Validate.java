@@ -24,6 +24,7 @@ package soot.dexpler.typing;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -71,8 +72,9 @@ public class Validate {
         DefinitionStmt s = (DefinitionStmt) u;
         definitions.add(s);
       }
-      List<ValueBox> uses = u.getUseBoxes();
-      for (ValueBox vb : uses) {
+      Iterator<ValueBox> uses = u.getUseBoxesIterator();
+      while (uses.hasNext()) {
+        ValueBox vb = uses.next();
         Value v = vb.getValue();
         if (v instanceof ArrayRef) {
           unitWithArrayRef.add(u);
@@ -86,8 +88,9 @@ public class Validate {
 
     for (Unit u : unitWithArrayRef) {
       boolean ok = false;
-      List<ValueBox> uses = u.getUseBoxes();
-      for (ValueBox vb : uses) {
+      Iterator<ValueBox> uses = u.getUseBoxesIterator();
+      while (uses.hasNext()) {
+        ValueBox vb = uses.next();
         Value v = vb.getValue();
         if (v instanceof ArrayRef) {
           ArrayRef ar = (ArrayRef) v;

@@ -39,6 +39,7 @@ import soot.Singletons;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
+import soot.jimple.BranchableStmt;
 import soot.jimple.ConditionExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
@@ -82,13 +83,7 @@ public class UnconditionalBranchFolder extends BodyTransformer {
   }
 
   private static enum BranchType {
-    TOTAL_COUNT,
-    GOTO_GOTO,
-    IF_TO_GOTO,
-    GOTO_IF,
-    IF_TO_IF,
-    IF_SAME_TARGET,
-    GOTO_SUCCESSOR;
+    TOTAL_COUNT, GOTO_GOTO, IF_TO_GOTO, GOTO_IF, IF_TO_IF, IF_SAME_TARGET, GOTO_SUCCESSOR;
   } // BranchType
 
   private static class HandleRes {
@@ -219,6 +214,37 @@ public class UnconditionalBranchFolder extends BodyTransformer {
                   succAsGoto.setTarget(ifTarget);
                   stmtAsIfStmt.setTarget(gotoTarget);
                   ifTarget = gotoTarget;
+                  // We need to check whether anyone has a goto to the "goto X", because this no has to also go
+                  // to Y
+
+                  // If we wouldn't do that, we would e.g. go from
+                  // if $i0 == 6 goto label04;
+                  // label03:
+                  // goto label21;
+                  // ...
+                  // goto label3;
+
+                  // to
+                  // if $i0 != 6 goto label21;
+                  // label03:
+                  // goto label04;
+                  // label04:
+                  // ...
+                  // goto label03;
+                  // this would alter the semantics, since the previous go-tos now go to the other branch!
+                  if (!succAsGoto.getBoxesPointingToThis().isEmpty()) {
+                    // we cannot simply use getBoxesPointingToThis, because we do not want to update
+                    // trap references
+                    for (Unit i : units) {
+                      if (i instanceof BranchableStmt) {
+                        BranchableStmt b = (BranchableStmt) i;
+                        if (b.getTarget() == succAsGoto) {
+                          b.setTarget(gotoTarget);
+                        }
+                      }
+                    }
+                  }
+
                   // NOTE: No need to remove the goto [successor] because it
                   // is processed by the next iteration of the main loop.
                   // NOTE: Nothing is removed here, it is a simple refactoring.
@@ -464,20 +490,21 @@ public class UnconditionalBranchFolder extends BodyTransformer {
   } // Transformer
 
   public static ConditionExpr reverseCondition(ConditionExpr cond) {
+    final Jimple j = Jimple.v();
     // NOTE: Adapted from the private reverseCondition(..) method in JimpleBodyBuilder.
     ConditionExpr newExpr;
     if (cond instanceof soot.jimple.EqExpr) {
-      newExpr = Jimple.v().newNeExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newNeExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.NeExpr) {
-      newExpr = Jimple.v().newEqExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newEqExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.GtExpr) {
-      newExpr = Jimple.v().newLeExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newLeExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.GeExpr) {
-      newExpr = Jimple.v().newLtExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newLtExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.LtExpr) {
-      newExpr = Jimple.v().newGeExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newGeExpr(cond.getOp1(), cond.getOp2());
     } else if (cond instanceof soot.jimple.LeExpr) {
-      newExpr = Jimple.v().newGtExpr(cond.getOp1(), cond.getOp2());
+      newExpr = j.newGtExpr(cond.getOp1(), cond.getOp2());
     } else {
       throw new RuntimeException("Unknown ConditionExpr");
     }

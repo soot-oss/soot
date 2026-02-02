@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,19 +25,20 @@ package soot.dexpler.instructions;
  * #L%
  */
 
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction22c;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
-import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
-import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
-import soot.dexpler.IDalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
@@ -63,10 +62,6 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      // DalvikTyper.v().?
-    }
   }
 
   @Override

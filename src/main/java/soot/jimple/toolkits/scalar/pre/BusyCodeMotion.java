@@ -114,9 +114,10 @@ public class BusyCodeMotion extends BodyTransformer {
       }
     };
 
+    final Scene sc = Scene.v();
     /* if a more precise sideeffect-tester comes out, please change it here! */
     final SideEffectTester sideEffect;
-    if (Scene.v().hasCallGraph() && !options.naive_side_effect()) {
+    if (sc.hasCallGraph() && !options.naive_side_effect()) {
       sideEffect = new PASideEffectTester();
     } else {
       sideEffect = new NaiveSideEffectTester();
@@ -126,7 +127,7 @@ public class BusyCodeMotion extends BodyTransformer {
     final UpSafetyAnalysis upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs, sideEffect);
     final DownSafetyAnalysis downSafe = new DownSafetyAnalysis(graph, unitToNoExceptionEquivRhs, sideEffect);
     final EarliestnessComputation earliest = new EarliestnessComputation(graph, upSafe, downSafe, sideEffect);
-    final LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
+    final LocalCreation localCreation = sc.createLocalCreation(b.getLocals(), PREFIX);
     final HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
 
     Chain<Unit> unitChain = b.getUnits();

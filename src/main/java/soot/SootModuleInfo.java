@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.dava.toolkits.base.misc.PackageNamer;
 
 /**
  * Represents a Module-Info file.
@@ -138,7 +137,7 @@ public class SootModuleInfo extends SootClass {
     } else {
       qualifiedExports = Collections.singletonList(SootModuleInfo.ALL_MODULES);
     }
-    exportedPackages.put(PackageNamer.v().get_FixedPackageName(packaze).replace('/', '.'), qualifiedExports);
+    exportedPackages.put(packaze.replace('/', '.'), qualifiedExports);
   }
 
   public void addOpenedPackage(String packaze, String... openedToModules) {
@@ -148,7 +147,7 @@ public class SootModuleInfo extends SootClass {
     } else {
       qualifiedOpens = Collections.singletonList(SootModuleInfo.ALL_MODULES);
     }
-    openedPackages.put(PackageNamer.v().get_FixedPackageName(packaze).replace('/', '.'), qualifiedOpens);
+    openedPackages.put(packaze.replace('/', '.'), qualifiedOpens);
   }
 
   public String getModuleName() {
@@ -189,12 +188,8 @@ public class SootModuleInfo extends SootClass {
     }
 
     // all packages are exported/open to self
-    if (this.getModuleName().equals(toModule)) {
-      return this.modulePackages.contains(packaze);
-    }
-
     // all packages in open and automatic modules are open
-    if (this.isAutomaticModule()) {
+    if (this.getModuleName().equals(toModule) || this.isAutomaticModule()) {
       return this.modulePackages.contains(packaze);
     }
 
@@ -215,12 +210,8 @@ public class SootModuleInfo extends SootClass {
     }
 
     /// all packages are exported/open to self
-    if (this.getModuleName().equals(toModule)) {
-      return this.modulePackages.contains(packaze);
-    }
-
     // a automatic module exports all its packages
-    if (this.isAutomaticModule()) {
+    if (this.getModuleName().equals(toModule) || this.isAutomaticModule()) {
       return this.modulePackages.contains(packaze);
     }
 

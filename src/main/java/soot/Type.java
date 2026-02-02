@@ -38,7 +38,13 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   private int number = 0;
 
   public Type() {
-    Scene.v().getTypeNumberer().add(this);
+    this(true);
+  }
+
+  public Type(boolean doNumber) {
+    if (doNumber) {
+      Scene.v().getTypeNumberer().add(this);
+    }
   }
 
   /**
@@ -118,5 +124,14 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   @Override
   public final void setNumber(int number) {
     this.number = number;
+  }
+
+  /**
+   * If this type is not allowed in final code, this method provides a replacement type that is allowed in final code
+   * 
+   * @return The replacement type
+   */
+  public Type getDefaultFinalType() {
+    return this;
   }
 }

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -254,7 +255,8 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
           out.state[varRef] = null;
         }
       }
-      for (ValueBox b : rhs.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = rhs.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox b = iterator.next();
         Value v = b.getValue();
         if (v instanceof Local) {
           Integer localRef = localToInt.get((Local) v);
@@ -274,7 +276,8 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
         }
       }
     } else {
-      for (ValueBox b : d.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = d.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox b = iterator.next();
         Value v = b.getValue();
         if (v instanceof Local) {
           Integer localRef = localToInt.get((Local) v);

@@ -1,5 +1,7 @@
 package soot.util;
 
+import java.util.Collection;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -73,7 +75,7 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
     putAll(m);
   }
 
-  public HashMultiMap(Map<K, Set<V>> m) {
+  public HashMultiMap(Map<K, Collection<V>> m) {
     this.loadFactor = DEFAULT_LOAD_FACTOR;
     this.m = createMap();
     putAll(m);
@@ -118,7 +120,7 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   @Override
-  public boolean putAll(K key, Set<V> values) {
+  public boolean putAll(K key, Collection<V> values) {
     if (values.isEmpty()) {
       return false;
     }
@@ -144,7 +146,7 @@ public class HashMultiMap<K, V> extends AbstractMultiMap<K, V> {
   }
 
   @Override
-  public boolean removeAll(K key, Set<V> values) {
+  public boolean removeAll(K key, Collection<V> values) {
     Set<V> s = m.get(key);
     if (s == null) {
       return false;

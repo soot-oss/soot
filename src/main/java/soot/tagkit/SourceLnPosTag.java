@@ -60,14 +60,6 @@ public class SourceLnPosTag implements Tag {
   }
 
   @Override
-  public byte[] getValue() {
-    byte[] v = new byte[2];
-    v[0] = (byte) (startLn / 256);
-    v[1] = (byte) (startLn % 256);
-    return v;
-  }
-
-  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("Source Line Pos Tag: ");

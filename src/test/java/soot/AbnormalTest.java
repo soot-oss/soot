@@ -59,9 +59,6 @@ public class AbnormalTest {
         Options.v().set_output_format(Options.output_format_baf);
         runTest();
         setup();
-        Options.v().set_output_format(Options.output_format_dava);
-        runTest();
-        setup();
         Options.v().set_output_format(Options.output_format_shimp);
         runTest();
         setup();

@@ -59,13 +59,7 @@ public class ContextInsensitiveBuilder {
       for (Iterator<SootClass> cIt = new ArrayList<>(Scene.v().getClasses()).iterator(); cIt.hasNext();) {
         final SootClass c = cIt.next();
         for (final SootMethod m : c.getMethods()) {
-          if (!m.isConcrete()) {
-            continue;
-          }
-          if (m.isNative()) {
-            continue;
-          }
-          if (m.isPhantom()) {
+          if (!m.isConcrete() || m.isNative() || m.isPhantom()) {
             continue;
           }
           if (!m.hasActiveBody()) {
@@ -105,14 +99,19 @@ public class ContextInsensitiveBuilder {
       cgb.build();
       reachables = cgb.reachables();
     }
-    for (final SootClass c : Scene.v().getClasses()) {
+    for (final SootClass c : new ArrayList<>(Scene.v().getClasses())) {
       handleClass(c);
     }
     while (callEdges.hasNext()) {
       Edge e = callEdges.next();
-      if (!e.isInvalid() && e.getTgt().method().getDeclaringClass().isConcrete()) {
+      if (e == null) {
+        continue;
+      }
+      if (!e.isInvalid()) {
         if (e.tgt().isConcrete() || e.tgt().isNative()) {
-          MethodPAG.v(pag, e.tgt()).addToPAG(null);
+          MethodPAG mpag = MethodPAG.v(pag, e.tgt());
+          mpag.build();
+          mpag.addToPAG(null);
         }
         pag.addCallTarget(e);
       }
@@ -129,7 +128,7 @@ public class ContextInsensitiveBuilder {
   /* End of package methods. */
   protected void handleClass(SootClass c) {
     boolean incedClasses = false;
-    if (c.isConcrete()) {
+    if (c.isConcrete() || Scene.v().getFastHierarchy().getSubclassesOf(c).stream().anyMatch(SootClass::isConcrete)) {
       for (SootMethod m : c.getMethods()) {
         if (!m.isConcrete() && !m.isNative()) {
           continue;

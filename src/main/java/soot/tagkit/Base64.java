@@ -26,8 +26,6 @@
 
 package soot.tagkit;
 
-import java.util.Arrays;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework

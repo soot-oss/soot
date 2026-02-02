@@ -91,8 +91,8 @@ public class DexArrayInitReducer extends BodyTransformer {
             && assignStmt.getBoxesPointingToThis().isEmpty()) {
           ArrayRef arrayRef = (ArrayRef) assignStmt.getLeftOp();
 
-          Value u1val = u1.getDefBoxes().get(0).getValue();
-          Value u2val = u2.getDefBoxes().get(0).getValue();
+          Value u1val = u1.getDefBoxesIterator().next().getValue();
+          Value u2val = u2.getDefBoxesIterator().next().getValue();
 
           // index
           if (arrayRef.getIndex() == u1val) {
@@ -114,8 +114,8 @@ public class DexArrayInitReducer extends BodyTransformer {
           while (!(doneU1 && doneU2) && !(foundU1 && foundU2) && checkIt.hasNext()) {
             Unit checkU = checkIt.next();
 
-            // Does the current statement use the value?
-            for (ValueBox vb : checkU.getUseBoxes()) {
+            for (Iterator<ValueBox> iterator = checkU.getUseBoxesIterator(); iterator.hasNext();) {
+              ValueBox vb = iterator.next();
               if (!doneU1 && vb.getValue() == u1val) {
                 foundU1 = true;
               }
@@ -124,8 +124,8 @@ public class DexArrayInitReducer extends BodyTransformer {
               }
             }
 
-            // Does the current statement overwrite the value?
-            for (ValueBox vb : checkU.getDefBoxes()) {
+            for (Iterator<ValueBox> iterator = checkU.getDefBoxesIterator(); iterator.hasNext();) {
+              ValueBox vb = iterator.next();
               if (vb.getValue() == u1val) {
                 doneU1 = true;
               } else if (vb.getValue() == u2val) {

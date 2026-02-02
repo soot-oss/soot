@@ -33,7 +33,7 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -57,7 +57,8 @@ public class SlowAvailableExpressions implements AvailableExpressions {
     this.unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
     this.unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
 
-    SlowAvailableExpressionsAnalysis analysis = new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b));
+    SlowAvailableExpressionsAnalysis analysis
+        = new SlowAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
     for (Unit s : units) {
       {
         List<UnitValueBoxPair> pairsBefore = new ArrayList<UnitValueBoxPair>();

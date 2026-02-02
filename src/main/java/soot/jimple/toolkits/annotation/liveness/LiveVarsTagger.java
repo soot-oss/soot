@@ -34,7 +34,7 @@ import soot.ValueBox;
 import soot.jimple.Stmt;
 import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 
@@ -49,7 +49,7 @@ public class LiveVarsTagger extends BodyTransformer {
 
   protected void internalTransform(Body b, String phaseName, Map options) {
 
-    LiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(b));
+    LiveLocals sll = new SimpleLiveLocals(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
 
     Iterator it = b.getUnits().iterator();
     while (it.hasNext()) {
@@ -60,14 +60,14 @@ public class LiveVarsTagger extends BodyTransformer {
         Value v = (Value) liveLocalsIt.next();
         s.addTag(new StringTag("Live Variable: " + v, "Live Variable"));
 
-        Iterator usesIt = s.getUseBoxes().iterator();
+        Iterator usesIt = s.getUseBoxesIterator();
         while (usesIt.hasNext()) {
           ValueBox use = (ValueBox) usesIt.next();
           if (use.getValue().equals(v)) {
             use.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
           }
         }
-        Iterator defsIt = s.getDefBoxes().iterator();
+        Iterator defsIt = s.getDefBoxesIterator();
         while (defsIt.hasNext()) {
           ValueBox def = (ValueBox) defsIt.next();
           if (def.getValue().equals(v)) {

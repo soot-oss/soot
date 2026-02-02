@@ -105,7 +105,7 @@ public abstract class PointerStmtSwitch extends AbstractStmtSwitch {
 
   /** Any other statement */
   protected void caseUninterestingStmt(Stmt s) {
-  };
+  }
 
   public final void caseAssignStmt(AssignStmt s) {
     statement = s;

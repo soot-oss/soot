@@ -38,7 +38,7 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.Stmt;
 import soot.options.Options;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
@@ -68,8 +68,8 @@ public class FastAvailableExpressions implements AvailableExpressions {
     this.unitToEquivsAfter = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
     this.unitToEquivsBefore = new HashMap<Unit, Chain<EquivalentValue>>(units.size() * 2 + 1, 0.7f);
 
-    FastAvailableExpressionsAnalysis analysis =
-        new FastAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b), b.getMethod(), st);
+    FastAvailableExpressionsAnalysis analysis
+        = new FastAvailableExpressionsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b), b.getMethod(), st);
     // Build unitToExprs map
     for (Unit s : units) {
       FlowSet<Value> set = analysis.getFlowBefore(s);

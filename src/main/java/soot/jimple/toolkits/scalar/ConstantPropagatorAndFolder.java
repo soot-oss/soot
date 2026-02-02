@@ -22,7 +22,7 @@ package soot.jimple.toolkits.scalar;
  * #L%
  */
 
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.StringConstant;
 import soot.options.Options;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
@@ -67,25 +67,60 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     int numFolded = 0;
     int numPropagated = 0;
+    final boolean verbose = Options.v().verbose();
 
-    if (Options.v().verbose()) {
+    if (verbose) {
       logger.debug("[" + b.getMethod().getName() + "] Propagating and folding constants...");
     }
 
-    UnitGraph g = new ExceptionalUnitGraph(b);
+    UnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
     LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(g);
 
     // Perform a constant/local propagation pass.
     // go through each use box in each statement
     for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(g, false)) {
       // propagation pass
-      for (ValueBox useBox : u.getUseBoxes()) {
-        Value value = useBox.getValue();
-        if (value instanceof Local) {
-          Local local = (Local) value;
-          List<Unit> defsOfUse = localDefs.getDefsOfAt(local, u);
-          if (defsOfUse.size() == 1) {
-            DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
+      numPropagated += propagate(localDefs, u);
+
+      // folding pass
+      numFolded += fold(u);
+    }
+
+    if (verbose) {
+      logger.debug("[" + b.getMethod().getName() + "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
+    }
+  }
+
+  protected int fold(Unit u) {
+    int numFolded = 0;
+    for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+      ValueBox useBox = iterator.next();
+      Value value = useBox.getValue();
+      if (!(value instanceof Constant)) {
+        if (Evaluator.isValueConstantValued(value)) {
+          Value constValue = Evaluator.getConstantValueOf(value);
+          if (useBox.canContainValue(constValue)) {
+            useBox.setValue(constValue);
+            numFolded++;
+          }
+        }
+      }
+    }
+    return numFolded;
+  }
+
+  protected int propagate(LocalDefs localDefs, Unit u) {
+    int numPropagated = 0;
+    for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+      ValueBox useBox = iterator.next();
+      Value value = useBox.getValue();
+      if (value instanceof Local) {
+        Local local = (Local) value;
+        Iterator<Unit> defsOfUse = localDefs.getDefsOfAtIterator(local, u);
+        if (defsOfUse.hasNext()) {
+          Unit first = defsOfUse.next();
+          if (!defsOfUse.hasNext()) { // Only one definition site
+            DefinitionStmt defStmt = (DefinitionStmt) first;
             Value rhs = defStmt.getRightOp();
             if (rhs instanceof NumericConstant || rhs instanceof StringConstant || rhs instanceof NullConstant) {
               if (useBox.canContainValue(rhs)) {
@@ -102,24 +137,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer {
           }
         }
       }
-
-      // folding pass
-      for (ValueBox useBox : u.getUseBoxes()) {
-        Value value = useBox.getValue();
-        if (!(value instanceof Constant)) {
-          if (Evaluator.isValueConstantValued(value)) {
-            Value constValue = Evaluator.getConstantValueOf(value);
-            if (useBox.canContainValue(constValue)) {
-              useBox.setValue(constValue);
-              numFolded++;
-            }
-          }
-        }
-      }
     }
-
-    if (Options.v().verbose()) {
-      logger.debug("[" + b.getMethod().getName() + "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
-    }
+    return numPropagated;
   }
 }

@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Type;
@@ -38,6 +39,7 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.StmtSwitch;
+import soot.util.IteratorConcatElement;
 import soot.util.Switch;
 
 public class JInvokeStmt extends AbstractStmt implements InvokeStmt {
@@ -55,6 +57,11 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt {
   @Override
   public Object clone() {
     return new JInvokeStmt(Jimple.cloneIfNecessary(getInvokeExpr()));
+  }
+
+  @Override
+  public InvokeExpr getInvokeExprUnsafe() {
+    return (InvokeExpr) invokeExprBox.getValue();
   }
 
   @Override
@@ -92,6 +99,16 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt {
     List<ValueBox> list = new ArrayList<ValueBox>(invokeExprBox.getValue().getUseBoxes());
     list.add(invokeExprBox);
     return list;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(invokeExprBox.getValue().getUseBoxesIterator(), invokeExprBox);
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    return getUseBoxesIterator();
   }
 
   @Override

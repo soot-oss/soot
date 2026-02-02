@@ -3360,6 +3360,27 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAStringConstant(node);
     }
 
+    public void inABoolConstant(ABoolConstant node)
+    {
+        defaultIn(node);
+    }
+
+    public void outABoolConstant(ABoolConstant node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseABoolConstant(ABoolConstant node)
+    {
+        inABoolConstant(node);
+        if(node.getBoolConstant() != null)
+        {
+            node.getBoolConstant().apply(this);
+        }
+        outABoolConstant(node);
+    }
+
     public void inAClzzConstant(AClzzConstant node)
     {
         defaultIn(node);
