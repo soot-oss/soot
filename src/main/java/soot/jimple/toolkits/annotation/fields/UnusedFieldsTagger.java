@@ -37,31 +37,29 @@ import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.FieldRef;
-import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
 /** A scene transformer that adds tags to unused fields. */
-public class UnreachableFieldsTagger extends SceneTransformer {
-  public UnreachableFieldsTagger(Singletons.Global g) {
+public class UnusedFieldsTagger extends SceneTransformer {
+  public UnusedFieldsTagger(Singletons.Global g) {
   }
 
-  public static UnreachableFieldsTagger v() {
-    return G.v().soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger();
+  public static UnusedFieldsTagger v() {
+    return G.v().soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger();
   }
 
-  protected void internalTransform(String phaseName, Map options) {
+  @Override
+  protected void internalTransform(String phaseName, Map<String, String> options) {
 
     // make list of all fields
     ArrayList<SootField> fieldList = new ArrayList<SootField>();
 
-    Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
+    Iterator<SootClass> getClassesIt = Scene.v().getApplicationClasses().iterator();
     while (getClassesIt.hasNext()) {
-      SootClass appClass = (SootClass) getClassesIt.next();
-      // System.out.println("class to check: "+appClass);
-      Iterator getFieldsIt = appClass.getFields().iterator();
+      SootClass appClass = getClassesIt.next();
+      Iterator<SootField> getFieldsIt = appClass.getFields().iterator();
       while (getFieldsIt.hasNext()) {
-        SootField field = (SootField) getFieldsIt.next();
-        // System.out.println("adding field: "+field);
+        SootField field = getFieldsIt.next();
         fieldList.add(field);
       }
     }
@@ -70,16 +68,15 @@ public class UnreachableFieldsTagger extends SceneTransformer {
     getClassesIt = Scene.v().getApplicationClasses().iterator();
     while (getClassesIt.hasNext()) {
       SootClass appClass = (SootClass) getClassesIt.next();
-      Iterator mIt = appClass.getMethods().iterator();
+      Iterator<SootMethod> mIt = appClass.getMethods().iterator();
       while (mIt.hasNext()) {
-        SootMethod sm = (SootMethod) mIt.next();
-        // System.out.println("checking method: "+sm.getName());
+        SootMethod sm = mIt.next();
         if (!sm.hasActiveBody() || !Scene.v().getReachableMethods().contains(sm)) {
           continue;
         }
         Body b = sm.getActiveBody();
 
-        Iterator usesIt = b.getUseBoxesIterator();
+        Iterator<ValueBox> usesIt = b.getUseBoxesIterator();
         while (usesIt.hasNext()) {
           ValueBox vBox = (ValueBox) usesIt.next();
           Value v = vBox.getValue();
@@ -90,7 +87,6 @@ public class UnreachableFieldsTagger extends SceneTransformer {
             if (fieldList.contains(f)) {
               int index = fieldList.indexOf(f);
               fieldList.remove(index);
-              // System.out.println("removed field: "+f);
             }
 
           }
@@ -104,8 +100,7 @@ public class UnreachableFieldsTagger extends SceneTransformer {
     while (unusedIt.hasNext()) {
       SootField unusedField = unusedIt.next();
       unusedField.addTag(new StringTag("Field " + unusedField.getName() + " is not used!", "Unreachable Fields"));
-      unusedField.addTag(new ColorTag(ColorTag.RED, true, "Unreachable Fields"));
-      // System.out.println("tagged field: "+unusedField);
+      unusedField.addTag(UnusedFieldTag.v());
 
     }
   }

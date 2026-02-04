@@ -146,6 +146,7 @@ import soot.jimple.SubExpr;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import soot.jimple.internal.JIdentityStmt;
+import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.base.ArrayWriteAggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
@@ -194,7 +195,7 @@ public class DexBody {
   protected List<DexlibAbstractInstruction> instructions;
   // keeps track about the jimple locals that are associated with the dex
   // registers
-  protected Local[] registerLocals;
+  protected JimpleLocal[] registerLocals;
   protected Local storeResultLocal;
   protected TreeMap<Integer, DexlibAbstractInstruction> instructionAtAddress;
 
@@ -257,6 +258,7 @@ public class DexBody {
 
   // the set of names used by Jimple locals
   protected Set<String> takenLocalNames;
+  private JBOptions jbOptions = new JBOptions(PhaseOptions.v().getPhaseOptions("jb"));
 
   /**
    * Allocate a fresh name for Jimple local
@@ -325,7 +327,7 @@ public class DexBody {
     localDebugs = ArrayListMultimap.create();
     takenLocalNames = new HashSet<String>();
 
-    registerLocals = new Local[numRegisters];
+    registerLocals = new JimpleLocal[numRegisters];
 
     extractDexInstructions(code);
 
@@ -366,7 +368,9 @@ public class DexBody {
           signature = sl.getSignature();
         }
         if (name != null && type != null) {
-          localDebugs.put(reg, new RegDbgEntry(codeAddr, -1 /* endAddress */, reg, name, type, signature));
+          if (jbOptions.use_original_names()) {
+            localDebugs.put(reg, new RegDbgEntry(codeAddr, -1 /* endAddress */, reg, name, type, signature));
+          }
         }
       } else if (di instanceof ImmutableEndLocal) {
         ImmutableEndLocal el = (ImmutableEndLocal) di;
@@ -550,7 +554,6 @@ public class DexBody {
      * t_whole_jimplification.start();
      */
 
-    JBOptions jbOptions = new JBOptions(phaseOptions.getPhaseOptions("jb"));
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
@@ -568,7 +571,8 @@ public class DexBody {
     if (!isStatic) {
       int thisRegister = numRegisters - numParameterRegisters - 1;
 
-      Local thisLocal = jimple.newLocal(freshLocalName("this"), unknownType); // generateLocal(UnknownType.v());
+      JimpleLocal thisLocal = jimple.newLocal(freshLocalName("this"), unknownType); // generateLocal(UnknownType.v());
+      thisLocal.setUserDefinedLocal();
       jBody.getLocals().add(thisLocal);
 
       registerLocals[thisRegister] = thisLocal;
@@ -582,12 +586,19 @@ public class DexBody {
       int parameterRegister = numRegisters - numParameterRegisters; // index of parameter register
       for (Type t : parameterTypes) {
 
+        boolean isUserLocal = false;
         String localName = null;
         Type localType = null;
         if (jbOptions.use_original_names()) {
           // Attempt to read original parameter name.
           try {
             localName = parameterNames.get(argIdx);
+            if (localName != null) {
+              isUserLocal = true;
+              if (jbOptions.use_original_types()) {
+                localType = parameterTypes.get(argIdx);
+              }
+            }
           } catch (Exception ex) {
             logger.error("Exception while reading original parameter names.", ex);
           }
@@ -605,7 +616,10 @@ public class DexBody {
           localType = unknownType;
         }
 
-        Local gen = jimple.newLocal(freshLocalName(localName), localType);
+        JimpleLocal gen = jimple.newLocal(freshLocalName(localName), localType);
+        if (isUserLocal) {
+          gen.setUserDefinedLocal();
+        }
         jBody.getLocals().add(gen);
         registerLocals[parameterRegister] = gen;
 
@@ -623,12 +637,18 @@ public class DexBody {
           // may only use UnknownType here because the local may be reused with a different
           // type later (before splitting)
           String name;
+          boolean userLocal;
           if (localDebugs.containsKey(parameterRegister)) {
             name = localDebugs.get(parameterRegister).get(0).name;
+            userLocal = true;
           } else {
             name = "$u" + parameterRegister;
+            userLocal = false;
           }
-          Local g = jimple.newLocal(freshLocalName(name), unknownType);
+          JimpleLocal g = jimple.newLocal(freshLocalName(name), unknownType);
+          if (userLocal) {
+            g.setUserDefinedLocal();
+          }
           jBody.getLocals().add(g);
           registerLocals[parameterRegister] = g;
         }
@@ -639,14 +659,27 @@ public class DexBody {
     }
 
     for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic ? 0 : 1)); i++) {
+      Type type = unknownType;
       String name;
-      if (localDebugs.containsKey(i)) {
-        name = localDebugs.get(i).get(0).name;
+      List<RegDbgEntry> dbg = localDebugs.get(i);
+      boolean userLocal;
+      if (!dbg.isEmpty()) {
+        RegDbgEntry n = dbg.get(0);
+        name = n.name;
+        userLocal = true;
+        if (jbOptions.use_original_types()) {
+          type = n.type;
+        }
       } else {
         name = "$u" + i;
+        userLocal = false;
       }
-      registerLocals[i] = jimple.newLocal(freshLocalName(name), unknownType);
-      jBody.getLocals().add(registerLocals[i]);
+      JimpleLocal l = jimple.newLocal(freshLocalName(name), type);
+      if (userLocal) {
+        l.setUserDefinedLocal();
+      }
+      jBody.getLocals().add(l);
+      registerLocals[i] = l;
     }
 
     // add local to store intermediate results

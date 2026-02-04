@@ -45,7 +45,6 @@ import soot.UserInputException;
 public class AsmClassSource extends ClassSource {
 
   private static final String UNSUPPORTED_CLASS_FILE = "Unsupported class file major version (\\d+)";
-  private static final String MANIFEST_IMPL_VERSION = "Implementation-Version: (.*)";
   protected IFoundFile foundFile;
 
   /**

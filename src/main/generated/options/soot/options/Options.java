@@ -1951,6 +1951,7 @@ public class Options extends OptionsBase {
                     + padVal("jb.dtr", "Reduces chains of catch-all traps")
                     + padVal("jb.ese", "Removes empty switch statements")
                     + padVal("jb.ls", "Local splitter: one local per DU-UD web")
+                    + padVal("jb.rua", "Removes useless aliases that are defined only once")
                     + padVal("jb.sils", "Splits primitive locals used as different types")
                     + padVal("jb.awa", "Reorder array writes to save local variables")
                     + padVal("jb.a", "Aggregator: removes some unnecessary copies")
@@ -2012,7 +2013,6 @@ public class Options extends OptionsBase {
                     + padVal("jap.npc", "Null pointer checker")
                     + padVal("jap.npcolorer", "Null pointer colourer: tags references for eclipse")
                     + padVal("jap.abc", "Array bound checker")
-                    + padVal("jap.profiling", "Instruments null pointer and array checks")
                     + padVal("jap.sea", "Side effect tagger")
                     + padVal("jap.fieldrw", "Field read/write tagger")
                     + padVal("jap.cgtagger", "Call graph tagger")
@@ -2048,6 +2048,7 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "")
                     + padOpt("use-original-names (false)", "")
+                    + padOpt("use-original-types (false)", "")
                     + padOpt("preserve-source-annotations (false)", "")
                     + padOpt("stabilize-local-names (false)", "")
                     + padOpt("model-lambdametafactory (true)", "Replace dynamic invoke instructions to the LambdaMetafactory by static invokes to a synthetic LambdaMetafactory implementation.");
@@ -2067,6 +2068,12 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jb.ls"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Local Splitter identifies DU-UD webs for local variables and \nintroduces new variables so that each disjoint web is associated \nwith a single local."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (true)", "");
+
+        if (phaseName.equals("jb.rua"))
+            return "Phase " + phaseName + ":\n"
+                    + "\n"
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "");
 
@@ -2668,8 +2675,7 @@ public class Options extends OptionsBase {
                     + "\nThe Null Pointer Checker finds instruction which have the \npotential to throw NullPointerExceptions and adds annotations \nindicating whether or not the pointer being dereferenced can be \ndetermined statically not to be null."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "")
-                    + padOpt("only-array-ref (false)", "Annotate only array references")
-                    + padOpt("profiling (false)", "Insert instructions to count safe pointer accesses");
+                    + padOpt("only-array-ref (false)", "Annotate only array references");
 
         if (phaseName.equals("jap.npcolorer"))
             return "Phase " + phaseName + ":\n"
@@ -2687,16 +2693,7 @@ public class Options extends OptionsBase {
                     + padOpt("with-arrayref (false)", "")
                     + padOpt("with-fieldref (false)", "")
                     + padOpt("with-classfield (false)", "")
-                    + padOpt("with-rectarray (false)", "")
-                    + padOpt("profiling (false)", "Profile the results of array bounds check analysis.")
-                    + padOpt("add-color-tags (false)", "Add color tags to results of array bound check analysis.");
-
-        if (phaseName.equals("jap.profiling"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Profiling Generator inserts the method invocations required \nto initialize and to report the results of any profiling \nperformed by the Null Pointer Checker and Array Bound Checker. \nUsers of the Profiling Generator must provide a MultiCounter \nclass implementing the methods invoked. For details, see the \nProfilingGenerator source code."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "")
-                    + padOpt("notmainentry (false)", "Instrument runBenchmark() instead of main()");
+                    + padOpt("with-rectarray (false)", "");
 
         if (phaseName.equals("jap.sea"))
             return "Phase " + phaseName + ":\n"
@@ -2876,6 +2873,7 @@ public class Options extends OptionsBase {
             return String.join(" ", 
                     "enabled",
                     "use-original-names",
+                    "use-original-types",
                     "preserve-source-annotations",
                     "stabilize-local-names",
                     "model-lambdametafactory"
@@ -2892,6 +2890,11 @@ public class Options extends OptionsBase {
             );
 
         if (phaseName.equals("jb.ls"))
+            return String.join(" ", 
+                    "enabled"
+            );
+
+        if (phaseName.equals("jb.rua"))
             return String.join(" ", 
                     "enabled"
             );
@@ -3339,8 +3342,7 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npc"))
             return String.join(" ", 
                     "enabled",
-                    "only-array-ref",
-                    "profiling"
+                    "only-array-ref"
             );
 
         if (phaseName.equals("jap.npcolorer"))
@@ -3356,15 +3358,7 @@ public class Options extends OptionsBase {
                     "with-arrayref",
                     "with-fieldref",
                     "with-classfield",
-                    "with-rectarray",
-                    "profiling",
-                    "add-color-tags"
-            );
-
-        if (phaseName.equals("jap.profiling"))
-            return String.join(" ", 
-                    "enabled",
-                    "notmainentry"
+                    "with-rectarray"
             );
 
         if (phaseName.equals("jap.sea"))
@@ -3518,6 +3512,7 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true "
                     + "use-original-names:false "
+                    + "use-original-types:false "
                     + "preserve-source-annotations:false "
                     + "stabilize-local-names:false "
                     + "model-lambdametafactory:true ";
@@ -3531,6 +3526,10 @@ public class Options extends OptionsBase {
                     + "enabled:true ";
 
         if (phaseName.equals("jb.ls"))
+            return ""
+                    + "enabled:true ";
+
+        if (phaseName.equals("jb.rua"))
             return ""
                     + "enabled:true ";
 
@@ -3918,8 +3917,7 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npc"))
             return ""
                     + "enabled:false "
-                    + "only-array-ref:false "
-                    + "profiling:false ";
+                    + "only-array-ref:false ";
 
         if (phaseName.equals("jap.npcolorer"))
             return ""
@@ -3933,14 +3931,7 @@ public class Options extends OptionsBase {
                     + "with-arrayref:false "
                     + "with-fieldref:false "
                     + "with-classfield:false "
-                    + "with-rectarray:false "
-                    + "profiling:false "
-                    + "add-color-tags:false ";
-
-        if (phaseName.equals("jap.profiling"))
-            return ""
-                    + "enabled:false "
-                    + "notmainentry:false ";
+                    + "with-rectarray:false ";
 
         if (phaseName.equals("jap.sea"))
             return ""
@@ -4068,6 +4059,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jb.dtr")
                 || phaseName.equals("jb.ese")
                 || phaseName.equals("jb.ls")
+                || phaseName.equals("jb.rua")
                 || phaseName.equals("jb.sils")
                 || phaseName.equals("jb.awa")
                 || phaseName.equals("jb.a")
@@ -4129,7 +4121,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jap.npc")
                 || phaseName.equals("jap.npcolorer")
                 || phaseName.equals("jap.abc")
-                || phaseName.equals("jap.profiling")
                 || phaseName.equals("jap.sea")
                 || phaseName.equals("jap.fieldrw")
                 || phaseName.equals("jap.cgtagger")
@@ -4170,6 +4161,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jb.ese");
         if (!PackManager.v().hasPhase("jb.ls"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.ls");
+        if (!PackManager.v().hasPhase("jb.rua"))
+            G.v().out.println("Warning: Options exist for non-existent phase jb.rua");
         if (!PackManager.v().hasPhase("jb.sils"))
             G.v().out.println("Warning: Options exist for non-existent phase jb.sils");
         if (!PackManager.v().hasPhase("jb.awa"))
@@ -4292,8 +4285,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jap.npcolorer");
         if (!PackManager.v().hasPhase("jap.abc"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.abc");
-        if (!PackManager.v().hasPhase("jap.profiling"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.profiling");
         if (!PackManager.v().hasPhase("jap.sea"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.sea");
         if (!PackManager.v().hasPhase("jap.fieldrw"))

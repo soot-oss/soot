@@ -1,10 +1,10 @@
-package soot;
+package soot.jimple.toolkits.annotation.fields;
 
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 1997 - 1999 Raja Vallee-Rai
+ * Copyright (C) 2026 Marc Miltenberger
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,23 +21,23 @@ package soot;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import soot.util.Numberable;
+import soot.tagkit.Tag;
 
 /**
- * A local variable, used within Body classes. Intermediate representations must use an implementation of Local for their
- * local variables.
+ * The field is deemed unreachable
  */
-public interface Local extends Value, Numberable, Immediate {
-  /** Returns the name of the current Local variable. */
-  public String getName();
+public class UnusedFieldTag implements Tag {
 
-  /** Sets the name of the current variable. */
-  public void setName(String name);
+  private static final String NAME = "UnreachableFieldTag";
+  private static final UnusedFieldTag INSTANCE = new UnusedFieldTag();
 
-  /** Sets the type of the current variable. */
-  public void setType(Type t);
+  @Override
+  public String getName() {
+    return NAME;
+  }
 
-  public boolean isStackLocal();
+  public static Tag v() {
+    return INSTANCE;
+  }
 
 }

@@ -27,11 +27,8 @@ import java.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
-import soot.tagkit.PositionTag;
-import soot.tagkit.Tag;
 
 /**
  * Adds PositionTags to ValueBoxes to identify their position in the output.
@@ -57,14 +54,8 @@ public class AttributesUnitPrinter {
   }
 
   public void endUnit(Unit u) {
-    int endStmtOffset = outputLength() - lastNewline;
-    // logger.debug("u: "+u.toString());
     if (hasTag(u)) {
-      // logger.debug("u: "+u.toString()+" has tag");
       u.addTag(new JimpleLineNumberTag(startLn, currentLn));
-    }
-    if (hasColorTag(u)) {
-      u.addTag(new PositionTag(startStmtOffset, endStmtOffset));
     }
   }
 
@@ -77,9 +68,6 @@ public class AttributesUnitPrinter {
 
   public void endValueBox(ValueBox u) {
     endOffset = outputLength() - lastNewline;
-    if (hasColorTag(u)) {
-      u.addTag(new PositionTag(startOffsets.pop(), endOffset));
-    }
   }
 
   private boolean hasTag(Host h) {
@@ -91,15 +79,6 @@ public class AttributesUnitPrinter {
       }
     }
     return !h.getTags().isEmpty();
-  }
-
-  private boolean hasColorTag(Host h) {
-    for (Tag t : h.getTags()) {
-      if (t instanceof ColorTag) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public void setEndLn(int ln) {

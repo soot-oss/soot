@@ -69,15 +69,14 @@ import soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder;
 import soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher;
 import soot.jimple.toolkits.annotation.callgraph.CallGraphTagger;
 import soot.jimple.toolkits.annotation.defs.ReachingDefsTagger;
-import soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger;
+import soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger;
 import soot.jimple.toolkits.annotation.liveness.LiveVarsTagger;
 import soot.jimple.toolkits.annotation.logic.LoopInvariantFinder;
-import soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger;
+import soot.jimple.toolkits.annotation.methods.UnusedMethodsTagger;
 import soot.jimple.toolkits.annotation.nullcheck.NullCheckEliminator;
 import soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker;
 import soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer;
 import soot.jimple.toolkits.annotation.parity.ParityTagger;
-import soot.jimple.toolkits.annotation.profiling.ProfilingGenerator;
 import soot.jimple.toolkits.annotation.purity.PurityAnalysis;
 import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger;
 import soot.jimple.toolkits.base.Aggregator;
@@ -122,6 +121,7 @@ import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
 import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
+import soot.toolkits.scalar.RemoveUselessAliases;
 import soot.toolkits.scalar.SharedInitializationLocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.EscapedWriter;
@@ -178,6 +178,7 @@ public class PackManager {
       p.add(new Transform("jb.lns", LocalNameStandardizer.v()));
       p.add(new Transform("jb.cp", CopyPropagator.v()));
       p.add(new Transform("jb.dae", DeadAssignmentEliminator.v()));
+      p.add(new Transform("jb.rua", RemoveUselessAliases.v()));
       p.add(new Transform("jb.cp-ule", UnusedLocalEliminator.v()));
       p.add(new Transform("jb.lp", LocalPacker.v()));
       p.add(new Transform("jb.ne", NopEliminator.v()));
@@ -195,7 +196,7 @@ public class PackManager {
     addPack(p = new ScenePack("wspp"));
 
     // Call graph pack
-    addPack(p = new CallGraphPack("cg"));
+    addPack(p = createCallGraphPack("cg"));
     {
       p.add(new Transform("cg.cha", CHATransformer.v()));
       p.add(new Transform("cg.spark", SparkTransformer.v()));
@@ -228,8 +229,8 @@ public class PackManager {
     addPack(p = new ScenePack("wjap"));
     {
       p.add(new Transform("wjap.ra", RectangularArrayFinder.v()));
-      p.add(new Transform("wjap.umt", UnreachableMethodsTagger.v()));
-      p.add(new Transform("wjap.uft", UnreachableFieldsTagger.v()));
+      p.add(new Transform("wjap.umt", UnusedMethodsTagger.v()));
+      p.add(new Transform("wjap.uft", UnusedFieldsTagger.v()));
       p.add(new Transform("wjap.tqt", TightestQualifiersTagger.v()));
       p.add(new Transform("wjap.cgg", CallGraphGrapher.v()));
       p.add(new Transform("wjap.purity", PurityAnalysis.v())); // [AM]
@@ -274,7 +275,6 @@ public class PackManager {
       p.add(new Transform("jap.npc", NullPointerChecker.v()));
       p.add(new Transform("jap.npcolorer", NullPointerColorer.v()));
       p.add(new Transform("jap.abc", ArrayBoundsChecker.v()));
-      p.add(new Transform("jap.profiling", ProfilingGenerator.v()));
       p.add(new Transform("jap.sea", SideEffectTagger.v()));
       p.add(new Transform("jap.fieldrw", FieldTagger.v()));
       p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));
@@ -322,6 +322,10 @@ public class PackManager {
     // Baf optimization pack
     addPack(p = new BodyPack("bop"));
     onlyStandardPacks = true;
+  }
+
+  protected Pack createCallGraphPack(String name) {
+    return new CallGraphPack(name);
   }
 
   private void addPack(Pack p) {
@@ -723,21 +727,22 @@ public class PackManager {
 
       if (produceJimple) {
         Body body = m.retrieveActiveBody();
+        if (body != null) {
+          getTransform("jb.cp").apply(body); // CopyPropagator
+          getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
+          getTransform("jb.uce").apply(body); // UnreachableCodeEliminator
+          getTransform("jb.dae").apply(body); // DeadAssignmentEliminator
+          getTransform("jb.cp-ule").apply(body); // UnusedLocalEliminator
+          getPack("jtp").apply(body);
 
-        getTransform("jb.cp").apply(body); // CopyPropagator
-        getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
-        getTransform("jb.uce").apply(body); // UnreachableCodeEliminator
-        getTransform("jb.dae").apply(body); // DeadAssignmentEliminator
-        getTransform("jb.cp-ule").apply(body); // UnusedLocalEliminator
-        getPack("jtp").apply(body);
-
-        if (Options.v().validate()) {
-          body.validate();
-        }
-        getPack("jop").apply(body);
-        getPack("jap").apply(body);
-        if (tc != null) {
-          tc.collectBodyTags(body);
+          if (Options.v().validate()) {
+            body.validate();
+          }
+          getPack("jop").apply(body);
+          getPack("jap").apply(body);
+          if (tc != null) {
+            tc.collectBodyTags(body);
+          }
         }
       }
 

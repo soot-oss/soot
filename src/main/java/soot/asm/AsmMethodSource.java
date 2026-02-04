@@ -21,6 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -260,6 +261,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
 import soot.asm.Operand.OperandType;
+import soot.dexpler.Util;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
@@ -300,13 +302,18 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
+import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
+import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.TrapTightener;
+import soot.toolkits.scalar.LocalPacker;
 import soot.util.Chain;
 
 /**
@@ -339,7 +346,7 @@ public class AsmMethodSource implements MethodSource {
 
   /* -state fields- */
   protected int nextLocal;
-  protected Map<Integer, Local> locals;
+  protected Map<Integer, JimpleLocal> locals;
   private Multimap<LabelNode, UnitBox> labels;
   private Map<AbstractInsnNode, Unit> units;
   private ArrayList<Operand> stack;
@@ -395,39 +402,56 @@ public class AsmMethodSource implements MethodSource {
     return result;
   }
 
+  private final boolean useOriginalTypes
+      = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-types");
+
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
       throw new IllegalArgumentException("Invalid local index: " + idx);
     }
     Integer i = idx;
-    Local l = locals.get(i);
+    JimpleLocal l = locals.get(i);
     if (l == null) {
       String name = getLocalName(idx);
-      l = Jimple.v().newLocal(name, UnknownType.v());
+      Type type = UnknownType.v();
+      if (useOriginalTypes) {
+        LocalVariableNode local = getLocalVarNode(i);
+        if (local != null && local.desc != null) {
+          type = AsmUtil.toJimpleType(local.desc, Optional.absent());
+        }
+      }
+      l = Jimple.v().newLocal(name, type);
+      l.setUserDefinedLocal();
       locals.put(i, l);
     }
     return l;
   }
 
   protected String getLocalName(int idx) {
-    String name;
+    String name = null;
     if (localVars != null) {
-      name = null;
-      for (LocalVariableNode lvn : localVars) {
-        // Ignore LocalVariableNode which don't cover any real units
-        if (lvn.index == idx && lvn.start != lvn.end) {
-          name = lvn.name;
-          break;
-        }
-      }
+      LocalVariableNode n = getLocalVarNode(idx);
       /* normally for try-catch blocks */
-      if (name == null) {
+      if (n != null) {
+        name = n.name;
+      }
+      if (n == null) {
         name = "l" + idx;
       }
     } else {
       name = "l" + idx;
     }
     return name;
+  }
+
+  private LocalVariableNode getLocalVarNode(int idx) {
+    for (LocalVariableNode lvn : localVars) {
+      // Ignore LocalVariableNode which don't cover any real units
+      if (lvn.index == idx && lvn.start != lvn.end) {
+        return lvn;
+      }
+    }
+    return null;
   }
 
   private void push(Operand opr) {
@@ -583,7 +607,7 @@ public class AsmMethodSource implements MethodSource {
 
   protected Local newStackLocal() {
     Integer idx = nextLocal++;
-    Local l = Jimple.v().newLocal("$stack" + idx, UnknownType.v());
+    JimpleLocal l = Jimple.v().newLocal("$stack" + idx, UnknownType.v());
     locals.put(idx, l);
     return l;
   }
@@ -2328,15 +2352,24 @@ public class AsmMethodSource implements MethodSource {
 
   @Override
   public Body getBody(SootMethod m, String phaseName) {
-    if (!m.isConcrete() || instructions == null || instructions.size() == 0) {
+    if (!m.isConcrete()) {
       return null;
     }
     final Jimple jimp = Jimple.v();
     final JimpleBody jb = jimp.newBody(m);
+    if (instructions == null || instructions.size() == 0) {
+      logger.warn(m.getSignature() + " has no instructions");
+
+      Util.emptyBody(jb);
+      Util.addExceptionAfterUnit(jb, "java.lang.RuntimeException", jb.getUnits().getLast(),
+          "Soot has detected that this method has no instructions. The JVM would throw an exception when loading the class");
+      TypeAssigner.v().transform(jb);
+      return jb;
+    }
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
-    locals = new LinkedHashMap<Integer, Local>(maxLocals + (maxLocals / 2));
+    locals = new LinkedHashMap<Integer, JimpleLocal>(maxLocals + (maxLocals / 2));
     labels = LinkedListMultimap.create(4);
     units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
@@ -2411,6 +2444,11 @@ public class AsmMethodSource implements MethodSource {
       throw new RuntimeException("Failed to apply jb to " + m, t);
     }
     TrapTightener.removeInvalidTraps(jb);
+    LocalPacker.v().transform(jb);
+    DeadAssignmentEliminator.v().transform(jb);
+    UnconditionalBranchFolder.v().transform(jb);
+
+    ensureUniqueNames(jb.getLocals());
 
     return jb;
   }
@@ -2457,7 +2495,7 @@ public class AsmMethodSource implements MethodSource {
       // the LocalVariableTable allows multiple local variable indices to
       // have the same name simultaneously but they must be distinguished here.
       final Chain<Unit> jbUnits = jb.getUnits();
-      Table<Integer, String, Local> newLocals = null;
+      Table<Integer, String, JimpleLocal> newLocals = null;
       for (Map.Entry<Integer, Collection<LocalVariableNode>> e : groups.asMap().entrySet()) {
         Collection<LocalVariableNode> lvns = e.getValue();
         if (lvns.size() > 1) {
@@ -2468,7 +2506,7 @@ public class AsmMethodSource implements MethodSource {
             continue;
           }
 
-          final Local chosen = this.locals.get(localNum);
+          final JimpleLocal chosen = this.locals.get(localNum);
           final String chosenName = chosen.getName();
           final Type chosenType = chosen.getType();
           // Detect inconsistencies in the LocalVariableTable.
@@ -2524,9 +2562,10 @@ public class AsmMethodSource implements MethodSource {
               if (newLocals == null) {
                 newLocals = HashBasedTable.create(this.maxLocals, 1);
               }
-              Local newLocal = newLocals.get(localNum, name);
+              JimpleLocal newLocal = newLocals.get(localNum, name);
               if (newLocal == null) {
                 newLocal = jimp.newLocal(name, chosenType);
+                newLocal.setUserDefinedLocal();
                 Local old = newLocals.put(localNum, name, newLocal);
                 assert (old == null);
               }
@@ -2565,7 +2604,7 @@ public class AsmMethodSource implements MethodSource {
   /**
    * If any locals have the same name, append a unique id so that each is different.
    */
-  private void ensureUniqueNames(Chain<Local> jbLocals) {
+  public static void ensureUniqueNames(Chain<Local> jbLocals) {
     Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
     for (Local l : jbLocals) {
       nameToLocal.put(l.getName(), l);

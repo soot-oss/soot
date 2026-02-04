@@ -32,17 +32,14 @@ import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
+import soot.Immediate;
 import soot.PhaseOptions;
-import soot.Scene;
 import soot.Singletons;
-import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.IntConstant;
-import soot.jimple.Jimple;
 import soot.jimple.LengthExpr;
 import soot.jimple.MonitorStmt;
 import soot.jimple.Stmt;
@@ -77,7 +74,6 @@ public class NullPointerChecker extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    final boolean isProfiling = PhaseOptions.getBoolean(options, "profiling");
     final boolean enableOther = !PhaseOptions.getBoolean(options, "onlyarrayref");
 
     final Date start = new Date();
@@ -85,11 +81,7 @@ public class NullPointerChecker extends BodyTransformer {
       logger.debug("[npc] Null pointer check for " + body.getMethod().getName() + " started on " + start);
     }
 
-    final BranchedRefVarsAnalysis analysis
-        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
-
-    final SootMethod increase
-        = isProfiling ? Scene.v().loadClassAndSupport("MultiCounter").getMethod("void increase(int)") : null;
+    final NullnessAnalysis analysis = new NullnessAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
 
     final Chain<Unit> units = body.getUnits();
     for (Iterator<Unit> stmtIt = units.snapshotIterator(); stmtIt.hasNext();) {
@@ -143,14 +135,9 @@ public class NullPointerChecker extends BodyTransformer {
         }
       }
 
-      // annotate it or now
-      if (obj != null) {
-        boolean needCheck = (analysis.anyRefInfo(obj, analysis.getFlowBefore(s)) != BranchedRefVarsAnalysis.kNonNull);
-        if (isProfiling) {
-          final int count = needCheck ? 5 : 6;
-          final Jimple jimp = Jimple.v();
-          units.insertBefore(jimp.newInvokeStmt(jimp.newStaticInvokeExpr(increase.makeRef(), IntConstant.v(count))), s);
-        }
+      // annotate it
+      if (obj instanceof Immediate) {
+        boolean needCheck = !analysis.isAlwaysNonNullBefore(s, (Immediate) obj);
         s.addTag(new NullCheckTag(needCheck));
       }
     }

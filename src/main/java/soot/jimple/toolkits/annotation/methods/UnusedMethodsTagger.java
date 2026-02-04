@@ -32,19 +32,18 @@ import soot.SceneTransformer;
 import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
 /** A scene transformer that adds tags to unused methods. */
-public class UnreachableMethodsTagger extends SceneTransformer {
-  public UnreachableMethodsTagger(Singletons.Global g) {
+public class UnusedMethodsTagger extends SceneTransformer {
+  public UnusedMethodsTagger(Singletons.Global g) {
   }
 
-  public static UnreachableMethodsTagger v() {
-    return G.v().soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger();
+  public static UnusedMethodsTagger v() {
+    return G.v().soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger();
   }
 
-  protected void internalTransform(String phaseName, Map options) {
+  protected void internalTransform(String phaseName, Map<String, String> options) {
 
     // make list of all unreachable methods
     ArrayList<SootMethod> methodList = new ArrayList<SootMethod>();
@@ -68,8 +67,7 @@ public class UnreachableMethodsTagger extends SceneTransformer {
     while (unusedIt.hasNext()) {
       SootMethod unusedMethod = unusedIt.next();
       unusedMethod.addTag(new StringTag("Method " + unusedMethod.getName() + " is not reachable!", "Unreachable Methods"));
-      unusedMethod.addTag(new ColorTag(255, 0, 0, true, "Unreachable Methods"));
-      // System.out.println("tagged method: "+unusedMethod);
+      unusedMethod.addTag(UnusedMethodTag.v());
 
     }
   }

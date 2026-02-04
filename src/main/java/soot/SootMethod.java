@@ -449,7 +449,28 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
       }
 
       // Method sources are not expected to be thread safe
-      activeBody = ms.getBody(this, "jb");
+      try {
+        activeBody = ms.getBody(this, "jb");
+      } catch (Exception e) {
+
+        boolean useOriginalNames = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-names");
+        boolean useOriginalTypes = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-types");
+        String potentialFailureReasons = "";
+        if (useOriginalNames) {
+          potentialFailureReasons = "Using original names is enabled! This causes Soot to disable some optimizations."
+              + "Consider disabling this option!\n";
+        }
+        if (useOriginalTypes) {
+          potentialFailureReasons += "Using original types is enabled! In case of obfuscated or broken applications,"
+              + " this might cause problems when typing. Consider disabling this option!\n";
+        }
+        if (!potentialFailureReasons.isEmpty()) {
+          throw new RuntimeException("An error occurred while retrieving the method body of " + getSignature()
+              + ". Potential failure reasons: " + potentialFailureReasons.trim(), e);
+        } else {
+          throw e;
+        }
+      }
 
       // Call the consumer such that clients can update any data structures, caches, etc.
       // atomically before the body is available to other threads.

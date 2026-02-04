@@ -170,10 +170,10 @@ public class LocalSplitter extends BodyTransformer {
           continue;
         }
 
-        Local newLocal = (Local) oldLocal.clone();
+        Local newLocal = (Local) createClonedLocal(oldLocal);
         String name = newLocal.getName();
         if (name != null) {
-          newLocal.setName(name + '#' + (++w)); // renaming should not be done here
+          newLocal.setName(getNewName(name, ++w));
         }
         body.getLocals().add(newLocal);
 
@@ -217,6 +217,14 @@ public class LocalSplitter extends BodyTransformer {
       timers.splitPhase2Timer.end();
       timers.splitTimer.end();
     }
+  }
+
+  protected Local createClonedLocal(Local oldLocal) {
+    return (Local) oldLocal.clone();
+  }
+
+  protected String getNewName(String name, int count) {
+    return name + '#' + count;
   }
 
   public static ThrowAnalysis getThrowableAnalysis() {

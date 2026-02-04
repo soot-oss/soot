@@ -40,10 +40,33 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.IdentityStmt;
 import soot.jimple.ParameterRef;
-import soot.tagkit.ColorTag;
+import soot.tagkit.Tag;
 
-/** Adds colour tags to indicate potential aliasing between method parameters. */
+/** Adds color tags to indicate potential aliasing between method parameters. */
 public class ParameterAliasTagger extends BodyTransformer {
+
+  /**
+   * Contains information about the results of the parameter alias analysis
+   */
+  public class ParameterAliasTag implements Tag {
+
+    private int color;
+    public static final String NAME = "ParameterAlias";
+
+    public ParameterAliasTag(int color) {
+      this.color = color;
+    }
+
+    public int getColor() {
+      return color;
+    }
+
+    @Override
+    public String getName() {
+      return NAME;
+    }
+
+  }
 
   public ParameterAliasTagger(Singletons.Global g) {
   }
@@ -75,9 +98,8 @@ public class ParameterAliasTagger extends BodyTransformer {
   }
 
   private void fill(Set<IdentityStmt> parms, IdentityStmt parm, int colour, PointsToAnalysis pa) {
-    if (parms.contains(parm)) {
-      parm.getRightOpBox().addTag(new ColorTag(colour, "Parameter Alias"));
-      parms.remove(parm);
+    if (parms.remove(parm)) {
+      parm.getRightOpBox().addTag(new ParameterAliasTag(colour));
       PointsToSet ps = pa.reachingObjects((Local) parm.getLeftOp());
       for (IdentityStmt is : new LinkedList<IdentityStmt>(parms)) {
         if (ps.hasNonEmptyIntersection(pa.reachingObjects((Local) is.getLeftOp()))) {

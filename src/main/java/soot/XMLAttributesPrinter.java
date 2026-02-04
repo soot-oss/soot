@@ -80,7 +80,6 @@ public class XMLAttributesPrinter {
   }
 
   private void printAttrs(SootClass c, soot.xml.TagCollector tc, boolean includeBodyTags) {
-    tc.collectKeyTags(c);
     tc.collectTags(c, includeBodyTags);
 
     // If there are no attributes, then the attribute file is not created.
@@ -89,7 +88,6 @@ public class XMLAttributesPrinter {
     }
     initFile();
     tc.printTags(writerOut);
-    tc.printKeys(writerOut);
     finishFile();
   }
 

@@ -25,8 +25,10 @@ package soot.jimple.toolkits.annotation.qualifiers;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import soot.Body;
+import soot.ClassMember;
 import soot.G;
 import soot.MethodOrMethodContext;
 import soot.MethodToContexts;
@@ -40,9 +42,9 @@ import soot.SootMethod;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.FieldRef;
+import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTag.AccessLevel;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
-import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
 /**
@@ -62,26 +64,50 @@ public class TightestQualifiersTagger extends SceneTransformer {
   public final static int RESULT_PACKAGE = 1;
   public final static int RESULT_PROTECTED = 2;
   public final static int RESULT_PRIVATE = 3;
+  private static final BiFunction<? super ClassMember, ? super Integer, ? extends Integer> UPDATE_TO_PACKAGE
+      = new BiFunction<ClassMember, Integer, Integer>() {
+
+        @Override
+        public Integer apply(ClassMember t, Integer old) {
+          if (old == null || old == RESULT_PRIVATE) {
+            return RESULT_PACKAGE;
+          }
+          return old;
+        }
+
+      };
+  private static final BiFunction<? super ClassMember, ? super Integer, ? extends Integer> UPDATE_TO_PROTECTED
+      = new BiFunction<ClassMember, Integer, Integer>() {
+
+        @Override
+        public Integer apply(ClassMember t, Integer old) {
+          if (old != RESULT_PUBLIC) {
+            return RESULT_PROTECTED;
+          }
+          return old;
+        }
+
+      };
 
   private final HashMap<SootMethod, Integer> methodResultsMap = new HashMap<SootMethod, Integer>();
   private final HashMap<SootField, Integer> fieldResultsMap = new HashMap<SootField, Integer>();
   private MethodToContexts methodToContexts;
 
-  protected void internalTransform(String phaseName, Map options) {
-
+  @Override
+  protected void internalTransform(String phaseName, Map<String, String> options) {
     handleMethods();
     handleFields();
   }
 
   private void handleMethods() {
-    Iterator classesIt = Scene.v().getApplicationClasses().iterator();
+    Iterator<SootClass> classesIt = Scene.v().getApplicationClasses().iterator();
     while (classesIt.hasNext()) {
       SootClass appClass = (SootClass) classesIt.next();
-      Iterator methsIt = appClass.getMethods().iterator();
+      Iterator<SootMethod> methsIt = appClass.getMethods().iterator();
       while (methsIt.hasNext()) {
         SootMethod sm = (SootMethod) methsIt.next();
         // for now if its unreachable do nothing
-        if (!Scene.v().getReachableMethods().contains(sm)) {
+        if (skipMethod(sm)) {
           continue;
         }
         analyzeMethod(sm);
@@ -92,41 +118,59 @@ public class TightestQualifiersTagger extends SceneTransformer {
     while (methStatIt.hasNext()) {
       SootMethod meth = methStatIt.next();
       int result = methodResultsMap.get(meth).intValue();
-      String sRes = "Public";
-      if (result == RESULT_PUBLIC) {
-        sRes = "Public";
-      } else if (result == RESULT_PROTECTED) {
-        sRes = "Protected";
-      } else if (result == RESULT_PACKAGE) {
-        sRes = "Package";
-      } else if (result == RESULT_PRIVATE) {
-        sRes = "Private";
-      }
+      AccessLevel sRes = resultToLevel(result);
 
-      String actual = null;
-      if (Modifier.isPublic(meth.getModifiers())) {
-        actual = "Public";
-      } else if (Modifier.isProtected(meth.getModifiers())) {
-        actual = "Protected";
-      } else if (Modifier.isPrivate(meth.getModifiers())) {
-        actual = "Private";
-      } else {
-        actual = "Package";
-      }
-
-      // System.out.println("Method: "+meth.getName()+" has "+actual+" level access, can have: "+sRes+" level access.");
+      int modifiers = meth.getModifiers();
+      AccessLevel actual = getAccessLevelFromModifiers(modifiers);
 
       if (!sRes.equals(actual)) {
-        if (meth.getName().equals("<init>")) {
-          meth.addTag(new StringTag("Constructor: " + meth.getDeclaringClass().getName() + " has " + actual
-              + " level access, can have: " + sRes + " level access.", "Tightest Qualifiers"));
+        if (meth.isConstructor()) {
+          meth.addTag(new StringTag(String.format("Constructor: %s has %s level access, can have: %s level access.",
+              meth.getDeclaringClass().getName(), actual, sRes), "Tightest Qualifiers"));
         } else {
           meth.addTag(new StringTag(
-              "Method: " + meth.getName() + " has " + actual + " level access, can have: " + sRes + " level access.",
+              String.format("Method: %s has %s level access, can have: %s level access.", meth.getName(), actual, sRes),
               "Tightest Qualifiers"));
         }
-        meth.addTag(new ColorTag(255, 10, 0, true, "Tightest Qualifiers"));
+        meth.addTag(TightestQualifiersTag.v(actual, sRes));
       }
+    }
+  }
+
+  /**
+   * Returns whether to skip a method. By default, the analysis skips unreachable methods
+   * 
+   * @param sm
+   *          the method
+   * @return true if the method should be skipped
+   */
+  protected boolean skipMethod(SootMethod sm) {
+    return !Scene.v().getReachableMethods().contains(sm);
+  }
+
+  private static AccessLevel getAccessLevelFromModifiers(int modifiers) {
+    if (Modifier.isPublic(modifiers)) {
+      return AccessLevel.PUBLIC;
+    } else if (Modifier.isProtected(modifiers)) {
+      return AccessLevel.PROTECTED;
+    } else if (Modifier.isPrivate(modifiers)) {
+      return AccessLevel.PRIVATE;
+    } else {
+      return AccessLevel.PACKAGE_PROTECTED;
+    }
+  }
+
+  private static AccessLevel resultToLevel(int result) {
+    switch (result) {
+      case RESULT_PUBLIC:
+      default:
+        return AccessLevel.PUBLIC;
+      case RESULT_PROTECTED:
+        return AccessLevel.PROTECTED;
+      case RESULT_PACKAGE:
+        return AccessLevel.PACKAGE_PROTECTED;
+      case RESULT_PRIVATE:
+        return AccessLevel.PRIVATE;
     }
   }
 
@@ -134,25 +178,20 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
     CallGraph cg = Scene.v().getCallGraph();
 
-    // Iterator eIt = Scene.v().getEntryPoints().iterator();
-    // while (eIt.hasNext()){
-    // System.out.println(eIt.next());
-    // }
-
     if (methodToContexts == null) {
       methodToContexts = new MethodToContexts(Scene.v().getReachableMethods().listener());
     }
 
-    for (Iterator momcIt = methodToContexts.get(sm).iterator(); momcIt.hasNext();) {
-      final MethodOrMethodContext momc = (MethodOrMethodContext) momcIt.next();
-      Iterator callerEdges = cg.edgesInto(momc);
+    for (Iterator<MethodOrMethodContext> momcIt = methodToContexts.get(sm).iterator(); momcIt.hasNext();) {
+      final MethodOrMethodContext momc = momcIt.next();
+      Iterator<Edge> callerEdges = cg.edgesInto(momc);
       while (callerEdges.hasNext()) {
-        Edge callEdge = (Edge) callerEdges.next();
+        Edge callEdge = callerEdges.next();
         if (!callEdge.isExplicit()) {
           continue;
         }
         SootMethod methodCaller = callEdge.src();
-        // System.out.println("Caller edge type: "+Edge.kindToString(callEdge.kind()));
+
         SootClass callingClass = methodCaller.getDeclaringClass();
         // public methods
         if (Modifier.isPublic(sm.getModifiers())) {
@@ -178,15 +217,12 @@ public class TightestQualifiersTagger extends SceneTransformer {
   private boolean analyzeProtectedMethod(SootMethod sm, SootClass callingClass) {
     SootClass methodClass = sm.getDeclaringClass();
 
-    // System.out.println("protected method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class:
-    // "+callingClass.getName());
-
     boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
     boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
     boolean sameClassAccess = isCallClassMethodClass(callingClass, methodClass);
 
     if (!insidePackageAccess && subClassAccess) {
-      methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
+      methodResultsMap.put(sm, RESULT_PROTECTED);
       return true;
     } else if (insidePackageAccess && !sameClassAccess) {
       updateToPackage(sm);
@@ -200,10 +236,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
   private boolean analyzePackageMethod(SootMethod sm, SootClass callingClass) {
     SootClass methodClass = sm.getDeclaringClass();
 
-    // System.out.println("package method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class:
-    // "+callingClass.getName());
     boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
-    boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
     boolean sameClassAccess = isCallClassMethodClass(callingClass, methodClass);
 
     if (insidePackageAccess && !sameClassAccess) {
@@ -219,15 +252,12 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
     SootClass methodClass = sm.getDeclaringClass();
 
-    // System.out.println("public method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class:
-    // "+callingClass.getName());
-
     boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
     boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
     boolean sameClassAccess = isCallClassMethodClass(callingClass, methodClass);
 
     if (!insidePackageAccess && !subClassAccess) {
-      methodResultsMap.put(sm, new Integer(RESULT_PUBLIC));
+      methodResultsMap.put(sm, RESULT_PUBLIC);
       return true;
     } else if (!insidePackageAccess && subClassAccess) {
       updateToProtected(sm);
@@ -243,43 +273,23 @@ public class TightestQualifiersTagger extends SceneTransformer {
   }
 
   private void updateToProtected(SootMethod sm) {
-    if (!methodResultsMap.containsKey(sm)) {
-      methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
-    } else {
-      if (methodResultsMap.get(sm).intValue() != RESULT_PUBLIC) {
-        methodResultsMap.put(sm, new Integer(RESULT_PROTECTED));
-      }
-    }
+    methodResultsMap.compute(sm, UPDATE_TO_PROTECTED);
   }
 
   private void updateToPackage(SootMethod sm) {
-    if (!methodResultsMap.containsKey(sm)) {
-      methodResultsMap.put(sm, new Integer(RESULT_PACKAGE));
-    } else {
-      if (methodResultsMap.get(sm).intValue() == RESULT_PRIVATE) {
-        methodResultsMap.put(sm, new Integer(RESULT_PACKAGE));
-      }
-    }
+    methodResultsMap.compute(sm, UPDATE_TO_PACKAGE);
   }
 
   private void updateToPrivate(SootMethod sm) {
-    if (!methodResultsMap.containsKey(sm)) {
-      methodResultsMap.put(sm, new Integer(RESULT_PRIVATE));
-    }
+    methodResultsMap.putIfAbsent(sm, RESULT_PRIVATE);
   }
 
   private boolean isCallClassMethodClass(SootClass call, SootClass check) {
-    if (call.equals(check)) {
-      return true;
-    }
-    return false;
+    return call.equals(check);
   }
 
   private boolean isCallClassSubClass(SootClass call, SootClass check) {
-    if (!call.hasSuperclass()) {
-      return false;
-    }
-    if (call.getSuperclass().equals(check)) {
+    if (call != check && Scene.v().getOrMakeFastHierarchy().canStoreClass(call, check)) {
       return true;
     }
     return false;
@@ -293,12 +303,12 @@ public class TightestQualifiersTagger extends SceneTransformer {
   }
 
   private void handleFields() {
-    Iterator classesIt = Scene.v().getApplicationClasses().iterator();
+    Iterator<SootClass> classesIt = Scene.v().getApplicationClasses().iterator();
     while (classesIt.hasNext()) {
       SootClass appClass = (SootClass) classesIt.next();
-      Iterator fieldsIt = appClass.getFields().iterator();
+      Iterator<SootField> fieldsIt = appClass.getFields().iterator();
       while (fieldsIt.hasNext()) {
-        SootField sf = (SootField) fieldsIt.next();
+        SootField sf = fieldsIt.next();
         analyzeField(sf);
       }
     }
@@ -307,36 +317,15 @@ public class TightestQualifiersTagger extends SceneTransformer {
     while (fieldStatIt.hasNext()) {
       SootField f = fieldStatIt.next();
       int result = fieldResultsMap.get(f).intValue();
-      String sRes = "Public";
-      if (result == RESULT_PUBLIC) {
-        sRes = "Public";
-      } else if (result == RESULT_PROTECTED) {
-        sRes = "Protected";
-      } else if (result == RESULT_PACKAGE) {
-        sRes = "Package";
-      } else if (result == RESULT_PRIVATE) {
-        sRes = "Private";
-      }
+      AccessLevel sRes = resultToLevel(result);
 
-      String actual = null;
-      if (Modifier.isPublic(f.getModifiers())) {
-        // System.out.println("Field: "+f.getName()+" is public");
-        actual = "Public";
-      } else if (Modifier.isProtected(f.getModifiers())) {
-        actual = "Protected";
-      } else if (Modifier.isPrivate(f.getModifiers())) {
-        actual = "Private";
-      } else {
-        actual = "Package";
-      }
-
-      // System.out.println("Field: "+f.getName()+" has "+actual+" level access, can have: "+sRes+" level access.");
+      AccessLevel actual = getAccessLevelFromModifiers(f.getModifiers());
 
       if (!sRes.equals(actual)) {
         f.addTag(
             new StringTag("Field: " + f.getName() + " has " + actual + " level access, can have: " + sRes + " level access.",
                 "Tightest Qualifiers"));
-        f.addTag(new ColorTag(255, 10, 0, true, "Tightest Qualifiers"));
+        f.addTag(TightestQualifiersTag.v(actual, sRes));
       }
     }
   }
@@ -344,10 +333,10 @@ public class TightestQualifiersTagger extends SceneTransformer {
   private void analyzeField(SootField sf) {
 
     // from all bodies get all use boxes and eliminate used fields
-    Iterator classesIt = Scene.v().getApplicationClasses().iterator();
+    Iterator<SootClass> classesIt = Scene.v().getApplicationClasses().iterator();
     while (classesIt.hasNext()) {
       SootClass appClass = (SootClass) classesIt.next();
-      Iterator mIt = appClass.getMethods().iterator();
+      Iterator<SootMethod> mIt = appClass.getMethods().iterator();
       while (mIt.hasNext()) {
         SootMethod sm = (SootMethod) mIt.next();
         if (!sm.hasActiveBody() || !Scene.v().getReachableMethods().contains(sm)) {
@@ -355,9 +344,9 @@ public class TightestQualifiersTagger extends SceneTransformer {
         }
         Body b = sm.getActiveBody();
 
-        Iterator usesIt = b.getUseBoxes().iterator();
+        Iterator<ValueBox> usesIt = b.getUseBoxesIterator();
         while (usesIt.hasNext()) {
-          ValueBox vBox = (ValueBox) usesIt.next();
+          ValueBox vBox = usesIt.next();
           Value v = vBox.getValue();
           if (v instanceof FieldRef) {
             FieldRef fieldRef = (FieldRef) v;
@@ -388,7 +377,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
     boolean sameClassAccess = isCallClassMethodClass(callingClass, fieldClass);
 
     if (!insidePackageAccess && !subClassAccess) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PUBLIC));
+      fieldResultsMap.put(sf, RESULT_PUBLIC);
       return true;
     } else if (!insidePackageAccess && subClassAccess) {
       updateToProtected(sf);
@@ -411,7 +400,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
     boolean sameClassAccess = isCallClassMethodClass(callingClass, fieldClass);
 
     if (!insidePackageAccess && subClassAccess) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
+      fieldResultsMap.put(sf, RESULT_PROTECTED);
       return true;
     } else if (insidePackageAccess && !sameClassAccess) {
       updateToPackage(sf);
@@ -426,7 +415,6 @@ public class TightestQualifiersTagger extends SceneTransformer {
     SootClass fieldClass = sf.getDeclaringClass();
 
     boolean insidePackageAccess = isCallSamePackage(callingClass, fieldClass);
-    boolean subClassAccess = isCallClassSubClass(callingClass, fieldClass);
     boolean sameClassAccess = isCallClassMethodClass(callingClass, fieldClass);
 
     if (insidePackageAccess && !sameClassAccess) {
@@ -439,28 +427,14 @@ public class TightestQualifiersTagger extends SceneTransformer {
   }
 
   private void updateToProtected(SootField sf) {
-    if (!fieldResultsMap.containsKey(sf)) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
-    } else {
-      if (fieldResultsMap.get(sf).intValue() != RESULT_PUBLIC) {
-        fieldResultsMap.put(sf, new Integer(RESULT_PROTECTED));
-      }
-    }
+    fieldResultsMap.compute(sf, UPDATE_TO_PROTECTED);
   }
 
   private void updateToPackage(SootField sf) {
-    if (!fieldResultsMap.containsKey(sf)) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PACKAGE));
-    } else {
-      if (fieldResultsMap.get(sf).intValue() == RESULT_PRIVATE) {
-        fieldResultsMap.put(sf, new Integer(RESULT_PACKAGE));
-      }
-    }
+    fieldResultsMap.compute(sf, UPDATE_TO_PACKAGE);
   }
 
   private void updateToPrivate(SootField sf) {
-    if (!fieldResultsMap.containsKey(sf)) {
-      fieldResultsMap.put(sf, new Integer(RESULT_PRIVATE));
-    }
+    fieldResultsMap.putIfAbsent(sf, RESULT_PRIVATE);
   }
 }

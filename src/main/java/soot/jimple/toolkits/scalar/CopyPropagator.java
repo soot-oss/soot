@@ -50,6 +50,7 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
+import soot.jimple.internal.JimpleLocal;
 import soot.options.CPOptions;
 import soot.options.Options;
 import soot.tagkit.Host;
@@ -305,6 +306,20 @@ public class CopyPropagator extends BodyTransformer {
   }
 
   public static void copyLineTags(ValueBox useBox, DefinitionStmt def) {
+    // make sure to also retain user variables
+    Value v = useBox.getValue();
+    if (v instanceof JimpleLocal) {
+      JimpleLocal dest = (JimpleLocal) v;
+      Value srcV = def.getLeftOp();
+      if (srcV instanceof JimpleLocal) {
+        JimpleLocal src = (JimpleLocal) srcV;
+        if (src.isUserDefinedLocal() && !dest.isUserDefinedLocal()) {
+          // Resolving duplicates is done later (AsmMethodSource.ensureUniqueNames)
+          dest.setName(src.getName());
+          dest.setUserDefinedLocal();
+        }
+      }
+    }
     // we might have a def statement which contains a propagated constant itself as right-op. we
     // want to propagate the tags of this constant and not the def statement itself in this case.
     if (!copyLineTags(useBox, def.getRightOpBox())) {

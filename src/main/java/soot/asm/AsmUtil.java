@@ -28,11 +28,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +41,7 @@ import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.IFoundFile;
 import soot.IntType;
 import soot.LongType;
 import soot.ModuleRefType;
@@ -412,7 +411,6 @@ public class AsmUtil {
     return false;
   }
 
-
   public static Type[] jimpleTypesOfFieldOrMethodDescriptor(String descriptor) {
     Type[] ret = null;
     char[] d = descriptor.toCharArray();
@@ -530,5 +528,52 @@ public class AsmUtil {
     return null;
   }
 
+  /**
+   * Returns the true file name of a given class file
+   * 
+   * @param file
+   *          the file (may be null)
+   * @param cls
+   *          the class
+   * @return the true class name
+   */
+  public static String getTrueClassName(IFoundFile file, String cls) {
+    if (file != null) {
+      try {
+        ClassReader rd = new ClassReader(file.inputStream());
+        return rd.getClassName().replace('/', '.');
+      } catch (IOException e) {
+        // We use the fallback then
+      }
+    }
+
+    // fallback
+    return getTrueClassName(cls);
+  }
+
+  /**
+   * Returns the true file name of a given class file
+   * 
+   * @param cls
+   *          the class
+   * @return the true class name
+   */
+  public static String getTrueClassName(String cls) {
+    // fallback
+    if (cls.endsWith(".class")) {
+      cls = cls.substring(0, cls.length() - 6);
+    }
+    return removeWebPaths(cls.replace('/', '.'));
+  }
+
+  public static String removeWebPaths(String cls) {
+
+    if (cls.startsWith("BOOT-INF/classes/")) {
+      cls = cls.substring(17);
+    } else if (cls.startsWith("WEB-INF/classes/")) {
+      cls = cls.substring(16);
+    }
+    return cls;
+  }
 
 }

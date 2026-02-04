@@ -25,7 +25,6 @@ package soot.xml;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
-import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.LineNumberTag;
@@ -37,7 +36,6 @@ import soot.tagkit.Tag;
 
 public class Attribute {
 
-  private ArrayList<ColorAttribute> colors;
   private ArrayList<StringAttribute> texts;
   private ArrayList<LinkAttribute> links;
   private int jimpleStartPos;
@@ -48,18 +46,6 @@ public class Attribute {
   private int javaEndLn;
   private int jimpleStartLn;
   private int jimpleEndLn;
-
-  public ArrayList<ColorAttribute> colors() {
-    return colors;
-  }
-
-  public void addColor(ColorAttribute ca) {
-    ArrayList<ColorAttribute> colors = this.colors;
-    if (colors == null) {
-      this.colors = colors = new ArrayList<ColorAttribute>();
-    }
-    colors.add(ca);
-  }
 
   public void addText(StringAttribute s) {
     ArrayList<StringAttribute> texts = this.texts;
@@ -141,10 +127,6 @@ public class Attribute {
     this.javaEndLn = x;
   }
 
-  public boolean hasColor() {
-    return this.colors != null;
-  }
-
   public void addTag(Tag t) {
     if (t instanceof LineNumberTag) {
       int lnNum = ((LineNumberTag) t).getLineNumber();
@@ -172,9 +154,6 @@ public class Attribute {
       PositionTag pt = (PositionTag) t;
       jimpleStartPos(pt.getStartOffset());
       jimpleEndPos(pt.getEndOffset());
-    } else if (t instanceof ColorTag) {
-      ColorTag ct = (ColorTag) t;
-      addColor(new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground(), ct.getAnalysisType()));
     }
     /*
      * else if (t instanceof SourcePositionTag){ } else if (t instanceof SourceLineNumberTag){ }
@@ -227,7 +206,7 @@ public class Attribute {
   }
 
   public boolean isEmpty() {
-    return colors == null && texts == null && links == null;
+    return texts == null && links == null;
   }
 
   public void print(PrintWriter writerOut) {
@@ -244,12 +223,6 @@ public class Attribute {
         + "\" epos=\"" + javaEndPos() + "\"/>");
     writerOut.println("<jmpPos sline=\"" + jimpleStartLn() + "\" eline=\"" + jimpleEndLn() + "\" spos=\"" + jimpleStartPos()
         + "\" epos=\"" + jimpleEndPos() + "\"/>");
-    if (colors != null) {
-      for (ColorAttribute ca : colors) {
-        writerOut.println("<color r=\"" + ca.red() + "\" g=\"" + ca.green() + "\" b=\"" + ca.blue() + "\" fg=\"" + ca.fg()
-            + "\" aType=\"" + ca.analysisType() + "\"/>");
-      }
-    }
     if (texts != null) {
       for (StringAttribute sa : texts) {
         writerOut.println("<text info=\"" + sa.info() + "\" aType=\"" + sa.analysisType() + "\"/>");

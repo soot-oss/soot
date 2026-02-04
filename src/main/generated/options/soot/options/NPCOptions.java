@@ -54,18 +54,4 @@ public class NPCOptions {
         return soot.PhaseOptions.getBoolean(options, "only-array-ref");
     }
 
-    /**
-     * Profiling --
-     * Insert instructions to count safe pointer accesses.
-     *
-     * Insert profiling instructions that at runtime count the number 
-     * of eliminated safe null pointer checks. The inserted profiling 
-     * code assumes the existence of a MultiCounter class implementing 
-     * the methods invoked. For details, see the NullPointerChecker 
-     * source code.
-     */
-    public boolean profiling() {
-        return soot.PhaseOptions.getBoolean(options, "profiling");
-    }
-
 }

@@ -34,35 +34,37 @@
                            </a></li>
                      <li><a href="#phase_1_3">Local Splitter (jb.ls)
                            </a></li>
-                     <li><a href="#phase_1_4">Shared Initialization Local Splitter (jb.sils)
+                     <li><a href="#phase_1_4">Remove Useless Aliases (jb.rua)
                            </a></li>
-                     <li><a href="#phase_1_5">Array Writer Aggregregator (jb.awa)
+                     <li><a href="#phase_1_5">Shared Initialization Local Splitter (jb.sils)
                            </a></li>
-                     <li><a href="#phase_1_6">Jimple Local Aggregator (jb.a)
+                     <li><a href="#phase_1_6">Array Writer Aggregregator (jb.awa)
                            </a></li>
-                     <li><a href="#phase_1_7">Unused Local Eliminator (jb.ule)
+                     <li><a href="#phase_1_7">Jimple Local Aggregator (jb.a)
                            </a></li>
-                     <li><a href="#phase_1_8">Type Assigner (jb.tr)
+                     <li><a href="#phase_1_8">Unused Local Eliminator (jb.ule)
                            </a></li>
-                     <li><a href="#phase_1_9">Unsplit-originals Local Packer (jb.ulp)
+                     <li><a href="#phase_1_9">Type Assigner (jb.tr)
                            </a></li>
-                     <li><a href="#phase_1_10">Local Name Standardizer (jb.lns)
+                     <li><a href="#phase_1_10">Unsplit-originals Local Packer (jb.ulp)
                            </a></li>
-                     <li><a href="#phase_1_11">Copy Propagator (jb.cp)
+                     <li><a href="#phase_1_11">Local Name Standardizer (jb.lns)
                            </a></li>
-                     <li><a href="#phase_1_12">Dead Assignment Eliminator (jb.dae)
+                     <li><a href="#phase_1_12">Copy Propagator (jb.cp)
                            </a></li>
-                     <li><a href="#phase_1_13">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
+                     <li><a href="#phase_1_13">Dead Assignment Eliminator (jb.dae)
                            </a></li>
-                     <li><a href="#phase_1_14">Local Packer (jb.lp)
+                     <li><a href="#phase_1_14">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
                            </a></li>
-                     <li><a href="#phase_1_15">Nop Eliminator (jb.ne)
+                     <li><a href="#phase_1_15">Local Packer (jb.lp)
                            </a></li>
-                     <li><a href="#phase_1_16">Unreachable Code Eliminator (jb.uce)
+                     <li><a href="#phase_1_16">Nop Eliminator (jb.ne)
                            </a></li>
-                     <li><a href="#phase_1_17">Trap Tightener (jb.tt)
+                     <li><a href="#phase_1_17">Unreachable Code Eliminator (jb.uce)
                            </a></li>
-                     <li><a href="#phase_1_18">Conditional Branch Folder (jb.cbf)
+                     <li><a href="#phase_1_18">Trap Tightener (jb.tt)
+                           </a></li>
+                     <li><a href="#phase_1_19">Conditional Branch Folder (jb.cbf)
                            </a></li>
                   </ul>
                </li>
@@ -172,31 +174,29 @@
                            </a></li>
                      <li><a href="#phase_15_3">Array Bound Checker (jap.abc)
                            </a></li>
-                     <li><a href="#phase_15_4">Profiling Generator (jap.profiling)
+                     <li><a href="#phase_15_4">Side Effect tagger (jap.sea)
                            </a></li>
-                     <li><a href="#phase_15_5">Side Effect tagger (jap.sea)
+                     <li><a href="#phase_15_5">Field Read/Write Tagger (jap.fieldrw)
                            </a></li>
-                     <li><a href="#phase_15_6">Field Read/Write Tagger (jap.fieldrw)
+                     <li><a href="#phase_15_6">Call Graph Tagger (jap.cgtagger)
                            </a></li>
-                     <li><a href="#phase_15_7">Call Graph Tagger (jap.cgtagger)
+                     <li><a href="#phase_15_7">Parity Tagger (jap.parity)
                            </a></li>
-                     <li><a href="#phase_15_8">Parity Tagger (jap.parity)
+                     <li><a href="#phase_15_8">Parameter Alias Tagger (jap.pat)
                            </a></li>
-                     <li><a href="#phase_15_9">Parameter Alias Tagger (jap.pat)
+                     <li><a href="#phase_15_9">Live Variables Tagger (jap.lvtagger)
                            </a></li>
-                     <li><a href="#phase_15_10">Live Variables Tagger (jap.lvtagger)
+                     <li><a href="#phase_15_10">Reaching Defs Tagger (jap.rdtagger)
                            </a></li>
-                     <li><a href="#phase_15_11">Reaching Defs Tagger (jap.rdtagger)
+                     <li><a href="#phase_15_11">Cast Elimination Check Tagger (jap.che)
                            </a></li>
-                     <li><a href="#phase_15_12">Cast Elimination Check Tagger (jap.che)
+                     <li><a href="#phase_15_12">Unreachable Method Transformer (jap.umt)
                            </a></li>
-                     <li><a href="#phase_15_13">Unreachable Method Transformer (jap.umt)
+                     <li><a href="#phase_15_13">Loop Invariant Tagger (jap.lit)
                            </a></li>
-                     <li><a href="#phase_15_14">Loop Invariant Tagger (jap.lit)
+                     <li><a href="#phase_15_14">Available Expressions Tagger (jap.aet)
                            </a></li>
-                     <li><a href="#phase_15_15">Available Expressions Tagger (jap.aet)
-                           </a></li>
-                     <li><a href="#phase_15_16">Dominators Tagger (jap.dmt)
+                     <li><a href="#phase_15_15">Dominators Tagger (jap.dmt)
                            </a></li>
                   </ul>
                </li>
@@ -1106,9 +1106,25 @@
             )
             
             <p>
-               Retain the original names for local variables when the source
+               Retain the original names for local variables when the bytecode
                includes those names. Otherwise, Soot gives variables generic
                names based on their types.
+               
+            </p>
+         </li>
+         <li><b>Use Original Types</b>
+            (use-original-types)
+            <br>
+            (default value:
+            <span class="value">false</span>
+            )
+            
+            <p>
+               Retain the original types for local variables when the bytecode
+               includes those types. Note that this can cause problems when the
+               bytecode is obfuscated and the types are deliberately wrong!
+               Otherwise, Soot assigns types automatically based on the context.
+               Note that this option only makes sense when use-original-names is set. 
                
             </p>
          </li>
@@ -1231,7 +1247,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_4">Shared Initialization Local Splitter (jb.sils)
+      <h2><a name="phase_1_4">Remove Useless Aliases (jb.rua)
             </a></h2>
       <p></p>
       <h4>Accepted phase options:</h4>
@@ -1246,7 +1262,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_5">Array Writer Aggregregator (jb.awa)
+      <h2><a name="phase_1_5">Shared Initialization Local Splitter (jb.sils)
             </a></h2>
       <p></p>
       <h4>Accepted phase options:</h4>
@@ -1261,7 +1277,22 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_6">Jimple Local Aggregator (jb.a)
+      <h2><a name="phase_1_6">Array Writer Aggregregator (jb.awa)
+            </a></h2>
+      <p></p>
+      <h4>Accepted phase options:</h4>
+      <ul>
+         <li><b>Enabled</b>
+            (enabled)
+            <br>
+            (default value:
+            <span class="value">true</span>
+            )
+            
+            <p></p>
+         </li>
+      </ul>
+      <h2><a name="phase_1_7">Jimple Local Aggregator (jb.a)
             </a></h2>
       <p>
          
@@ -1307,7 +1338,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_7">Unused Local Eliminator (jb.ule)
+      <h2><a name="phase_1_8">Unused Local Eliminator (jb.ule)
             </a></h2>
       <p>
          The Unused Local Eliminator removes any unused locals from the
@@ -1326,7 +1357,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_8">Type Assigner (jb.tr)
+      <h2><a name="phase_1_9">Type Assigner (jb.tr)
             </a></h2>
       <p>
          The Type Assigner gives local variables types which will
@@ -1407,7 +1438,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_9">Unsplit-originals Local Packer (jb.ulp)
+      <h2><a name="phase_1_10">Unsplit-originals Local Packer (jb.ulp)
             </a></h2>
       <p>
          The Unsplit-originals Local Packer executes only when the
@@ -1445,7 +1476,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_10">Local Name Standardizer (jb.lns)
+      <h2><a name="phase_1_11">Local Name Standardizer (jb.lns)
             </a></h2>
       <p>
          The Local Name Standardizer assigns generic names to local variables.
@@ -1500,7 +1531,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_11">Copy Propagator (jb.cp)
+      <h2><a name="phase_1_12">Copy Propagator (jb.cp)
             </a></h2>
       <p>
          This phase performs cascaded copy propagation.
@@ -1564,7 +1595,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_12">Dead Assignment Eliminator (jb.dae)
+      <h2><a name="phase_1_13">Dead Assignment Eliminator (jb.dae)
             </a></h2>
       <p>
          The Dead Assignment Eliminator eliminates assignment statements
@@ -1598,7 +1629,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_13">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
+      <h2><a name="phase_1_14">Post-copy propagation Unused Local Eliminator (jb.cp-ule)
             </a></h2>
       <p>
          This phase removes any locals that are unused after copy propagation.
@@ -1616,7 +1647,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_14">Local Packer (jb.lp)
+      <h2><a name="phase_1_15">Local Packer (jb.lp)
             </a></h2>
       <p>
          The Local Packer attempts to minimize the number of local
@@ -1652,7 +1683,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_15">Nop Eliminator (jb.ne)
+      <h2><a name="phase_1_16">Nop Eliminator (jb.ne)
             </a></h2>
       <p>
          The Nop Eliminator removes nop statements from the method.
@@ -1670,7 +1701,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_16">Unreachable Code Eliminator (jb.uce)
+      <h2><a name="phase_1_17">Unreachable Code Eliminator (jb.uce)
             </a></h2>
       <p>
          The Unreachable Code Eliminator removes unreachable code and
@@ -1702,7 +1733,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_1_17">Trap Tightener (jb.tt)
+      <h2><a name="phase_1_18">Trap Tightener (jb.tt)
             </a></h2>
       <p>
          The Trap Tightener changes the area protected by each exception handler,
@@ -1726,7 +1757,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_1_18">Conditional Branch Folder (jb.cbf)
+      <h2><a name="phase_1_19">Conditional Branch Folder (jb.cbf)
             </a></h2>
       <p>
          The Conditional Branch Folder statically evaluates the
@@ -5694,25 +5725,6 @@
                
             </p>
          </li>
-         <li><b>Profiling</b>
-            (profiling)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p>
-               
-               Insert profiling instructions that at runtime count the number of
-               eliminated safe null pointer checks. The inserted profiling code
-               assumes the existence of a MultiCounter class
-               implementing the methods invoked. For details, see the
-               NullPointerChecker
-               source code.
-               
-               
-            </p>
-         </li>
       </ul>
       <h2><a name="phase_15_2">Null Pointer Colourer (jap.npcolorer)
             </a></h2>
@@ -5869,80 +5881,8 @@
                
             </p>
          </li>
-         <li><b>Profiling</b>
-            (profiling)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p>
-               
-               Profile the results of array bounds check analysis. The inserted
-               profiling code assumes the existence of a
-               MultiCounter
-               class implementing the methods invoked. For details, see the
-               ArrayBoundsChecker
-               source code.
-               
-               
-            </p>
-         </li>
-         <li><b>Add Color Tags</b>
-            (add-color-tags)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p>Add color tags to the results of the array bounds check analysis.</p>
-         </li>
       </ul>
-      <h2><a name="phase_15_4">Profiling Generator (jap.profiling)
-            </a></h2>
-      <p>
-         
-         The Profiling Generator inserts the method invocations required
-         to initialize and to report the results of any profiling
-         performed by the Null Pointer Checker and Array Bound
-         Checker. Users of the Profiling Generator must provide a
-         MultiCounter
-         class implementing the methods invoked. For
-         details, see the ProfilingGenerator source code.
-         
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p></p>
-         </li>
-         <li><b>Not Main Entry</b>
-            (notmainentry)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p>
-               
-               Insert the calls to the MultiCounter at the
-               beginning and end of methods with the signature
-               long runBenchmark(java.lang.String[])
-               instead of the signature
-               void main(java.lang.String[]).
-               
-               
-            </p>
-         </li>
-      </ul>
-      <h2><a name="phase_15_5">Side Effect tagger (jap.sea)
+      <h2><a name="phase_15_4">Side Effect tagger (jap.sea)
             </a></h2>
       <p>
          
@@ -5983,7 +5923,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_15_6">Field Read/Write Tagger (jap.fieldrw)
+      <h2><a name="phase_15_5">Field Read/Write Tagger (jap.fieldrw)
             </a></h2>
       <p>
          
@@ -6018,7 +5958,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_15_7">Call Graph Tagger (jap.cgtagger)
+      <h2><a name="phase_15_6">Call Graph Tagger (jap.cgtagger)
             </a></h2>
       <p>
          The Call Graph Tagger produces LinkTags based on the call
@@ -6040,7 +5980,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_8">Parity Tagger (jap.parity)
+      <h2><a name="phase_15_7">Parity Tagger (jap.parity)
             </a></h2>
       <p>
          The Parity Tagger produces StringTags and ColorTags indicating
@@ -6063,7 +6003,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_9">Parameter Alias Tagger (jap.pat)
+      <h2><a name="phase_15_8">Parameter Alias Tagger (jap.pat)
             </a></h2>
       <p>For each method with parameters of reference type, this tagger indicates the aliasing
          relationships between the parameters using colour tags. Parameters that may be aliased
@@ -6083,7 +6023,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_10">Live Variables Tagger (jap.lvtagger)
+      <h2><a name="phase_15_9">Live Variables Tagger (jap.lvtagger)
             </a></h2>
       <p>Colors live variables.</p>
       <h4>Accepted phase options:</h4>
@@ -6098,7 +6038,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_11">Reaching Defs Tagger (jap.rdtagger)
+      <h2><a name="phase_15_10">Reaching Defs Tagger (jap.rdtagger)
             </a></h2>
       <p>For each use of a local in a stmt creates a link to the reaching def.</p>
       <h4>Accepted phase options:</h4>
@@ -6113,7 +6053,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_12">Cast Elimination Check Tagger (jap.che)
+      <h2><a name="phase_15_11">Cast Elimination Check Tagger (jap.che)
             </a></h2>
       <p>Indicates whether cast checks can be eliminated.</p>
       <h4>Accepted phase options:</h4>
@@ -6128,7 +6068,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_13">Unreachable Method Transformer (jap.umt)
+      <h2><a name="phase_15_12">Unreachable Method Transformer (jap.umt)
             </a></h2>
       <p>When the whole-program analysis determines a method to be unreachable, this transformer
          inserts an assertion into the method to check that it is indeed unreachable.
@@ -6146,7 +6086,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_14">Loop Invariant Tagger (jap.lit)
+      <h2><a name="phase_15_13">Loop Invariant Tagger (jap.lit)
             </a></h2>
       <p>An expression whose operands are constant or have reaching definitions from outside
          the
@@ -6165,7 +6105,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_15">Available Expressions Tagger (jap.aet)
+      <h2><a name="phase_15_14">Available Expressions Tagger (jap.aet)
             </a></h2>
       <p>A each statement a set of available expressions is after the statement is added as
          a
@@ -6207,7 +6147,7 @@
             </table>
          </li>
       </ul>
-      <h2><a name="phase_15_16">Dominators Tagger (jap.dmt)
+      <h2><a name="phase_15_15">Dominators Tagger (jap.dmt)
             </a></h2>
       <p>Provides link tags at a statement to all of the satements dominators.</p>
       <h4>Accepted phase options:</h4>

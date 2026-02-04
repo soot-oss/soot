@@ -59,6 +59,7 @@ import soot.ShortType;
 import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
+import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
@@ -864,6 +865,10 @@ public class TypeResolver {
   }
 
   protected Type getDefiniteType(Local v) {
+    Type type = v.getType();
+    if (type != null && !(type instanceof UnknownType)) {
+      return type;
+    }
     return null;
   }
 

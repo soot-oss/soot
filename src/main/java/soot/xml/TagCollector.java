@@ -35,22 +35,19 @@ import soot.Unit;
 import soot.ValueBox;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
-import soot.tagkit.KeyTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
 
 public class TagCollector {
 
   private final ArrayList<Attribute> attributes;
-  private final ArrayList<Key> keys;
 
   public TagCollector() {
     this.attributes = new ArrayList<Attribute>();
-    this.keys = new ArrayList<Key>();
   }
 
   public boolean isEmpty() {
-    return attributes.isEmpty() && keys.isEmpty();
+    return attributes.isEmpty();
   }
 
   /**
@@ -85,23 +82,6 @@ public class TagCollector {
       if (includeBodies && sm.hasActiveBody()) {
         collectBodyTags(sm.getActiveBody());
       }
-    }
-  }
-
-  public void collectKeyTags(SootClass sc) {
-    for (Tag next : sc.getTags()) {
-      if (next instanceof KeyTag) {
-        KeyTag kt = (KeyTag) next;
-        Key k = new Key(kt.red(), kt.green(), kt.blue(), kt.key());
-        k.aType(kt.analysisType());
-        keys.add(k);
-      }
-    }
-  }
-
-  public void printKeys(PrintWriter writerOut) {
-    for (Key k : keys) {
-      k.print(writerOut);
     }
   }
 

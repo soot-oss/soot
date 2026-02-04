@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
@@ -99,13 +100,13 @@ public class SootClass extends AbstractHost {
   private RefType refType;
 
   private volatile int resolvingLevel = DANGLING;
-  protected ConcurrentMap<NameAndNumber, List<SootMethod>> methodParameterMap = new ConcurrentHashMap<>();
+  protected ConcurrentMap<NameAndNumber, Collection<SootMethod>> methodParameterMap = new ConcurrentHashMap<>();
 
-  private static final Function<? super NameAndNumber, ? extends List<SootMethod>> NEW_LIST_FACTORY
-      = new Function<NameAndNumber, List<SootMethod>>() {
+  private static final Function<? super NameAndNumber, Collection<SootMethod>> NEW_SET_FACTORY
+      = new Function<NameAndNumber, Collection<SootMethod>>() {
         @Override
-        public List<SootMethod> apply(NameAndNumber t) {
-          return new ArrayList<>();
+        public Collection<SootMethod> apply(NameAndNumber t) {
+          return new ConcurrentLinkedDeque<SootMethod>();
         }
       };
 
@@ -692,16 +693,16 @@ public class SootClass extends AbstractHost {
       throw new RuntimeException("Attempting to add method " + m.getSubSignature() + " to class " + this
           + ", but the class already has a method with that signature.");
     }
+    m.setDeclared(true);
+    m.setDeclaringClass(this);
     this.subSigToMethods.put(m.getNumberedSubSignature(), m);
     this.methodList.add(m);
     addToNameAndParamMap(m);
-    m.setDeclared(true);
-    m.setDeclaringClass(this);
   }
 
   protected void addToNameAndParamMap(SootMethod m) {
-    List<SootMethod> use
-        = methodParameterMap.computeIfAbsent(new NameAndNumber(m.getName(), m.getParameterCount()), NEW_LIST_FACTORY);
+    Collection<SootMethod> use
+        = methodParameterMap.computeIfAbsent(new NameAndNumber(m.getName(), m.getParameterCount()), NEW_SET_FACTORY);
     use.add(m);
   }
 
@@ -720,11 +721,11 @@ public class SootClass extends AbstractHost {
     if (old != null) {
       return old;
     }
+    m.setDeclared(true);
+    m.setDeclaringClass(this);
     addToNameAndParamMap(m);
     this.subSigToMethods.put(m.getNumberedSubSignature(), m);
     this.methodList.add(m);
-    m.setDeclared(true);
-    m.setDeclaringClass(this);
     return m;
   }
 
@@ -766,11 +767,9 @@ public class SootClass extends AbstractHost {
     m.setDeclaringClass(null);
     Scene scene = Scene.v();
 
-    List<SootMethod> l = methodParameterMap.get(new NameAndNumber(m.getName(), m.getParameterCount()));
+    Collection<SootMethod> l = methodParameterMap.get(new NameAndNumber(m.getName(), m.getParameterCount()));
     if (l != null) {
-      synchronized (l) {
-        l.remove(m);
-      }
+      l.remove(m);
     }
     // We have caches for resolving default methods in the FastHierarchy, which are no longer valid
     scene.modifyHierarchy();
@@ -1317,7 +1316,7 @@ public class SootClass extends AbstractHost {
    * @return the methods
    */
   public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
-    List<SootMethod> l = methodParameterMap.get(new NameAndNumber(name, paramCount));
+    Collection<SootMethod> l = methodParameterMap.get(new NameAndNumber(name, paramCount));
     if (l == null) {
       return Collections.emptyList();
     }

@@ -40,6 +40,7 @@ import soot.Singletons;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.asm.AsmMethodSource;
 import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
@@ -361,6 +362,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       }
     }
     UnusedLocalEliminator.v().transform(body);
+    AsmMethodSource.ensureUniqueNames(body.getLocals());
   }
 
   private boolean intersects(TreeSet<Integer> t1, TreeSet<Integer> t2) {

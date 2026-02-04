@@ -625,7 +625,8 @@ public class Scene {
       // If we have an apk file on the process dir and do not have a src-prec
       // option that loads APK files, we give a warning
       for (String entry : options.process_dir()) {
-        if (entry.toLowerCase().endsWith(".apk")) {
+        final String e = entry.toLowerCase();
+        if (e.endsWith(".apk") || e.endsWith(".dex")) {
           System.err.println("APK file on process dir, but chosen src-prec does not support loading APKs");
           break;
         }

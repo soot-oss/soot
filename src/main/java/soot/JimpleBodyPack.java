@@ -77,6 +77,7 @@ public class JimpleBodyPack extends BodyPack {
     }
 
     pacman.getTransform("jb.tr").apply(b);
+    pacman.getTransform("jb.rua").apply(b);
 
     if (time) {
       Timers.v().assignTimer.end();

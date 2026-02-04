@@ -1590,9 +1590,22 @@
                     <default>false</default>
                     <short_desc/>
                     <long_desc>
-                        Retain the original names for local variables when the source
+                        Retain the original names for local variables when the bytecode
                         includes those names. Otherwise, Soot gives variables generic
                         names based on their types.
+                    </long_desc>
+                </boolopt>
+                <boolopt>
+                    <name>Use Original Types</name>
+                    <alias>use-original-types</alias>
+                    <default>false</default>
+                    <short_desc/>
+                    <long_desc>
+                        Retain the original types for local variables when the bytecode
+                        includes those types. Note that this can cause problems when the
+                        bytecode is obfuscated and the types are deliberately wrong!
+                        Otherwise, Soot assigns types automatically based on the context.
+                        Note that this option only makes sense when use-original-names is set. 
                     </long_desc>
                 </boolopt>
                 <boolopt>
@@ -1681,6 +1694,16 @@
                         introduces new variables so that each disjoint web is associated
                         with a single local.
                     </long_desc>
+                </sub_phase>
+                <sub_phase>
+                    <name>Remove Useless Aliases</name>
+                    <alias>jb.rua</alias>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>true</default>
+                    </boolopt>
+                    <short_desc>Removes useless aliases that are defined only once</short_desc>
                 </sub_phase>
                 <sub_phase>
                     <name>Shared Initialization Local Splitter</name>
@@ -5522,22 +5545,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                             instructions that need null pointer checks.
                         </long_desc>
                     </boolopt>
-                    <boolopt>
-                        <name>Profiling</name>
-                        <alias>profiling</alias>
-                        <default>false</default>
-                        <short_desc>Insert instructions to count safe pointer accesses</short_desc>
-                        <long_desc>
-                            <p>
-                                Insert profiling instructions that at runtime count the number of
-                                eliminated safe null pointer checks. The inserted profiling code
-                                assumes the existence of a <tt>MultiCounter</tt> class
-                                implementing the methods invoked. For details, see the
-                                <tt>NullPointerChecker</tt>
-                                source code.
-                            </p>
-                        </long_desc>
-                    </boolopt>
                 </sub_phase>
                 <sub_phase>
                     <name>Null Pointer Colourer</name>
@@ -5669,70 +5676,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                             call graph, and it usually takes a long time. If the application uses
                             rectangular arrays, these options can improve the analysis
                             result.
-                        </long_desc>
-                    </boolopt>
-                    <boolopt>
-                        <name>Profiling</name>
-                        <alias>profiling</alias>
-                        <default>false</default>
-                        <short_desc>Profile the results of array bounds check analysis.</short_desc>
-                        <long_desc>
-                            <p>
-                                Profile the results of array bounds check analysis. The inserted
-                                profiling code assumes the existence of a
-                                <tt>MultiCounter</tt>
-                                class implementing the methods invoked. For details, see the
-                                <tt>ArrayBoundsChecker</tt>
-                                source code.
-                            </p>
-                        </long_desc>
-                    </boolopt>
-                    <boolopt>
-                        <name>Add Color Tags</name>
-                        <alias>add-color-tags</alias>
-                        <default>false</default>
-                        <short_desc>Add color tags to results of array bound check analysis.</short_desc>
-                        <long_desc>Add color tags to the results of the array bounds check analysis.</long_desc>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Profiling Generator</name>
-                    <alias>jap.profiling</alias>
-                    <class>ProfilingOptions</class>
-                    <short_desc>Instruments null pointer and array checks</short_desc>
-                    <long_desc>
-                        <p>
-                            The Profiling Generator inserts the method invocations required
-                            to initialize and to report the results of any profiling
-                            performed by the Null Pointer Checker and Array Bound
-                            Checker. Users of the Profiling Generator must provide a
-                            <tt>MultiCounter</tt>
-                            class implementing the methods invoked. For
-                            details, see the <tt>ProfilingGenerator</tt> source code.
-                        </p>
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Not Main Entry</name>
-                        <alias>notmainentry</alias>
-                        <default>false</default>
-                        <short_desc>Instrument <tt>runBenchmark()</tt> instead of
-                            <tt>main()</tt>
-                        </short_desc>
-                        <long_desc>
-                            <p>
-                                Insert the calls to the <tt>MultiCounter</tt> at the
-                                beginning and end of methods with the signature
-                                <tt>long runBenchmark(java.lang.String[])</tt>
-                                instead of the signature
-                                <tt>void main(java.lang.String[])</tt>.
-                            </p>
                         </long_desc>
                     </boolopt>
                 </sub_phase>

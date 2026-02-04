@@ -42,6 +42,7 @@ public class JimpleLocal implements Local, ConvertToBaf {
   protected String name;
   protected Type type;
   private volatile int number = 0;
+  private boolean userDefinedLocal;
 
   /** Constructs a JimpleLocal of the given name and type. */
   public JimpleLocal(String name, Type type) {
@@ -73,6 +74,7 @@ public class JimpleLocal implements Local, ConvertToBaf {
     // do not intern the name again
     JimpleLocal local = new JimpleLocal(null, type);
     local.name = name;
+    local.userDefinedLocal = userDefinedLocal;
     return local;
   }
 
@@ -146,5 +148,21 @@ public class JimpleLocal implements Local, ConvertToBaf {
   public boolean isStackLocal() {
     String n = getName();
     return n != null && n.charAt(0) == '$';
+  }
+
+  public void setUserDefinedLocal() {
+    this.userDefinedLocal = true;
+  }
+
+  public boolean isUserDefinedLocal() {
+    return userDefinedLocal;
+  }
+
+  
+  public static boolean isUserDefinedLocal(Local l) {
+    if (l instanceof JimpleLocal) {
+      return ((JimpleLocal) l).isUserDefinedLocal();
+    }
+    return false;
   }
 }

@@ -32,17 +32,14 @@ import soot.BodyTransformer;
 import soot.G;
 import soot.RefLikeType;
 import soot.Singletons;
-import soot.SootClass;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis.AnalysisInfo;
+import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis.NullnessLattice;
 import soot.jimple.toolkits.annotation.tags.NullCheckTag;
-import soot.tagkit.ColorTag;
-import soot.tagkit.KeyTag;
 import soot.tagkit.StringTag;
-import soot.tagkit.Tag;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
-import soot.toolkits.scalar.FlowSet;
 
 public class NullPointerColorer extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(NullPointerColorer.class);
@@ -56,63 +53,27 @@ public class NullPointerColorer extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    BranchedRefVarsAnalysis analysis
-        = new BranchedRefVarsAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
+    NullnessAnalysis analysis = new NullnessAnalysis(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
 
     for (Unit s : b.getUnits()) {
-      FlowSet<RefIntPair> beforeSet = analysis.getFlowBefore(s);
+      AnalysisInfo beforeSet = analysis.getFlowBefore(s);
       for (ValueBox vBox : s.getUseBoxes()) {
-        addColorTags(vBox, beforeSet, s, analysis);
+        addTags(vBox, beforeSet, s, analysis);
       }
-      FlowSet<RefIntPair> afterSet = analysis.getFallFlowAfter(s);
+      AnalysisInfo afterSet = analysis.getFallFlowAfter(s);
       for (ValueBox vBox : s.getDefBoxes()) {
-        addColorTags(vBox, afterSet, s, analysis);
+        addTags(vBox, afterSet, s, analysis);
       }
     }
 
-    boolean keysAdded = false;
-    final SootClass declaringClass = b.getMethod().getDeclaringClass();
-    for (Tag next : declaringClass.getTags()) {
-      if (next instanceof KeyTag) {
-        if (NullCheckTag.NAME.equals(((KeyTag) next).analysisType())) {
-          keysAdded = true;
-        }
-      }
-    }
-    if (!keysAdded) {
-      declaringClass.addTag(new KeyTag(ColorTag.RED, "Nullness: Null", NullCheckTag.NAME));
-      declaringClass.addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null", NullCheckTag.NAME));
-      declaringClass.addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown", NullCheckTag.NAME));
-    }
   }
 
-  private void addColorTags(ValueBox vBox, FlowSet<RefIntPair> set, Unit u, BranchedRefVarsAnalysis analysis) {
+  private void addTags(ValueBox vBox, AnalysisInfo set, Unit u, NullnessAnalysis analysis) {
     Value val = vBox.getValue();
     if (val.getType() instanceof RefLikeType) {
-      // logger.debug(""+val+": "+val.getClass().toString());
-      switch (analysis.anyRefInfo(val, set)) {
-        case BranchedRefVarsAnalysis.kNull: {
-          // analysis.kNull
-          u.addTag(new StringTag(val + ": Null", NullCheckTag.NAME));
-          vBox.addTag(new ColorTag(ColorTag.RED, NullCheckTag.NAME));
-          break;
-        }
-        case BranchedRefVarsAnalysis.kNonNull: {
-          u.addTag(new StringTag(val + ": NonNull", NullCheckTag.NAME));
-          vBox.addTag(new ColorTag(ColorTag.GREEN, NullCheckTag.NAME));
-          break;
-        }
-        case BranchedRefVarsAnalysis.kTop: {
-          u.addTag(new StringTag(val + ": Nullness Unknown", NullCheckTag.NAME));
-          vBox.addTag(new ColorTag(ColorTag.BLUE, NullCheckTag.NAME));
-          break;
-        }
-        case BranchedRefVarsAnalysis.kBottom: {
-          u.addTag(new StringTag(val + ": Nullness Unknown", NullCheckTag.NAME));
-          vBox.addTag(new ColorTag(ColorTag.BLUE, NullCheckTag.NAME));
-          break;
-        }
-      }
+      NullnessLattice p = set.getLattice(val);
+      u.addTag(new StringTag(val + ": " + p.toString(), NullCheckTag.NAME));
+      u.addTag(new NullnessTag(p));
     }
   }
 }
