@@ -2013,7 +2013,6 @@ public class Options extends OptionsBase {
                     + padVal("jap.npc", "Null pointer checker")
                     + padVal("jap.npcolorer", "Null pointer colourer: tags references for eclipse")
                     + padVal("jap.abc", "Array bound checker")
-                    + padVal("jap.profiling", "Instruments null pointer and array checks")
                     + padVal("jap.sea", "Side effect tagger")
                     + padVal("jap.fieldrw", "Field read/write tagger")
                     + padVal("jap.cgtagger", "Call graph tagger")
@@ -2676,8 +2675,7 @@ public class Options extends OptionsBase {
                     + "\nThe Null Pointer Checker finds instruction which have the \npotential to throw NullPointerExceptions and adds annotations \nindicating whether or not the pointer being dereferenced can be \ndetermined statically not to be null."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "")
-                    + padOpt("only-array-ref (false)", "Annotate only array references")
-                    + padOpt("profiling (false)", "Insert instructions to count safe pointer accesses");
+                    + padOpt("only-array-ref (false)", "Annotate only array references");
 
         if (phaseName.equals("jap.npcolorer"))
             return "Phase " + phaseName + ":\n"
@@ -2695,16 +2693,7 @@ public class Options extends OptionsBase {
                     + padOpt("with-arrayref (false)", "")
                     + padOpt("with-fieldref (false)", "")
                     + padOpt("with-classfield (false)", "")
-                    + padOpt("with-rectarray (false)", "")
-                    + padOpt("profiling (false)", "Profile the results of array bounds check analysis.")
-                    + padOpt("add-color-tags (false)", "Add color tags to results of array bound check analysis.");
-
-        if (phaseName.equals("jap.profiling"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Profiling Generator inserts the method invocations required \nto initialize and to report the results of any profiling \nperformed by the Null Pointer Checker and Array Bound Checker. \nUsers of the Profiling Generator must provide a MultiCounter \nclass implementing the methods invoked. For details, see the \nProfilingGenerator source code."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "")
-                    + padOpt("notmainentry (false)", "Instrument runBenchmark() instead of main()");
+                    + padOpt("with-rectarray (false)", "");
 
         if (phaseName.equals("jap.sea"))
             return "Phase " + phaseName + ":\n"
@@ -3353,8 +3342,7 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npc"))
             return String.join(" ", 
                     "enabled",
-                    "only-array-ref",
-                    "profiling"
+                    "only-array-ref"
             );
 
         if (phaseName.equals("jap.npcolorer"))
@@ -3370,15 +3358,7 @@ public class Options extends OptionsBase {
                     "with-arrayref",
                     "with-fieldref",
                     "with-classfield",
-                    "with-rectarray",
-                    "profiling",
-                    "add-color-tags"
-            );
-
-        if (phaseName.equals("jap.profiling"))
-            return String.join(" ", 
-                    "enabled",
-                    "notmainentry"
+                    "with-rectarray"
             );
 
         if (phaseName.equals("jap.sea"))
@@ -3937,8 +3917,7 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npc"))
             return ""
                     + "enabled:false "
-                    + "only-array-ref:false "
-                    + "profiling:false ";
+                    + "only-array-ref:false ";
 
         if (phaseName.equals("jap.npcolorer"))
             return ""
@@ -3952,14 +3931,7 @@ public class Options extends OptionsBase {
                     + "with-arrayref:false "
                     + "with-fieldref:false "
                     + "with-classfield:false "
-                    + "with-rectarray:false "
-                    + "profiling:false "
-                    + "add-color-tags:false ";
-
-        if (phaseName.equals("jap.profiling"))
-            return ""
-                    + "enabled:false "
-                    + "notmainentry:false ";
+                    + "with-rectarray:false ";
 
         if (phaseName.equals("jap.sea"))
             return ""
@@ -4149,7 +4121,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jap.npc")
                 || phaseName.equals("jap.npcolorer")
                 || phaseName.equals("jap.abc")
-                || phaseName.equals("jap.profiling")
                 || phaseName.equals("jap.sea")
                 || phaseName.equals("jap.fieldrw")
                 || phaseName.equals("jap.cgtagger")
@@ -4314,8 +4285,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jap.npcolorer");
         if (!PackManager.v().hasPhase("jap.abc"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.abc");
-        if (!PackManager.v().hasPhase("jap.profiling"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.profiling");
         if (!PackManager.v().hasPhase("jap.sea"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.sea");
         if (!PackManager.v().hasPhase("jap.fieldrw"))

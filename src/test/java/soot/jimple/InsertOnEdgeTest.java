@@ -4,7 +4,7 @@ package soot.jimple;
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2021, 2026 Ben Sepanski, Marc Miltenberger
+ * Copyright (C) 2021 Ben Sepanski, Marc Miltenberger
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as

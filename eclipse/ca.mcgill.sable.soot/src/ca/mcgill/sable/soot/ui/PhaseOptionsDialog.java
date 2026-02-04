@@ -143,7 +143,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite japjap_npcChild = japjap_npcCreate(getPageContainer());
 		Composite japjap_npcolorerChild = japjap_npcolorerCreate(getPageContainer());
 		Composite japjap_abcChild = japjap_abcCreate(getPageContainer());
-		Composite japjap_profilingChild = japjap_profilingCreate(getPageContainer());
 		Composite japjap_seaChild = japjap_seaCreate(getPageContainer());
 		Composite japjap_fieldrwChild = japjap_fieldrwCreate(getPageContainer());
 		Composite japjap_cgtaggerChild = japjap_cgtaggerCreate(getPageContainer());
@@ -675,10 +674,8 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jap", "jap.npc");
 		addToEnableGroup("jap", "jap.npc", getjapjap_npcenabled_widget(), "enabled");
 		addToEnableGroup("jap", "jap.npc", getjapjap_npconly_array_ref_widget(), "only-array-ref");
-		addToEnableGroup("jap", "jap.npc", getjapjap_npcprofiling_widget(), "profiling");
 		getjapjap_npcenabled_widget().getButton().addSelectionListener(this);
 		getjapjap_npconly_array_ref_widget().getButton().addSelectionListener(this);
-		getjapjap_npcprofiling_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jap", "jap.npcolorer");
 		addToEnableGroup("jap", "jap.npcolorer", getjapjap_npcolorerenabled_widget(), "enabled");
@@ -692,8 +689,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_fieldref_widget(), "with-fieldref");
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_classfield_widget(), "with-classfield");
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_rectarray_widget(), "with-rectarray");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcprofiling_widget(), "profiling");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcadd_color_tags_widget(), "add-color-tags");
 		getjapjap_abcenabled_widget().getButton().addSelectionListener(this);
 		getjapjap_abcwith_all_widget().getButton().addSelectionListener(this);
 		getjapjap_abcwith_cse_widget().getButton().addSelectionListener(this);
@@ -701,14 +696,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		getjapjap_abcwith_fieldref_widget().getButton().addSelectionListener(this);
 		getjapjap_abcwith_classfield_widget().getButton().addSelectionListener(this);
 		getjapjap_abcwith_rectarray_widget().getButton().addSelectionListener(this);
-		getjapjap_abcprofiling_widget().getButton().addSelectionListener(this);
-		getjapjap_abcadd_color_tags_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jap", "jap.profiling");
-		addToEnableGroup("jap", "jap.profiling", getjapjap_profilingenabled_widget(), "enabled");
-		addToEnableGroup("jap", "jap.profiling", getjapjap_profilingnotmainentry_widget(), "notmainentry");
-		getjapjap_profilingenabled_widget().getButton().addSelectionListener(this);
-		getjapjap_profilingnotmainentry_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jap", "jap.sea");
 		addToEnableGroup("jap", "jap.sea", getjapjap_seaenabled_widget(), "enabled");
@@ -2617,12 +2604,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_npconly_array_ref_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getjapjap_npcprofiling_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_npcprofiling_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getjapjap_npcolorerenabled_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -2670,30 +2651,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcwith_rectarray_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcprofiling_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcprofiling_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcadd_color_tags_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcadd_color_tags_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_profilingenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_profilingenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_profilingnotmainentry_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_profilingnotmainentry_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjapjap_seaenabled_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -3737,16 +3694,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jap_jap_abc_branch;
-			
-			
-			SootOption jap_jap_profiling_branch = new SootOption("Profiling Generator", "japjap_profiling");
-			subParent.addChild(jap_jap_profiling_branch);
-
-
-			
-
-			
-			subSectParent = jap_jap_profiling_branch;
 			
 			
 			SootOption jap_jap_sea_branch = new SootOption("Side Effect tagger", "japjap_sea");
@@ -7054,16 +7001,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return japjap_npconly_array_ref_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_npcprofiling_widget;
-	
-	private void setjapjap_npcprofiling_widget(BooleanOptionWidget widget) {
-		japjap_npcprofiling_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_npcprofiling_widget() {
-		return japjap_npcprofiling_widget;
-	}	
-	
 	private BooleanOptionWidget japjap_npcolorerenabled_widget;
 	
 	private void setjapjap_npcolorerenabled_widget(BooleanOptionWidget widget) {
@@ -7142,46 +7079,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjapjap_abcwith_rectarray_widget() {
 		return japjap_abcwith_rectarray_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcprofiling_widget;
-	
-	private void setjapjap_abcprofiling_widget(BooleanOptionWidget widget) {
-		japjap_abcprofiling_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcprofiling_widget() {
-		return japjap_abcprofiling_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcadd_color_tags_widget;
-	
-	private void setjapjap_abcadd_color_tags_widget(BooleanOptionWidget widget) {
-		japjap_abcadd_color_tags_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcadd_color_tags_widget() {
-		return japjap_abcadd_color_tags_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_profilingenabled_widget;
-	
-	private void setjapjap_profilingenabled_widget(BooleanOptionWidget widget) {
-		japjap_profilingenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_profilingenabled_widget() {
-		return japjap_profilingenabled_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_profilingnotmainentry_widget;
-	
-	private void setjapjap_profilingnotmainentry_widget(BooleanOptionWidget widget) {
-		japjap_profilingnotmainentry_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_profilingnotmainentry_widget() {
-		return japjap_profilingnotmainentry_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_seaenabled_widget;
@@ -14091,17 +13988,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p phase-option", "jap.npc","only-array-ref", "\nAnnotate only array-referencing instructions, instead of all \ninstructions that need null pointer checks.", defaultBool)));
 
-		defKey = "p phase-option"+" "+"jap.npc"+" "+"profiling";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p phase-option", "jap.npc","profiling", "\nInsert profiling instructions that at runtime count the number \nof eliminated safe null pointer checks. The inserted profiling \ncode assumes the existence of a MultiCounter class implementing \nthe methods invoked. For details, see the NullPointerChecker \nsource code.", defaultBool)));
-
 
 		return editGroupjapjap_npc;
 	}
@@ -14250,82 +14136,8 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p phase-option", "jap.abc","with-rectarray", "\nThis option is used together with wjap.ra to make Soot run the \nwhole-program analysis for rectangular array objects. This \nanalysis is based on the call graph, and it usually takes a long \ntime. If the application uses rectangular arrays, these options \ncan improve the analysis result.", defaultBool)));
 
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"profiling";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p phase-option", "jap.abc","profiling", "\nProfile the results of array bounds check analysis. The inserted \nprofiling code assumes the existence of a MultiCounter class \nimplementing the methods invoked. For details, see the \nArrayBoundsChecker source code.", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"add-color-tags";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcadd_color_tags_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Add Color Tags", "p phase-option", "jap.abc","add-color-tags", "\nAdd color tags to the results of the array bounds check \nanalysis.", defaultBool)));
-
 
 		return editGroupjapjap_abc;
-	}
-
-
-
-	private Composite japjap_profilingCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjapjap_profiling = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjapjap_profiling.setLayout(layout);
-	
-	 	editGroupjapjap_profiling.setText("Profiling Generator");
-	 	
-		editGroupjapjap_profiling.setData("id", "japjap_profiling");
-		
-		String descjapjap_profiling = "Instruments null pointer and array checks";	
-		if (descjapjap_profiling.length() > 0) {
-			Label descLabeljapjap_profiling = new Label(editGroupjapjap_profiling, SWT.WRAP);
-			descLabeljapjap_profiling.setText(descjapjap_profiling);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jap.profiling"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_profilingenabled_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.profiling","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.profiling"+" "+"notmainentry";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p phase-option", "jap.profiling","notmainentry", "\nInsert the calls to the MultiCounter at the beginning and end of \nmethods with the signature long runBenchmark(java.lang.String[]) \ninstead of the signature void main(java.lang.String[]).", defaultBool)));
-
-
-		return editGroupjapjap_profiling;
 	}
 
 

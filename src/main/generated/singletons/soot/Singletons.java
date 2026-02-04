@@ -846,20 +846,6 @@ public class Singletons {
     	instance_soot_baf_toolkits_base_PeepholeOptimizer = null;
     }
 
-    private soot.jimple.toolkits.annotation.profiling.ProfilingGenerator instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator;
-    public soot.jimple.toolkits.annotation.profiling.ProfilingGenerator soot_jimple_toolkits_annotation_profiling_ProfilingGenerator() {
-        if (instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator == null) {
-	       	synchronized (this) {
-		        if (instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator == null)
-	        		instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator = new soot.jimple.toolkits.annotation.profiling.ProfilingGenerator(g);
-	       	}
-       	}
-        return instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator;
-    }
-    protected void release_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator() {
-    	instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator = null;
-    }
-
     private soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder;
     public soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder() {
         if (instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder == null) {

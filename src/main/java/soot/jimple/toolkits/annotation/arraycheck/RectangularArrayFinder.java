@@ -106,24 +106,6 @@ public class RectangularArrayFinder extends SceneTransformer {
       }
     }
 
-    /*
-     * MutableDirectedGraph methodGraph = ig.newMethodGraph(); HashSet visitedMethods = new HashSet(); LinkedList
-     * tovisitMethods = new LinkedList();
-     *
-     * List heads = methodGraph.getHeads(); Iterator headIt = heads.iterator(); while (headIt.hasNext()) { SootMethod entry =
-     * (SootMethod)headIt.next(); String sig = entry.getSubSignature();
-     *
-     * if (sig.equals(mainSignature)) tovisitMethods.add(entry); }
-     *
-     * while (!tovisitMethods.isEmpty()) { SootMethod visiting = (SootMethod)tovisitMethods.removeFirst();
-     * visitedMethods.add(visiting);
-     *
-     * recoverRectArray(visiting); addInfoFromMethod(visiting);
-     *
-     * List succs = methodGraph.getSuccsOf(visiting); Iterator succIt = succs.iterator(); while (succIt.hasNext()) { Object
-     * succ = succIt.next(); if (!visitedMethods.contains(succ)) tovisitMethods.add(succ); } }
-     */
-
     /* propagate the graph info from FALSE node. */
     if (agraph.containsNode(BoolValue.v(false))) {
       List<Object> startNodes = agraph.getSuccsOf(BoolValue.v(false));

@@ -77,7 +77,6 @@ import soot.jimple.toolkits.annotation.nullcheck.NullCheckEliminator;
 import soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker;
 import soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer;
 import soot.jimple.toolkits.annotation.parity.ParityTagger;
-import soot.jimple.toolkits.annotation.profiling.ProfilingGenerator;
 import soot.jimple.toolkits.annotation.purity.PurityAnalysis;
 import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger;
 import soot.jimple.toolkits.base.Aggregator;
@@ -276,7 +275,6 @@ public class PackManager {
       p.add(new Transform("jap.npc", NullPointerChecker.v()));
       p.add(new Transform("jap.npcolorer", NullPointerColorer.v()));
       p.add(new Transform("jap.abc", ArrayBoundsChecker.v()));
-      p.add(new Transform("jap.profiling", ProfilingGenerator.v()));
       p.add(new Transform("jap.sea", SideEffectTagger.v()));
       p.add(new Transform("jap.fieldrw", FieldTagger.v()));
       p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));

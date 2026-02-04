@@ -87,7 +87,7 @@ public abstract class Body extends AbstractHost implements Serializable {
   /**
    * The chain of traps for this Body.
    */
-  protected Chain<Trap> trapChain = new HashChain<>() { 
+  protected Chain<Trap> trapChain = new HashChain<Trap>() {
     protected void elementRemoved(Trap removed) {
       Unit u = removed.getBeginUnit();
       if (u != null) {
@@ -146,8 +146,7 @@ public abstract class Body extends AbstractHost implements Serializable {
         if (removed instanceof Stmt) {
           Stmt stmt = (Stmt) removed;
           stmt.setContainingBody(null);
-          if (stmt instanceof BranchableStmt)
-          {
+          if (stmt instanceof BranchableStmt) {
             BranchableStmt b = ((BranchableStmt) stmt);
             UnitBox box = b.getTargetBox();
             Unit target = box.getUnit();

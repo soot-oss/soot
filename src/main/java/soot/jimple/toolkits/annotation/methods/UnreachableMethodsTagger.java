@@ -32,7 +32,6 @@ import soot.SceneTransformer;
 import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.tagkit.ColorTag;
 import soot.tagkit.StringTag;
 
 /** A scene transformer that adds tags to unused methods. */
@@ -68,8 +67,7 @@ public class UnreachableMethodsTagger extends SceneTransformer {
     while (unusedIt.hasNext()) {
       SootMethod unusedMethod = unusedIt.next();
       unusedMethod.addTag(new StringTag("Method " + unusedMethod.getName() + " is not reachable!", "Unreachable Methods"));
-      unusedMethod.addTag(new ColorTag(255, 0, 0, true, "Unreachable Methods"));
-      // System.out.println("tagged method: "+unusedMethod);
+      unusedMethod.addTag(UnreachableMethodTag.v());
 
     }
   }

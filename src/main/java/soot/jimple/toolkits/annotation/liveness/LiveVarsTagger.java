@@ -28,12 +28,11 @@ import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
+import soot.Local;
 import soot.Singletons;
-import soot.Value;
+import soot.Unit;
 import soot.ValueBox;
 import soot.jimple.Stmt;
-import soot.tagkit.ColorTag;
-import soot.tagkit.StringTag;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
@@ -51,27 +50,26 @@ public class LiveVarsTagger extends BodyTransformer {
 
     LiveLocals sll = new SimpleLiveLocals(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b));
 
-    Iterator it = b.getUnits().iterator();
+    Iterator<Unit> it = b.getUnits().iterator();
     while (it.hasNext()) {
       Stmt s = (Stmt) it.next();
-      // System.out.println("stmt: "+s);
-      Iterator liveLocalsIt = sll.getLiveLocalsAfter(s).iterator();
+      Iterator<Local> liveLocalsIt = sll.getLiveLocalsAfter(s).iterator();
       while (liveLocalsIt.hasNext()) {
-        Value v = (Value) liveLocalsIt.next();
-        s.addTag(new StringTag("Live Variable: " + v, "Live Variable"));
+        Local v = liveLocalsIt.next();
+        s.addTag(LiveVariableTag.v());
 
-        Iterator usesIt = s.getUseBoxesIterator();
+        Iterator<ValueBox> usesIt = s.getUseBoxesIterator();
         while (usesIt.hasNext()) {
-          ValueBox use = (ValueBox) usesIt.next();
+          ValueBox use = usesIt.next();
           if (use.getValue().equals(v)) {
-            use.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
+            use.addTag(LiveVariableTag.v());
           }
         }
-        Iterator defsIt = s.getDefBoxesIterator();
+        Iterator<ValueBox> defsIt = s.getDefBoxesIterator();
         while (defsIt.hasNext()) {
-          ValueBox def = (ValueBox) defsIt.next();
+          ValueBox def = defsIt.next();
           if (def.getValue().equals(v)) {
-            def.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
+            def.addTag(LiveVariableTag.v());
           }
         }
       }

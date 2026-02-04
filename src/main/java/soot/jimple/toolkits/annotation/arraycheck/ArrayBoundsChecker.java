@@ -21,8 +21,6 @@ package soot.jimple.toolkits.annotation.arraycheck;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -34,27 +32,27 @@ import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
-import soot.Scene;
 import soot.Singletons;
-import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.ArrayRef;
 import soot.jimple.IntConstant;
-import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.tags.ArrayCheckTag;
 import soot.options.ABCOptions;
 import soot.options.Options;
-import soot.tagkit.ColorTag;
-import soot.tagkit.KeyTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
 public class ArrayBoundsChecker extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ArrayBoundsChecker.class);
+  private static final int UNSAFE_LOWER_UNSAFE_UPPER = 0;
+  private static final int UNSAFE_LOWER_SAFE_UPPER = 1;
+  private static final int SAFE_LOWER_UNSAFE_UPPER = 2;
+  private static final int SAFE_LOWER_SAFE_UPPER = 3;
 
   public ArrayBoundsChecker(Singletons.Global g) {
   }
@@ -68,9 +66,9 @@ public class ArrayBoundsChecker extends BodyTransformer {
   protected boolean takeArrayRef = false;
   protected boolean takeCSE = false;
   protected boolean takeRectArray = false;
-  protected boolean addColorTags = false;
 
-  protected void internalTransform(Body body, String phaseName, Map opts) {
+  @Override
+  protected void internalTransform(Body body, String phaseName, Map<String, String> opts) {
     ABCOptions options = new ABCOptions(opts);
     if (options.with_all()) {
       takeClassField = true;
@@ -86,17 +84,15 @@ public class ArrayBoundsChecker extends BodyTransformer {
       takeRectArray = options.with_rectarray();
     }
 
-    addColorTags = options.add_color_tags();
+    long start = 0;
+    final boolean verbose = Options.v().verbose();
+    final SootMethod m = body.getMethod();
+    if (verbose) {
+      start = System.currentTimeMillis();
+      logger.debug("[abc] Analyzing array bounds information for " + m.getName());
+    }
 
     {
-      SootMethod m = body.getMethod();
-
-      Date start = new Date();
-
-      if (Options.v().verbose()) {
-        logger.debug("[abc] Analyzing array bounds information for " + m.getName());
-        logger.debug("[abc] Started on " + start);
-      }
 
       ArrayBoundsCheckerAnalysis analysis = null;
 
@@ -104,19 +100,11 @@ public class ArrayBoundsChecker extends BodyTransformer {
         analysis = new ArrayBoundsCheckerAnalysis(body, takeClassField, takeFieldRef, takeArrayRef, takeCSE, takeRectArray);
       }
 
-      SootClass counterClass = null;
-      SootMethod increase = null;
-
-      if (options.profiling()) {
-        counterClass = Scene.v().loadClassAndSupport("MultiCounter");
-        increase = counterClass.getMethod("void increase(int)");
-      }
-
-      Chain units = body.getUnits();
+      Chain<Unit> units = body.getUnits();
 
       IntContainer zero = new IntContainer(0);
 
-      Iterator unitIt = units.snapshotIterator();
+      Iterator<Unit> unitIt = units.snapshotIterator();
 
       while (unitIt.hasNext()) {
         Stmt stmt = (Stmt) unitIt.next();
@@ -132,141 +120,59 @@ public class ArrayBoundsChecker extends BodyTransformer {
             boolean lowercheck = true;
             boolean uppercheck = true;
 
-            if (res == 0) {
+            if (res == UNSAFE_LOWER_UNSAFE_UPPER) {
               lowercheck = true;
               uppercheck = true;
-            } else if (res == 1) {
+            } else if (res == UNSAFE_LOWER_SAFE_UPPER) {
               lowercheck = true;
               uppercheck = false;
-            } else if (res == 2) {
+            } else if (res == SAFE_LOWER_UNSAFE_UPPER) {
               lowercheck = false;
               uppercheck = true;
-            } else if (res == 3) {
+            } else if (res == SAFE_LOWER_SAFE_UPPER) {
               lowercheck = false;
               uppercheck = false;
             }
+            Tag checkTag = new ArrayCheckTag(lowercheck, uppercheck);
+            stmt.addTag(checkTag);
 
-            if (addColorTags) {
-              if (res == 0) {
-                aref.getIndexBox().addTag(new ColorTag(255, 0, 0, false, ArrayCheckTag.NAME));
-              } else if (res == 1) {
-                aref.getIndexBox().addTag(new ColorTag(255, 248, 35, false, ArrayCheckTag.NAME));
-              } else if (res == 2) {
-                aref.getIndexBox().addTag(new ColorTag(255, 163, 0, false, ArrayCheckTag.NAME));
-              } else if (res == 3) {
-                aref.getIndexBox().addTag(new ColorTag(45, 255, 84, false, ArrayCheckTag.NAME));
-              }
-              SootClass bodyClass = body.getMethod().getDeclaringClass();
-              Iterator keysIt = bodyClass.getTags().iterator();
-              boolean keysAdded = false;
-              while (keysIt.hasNext()) {
-                Object next = keysIt.next();
-                if (next instanceof KeyTag) {
-                  if (((KeyTag) next).analysisType().equals(ArrayCheckTag.NAME)) {
-                    keysAdded = true;
-                  }
-                }
-              }
-              if (!keysAdded) {
-                bodyClass.addTag(new KeyTag(255, 0, 0, "ArrayBounds: Unsafe Lower and Unsafe Upper", ArrayCheckTag.NAME));
-                bodyClass.addTag(new KeyTag(255, 248, 35, "ArrayBounds: Unsafe Lower and Safe Upper", ArrayCheckTag.NAME));
-                bodyClass.addTag(new KeyTag(255, 163, 0, "ArrayBounds: Safe Lower and Unsafe Upper", ArrayCheckTag.NAME));
-                bodyClass.addTag(new KeyTag(45, 255, 84, "ArrayBounds: Safe Lower and Safe Upper", ArrayCheckTag.NAME));
-              }
-            }
-
-            /*
-             * boolean lowercheck = true; boolean uppercheck = true;
-             *
-             * { if (Options.v().debug()) { if (!vgraph.makeShortestPathGraph()) { logger.debug(""+stmt+" :");
-             * logger.debug(""+vgraph); } }
-             *
-             * Value base = aref.getBase(); Value index = aref.getIndex();
-             *
-             * if (index instanceof IntConstant) { int indexv = ((IntConstant)index).value;
-             *
-             * if (vgraph.hasEdge(base, zero)) { int alength = vgraph.edgeWeight(base, zero);
-             *
-             * if (-alength > indexv) uppercheck = false; }
-             *
-             * if (indexv >= 0) lowercheck = false; } else { if (vgraph.hasEdge(base, index)) { int upperdistance =
-             * vgraph.edgeWeight(base, index); if (upperdistance < 0) uppercheck = false; }
-             *
-             * if (vgraph.hasEdge(index, zero)) { int lowerdistance = vgraph.edgeWeight(index, zero);
-             *
-             * if (lowerdistance <= 0) lowercheck = false; } } }
-             */
-
-            if (options.profiling()) {
-              int lowercounter = 0;
-              if (!lowercheck) {
-                lowercounter = 1;
-              }
-
-              units.insertBefore(
-                  Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(lowercounter))),
-                  stmt);
-
-              int uppercounter = 2;
-              if (!uppercheck) {
-                uppercounter = 3;
-              }
-
-              units.insertBefore(
-                  Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(increase.makeRef(), IntConstant.v(uppercounter))),
-                  stmt);
-
-              /*
-               * if (!lowercheck && !uppercheck) { units.insertBefore(Jimple.v().newInvokeStmt(
-               * Jimple.v().newStaticInvokeExpr(increase, IntConstant.v(4))), stmt);
-               *
-               * NullCheckTag nullTag = (NullCheckTag)stmt.getTag(NullCheckTag.NAME);
-               *
-               * if (nullTag != null && !nullTag.needCheck()) units.insertBefore(Jimple.v().newInvokeStmt(
-               * Jimple.v().newStaticInvokeExpr(increase, IntConstant.v(7))), stmt); }
-               */
-            } else {
-              Tag checkTag = new ArrayCheckTag(lowercheck, uppercheck);
-              stmt.addTag(checkTag);
-            }
           }
+
         }
       }
+    }
 
-      if (addColorTags && takeRectArray) {
-        RectangularArrayFinder raf = RectangularArrayFinder.v();
-        for (Iterator vbIt = body.getUseAndDefBoxesIterator(); vbIt.hasNext();) {
-          final ValueBox vb = (ValueBox) vbIt.next();
-          Value v = vb.getValue();
-          if (!(v instanceof Local)) {
-            continue;
-          }
-          Type t = v.getType();
-          if (!(t instanceof ArrayType)) {
-            continue;
-          }
-          ArrayType at = (ArrayType) t;
-          if (at.numDimensions <= 1) {
-            continue;
-          }
-          vb.addTag(new ColorTag(raf.isRectangular(new MethodLocal(m, (Local) v)) ? ColorTag.GREEN : ColorTag.RED));
+    if (takeRectArray) {
+      RectangularArrayFinder raf = RectangularArrayFinder.v();
+      for (Iterator<ValueBox> vbIt = body.getUseAndDefBoxesIterator(); vbIt.hasNext();) {
+        final ValueBox vb = (ValueBox) vbIt.next();
+        Value v = vb.getValue();
+        if (!(v instanceof Local)) {
+          continue;
         }
+        Type t = v.getType();
+        if (!(t instanceof ArrayType)) {
+          continue;
+        }
+        ArrayType at = (ArrayType) t;
+        if (at.numDimensions <= 1) {
+          continue;
+        }
+        vb.addTag(IsRectangularTag.v(raf.isRectangular(new MethodLocal(m, (Local) v))));
       }
+    }
 
-      Date finish = new Date();
-      if (Options.v().verbose()) {
-        long runtime = finish.getTime() - start.getTime();
-        logger.debug(
-            "[abc] ended on " + finish + ". It took " + (runtime / 60000) + " min. " + ((runtime % 60000) / 1000) + " sec.");
-      }
+    if (verbose) {
+      long runtime = System.currentTimeMillis() - start;
+      logger.debug("[abc] took " + (runtime / 60000) + " min. " + ((runtime % 60000) / 1000) + " sec.");
     }
   }
 
   private boolean hasArrayLocals(Body body) {
-    Iterator localIt = body.getLocals().iterator();
+    Iterator<Local> localIt = body.getLocals().iterator();
 
     while (localIt.hasNext()) {
-      Local local = (Local) localIt.next();
+      Local local = localIt.next();
       if (local.getType() instanceof ArrayType) {
         return true;
       }
@@ -283,8 +189,8 @@ public class ArrayBoundsChecker extends BodyTransformer {
     {
       if (Options.v().debug()) {
         if (!vgraph.makeShortestPathGraph()) {
-          logger.debug("" + stmt + " :");
-          logger.debug("" + vgraph);
+          logger.debug(stmt + " :");
+          logger.debug(vgraph.toString());
         }
       }
 
@@ -324,13 +230,13 @@ public class ArrayBoundsChecker extends BodyTransformer {
     }
 
     if (lowercheck && uppercheck) {
-      return 0;
+      return UNSAFE_LOWER_UNSAFE_UPPER;
     } else if (lowercheck && !uppercheck) {
-      return 1;
+      return UNSAFE_LOWER_SAFE_UPPER;
     } else if (!lowercheck && uppercheck) {
-      return 2;
+      return SAFE_LOWER_UNSAFE_UPPER;
     } else {
-      return 3;
+      return SAFE_LOWER_SAFE_UPPER;
     }
   }
 }

@@ -1,10 +1,11 @@
-package soot.xml;
+package soot.jimple.toolkits.annotation.parity;
 
+import soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity;
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
  * %%
- * Copyright (C) 2004 Jennifer Lhotak
+ * Copyright (C) 2026 Marc Miltenberger
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -21,40 +22,36 @@ package soot.xml;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+import soot.tagkit.Tag;
 
-public class ColorAttribute {
+/**
+ * Contains information about the results of the parity analysis
+ */
+public class ParityTag implements Tag {
 
-  private final int red;
-  private final int green;
-  private final int blue;
-  private final int fg;
-  private final String analysisType;
+  private static final String NAME = "Parity";
+  private Parity parity;
 
-  public ColorAttribute(int red, int green, int blue, boolean fg, String type) {
-    this.red = red;
-    this.green = green;
-    this.blue = blue;
-    this.fg = fg ? 1 : 0;
-    this.analysisType = type;
+  public ParityTag(Parity parity) {
+    this.parity = parity;
   }
 
-  public int red() {
-    return this.red;
+  /**
+   * Returns the parity
+   * 
+   * @return the parity
+   */
+  public Parity getParity() {
+    return parity;
   }
 
-  public int green() {
-    return this.green;
+  @Override
+  public String getName() {
+    return NAME;
   }
 
-  public int blue() {
-    return this.blue;
+  public static Tag v(Parity result) {
+    return new ParityTag(result);
   }
 
-  public int fg() {
-    return this.fg;
-  }
-
-  public String analysisType() {
-    return this.analysisType;
-  }
 }

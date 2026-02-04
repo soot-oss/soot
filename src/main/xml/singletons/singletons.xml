@@ -58,7 +58,6 @@
   <class>soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker</class>
   <class>soot.PackManager</class>
   <class>soot.baf.toolkits.base.PeepholeOptimizer</class>
-  <class>soot.jimple.toolkits.annotation.profiling.ProfilingGenerator</class>
   <class>soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder</class>
   <class>soot.RefType</class>
   <class>soot.ModuleRefType</class>

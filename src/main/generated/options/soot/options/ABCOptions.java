@@ -118,28 +118,4 @@ public class ABCOptions {
         return soot.PhaseOptions.getBoolean(options, "with-rectarray");
     }
 
-    /**
-     * Profiling --
-     * Profile the results of array bounds check analysis.
-     *
-     * Profile the results of array bounds check analysis. The inserted 
-     * profiling code assumes the existence of a MultiCounter class 
-     * implementing the methods invoked. For details, see the 
-     * ArrayBoundsChecker source code.
-     */
-    public boolean profiling() {
-        return soot.PhaseOptions.getBoolean(options, "profiling");
-    }
-
-    /**
-     * Add Color Tags --
-     * Add color tags to results of array bound check analysis.
-     *
-     * Add color tags to the results of the array bounds check 
-     * analysis.
-     */
-    public boolean add_color_tags() {
-        return soot.PhaseOptions.getBoolean(options, "add-color-tags");
-    }
-
 }

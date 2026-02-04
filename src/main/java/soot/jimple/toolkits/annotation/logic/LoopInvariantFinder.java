@@ -22,10 +22,11 @@ package soot.jimple.toolkits.annotation.logic;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +47,13 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.NaiveSideEffectTester;
 import soot.jimple.NewExpr;
 import soot.jimple.Stmt;
-import soot.tagkit.ColorTag;
 import soot.tagkit.LoopInvariantTag;
-import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.SmartLocalDefs;
-import soot.toolkits.scalar.SmartLocalDefsPool;
 
 public class LoopInvariantFinder extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(LoopInvariantFinder.class);
 
-  private ArrayList constants;
+  private Set<Local> constants;
+  private Set<Local> moreThanOneConstants;
 
   public LoopInvariantFinder(Singletons.Global g) {
   }
@@ -67,14 +65,14 @@ public class LoopInvariantFinder extends BodyTransformer {
   /**
    * this one uses the side effect tester
    */
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  @Override
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
-    SmartLocalDefs sld = SmartLocalDefsPool.v().getSmartLocalDefsFor(b);
-    UnitGraph g = sld.getGraph();
     NaiveSideEffectTester nset = new NaiveSideEffectTester();
 
     Collection<Loop> loops = new LoopFinder().getLoops(b);
-    constants = new ArrayList();
+    constants = new HashSet<>();
+    moreThanOneConstants = new HashSet<>();
 
     // no loop invariants if no loops
     if (loops.isEmpty()) {
@@ -84,7 +82,6 @@ public class LoopInvariantFinder extends BodyTransformer {
     Iterator<Loop> lIt = loops.iterator();
     while (lIt.hasNext()) {
       Loop loop = lIt.next();
-      Stmt header = loop.getHead();
       Collection<Stmt> loopStmts = loop.getLoopStatements();
       Iterator<Stmt> bIt = loopStmts.iterator();
       while (bIt.hasNext()) {
@@ -104,11 +101,13 @@ public class LoopInvariantFinder extends BodyTransformer {
     // handle constants
     if (s instanceof DefinitionStmt) {
       DefinitionStmt ds = (DefinitionStmt) s;
-      if (ds.getLeftOp() instanceof Local && ds.getRightOp() instanceof Constant) {
-        if (!constants.contains(ds.getLeftOp())) {
-          constants.add(ds.getLeftOp());
+      final Value lop = ds.getLeftOp();
+      if (lop instanceof Local && ds.getRightOp() instanceof Constant) {
+        Local l = (Local) lop;
+        if (!constants.contains(l)) {
+          constants.add(l);
         } else {
-          constants.remove(ds.getLeftOp());
+          moreThanOneConstants.add(l);
         }
       }
     }
@@ -123,7 +122,7 @@ public class LoopInvariantFinder extends BodyTransformer {
       logger.debug("s : " + s + " use boxes: " + s.getUseBoxes() + " def boxes: " + s.getDefBoxes());
     }
     // just use boxes here
-    Iterator useBoxesIt = s.getUseBoxes().iterator();
+    Iterator<ValueBox> useBoxesIt = s.getUseBoxes().iterator();
     boolean result = true;
     uses: while (useBoxesIt.hasNext()) {
       ValueBox vb = (ValueBox) useBoxesIt.next();
@@ -162,9 +161,9 @@ public class LoopInvariantFinder extends BodyTransformer {
 
     }
 
-    Iterator defBoxesIt = s.getDefBoxesIterator();
+    Iterator<ValueBox> defBoxesIt = s.getDefBoxesIterator();
     defs: while (defBoxesIt.hasNext()) {
-      ValueBox vb = (ValueBox) defBoxesIt.next();
+      ValueBox vb = defBoxesIt.next();
       Value v = vb.getValue();
       // new's are not invariant
       if (v instanceof NewExpr) {
@@ -204,7 +203,6 @@ public class LoopInvariantFinder extends BodyTransformer {
     logger.debug("stmt: " + s + " result: " + result);
     if (result) {
       s.addTag(new LoopInvariantTag("is loop invariant"));
-      s.addTag(new ColorTag(ColorTag.RED, "Loop Invariant Analysis"));
     } else {
       // if loops are nested it might be invariant in one of them
       // so remove tag
@@ -217,7 +215,8 @@ public class LoopInvariantFinder extends BodyTransformer {
   private boolean isConstant(Stmt s) {
     if (s instanceof DefinitionStmt) {
       DefinitionStmt ds = (DefinitionStmt) s;
-      if (constants.contains(ds.getLeftOp())) {
+      Value lop = ds.getLeftOp();
+      if (constants.contains(lop) && !moreThanOneConstants.contains(lop)) {
         return true;
       }
     }

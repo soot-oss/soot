@@ -66,6 +66,33 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
  * @author Julian Tibble
  */
 public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalysis.AnalysisInfo> {
+
+  public static enum NullnessLattice {
+    BOTTOM(NullnessAnalysis.BOTTOM), NULL(NullnessAnalysis.NULL), NON_NULL(NullnessAnalysis.NON_NULL), TOP(
+        NullnessAnalysis.TOP);
+
+    public final int val;
+
+    NullnessLattice(int t) {
+      this.val = t;
+    }
+
+    static NullnessLattice of(int i) {
+      switch (i) {
+        case NullnessAnalysis.BOTTOM:
+          return BOTTOM;
+        case NullnessAnalysis.NULL:
+          return NULL;
+        case NullnessAnalysis.NON_NULL:
+          return NON_NULL;
+        case NullnessAnalysis.TOP:
+          return TOP;
+        default:
+          throw new IllegalArgumentException(String.format("Unknown: %d", i));
+      }
+    }
+  }
+
   /**
    * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM, NON_NULL, NULL or TOP. This
    * class returns BOTTOM by default.
@@ -82,6 +109,10 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     public AnalysisInfo(AnalysisInfo other) {
       super(used);
       or(other);
+    }
+
+    public NullnessLattice getLattice(Value key) {
+      return NullnessLattice.of(get(key));
     }
 
     public int get(Value key) {
@@ -106,10 +137,10 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
   }
 
-  protected final static int BOTTOM = 0;
-  protected final static int NULL = 1;
-  protected final static int NON_NULL = 2;
-  protected final static int TOP = 3;
+  public final static int BOTTOM = 0;
+  public final static int NULL = 1;
+  public final static int NON_NULL = 2;
+  public final static int TOP = 3;
 
   protected final HashMap<Value, Integer> valueToIndex = new HashMap<Value, Integer>();
   protected int used = 0;
