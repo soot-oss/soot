@@ -87,8 +87,8 @@
   <class>soot.jimple.toolkits.annotation.callgraph.CallGraphTagger</class>
   <class>soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer</class>
   <class>soot.jimple.toolkits.annotation.parity.ParityTagger</class>
-  <class>soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger</class>
-  <class>soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger</class>
+  <class>soot.jimple.toolkits.annotation.methods.UnusedMethodsTagger</class>
+  <class>soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger</class>
   <class>soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger</class>
   <class>soot.jimple.toolkits.pointer.ParameterAliasTagger</class>
   <class>soot.jimple.toolkits.annotation.defs.ReachingDefsTagger</class>

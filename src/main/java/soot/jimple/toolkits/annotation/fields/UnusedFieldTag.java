@@ -26,10 +26,10 @@ import soot.tagkit.Tag;
 /**
  * The field is deemed unreachable
  */
-public class UnreachableFieldTag implements Tag {
+public class UnusedFieldTag implements Tag {
 
   private static final String NAME = "UnreachableFieldTag";
-  private static final UnreachableFieldTag INSTANCE = new UnreachableFieldTag();
+  private static final UnusedFieldTag INSTANCE = new UnusedFieldTag();
 
   @Override
   public String getName() {

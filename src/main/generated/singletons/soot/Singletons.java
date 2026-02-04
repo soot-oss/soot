@@ -1252,32 +1252,32 @@ public class Singletons {
     	instance_soot_jimple_toolkits_annotation_parity_ParityTagger = null;
     }
 
-    private soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger;
-    public soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger() {
-        if (instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger == null) {
+    private soot.jimple.toolkits.annotation.methods.UnusedMethodsTagger instance_soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger;
+    public soot.jimple.toolkits.annotation.methods.UnusedMethodsTagger soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger() {
+        if (instance_soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger == null) {
 	       	synchronized (this) {
-		        if (instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger == null)
-	        		instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger = new soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger(g);
+		        if (instance_soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger = new soot.jimple.toolkits.annotation.methods.UnusedMethodsTagger(g);
 	       	}
        	}
-        return instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger;
+        return instance_soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger;
     }
-    protected void release_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger() {
-    	instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger = null;
+    protected void release_soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger() {
+    	instance_soot_jimple_toolkits_annotation_methods_UnusedMethodsTagger = null;
     }
 
-    private soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger;
-    public soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger() {
-        if (instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger == null) {
+    private soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger instance_soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger;
+    public soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger() {
+        if (instance_soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger == null) {
 	       	synchronized (this) {
-		        if (instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger == null)
-	        		instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger = new soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger(g);
+		        if (instance_soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger = new soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger(g);
 	       	}
        	}
-        return instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger;
+        return instance_soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger;
     }
-    protected void release_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger() {
-    	instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger = null;
+    protected void release_soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger() {
+    	instance_soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger = null;
     }
 
     private soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger;

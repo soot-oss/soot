@@ -69,10 +69,10 @@ import soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder;
 import soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher;
 import soot.jimple.toolkits.annotation.callgraph.CallGraphTagger;
 import soot.jimple.toolkits.annotation.defs.ReachingDefsTagger;
-import soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger;
+import soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger;
 import soot.jimple.toolkits.annotation.liveness.LiveVarsTagger;
 import soot.jimple.toolkits.annotation.logic.LoopInvariantFinder;
-import soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger;
+import soot.jimple.toolkits.annotation.methods.UnusedMethodsTagger;
 import soot.jimple.toolkits.annotation.nullcheck.NullCheckEliminator;
 import soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker;
 import soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer;
@@ -229,8 +229,8 @@ public class PackManager {
     addPack(p = new ScenePack("wjap"));
     {
       p.add(new Transform("wjap.ra", RectangularArrayFinder.v()));
-      p.add(new Transform("wjap.umt", UnreachableMethodsTagger.v()));
-      p.add(new Transform("wjap.uft", UnreachableFieldsTagger.v()));
+      p.add(new Transform("wjap.umt", UnusedMethodsTagger.v()));
+      p.add(new Transform("wjap.uft", UnusedFieldsTagger.v()));
       p.add(new Transform("wjap.tqt", TightestQualifiersTagger.v()));
       p.add(new Transform("wjap.cgg", CallGraphGrapher.v()));
       p.add(new Transform("wjap.purity", PurityAnalysis.v())); // [AM]

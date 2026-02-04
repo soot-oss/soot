@@ -26,10 +26,10 @@ import soot.tagkit.Tag;
 /**
  * The method is deemed unreachable
  */
-public class UnreachableMethodTag implements Tag {
+public class UnusedMethodTag implements Tag {
 
   private static final String NAME = "UnreachableMethodTag";
-  private static final UnreachableMethodTag INSTANCE = new UnreachableMethodTag();
+  private static final UnusedMethodTag INSTANCE = new UnusedMethodTag();
 
   @Override
   public String getName() {

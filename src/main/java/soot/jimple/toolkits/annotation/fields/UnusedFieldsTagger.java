@@ -40,12 +40,12 @@ import soot.jimple.FieldRef;
 import soot.tagkit.StringTag;
 
 /** A scene transformer that adds tags to unused fields. */
-public class UnreachableFieldsTagger extends SceneTransformer {
-  public UnreachableFieldsTagger(Singletons.Global g) {
+public class UnusedFieldsTagger extends SceneTransformer {
+  public UnusedFieldsTagger(Singletons.Global g) {
   }
 
-  public static UnreachableFieldsTagger v() {
-    return G.v().soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger();
+  public static UnusedFieldsTagger v() {
+    return G.v().soot_jimple_toolkits_annotation_fields_UnusedFieldsTagger();
   }
 
   @Override
@@ -100,7 +100,7 @@ public class UnreachableFieldsTagger extends SceneTransformer {
     while (unusedIt.hasNext()) {
       SootField unusedField = unusedIt.next();
       unusedField.addTag(new StringTag("Field " + unusedField.getName() + " is not used!", "Unreachable Fields"));
-      unusedField.addTag(UnreachableFieldTag.v());
+      unusedField.addTag(UnusedFieldTag.v());
 
     }
   }
