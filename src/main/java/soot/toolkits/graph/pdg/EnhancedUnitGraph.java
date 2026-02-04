@@ -33,6 +33,7 @@ import soot.Unit;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.JNopStmt;
 import soot.toolkits.graph.DominatorNode;
+import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.MHGDominatorsFinder;
 import soot.toolkits.graph.MHGPostDominatorsFinder;
 import soot.toolkits.graph.UnitGraph;
@@ -156,8 +157,8 @@ public class EnhancedUnitGraph extends UnitGraph {
   }
 
   protected void handleExplicitThrowEdges() {
-    MHGDominatorTree<Unit> dom = new MHGDominatorTree<Unit>(new MHGDominatorsFinder<Unit>(this));
-    MHGDominatorTree<Unit> pdom = new MHGDominatorTree<Unit>(new MHGPostDominatorsFinder<Unit>(this));
+    DominatorTree<Unit> dom = new DominatorTree<Unit>(new MHGDominatorsFinder<Unit>(this));
+    DominatorTree<Unit> pdom = new DominatorTree<Unit>(new MHGPostDominatorsFinder<Unit>(this));
 
     // this keeps a map from the entry of a try-catch-block to a selected merge point
     Hashtable<Unit, Unit> x2mergePoint = new Hashtable<Unit, Unit>();
