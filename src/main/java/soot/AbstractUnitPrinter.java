@@ -34,7 +34,7 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
 
   protected boolean startOfLine = true;
   protected String indent = "        ";
-  protected StringBuffer output = new StringBuffer();
+  protected StringBuilder output = new StringBuilder();
   protected AttributesUnitPrinter pt;
   protected HashSet<String> quotableLocals;
 
@@ -147,12 +147,12 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
   @Override
   public String toString() {
     String ret = output.toString();
-    output = new StringBuffer();
+    output = new StringBuilder();
     return ret;
   }
 
   @Override
-  public StringBuffer output() {
+  public StringBuilder output() {
     return output;
   }
 

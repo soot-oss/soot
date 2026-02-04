@@ -236,7 +236,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 
   @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer("{");
+    StringBuilder buffer = new StringBuilder("{");
 
     boolean isFirst = true;
     for (T t : this) {
