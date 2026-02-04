@@ -593,9 +593,11 @@ public class DexBody {
           // Attempt to read original parameter name.
           try {
             localName = parameterNames.get(argIdx);
-            isUserLocal = true;
-            if (jbOptions.use_original_types()) {
-              localType = parameterTypes.get(argIdx);
+            if (localName != null) {
+              isUserLocal = true;
+              if (jbOptions.use_original_types()) {
+                localType = parameterTypes.get(argIdx);
+              }
             }
           } catch (Exception ex) {
             logger.error("Exception while reading original parameter names.", ex);
