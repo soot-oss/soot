@@ -97,7 +97,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
     @Override
     public String toString() {
-      StringBuffer ret = new StringBuffer();
+      StringBuilder ret = new StringBuilder();
       ret.append(super.toString());
       resolve(ret);
       return ret.toString();
@@ -119,7 +119,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
     return ret;
   }
 
-  private SootField resolve(StringBuffer trace) {
+  private SootField resolve(StringBuilder trace) {
     SootClass cl = declaringClass;
     Scene scene = null;
     while (true) {

@@ -847,7 +847,7 @@ public class ThrowableSet {
    */
   @Override
   public String toString() {
-    StringBuffer buffer = new StringBuffer(this.toBriefString());
+    StringBuilder buffer = new StringBuilder(this.toBriefString());
     buffer.append(":\n  ");
     for (RefLikeType ei : exceptionsIncluded) {
       buffer.append('+');
@@ -911,7 +911,7 @@ public class ThrowableSet {
 
     Collection<RefLikeType> vmErrorThrowables = ThrowableSet.Manager.v().VM_ERRORS.exceptionsIncluded;
     boolean containsAllVmErrors = s.containsAll(vmErrorThrowables);
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
 
     if (containsAllVmErrors) {
       buf.append(connector);
@@ -1262,7 +1262,7 @@ public class ThrowableSet {
     public String reportInstrumentation() {
       int setCount = registry.size();
 
-      StringBuffer buf = new StringBuffer("registeredSets: ").append(setCount).append("\naddsOfRefType: ")
+      StringBuilder buf = new StringBuilder("registeredSets: ").append(setCount).append("\naddsOfRefType: ")
           .append(addsOfRefType).append("\naddsOfAnySubType: ").append(addsOfAnySubType).append("\naddsOfSet: ")
           .append(addsOfSet).append("\naddsInclusionFromMap: ").append(addsInclusionFromMap)
           .append("\naddsInclusionFromMemo: ").append(addsInclusionFromMemo).append("\naddsInclusionFromSearch: ")

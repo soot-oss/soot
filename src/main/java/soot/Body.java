@@ -185,7 +185,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public SootMethod getMethod() {
     if (method == null) {
-      throw new RuntimeException("no method associated w/ body");
+      throw new IllegalStateException("No method associated w/ body");
     }
     return method;
   }
@@ -410,12 +410,12 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public Unit getThisUnit() {
     for (Unit u : getUnits()) {
-      if (u instanceof IdentityStmt && ((IdentityStmt) u).getRightOp() instanceof ThisRef) {
+      if (u instanceof IdentityUnit && ((IdentityUnit) u).getRightOp() instanceof ThisRef) {
         return u;
       }
     }
 
-    throw new RuntimeException("couldn't find this-assignment!" + " in " + getMethod());
+    throw new RuntimeException("Couldn't find this-assignment in " + getMethod());
   }
 
   /**
@@ -424,7 +424,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * @return
    */
   public Local getThisLocal() {
-    return (Local) (((IdentityStmt) getThisUnit()).getLeftOp());
+    return (Local) (((IdentityUnit) getThisUnit()).getLeftOp());
   }
 
   /**
@@ -436,8 +436,8 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   public Local getParameterLocal(int i) {
     for (Unit s : getUnits()) {
-      if (s instanceof IdentityStmt) {
-        IdentityStmt is = (IdentityStmt) s;
+      if (s instanceof IdentityUnit) {
+        IdentityUnit is = (IdentityUnit) s;
         Value rightOp = is.getRightOp();
         if (rightOp instanceof ParameterRef) {
           ParameterRef pr = (ParameterRef) rightOp;
@@ -447,7 +447,7 @@ public abstract class Body extends AbstractHost implements Serializable {
         }
       }
     }
-    throw new RuntimeException("couldn't find parameterref" + i + " in " + getMethod());
+    throw new RuntimeException("Couldn't find parameter reference " + i + " in " + getMethod());
   }
 
   /**
@@ -470,7 +470,7 @@ public abstract class Body extends AbstractHost implements Serializable {
         if (rightOp instanceof ParameterRef) {
           int idx = ((ParameterRef) rightOp).getIndex();
           if (res[idx] != null) {
-            throw new RuntimeException("duplicate parameterref" + idx + " in " + getMethod());
+            throw new RuntimeException("Duplicate parameter reference" + idx + " in " + getMethod());
           }
           res[idx] = (Local) is.getLeftOp();
           numFound++;
@@ -483,10 +483,10 @@ public abstract class Body extends AbstractHost implements Serializable {
     if (numFound != numParams) {
       for (int i = 0; i < numParams; i++) {
         if (res[i] == null) {
-          throw new RuntimeException("couldn't find parameterref" + i + " in " + getMethod());
+          throw new RuntimeException("Couldn't find parameter reference " + i + " in " + getMethod());
         }
       }
-      throw new RuntimeException("couldn't find parameterref? in " + getMethod());
+      throw new RuntimeException("Couldn't find parameter reference in " + getMethod());
     }
     return Arrays.asList(res);
   }

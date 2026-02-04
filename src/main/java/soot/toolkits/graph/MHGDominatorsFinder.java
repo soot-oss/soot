@@ -57,7 +57,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
   protected final Set<N> heads;
   protected final Map<N, BitSet> nodeToFlowSet;
   protected final Map<N, Integer> nodeToIndex;
-  protected final Map<Integer, N> indexToNode;
+  protected final N[] indexToNode;
   protected int lastIndex = 0;
 
   public MHGDominatorsFinder(DirectedGraph<N> graph) {
@@ -66,7 +66,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     int size = graph.size() * 2 + 1;
     this.nodeToFlowSet = new HashMap<N, BitSet>(size, 0.7f);
     this.nodeToIndex = new HashMap<N, Integer>(size, 0.7f);
-    this.indexToNode = new HashMap<Integer, N>(size, 0.7f);
+    this.indexToNode = (N[]) new Object[size];
     doAnalysis();
   }
 
@@ -143,7 +143,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     if (index == null) {
       index = lastIndex;
       nodeToIndex.put(o, index);
-      indexToNode.put(index, o);
+      indexToNode[index] = o;
       lastIndex++;
     }
     return index;
@@ -160,7 +160,12 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     List<N> result = new ArrayList<N>();
     BitSet bitSet = getDominatorsBitSet(node);
     for (int i = bitSet.nextSetBit(0); i >= 0; i = bitSet.nextSetBit(i + 1)) {
-      result.add(indexToNode.get(i));
+      N n = indexToNode[i];
+      if (n == null) {
+        //can happen when not all nodes are visited
+        continue;
+      }
+      result.add(n);
       if (i == Integer.MAX_VALUE) {
         break; // or (i+1) would overflow
       }
@@ -179,7 +184,11 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     doms.clear(indexOfAssert(node));
 
     for (int i = doms.nextSetBit(0); i >= 0; i = doms.nextSetBit(i + 1)) {
-      N dominator = indexToNode.get(i);
+      N dominator = indexToNode[i];
+      if (dominator == null) {
+        //can happen when not all nodes are visited
+        continue;
+      }
       if (isDominatedByAll(dominator, doms)) {
         if (dominator != null) {
           return dominator;
