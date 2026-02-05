@@ -37,9 +37,11 @@ import java.util.RandomAccess;
 import java.util.Set;
 
 import soot.baf.GotoInst;
+import soot.jimple.BranchableStmt;
 import soot.jimple.GotoStmt;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.interaction.FlowInfo;
 import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.util.Numberable;
@@ -144,36 +146,34 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
           throw new RuntimeException("error: no entry point for method in forward analysis");
         }
       } else {
+        entries = new ArrayList<D>(actualEntries);
+
         // case of backward analysis on
         // a method which potentially has
         // an infinite loop and no return statement
-        entries = new ArrayList<D>(actualEntries);
-
-        // a single head is expected
-        assert g.getHeads().size() == 1;
-        D head = g.getHeads().get(0);
-
-        // collect all 'goto' statements to catch the 'goto' from the infinite loop
-        Set<D> visitedNodes = new HashSet<D>();
-        List<D> workList = new ArrayList<D>();
-        workList.add(head);
-        for (D current; !workList.isEmpty();) {
-          current = workList.remove(0);
-          visitedNodes.add(current);
-
-          // only add 'goto' statements
-          if (current instanceof GotoInst || current instanceof GotoStmt) {
-            entries.add(current);
-          }
-
-          for (D next : g.getSuccsOf(current)) {
-            if (visitedNodes.contains(next)) {
-              continue;
+        StronglyConnectedComponentsFast<D> scc = new StronglyConnectedComponentsFast<>(g);
+        Set<D> actualEntriesSet = new HashSet<>(actualEntries);
+        nextComponent: for (List<D> i : scc.getComponents()) {
+          Set<D> allLoopNodesSet = null;
+          for (D u : i) {
+            if (actualEntriesSet.contains(u)) {
+              continue nextComponent;
             }
-            workList.add(next);
+            if (u instanceof BranchableStmt) {
+              BranchableStmt b = (BranchableStmt) u;
+              if (allLoopNodesSet == null) {
+                allLoopNodesSet = new HashSet<>(i);
+              }
+              if (!allLoopNodesSet.contains(b.getTarget())) {
+                //we've found a goto to out of the loop, this is fine
+                continue nextComponent;
+              }
+            }
           }
+          //we've found a case where we have a strongly connected component (loop)
+          //that has no exit node. We just add one representative from that SCC.
+          entries.add(i.get(0));
         }
-
         //
         if (entries.isEmpty()) {
           throw new RuntimeException("error: backward analysis on an empty entry set.");
