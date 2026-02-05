@@ -26,9 +26,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.Body;
+import soot.Local;
 import soot.MethodSource;
-import soot.PackManager;
 import soot.SootMethod;
+import soot.jimple.internal.JimpleLocal;
 import soot.jimple.parser.JimpleAST;
 import soot.options.Options;
 
@@ -40,6 +41,7 @@ public class JimpleMethodSource implements MethodSource {
     mJimpleAST = aJimpleAST;
   }
 
+  @Override
   public Body getBody(SootMethod m, String phaseName) {
     JimpleBody jb = (JimpleBody) mJimpleAST.getBody(m);
     if (jb == null) {
@@ -50,7 +52,9 @@ public class JimpleMethodSource implements MethodSource {
       logger.debug("[" + m.getName() + "] Retrieving JimpleBody from AST...");
     }
 
-    PackManager.v().getPack("jb").apply(jb);
+    for (Local i : jb.getLocals()) {
+      ((JimpleLocal) i).setUserDefinedLocal();
+    }
     return jb;
   }
 }
