@@ -132,53 +132,51 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
       List<D> entries = null;
       List<D> actualEntries = gv.getEntries(g);
 
-      if (!actualEntries.isEmpty()) {
-        // normal cases: there is at least
-        // one return statement for a backward analysis
-        // or one entry statement for a forward analysis
-        entries = actualEntries;
-      } else {
-        // cases without any entry statement
-
-        if (isForward) {
+      if (isForward) {
+        if (!actualEntries.isEmpty()) {
+          // normal cases: there is at least
+          // one return statement for a backward analysis
+          // or one entry statement for a forward analysis
+          entries = actualEntries;
+        } else {
           // case of a forward flow analysis on
           // a method without any entry point
           throw new RuntimeException("error: no entry point for method in forward analysis");
-        } else {
-          // case of backward analysis on
-          // a method which potentially has
-          // an infinite loop and no return statement
-          entries = new ArrayList<D>();
+        }
+      } else {
+        // case of backward analysis on
+        // a method which potentially has
+        // an infinite loop and no return statement
+        entries = new ArrayList<D>(actualEntries);
 
-          // a single head is expected
-          assert g.getHeads().size() == 1;
-          D head = g.getHeads().get(0);
+        // a single head is expected
+        assert g.getHeads().size() == 1;
+        D head = g.getHeads().get(0);
 
-          // collect all 'goto' statements to catch the 'goto' from the infinite loop
-          Set<D> visitedNodes = new HashSet<D>();
-          List<D> workList = new ArrayList<D>();
-          workList.add(head);
-          for (D current; !workList.isEmpty();) {
-            current = workList.remove(0);
-            visitedNodes.add(current);
+        // collect all 'goto' statements to catch the 'goto' from the infinite loop
+        Set<D> visitedNodes = new HashSet<D>();
+        List<D> workList = new ArrayList<D>();
+        workList.add(head);
+        for (D current; !workList.isEmpty();) {
+          current = workList.remove(0);
+          visitedNodes.add(current);
 
-            // only add 'goto' statements
-            if (current instanceof GotoInst || current instanceof GotoStmt) {
-              entries.add(current);
-            }
-
-            for (D next : g.getSuccsOf(current)) {
-              if (visitedNodes.contains(next)) {
-                continue;
-              }
-              workList.add(next);
-            }
+          // only add 'goto' statements
+          if (current instanceof GotoInst || current instanceof GotoStmt) {
+            entries.add(current);
           }
 
-          //
-          if (entries.isEmpty()) {
-            throw new RuntimeException("error: backward analysis on an empty entry set.");
+          for (D next : g.getSuccsOf(current)) {
+            if (visitedNodes.contains(next)) {
+              continue;
+            }
+            workList.add(next);
           }
+        }
+
+        //
+        if (entries.isEmpty()) {
+          throw new RuntimeException("error: backward analysis on an empty entry set.");
         }
       }
 
