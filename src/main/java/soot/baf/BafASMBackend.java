@@ -153,7 +153,7 @@ public class BafASMBackend extends AbstractASMBackend {
         if (constant instanceof ClassConstant) {
           minVersion = Math.max(minVersion, Options.java_version_1_5);
         }
-        String typeString = constant.getType().toQuotedString();
+        String typeString = constant.getType().toString();
         if (typeString != null) {
           switch (typeString) {
             case PolymorphicMethodRef.VARHANDLE_SIGNATURE:

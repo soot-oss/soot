@@ -103,19 +103,6 @@ public class ArrayType extends RefLikeType {
     return buffer.toString();
   }
 
-  /**
-   * Returns a textual representation, quoted as needed, of this type for serialization, e.g. to .jimple format
-   */
-  @Override
-  public String toQuotedString() {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append(baseType.toQuotedString());
-    for (int i = 0; i < numDimensions; i++) {
-      buffer.append("[]");
-    }
-    return buffer.toString();
-  }
-
   @Override
   public int hashCode() {
     return baseType.hashCode() + 0x432E0341 * numDimensions;
