@@ -43,7 +43,9 @@ import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.AssignStmt;
 import soot.options.Options;
+import soot.shimple.PhiExpr;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalGraph;
 import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
@@ -72,6 +74,31 @@ public class SimpleLocalDefs implements LocalDefs {
       }
     }
 
+    @Override
+    public boolean doDefsAgreeAt(Local l, Unit a, Unit b) {
+      Iterator<Unit> la = getDefsOfAtIterator(l, a);
+      Iterator<Unit> lb = getDefsOfAtIterator(l, b);
+      while (la.hasNext()) {
+        Unit ua = la.next();
+        if (!lb.hasNext()) {
+          return false;
+        }
+        Unit ub = lb.next();
+        if (ua != ub) {
+          return false;
+        }
+        if (ua instanceof AssignStmt) {
+          AssignStmt assign = (AssignStmt) ua;
+          Value rop = assign.getRightOp();
+          if (rop instanceof PhiExpr) {
+            //Definitions do not necessarily agree!
+            return false;
+          }
+        }
+      }
+      return !lb.hasNext();
+    }
+    
     @Override
     public List<Unit> getDefsOfAt(Local l, Unit s) {
       List<Unit> lst = result.get(l);
