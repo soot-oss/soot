@@ -233,7 +233,7 @@ public class XMLPrinter {
     // add method node
     XMLNode methodNode = methodsNode.addChild("method", new String[] { "name", "returntype", "class" }, new String[] {
         cleanMethodName, body.getMethod().getReturnType().toString(), body.getMethod().getDeclaringClass().getName() });
-    String declarationStr = body.getMethod().getDeclaration().trim();
+    String declarationStr = body.getMethod().getQuotedDeclaration().trim();
     methodNode.addChild("declaration", toCDATA(declarationStr), new String[] { "length" },
         new String[] { String.valueOf(declarationStr.length()) });
 
