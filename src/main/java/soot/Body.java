@@ -701,4 +701,18 @@ public abstract class Body extends AbstractHost implements Serializable {
   public long getModificationCount() {
     return localChain.getModificationCount() + unitChain.getModificationCount() + trapChain.getModificationCount();
   }
+
+  /**
+   * Returns the first non-identity stmt in this body.
+   * 
+   * @return
+   */
+  public Unit getFirstNonIdentityStmt() {
+    for (Unit u : getUnits()) {
+      if (!(u instanceof IdentityUnit)) {
+        return u;
+      }
+    }
+    throw new RuntimeException("No non-id statements!");
+  }
 }

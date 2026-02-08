@@ -73,7 +73,7 @@
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
         <testcase.groups.excluded>categories.Java9Test,categories.Java11Test</testcase.groups.excluded>
-        <asm.version>9.8</asm.version>
+        <asm.version>9.9.1</asm.version>
     </properties>
     <build>
         <finalName>sootclasses-trunk</finalName>

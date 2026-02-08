@@ -36,6 +36,8 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.InitAnalysis;
+import soot.toolkits.scalar.SimpleLocalDefs;
+import soot.toolkits.scalar.SmartLocalDefs;
 
 public enum CheckInitValidator implements BodyValidator {
   INSTANCE;
@@ -58,9 +60,12 @@ public enum CheckInitValidator implements BodyValidator {
         if (v instanceof Local) {
           Local l = (Local) v;
           if (!init.contains(l)) {
+            SimpleLocalDefs defs = new SimpleLocalDefs(g);
+            List<Unit> allDefs = defs.getDefsOfAt(l, s);
+            ValidationException e = new ValidationException(s, "Local variable " + l.getName() + " is not definitively defined at this point",
+                "Warning: Local variable " + l + " not definitely defined at " + s + " in " + body.getMethod() + "\nFound definition sites: " + allDefs);
             exception.add(
-                new ValidationException(s, "Local variable " + l.getName() + " is not definitively defined at this point",
-                    "Warning: Local variable " + l + " not definitely defined at " + s + " in " + body.getMethod()));
+                e);
           }
         }
       }

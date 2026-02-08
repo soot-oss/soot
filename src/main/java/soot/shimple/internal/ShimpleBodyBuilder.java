@@ -39,6 +39,7 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.Jimple;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.base.ArrayWriteAggregator;
+import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.NopEliminator;
@@ -157,12 +158,15 @@ public class ShimpleBodyBuilder {
 
   public void postElimOpt() {
     if (options.node_elim_opt()) {
+      //might be able to propagate some constants:
+      CopyPropagator.v().transform(body);
       DeadAssignmentEliminator.v().transform(body);
       UnreachableCodeEliminator.v().transform(body);
       UnconditionalBranchFolder.v().transform(body);
       ArrayWriteAggregator.v().transform(body);
       Aggregator.v().transform(body);
       UnusedLocalEliminator.v().transform(body);
+      
     }
   }
 
