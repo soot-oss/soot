@@ -686,7 +686,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   public String getBytecodeSignature() {
     StringBuilder buffer = new StringBuilder();
     buffer.append('<');
-    buffer.append(Scene.v().quotedNameOf(getDeclaringClass().getName()));
+    buffer.append(getDeclaringClass().getName());
     buffer.append(": ");
     buffer.append(getName());
     buffer.append(ASMBackendUtils.jvmDescriptorOf(makeRef()));
@@ -718,7 +718,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   public static String getSignature(SootClass cl, String subSignature) {
     StringBuilder buffer = new StringBuilder();
     buffer.append('<');
-    buffer.append(Scene.v().quotedNameOf(cl.getName()));
+    buffer.append(cl.getName());
     buffer.append(": ");
     buffer.append(subSignature);
     buffer.append('>');
@@ -748,16 +748,16 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
   private static String getSubSignatureImpl(String name, List<Type> params, Type returnType) {
     StringBuilder buffer = new StringBuilder();
 
-    buffer.append(returnType.toQuotedString());
+    buffer.append(returnType.toString());
     buffer.append(' ');
-    buffer.append(Scene.v().quotedNameOf(name));
+    buffer.append(name);
     buffer.append('(');
     if (params != null) {
       for (int i = 0, e = params.size(); i < e; i++) {
         if (i > 0) {
           buffer.append(',');
         }
-        buffer.append(params.get(i).toQuotedString());
+        buffer.append(params.get(i).toString());
       }
     }
     buffer.append(')');
@@ -781,7 +781,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
    * Returns the declaration of this method, as used at the top of textual body representations (before the {}'s containing
    * the code for representation.)
    */
-  public String getDeclaration() {
+  public String getQuotedDeclaration() {
     StringBuilder buffer = new StringBuilder();
 
     // modifiers
@@ -798,15 +798,16 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     }
 
     // return type + name
-    buffer.append(this.getReturnType().toQuotedString()).append(' ');
-    buffer.append(Scene.v().quotedNameOf(this.getName()));
+    Scene sc = Scene.v();
+    buffer.append(sc.quotedNameOf(this.getReturnType().toString())).append(' ');
+    buffer.append(sc.quotedNameOf(this.getName()));
 
     // parameters
     buffer.append('(');
     for (Iterator<Type> typeIt = this.getParameterTypes().iterator(); typeIt.hasNext();) {
       Type t = typeIt.next();
 
-      buffer.append(t.toQuotedString());
+      buffer.append(sc.quotedNameOf(t.toString()));
       if (typeIt.hasNext()) {
         buffer.append(", ");
       }
@@ -817,9 +818,9 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     if (exceptions != null) {
       Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
       if (exceptionIt.hasNext()) {
-        buffer.append(" throws ").append(Scene.v().quotedNameOf(exceptionIt.next().getName()));
+        buffer.append(" throws ").append(sc.quotedNameOf(exceptionIt.next().getName()));
         while (exceptionIt.hasNext()) {
-          buffer.append(", ").append(Scene.v().quotedNameOf(exceptionIt.next().getName()));
+          buffer.append(", ").append(sc.quotedNameOf(exceptionIt.next().getName()));
         }
       }
     }
