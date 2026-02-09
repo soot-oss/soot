@@ -144,7 +144,7 @@ public class Printer {
             out.println("/*" + t.toString() + "*/");
           }
         }
-        out.println("    " + f.getDeclaration() + ";");
+        out.println("    " + f.getQuotedDeclaration() + ";");
         if (addJimpleLn()) {
           setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), f));
         }
@@ -185,7 +185,7 @@ public class Printer {
                 out.println("/*" + t.toString() + "*/");
               }
             }
-            out.println("    " + method.getDeclaration() + ";");
+            out.println("    " + method.getQuotedDeclaration() + ";");
             incJimpleLnNum();
           }
           if (methodIt.hasNext()) {
@@ -273,7 +273,7 @@ public class Printer {
     if (customMethodSignaturePrinter != null) {
       return customMethodSignaturePrinter.apply(sootMethod);
     } else {
-      return sootMethod.getDeclaration();
+      return sootMethod.getQuotedDeclaration();
     }
   }
 
