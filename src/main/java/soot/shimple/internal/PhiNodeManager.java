@@ -34,13 +34,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import soot.DefaultLocalGenerator;
 import soot.IdentityUnit;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.Trap;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
 import soot.ValueBox;
+import soot.asm.LocalNaming;
 import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
@@ -398,6 +401,7 @@ public class PhiNodeManager {
         loopUnits.addAll(c);
       }
     }
+    LocalGenerator lg = new DefaultLocalGenerator(body);
     while (unitsIt.hasNext()) {
       Unit unit = unitsIt.next();
       PhiExpr phi = Shimple.getPhiExpr(unit);
@@ -417,8 +421,8 @@ public class PhiNodeManager {
             assert ld.size() == 1;
             Unit elem = ld.get(0);
             //When the definition site happens to be in a loop, we cannot
-            //move the definition back, since otherwise we might destory
-            //the reference from thje previous iteration
+            //move the definition back, since otherwise we might destroy
+            //the reference from the previous iteration
             //See soot.jimple.toolkit.scalar.CopyPropagatorTest.test_cp_withSSA
             if (!loopUnits.contains(elem)) {
               pred = elem;
@@ -431,7 +435,8 @@ public class PhiNodeManager {
           // don't overwrite the old value of the local
           if (pred.branches()) {
             boolean needPriming = false;
-            Local savedLocal = jimp.newLocal(lhsLocal.getName() + "_", lhsLocal.getType());
+            
+            Local savedLocal = lg.generateLocal(lhsLocal.getType());;
 
             for (ValueBox useBox : pred.getUseBoxes()) {
               if (lhsLocal.equals(useBox.getValue())) {
