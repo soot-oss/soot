@@ -45,12 +45,17 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
+import soot.jimple.Stmt;
+import soot.jimple.internal.JimpleLocal;
+import soot.jimple.toolkits.pointer.LocalMustAliasAnalysis;
+import soot.jimple.toolkits.pointer.StrongLocalMustAliasAnalysis;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.shimple.PhiExpr;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.shimple.ShimpleFactory;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.DominanceFrontier;
@@ -58,6 +63,7 @@ import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.SimpleLocalDefs;
+import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.ValueUnitPair;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
@@ -66,8 +72,8 @@ import soot.util.MultiMap;
 /**
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
- *      the Control Dependence Graph</a>
+ * @see <a href= "http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form
+ *      and the Control Dependence Graph</a>
  */
 public class PhiNodeManager {
 
@@ -368,7 +374,8 @@ public class PhiNodeManager {
    * predecessors. Returns true if new locals were added to the body during the process, false otherwise.
    */
   public boolean doEliminatePhiNodes() {
-    // flag that indicates whether we created new locals during the elimination process
+    // flag that indicates whether we created new locals during the elimination
+    // process
     boolean addedNewLocals = false;
 
     // List of Phi nodes to be deleted.
@@ -376,7 +383,7 @@ public class PhiNodeManager {
 
     SimpleLocalDefs localDefs = new SimpleLocalDefs(new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v()));
 
-    List<Unit> insertedStatements = new ArrayList<>();
+    List<AssignStmt> insertedStatements = new ArrayList<>();
     final Jimple jimp = Jimple.v();
     final UnitPatchingChain units = body.getUnits();
     final Iterator<Unit> unitsIt = body.getUnits().snapshotIterator();
@@ -388,7 +395,7 @@ public class PhiNodeManager {
         for (ValueUnitPair p : phi.getArgs()) {
           Unit pred = p.getUnit();
           if (lhsLocal == p.getValue()) {
-            //nothing to do
+            // nothing to do
             continue;
           }
           AssignStmt stmt = jimp.newAssignStmt(lhsLocal, p.getValue());
@@ -445,17 +452,91 @@ public class PhiNodeManager {
       units.remove(removeMe);
       removeMe.clearUnitBoxes();
     }
-    TrapInterruptionGenerator trapinterrupt = new TrapInterruptionGenerator(body);
-    trapinterrupt.removeTrapsFrom(insertedStatements);
-    for (Unit i : body.getUnits()) {
-    	if (i instanceof IdentityStmt && ((IdentityStmt) i).getRightOp() instanceof CaughtExceptionRef)
-    	{
-    		//this may never fail
-    		trapinterrupt.removeTrapsFrom(i);
-    	}
+    if (!insertedStatements.isEmpty()) {
+      mergeVariables(insertedStatements);
+
+      TrapInterruptionGenerator trapinterrupt = new TrapInterruptionGenerator(body);
+      trapinterrupt.removeTrapsFrom(insertedStatements);
+      for (Unit unit : body.getUnits()) {
+        if (unit instanceof IdentityStmt && ((IdentityStmt) unit).getRightOp() instanceof CaughtExceptionRef) {
+          // this may never fail
+          trapinterrupt.removeTrapsFrom(unit);
+        }
+      }
+      TrapTightener.v().transform(body);
     }
 
     return addedNewLocals;
+  }
+
+  private boolean mergeVariables(List<AssignStmt> insertedStatements) {
+    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v());
+    MultiMap<Local, Stmt> allUses = new HashMultiMap<Local, Stmt>();
+    boolean changed = false;
+    for (Unit unit : body.getUnits()) {
+      Iterator<ValueBox> uses = unit.getUseBoxesIterator();
+      while (uses.hasNext()) {
+        ValueBox u = uses.next();
+        Value v = u.getValue();
+        if (v instanceof Local) {
+          Local lcl = (Local) v;
+          allUses.put(lcl, (Stmt) unit);
+        }
+      }
+    }
+    Map<Local, Set<Local>> merged = new HashMap<>();
+    LocalMustAliasAnalysis alias = new LocalMustAliasAnalysis(graph);
+    Map<Local, Local> mergeTargets = new HashMap<>();
+    Iterator<AssignStmt> i = insertedStatements.iterator();
+    next: while (i.hasNext()) {
+      AssignStmt u = i.next();
+
+      Local lop = (Local) u.getLeftOp();
+      Local rop = (Local) u.getRightOp();
+      for (Stmt uselop : allUses.get(lop)) {
+        if (!alias.mustAlias(lop, uselop, rop, uselop))
+          continue next;
+      }
+      for (Stmt uselop : allUses.get(rop)) {
+        if (!alias.mustAlias(lop, uselop, rop, uselop))
+          continue next;
+      }
+      Local mergeFrom = lop, mergeTo = rop;
+      if (((JimpleLocal) lop).isUserDefinedLocal()) {
+        mergeTo = lop;
+        mergeFrom = rop;
+      }
+
+      Set<Local> p = merged.get(mergeTo);
+      if (p == null) {
+        p = new HashSet<>();
+        merged.put(mergeTo, p);
+      }
+      mergeTargets.remove(mergeTo);
+      mergeTargets.put(mergeFrom, mergeTo);
+      p.add(mergeFrom);
+      Set<Local> mf = merged.remove(mergeFrom);
+      if (mf != null) {
+        p.addAll(mf);
+      }
+      merged.put(mergeFrom, p);
+      changed = true;
+      i.remove();
+    }
+    if (!mergeTargets.isEmpty()) {
+      Iterator<ValueBox> it = body.getUseAndDefBoxesIterator();
+      while (it.hasNext()) {
+        ValueBox p = it.next();
+        Value v = p.getValue();
+        if (v != null) {
+          Local newL = mergeTargets.get(v);
+          if (newL != null) {
+            p.setValue(newL);
+          }
+        }
+      }
+    }
+    return changed;
   }
 
   /**
