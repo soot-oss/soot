@@ -62,6 +62,7 @@ import soot.toolkits.graph.DominanceFrontier;
 import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.ValueUnitPair;
@@ -453,7 +454,6 @@ public class PhiNodeManager {
       removeMe.clearUnitBoxes();
     }
     if (!insertedStatements.isEmpty()) {
-      mergeVariables(insertedStatements);
 
       TrapInterruptionGenerator trapinterrupt = new TrapInterruptionGenerator(body);
       trapinterrupt.removeTrapsFrom(insertedStatements);
@@ -463,80 +463,9 @@ public class PhiNodeManager {
           trapinterrupt.removeTrapsFrom(unit);
         }
       }
-      TrapTightener.v().transform(body);
     }
 
     return addedNewLocals;
-  }
-
-  private boolean mergeVariables(List<AssignStmt> insertedStatements) {
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v());
-    MultiMap<Local, Stmt> allUses = new HashMultiMap<Local, Stmt>();
-    boolean changed = false;
-    for (Unit unit : body.getUnits()) {
-      Iterator<ValueBox> uses = unit.getUseBoxesIterator();
-      while (uses.hasNext()) {
-        ValueBox u = uses.next();
-        Value v = u.getValue();
-        if (v instanceof Local) {
-          Local lcl = (Local) v;
-          allUses.put(lcl, (Stmt) unit);
-        }
-      }
-    }
-    Map<Local, Set<Local>> merged = new HashMap<>();
-    LocalMustAliasAnalysis alias = new LocalMustAliasAnalysis(graph);
-    Map<Local, Local> mergeTargets = new HashMap<>();
-    Iterator<AssignStmt> i = insertedStatements.iterator();
-    next: while (i.hasNext()) {
-      AssignStmt u = i.next();
-
-      Local lop = (Local) u.getLeftOp();
-      Local rop = (Local) u.getRightOp();
-      for (Stmt uselop : allUses.get(lop)) {
-        if (!alias.mustAlias(lop, uselop, rop, uselop))
-          continue next;
-      }
-      for (Stmt uselop : allUses.get(rop)) {
-        if (!alias.mustAlias(lop, uselop, rop, uselop))
-          continue next;
-      }
-      Local mergeFrom = lop, mergeTo = rop;
-      if (((JimpleLocal) lop).isUserDefinedLocal()) {
-        mergeTo = lop;
-        mergeFrom = rop;
-      }
-
-      Set<Local> p = merged.get(mergeTo);
-      if (p == null) {
-        p = new HashSet<>();
-        merged.put(mergeTo, p);
-      }
-      mergeTargets.remove(mergeTo);
-      mergeTargets.put(mergeFrom, mergeTo);
-      p.add(mergeFrom);
-      Set<Local> mf = merged.remove(mergeFrom);
-      if (mf != null) {
-        p.addAll(mf);
-      }
-      merged.put(mergeFrom, p);
-      changed = true;
-      i.remove();
-    }
-    if (!mergeTargets.isEmpty()) {
-      Iterator<ValueBox> it = body.getUseAndDefBoxesIterator();
-      while (it.hasNext()) {
-        ValueBox p = it.next();
-        Value v = p.getValue();
-        if (v != null) {
-          Local newL = mergeTargets.get(v);
-          if (newL != null) {
-            p.setValue(newL);
-          }
-        }
-      }
-    }
-    return changed;
   }
 
   /**

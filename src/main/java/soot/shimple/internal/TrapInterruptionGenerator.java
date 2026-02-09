@@ -13,6 +13,7 @@ import java.util.Set;
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
+import soot.options.Options;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
@@ -103,13 +104,12 @@ public class TrapInterruptionGenerator {
     return trapsInRange;
   }
 
-  public void removeTrapsFromChecked(Unit u) {
-    String bef = body.toString();
+  void removeTrapsFromChecked(Unit u) {
     MultiMap<Unit, Trap> prev = getTrapsInRange();
     if (!prev.equals(trapsInRange))
       throw new IllegalStateException();
     
-    removeTrapsFrom(u);
+    doRemoveTrapsFrom(u);
     MultiMap<Unit, Trap> after = getTrapsInRange();
     if (!after.equals(trapsInRange))
       throw new IllegalStateException();
@@ -138,7 +138,7 @@ public class TrapInterruptionGenerator {
             }
           }
           if (!foundEquiv)
-            throw new IllegalStateException();
+            throw new IllegalStateException("");
         }
       }
     }
@@ -150,6 +150,13 @@ public class TrapInterruptionGenerator {
    * @param u the unit
    */
   public void removeTrapsFrom(Unit u) {
+    if (Options.v().validate()) {
+      removeTrapsFromChecked(u);
+    } else {
+      doRemoveTrapsFrom(u);      
+    }
+  }
+  protected void doRemoveTrapsFrom(Unit u) {
     Unit after = body.getUnits().getSuccOf(u);
     Set<Trap> r = trapsInRange.get(u);
     if (r.isEmpty()) {
@@ -204,7 +211,7 @@ public class TrapInterruptionGenerator {
 
   public void removeTrapsFrom(Collection<? extends Unit> stmts) {
     for (Unit stmt : stmts) {
-      removeTrapsFromChecked(stmt);
+      removeTrapsFrom(stmt);
     }
   }
 }
