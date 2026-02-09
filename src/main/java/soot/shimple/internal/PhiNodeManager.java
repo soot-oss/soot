@@ -50,6 +50,7 @@ import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.pointer.LocalMustAliasAnalysis;
 import soot.jimple.toolkits.pointer.StrongLocalMustAliasAnalysis;
 import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.thread.mhp.SCC;
 import soot.shimple.PhiExpr;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
@@ -62,6 +63,7 @@ import soot.toolkits.graph.DominanceFrontier;
 import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
@@ -382,12 +384,20 @@ public class PhiNodeManager {
     // List of Phi nodes to be deleted.
     List<Unit> phiNodes = new ArrayList<Unit>();
 
-    SimpleLocalDefs localDefs = new SimpleLocalDefs(new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v()));
+    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v());
+    SimpleLocalDefs localDefs = new SimpleLocalDefs(graph);
 
     List<AssignStmt> insertedStatements = new ArrayList<>();
     final Jimple jimp = Jimple.v();
     final UnitPatchingChain units = body.getUnits();
     final Iterator<Unit> unitsIt = body.getUnits().snapshotIterator();
+    StronglyConnectedComponentsFast<Unit> scc = new StronglyConnectedComponentsFast<>(graph);
+    Set<Unit> loopUnits = new HashSet<>();
+    for (List<Unit> c : scc.getComponents()) {
+      if (c.size() != 1) {
+        loopUnits.addAll(c);
+      }
+    }
     while (unitsIt.hasNext()) {
       Unit unit = unitsIt.next();
       PhiExpr phi = Shimple.getPhiExpr(unit);
@@ -404,7 +414,15 @@ public class PhiNodeManager {
           Value l = p.getValue();
           if (l instanceof Local) {
             List<Unit> ld = localDefs.getDefsOfAt((Local) l, pred);
-            pred = ld.get(0);
+            assert ld.size() == 1;
+            Unit elem = ld.get(0);
+            //When the definition site happens to be in a loop, we cannot
+            //move the definition back, since otherwise we might destory
+            //the reference from thje previous iteration
+            //See soot.jimple.toolkit.scalar.CopyPropagatorTest.test_cp_withSSA
+            if (!loopUnits.contains(elem)) {
+              pred = elem;
+            }
           }
 
           // if we need to insert the copy statement *before* an
