@@ -447,6 +447,13 @@ public class PhiNodeManager {
     }
     TrapInterruptionGenerator trapinterrupt = new TrapInterruptionGenerator(body);
     trapinterrupt.removeTrapsFrom(insertedStatements);
+    for (Unit i : body.getUnits()) {
+    	if (i instanceof IdentityStmt && ((IdentityStmt) i).getRightOp() instanceof CaughtExceptionRef)
+    	{
+    		//this may never fail
+    		trapinterrupt.removeTrapsFrom(i);
+    	}
+    }
 
     return addedNewLocals;
   }
