@@ -1,5 +1,7 @@
 package soot.toolkits.graph;
 
+import java.util.ArrayDeque;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -26,8 +28,11 @@ package soot.toolkits.graph;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,32 +63,61 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
   protected final Map<N, BitSet> nodeToFlowSet;
   protected final Map<N, Integer> nodeToIndex;
   protected final N[] indexToNode;
-  protected int lastIndex = 0;
 
   public MHGDominatorsFinder(DirectedGraph<N> graph) {
     this.graph = graph;
     this.heads = new HashSet<>(graph.getHeads());
-    int size = graph.size() * 2 + 1;
+    Set<N> allReachableNodes = getAllReachableNodes(graph);
+    int size = allReachableNodes.size() * 2 + 1;
+    
+    
     this.nodeToFlowSet = new HashMap<N, BitSet>(size, 0.7f);
     this.nodeToIndex = new HashMap<N, Integer>(size, 0.7f);
-    this.indexToNode = (N[]) new Object[size];
-    doAnalysis();
+    this.indexToNode = (N[]) new Object[allReachableNodes.size()];
+
+    int lastIndex = 0;
+    for (N n : allReachableNodes) {
+      nodeToIndex.put(n, lastIndex);
+      indexToNode[lastIndex] = n;
+      lastIndex++;
+    }
+    doAnalysis(allReachableNodes);
   }
 
-  protected void doAnalysis() {
+  private Set<N> getAllReachableNodes(DirectedGraph<N> graph) {
+    Deque<N> queue = new ArrayDeque<>(graph.getHeads());
+    Set<N> seen = new LinkedHashSet<>();
+    while (true) {
+      N p = queue.poll();
+      if (p == null) {
+        break;
+      }
+      if (seen.add(p)) {
+        queue.addAll(graph.getSuccsOf(p));
+      }
+      
+    }
+    return seen;
+  }
+
+  protected void doAnalysis(Set<N> allReachableNodes) {
     final DirectedGraph<N> graph = this.graph;
 
     // build full set
-    BitSet fullSet = new BitSet(graph.size());
-    fullSet.flip(0, graph.size());// set all to true
+    int graphsize = nodeToIndex.size();
+    BitSet fullSet = new BitSet(graphsize);
+    fullSet.flip(0, graphsize);// set all to true
 
     // set up domain for intersection: head nodes are only dominated by themselves,
     // other nodes are dominated by everything else
-    for (N o : graph) {
+    for (N o : allReachableNodes) {
       if (heads.contains(o)) {
         BitSet self = new BitSet();
-        self.set(indexOf(o));
+        self.set(indexOfAssert(o));
         nodeToFlowSet.put(o, self);
+      } else if (graph.getPredsOf(o).isEmpty()) {
+        BitSet empty = new BitSet();
+        nodeToFlowSet.put(o, empty);
       } else {
         nodeToFlowSet.put(o, fullSet);
       }
@@ -92,7 +126,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     boolean changed;
     do {
       changed = false;
-      for (N o : graph) {
+      for (N o : allReachableNodes) {
         if (heads.contains(o)) {
           continue;
         }
@@ -114,7 +148,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
         BitSet oldSet = getDominatorsBitSet(o);
         // each node dominates itself
         if (predsIntersect != null) {
-          predsIntersect.set(indexOf(o));
+          predsIntersect.set(indexOfAssert(o));
         } else {
           predsIntersect = fullSet;
         }
@@ -128,7 +162,6 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
   protected BitSet getDominatorsBitSet(N node) {
     BitSet bitSet = nodeToFlowSet.get(node);
-    assert (bitSet != null) : "Node " + node + " is not in the graph!";
     return bitSet;
   }
 
@@ -138,16 +171,6 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     return index;
   }
 
-  protected int indexOf(N o) {
-    Integer index = nodeToIndex.get(o);
-    if (index == null) {
-      index = lastIndex;
-      nodeToIndex.put(o, index);
-      indexToNode[index] = o;
-      lastIndex++;
-    }
-    return index;
-  }
 
   @Override
   public DirectedGraph<N> getGraph() {
@@ -159,12 +182,11 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     // reconstruct list of dominators from bitset
     List<N> result = new ArrayList<N>();
     BitSet bitSet = getDominatorsBitSet(node);
+    if (bitSet == null) {
+      return Collections.emptyList();
+    }
     for (int i = bitSet.nextSetBit(0); i >= 0; i = bitSet.nextSetBit(i + 1)) {
       N n = indexToNode[i];
-      if (n == null) {
-        //can happen when not all nodes are visited
-        continue;
-      }
       result.add(n);
       if (i == Integer.MAX_VALUE) {
         break; // or (i+1) would overflow
@@ -181,14 +203,13 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     }
 
     BitSet doms = (BitSet) getDominatorsBitSet(node).clone();
+    if (doms == null) {
+      return null;
+    }
     doms.clear(indexOfAssert(node));
 
     for (int i = doms.nextSetBit(0); i >= 0; i = doms.nextSetBit(i + 1)) {
       N dominator = indexToNode[i];
-      if (dominator == null) {
-        //can happen when not all nodes are visited
-        continue;
-      }
       if (isDominatedByAll(dominator, doms)) {
         if (dominator != null) {
           return dominator;
@@ -203,6 +224,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
   private boolean isDominatedByAll(N node, BitSet doms) {
     BitSet s1 = getDominatorsBitSet(node);
+    if (s1 == null) {
+      return doms.isEmpty();
+    }
     for (int i = doms.nextSetBit(0); i >= 0; i = doms.nextSetBit(i + 1)) {
       if (!s1.get(i)) {
         return false;
@@ -216,12 +240,19 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
   @Override
   public boolean isDominatedBy(N node, N dominator) {
-    return getDominatorsBitSet(node).get(indexOfAssert(dominator));
+    Integer idx = nodeToIndex.get(dominator);
+    if (idx == null) {
+      return false;
+    }
+    return getDominatorsBitSet(node).get(idx);
   }
 
   @Override
   public boolean isDominatedByAll(N node, Collection<N> dominators) {
     BitSet s1 = getDominatorsBitSet(node);
+    if (s1 == null) {
+      return dominators.isEmpty();
+    }
     for (N n : dominators) {
       if (!s1.get(indexOfAssert(n))) {
         return false;
@@ -232,7 +263,10 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
 
   @Override
   public boolean isDominatingAllGiven(N node, Collection<N> given) {
-    int c = indexOfAssert(node);
+    Integer c = nodeToIndex.get(node);
+    if (c == null) {
+      return given.isEmpty();
+    }
     for (N n : given) {
       BitSet s1 = getDominatorsBitSet(n);
       if (!s1.get(c)) {
@@ -245,6 +279,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
   @Override
   public boolean isDominatedByAny(N node, Collection<N> dominators) {
     BitSet s1 = getDominatorsBitSet(node);
+    if (s1 == null) {
+      return false;
+    }
     for (N n : dominators) {
       if (s1.get(indexOfAssert(n))) {
         return true;
