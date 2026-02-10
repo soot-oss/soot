@@ -171,7 +171,7 @@ public class ClassFieldAnalysis {
       return;
     }
 
-    Body body = method.retrieveActiveBody();
+    Body body = method.getActiveBody();
 
     if (body == null) {
       return;
