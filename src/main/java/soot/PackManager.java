@@ -228,6 +228,7 @@ public class PackManager {
     // The RectangularArrayFinder will be put into this package.
     addPack(p = new ScenePack("wjap"));
     {
+      p.add(new Transform("wjap.abc", ArrayBoundsChecker.v()));
       p.add(new Transform("wjap.ra", RectangularArrayFinder.v()));
       p.add(new Transform("wjap.umt", UnusedMethodsTagger.v()));
       p.add(new Transform("wjap.uft", UnusedFieldsTagger.v()));
@@ -274,7 +275,6 @@ public class PackManager {
     {
       p.add(new Transform("jap.npc", NullPointerChecker.v()));
       p.add(new Transform("jap.npcolorer", NullPointerColorer.v()));
-      p.add(new Transform("jap.abc", ArrayBoundsChecker.v()));
       p.add(new Transform("jap.sea", SideEffectTagger.v()));
       p.add(new Transform("jap.fieldrw", FieldTagger.v()));
       p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));

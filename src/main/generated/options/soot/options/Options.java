@@ -1984,6 +1984,7 @@ public class Options extends OptionsBase {
                     + padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
                     + padVal("wjop.si", "Static inliner: inlines monomorphic calls")
                 + padOpt("wjap", "Whole-jimple annotation pack: adds interprocedural tags")
+                    + padVal("wjap.abc", "Array bound checker")
                     + padVal("wjap.ra", "Rectangular array finder")
                     + padVal("wjap.umt", "Tags all unreachable methods")
                     + padVal("wjap.uft", "Tags all unreachable fields")
@@ -2012,7 +2013,6 @@ public class Options extends OptionsBase {
                 + padOpt("jap", "Jimple annotation pack: adds intraprocedural tags")
                     + padVal("jap.npc", "Null pointer checker")
                     + padVal("jap.npcolorer", "Null pointer colourer: tags references for eclipse")
-                    + padVal("jap.abc", "Array bound checker")
                     + padVal("jap.sea", "Side effect tagger")
                     + padVal("jap.fieldrw", "Field read/write tagger")
                     + padVal("jap.cgtagger", "Call graph tagger")
@@ -2488,6 +2488,18 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "");
 
+        if (phaseName.equals("wjap.abc"))
+            return "Phase " + phaseName + ":\n"
+                    + "\nThe Array Bound Checker performs a static analysis to determine \nwhich array bounds checks may safely be eliminated and then \nannotates statements with the results of the analysis. If Soot \nis in whole-program mode, the Array Bound Checker can use the \nresults provided by the Rectangular Array Finder."
+                    + "\n\nRecognized options (with default values):\n"
+                    + padOpt("enabled (false)", "")
+                    + padOpt("with-all (false)", "")
+                    + padOpt("with-cse (false)", "")
+                    + padOpt("with-arrayref (false)", "")
+                    + padOpt("with-fieldref (false)", "")
+                    + padOpt("with-classfield (false)", "")
+                    + padOpt("with-rectarray (false)", "");
+
         if (phaseName.equals("wjap.ra"))
             return "Phase " + phaseName + ":\n"
                     + "\nThe Rectangular Array Finder traverses Jimple statements based \non the static call graph, and finds array variables which always \nhold rectangular two-dimensional array objects. In Java, a \nmulti-dimensional array is an array of arrays, which means the \nshape of the array can be ragged. Nevertheless, many \napplications use rectangular arrays. Knowing that an array is \nrectangular can be very helpful in proving safe array bounds \nchecks. The Rectangular Array Finder does not change the program \nbeing analyzed. Its results are used by the Array Bound Checker."
@@ -2682,18 +2694,6 @@ public class Options extends OptionsBase {
                     + "\nProduce colour tags that the Soot plug-in for Eclipse can use to \nhighlight null and non-null references."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
-
-        if (phaseName.equals("jap.abc"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Array Bound Checker performs a static analysis to determine \nwhich array bounds checks may safely be eliminated and then \nannotates statements with the results of the analysis. If Soot \nis in whole-program mode, the Array Bound Checker can use the \nresults provided by the Rectangular Array Finder."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "")
-                    + padOpt("with-all (false)", "")
-                    + padOpt("with-cse (false)", "")
-                    + padOpt("with-arrayref (false)", "")
-                    + padOpt("with-fieldref (false)", "")
-                    + padOpt("with-classfield (false)", "")
-                    + padOpt("with-rectarray (false)", "");
 
         if (phaseName.equals("jap.sea"))
             return "Phase " + phaseName + ":\n"
@@ -3186,6 +3186,17 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
+        if (phaseName.equals("wjap.abc"))
+            return String.join(" ", 
+                    "enabled",
+                    "with-all",
+                    "with-cse",
+                    "with-arrayref",
+                    "with-fieldref",
+                    "with-classfield",
+                    "with-rectarray"
+            );
+
         if (phaseName.equals("wjap.ra"))
             return String.join(" ", 
                     "enabled"
@@ -3348,17 +3359,6 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npcolorer"))
             return String.join(" ", 
                     "enabled"
-            );
-
-        if (phaseName.equals("jap.abc"))
-            return String.join(" ", 
-                    "enabled",
-                    "with-all",
-                    "with-cse",
-                    "with-arrayref",
-                    "with-fieldref",
-                    "with-classfield",
-                    "with-rectarray"
             );
 
         if (phaseName.equals("jap.sea"))
@@ -3787,6 +3787,16 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:true ";
 
+        if (phaseName.equals("wjap.abc"))
+            return ""
+                    + "enabled:false "
+                    + "with-all:false "
+                    + "with-cse:false "
+                    + "with-arrayref:false "
+                    + "with-fieldref:false "
+                    + "with-classfield:false "
+                    + "with-rectarray:false ";
+
         if (phaseName.equals("wjap.ra"))
             return ""
                     + "enabled:false ";
@@ -3922,16 +3932,6 @@ public class Options extends OptionsBase {
         if (phaseName.equals("jap.npcolorer"))
             return ""
                     + "enabled:false ";
-
-        if (phaseName.equals("jap.abc"))
-            return ""
-                    + "enabled:false "
-                    + "with-all:false "
-                    + "with-cse:false "
-                    + "with-arrayref:false "
-                    + "with-fieldref:false "
-                    + "with-classfield:false "
-                    + "with-rectarray:false ";
 
         if (phaseName.equals("jap.sea"))
             return ""
@@ -4092,6 +4092,7 @@ public class Options extends OptionsBase {
                 || phaseName.equals("wjop.smb")
                 || phaseName.equals("wjop.si")
                 || phaseName.equals("wjap")
+                || phaseName.equals("wjap.abc")
                 || phaseName.equals("wjap.ra")
                 || phaseName.equals("wjap.umt")
                 || phaseName.equals("wjap.uft")
@@ -4120,7 +4121,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jap")
                 || phaseName.equals("jap.npc")
                 || phaseName.equals("jap.npcolorer")
-                || phaseName.equals("jap.abc")
                 || phaseName.equals("jap.sea")
                 || phaseName.equals("jap.fieldrw")
                 || phaseName.equals("jap.cgtagger")
@@ -4227,6 +4227,8 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase wjop.si");
         if (!PackManager.v().hasPhase("wjap"))
             G.v().out.println("Warning: Options exist for non-existent phase wjap");
+        if (!PackManager.v().hasPhase("wjap.abc"))
+            G.v().out.println("Warning: Options exist for non-existent phase wjap.abc");
         if (!PackManager.v().hasPhase("wjap.ra"))
             G.v().out.println("Warning: Options exist for non-existent phase wjap.ra");
         if (!PackManager.v().hasPhase("wjap.umt"))
@@ -4283,8 +4285,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jap.npc");
         if (!PackManager.v().hasPhase("jap.npcolorer"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.npcolorer");
-        if (!PackManager.v().hasPhase("jap.abc"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.abc");
         if (!PackManager.v().hasPhase("jap.sea"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.sea");
         if (!PackManager.v().hasPhase("jap.fieldrw"))

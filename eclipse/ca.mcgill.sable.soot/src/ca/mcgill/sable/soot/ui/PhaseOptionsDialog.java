@@ -120,6 +120,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite wjtpwjtp_rdcChild = wjtpwjtp_rdcCreate(getPageContainer());
 		Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
 		Composite wjopwjop_siChild = wjopwjop_siCreate(getPageContainer());
+		Composite wjapwjap_abcChild = wjapwjap_abcCreate(getPageContainer());
 		Composite wjapwjap_raChild = wjapwjap_raCreate(getPageContainer());
 		Composite wjapwjap_umtChild = wjapwjap_umtCreate(getPageContainer());
 		Composite wjapwjap_uftChild = wjapwjap_uftCreate(getPageContainer());
@@ -142,7 +143,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite jopjop_uleChild = jopjop_uleCreate(getPageContainer());
 		Composite japjap_npcChild = japjap_npcCreate(getPageContainer());
 		Composite japjap_npcolorerChild = japjap_npcolorerCreate(getPageContainer());
-		Composite japjap_abcChild = japjap_abcCreate(getPageContainer());
 		Composite japjap_seaChild = japjap_seaCreate(getPageContainer());
 		Composite japjap_fieldrwChild = japjap_fieldrwCreate(getPageContainer());
 		Composite japjap_cgtaggerChild = japjap_cgtaggerCreate(getPageContainer());
@@ -522,6 +522,22 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("wjap", getwjapenabled_widget(), "enabled");
 		getwjapenabled_widget().getButton().addSelectionListener(this);
 
+		makeNewEnableGroup("wjap", "wjap.abc");
+		addToEnableGroup("wjap", "wjap.abc", getwjapwjap_abcenabled_widget(), "enabled");
+		addToEnableGroup("wjap", "wjap.abc", getwjapwjap_abcwith_all_widget(), "with-all");
+		addToEnableGroup("wjap", "wjap.abc", getwjapwjap_abcwith_cse_widget(), "with-cse");
+		addToEnableGroup("wjap", "wjap.abc", getwjapwjap_abcwith_arrayref_widget(), "with-arrayref");
+		addToEnableGroup("wjap", "wjap.abc", getwjapwjap_abcwith_fieldref_widget(), "with-fieldref");
+		addToEnableGroup("wjap", "wjap.abc", getwjapwjap_abcwith_classfield_widget(), "with-classfield");
+		addToEnableGroup("wjap", "wjap.abc", getwjapwjap_abcwith_rectarray_widget(), "with-rectarray");
+		getwjapwjap_abcenabled_widget().getButton().addSelectionListener(this);
+		getwjapwjap_abcwith_all_widget().getButton().addSelectionListener(this);
+		getwjapwjap_abcwith_cse_widget().getButton().addSelectionListener(this);
+		getwjapwjap_abcwith_arrayref_widget().getButton().addSelectionListener(this);
+		getwjapwjap_abcwith_fieldref_widget().getButton().addSelectionListener(this);
+		getwjapwjap_abcwith_classfield_widget().getButton().addSelectionListener(this);
+		getwjapwjap_abcwith_rectarray_widget().getButton().addSelectionListener(this);
+
 		makeNewEnableGroup("wjap", "wjap.ra");
 		addToEnableGroup("wjap", "wjap.ra", getwjapwjap_raenabled_widget(), "enabled");
 		getwjapwjap_raenabled_widget().getButton().addSelectionListener(this);
@@ -680,22 +696,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		makeNewEnableGroup("jap", "jap.npcolorer");
 		addToEnableGroup("jap", "jap.npcolorer", getjapjap_npcolorerenabled_widget(), "enabled");
 		getjapjap_npcolorerenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jap", "jap.abc");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcenabled_widget(), "enabled");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_all_widget(), "with-all");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_cse_widget(), "with-cse");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_arrayref_widget(), "with-arrayref");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_fieldref_widget(), "with-fieldref");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_classfield_widget(), "with-classfield");
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_rectarray_widget(), "with-rectarray");
-		getjapjap_abcenabled_widget().getButton().addSelectionListener(this);
-		getjapjap_abcwith_all_widget().getButton().addSelectionListener(this);
-		getjapjap_abcwith_cse_widget().getButton().addSelectionListener(this);
-		getjapjap_abcwith_arrayref_widget().getButton().addSelectionListener(this);
-		getjapjap_abcwith_fieldref_widget().getButton().addSelectionListener(this);
-		getjapjap_abcwith_classfield_widget().getButton().addSelectionListener(this);
-		getjapjap_abcwith_rectarray_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jap", "jap.sea");
 		addToEnableGroup("jap", "jap.sea", getjapjap_seaenabled_widget(), "enabled");
@@ -2298,6 +2298,48 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapenabled_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getwjapwjap_abcenabled_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_abcenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getwjapwjap_abcwith_all_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_abcwith_all_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getwjapwjap_abcwith_cse_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_abcwith_cse_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getwjapwjap_abcwith_arrayref_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_abcwith_arrayref_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getwjapwjap_abcwith_fieldref_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_abcwith_fieldref_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getwjapwjap_abcwith_classfield_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_abcwith_classfield_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getwjapwjap_abcwith_rectarray_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_abcwith_rectarray_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getwjapwjap_raenabled_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -2609,48 +2651,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_npcolorerenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcwith_all_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_all_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcwith_cse_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_cse_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcwith_arrayref_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_arrayref_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcwith_fieldref_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_fieldref_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcwith_classfield_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_classfield_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getjapjap_abcwith_rectarray_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_rectarray_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjapjap_seaenabled_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -3424,6 +3424,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 			
+			SootOption wjap_wjap_abc_branch = new SootOption("Array Bound Checker", "wjapwjap_abc");
+			subParent.addChild(wjap_wjap_abc_branch);
+
+
+			
+
+			
+			subSectParent = wjap_wjap_abc_branch;
+			
+			
 			SootOption wjap_wjap_ra_branch = new SootOption("Rectangular Array Finder", "wjapwjap_ra");
 			subParent.addChild(wjap_wjap_ra_branch);
 
@@ -3684,16 +3694,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jap_jap_npcolorer_branch;
-			
-			
-			SootOption jap_jap_abc_branch = new SootOption("Array Bound Checker", "japjap_abc");
-			subParent.addChild(jap_jap_abc_branch);
-
-
-			
-
-			
-			subSectParent = jap_jap_abc_branch;
 			
 			
 			SootOption jap_jap_sea_branch = new SootOption("Side Effect tagger", "japjap_sea");
@@ -6489,6 +6489,76 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return wjapenabled_widget;
 	}	
 	
+	private BooleanOptionWidget wjapwjap_abcenabled_widget;
+	
+	private void setwjapwjap_abcenabled_widget(BooleanOptionWidget widget) {
+		wjapwjap_abcenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_abcenabled_widget() {
+		return wjapwjap_abcenabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_abcwith_all_widget;
+	
+	private void setwjapwjap_abcwith_all_widget(BooleanOptionWidget widget) {
+		wjapwjap_abcwith_all_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_abcwith_all_widget() {
+		return wjapwjap_abcwith_all_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_abcwith_cse_widget;
+	
+	private void setwjapwjap_abcwith_cse_widget(BooleanOptionWidget widget) {
+		wjapwjap_abcwith_cse_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_abcwith_cse_widget() {
+		return wjapwjap_abcwith_cse_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_abcwith_arrayref_widget;
+	
+	private void setwjapwjap_abcwith_arrayref_widget(BooleanOptionWidget widget) {
+		wjapwjap_abcwith_arrayref_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_abcwith_arrayref_widget() {
+		return wjapwjap_abcwith_arrayref_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_abcwith_fieldref_widget;
+	
+	private void setwjapwjap_abcwith_fieldref_widget(BooleanOptionWidget widget) {
+		wjapwjap_abcwith_fieldref_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_abcwith_fieldref_widget() {
+		return wjapwjap_abcwith_fieldref_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_abcwith_classfield_widget;
+	
+	private void setwjapwjap_abcwith_classfield_widget(BooleanOptionWidget widget) {
+		wjapwjap_abcwith_classfield_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_abcwith_classfield_widget() {
+		return wjapwjap_abcwith_classfield_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_abcwith_rectarray_widget;
+	
+	private void setwjapwjap_abcwith_rectarray_widget(BooleanOptionWidget widget) {
+		wjapwjap_abcwith_rectarray_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_abcwith_rectarray_widget() {
+		return wjapwjap_abcwith_rectarray_widget;
+	}	
+	
 	private BooleanOptionWidget wjapwjap_raenabled_widget;
 	
 	private void setwjapwjap_raenabled_widget(BooleanOptionWidget widget) {
@@ -7009,76 +7079,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getjapjap_npcolorerenabled_widget() {
 		return japjap_npcolorerenabled_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcenabled_widget;
-	
-	private void setjapjap_abcenabled_widget(BooleanOptionWidget widget) {
-		japjap_abcenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcenabled_widget() {
-		return japjap_abcenabled_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcwith_all_widget;
-	
-	private void setjapjap_abcwith_all_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_all_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcwith_all_widget() {
-		return japjap_abcwith_all_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcwith_cse_widget;
-	
-	private void setjapjap_abcwith_cse_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_cse_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcwith_cse_widget() {
-		return japjap_abcwith_cse_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcwith_arrayref_widget;
-	
-	private void setjapjap_abcwith_arrayref_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_arrayref_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcwith_arrayref_widget() {
-		return japjap_abcwith_arrayref_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcwith_fieldref_widget;
-	
-	private void setjapjap_abcwith_fieldref_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_fieldref_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcwith_fieldref_widget() {
-		return japjap_abcwith_fieldref_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcwith_classfield_widget;
-	
-	private void setjapjap_abcwith_classfield_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_classfield_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcwith_classfield_widget() {
-		return japjap_abcwith_classfield_widget;
-	}	
-	
-	private BooleanOptionWidget japjap_abcwith_rectarray_widget;
-	
-	private void setjapjap_abcwith_rectarray_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_rectarray_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_abcwith_rectarray_widget() {
-		return japjap_abcwith_rectarray_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_seaenabled_widget;
@@ -12606,6 +12606,113 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 
+	private Composite wjapwjap_abcCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupwjapwjap_abc = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjapwjap_abc.setLayout(layout);
+	
+	 	editGroupwjapwjap_abc.setText("Array Bound Checker");
+	 	
+		editGroupwjapwjap_abc.setData("id", "wjapwjap_abc");
+		
+		String descwjapwjap_abc = "Array bound checker";	
+		if (descwjapwjap_abc.length() > 0) {
+			Label descLabelwjapwjap_abc = new Label(editGroupwjapwjap_abc, SWT.WRAP);
+			descLabelwjapwjap_abc.setText(descwjapwjap_abc);
+		}
+		OptionData [] data;	
+		
+		
+		
+
+		defKey = "p phase-option"+" "+"wjap.abc"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setwjapwjap_abcenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_abc, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.abc","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.abc"+" "+"with-all";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setwjapwjap_abcwith_all_widget(new BooleanOptionWidget(editGroupwjapwjap_abc, SWT.NONE, new OptionData("With All", "p phase-option", "wjap.abc","with-all", "\nSetting the With All option to true is equivalent to setting \neach of With CSE, With Array Ref, With Field Ref, With Class \nField, and With Rectangular Array to true.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.abc"+" "+"with-cse";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setwjapwjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupwjapwjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p phase-option", "wjap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 is \nassigned a*b, where neither a nor b have changed between the two \nstatements. The analysis can conclude that r2 has the same value \nas r1. Experiments show that this option can improve the result \nslightly.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.abc"+" "+"with-arrayref";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setwjapwjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupwjapwjap_abc, SWT.NONE, new OptionData("With Array References", "p phase-option", "wjap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. We \nalso assume that the application is single-threaded or that the \narray references occur in a synchronized block. That is, we \nassume that an array element may not be changed by other threads \nbetween two array references.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.abc"+" "+"with-fieldref";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setwjapwjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupwjapwjap_abc, SWT.NONE, new OptionData("With Field References", "p phase-option", "wjap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions; however, we are more conservative when \nwriting to a field, because the base of the field reference may \nbe aliased. We also assume that the application is \nsingle-threaded or that the field references occur in a \nsynchronized block. That is, we assume that a field may not be \nchanged by other threads between two field references.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.abc"+" "+"with-classfield";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setwjapwjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupwjapwjap_abc, SWT.NONE, new OptionData("With Class Field", "p phase-option", "wjap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes final or private class fields first. It can \nrecognize the fields that hold array objects of constant length. \nIn an application using lots of array fields, this option can \nimprove the analysis results dramatically.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.abc"+" "+"with-rectarray";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setwjapwjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupwjapwjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p phase-option", "wjap.abc","with-rectarray", "\nThis option is used together with wjap.ra to make Soot run the \nwhole-program analysis for rectangular array objects. This \nanalysis is based on the call graph, and it usually takes a long \ntime. If the application uses rectangular arrays, these options \ncan improve the analysis result.", defaultBool)));
+
+
+		return editGroupwjapwjap_abc;
+	}
+
+
+
 	private Composite wjapwjap_raCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -14031,113 +14138,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjapjap_npcolorer;
-	}
-
-
-
-	private Composite japjap_abcCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjapjap_abc = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjapjap_abc.setLayout(layout);
-	
-	 	editGroupjapjap_abc.setText("Array Bound Checker");
-	 	
-		editGroupjapjap_abc.setData("id", "japjap_abc");
-		
-		String descjapjap_abc = "Array bound checker";	
-		if (descjapjap_abc.length() > 0) {
-			Label descLabeljapjap_abc = new Label(editGroupjapjap_abc, SWT.WRAP);
-			descLabeljapjap_abc.setText(descjapjap_abc);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcenabled_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.abc","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-all";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p phase-option", "jap.abc","with-all", "\nSetting the With All option to true is equivalent to setting \neach of With CSE, With Array Ref, With Field Ref, With Class \nField, and With Rectangular Array to true.", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-cse";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p phase-option", "jap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 is \nassigned a*b, where neither a nor b have changed between the two \nstatements. The analysis can conclude that r2 has the same value \nas r1. Experiments show that this option can improve the result \nslightly.", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-arrayref";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p phase-option", "jap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. We \nalso assume that the application is single-threaded or that the \narray references occur in a synchronized block. That is, we \nassume that an array element may not be changed by other threads \nbetween two array references.", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-fieldref";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p phase-option", "jap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions; however, we are more conservative when \nwriting to a field, because the base of the field reference may \nbe aliased. We also assume that the application is \nsingle-threaded or that the field references occur in a \nsynchronized block. That is, we assume that a field may not be \nchanged by other threads between two field references.", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-classfield";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p phase-option", "jap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes final or private class fields first. It can \nrecognize the fields that hold array objects of constant length. \nIn an application using lots of array fields, this option can \nimprove the analysis results dramatically.", defaultBool)));
-
-		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-rectarray";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p phase-option", "jap.abc","with-rectarray", "\nThis option is used together with wjap.ra to make Soot run the \nwhole-program analysis for rectangular array objects. This \nanalysis is based on the call graph, and it usually takes a long \ntime. If the application uses rectangular arrays, these options \ncan improve the analysis result.", defaultBool)));
-
-
-		return editGroupjapjap_abc;
 	}
 
 
