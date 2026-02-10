@@ -30,6 +30,9 @@ import java.util.List;
 
 import soot.Local;
 import soot.Unit;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.shimple.PhiExpr;
 
 /**
  * Provides an interface for querying for the definitions of a Local at a given Unit in a method.
@@ -82,15 +85,30 @@ public interface LocalDefs {
   }
 
   /**
-   * @param l
-   * @param a
-   * @param b
-   * @return
+   * Checks whether the definitions of <code>l</code> agree at units <code>a</code> and <code>b</code>
+   * @param l the local to check
+   * @param a the first usage site
+   * @param b the second usage site
+   * @return whether the set of definition statements agree
    */
   public default boolean doDefsAgreeAt(Local l, Unit a, Unit b) {
     Iterator<Unit> la = getDefsOfAtIterator(l, a);
     Iterator<Unit> lb = getDefsOfAtIterator(l, b);
-    return Iterators.elementsEqual(la, lb);
+    
+    //Check whether the iterator elements are equal
+    //Is slightly faster than using Iterator.equals since we only
+    //check the identity here
+    while (la.hasNext()) {
+      Unit ua = la.next();
+      if (!lb.hasNext()) {
+        return false;
+      }
+      Unit ub = lb.next();
+      if (ua != ub) {
+        return false;
+      }
+    }
+    return !lb.hasNext();
   }
 
   /**

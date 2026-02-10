@@ -81,7 +81,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   public static String getSignature(SootClass cl, String subSignature) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append('<').append(Scene.v().quotedNameOf(cl.getName())).append(": ");
+    buffer.append('<').append(cl.getName()).append(": ");
     buffer.append(subSignature).append('>');
     return buffer.toString();
   }
@@ -99,14 +99,14 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   protected static String getSubSignature(String name, Type type) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append(type.toQuotedString()).append(' ').append(Scene.v().quotedNameOf(name));
+    buffer.append(type.toString()).append(' ').append(name);
     return buffer.toString();
   }
 
   @Override
   public SootClass getDeclaringClass() {
     if (!isDeclared) {
-      throw new RuntimeException("not declared: " + getName() + " " + getType());
+      throw new RuntimeException("Not declared: " + getName() + " " + getType());
     }
 
     return declaringClass;
@@ -224,7 +224,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
   }
 
   private String getOriginalStyleDeclaration() {
-    String qualifiers = (Modifier.toString(modifiers) + ' ' + type.toQuotedString()).trim();
+    String qualifiers = (Modifier.toString(modifiers) + ' ' + Scene.v().quotedNameOf(type.toString())).trim();
     if (qualifiers.isEmpty()) {
       return Scene.v().quotedNameOf(name);
     } else {
@@ -233,7 +233,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   }
 
-  public String getDeclaration() {
+  public String getQuotedDeclaration() {
     return getOriginalStyleDeclaration();
   }
 
