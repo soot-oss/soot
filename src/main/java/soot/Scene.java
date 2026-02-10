@@ -248,13 +248,19 @@ public class Scene {
 
     StringBuilder res = new StringBuilder(s.length());
     for (String part : s.split("\\.")) {
+      int arr = part.indexOf('[');
+      String arrSuffix = "";
+      if (arr != -1) {
+        arrSuffix = part.substring(arr);
+        part = part.substring(0, arr);
+      }
       if (res.length() > 0) {
         res.append('.');
       }
       if ((!part.isEmpty() && part.charAt(0) == '-') || reservedNames.contains(part)) {
-        res.append('\'').append(part).append('\'');
+        res.append('\'').append(part).append('\'').append(arrSuffix);
       } else {
-        res.append(part);
+        res.append(part).append(arrSuffix);
       }
     }
     return res.toString();
