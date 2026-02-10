@@ -151,7 +151,7 @@ public class MethodBuilder extends JSRInlinerAdapter {
     return new AnnotationElemBuilder() {
       @Override
       public void visitEnd() {
-        AnnotationTag annotTag = new AnnotationTag(desc, elems);
+        AnnotationTag annotTag = new AnnotationTag(descriptor, elems);
         vat.addAnnotation(annotTag);
       }
     };
@@ -308,7 +308,7 @@ public class MethodBuilder extends JSRInlinerAdapter {
    * 
    * @param array
    *          The array to check
-   * @return True if the given arry contains only <code>null</code> values, false otherwise
+   * @return True if the given array contains only <code>null</code> values, false otherwise
    */
   private boolean isFullyEmpty(String[] array) {
     for (int i = 0; i < array.length; i++) {
