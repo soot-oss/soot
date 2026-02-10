@@ -13,6 +13,7 @@ import java.util.Set;
 import soot.Body;
 import soot.Trap;
 import soot.Unit;
+import soot.options.Options;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
@@ -68,7 +69,7 @@ import soot.util.MultiMap;
  * Note that this changes the semantics of the method! It is primarily used during deshimplification, since the newly added
  * assignments cannot trigger an exception (a = b), but the JVM assumes that they might trigger exceptions, which could trip
  * verification (see soot.shimple.Shimple1Test.testComplexPhi_1A)
-
+ * 
  * @author Marc Miltenberger
  */
 public class TrapInterruptionGenerator {
@@ -82,7 +83,7 @@ public class TrapInterruptionGenerator {
   }
 
   private MultiMap<Unit, Trap> getTrapsInRange() {
-    MultiMap<Unit, Trap>  trapsInRange= new HashMultiMap<>();
+    MultiMap<Unit, Trap> trapsInRange = new HashMultiMap<>();
     MultiMap<Unit, Trap> trapStarts = new HashMultiMap<>();
     for (Trap t : body.getTraps()) {
       trapStarts.put(t.getBeginUnit(), t);
@@ -103,26 +104,28 @@ public class TrapInterruptionGenerator {
     return trapsInRange;
   }
 
-  public void removeTrapsFromChecked(Unit u) {
-    String bef = body.toString();
+  void removeTrapsFromChecked(Unit u) {
     MultiMap<Unit, Trap> prev = getTrapsInRange();
-    if (!prev.equals(trapsInRange))
-      throw new IllegalStateException();
-    
-    removeTrapsFrom(u);
+    if (!prev.equals(trapsInRange)) {
+      throw new IllegalStateException("Traps in range was not properly updated");
+    }
+
+    doRemoveTrapsFrom(u);
     MultiMap<Unit, Trap> after = getTrapsInRange();
-    if (!after.equals(trapsInRange))
-      throw new IllegalStateException();
-    
+    if (!after.equals(trapsInRange)) {
+      throw new IllegalStateException("Traps in range was not properly updated");
+    }
+
     for (Unit i : body.getUnits()) {
       if (i == u) {
-        if (!after.get(i).isEmpty())
+        if (!after.get(i).isEmpty()) {
           throw new IllegalStateException();
+        }
       } else {
         Set<Trap> trapPrev = prev.get(i);
         Set<Trap> trapAfter = after.get(i);
         if (trapPrev.size() != trapAfter.size()) {
-          throw new IllegalStateException();
+          throw new IllegalStateException("Different sizes in traps in " + body.getMethod());
         }
         for (Trap p : trapPrev) {
           boolean foundEquiv = false;
@@ -131,36 +134,46 @@ public class TrapInterruptionGenerator {
               foundEquiv = true;
               break;
             }
-            if (a.getException() == p.getException() &&
-                a.getHandlerUnit() == p.getHandlerUnit()) {
+            if (a.getException() == p.getException() && a.getHandlerUnit() == p.getHandlerUnit()) {
               foundEquiv = true;
               break;
             }
           }
-          if (!foundEquiv)
-            throw new IllegalStateException();
+          if (!foundEquiv) {
+            throw new IllegalStateException("Did not find an equivalent trap for" + p + " in " + body.getMethod());
+          }
         }
       }
     }
-    
+
   }
-  
+
   /**
    * Removes all traps on the given unit
-   * @param u the unit
+   * 
+   * @param u
+   *          the unit
    */
   public void removeTrapsFrom(Unit u) {
+    if (Options.v().validate()) {
+      removeTrapsFromChecked(u);
+    } else {
+      doRemoveTrapsFrom(u);
+    }
+  }
+
+  protected void doRemoveTrapsFrom(Unit u) {
     Unit after = body.getUnits().getSuccOf(u);
     Set<Trap> r = trapsInRange.get(u);
     if (r.isEmpty()) {
       return;
     }
     if (after != null) {
-      //there's a unit after ours, so we need to adjust all other traps
+      // there's a unit after ours, so we need to adjust all other traps
       Map<Trap, Trap> newTraps = new HashMap<>();
       Set<Unit> leftTrapEnds = new HashSet<>();
       for (Trap t : r) {
-        //these will be the new traps after u
+        // these will be the new traps after u
         Trap clone = (Trap) t.clone();
         newTraps.put(t, clone);
         body.getTraps().insertAfter(clone, t);
@@ -170,7 +183,7 @@ public class TrapInterruptionGenerator {
       Unit currentUnit = after;
       while (true) {
         if (leftTrapEnds.remove(currentUnit) && leftTrapEnds.isEmpty()) {
-          //no other trap can be affected after this
+          // no other trap can be affected after this
           break;
         }
         List<Trap> oldTraps = new ArrayList<>(trapsInRange.get(currentUnit));
@@ -193,7 +206,7 @@ public class TrapInterruptionGenerator {
     Iterator<Trap> rit = r.iterator();
     while (rit.hasNext()) {
       Trap t = rit.next();
-      t.setEndUnit(u); //exclude u
+      t.setEndUnit(u); // exclude u
       if (t.getBeginUnit() == t.getEndUnit()) {
         rit.remove();
         body.getTraps().remove(t);
@@ -204,7 +217,7 @@ public class TrapInterruptionGenerator {
 
   public void removeTrapsFrom(Collection<? extends Unit> stmts) {
     for (Unit stmt : stmts) {
-      removeTrapsFromChecked(stmt);
+      removeTrapsFrom(stmt);
     }
   }
 }

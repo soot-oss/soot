@@ -27,8 +27,10 @@ package soot.toolkits.graph;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +40,17 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
+
+import soot.IntType;
+import soot.SootMethod;
+import soot.Unit;
+import soot.VoidType;
+import soot.jimple.AssignStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.internal.JimpleLocal;
 
 public class TestDominance {
 
@@ -57,6 +70,82 @@ public class TestDominance {
       kids.put(kid.id, dkid);
     }
     return kids;
+  }
+  
+  @Test
+  public void testNoPredecessor() {
+    SootMethod tmp = new SootMethod("tmp", Collections.emptyList(), VoidType.v());
+    JimpleBody jb = new JimpleBody(tmp);
+    Jimple j = Jimple.v();
+    JimpleLocal l = j.newLocal("tmp",IntType.v());
+    jb.getLocals().add(l);
+    AssignStmt u1 = j.newAssignStmt(l, IntConstant.v(0));
+    ReturnVoidStmt u2 = j.newReturnVoidStmt();
+    AssignStmt u3 = j.newAssignStmt(l, IntConstant.v(1));
+    ReturnVoidStmt u4 = j.newReturnVoidStmt();
+    jb.getUnits().add(u1);
+    jb.getUnits().add(u2);
+    jb.getUnits().add(u3);
+    jb.getUnits().add(u4);
+    
+    DirectedGraph<Unit> graph = new DirectedGraph<Unit>() {
+      
+      @Override
+      public int size() {
+        return jb.getUnits().size();
+      }
+      
+      @Override
+      public Iterator<Unit> iterator() {
+        return jb.getUnits().iterator();
+      }
+      
+      @Override
+      public List<Unit> getTails() {
+        return Arrays.asList(u2, u4);
+      }
+      
+      @Override
+      public List<Unit> getSuccsOf(Unit s) {
+        if (s == u1) {
+          return Arrays.asList(u2);
+        }
+        if (s == u2 || s == u4)  {
+          return Collections.emptyList();
+        }
+        if (s == u3) {
+          return Arrays.asList(u4);
+        }
+        throw new RuntimeException();
+      }
+      
+      @Override
+      public List<Unit> getPredsOf(Unit s) {
+        if (s == u1 || s == u3)  {
+          return Collections.emptyList();
+        }
+        if (s == u2) {
+          return Arrays.asList(u1);
+        }
+        if (s == u4) {
+          return Arrays.asList(u3);
+        }
+        throw new RuntimeException();
+      }
+      
+      @Override
+      public List<Unit> getHeads() {
+        return Arrays.asList(u1);
+      }
+    };
+    
+    MHGDominatorsFinder<Unit> finder = new MHGDominatorsFinder<Unit>(graph);
+    assertEquals(Arrays.asList(u1), finder.getDominators(u1));
+    assertEquals(Arrays.asList(u1, u2), finder.getDominators(u2));
+    List<Unit> d3 = finder.getDominators(u3);
+    assertEquals(Collections.emptyList(), d3);
+    List<Unit> d4 = finder.getDominators(u4);
+    assertEquals(Collections.emptyList(), d4);
   }
 
   @Test

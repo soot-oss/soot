@@ -1,5 +1,7 @@
 package soot;
 
+import java.util.List;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -31,6 +33,7 @@ import soot.jimple.ThisRef;
  * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
  */
 public class NormalUnitPrinter extends LabeledUnitPrinter {
+  private final Scene scene = Scene.v();
 
   public NormalUnitPrinter(Body body) {
     super(body);
@@ -39,19 +42,34 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
   @Override
   public void type(Type t) {
     handleIndent();
-    output.append(t == null ? "<null>" : t.toQuotedString());
+    output.append(t == null ? "<null>" : scene.quotedNameOf(t.toString()));
   }
 
   @Override
   public void methodRef(SootMethodRef m) {
     handleIndent();
-    output.append(m.getSignature());
+    // we need to quote the signature
+    output.append('<').append(scene.quotedNameOf(m.declaringClass().getName())).append(": ");
+    output.append(scene.quotedNameOf(m.getReturnType().toString()));
+    output.append(' ').append(scene.quotedNameOf(m.name())).append('(');
+    final List<Type> pt = m.getParameterTypes();
+    for (int i = 0; i < pt.size(); i++) {
+      if (i != 0) {
+        output.append(',');
+      }
+      output.append(scene.quotedNameOf(pt.get(i).toString()));
+    }
+    output.append(")>");
   }
 
   @Override
   public void fieldRef(SootFieldRef f) {
     handleIndent();
-    output.append(f.getSignature());
+    // we need to quote the signature
+    output.append('<').append(scene.quotedNameOf(f.declaringClass().getName())).append(": ");
+    output.append(scene.quotedNameOf(f.type().toString()));
+    output.append(' ').append(scene.quotedNameOf(f.name()));
+    output.append('>');
   }
 
   @Override

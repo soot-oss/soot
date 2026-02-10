@@ -156,7 +156,7 @@ public class BodyExtractorWalker extends Walker {
 
     if (sm.isConcrete() && methodBody != null) {
       if (Options.v().verbose()) {
-        logger.debug("[Parsed] " + sm.getDeclaration());
+        logger.debug("[Parsed] " + sm.getQuotedDeclaration());
       }
 
       methodBody.setMethod(sm);
