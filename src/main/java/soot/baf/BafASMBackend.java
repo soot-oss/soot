@@ -90,10 +90,10 @@ import soot.util.Chain;
 public class BafASMBackend extends AbstractASMBackend {
 
   // Contains one Label for every Unit that is the target of a branch or jump
-  protected final Map<Unit, Label> branchTargetLabels = new HashMap<Unit, Label>();
+  protected Map<Unit, Label> branchTargetLabels;
 
   // Contains a mapping of local variables to indices in the local variable stack
-  protected final Map<Local, Integer> localToSlot = new HashMap<Local, Integer>();
+  protected Map<Local, Integer> localToSlot;
 
   /**
    * Creates a new BafASMBackend with a given enforced java version
@@ -177,6 +177,8 @@ public class BafASMBackend extends AbstractASMBackend {
    */
   @Override
   protected void generateMethodBody(MethodVisitor mv, SootMethod method) {
+    branchTargetLabels = new HashMap<Unit, Label>();
+    localToSlot = new HashMap<Local, Integer>();
     final BafBody body = getBafBody(method);
 
     /*
@@ -184,9 +186,7 @@ public class BafASMBackend extends AbstractASMBackend {
      */
     for (UnitBox box : body.getUnitBoxes(true)) {
       Unit u = box.getUnit();
-      if (!branchTargetLabels.containsKey(u)) {
-        branchTargetLabels.put(u, new Label());
-      }
+      branchTargetLabels.putIfAbsent(u, new Label());
     }
 
     Label startLabel = null;

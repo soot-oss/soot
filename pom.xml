@@ -73,7 +73,7 @@
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
         <testcase.groups.excluded>categories.Java9Test,categories.Java11Test</testcase.groups.excluded>
-        <asm.version>9.8</asm.version>
+        <asm.version>9.9.1</asm.version>
     </properties>
     <build>
         <finalName>sootclasses-trunk</finalName>
@@ -298,6 +298,9 @@
                         --add-opens=java.base/java.util.stream=ALL-UNNAMED
                         --add-opens=java.base/java.io=ALL-UNNAMED
                         --add-opens=java.base/java.net=ALL-UNNAMED
+                        --add-opens=java.base/java.nio.file=ALL-UNNAMED
+                        --add-opens=java.base/java.nio.channels.spi=ALL-UNNAMED
+                        --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
                     </argLine>
                 </configuration>
                 <executions>

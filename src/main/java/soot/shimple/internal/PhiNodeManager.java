@@ -29,38 +29,45 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import soot.DefaultLocalGenerator;
 import soot.IdentityUnit;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.Trap;
 import soot.Unit;
+import soot.UnitPatchingChain;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.shimple.PhiExpr;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.shimple.ShimpleFactory;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.DominanceFrontier;
 import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
+import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.ValueUnitPair;
-import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
 /**
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
- *      the Control Dependence Graph</a>
+ * @see <a href= "http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form
+ *      and the Control Dependence Graph</a>
  */
 public class PhiNodeManager {
 
@@ -361,82 +368,112 @@ public class PhiNodeManager {
    * predecessors. Returns true if new locals were added to the body during the process, false otherwise.
    */
   public boolean doEliminatePhiNodes() {
-    // flag that indicates whether we created new locals during the elimination process
+    // flag that indicates whether we created new locals during the elimination
+    // process
     boolean addedNewLocals = false;
 
     // List of Phi nodes to be deleted.
     List<Unit> phiNodes = new ArrayList<Unit>();
 
-    // This stores the assignment statements equivalent to each
-    // (and every) Phi. We use lists instead of a Map of
-    // non-determinate order since we prefer to preserve the order
-    // of the assignment statements, i.e. if a block has more than
-    // one Phi expression, we prefer that the equivalent
-    // assignments be placed in the same order as the Phi expressions.
-    List<AssignStmt> equivStmts = new ArrayList<AssignStmt>();
+    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v());
+    SimpleLocalDefs localDefs = new SimpleLocalDefs(graph);
 
-    // Similarly, to preserve order, instead of directly storing
-    // the pred, we store the pred box so that we follow the
-    // pointers when SPatchingChain moves them.
-    List<ValueUnitPair> predBoxes = new ArrayList<ValueUnitPair>();
-
+    List<AssignStmt> insertedStatements = new ArrayList<>();
     final Jimple jimp = Jimple.v();
-    final Chain<Unit> units = body.getUnits();
-    for (Unit unit : units) {
+    final UnitPatchingChain units = body.getUnits();
+    final Iterator<Unit> unitsIt = body.getUnits().snapshotIterator();
+    StronglyConnectedComponentsFast<Unit> scc = new StronglyConnectedComponentsFast<>(graph);
+    Set<Unit> loopUnits = new HashSet<>();
+    for (List<Unit> c : scc.getComponents()) {
+      if (c.size() != 1) {
+        loopUnits.addAll(c);
+      }
+    }
+    LocalGenerator lg = new DefaultLocalGenerator(body);
+    while (unitsIt.hasNext()) {
+      Unit unit = unitsIt.next();
       PhiExpr phi = Shimple.getPhiExpr(unit);
       if (phi != null) {
         Local lhsLocal = Shimple.getLhsLocal(unit);
-        for (ValueUnitPair vup : phi.getArgs()) {
-          predBoxes.add(vup);
-          equivStmts.add(jimp.newAssignStmt(lhsLocal, vup.getValue()));
-        }
-        phiNodes.add(unit);
-      }
-    }
+        for (ValueUnitPair p : phi.getArgs()) {
+          Unit pred = p.getUnit();
+          if (lhsLocal == p.getValue()) {
+            // nothing to do
+            continue;
+          }
+          AssignStmt stmt = jimp.newAssignStmt(lhsLocal, p.getValue());
+          insertedStatements.add(stmt);
+          Value l = p.getValue();
+          if (l instanceof Local) {
+            List<Unit> ld = localDefs.getDefsOfAt((Local) l, pred);
+            assert ld.size() == 1;
+            Unit elem = ld.get(0);
+            //When the definition site happens to be in a loop, we cannot
+            //move the definition back, since otherwise we might destroy
+            //the reference from the previous iteration
+            //See soot.jimple.toolkit.scalar.CopyPropagatorTest.test_cp_withSSA
+            if (!loopUnits.contains(elem)) {
+              pred = elem;
+            }
+          }
 
-    if (equivStmts.size() != predBoxes.size()) {
-      throw new RuntimeException("Assertion failed.");
-    }
+          // if we need to insert the copy statement *before* an
+          // instruction that happens to be *using* the Local being
+          // defined, we need to do some extra work to make sure we
+          // don't overwrite the old value of the local
+          if (pred.branches()) {
+            boolean needPriming = false;
+            
+            Local savedLocal = lg.generateLocal(lhsLocal.getType());;
 
-    for (ListIterator<ValueUnitPair> it = predBoxes.listIterator(); it.hasNext();) {
-      Unit pred = it.next().getUnit();
-      if (pred == null) {
-        throw new RuntimeException("Assertion failed.");
-      }
-      AssignStmt stmt = equivStmts.get(it.previousIndex());
+            for (ValueBox useBox : pred.getUseBoxes()) {
+              if (lhsLocal.equals(useBox.getValue())) {
+                needPriming = true;
+                addedNewLocals = true;
+                useBox.setValue(savedLocal);
+              }
+            }
 
-      // if we need to insert the copy statement *before* an
-      // instruction that happens to be *using* the Local being
-      // defined, we need to do some extra work to make sure we
-      // don't overwrite the old value of the local
-      if (pred.branches()) {
-        boolean needPriming = false;
-        Local lhsLocal = (Local) stmt.getLeftOp();
-        Local savedLocal = jimp.newLocal(lhsLocal.getName() + "_", lhsLocal.getType());
+            if (needPriming) {
+              body.getLocals().add(savedLocal);
+              AssignStmt assign = jimp.newAssignStmt(savedLocal, lhsLocal);
+              units.insertBefore(assign, pred);
+              insertedStatements.add(assign);
+            }
 
-        for (ValueBox useBox : pred.getUseBoxes()) {
-          if (lhsLocal.equals(useBox.getValue())) {
-            needPriming = true;
-            addedNewLocals = true;
-            useBox.setValue(savedLocal);
+            // this is all we really wanted to do!
+            units.insertBefore(stmt, pred);
+          } else {
+            Unit succ = pred;
+            while (true) {
+              Unit s = units.getSuccOf(succ);
+              if (s instanceof IdentityStmt && !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef)) {
+                succ = s;
+              } else {
+                break;
+              }
+            }
+            units.insertAfter(stmt, succ);
           }
         }
-
-        if (needPriming) {
-          body.getLocals().add(savedLocal);
-          units.insertBefore(jimp.newAssignStmt(savedLocal, lhsLocal), pred);
-        }
-
-        // this is all we really wanted to do!
-        units.insertBefore(stmt, pred);
-      } else {
-        units.insertAfter(stmt, pred);
+        phiNodes.add(unit);
       }
     }
 
     for (Unit removeMe : phiNodes) {
       units.remove(removeMe);
       removeMe.clearUnitBoxes();
+    }
+    if (!insertedStatements.isEmpty()) {
+
+      TrapInterruptionGenerator trapinterrupt = new TrapInterruptionGenerator(body);
+      trapinterrupt.removeTrapsFrom(insertedStatements);
+      for (Unit unit : body.getUnits()) {
+        if (unit instanceof IdentityStmt && ((IdentityStmt) unit).getRightOp() instanceof CaughtExceptionRef) {
+          // this may never fail
+          trapinterrupt.removeTrapsFrom(unit);
+        }
+      }
     }
 
     return addedNewLocals;
