@@ -181,7 +181,7 @@ public abstract class AbstractTestingFramework {
    */
   protected List<String> getExcludes() {
     List<String> excludeList = new ArrayList<>();
-    //excludeList.add("java.*");
+    // excludeList.add("java.*");
     excludeList.add("sun.*");
     excludeList.add("android.*");
     excludeList.add("org.apache.*");
@@ -274,7 +274,7 @@ public abstract class AbstractTestingFramework {
     // First, convert all method Body instances to BafBody
     for (SootMethod m : sc.getMethods()) {
       if (m.isConcrete()) {
-        convertBodyToBaf(m);
+        convertBodyToJimple(m);
       }
     }
 
@@ -282,6 +282,21 @@ public abstract class AbstractTestingFramework {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     new BafASMBackend(sc, Options.v().java_version()).generateClassFile(os);
     return os.toByteArray();
+  }
+
+  /**
+   * Converts the {@link Body} of the given {@link SootMethod} to a {@link JimpleBody}.
+   * 
+   * @param m
+   */
+  public static void convertBodyToJimple(SootMethod m) {
+    Body b = m.retrieveActiveBody();
+    Assert.assertNotNull(b);
+    // If ShimpleBody, first convert to JimpleBody
+    if (b instanceof ShimpleBody) {
+      JimpleBody jb = ((ShimpleBody) b).toJimpleBody();
+      m.setActiveBody(jb);
+    }
   }
 
   /**

@@ -724,6 +724,9 @@ public abstract class AbstractASMBackend {
     SootClass csuperClass = sc.getSuperclassUnsafe();
     if (csuperClass != null) {
       superClass = ASMBackendUtils.slashify(csuperClass.getName());
+    } else if (sc instanceof SootModuleInfo) {
+      //https://gitlab.ow2.org/asm/asm/-/blob/6a119d77037796d41e091379803eb121f13f7fca/src/org/objectweb/asm/util/CheckClassAdapter.java#L357
+      superClass = null;
     }
 
     // Retrieve directly implemented interfaces

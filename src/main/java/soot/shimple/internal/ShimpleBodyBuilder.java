@@ -51,9 +51,11 @@ import soot.shimple.PhiExpr;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.shimple.ShimpleFactory;
+import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
@@ -165,7 +167,9 @@ public class ShimpleBodyBuilder {
       UnconditionalBranchFolder.v().transform(body);
       ArrayWriteAggregator.v().transform(body);
       Aggregator.v().transform(body);
+      LocalPacker.v().transform(body);
       UnusedLocalEliminator.v().transform(body);
+      TrapTightener.v().transform(body);
       
     }
   }

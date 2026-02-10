@@ -29,13 +29,14 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import soot.DefaultLocalGenerator;
 import soot.IdentityUnit;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.Trap;
 import soot.Unit;
 import soot.UnitPatchingChain;
@@ -45,7 +46,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
-import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.shimple.PhiExpr;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
@@ -57,17 +57,17 @@ import soot.toolkits.graph.DominanceFrontier;
 import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.ValueUnitPair;
-import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
 
 /**
  * @author Navindra Umanee
  * @see soot.shimple.ShimpleBody
- * @see <a href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form and
- *      the Control Dependence Graph</a>
+ * @see <a href= "http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently Computing Static Single Assignment Form
+ *      and the Control Dependence Graph</a>
  */
 public class PhiNodeManager {
 
@@ -368,18 +368,28 @@ public class PhiNodeManager {
    * predecessors. Returns true if new locals were added to the body during the process, false otherwise.
    */
   public boolean doEliminatePhiNodes() {
-    // flag that indicates whether we created new locals during the elimination process
+    // flag that indicates whether we created new locals during the elimination
+    // process
     boolean addedNewLocals = false;
 
     // List of Phi nodes to be deleted.
     List<Unit> phiNodes = new ArrayList<Unit>();
 
-    SimpleLocalDefs localDefs = new SimpleLocalDefs(new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v()));
+    final ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v());
+    SimpleLocalDefs localDefs = new SimpleLocalDefs(graph);
 
-    List<Unit> insertedStatements = new ArrayList<>();
+    List<AssignStmt> insertedStatements = new ArrayList<>();
     final Jimple jimp = Jimple.v();
     final UnitPatchingChain units = body.getUnits();
     final Iterator<Unit> unitsIt = body.getUnits().snapshotIterator();
+    StronglyConnectedComponentsFast<Unit> scc = new StronglyConnectedComponentsFast<>(graph);
+    Set<Unit> loopUnits = new HashSet<>();
+    for (List<Unit> c : scc.getComponents()) {
+      if (c.size() != 1) {
+        loopUnits.addAll(c);
+      }
+    }
+    LocalGenerator lg = new DefaultLocalGenerator(body);
     while (unitsIt.hasNext()) {
       Unit unit = unitsIt.next();
       PhiExpr phi = Shimple.getPhiExpr(unit);
@@ -388,7 +398,7 @@ public class PhiNodeManager {
         for (ValueUnitPair p : phi.getArgs()) {
           Unit pred = p.getUnit();
           if (lhsLocal == p.getValue()) {
-            //nothing to do
+            // nothing to do
             continue;
           }
           AssignStmt stmt = jimp.newAssignStmt(lhsLocal, p.getValue());
@@ -396,7 +406,15 @@ public class PhiNodeManager {
           Value l = p.getValue();
           if (l instanceof Local) {
             List<Unit> ld = localDefs.getDefsOfAt((Local) l, pred);
-            pred = ld.get(0);
+            assert ld.size() == 1;
+            Unit elem = ld.get(0);
+            //When the definition site happens to be in a loop, we cannot
+            //move the definition back, since otherwise we might destroy
+            //the reference from the previous iteration
+            //See soot.jimple.toolkit.scalar.CopyPropagatorTest.test_cp_withSSA
+            if (!loopUnits.contains(elem)) {
+              pred = elem;
+            }
           }
 
           // if we need to insert the copy statement *before* an
@@ -405,7 +423,8 @@ public class PhiNodeManager {
           // don't overwrite the old value of the local
           if (pred.branches()) {
             boolean needPriming = false;
-            Local savedLocal = jimp.newLocal(lhsLocal.getName() + "_", lhsLocal.getType());
+            
+            Local savedLocal = lg.generateLocal(lhsLocal.getType());;
 
             for (ValueBox useBox : pred.getUseBoxes()) {
               if (lhsLocal.equals(useBox.getValue())) {
@@ -445,8 +464,17 @@ public class PhiNodeManager {
       units.remove(removeMe);
       removeMe.clearUnitBoxes();
     }
-    TrapInterruptionGenerator trapinterrupt = new TrapInterruptionGenerator(body);
-    trapinterrupt.removeTrapsFrom(insertedStatements);
+    if (!insertedStatements.isEmpty()) {
+
+      TrapInterruptionGenerator trapinterrupt = new TrapInterruptionGenerator(body);
+      trapinterrupt.removeTrapsFrom(insertedStatements);
+      for (Unit unit : body.getUnits()) {
+        if (unit instanceof IdentityStmt && ((IdentityStmt) unit).getRightOp() instanceof CaughtExceptionRef) {
+          // this may never fail
+          trapinterrupt.removeTrapsFrom(unit);
+        }
+      }
+    }
 
     return addedNewLocals;
   }
