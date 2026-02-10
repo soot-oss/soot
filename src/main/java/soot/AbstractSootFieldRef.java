@@ -97,7 +97,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
     @Override
     public String toString() {
-      StringBuffer ret = new StringBuffer();
+      StringBuilder ret = new StringBuilder();
       ret.append(super.toString());
       resolve(ret);
       return ret.toString();
@@ -110,16 +110,18 @@ public class AbstractSootFieldRef implements SootFieldRef {
   }
 
   private SootField checkStatic(SootField ret) {
-    if ((Options.v().wrong_staticness() == Options.wrong_staticness_fail
-          || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict)
-          && ret.isStatic() != isStatic() && !ret.isPhantom()) {
+    final Options options = Options.v();
+    int staticness = options.wrong_staticness();
+    if ((staticness == Options.wrong_staticness_fail || staticness == Options.wrong_staticness_fixstrict)
+        && ret.isStatic() != isStatic() && !ret.isPhantom()) {
       throw new ResolutionFailedException("Resolved " + this + " to " + ret + " which has wrong static-ness");
     }
     return ret;
   }
 
-  private SootField resolve(StringBuffer trace) {
+  private SootField resolve(StringBuilder trace) {
     SootClass cl = declaringClass;
+    Scene scene = null;
     while (true) {
       if (trace != null) {
         trace.append("Looking in " + cl + " which has fields " + cl.getFields() + "\n");
@@ -132,7 +134,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
       }
       // If we have a phantom class, we directly construct a phantom field
       // in it and don't care about superclasses.
-      else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
+      else if ((scene != null ? scene : (scene = Scene.v())).allowsPhantomRefs() && cl.isPhantom()) {
         synchronized (cl) {
           // Check that no other thread has created the field in the
           // meantime
@@ -148,7 +150,10 @@ public class AbstractSootFieldRef implements SootFieldRef {
           }
 
           // Create the phantom field
-          SootField f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
+          if (scene == null) {
+            scene = Scene.v();
+          }
+          SootField f = scene.makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
           f.setPhantom(true);
           cl.addField(f);
           return f;
@@ -184,7 +189,8 @@ public class AbstractSootFieldRef implements SootFieldRef {
     }
 
     // If we allow phantom refs, we construct phantom fields
-    if (Options.v().allow_phantom_refs()) {
+    Options options = Options.v();
+    if (options.allow_phantom_refs()) {
       SootField sf = Scene.v().makeSootField(name, type, isStatic ? Modifier.STATIC : 0);
       sf.setPhantom(true);
       synchronized (declaringClass) {
@@ -207,7 +213,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
     if (trace == null) {
       FieldResolutionFailedException e = new FieldResolutionFailedException();
-      if (Options.v().ignore_resolution_errors()) {
+      if (options.ignore_resolution_errors()) {
         logger.debug("" + e.getMessage());
       } else {
         throw e;
@@ -250,10 +256,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
     if (this == obj) {
       return true;
     }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if ((obj == null) || (getClass() != obj.getClass())) {
       return false;
     }
     AbstractSootFieldRef other = (AbstractSootFieldRef) obj;

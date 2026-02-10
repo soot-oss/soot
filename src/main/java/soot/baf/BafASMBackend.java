@@ -90,21 +90,10 @@ import soot.util.Chain;
 public class BafASMBackend extends AbstractASMBackend {
 
   // Contains one Label for every Unit that is the target of a branch or jump
-  protected final Map<Unit, Label> branchTargetLabels = new HashMap<Unit, Label>();
+  protected Map<Unit, Label> branchTargetLabels;
 
   // Contains a mapping of local variables to indices in the local variable stack
-  protected final Map<Local, Integer> localToSlot = new HashMap<Local, Integer>();
-
-  /**
-   * Returns the ASM Label for a given Unit that is the target of a branch or jump
-   *
-   * @param target
-   *          The unit that is the branch target
-   * @return The Label that specifies this unit
-   */
-  protected Label getBranchTargetLabel(Unit target) {
-    return branchTargetLabels.get(target);
-  }
+  protected Map<Local, Integer> localToSlot;
 
   /**
    * Creates a new BafASMBackend with a given enforced java version
@@ -117,6 +106,17 @@ public class BafASMBackend extends AbstractASMBackend {
    */
   public BafASMBackend(SootClass sc, int javaVersion) {
     super(sc, javaVersion);
+  }
+
+  /**
+   * Returns the ASM Label for a given Unit that is the target of a branch or jump
+   *
+   * @param target
+   *          The unit that is the branch target
+   * @return The Label that specifies this unit
+   */
+  protected Label getBranchTargetLabel(Unit target) {
+    return branchTargetLabels.get(target);
   }
 
   /*
@@ -137,23 +137,32 @@ public class BafASMBackend extends AbstractASMBackend {
     }
 
     for (Unit u : body.getUnits()) {
-      if (minVersion == Options.java_version_1_9) {
-        return minVersion;
+      if (minVersion >= Options.java_version_1_9) {
+        // Stop early since no case below goes above 1.9
+        break;
       }
       if (u instanceof DynamicInvokeInst) {
         minVersion = Math.max(minVersion, Options.java_version_1_7);
-      }
-      if (u instanceof PushInst) {
+      } else if (u instanceof SpecialInvokeInst) {
+        // INVOKESPECIAL can't be used with interfaces prior to Java 8
+        if (((SpecialInvokeInst) u).getMethodRef().getDeclaringClass().isInterface()) {
+          minVersion = Math.max(minVersion, Options.java_version_1_8);
+        }
+      } else if (u instanceof PushInst) {
         Constant constant = ((PushInst) u).getConstant();
         if (constant instanceof ClassConstant) {
           minVersion = Math.max(minVersion, Options.java_version_1_5);
         }
-        String typeString = constant.getType().toQuotedString();
-        if (PolymorphicMethodRef.METHODHANDLE_SIGNATURE.equals(typeString)) {
-          minVersion = Math.max(minVersion, Options.java_version_1_7);
-        }
-        if (PolymorphicMethodRef.VARHANDLE_SIGNATURE.equals(typeString)) {
-          minVersion = Math.max(minVersion, Options.java_version_1_9);
+        String typeString = constant.getType().toString();
+        if (typeString != null) {
+          switch (typeString) {
+            case PolymorphicMethodRef.VARHANDLE_SIGNATURE:
+              minVersion = Math.max(minVersion, Options.java_version_1_9);
+              break;
+            case PolymorphicMethodRef.METHODHANDLE_SIGNATURE:
+              minVersion = Math.max(minVersion, Options.java_version_1_7);
+              break;
+          }
         }
       }
     }
@@ -168,6 +177,8 @@ public class BafASMBackend extends AbstractASMBackend {
    */
   @Override
   protected void generateMethodBody(MethodVisitor mv, SootMethod method) {
+    branchTargetLabels = new HashMap<Unit, Label>();
+    localToSlot = new HashMap<Local, Integer>();
     final BafBody body = getBafBody(method);
 
     /*
@@ -175,9 +186,7 @@ public class BafASMBackend extends AbstractASMBackend {
      */
     for (UnitBox box : body.getUnitBoxes(true)) {
       Unit u = box.getUnit();
-      if (!branchTargetLabels.containsKey(u)) {
-        branchTargetLabels.put(u, new Label());
-      }
+      branchTargetLabels.putIfAbsent(u, new Label());
     }
 
     Label startLabel = null;
@@ -233,6 +242,8 @@ public class BafASMBackend extends AbstractASMBackend {
           localToSlot.put(l, slot);
           assignedLocals.add(l);
         }
+      } else {
+        break;
       }
     }
 
@@ -493,7 +504,7 @@ public class BafASMBackend extends AbstractASMBackend {
         Value l = i.getLeftOp();
         Value r = i.getRightOp();
         if (r instanceof CaughtExceptionRef && l instanceof Local) {
-          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get((Local) l));
+          mv.visitVarInsn(Opcodes.ASTORE, localToSlot.get(l));
           // asm handles constant opcodes automatically here
         }
       }
@@ -1388,7 +1399,7 @@ public class BafASMBackend extends AbstractASMBackend {
       public void caseStaticInvokeInst(StaticInvokeInst i) {
         SootMethodRef m = i.getMethodRef();
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, slashify(m.declaringClass().getName()), m.name(), toTypeDesc(m),
-            m.declaringClass().isInterface() && !m.isStatic());
+            m.declaringClass().isInterface());
       }
 
       @Override
@@ -1585,7 +1596,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
       @Override
       public void caseIncInst(IncInst i) {
-        if (i.getUseBoxes().get(0).getValue() != i.getDefBoxes().get(0).getValue()) {
+        if (i.getUseBoxesIterator().next().getValue() != i.getDefBoxesIterator().next().getValue()) {
           throw new RuntimeException("iinc def and use boxes don't match");
         }
         if (i.getConstant() instanceof IntConstant) {

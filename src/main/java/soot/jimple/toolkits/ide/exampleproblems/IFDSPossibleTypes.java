@@ -191,7 +191,7 @@ public class IFDSPossibleTypes
                 return new FlowFunction<Pair<Value, Type>>() {
 
                   public Set<Pair<Value, Type>> computeTargets(Pair<Value, Type> source) {
-                    if (source == retLocal) {
+                    if (source.getO1() == retLocal) {
                       return Collections.singleton(new Pair<Value, Type>(tgtLocal, source.getO2()));
                     }
                     return Collections.emptySet();

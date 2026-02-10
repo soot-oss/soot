@@ -25,7 +25,6 @@ package soot.asm;
 import java.io.PrintStream;
 
 /**
- * 
  * @author Timothy Hoffman
  */
 public class LocalNaming {
@@ -49,16 +48,17 @@ public class LocalNaming {
     omega.println(delta);
   }
 
-  static class Config{
-    static int getD(){
+  static class Config {
+    static int getD() {
       return 0;
     }
-    static int getF(){
+
+    static int getF() {
       return 1;
     }
   }
 
-  public void test(){
+  public void test() {
     int d = Config.getD();
     int f = Config.getF();
     int[] arr = new int[2];

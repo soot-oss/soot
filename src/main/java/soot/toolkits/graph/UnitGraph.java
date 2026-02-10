@@ -23,6 +23,7 @@ package soot.toolkits.graph;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -52,11 +53,11 @@ import soot.util.Chain;
  */
 public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   private static final Logger logger = LoggerFactory.getLogger(UnitGraph.class);
-  
+
   protected final Body body;
   protected final Chain<Unit> unitChain;
   protected final SootMethod method;
-  
+
   protected List<Unit> heads;
   protected List<Unit> tails;
 
@@ -98,44 +99,71 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       Unit currentUnit = nextUnit;
       nextUnit = unitIt.hasNext() ? unitIt.next() : null;
 
-      ArrayList<Unit> successors = new ArrayList<Unit>();
-
+      Unit singleSuccessor = null;
       if (currentUnit.fallsThrough()) {
         // Add the next unit as the successor
         if (nextUnit != null) {
-          successors.add(nextUnit);
+          singleSuccessor = nextUnit;
 
           List<Unit> preds = unitToPreds.get(nextUnit);
           if (preds == null) {
-            preds = new ArrayList<Unit>();
-            unitToPreds.put(nextUnit, preds);
-          }
-          preds.add(currentUnit);
-        }
-      }
-
-      if (currentUnit.branches()) {
-        for (UnitBox targetBox : currentUnit.getUnitBoxes()) {
-          Unit target = targetBox.getUnit();
-          // Arbitrary bytecode can branch to the same
-          // target it falls through to, so we screen for duplicates:
-          if (!successors.contains(target)) {
-            successors.add(target);
-
-            List<Unit> preds = unitToPreds.get(target);
-            if (preds == null) {
-              preds = new ArrayList<Unit>();
-              unitToPreds.put(target, preds);
+            // Most units only have one predecessor.
+            unitToPreds.put(nextUnit, Collections.singletonList(currentUnit));
+          } else {
+            if (!(preds instanceof ArrayList)) {
+              List<Unit> npreds = new ArrayList<>(preds.size() + 1);
+              npreds.addAll(preds);
+              preds = npreds;
+              unitToPreds.put(nextUnit, npreds);
             }
             preds.add(currentUnit);
           }
         }
       }
 
+      List<Unit> successors = null;
+      if (currentUnit.branches()) {
+        List<UnitBox> ub = currentUnit.getUnitBoxes();
+        Unit[] successorsArr = new Unit[ub.size() + (singleSuccessor != null ? 1 : 0)];
+        int idx = 0;
+        if (singleSuccessor != null) {
+          successorsArr[idx++] = singleSuccessor;
+        }
+        next: for (UnitBox targetBox : ub) {
+          Unit target = targetBox.getUnit();
+          // Arbitrary bytecode can branch to the same
+          // target it falls through to, so we screen for duplicates:
+          for (int i = 0; i < idx; i++) {
+            if (successorsArr[i].equals(target)) {
+              continue next;
+            }
+          }
+
+          successorsArr[idx++] = target;
+
+          List<Unit> preds = unitToPreds.get(target);
+          if (preds == null) {
+            preds = new ArrayList<Unit>();
+            unitToPreds.put(target, preds);
+          } else if (!(preds instanceof ArrayList)) {
+            List<Unit> npreds = new ArrayList<>(preds.size() + 1);
+            npreds.addAll(preds);
+            preds = npreds;
+            unitToPreds.put(target, preds);
+          }
+          preds.add(currentUnit);
+        }
+        if (idx != successorsArr.length) {
+          successorsArr = Arrays.copyOf(successorsArr, idx);
+        }
+        successors = Arrays.asList(successorsArr);
+      }
+
       // Store away successors
-      if (!successors.isEmpty()) {
-        successors.trimToSize();
+      if (successors != null) {
         unitToSuccs.put(currentUnit, successors);
+      } else if (singleSuccessor != null) {
+        unitToSuccs.put(currentUnit, Collections.singletonList(singleSuccessor));
       }
     }
   }
@@ -157,6 +185,12 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
     tails = new ArrayList<Unit>();
     heads = new ArrayList<Unit>();
 
+    Unit entryPoint = null;
+    if (!unitChain.isEmpty()) {
+      entryPoint = unitChain.getFirst();
+    }
+    boolean hasEntryPoint = false;
+
     for (Unit s : unitChain) {
       List<Unit> succs = unitToSuccs.get(s);
       if (succs == null || succs.isEmpty()) {
@@ -164,14 +198,16 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       }
       List<Unit> preds = unitToPreds.get(s);
       if (preds == null || preds.isEmpty()) {
+        if (s == entryPoint) {
+          hasEntryPoint = true;
+        }
         heads.add(s);
       }
     }
 
     // Add the first Unit, even if it is the target of a branch.
-    if (!unitChain.isEmpty()) {
-      Unit entryPoint = unitChain.getFirst();
-      if (!heads.contains(entryPoint)) {
+    if (entryPoint != null) {
+      if (!hasEntryPoint) {
         heads.add(entryPoint);
       }
     }
@@ -192,19 +228,28 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
   protected Map<Unit, List<Unit>> combineMapValues(Map<Unit, List<Unit>> mapA, Map<Unit, List<Unit>> mapB) {
     // The duplicate screen
     Map<Unit, List<Unit>> result = new LinkedHashMap<Unit, List<Unit>>(mapA.size() * 2 + 1, 0.7f);
+    final List<Unit> emptyList = Collections.<Unit>emptyList();
     for (Unit unit : unitChain) {
       List<Unit> listA = mapA.get(unit);
-      if (listA == null) {
-        listA = Collections.emptyList();
-      }
       List<Unit> listB = mapB.get(unit);
+      if (listA == null) {
+        List<Unit> toAdd;
+        if (listB == null) {
+          toAdd = emptyList;
+        } else {
+          toAdd = listB;
+        }
+        result.put(unit, toAdd);
+        continue;
+      }
       if (listB == null) {
-        listB = Collections.emptyList();
+        result.put(unit, listA);
+        continue;
       }
 
       int resultSize = listA.size() + listB.size();
       if (resultSize == 0) {
-        result.put(unit, Collections.<Unit>emptyList());
+        result.put(unit, emptyList);
       } else {
         List<Unit> resultList = new ArrayList<Unit>(resultSize);
         List<Unit> list;
@@ -301,6 +346,7 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
     pathStack.add(from);
     pathStackIndex.add(0);
 
+    Unit firstUnit = getBody().getUnits().getFirst();
     final int psiMax = this.getSuccsOf(from).size();
     int level = 0;
     while (pathStackIndex.get(0) != psiMax) {
@@ -328,7 +374,14 @@ public abstract class UnitGraph implements DirectedBodyGraph<Unit> {
       }
 
       // check preds of betweenUnit to see if we should visit its kids.
-      if (this.getPredsOf(betweenUnit).size() > 1) {
+      int min = 1;
+      if (firstUnit == betweenUnit) {
+        // the first unit of the body has no inherent predecessor;
+        // so having at least one predecessor means that there is a backedge
+        // and the start of the method is a start of a loop
+        min = 0;
+      }
+      if (this.getPredsOf(betweenUnit).size() > min) {
         pathStackIndex.set(level, p + 1);
         continue;
       }

@@ -1,5 +1,3 @@
-package soot.toDex.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,12 +20,14 @@ package soot.toDex.instructions;
  * #L%
  */
 
+package soot.toDex.instructions;
+
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.SwitchLabelElement;
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderSparseSwitchPayload;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.builder.SwitchLabelElement;
-import org.jf.dexlib2.builder.instruction.BuilderSparseSwitchPayload;
 
 import soot.Unit;
 import soot.jimple.Stmt;

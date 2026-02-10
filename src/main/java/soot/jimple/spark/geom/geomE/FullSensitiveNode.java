@@ -281,7 +281,7 @@ public class FullSensitiveNode extends IVarAbstraction {
             break;
           }
 
-          if (objn.willUpdate == false) {
+          if (!objn.willUpdate) {
             // This must be a store constraint
             // This object field is not need for computing
             // the points-to information of the seed pointers
@@ -294,7 +294,7 @@ public class FullSensitiveNode extends IVarAbstraction {
           for (i = 0; i < GeometricManager.Divisions; ++i) {
             pts = entry_pts[i];
 
-            while (pts != null && pts.is_new == true) {
+            while (pts != null && pts.is_new) {
               switch (pcons.type) {
                 case Constants.STORE_CONS:
                   // Store, qv -> pv.field
@@ -341,12 +341,8 @@ public class FullSensitiveNode extends IVarAbstraction {
           gm2 = entry2.getValue();
 
           // Avoid the garbage
-          if (gm2 == deadManager) {
-            continue;
-          }
-
           // Type filtering and flow-to-this filtering, a simple approach
-          if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) {
+          if ((gm2 == deadManager) || !ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) {
             continue;
           }
 
@@ -358,7 +354,7 @@ public class FullSensitiveNode extends IVarAbstraction {
             pe = entry_pe[j];
 
             while (pe != null) {
-              if (pe.is_new == false && hasNewPointsTo == false) {
+              if (!pe.is_new && !hasNewPointsTo) {
                 break;
               }
 
@@ -388,12 +384,8 @@ public class FullSensitiveNode extends IVarAbstraction {
           gm2 = entry2.getValue();
 
           // Avoid the garbage
-          if (gm2 == deadManager) {
-            continue;
-          }
-
           // Type filtering and flow-to-this filtering, a simple approach
-          if (!ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) {
+          if ((gm2 == deadManager) || !ptAnalyzer.castNeverFails(obj.getType(), qn.getType())) {
             continue;
           }
 
@@ -403,7 +395,7 @@ public class FullSensitiveNode extends IVarAbstraction {
           for (i = 0; i < GeometricManager.Divisions; ++i) {
             pts = entry_pts[i];
 
-            while (pts != null && pts.is_new == true) {
+            while (pts != null && pts.is_new) {
               for (j = 0; j < GeometricManager.Divisions; ++j) {
                 pe = entry_pe[j];
 
@@ -479,10 +471,7 @@ public class FullSensitiveNode extends IVarAbstraction {
 
     for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
       AllocNode an = it.next();
-      if (an instanceof ClassConstantNode) {
-        continue;
-      }
-      if (an instanceof StringConstantNode) {
+      if ((an instanceof ClassConstantNode) || (an instanceof StringConstantNode)) {
         continue;
       }
       qt = qn.find_points_to(an);
@@ -674,7 +663,7 @@ public class FullSensitiveNode extends IVarAbstraction {
       SegmentNode[] int_entry = gm.getFigures();
       for (int i = 0; i < GeometricManager.Divisions; ++i) {
         SegmentNode p = int_entry[i];
-        while (p != null && p.is_new == true) {
+        while (p != null && p.is_new) {
           ++ans;
           p = p.next;
         }

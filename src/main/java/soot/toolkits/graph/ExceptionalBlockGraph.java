@@ -82,7 +82,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
    *          The underlying body we want to make a graph for.
    */
   public ExceptionalBlockGraph(Body body) {
-    this(new ExceptionalUnitGraph(body));
+    this(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
   }
 
   /**
@@ -185,8 +185,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 
   private Map<Block, Collection<ExceptionDest>> buildExceptionDests(ExceptionalUnitGraph unitGraph,
       Map<Unit, Block> unitToBlock) {
-    Map<Block, Collection<ExceptionDest>> result =
-        new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
+    Map<Block, Collection<ExceptionDest>> result
+        = new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
     for (Block block : mBlocks) {
       result.put(block, collectDests(block, unitGraph, unitToBlock));
     }
@@ -381,5 +381,10 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
       }
       return buf.toString();
     }
+  }
+
+  @Override
+  public Map<Block, Collection<soot.toolkits.graph.ExceptionalGraph.ExceptionDest<? extends Block>>> getAllExceptionDests() {
+    return (Map) blockToExceptionDests;
   }
 }

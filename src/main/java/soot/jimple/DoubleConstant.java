@@ -10,12 +10,12 @@ package soot.jimple;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -35,11 +35,20 @@ public class DoubleConstant extends RealConstant {
 
   public final double value;
 
+  public static final DoubleConstant ZERO = new DoubleConstant(0);
+  public static final DoubleConstant ONE = new DoubleConstant(1);
+
   private DoubleConstant(double value) {
     this.value = value;
   }
 
   public static DoubleConstant v(double value) {
+    if (Double.compare(value, 0D) == 0) {
+      return ZERO;
+    }
+    if (Double.compare(value, 1D) == 0) {
+      return ONE;
+    }
     return new DoubleConstant(value);
   }
 
@@ -196,5 +205,10 @@ public class DoubleConstant extends RealConstant {
     if (!(constant instanceof DoubleConstant)) {
       throw new IllegalArgumentException("DoubleConstant expected");
     }
+  }
+
+  @Override
+  public Number getNumericValue() {
+    return value;
   }
 }

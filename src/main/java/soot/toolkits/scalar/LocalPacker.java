@@ -25,6 +25,7 @@ package soot.toolkits.scalar;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +45,7 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.GroupIntPair;
+import soot.jimple.internal.JimpleLocal;
 import soot.options.Options;
 import soot.util.Chain;
 import soot.util.DeterministicHashMap;
@@ -148,20 +150,23 @@ public class LocalPacker extends BodyTransformer {
           //
           // If we have a split local, let's find a better name for it
           String name = newLocal.getName();
-          int signIndex = name.indexOf('#');
-          if (signIndex >= 0) {
-            String newName = name.substring(0, signIndex);
-            if (usedLocalNames.add(newName)) {
-              newLocal.setName(newName);
-            } else {
-              // just leave it alone for now
-            }
-          } else {
-            usedLocalNames.add(name);
-          }
+          setNewName(usedLocalNames, newLocal, name);
 
           groupIntToLocal.put(pair, newLocal);
           bodyLocalsRef.add(newLocal);
+        } else {
+          if (JimpleLocal.isUserDefinedLocal(original)) {
+            if (JimpleLocal.isUserDefinedLocal(newLocal)) {
+              // we should keep the locals split since both are user defined.
+              newLocal = original;
+              bodyLocalsRef.add(original);
+            } else {
+              // Our new local is a made-up name by soot, while the original is not.
+              // rename:
+              usedLocalNames.remove(newLocal.getName());
+              newLocal.setName(setNewName(usedLocalNames, newLocal, original.getName()));
+            }
+          }
         }
 
         localToNewLocal.put(original, newLocal);
@@ -170,18 +175,40 @@ public class LocalPacker extends BodyTransformer {
 
     // Go through all valueBoxes of this method and perform changes
     for (Unit s : body.getUnits()) {
-      for (ValueBox box : s.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value val = box.getValue();
         if (val instanceof Local) {
           box.setValue(localToNewLocal.get((Local) val));
         }
       }
-      for (ValueBox box : s.getDefBoxes()) {
+      for (Iterator<ValueBox> iterator = s.getDefBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         Value val = box.getValue();
         if (val instanceof Local) {
           box.setValue(localToNewLocal.get((Local) val));
         }
       }
     }
+  }
+
+  private String setNewName(final Set<String> usedLocalNames, Local newLocal, String name) {
+    if (name != null) {
+      int signIndex = name.indexOf('#');
+      if (signIndex >= 0) {
+        String newName = name.substring(0, signIndex);
+        if (usedLocalNames.add(newName)) {
+          newLocal.setName(newName);
+          return newName;
+        } else {
+          // just leave it alone for now
+        }
+      } else {
+        usedLocalNames.add(name);
+        return name;
+
+      }
+    }
+    return name;
   }
 }

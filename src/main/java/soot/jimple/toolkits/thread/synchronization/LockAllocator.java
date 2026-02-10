@@ -71,6 +71,7 @@ import soot.jimple.toolkits.thread.mhp.SynchObliviousMhpAnalysis;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.LocalDefs;
@@ -215,7 +216,7 @@ public class LockAllocator extends SceneTransformer {
         SootMethod method = methodsIt.next();
         if (method.isConcrete()) {
           Body b = method.retrieveActiveBody();
-          ExceptionalUnitGraph eug = new ExceptionalUnitGraph(b);
+          ExceptionalUnitGraph eug = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
           methodToExcUnitGraph.put(method, eug);
 
           // run the intraprocedural analysis

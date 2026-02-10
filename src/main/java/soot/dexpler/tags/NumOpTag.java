@@ -44,17 +44,20 @@ package soot.dexpler.tags;
 
 import soot.tagkit.Tag;
 
-public class NumOpTag implements Tag {
+public class NumOpTag implements Tag, DexplerTag {
+
+  public static final NumOpTag INSTANCE = new NumOpTag();
 
   public static final String NAME = "NumOpTag";
+
+  @Deprecated
+  public NumOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
-  }
 }

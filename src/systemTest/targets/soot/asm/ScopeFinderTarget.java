@@ -43,7 +43,6 @@ public class ScopeFinderTarget {
     field = new Object();
   }
 
-  @Nullable
   public void method() {
     System.out.println("in method");
   }

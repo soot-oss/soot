@@ -1,9 +1,9 @@
 package soot.jimple.toolkits.typing.fast;
 
+import java.util.Collection;
 import java.util.List;
 
 import soot.Local;
-import soot.util.Chain;
 
 /*-
  * #%L
@@ -37,30 +37,30 @@ import soot.util.Chain;
 public interface ITypingStrategy {
 
   /**
-   * Creates a new {@link Typing} class instance with initialized bottom types for the given locals
+   * Creates a new {@link ITyping} class instance with initialized bottom types for the given locals
    * 
    * @param locals
    *          the locals
-   * @return the {@link Typing}
+   * @return the {@link ITyping}
    */
-  public Typing createTyping(Chain<Local> locals);
-
-  /**
-   * Creates a new typing class as a copy from a given class
-   * 
-   * @param tg
-   *          the existing {@link Typing}
-   * @return the new {@link Typing}
-   */
-  public Typing createTyping(Typing tg);
+  public ITyping createEmptyTyping(Collection<Local> locals);
 
   /**
    * Minimize the given typing list using the hierarchy
    * 
    * @param tgs
-   *          the {@link Typing} list
+   *          the {@link ITyping} list
    * @param h
    *          the hierarchy
    */
-  public void minimize(List<Typing> tgs, IHierarchy h);
+  public void minimize(List<ITyping> tgs, IHierarchy h);
+
+  /**
+   * Finalizes the given types, i.e., converts intermediate types such as [0..1] to final types such as <code>boolean</code>.
+   * 
+   * @param tp
+   *          The typing to finalize
+   */
+  public void finalizeTypes(ITyping tp);
+
 }

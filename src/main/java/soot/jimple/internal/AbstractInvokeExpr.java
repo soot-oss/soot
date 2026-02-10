@@ -1,5 +1,7 @@
 package soot.jimple.internal;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -24,7 +26,9 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.SootMethod;
@@ -120,5 +124,49 @@ public abstract class AbstractInvokeExpr implements InvokeExpr {
       list.addAll(element.getValue().getUseBoxes());
     }
     return list;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    if (argBoxes == null) {
+      return Collections.emptyIterator();
+    } else {
+      return new Iterator<ValueBox>() {
+        int argBoxesIterator;
+        ValueBoxesUseBoxIterator abInner = new ValueBoxesUseBoxIterator(argBoxes);
+        // 0 = argBoxes
+        // 1 = argBoxes inner
+        int state = 0;
+
+        @Override
+        public boolean hasNext() {
+          switch (state) {
+            case 0:
+              if (argBoxesIterator < argBoxes.length) {
+                return true;
+              } else {
+                state = 1;
+              }
+            default:
+              return abInner.hasNext();
+          }
+        }
+
+        @Override
+        public ValueBox next() {
+          switch (state) {
+            case 0:
+              ValueBox p = argBoxes[argBoxesIterator];
+              if (++argBoxesIterator >= argBoxes.length) {
+                state = 1;
+              }
+              return p;
+            default:
+              return abInner.next();
+          }
+        }
+      };
+      
+    }
   }
 }

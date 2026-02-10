@@ -33,4 +33,6 @@ public interface DefinitionStmt extends Stmt {
   public ValueBox getLeftOpBox();
 
   public ValueBox getRightOpBox();
+
+  public void setLeftOp(Value variable);
 }

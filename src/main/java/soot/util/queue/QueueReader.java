@@ -35,6 +35,7 @@ import soot.util.Invalidable;
  * been read by all the QueueReader's are kept. A QueueReader only receives the Object's added to the queue <b>after</b> the
  * QueueReader was created.
  *
+ * This QueueReader does <emph>not</emph> accept <code>null</code> values. 
  * @author Ondrej Lhotak
  */
 public class QueueReader<E> implements java.util.Iterator<E> {
@@ -54,19 +55,20 @@ public class QueueReader<E> implements java.util.Iterator<E> {
     Object ret = null;
     do {
       if (q[index] == null) {
-        throw new NoSuchElementException();
+        //this is the case when someone concurrently invalidates 
+        //the rest of the elements
+        return null;
       }
       if (index == q.length - 1) {
         q = (E[]) q[index];
         index = 0;
         if (q[index] == null) {
-          throw new NoSuchElementException();
+          //this is the case when someone concurrently invalidates 
+          //the rest of the elements
+          return null;
         }
       }
       ret = q[index];
-      if (ret == ChunkedQueue.NULL_CONST) {
-        ret = null;
-      }
       index++;
     } while (skip(ret));
     return (E) ret;

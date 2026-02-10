@@ -90,7 +90,8 @@ public class TypeAssigner extends BodyTransformer {
     }
 
     final Date start;
-    if (Options.v().verbose()) {
+    final boolean verbose = Options.v().verbose();
+    if (verbose) {
       start = new Date();
       logger.debug("[TypeAssigner] typing system started on " + start);
     } else {
@@ -121,16 +122,16 @@ public class TypeAssigner extends BodyTransformer {
     // In a final release this guard, and anything in the first branch, would probably be removed.
     //
     if (opt.compare_type_assigners()) {
-      compareTypeAssigners(jb, opt.use_older_type_assigner());
+      compareTypeAssigners(jb, opt.use_older_type_assigner(), opt);
     } else {
       if (opt.use_older_type_assigner()) {
         soot.jimple.toolkits.typing.TypeResolver.resolve(jb, Scene.v());
       } else {
-        (new soot.jimple.toolkits.typing.fast.TypeResolver(jb)).inferTypes();
+        (new soot.jimple.toolkits.typing.fast.TypeResolver(jb, opt)).inferTypes();
       }
     }
 
-    if (Options.v().verbose()) {
+    if (verbose) {
       Date finish = new Date();
       long runtime = finish.getTime() - start.getTime();
       long mins = runtime / 60000;
@@ -181,7 +182,8 @@ public class TypeAssigner extends BodyTransformer {
     List<Unit> unitToReplaceByException = new ArrayList<Unit>();
     for (Unit u : b.getUnits()) {
       Stmt s = (Stmt) u;
-      for (ValueBox vb : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox vb = iterator.next();
         Value value = vb.getValue();
         if (value instanceof Local && value.getType() instanceof NullType) {
 
@@ -228,7 +230,7 @@ public class TypeAssigner extends BodyTransformer {
 
   }
 
-  private void compareTypeAssigners(JimpleBody jb, boolean useOlderTypeAssigner) {
+  private void compareTypeAssigners(JimpleBody jb, boolean useOlderTypeAssigner, JBTROptions opt) {
     int size = jb.getUnits().size();
     JimpleBody oldJb, newJb;
     long oldTime, newTime;
@@ -236,7 +238,7 @@ public class TypeAssigner extends BodyTransformer {
       // Use old type assigner last
       newJb = (JimpleBody) jb.clone();
       newTime = System.currentTimeMillis();
-      (new soot.jimple.toolkits.typing.fast.TypeResolver(newJb)).inferTypes();
+      (new soot.jimple.toolkits.typing.fast.TypeResolver(newJb, opt)).inferTypes();
       newTime = System.currentTimeMillis() - newTime;
       oldTime = System.currentTimeMillis();
       soot.jimple.toolkits.typing.TypeResolver.resolve(jb, Scene.v());
@@ -249,7 +251,7 @@ public class TypeAssigner extends BodyTransformer {
       soot.jimple.toolkits.typing.TypeResolver.resolve(oldJb, Scene.v());
       oldTime = System.currentTimeMillis() - oldTime;
       newTime = System.currentTimeMillis();
-      (new soot.jimple.toolkits.typing.fast.TypeResolver(jb)).inferTypes();
+      (new soot.jimple.toolkits.typing.fast.TypeResolver(jb, opt)).inferTypes();
       newTime = System.currentTimeMillis() - newTime;
       newJb = jb;
     }

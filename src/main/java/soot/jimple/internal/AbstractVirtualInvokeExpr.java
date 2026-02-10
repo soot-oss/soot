@@ -131,4 +131,9 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     out.add(u);
     u.addAllTagsOf(context.getCurrentUnit());
   }
+
+  @Override
+  public boolean hasDefiniteMethodTarget() {
+    return false;
+  }
 }

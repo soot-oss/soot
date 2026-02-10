@@ -62,6 +62,9 @@ public class DeadAssignmentEliminatorTest {
     // load necessary classes
     G.reset();
     Options o = Options.v();
+    o.set_allow_phantom_refs(true); // in Java 25 there are classes such as
+    // java.lang.invoke.BoundMethodHandle$Species_J that are being generated at
+    // runtime, thus we need that option
     o.set_whole_program(true);
     Scene.v().loadNecessaryClasses();
     Scene.v().loadClassAndSupport("java.lang.Object");

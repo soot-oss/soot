@@ -144,7 +144,7 @@ public abstract class UnitMap<T> implements Map<Unit, T> {
    * If not overwritten does nothing.
    */
   protected void init() {
-  };
+  }
 
   /**
    * maps a unit to an object. This method is called for every unit. If the returned object is <code>null</code> no object

@@ -38,7 +38,13 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   private int number = 0;
 
   public Type() {
-    Scene.v().getTypeNumberer().add(this);
+    this(true);
+  }
+
+  public Type(boolean doNumber) {
+    if (doNumber) {
+      Scene.v().getTypeNumberer().add(this);
+    }
   }
 
   /**
@@ -46,22 +52,6 @@ public abstract class Type implements Switchable, Serializable, Numberable {
    */
   @Override
   public abstract String toString();
-
-  /**
-   * Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format
-   */
-  public String toQuotedString() {
-    return toString();
-  }
-
-  /**
-   * Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format Replaced
-   * by toQuotedString; only here for backwards compatibility.
-   */
-  @Deprecated
-  public String getEscapedName() {
-    return toQuotedString();
-  }
 
   /**
    * Converts the int-like types (short, byte, boolean and char) to IntType.
@@ -118,5 +108,14 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   @Override
   public final void setNumber(int number) {
     this.number = number;
+  }
+
+  /**
+   * If this type is not allowed in final code, this method provides a replacement type that is allowed in final code
+   * 
+   * @return The replacement type
+   */
+  public Type getDefaultFinalType() {
+    return this;
   }
 }

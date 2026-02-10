@@ -36,8 +36,10 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.DefinitionStmt;
-import soot.jimple.internal.JimpleLocal;
+import soot.jimple.Jimple;
 import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.base.ArrayWriteAggregator;
+import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.NopEliminator;
@@ -49,9 +51,11 @@ import soot.shimple.PhiExpr;
 import soot.shimple.Shimple;
 import soot.shimple.ShimpleBody;
 import soot.shimple.ShimpleFactory;
+import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
+import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
@@ -156,11 +160,17 @@ public class ShimpleBodyBuilder {
 
   public void postElimOpt() {
     if (options.node_elim_opt()) {
+      //might be able to propagate some constants:
+      CopyPropagator.v().transform(body);
       DeadAssignmentEliminator.v().transform(body);
       UnreachableCodeEliminator.v().transform(body);
       UnconditionalBranchFolder.v().transform(body);
+      ArrayWriteAggregator.v().transform(body);
       Aggregator.v().transform(body);
+      LocalPacker.v().transform(body);
       UnusedLocalEliminator.v().transform(body);
+      TrapTightener.v().transform(body);
+      
     }
   }
 
@@ -338,7 +348,7 @@ public class ShimpleBodyBuilder {
     String name = oldLocal.getName() + freshSeparator + subscript;
     Local newLocal = newLocals.get(name);
     if (newLocal == null) {
-      newLocal = new JimpleLocal(name, oldLocal.getType());
+      newLocal = Jimple.v().newLocal(name, oldLocal.getType());
       newLocals.put(name, newLocal);
       newLocalsToOldLocal.put(newLocal, oldLocal);
 

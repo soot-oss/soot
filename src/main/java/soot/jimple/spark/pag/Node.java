@@ -27,6 +27,7 @@ import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.sets.EmptyPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.pointer.representations.ReferenceVariable;
+import soot.options.Options;
 import soot.util.Numberable;
 
 /**
@@ -50,7 +51,7 @@ public class Node implements ReferenceVariable, Numberable {
 
   /** Sets the declared type of this node, null for unknown. */
   public void setType(Type type) {
-    if (TypeManager.isUnresolved(type)) {
+    if (TypeManager.isUnresolved(type) && !Options.v().ignore_resolution_errors()) {
       throw new RuntimeException("Unresolved type " + type);
     }
     this.type = type;
@@ -140,7 +141,7 @@ public class Node implements ReferenceVariable, Numberable {
 
   /** Creates a new node of pointer assignment graph pag, with type type. */
   Node(PAG pag, Type type) {
-    if (TypeManager.isUnresolved(type)) {
+    if (TypeManager.isUnresolved(type) && !Options.v().ignore_resolution_errors()) {
       throw new RuntimeException("Unresolved type " + type);
     }
     this.type = type;

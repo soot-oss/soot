@@ -28,14 +28,19 @@ import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.BooleanConstant;
 import soot.Local;
 import soot.RefType;
 import soot.Scene;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
+import soot.UnitPatchingChain;
+import soot.Value;
+import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
@@ -62,17 +67,36 @@ public class DexNullThrowTransformer extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    LocalCreation lc = new LocalCreation(b.getLocals(), "ex");
+    LocalCreation lc = Scene.v().createLocalCreation(b.getLocals(), "ex");
 
+    final NullConstant nc = NullConstant.v();
+    final IntConstant ic = IntConstant.v(0);
+    final BooleanConstant bc = BooleanConstant.v(false);
+    final LongConstant llc = LongConstant.v(0);
     for (Iterator<Unit> unitIt = b.getUnits().snapshotIterator(); unitIt.hasNext();) {
       Unit u = unitIt.next();
+      Stmt stmt = (Stmt) u;
+      if (stmt.getContainingBody() == null) {
+        // Has been removed
+        continue;
+      }
 
       // Check for a null exception
       if (u instanceof ThrowStmt) {
         ThrowStmt throwStmt = (ThrowStmt) u;
-        if (throwStmt.getOp() == NullConstant.v() || throwStmt.getOp().equals(IntConstant.v(0))
-            || throwStmt.getOp().equals(LongConstant.v(0))) {
+        if (throwStmt.getOp() == nc || throwStmt.getOp().equals(ic) || throwStmt.getOp().equals(llc)
+            || throwStmt.getOp().equals(bc)) {
           createThrowStmt(b, throwStmt, lc);
+        }
+      }
+      if (u instanceof AssignStmt) {
+        AssignStmt throwStmt = (AssignStmt) u;
+        Value rop = throwStmt.getRightOp();
+        if (rop instanceof LengthExpr) {
+          LengthExpr l = (LengthExpr) rop;
+          if (l.getOp() == nc || l.getOp().equals(ic) || l.getOp().equals(llc) || l.getOp().equals(bc)) {
+            createThrowStmt(b, throwStmt, lc);
+          }
         }
       }
     }
@@ -99,11 +123,22 @@ public class DexNullThrowTransformer extends BodyTransformer {
     Stmt newExStmt = Jimple.v().newAssignStmt(lcEx, Jimple.v().newNewExpr(tp));
     body.getUnits().insertBefore(newExStmt, oldStmt);
     Stmt invConsStmt = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(lcEx, constructorRef,
-        Collections.singletonList(StringConstant.v("Null throw statement replaced by Soot"))));
-    body.getUnits().insertBefore(invConsStmt, oldStmt);
+        Collections.singletonList(StringConstant.v("Attempt to get length of null array")))); // be consistent with the
+                                                                                              // behavior of Dalvik
+    UnitPatchingChain units = body.getUnits();
+    units.insertBefore(invConsStmt, oldStmt);
+    Unit succ = units.getSuccOf(oldStmt);
+    while (succ instanceof ThrowStmt && succ.getBoxesPointingToThis().isEmpty()) {
+      // we have a weird case were we would end up with
+      // throw x
+      // throw y
+      // with no jump target to throw y, so it cannot be reached. This would confuse subsequent analyses
+      units.remove(succ);
+      succ = units.getSuccOf(oldStmt);
+    }
 
     // Throw the exception
-    body.getUnits().swapWith(oldStmt, Jimple.v().newThrowStmt(lcEx));
+    units.swapWith(oldStmt, Jimple.v().newThrowStmt(lcEx));
   }
 
 }

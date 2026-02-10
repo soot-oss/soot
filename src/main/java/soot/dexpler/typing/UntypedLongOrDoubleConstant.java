@@ -65,6 +65,11 @@ public class UntypedLongOrDoubleConstant extends UntypedConstant {
   }
 
   @Override
+  public String toString() {
+    return "Untyped long or double constant " + value;
+  }
+
+  @Override
   public Value defineType(Type t) {
     if (t instanceof DoubleType) {
       return this.toDoubleConstant();

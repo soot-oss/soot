@@ -239,7 +239,8 @@ public class TrapSplitter extends BodyTransformer {
     for (Trap t1 : b.getTraps()) {
       // Look whether one of our trapped statements is the begin
       // statement of another trap
-      for (Unit splitUnit = t1.getBeginUnit(); splitUnit != t1.getEndUnit(); splitUnit = b.getUnits().getSuccOf(splitUnit)) {
+      for (Unit splitUnit = t1.getBeginUnit(); splitUnit != t1.getEndUnit() && splitUnit != null; splitUnit
+          = b.getUnits().getSuccOf(splitUnit)) {
         LinkedHashSet<Trap> otherTrapsContainingUnit = trapsContainingThisUnit.get(splitUnit);
         if (otherTrapsContainingUnit != null) {
           for (Trap t2 : otherTrapsContainingUnit) {

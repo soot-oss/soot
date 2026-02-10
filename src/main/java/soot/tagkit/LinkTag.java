@@ -56,9 +56,4 @@ public class LinkTag extends StringTag {
   public String getName() {
     return NAME;
   }
-
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("LinkTag has no value for bytecode");
-  }
 }

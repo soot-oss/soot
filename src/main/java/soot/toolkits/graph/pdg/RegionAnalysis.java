@@ -71,9 +71,9 @@ public class RegionAnalysis {
   protected Hashtable<Integer, Region> m_regions = new Hashtable<Integer, Region>();
   protected List<Region> m_regionsList = null;
   private int m_regCount = 0;
-  private MHGDominatorTree<Block> m_dom;
+  private DominatorTree<Block> m_dom;
   // this would actually be the postdominator tree in the original CFG
-  private MHGDominatorTree<Block> m_pdom;
+  private DominatorTree<Block> m_pdom;
   protected Region m_topLevelRegion = null;
   protected Hashtable<Block, Region> m_block2region = null;
 
@@ -83,12 +83,13 @@ public class RegionAnalysis {
     this.m_method = m;
     this.m_class = c;
 
-    if (Options.v().verbose()) {
+    boolean verbose = Options.v().verbose();
+    if (verbose) {
       logger.debug(
           "[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
     }
     this.findWeakRegions();
-    if (Options.v().verbose()) {
+    if (verbose) {
       logger.debug("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() + " ~~~~~~~~~~~~~~~~~~~~");
     }
   }
@@ -110,11 +111,11 @@ public class RegionAnalysis {
       throw new RuntimeException("Unsupported CFG passed into the RegionAnalyis constructor!");
     }
 
-    this.m_dom = new MHGDominatorTree<Block>(new MHGDominatorsFinder<Block>(this.m_blockCFG));
+    this.m_dom = new DominatorTree<Block>(new MHGDominatorsFinder<Block>(this.m_blockCFG));
 
     try {
 
-      this.m_pdom = new MHGDominatorTree<Block>(new MHGPostDominatorsFinder<Block>(m_blockCFG));
+      this.m_pdom = new DominatorTree<Block>(new MHGPostDominatorsFinder<Block>(m_blockCFG));
 
       if (Options.v().verbose()) {
         logger.debug("[RegionAnalysis] PostDominator tree: ");

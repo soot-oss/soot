@@ -23,10 +23,10 @@ package soot.jimple.internal;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.Local;
-import soot.Scene;
 import soot.Type;
 import soot.Unit;
 import soot.UnitPrinter;
@@ -35,7 +35,6 @@ import soot.baf.Baf;
 import soot.jimple.ConvertToBaf;
 import soot.jimple.JimpleToBafContext;
 import soot.jimple.JimpleValueSwitch;
-import soot.util.Numberer;
 import soot.util.Switch;
 
 public class JimpleLocal implements Local, ConvertToBaf {
@@ -43,15 +42,12 @@ public class JimpleLocal implements Local, ConvertToBaf {
   protected String name;
   protected Type type;
   private volatile int number = 0;
+  private boolean userDefinedLocal;
 
   /** Constructs a JimpleLocal of the given name and type. */
   public JimpleLocal(String name, Type type) {
     setName(name);
     setType(type);
-    Numberer<Local> numberer = Scene.v().getLocalNumberer();
-    if (numberer != null) {
-      numberer.add(this);
-    }
   }
 
   /** Returns true if the given object is structurally equal to this one. */
@@ -78,6 +74,7 @@ public class JimpleLocal implements Local, ConvertToBaf {
     // do not intern the name again
     JimpleLocal local = new JimpleLocal(null, type);
     local.name = name;
+    local.userDefinedLocal = userDefinedLocal;
     return local;
   }
 
@@ -121,6 +118,11 @@ public class JimpleLocal implements Local, ConvertToBaf {
   }
 
   @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+    return Collections.emptyIterator();
+  }
+
+  @Override
   public void apply(Switch sw) {
     ((JimpleValueSwitch) sw).caseLocal(this);
   }
@@ -140,5 +142,27 @@ public class JimpleLocal implements Local, ConvertToBaf {
   @Override
   public void setNumber(int number) {
     this.number = number;
+  }
+
+  @Override
+  public boolean isStackLocal() {
+    String n = getName();
+    return n != null && n.charAt(0) == '$';
+  }
+
+  public void setUserDefinedLocal() {
+    this.userDefinedLocal = true;
+  }
+
+  public boolean isUserDefinedLocal() {
+    return userDefinedLocal;
+  }
+
+  
+  public static boolean isUserDefinedLocal(Local l) {
+    if (l instanceof JimpleLocal) {
+      return ((JimpleLocal) l).isUserDefinedLocal();
+    }
+    return false;
   }
 }

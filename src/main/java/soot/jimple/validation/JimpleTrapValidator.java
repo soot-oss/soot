@@ -72,7 +72,7 @@ public enum JimpleTrapValidator implements BodyValidator {
         if (id.getRightOp() instanceof CaughtExceptionRef) {
           if (!caughtUnits.contains(id)) {
             exceptions.add(new ValidationException(id, "Could not find a corresponding trap using this statement as handler",
-                "Body of method " + body.getMethod().getSignature() + " contains a caught exception reference,"
+                "Body of method " + body.getMethod().getSignature() + " contains a caught exception reference, "
                     + "but not a corresponding trap using this statement as handler"));
           }
         }

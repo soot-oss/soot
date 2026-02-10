@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,28 +25,25 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.ThreeRegisterInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ThreeRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction23x;
 
 import soot.DoubleType;
 import soot.FloatType;
-import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Type;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.LongOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
 
@@ -75,27 +70,27 @@ public class CmpInstruction extends TaggedInstruction {
     Type type = null;
     switch (opcode) {
       case CMPL_DOUBLE:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         type = DoubleType.v();
         cmpExpr = Jimple.v().newCmplExpr(first, second);
         break;
       case CMPL_FLOAT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         type = FloatType.v();
         cmpExpr = Jimple.v().newCmplExpr(first, second);
         break;
       case CMPG_DOUBLE:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         type = DoubleType.v();
         cmpExpr = Jimple.v().newCmpgExpr(first, second);
         break;
       case CMPG_FLOAT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         type = FloatType.v();
         cmpExpr = Jimple.v().newCmpgExpr(first, second);
         break;
       case CMP_LONG:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         type = LongType.v();
         cmpExpr = Jimple.v().newCmpExpr(first, second);
         break;
@@ -109,14 +104,6 @@ public class CmpInstruction extends TaggedInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      getTag().getName();
-      BinopExpr bexpr = (BinopExpr) cmpExpr;
-      DalvikTyper.v().setType(bexpr.getOp1Box(), type, true);
-      DalvikTyper.v().setType(bexpr.getOp2Box(), type, true);
-      DalvikTyper.v().setType(((JAssignStmt) assign).getLeftOpBox(), IntType.v(), false);
-    }
   }
 
   @Override

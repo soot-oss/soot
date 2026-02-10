@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import soot.Body;
+import soot.DecimalConstant;
 import soot.FastHierarchy;
 import soot.G;
 import soot.IntegerType;
@@ -43,14 +44,18 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.PatchingChain;
+import soot.PrimType;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
+import soot.ShortConstant;
 import soot.Singletons;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Trap;
 import soot.Type;
+import soot.UByteConstant;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
@@ -126,6 +131,8 @@ import soot.baf.ThrowInst;
 import soot.baf.UshrInst;
 import soot.baf.VirtualInvokeInst;
 import soot.baf.XorInst;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
 import soot.grimp.GrimpValueSwitch;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.AddExpr;
@@ -192,9 +199,13 @@ import soot.jimple.SubExpr;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThisRef;
 import soot.jimple.ThrowStmt;
+import soot.jimple.UIntConstant;
+import soot.jimple.ULongConstant;
+import soot.jimple.UShortConstant;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+import soot.options.Options;
 import soot.shimple.PhiExpr;
 import soot.shimple.ShimpleValueSwitch;
 import soot.toolkits.exceptions.ThrowableSet.Pair;
@@ -211,7 +222,11 @@ import soot.toolkits.exceptions.ThrowableSet.Pair;
  */
 public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
+  private static final int MAX_DEFAULT_DEPTH = 25;
   protected final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
+  protected final ThrowableSet EMPTY = ThrowableSet.Manager.v().EMPTY;
+  protected final ThrowableSet ALL_THROWABLES = ThrowableSet.Manager.v().ALL_THROWABLES;
+  protected FastHierarchy fasthierarchy = null;
 
   // Cache the response to mightThrowImplicitly():
   private final ThrowableSet implicitThrowExceptions = ThrowableSet.Manager.v().VM_ERRORS
@@ -297,7 +312,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return sw.getResult();
   }
 
-  protected ThrowableSet mightThrow(SootMethodRef m) {
+  public ThrowableSet mightThrow(SootMethodRef m) {
     // The throw analysis is used in the front-ends. Conseqeuently, some
     // methods might not yet be loaded. If this is the case, we make
     // conservative assumptions.
@@ -317,9 +332,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
    *
    * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
    */
-  protected ThrowableSet mightThrow(SootMethod sm) {
+  public ThrowableSet mightThrow(SootMethod sm) {
     if (!isInterproc) {
-      return ThrowableSet.Manager.v().ALL_THROWABLES;
+      return ALL_THROWABLES;
     }
     return methodToThrowSet.getUnchecked(sm);
   }
@@ -339,26 +354,46 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
    *          method whose exceptions are to be returned.
    * @param doneSet
    *          The set of methods that were already processed
-   *
+   * 
    * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
    */
-  private ThrowableSet mightThrow(SootMethod sm, Set<SootMethod> doneSet) {
+  protected ThrowableSet mightThrow(final SootMethod sm, Set<SootMethod> doneSet) {
+    return mightThrow(sm, doneSet, MAX_DEFAULT_DEPTH);
+  }
+
+  /**
+   * Returns the set of types that might be thrown as a result of calling the specified method.
+   *
+   * @param sm
+   *          method whose exceptions are to be returned.
+   * @param doneSet
+   *          The set of methods that were already processed
+   * @param depth
+   *          The maximum depth to use
+   * @return a representation of the set of {@link java.lang.Throwable Throwable} types that <code>m</code> might throw.
+   */
+  protected ThrowableSet mightThrow(final SootMethod sm, Set<SootMethod> doneSet, int depth) {
     // Do not run in loops
-    if (!doneSet.add(sm)) {
-      return ThrowableSet.Manager.v().EMPTY;
+    if (!doneSet.add(sm) || depth < 0) {
+      return EMPTY;
     }
+    int nextDepth = depth - 1;
 
     // If we don't have body, we silently ignore the method. This is
     // unsound, but would otherwise always bloat our result set.
     if (!sm.hasActiveBody()) {
-      return ThrowableSet.Manager.v().EMPTY;
+      // if it is a dotnet project, leave all exceptions, because the method signature does not contain throwables
+      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        return ALL_THROWABLES;
+      }
+      return EMPTY;
     }
 
+    Body methodBody = sm.getActiveBody();
     // We need a mapping between unit and exception
-    final PatchingChain<Unit> units = sm.getActiveBody().getUnits();
-    Map<Unit, Collection<Trap>> unitToTraps
-        = sm.getActiveBody().getTraps().isEmpty() ? null : new HashMap<Unit, Collection<Trap>>();
-    for (Trap t : sm.getActiveBody().getTraps()) {
+    final PatchingChain<Unit> units = methodBody.getUnits();
+    Map<Unit, Collection<Trap>> unitToTraps = methodBody.getTraps().isEmpty() ? null : new HashMap<Unit, Collection<Trap>>();
+    for (Trap t : methodBody.getTraps()) {
       for (Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(), units.getPredOf(t.getEndUnit())); unitIt.hasNext();) {
         Unit unit = unitIt.next();
 
@@ -371,39 +406,67 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       }
     }
 
-    ThrowableSet methodSet = ThrowableSet.Manager.v().EMPTY;
-    if (sm.hasActiveBody()) {
-      Body methodBody = sm.getActiveBody();
+    ThrowableSet methodSet = EMPTY;
 
-      for (Unit u : methodBody.getUnits()) {
-        if (u instanceof Stmt) {
-          Stmt stmt = (Stmt) u;
+    for (Unit u : methodBody.getUnits()) {
+      if (u instanceof Stmt) {
+        Stmt stmt = (Stmt) u;
 
-          ThrowableSet curStmtSet;
-          if (stmt.containsInvokeExpr()) {
-            InvokeExpr inv = stmt.getInvokeExpr();
-            curStmtSet = mightThrow(inv.getMethod(), doneSet);
+        ThrowableSet curStmtSet;
+        if (stmt.containsInvokeExpr()) {
+          InvokeExpr inv = stmt.getInvokeExpr();
+          if (inv.hasDefiniteMethodTarget() || !(inv instanceof InstanceInvokeExpr)) {
+            curStmtSet = mightThrow(inv.getMethod(), doneSet, nextDepth);
           } else {
-            curStmtSet = mightThrow(u, sm);
-          }
-
-          // The exception might be caught along the way
-          if (unitToTraps != null) {
-            Collection<Trap> trapsForUnit = unitToTraps.get(stmt);
-            if (trapsForUnit != null) {
-              for (Trap t : trapsForUnit) {
-                Pair p = curStmtSet.whichCatchableAs(t.getException().getType());
-                curStmtSet = curStmtSet.remove(p.getCaught());
+            InstanceInvokeExpr inst = (InstanceInvokeExpr) inv;
+            Type type = inst.getBase().getType();
+            if (type instanceof RefType) {
+              RefType refType = (RefType) type;
+              SootClass sc = refType.getSootClass();
+              if (sc.resolvingLevel() >= SootClass.HIERARCHY) {
+                Set<SootMethod> possibleCallees = getCallees(stmt, sc, inv.getMethodRef());
+                curStmtSet = EMPTY;
+                for (SootMethod possibleCallee : possibleCallees) {
+                  curStmtSet = curStmtSet.add(mightThrow(possibleCallee, doneSet, nextDepth));
+                }
+              } else {
+                curStmtSet = mightThrow(inv.getMethod(), doneSet, nextDepth);
               }
+            } else {
+              // e.g. Object.clone
+              curStmtSet = mightThrow(inv.getMethod(), doneSet, nextDepth);
             }
           }
-
-          methodSet = methodSet.add(curStmtSet);
+        } else {
+          curStmtSet = mightThrow(u, sm);
         }
+
+        // The exception might be caught along the way
+        if (unitToTraps != null) {
+          Collection<Trap> trapsForUnit = unitToTraps.get(stmt);
+          if (trapsForUnit != null) {
+            for (Trap t : trapsForUnit) {
+              Pair p = curStmtSet.whichCatchableAs(t.getException().getType());
+              curStmtSet = curStmtSet.remove(p.getCaught());
+            }
+          }
+        }
+
+        methodSet = methodSet.add(curStmtSet);
       }
     }
 
     return methodSet;
+  }
+
+  protected Set<SootMethod> getCallees(Stmt stmt, SootClass sc, SootMethodRef methodRef) {
+    FastHierarchy fh = fasthierarchy;
+    if (fh == null) {
+      fh = Scene.v().getOrMakeFastHierarchy();
+      fasthierarchy = fh;
+    }
+
+    return fh.resolveAbstractDispatch(sc, methodRef);
   }
 
   private static final IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
@@ -579,7 +642,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       result = result.add(mgr.NULL_POINTER_EXCEPTION);
       result = result.add(mgr.INITIALIZATION_ERRORS);
       // might throw anything
-      result = result.add(ThrowableSet.Manager.v().ALL_THROWABLES);
+      result = result.add(ALL_THROWABLES);
     }
 
     @Override
@@ -762,7 +825,16 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         result = result.add(mgr.ARRAY_STORE_EXCEPTION);
       }
       result = result.add(mightThrow(s.getLeftOp()));
-      result = result.add(mightThrow(s.getRightOp()));
+
+      Value rightOp = s.getRightOp();
+      if (rightOp instanceof DivExpr && (s.hasTag(FloatOpTag.NAME) || s.hasTag(DoubleOpTag.NAME))) {
+        // workaround for https://github.com/soot-oss/soot/issues/2188
+        // skip right op processing - float and double divisions don't throw any exceptions but when
+        // building the Jimple body the value types are not yet known so we can not know from the expression
+        // if it is an int or float/double division
+      } else {
+        result = result.add(mightThrow(rightOp));
+      }
     }
 
     @Override
@@ -881,6 +953,31 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseClassConstant(ClassConstant c) {
+      result = result.add(RefType.v("java.lang.NoClassDefFoundError"));
+    }
+
+    @Override
+    public void caseDecimalConstant(DecimalConstant v) {
+    }
+
+    @Override
+    public void caseUIntConstant(UIntConstant v) {
+    }
+
+    @Override
+    public void caseShortConstant(ShortConstant v) {
+    }
+
+    @Override
+    public void caseUByteConstant(UByteConstant v) {
+    }
+
+    @Override
+    public void caseULongConstant(ULongConstant v) {
+    }
+
+    @Override
+    public void caseUShortConstant(UShortConstant v) {
     }
 
     @Override
@@ -1025,9 +1122,11 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseCastExpr(CastExpr expr) {
-      result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       Type fromType = expr.getOp().getType();
       Type toType = expr.getCastType();
+      if (!(fromType instanceof PrimType) || !(toType instanceof PrimType)) {
+        result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+      }
       if (toType instanceof RefLikeType) {
         // fromType might still be unknown when we are called,
         // but toType will have a value.
@@ -1074,7 +1173,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @Override
     public void caseNewExpr(NewExpr expr) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
-      for (ValueBox box : expr.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = expr.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         result = result.add(mightThrow(box.getValue()));
       }
     }
@@ -1136,7 +1236,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @SuppressWarnings("rawtypes")
     @Override
     public void casePhiExpr(PhiExpr e) {
-      for (ValueBox box : e.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = e.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         result = result.add(mightThrow(box.getValue()));
       }
     }

@@ -30,6 +30,14 @@ package soot;
 @SuppressWarnings("serial")
 public abstract class RefLikeType extends Type {
 
+  public RefLikeType(boolean b) {
+    super(b);
+  }
+
+  public RefLikeType() {
+    super();
+  }
+
   /**
    * If I have a variable x of declared type t, what is a good declared type for the expression ((Object[]) x)[i]? The
    * getArrayElementType() method in RefLikeType was introduced even later to answer this question for all classes

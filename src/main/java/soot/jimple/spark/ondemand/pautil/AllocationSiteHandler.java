@@ -24,6 +24,7 @@ package soot.jimple.spark.ondemand.pautil;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.RefType;
@@ -50,8 +51,10 @@ public interface AllocationSiteHandler {
   /**
    * handle a particular allocation site
    *
-   * @param allocNode the abstract location node
-   * @param callStack for context-sensitive analysis, the call site; might be null
+   * @param allocNode
+   *          the abstract location node
+   * @param callStack
+   *          for context-sensitive analysis, the call site; might be null
    * @return true if analysis should be terminated; false otherwise
    */
   public boolean handleAllocationSite(AllocNode allocNode, ImmutableStack<Integer> callStack);
@@ -123,16 +126,15 @@ public interface AllocationSiteHandler {
 
     public boolean shouldHandle(VarNode dst) {
       // TODO Auto-generated method stub
-      P2SetVisitor v =
-          new P2SetVisitor() {
+      P2SetVisitor v = new P2SetVisitor() {
 
-            @Override
-            public void visit(Node n) {
-              if (!returnValue) {
-                returnValue = !manager.castNeverFails(n.getType(), type);
-              }
-            }
-          };
+        @Override
+        public void visit(Node n) {
+          if (!returnValue) {
+            returnValue = !manager.castNeverFails(n.getType(), type);
+          }
+        }
+      };
       dst.getP2Set().forall(v);
       return v.getReturnValue();
     }
@@ -182,7 +184,7 @@ public interface AllocationSiteHandler {
         // we'll invoke the java.lang.Object method in this
         // case
         // Assert.chk(varNodeType.toString().equals("java.lang.Object"));
-        type = Scene.v().getSootClass("java.lang.Object").getType();
+        type = Scene.v().getSootClass(Scene.v().getObjectType().toString()).getType();
       }
       RefType refType = (RefType) type;
       SootMethod targetMethod = null;

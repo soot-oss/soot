@@ -53,11 +53,6 @@ public class ArrayNullCheckTag implements OneByteCodeTag {
   }
 
   @Override
-  public byte[] getValue() {
-    return new byte[] { value };
-  }
-
-  @Override
   public String toString() {
     return Byte.toString(value);
   }

@@ -62,7 +62,7 @@ import java.util.*;
  *
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
+@jakarta.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
 public class Options extends OptionsBase {
 
     public Options(Singletons.Global g) {
@@ -146,7 +146,7 @@ public class Options extends OptionsBase {
     <xsl:template mode="parse" match="boolopt">
             else if (false<xsl:text/>
         <xsl:choose>
-            <xsl:when test="default='true'">
+            <xsl:when test="child::default='true'">
                 <xsl:for-each select="alias">
                     || option.equals("no-<xsl:value-of select="."/>")<xsl:text/>
                 </xsl:for-each>
@@ -392,6 +392,7 @@ public class Options extends OptionsBase {
     public static final int <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(.,'-. ','___')"/> = <xsl:value-of select="$number"/>;<xsl:text/>
             </xsl:for-each>
         </xsl:for-each>
+    public static final int <xsl:copy-of select="$name"/>_MAX = <xsl:value-of select="count(value)"/>;<xsl:text/>
     </xsl:template>
 
     <!--*************************************************************************-->
@@ -549,7 +550,7 @@ public class Options extends OptionsBase {
 import java.util.*;
 
 /** Option parser for <xsl:value-of select="name|name"/>. */
-@javax.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
+@jakarta.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
 public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <xsl:copy-of select="extends"/></xsl:if> {
 
     private Map&lt;String, String&gt; options;

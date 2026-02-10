@@ -22,12 +22,12 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.VoidType;
+import soot.util.backend.ASMBackendUtils;
 
 public abstract class AbstractInvokeInst extends AbstractInst {
 
@@ -78,7 +78,7 @@ public abstract class AbstractInvokeInst extends AbstractInst {
   public int getInMachineCount() {
     int count = 0;
     for (Type t : getMethodRef().getParameterTypes()) {
-      count += AbstractJasminClass.sizeOfType(t);
+      count += ASMBackendUtils.sizeOfType(t);
     }
     return count;
   }
@@ -86,7 +86,7 @@ public abstract class AbstractInvokeInst extends AbstractInst {
   @Override
   public int getOutMachineCount() {
     final Type returnType = getMethodRef().getReturnType();
-    return (returnType instanceof VoidType) ? 0 : AbstractJasminClass.sizeOfType(returnType);
+    return (returnType instanceof VoidType) ? 0 : ASMBackendUtils.sizeOfType(returnType);
   }
 
   @Override

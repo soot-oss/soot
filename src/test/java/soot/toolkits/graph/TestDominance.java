@@ -25,10 +25,12 @@ package soot.toolkits.graph;
  */
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,340 +41,429 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import soot.toolkits.graph.pdg.MHGDominatorTree;
-
+import soot.IntType;
+import soot.SootMethod;
+import soot.Unit;
+import soot.VoidType;
+import soot.jimple.AssignStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.internal.JimpleLocal;
 
 public class TestDominance {
 
-    public Set<Integer> kid_ids(DominatorNode<Node> dn) {
-        Set<Integer> kids = new HashSet<Integer>();
-        for (DominatorNode<Node> dkid : dn.getChildren()) {
-            Node kid = dkid.getGode();
-            kids.add(kid.id);
+  public Set<Integer> kid_ids(DominatorNode<Node> dn) {
+    Set<Integer> kids = new HashSet<Integer>();
+    for (DominatorNode<Node> dkid : dn.getChildren()) {
+      Node kid = dkid.getGode();
+      kids.add(kid.id);
+    }
+    return kids;
+  }
+
+  public Map<Integer, DominatorNode<Node>> kid_map(DominatorNode<Node> dn) {
+    Map<Integer, DominatorNode<Node>> kids = new HashMap<Integer, DominatorNode<Node>>();
+    for (DominatorNode<Node> dkid : dn.getChildren()) {
+      Node kid = dkid.getGode();
+      kids.put(kid.id, dkid);
+    }
+    return kids;
+  }
+  
+  @Test
+  public void testNoPredecessor() {
+    SootMethod tmp = new SootMethod("tmp", Collections.emptyList(), VoidType.v());
+    JimpleBody jb = new JimpleBody(tmp);
+    Jimple j = Jimple.v();
+    JimpleLocal l = j.newLocal("tmp",IntType.v());
+    jb.getLocals().add(l);
+    AssignStmt u1 = j.newAssignStmt(l, IntConstant.v(0));
+    ReturnVoidStmt u2 = j.newReturnVoidStmt();
+    AssignStmt u3 = j.newAssignStmt(l, IntConstant.v(1));
+    ReturnVoidStmt u4 = j.newReturnVoidStmt();
+    jb.getUnits().add(u1);
+    jb.getUnits().add(u2);
+    jb.getUnits().add(u3);
+    jb.getUnits().add(u4);
+    
+    DirectedGraph<Unit> graph = new DirectedGraph<Unit>() {
+      
+      @Override
+      public int size() {
+        return jb.getUnits().size();
+      }
+      
+      @Override
+      public Iterator<Unit> iterator() {
+        return jb.getUnits().iterator();
+      }
+      
+      @Override
+      public List<Unit> getTails() {
+        return Arrays.asList(u2, u4);
+      }
+      
+      @Override
+      public List<Unit> getSuccsOf(Unit s) {
+        if (s == u1) {
+          return Arrays.asList(u2);
         }
-        return kids;
-    }
-
-    public Map<Integer,DominatorNode<Node>> kid_map(DominatorNode<Node> dn) {
-        Map<Integer,DominatorNode<Node>> kids = new HashMap<Integer,DominatorNode<Node>>();
-        for (DominatorNode<Node> dkid : dn.getChildren()) {
-            Node kid = dkid.getGode();
-            kids.put(kid.id, dkid);
+        if (s == u2 || s == u4)  {
+          return Collections.emptyList();
         }
-        return kids;
-    }
-
-    @Test
-    public void TestSimpleDiamond() {
-        Node x = new Node(4);
-        Node n = new Node(1).addkid((new Node(2)).addkid(x)).addkid((new Node(3)).addkid(x));
-        Graph g = new Graph(n);
-        MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
-        DominatorTree<Node> tree = new DominatorTree<Node>(finder);
-        assertThat(tree.getHeads().size(), is(1));
-
-        DominatorNode<Node> head = tree.getHeads().get(0);
-        assertThat(head.getGode().id, is(1));
-
-        Set<Integer> kids = kid_ids(head);
-        assertThat(kids.size(), is(3));
-        assertThat(kids, contains(2, 3, 4));
-    }
-
-    @Test
-    public void TestAcyclicCFG() {
-        Node n1 = new Node(1);
-        Node n2 = new Node(2);
-        Node n3 = new Node(3);
-        Node n4 = new Node(4);
-        Node n5 = new Node(5);
-        Node n6 = new Node(6);
-        Node n7 = new Node(7);
-        Node n8 = new Node(8);
-        Node n9 = new Node(9);
-        Node n10 = new Node(10);
-        Node n11 = new Node(11);
-        n1.addkid(n2).addkid(n3);
-        n2.addkid(n9);
-        n3.addkid(n4).addkid(n5);
-        n4.addkid(n9);
-        n5.addkid(n6).addkid(n10);
-        n6.addkid(n7).addkid(n8);
-        n7.addkid(n10);
-        n8.addkid(n10);
-        n9.addkid(n11);
-        n10.addkid(n11);
-        Graph g = new Graph(n1);
-
-        MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
-        DominatorTree<Node> tree = new DominatorTree<Node>(finder);
-        assertThat(tree.getHeads().size(), is(1));
-
-        DominatorNode<Node> n = tree.getHeads().get(0);
-        assertThat(n.getGode().id, is(1));
-        Set<Integer> kids = kid_ids(n);
-        assertThat(kids.size(), is(4));
-        assertThat(kids, contains(2, 3, 9, 11));
-
-        Map<Integer, DominatorNode<Node>> KM = kid_map(n);
-        DominatorNode<Node> m = KM.get(2);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        m = KM.get(9);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        m = KM.get(11);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        n = KM.get(3);
-        kids = kid_ids(n);
-        assertThat(kids.size(), is(2));
-        assertThat(kids, contains(4, 5));
-
-        KM = kid_map(n);
-        m = KM.get(4);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        n = KM.get(5);
-        kids = kid_ids(n);
-        assertThat(kids.size(), is(2));
-        assertThat(kids, contains(6, 10));
-
-        KM = kid_map(n);
-        m = KM.get(10);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        n = KM.get(6);
-        kids = kid_ids(n);
-        assertThat(kids.size(), is(2));
-        assertThat(kids, contains(7, 8));
-
-        KM = kid_map(n);
-        m = KM.get(7);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        m = KM.get(8);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-    }
-
-    @Test
-    public void TestMultiTailedPostDom() {
-        Node n1 = new Node(1);
-        Node n2 = new Node(2);
-        Node n3 = new Node(3);
-        Node n4 = new Node(4);
-        Node n5 = new Node(5);
-        Node n6 = new Node(6);
-        n1.addkid(n2).addkid(n3);
-        n3.addkid(n4).addkid(n5);
-        n4.addkid(n6);
-        n5.addkid(n6);
-        Graph g = new Graph(n1);
-
-        MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
-        MHGDominatorTree<Node> tree = new MHGDominatorTree<Node>(finder);
-        assertThat(tree.getHeads().size(), is(1));
-
-        DominatorNode<Node> n = tree.getHeads().get(0);
-        assertThat(n.getGode().id, is(1));
-        Set<Integer> kids = kid_ids(n);
-        assertThat(kids.size(), is(2));
-        assertThat(kids, contains(2, 3));
-
-        Map<Integer, DominatorNode<Node>> KM = kid_map(n);
-        DominatorNode<Node> m = KM.get(2);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        n = KM.get(3);
-        kids = kid_ids(n);
-        assertThat(kids.size(), is(3));
-        assertThat(kids, contains(4, 5, 6));
-
-        KM = kid_map(n);
-        m = KM.get(4);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        m = KM.get(5);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        m = KM.get(6);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
-
-        // ---------- now post-dom --------------
-
-        MHGPostDominatorsFinder<Node> pfinder = new MHGPostDominatorsFinder<Node>(g);
-        tree = new MHGDominatorTree<Node>(pfinder);
-
-        Map<Integer,DominatorNode<Node>> heads = new HashMap<Integer,DominatorNode<Node>>();
-        for (DominatorNode<Node> dhead : tree.getHeads()) {
-            Node head = dhead.getGode();
-            heads.put(head.id, dhead);
+        if (s == u3) {
+          return Arrays.asList(u4);
         }
+        throw new RuntimeException();
+      }
+      
+      @Override
+      public List<Unit> getPredsOf(Unit s) {
+        if (s == u1 || s == u3)  {
+          return Collections.emptyList();
+        }
+        if (s == u2) {
+          return Arrays.asList(u1);
+        }
+        if (s == u4) {
+          return Arrays.asList(u3);
+        }
+        throw new RuntimeException();
+      }
+      
+      @Override
+      public List<Unit> getHeads() {
+        return Arrays.asList(u1);
+      }
+    };
+    
+    MHGDominatorsFinder<Unit> finder = new MHGDominatorsFinder<Unit>(graph);
+    assertEquals(Arrays.asList(u1), finder.getDominators(u1));
+    assertEquals(Arrays.asList(u1, u2), finder.getDominators(u2));
+    List<Unit> d3 = finder.getDominators(u3);
+    assertEquals(Collections.emptyList(), d3);
+    List<Unit> d4 = finder.getDominators(u4);
+    assertEquals(Collections.emptyList(), d4);
+  }
 
-        Set<Integer> head_ids = heads.keySet();
-        assertThat(head_ids.size(), is(3));
-        assertThat(head_ids, contains(1, 2, 6));
+  @Test
+  public void TestSimpleDiamond() {
+    Node x = new Node(4);
+    Node n = new Node(1).addkid((new Node(2)).addkid(x)).addkid((new Node(3)).addkid(x));
+    Graph g = new Graph(n);
+    MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
+    DominatorTree<Node> tree = new DominatorTree<Node>(finder);
+    assertThat(tree.getHeads().size(), is(1));
 
-        m = heads.get(1);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
+    DominatorNode<Node> head = tree.getHeads().get(0);
+    assertThat(head.getGode().id, is(1));
 
-        m = heads.get(2);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
+    Set<Integer> kids = kid_ids(head);
+    assertThat(kids.size(), is(3));
+    assertThat(kids, containsInAnyOrder(2, 3, 4));
+  }
 
-        n = heads.get(6);
-        kids = kid_ids(n);
-        assertThat(kids.size(), is(3));
-        assertThat(kids, contains(3, 4, 5));
+  @Test
+  public void TestAcyclicCFG() {
+    Node n1 = new Node(1);
+    Node n2 = new Node(2);
+    Node n3 = new Node(3);
+    Node n4 = new Node(4);
+    Node n5 = new Node(5);
+    Node n6 = new Node(6);
+    Node n7 = new Node(7);
+    Node n8 = new Node(8);
+    Node n9 = new Node(9);
+    Node n10 = new Node(10);
+    Node n11 = new Node(11);
+    n1.addkid(n2).addkid(n3);
+    n2.addkid(n9);
+    n3.addkid(n4).addkid(n5);
+    n4.addkid(n9);
+    n5.addkid(n6).addkid(n10);
+    n6.addkid(n7).addkid(n8);
+    n7.addkid(n10);
+    n8.addkid(n10);
+    n9.addkid(n11);
+    n10.addkid(n11);
+    Graph g = new Graph(n1);
 
-        KM = kid_map(n);
-        m = KM.get(3);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
+    MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
+    DominatorTree<Node> tree = new DominatorTree<Node>(finder);
+    assertThat(tree.getHeads().size(), is(1));
 
-        m = KM.get(4);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
+    DominatorNode<Node> n = tree.getHeads().get(0);
+    assertThat(n.getGode().id, is(1));
+    Set<Integer> kids = kid_ids(n);
+    assertThat(kids.size(), is(4));
+    assertThat(kids, containsInAnyOrder(2, 3, 9, 11));
 
-        m = KM.get(5);
-        kids = kid_ids(m);
-        assertThat(kids.size(), is(0));
+    Map<Integer, DominatorNode<Node>> KM = kid_map(n);
+    DominatorNode<Node> m = KM.get(2);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = KM.get(9);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = KM.get(11);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    n = KM.get(3);
+    kids = kid_ids(n);
+    assertThat(kids.size(), is(2));
+    assertThat(kids, containsInAnyOrder(4, 5));
+
+    KM = kid_map(n);
+    m = KM.get(4);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    n = KM.get(5);
+    kids = kid_ids(n);
+    assertThat(kids.size(), is(2));
+    assertThat(kids, containsInAnyOrder(6, 10));
+
+    KM = kid_map(n);
+    m = KM.get(10);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    n = KM.get(6);
+    kids = kid_ids(n);
+    assertThat(kids.size(), is(2));
+    assertThat(kids, containsInAnyOrder(7, 8));
+
+    KM = kid_map(n);
+    m = KM.get(7);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = KM.get(8);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+  }
+
+  @Test
+  public void TestMultiTailedPostDom() {
+    Node n1 = new Node(1);
+    Node n2 = new Node(2);
+    Node n3 = new Node(3);
+    Node n4 = new Node(4);
+    Node n5 = new Node(5);
+    Node n6 = new Node(6);
+    n1.addkid(n2).addkid(n3);
+    n3.addkid(n4).addkid(n5);
+    n4.addkid(n6);
+    n5.addkid(n6);
+    Graph g = new Graph(n1);
+
+    MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
+    DominatorTree<Node> tree = new DominatorTree<Node>(finder);
+    assertThat(tree.getHeads().size(), is(1));
+
+    DominatorNode<Node> n = tree.getHeads().get(0);
+    assertThat(n.getGode().id, is(1));
+    Set<Integer> kids = kid_ids(n);
+    assertThat(kids.size(), is(2));
+    assertThat(kids, containsInAnyOrder(2, 3));
+
+    Map<Integer, DominatorNode<Node>> KM = kid_map(n);
+    DominatorNode<Node> m = KM.get(2);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    n = KM.get(3);
+    kids = kid_ids(n);
+    assertThat(kids.size(), is(3));
+    assertThat(kids, containsInAnyOrder(4, 5, 6));
+
+    KM = kid_map(n);
+    m = KM.get(4);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = KM.get(5);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = KM.get(6);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    // ---------- now post-dom --------------
+
+    MHGPostDominatorsFinder<Node> pfinder = new MHGPostDominatorsFinder<Node>(g);
+    tree = new DominatorTree<Node>(pfinder);
+
+    Map<Integer, DominatorNode<Node>> heads = new HashMap<Integer, DominatorNode<Node>>();
+    for (DominatorNode<Node> dhead : tree.getHeads()) {
+      Node head = dhead.getGode();
+      heads.put(head.id, dhead);
     }
+
+    Set<Integer> head_ids = heads.keySet();
+    assertThat(head_ids.size(), is(3));
+    assertThat(head_ids, containsInAnyOrder(1, 2, 6));
+
+    m = heads.get(1);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = heads.get(2);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    n = heads.get(6);
+    kids = kid_ids(n);
+    assertThat(kids.size(), is(3));
+    assertThat(kids, containsInAnyOrder(3, 4, 5));
+
+    KM = kid_map(n);
+    m = KM.get(3);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = KM.get(4);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+
+    m = KM.get(5);
+    kids = kid_ids(m);
+    assertThat(kids.size(), is(0));
+  }
 }
 
 class Graph implements DirectedGraph<Node> {
 
-    Node root;
-    List<Node> nodes;
-    List<Node> tails = new ArrayList<Node>();
+  Node root;
+  List<Node> nodes;
+  List<Node> tails = new ArrayList<Node>();
 
-    public Graph(Node root) {
-        this.root = root;
-        for (Node n : this) {
-            if (n.succs.size() == 0) {
-                tails.add(n);
-            }
-        }
+  public Graph(Node root) {
+    this.root = root;
+    for (Node n : this) {
+      if (n.succs.size() == 0) {
+        tails.add(n);
+      }
     }
+  }
 
-    /** 
-     *  Returns a list of entry points for this graph.
-     */
-    public List<Node> getHeads() {
-        return Collections.singletonList(this.root);
-    }
+  /**
+   * Returns a list of entry points for this graph.
+   */
+  @Override
+  public List<Node> getHeads() {
+    return Collections.singletonList(this.root);
+  }
 
-    /** Returns a list of exit points for this graph. */
-    public List<Node> getTails() {
-        return tails;
-    }
+  /** Returns a list of exit points for this graph. */
+  @Override
+  public List<Node> getTails() {
+    return tails;
+  }
 
-    /** 
-     *  Returns a list of predecessors for the given node in the graph.
-     */
-    public List<Node> getPredsOf(Node s){
-        return ((Node)s).preds;
-    }
+  /**
+   * Returns a list of predecessors for the given node in the graph.
+   */
+  @Override
+  public List<Node> getPredsOf(Node s) {
+    return s.preds;
+  }
 
-    /**
-     *  Returns a list of successors for the given node in the graph.
-     */
-    public List<Node> getSuccsOf(Node s) {
-        return ((Node)s).succs;
-    }
+  /**
+   * Returns a list of successors for the given node in the graph.
+   */
+  @Override
+  public List<Node> getSuccsOf(Node s) {
+    return s.succs;
+  }
 
-    /**
-     *  Returns the node count for this graph.
-     */
-    public int size() {
-        if (this.nodes == null) {
-             this.nodes = this.dfs(this.root);
-        }
-        return this.nodes.size();
+  /**
+   * Returns the node count for this graph.
+   */
+  @Override
+  public int size() {
+    if (this.nodes == null) {
+      this.nodes = this.dfs(this.root);
     }
+    return this.nodes.size();
+  }
 
-    /**
-     *  Returns an iterator for the nodes in this graph. No specific ordering
-     *  of the nodes is guaranteed.
-     */
-    public Iterator<Node> iterator() {
-        if (this.nodes == null) {
-             this.nodes = this.dfs(this.root);
-        }
-        Iterator<Node> i = this.nodes.iterator();
-        return i;
+  /**
+   * Returns an iterator for the nodes in this graph. No specific ordering of the nodes is guaranteed.
+   */
+  @Override
+  public Iterator<Node> iterator() {
+    if (this.nodes == null) {
+      this.nodes = this.dfs(this.root);
     }
+    Iterator<Node> i = this.nodes.iterator();
+    return i;
+  }
 
-    public List<Node> dfs(Node root) {
-        List<Node> list = new ArrayList<Node>();
-        Set<Node> seen = new HashSet<Node>();
-        dfs_visit(root, seen, list);
-        return list;
-    }
+  public List<Node> dfs(Node root) {
+    List<Node> list = new ArrayList<Node>();
+    Set<Node> seen = new HashSet<Node>();
+    dfs_visit(root, seen, list);
+    return list;
+  }
 
-    void dfs_visit(Node node, Set<Node> seen, List<Node> list) {
-        seen.add(node);
-        list.add(node);
-        for (Node kid : node.succs) {
-            if (!seen.contains(kid)) {
-                dfs_visit(kid, seen, list);
-            }
-        }
-        for (Node parent : node.preds) {
-            if (!seen.contains(parent)) {
-                dfs_visit(parent, seen, list);
-            }
-        }
+  void dfs_visit(Node node, Set<Node> seen, List<Node> list) {
+    seen.add(node);
+    list.add(node);
+    for (Node kid : node.succs) {
+      if (!seen.contains(kid)) {
+        dfs_visit(kid, seen, list);
+      }
     }
+    for (Node parent : node.preds) {
+      if (!seen.contains(parent)) {
+        dfs_visit(parent, seen, list);
+      }
+    }
+  }
 }
 
 class Node {
 
-    int id;
-    List<Node> preds = new ArrayList<Node>();
-    List<Node> succs = new ArrayList<Node>();
+  int id;
+  List<Node> preds = new ArrayList<Node>();
+  List<Node> succs = new ArrayList<Node>();
 
-    public Node(int id) {
-        this.id = id;
-    }
+  public Node(int id) {
+    this.id = id;
+  }
 
-    public Node addkid(Node kid) {
-        kid.preds.add(this);
-        this.succs.add(kid);
-        return this;
-    }
+  public Node addkid(Node kid) {
+    kid.preds.add(this);
+    this.succs.add(kid);
+    return this;
+  }
 
-    public int hashCode() {
-        return this.id;
-    }
+  @Override
+  public int hashCode() {
+    return this.id;
+  }
 
-    public boolean Equals(Object o) {
-        if (o == null) {
-            return false;
-        } else if (o instanceof Node) {
-            return this.Equals((Node)o);
-        }
-        return false;
+  public boolean Equals(Object o) {
+    if (o == null) {
+      return false;
+    } else if (o instanceof Node) {
+      return this.Equals((Node) o);
     }
+    return false;
+  }
 
-    public boolean Equals(Node o) {
-        if (o == null) {
-            return false;
-        }
-        return this.id == o.id;
+  public boolean Equals(Node o) {
+    if (o == null) {
+      return false;
     }
+    return this.id == o.id;
+  }
 
 }
-

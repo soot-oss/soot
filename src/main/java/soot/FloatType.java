@@ -22,19 +22,26 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
  * Soot representation of the Java built-in type 'float'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class FloatType extends PrimType {
+public class FloatType extends PrimType implements DotNetINumber, IJavaType {
 
-  public FloatType(Singletons.Global g) {
+  public static final int HASHCODE = 0xA84373FA;
+  public static final FloatType INSTANCE = new FloatType();
+
+  private FloatType() {
+    super(false);
   }
 
   public static FloatType v() {
-    return G.v().soot_FloatType();
+    return INSTANCE;
   }
 
   @Override
@@ -44,7 +51,7 @@ public class FloatType extends PrimType {
 
   @Override
   public int hashCode() {
-    return 0xA84373FA;
+    return HASHCODE;
   }
 
   @Override
@@ -58,7 +65,20 @@ public class FloatType extends PrimType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Float");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotNetBasicTypes.SYSTEM_SINGLE;
+    }
+    return JavaBasicTypes.JAVA_LANG_FLOAT;
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Float.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return float.class;
   }
 }

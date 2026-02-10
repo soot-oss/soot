@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,22 +25,24 @@ package soot.dexpler.instructions;
  * #L%
  */
 
+package soot.dexpler.instructions;
+
 import static soot.dexpler.Util.dottedClassName;
 import static soot.dexpler.Util.isFloatLike;
+
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction35c;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction3rc;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction45cc;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction4rcc;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
-import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
-import org.jf.dexlib2.iface.instruction.formats.Instruction45cc;
-import org.jf.dexlib2.iface.instruction.formats.Instruction4rcc;
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.MethodReference;
 
 import soot.Local;
 import soot.Modifier;
@@ -55,10 +55,7 @@ import soot.SootResolver;
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
-import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -94,24 +91,6 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
       addTags(invoke);
       body.add(invoke);
       unit = invoke;
-    }
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      // Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
-
-      if (invocation instanceof InstanceInvokeExpr) {
-        Type t = invocation.getMethodRef().getDeclaringClass().getType();
-        DalvikTyper.v().setType(((InstanceInvokeExpr) invocation).getBaseBox(), t, true);
-        // DalvikTyper.v().setObjectType(assign.getLeftOpBox());
-      }
-      int i = 0;
-      for (Type pt : invocation.getMethodRef().getParameterTypes()) {
-        DalvikTyper.v().setType(invocation.getArgBox(i++), pt, true);
-      }
-      if (assign != null) {
-        DalvikTyper.v().setType(assign.getLeftOpBox(), invocation.getType(), false);
-      }
-
     }
   }
 

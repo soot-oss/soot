@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Java To Jimple Body Creation. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class JJOptions {
 
     private Map<String, String> options;

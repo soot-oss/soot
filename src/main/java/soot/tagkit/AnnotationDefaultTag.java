@@ -52,9 +52,4 @@ public class AnnotationDefaultTag implements Tag {
   public AnnotationElem getDefaultVal() {
     return defaultVal;
   }
-
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("AnnotationDefaultTag has no value for bytecode");
-  }
 }

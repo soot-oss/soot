@@ -43,6 +43,14 @@ public interface SwitchStmt extends Stmt {
   public ValueBox getKeyBox();
 
   public List<Unit> getTargets();
+  
+  /**
+   * Returns the target unit if a value with value
+   * "value" is the key
+   * @param value the value
+   * @return the target
+   */
+  public Unit getTargetForValue(int value);
 
   public Unit getTarget(int index);
 

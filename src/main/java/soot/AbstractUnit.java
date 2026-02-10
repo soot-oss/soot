@@ -24,6 +24,7 @@ package soot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.tagkit.AbstractHost;
@@ -62,6 +63,11 @@ public abstract class AbstractUnit extends AbstractHost implements Unit {
   @Override
   public List<ValueBox> getDefBoxes() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return getUseBoxes().iterator();
   }
 
   /**

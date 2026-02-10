@@ -10,12 +10,12 @@ package soot.jimple.toolkits.typing;
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
@@ -30,14 +30,15 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.LongType;
 import soot.NullType;
 import soot.RefType;
+import soot.Scene;
 import soot.SootMethodRef;
 import soot.TrapManager;
 import soot.Type;
 import soot.Value;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -120,7 +121,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
   public void check(Stmt stmt, JimpleBody stmtBody) throws TypeException {
     try {
       this.stmtBody = stmtBody;
-      this.localGenerator = new LocalGenerator(stmtBody);
+      this.localGenerator = Scene.v().createLocalGenerator(stmtBody);
       stmt.apply(this);
     } catch (RuntimeTypeException e) {
       logger.error(e.getMessage(), e);
@@ -588,7 +589,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
           error("Type Error(47)");
         }
       }
-      if (!left.hasAncestorOrSelf(hierarchy.typeNode(RefType.v("java.lang.Throwable")))) {
+      if (!left.hasAncestorOrSelf(hierarchy.typeNode(Scene.v().getBaseExceptionType()))) {
         error("Type Error(48)");
       }
     } else {
@@ -733,9 +734,9 @@ class ConstraintChecker extends AbstractStmtSwitch {
     if (op instanceof Local) {
       Local opLocal = (Local) op;
       TypeNode opTy = hierarchy.typeNode(opLocal.getType());
-      if (!opTy.hasAncestorOrSelf(hierarchy.typeNode(RefType.v("java.lang.Throwable")))) {
+      if (!opTy.hasAncestorOrSelf(hierarchy.typeNode(Scene.v().getBaseExceptionType()))) {
         if (fix) {
-          stmt.setOp(insertCast(opLocal, RefType.v("java.lang.Throwable"), stmt));
+          stmt.setOp(insertCast(opLocal, Scene.v().getBaseExceptionType(), stmt));
         } else {
           error("Type Error(53)");
         }

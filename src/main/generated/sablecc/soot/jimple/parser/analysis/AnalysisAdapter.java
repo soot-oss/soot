@@ -831,6 +831,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseABoolConstant(ABoolConstant node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseAClzzConstant(AClzzConstant node)
     {
         defaultCase(node);
@@ -1612,6 +1618,12 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseEOF(EOF node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseInvalidToken(InvalidToken node)
     {
         defaultCase(node);
     }

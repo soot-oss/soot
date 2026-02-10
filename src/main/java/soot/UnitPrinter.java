@@ -74,5 +74,5 @@ public interface UnitPrinter {
 
   public AttributesUnitPrinter getPositionTagger();
 
-  public StringBuffer output();
+  public StringBuilder output();
 }

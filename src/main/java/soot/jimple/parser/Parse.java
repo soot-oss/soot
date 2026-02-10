@@ -35,7 +35,6 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.jimple.JimpleBody;
@@ -97,8 +96,6 @@ public class Parse {
       logger.debug("" + USAGE);
       System.exit(0);
     }
-
-    Scene.v().setPhantomRefs(true);
 
     for (String arg : args) {
       if (arg.startsWith("-")) {

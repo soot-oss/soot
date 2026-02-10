@@ -29,6 +29,7 @@ package soot.dexpler;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +104,6 @@ public class DexNullTransformer extends AbstractNullTransformer {
         if (r instanceof FieldRef) {
           usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
           doBreak = true;
-          return;
         } else if (r instanceof ArrayRef) {
           ArrayRef ar = (ArrayRef) r;
           if (ar.getType() instanceof UnknownType) {
@@ -117,24 +117,19 @@ public class DexNullTransformer extends AbstractNullTransformer {
             usedAsObject = isObject(ar.getType());
           }
           doBreak = true;
-          return;
-        } else if (r instanceof StringConstant || r instanceof NewExpr ||
-            r instanceof NewArrayExpr || r instanceof ClassConstant) {
+        } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr
+            || r instanceof ClassConstant) {
           usedAsObject = true;
           doBreak = true;
-          return;
         } else if (r instanceof CastExpr) {
           usedAsObject = isObject(((CastExpr) r).getCastType());
           doBreak = true;
-          return;
         } else if (r instanceof InvokeExpr) {
           usedAsObject = isObject(((InvokeExpr) r).getType());
           doBreak = true;
-          return;
         } else if (r instanceof LengthExpr) {
           usedAsObject = false;
           doBreak = true;
-          return;
           // introduces alias
         }
 
@@ -221,15 +216,14 @@ public class DexNullTransformer extends AbstractNullTransformer {
           } else if (l instanceof ArrayRef) {
             Type aType = ((ArrayRef) l).getType();
             if (aType instanceof UnknownType) {
-              usedAsObject = stmt.hasTag(ObjectOpTag.NAME); // isObject(
-              // findArrayType(g,
-              // localDefs,
-              // localUses,
-              // stmt));
+              if (stmt.hasTag(ObjectOpTag.NAME)) {
+                usedAsObject = true;
+                doBreak = true;
+              }
             } else {
               usedAsObject = isObject(aType);
+              doBreak = true;
             }
-            doBreak = true;
             return;
           }
         }
@@ -239,7 +233,6 @@ public class DexNullTransformer extends AbstractNullTransformer {
           usedAsObject = true; // isObject(((FieldRef)
           // r).getFieldRef().type());
           doBreak = true;
-          return;
         } else if (r instanceof ArrayRef) {
           ArrayRef ar = (ArrayRef) r;
           if (ar.getBase() == l) {
@@ -248,29 +241,24 @@ public class DexNullTransformer extends AbstractNullTransformer {
             usedAsObject = false;
           }
           doBreak = true;
-          return;
         } else if (r instanceof StringConstant || r instanceof NewExpr) {
-          throw new RuntimeException("NOT POSSIBLE StringConstant or NewExpr at " + stmt);
+          usedAsObject = true;
+          doBreak = true;
         } else if (r instanceof NewArrayExpr) {
           usedAsObject = false;
           doBreak = true;
-          return;
         } else if (r instanceof CastExpr) {
           usedAsObject = isObject(((CastExpr) r).getCastType());
           doBreak = true;
-          return;
         } else if (r instanceof InvokeExpr) {
           usedAsObject = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
           doBreak = true;
-          return;
         } else if (r instanceof LengthExpr) {
           usedAsObject = true;
           doBreak = true;
-          return;
         } else if (r instanceof BinopExpr) {
           usedAsObject = false;
           doBreak = true;
-          return;
         }
       }
 
@@ -349,7 +337,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
         for (Unit u : defs) {
           replaceWithNull(u);
           Set<Value> defLocals = new HashSet<Value>();
-          for (ValueBox vb : u.getDefBoxes()) {
+          for (Iterator<ValueBox> iterator = u.getDefBoxesIterator(); iterator.hasNext();) {
+            ValueBox vb = iterator.next();
             defLocals.add(vb.getValue());
           }
 
@@ -368,6 +357,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
     // Check for inlined zero values
     AbstractStmtSwitch inlinedZeroValues = new AbstractStmtSwitch() {
       final NullConstant nullConstant = NullConstant.v();
+      Set<Value> objects = null;
 
       @Override
       public void caseAssignStmt(AssignStmt stmt) {
@@ -388,17 +378,18 @@ public class DexNullTransformer extends AbstractNullTransformer {
         // Case a[0] = 0
         if (stmt.getLeftOp() instanceof ArrayRef && isConstZero(stmt.getRightOp())) {
           ArrayRef ar = (ArrayRef) stmt.getLeftOp();
-          if (isObjectArray(ar.getBase(), body) || stmt.hasTag(ObjectOpTag.NAME)) {
+          if (objects == null) {
+            objects = getObjectArray(body);
+          }
+          if (objects.contains(ar.getBase()) || stmt.hasTag(ObjectOpTag.NAME)) {
             stmt.setRightOp(nullConstant);
           }
         }
       }
 
       private boolean isConstZero(Value rightOp) {
-        if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) {
-          return true;
-        }
-        if (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0) {
+        if ((rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0)
+            || (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0)) {
           return true;
         }
         return false;
@@ -450,28 +441,28 @@ public class DexNullTransformer extends AbstractNullTransformer {
     }
   }
 
-  private boolean isObjectArray(Value v, Body body) {
+  private static Set<Value> getObjectArray(Body body) {
+    Set<Value> objArrays = new HashSet<Value>();
     for (Unit u : body.getUnits()) {
       if (u instanceof AssignStmt) {
         AssignStmt assign = (AssignStmt) u;
-        if (assign.getLeftOp() == v) {
-          if (assign.getRightOp() instanceof NewArrayExpr) {
-            NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
-            if (isObject(nea.getBaseType())) {
-              return true;
-            }
-          } else if (assign.getRightOp() instanceof FieldRef) {
-            FieldRef fr = (FieldRef) assign.getRightOp();
-            if (fr.getType() instanceof ArrayType) {
-              if (isObject(((ArrayType) fr.getType()).getArrayElementType())) {
-                return true;
-              }
+        if (assign.getRightOp() instanceof NewArrayExpr) {
+          NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
+          if (isObject(nea.getBaseType())) {
+            objArrays.add(assign.getLeftOp());
+          }
+        } else if (assign.getRightOp() instanceof FieldRef) {
+          FieldRef fr = (FieldRef) assign.getRightOp();
+          if (fr.getType() instanceof ArrayType) {
+            if (isObject(((ArrayType) fr.getType()).getArrayElementType())) {
+              objArrays.add(assign.getLeftOp());
             }
           }
         }
+
       }
     }
-    return false;
+    return objArrays;
   }
 
   /**

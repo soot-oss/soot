@@ -1,5 +1,10 @@
 package soot.jimple.toolkits.scalar;
 
+import java.util.Collection;
+
+import soot.Local;
+import soot.Type;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,54 +27,13 @@ package soot.jimple.toolkits.scalar;
  * #L%
  */
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+public abstract class LocalCreation {
+  protected final Collection<Local> localChain;
+  protected final String prefix;
 
-import soot.Local;
-import soot.Type;
-import soot.jimple.Jimple;
-
-/**
- * provides an easy interface to handle new var-names. New names are automatically added to the chain, and the provided
- * locals are guaranteed to have a unique name.
- */
-public class LocalCreation {
-
-  /** if no prefix is given, this one's used */
-  public static final String DEFAULT_PREFIX = "soot";
-
-  private final Collection<Local> localChain;
-  private final Set<String> locals;
-  private final String prefix;
-  private int counter;
-
-  /**
-   * all actions are done on the given locals-chain. as prefix the <code>DEFAULT-PREFIX</code> will be used.
-   *
-   * @param locals
-   *          the locals-chain of a Jimple-body
-   */
-  public LocalCreation(Collection<Local> locals) {
-    this(locals, DEFAULT_PREFIX);
-  }
-
-  /**
-   * whenever <code>newLocal(type)</code> will be called, the given prefix is used.
-   *
-   * @param locals
-   *          the locals-chain of a Jimple-body
-   * @param prefix
-   *          prefix overrides the DEFAULT-PREFIX
-   */
   public LocalCreation(Collection<Local> locals, String prefix) {
     this.localChain = locals;
-    this.locals = new HashSet<String>(locals.size());
-    for (Local l : locals) {
-      this.locals.add(l.getName());
-    }
     this.prefix = prefix;
-    this.counter = 0; // try the first one with suffix 0.
   }
 
   /**
@@ -83,9 +47,7 @@ public class LocalCreation {
    *          the Type of the new local.
    * @return a new local with a unique name and the given type.
    */
-  public Local newLocal(Type type) {
-    return newLocal(this.prefix, type);
-  }
+  public abstract Local newLocal(Type type);
 
   /**
    * returns a new local with the given prefix and the given type.<br>
@@ -98,18 +60,6 @@ public class LocalCreation {
    *          the Type of the now local.
    * @return a local with the given prefix and the given type.
    */
-  public Local newLocal(String prefix, Type type) {
-    int suffix = prefix.equals(this.prefix) ? this.counter : 0;
-    while (this.locals.contains(prefix + suffix)) {
-      suffix++;
-    }
-    if (prefix.equals(this.prefix)) {
-      this.counter = suffix + 1;
-    }
-    String newName = prefix + suffix;
-    Local newLocal = Jimple.v().newLocal(newName, type);
-    this.localChain.add(newLocal);
-    this.locals.add(newName);
-    return newLocal;
-  }
+  public abstract Local newLocal(String prefix, Type type);
+
 }

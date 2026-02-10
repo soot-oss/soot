@@ -33,13 +33,22 @@ public class FloatConstant extends RealConstant {
 
   private static final long serialVersionUID = 8670501761494749605L;
 
+  public static final FloatConstant ZERO = new FloatConstant(0);
+  public static final FloatConstant ONE = new FloatConstant(1);
+
   public final float value;
 
-  private FloatConstant(float value) {
+  protected FloatConstant(float value) {
     this.value = value;
   }
 
   public static FloatConstant v(float value) {
+    if (Float.compare(value, 0F) == 0) {
+      return ZERO;
+    }
+    if (Float.compare(value, 1F) == 0) {
+      return ONE;
+    }
     return new FloatConstant(value);
   }
 
@@ -195,5 +204,10 @@ public class FloatConstant extends RealConstant {
     if (!(constant instanceof FloatConstant)) {
       throw new IllegalArgumentException("FloatConstant expected");
     }
+  }
+
+  @Override
+  public Number getNumericValue() {
+    return value;
   }
 }

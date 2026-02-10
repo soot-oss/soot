@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,21 +20,29 @@ package soot.toDex;
  * #L%
  */
 
+package soot.toDex;
+
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.writer.io.FileDataStore;
+import com.android.tools.smali.dexlib2.writer.pool.DexPool;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.writer.io.FileDataStore;
-import org.jf.dexlib2.writer.pool.DexPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import soot.asm.AsmJava9ClassProvider;
 
 /**
  * @author Manuel Benz created on 26.09.17
  */
 public class MultiDexBuilder {
+  private static final Logger logger = LoggerFactory.getLogger(MultiDexBuilder.class);
 
   protected final Opcodes opcodes;
   protected final List<DexPool> dexPools = new LinkedList<>();
@@ -93,7 +99,8 @@ public class MultiDexBuilder {
     // (https://developer.android.com/studio/build/multidex.html,
     // http://www.fasteque.com/deep-dive-into-android-multidex/)
     if (!opcodes.isArt()) {
-      throw new RuntimeException("Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
+      logger.warn("Dex file overflow. Splitting is not supported for any version earlier than"
+          + "Lollipop Android (API 22). The application will not run on older devices.");
     }
 
     return true;

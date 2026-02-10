@@ -23,6 +23,7 @@ package soot.jimple.toolkits.base;
  */
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import soot.Body;
@@ -103,7 +104,8 @@ public class ThisInliner extends BodyTransformer {
             oldStmtsToNew.put(inlineeStmt, newThis);
           } else if (rightOp instanceof CaughtExceptionRef) {
             Stmt newInlinee = (Stmt) inlineeStmt.clone();
-            for (ValueBox vb : newInlinee.getUseAndDefBoxes()) {
+            for (Iterator<ValueBox> iterator = newInlinee.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+              ValueBox vb = iterator.next();
               Value val = vb.getValue();
               if (val instanceof Local) {
                 vb.setValue(oldLocalsToNew.get((Local) val));
@@ -127,7 +129,8 @@ public class ThisInliner extends BodyTransformer {
           oldStmtsToNew.put(inlineeStmt, newRet);
         } else {
           Stmt newInlinee = (Stmt) inlineeStmt.clone();
-          for (ValueBox vb : newInlinee.getUseAndDefBoxes()) {
+          for (Iterator<ValueBox> iterator = newInlinee.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+            ValueBox vb = iterator.next();
             Value val = vb.getValue();
             if (val instanceof Local) {
               vb.setValue(oldLocalsToNew.get((Local) val));

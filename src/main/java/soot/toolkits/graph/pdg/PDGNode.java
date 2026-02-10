@@ -41,11 +41,11 @@ public class PDGNode {
 
   public enum Type {
     REGION, CFGNODE
-  };
+  }
 
   public enum Attribute {
     NORMAL, ENTRY, CONDHEADER, LOOPHEADER
-  };
+  }
 
   protected Type m_type;
   protected Object m_node = null;
@@ -133,7 +133,7 @@ public class PDGNode {
     return this.m_dependents;
   }
 
-  public List<PDGNode> getBackDependets() {
+  public List<PDGNode> getBackDependents() {
     return this.m_backDependents;
   }
 

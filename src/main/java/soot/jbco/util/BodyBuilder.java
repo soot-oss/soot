@@ -24,8 +24,10 @@ package soot.jbco.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import soot.Local;
 import soot.PatchingChain;
@@ -63,7 +65,7 @@ public class BodyBuilder {
 
   public static boolean bodiesHaveBeenBuilt = false;
   public static boolean namesHaveBeenRetrieved = false;
-  public static List<String> nameList = new ArrayList<String>();
+  public static Set<String> nameList = new HashSet<String>();
 
   public static void retrieveAllBodies() {
     if (bodiesHaveBeenBuilt) {

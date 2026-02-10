@@ -31,10 +31,10 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
+import soot.Dependencies;
 import soot.G;
 import soot.Singletons;
 import soot.SootClass;
-import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.tagkit.SourceFileTag;
 
 public class DexResolver {

@@ -123,8 +123,8 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Equiv
           outIt.remove();
         }
       } else {
-        // iterate over uses in each avail.
-        for (ValueBox next : avail.getUseBoxes()) {
+        for (Iterator<ValueBox> iterator = avail.getUseBoxesIterator(); iterator.hasNext();) {
+          ValueBox next = iterator.next();
           Value use = next.getValue();
           if (sideEffect.unitCanWriteTo(u, use)) {
             outIt.remove();

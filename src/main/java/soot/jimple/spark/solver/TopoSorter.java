@@ -23,6 +23,8 @@ package soot.jimple.spark.solver;
  */
 
 import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
@@ -59,16 +61,31 @@ public class TopoSorter {
   protected HashSet<VarNode> visited;
 
   protected void dfsVisit(VarNode n) {
-    if (visited.contains(n)) {
+    if (!visited.add(n)) {
       return;
     }
-    visited.add(n);
-    Node[] succs = pag.simpleLookup(n);
-    for (Node element : succs) {
-      if (ignoreTypes || pag.getTypeManager().castNeverFails(n.getType(), element.getType())) {
-        dfsVisit((VarNode) element);
+
+    Stack<VarNode> stack = new Stack<>();
+    Set<VarNode> visitedSuccessors = new HashSet<>();
+    stack.add(n);
+
+    while (!stack.isEmpty()) {
+      VarNode s = stack.peek();
+
+      if (visitedSuccessors.add(s)) {
+        Node[] succs = pag.simpleLookup(s);
+        for (Node element : succs) {
+          if (ignoreTypes || pag.getTypeManager().castNeverFails(n.getType(), element.getType())) {
+            if (visited.add((VarNode) element)) {
+              stack.push((VarNode) element);
+            }
+          }
+        }
+
+      } else {
+        stack.pop();
+        s.setFinishingNumber(nextFinishNumber++);
       }
     }
-    n.setFinishingNumber(nextFinishNumber++);
   }
 }

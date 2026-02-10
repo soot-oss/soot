@@ -23,6 +23,7 @@ package soot.tagkit;
  */
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents the visibility of an annotation attribute attached to a class, field, method or method param (only one of these
@@ -82,11 +83,6 @@ public class VisibilityAnnotationTag implements Tag {
     return visibility;
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("VisibilityAnnotationTag has no value for bytecode");
-  }
-
   public void addAnnotation(AnnotationTag a) {
     if (annotations == null) {
       annotations = new ArrayList<AnnotationTag>();
@@ -94,7 +90,7 @@ public class VisibilityAnnotationTag implements Tag {
     annotations.add(a);
   }
 
-  public ArrayList<AnnotationTag> getAnnotations() {
+  public List<AnnotationTag> getAnnotations() {
     return annotations;
   }
 

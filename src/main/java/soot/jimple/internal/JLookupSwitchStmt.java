@@ -77,7 +77,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
 
   @Override
   public String toString() {
-    final char endOfLine = ' ';
+    final char endOfLine = '\n';
     StringBuilder buf = new StringBuilder(Jimple.LOOKUPSWITCH + "(");
 
     buf.append(keyBox.getValue().toString()).append(')').append(endOfLine);
@@ -87,12 +87,12 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
       IntConstant c = it.next();
       buf.append("    " + Jimple.CASE + " ").append(c).append(": " + Jimple.GOTO + " ");
       Unit target = getTarget(it.previousIndex());
-      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+      appendTarget(endOfLine, buf, target);
     }
     {
       buf.append("    " + Jimple.DEFAULT + ": " + Jimple.GOTO + " ");
       Unit target = getDefaultTarget();
-      buf.append(target == this ? "self" : target).append(';').append(endOfLine);
+      appendTarget(endOfLine, buf, target);
     }
     buf.append('}');
 
@@ -112,7 +112,7 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
       up.literal("    " + Jimple.CASE + " ");
       up.constant(c);
       up.literal(": " + Jimple.GOTO + " ");
-      targetBoxes[it.previousIndex()].toString(up);
+      targetBoxes.get(it.previousIndex()).toString(up);
       up.literal(";");
       up.newline();
     }
@@ -163,5 +163,15 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt implements LookupSwitc
     Unit u = baf.newLookupSwitchInst(baf.newPlaceholderInst(getDefaultTarget()), getLookupValues(), targetPlaceholders);
     u.addAllTagsOf(this);
     out.add(u);
+  }
+
+  @Override
+  public Unit getTargetForValue(int value) {
+    for (int i = 0; i < lookupValues.size(); i++) {
+      if (lookupValues.get(i).value == value) {
+        return getTarget(i);
+      }
+    }
+    return getDefaultTarget();
   }
 }

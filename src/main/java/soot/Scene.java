@@ -1,5 +1,31 @@
 package soot;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -23,30 +49,6 @@ package soot;
  * #L%
  */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.slf4j.Logger;
@@ -57,14 +59,18 @@ import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
 
 import soot.dexpler.DalvikThrowAnalysis;
+import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
+import soot.dotnet.members.DotnetMethod;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
-import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.jimple.toolkits.pointer.SideEffectAnalysis;
+import soot.jimple.toolkits.scalar.DefaultLocalCreation;
+import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
@@ -74,10 +80,8 @@ import soot.util.ArrayNumberer;
 import soot.util.Chain;
 import soot.util.HashChain;
 import soot.util.IterableNumberer;
-import soot.util.MapNumberer;
-import soot.util.Numberer;
+import soot.util.NumberedString;
 import soot.util.StringNumberer;
-import soot.util.WeakMapNumberer;
 
 /**
  * Manages the SootClasses of the application being analyzed.
@@ -85,17 +89,15 @@ import soot.util.WeakMapNumberer;
 public class Scene {
   private static final Logger logger = LoggerFactory.getLogger(Scene.class);
 
-  private static final int defaultSdkVersion = 15;
+  private static final int defaultSdkVersion = 27;
+  private static final Pattern arrayPattern = Pattern.compile("([^\\[\\]]*)(.*)");
 
   protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<String, RefType>();
-
-  protected final ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>(
-      new Kind[] { Kind.INVALID, Kind.STATIC, Kind.VIRTUAL, Kind.INTERFACE, Kind.SPECIAL, Kind.CLINIT, Kind.THREAD,
-          Kind.EXECUTOR, Kind.ASYNCTASK, Kind.FINALIZE, Kind.INVOKE_FINALIZE, Kind.PRIVILEGED, Kind.NEWINSTANCE });
 
   protected final Set<String> reservedNames = new HashSet<String>();
   @SuppressWarnings("unchecked")
   protected final Set<String>[] basicclasses = new Set[4];
+  protected final Options options = Options.v();
 
   protected Chain<SootClass> classes = new HashChain<SootClass>();
   protected Chain<SootClass> applicationClasses = new HashChain<SootClass>();
@@ -103,13 +105,7 @@ public class Scene {
   protected Chain<SootClass> phantomClasses = new HashChain<SootClass>();
 
   protected IterableNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
-  protected Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
   protected StringNumberer subSigNumberer = new StringNumberer();
-  protected IterableNumberer<SootClass> classNumberer;
-  protected Numberer<SparkField> fieldNumberer;
-  protected IterableNumberer<SootMethod> methodNumberer;
-  protected IterableNumberer<Local> localNumberer;
-  protected Numberer<Context> contextNumberer;
 
   protected Hierarchy activeHierarchy;
   protected FastHierarchy activeFastHierarchy;
@@ -124,7 +120,6 @@ public class Scene {
   protected String sootClassPath;
   protected List<SootClass> dynamicClasses;
   protected LinkedList<String> excludedPackages;
-  protected boolean allowsPhantomRefs = false;
   protected SootClass mainClass;
 
   protected boolean incrementalBuild = false;
@@ -139,7 +134,28 @@ public class Scene {
   private AndroidVersionInfo androidSDKVersionInfo;
   private int androidAPIVersion = -1;
 
+  protected List<ISootClassAddedListener> classAddedListeners = new ArrayList<>(4);
+
   public Scene(Singletons.Global g) {
+
+    IterableNumberer<Type> tn = getTypeNumberer();
+    tn.add(BooleanType.INSTANCE);
+    tn.add(ByteType.INSTANCE);
+    tn.add(CharType.INSTANCE);
+    tn.add(DecimalType.INSTANCE);
+    tn.add(DoubleType.INSTANCE);
+    tn.add(FloatType.INSTANCE);
+    tn.add(IntType.INSTANCE);
+    tn.add(LongType.INSTANCE);
+    tn.add(NullType.INSTANCE);
+    tn.add(ShortType.INSTANCE);
+    tn.add(UByteType.INSTANCE);
+    tn.add(UIntType.INSTANCE);
+    tn.add(ULongType.INSTANCE);
+    tn.add(UShortType.INSTANCE);
+    tn.add(UnknownType.INSTANCE);
+    tn.add(VoidType.INSTANCE);
+
     setReservedNames();
 
     // load soot.class.path system property, if defined
@@ -148,33 +164,24 @@ public class Scene {
       setSootClassPath(scp);
     }
 
-    if (Options.v().weak_map_structures()) {
-      this.classNumberer = new WeakMapNumberer<SootClass>();
-      this.fieldNumberer = new WeakMapNumberer<SparkField>();
-      this.methodNumberer = new WeakMapNumberer<SootMethod>();
-      this.localNumberer = new WeakMapNumberer<Local>();
+    if (options.src_prec() == Options.src_prec_dotnet) {
+      addSootBasicDotnetClasses();
     } else {
-      this.classNumberer = new ArrayNumberer<SootClass>();
-      this.fieldNumberer = new ArrayNumberer<SparkField>();
-      this.methodNumberer = new ArrayNumberer<SootMethod>();
-      this.localNumberer = new ArrayNumberer<Local>();
+      addSootBasicClasses();
     }
-
-    addSootBasicClasses();
-
     determineExcludedPackages();
   }
 
   public static Scene v() {
-    if (ModuleUtil.module_mode()) {
-      return G.v().soot_ModuleScene();
+    G g = G.v();
+    if (g.soot_ModuleUtil().isInModuleMode()) {
+      return g.soot_ModuleScene();
     } else {
-      return G.v().soot_Scene();
+      return g.soot_Scene();
     }
   }
 
   private void determineExcludedPackages() {
-    final Options options = Options.v();
     LinkedList<String> excludedPackages;
     {
       List<String> exclude = options.exclude();
@@ -206,7 +213,8 @@ public class Scene {
 
   public void setMainClass(SootClass m) {
     mainClass = m;
-    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))) {
+    if (!m.declaresMethod(getSubSigNumberer().findOrAdd("void main(java.lang.String[])"))
+        && !m.declaresMethod(getSubSigNumberer().findOrAdd(DotnetMethod.MAIN_METHOD_SIGNATURE))) {
       throw new RuntimeException("Main-class has no main method!");
     }
   }
@@ -240,13 +248,19 @@ public class Scene {
 
     StringBuilder res = new StringBuilder(s.length());
     for (String part : s.split("\\.")) {
+      int arr = part.indexOf('[');
+      String arrSuffix = "";
+      if (arr != -1) {
+        arrSuffix = part.substring(arr);
+        part = part.substring(0, arr);
+      }
       if (res.length() > 0) {
         res.append('.');
       }
       if ((!part.isEmpty() && part.charAt(0) == '-') || reservedNames.contains(part)) {
-        res.append('\'').append(part).append('\'');
+        res.append('\'').append(part).append('\'').append(arrSuffix);
       } else {
-        res.append(part);
+        res.append(part).append(arrSuffix);
       }
     }
     return res.toString();
@@ -300,8 +314,11 @@ public class Scene {
       throw new RuntimeException("There is no main class set!");
     }
 
-    SootMethod mainMethod = mainClass.getMethodUnsafe("main",
-        Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v());
+    SootMethod mainMethod = options.src_prec() != Options.src_prec_dotnet
+        ? mainClass.getMethodUnsafe("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)),
+            VoidType.v())
+        : mainClass.getMethodUnsafe("Main",
+            Collections.singletonList(ArrayType.v(RefType.v(DotNetBasicTypes.SYSTEM_STRING), 1)), VoidType.v());
     if (mainMethod == null) {
       throw new RuntimeException("Main class declares no main method!");
     }
@@ -314,41 +331,40 @@ public class Scene {
   }
 
   public void extendSootClassPath(String newPathElement) {
-    sootClassPath += File.pathSeparatorChar + newPathElement;
+    if (sootClassPath == null) {
+      sootClassPath = newPathElement;
+    } else {
+      sootClassPath += File.pathSeparatorChar + newPathElement;
+    }
     SourceLocator.v().extendClassPath(newPathElement);
+  }
+
+  public void reset() {
+    sootClassPath = null;
   }
 
   public String getSootClassPath() {
     if (sootClassPath == null) {
       // First, check Options for a classpath
-      String cp = Options.v().soot_classpath();
+      String cp = options.soot_classpath();
       // If no classpath is given via Options, just use the default.
       // Otherwise, if the prepend flag is set, append the default.
       if (cp == null || cp.isEmpty()) {
         cp = defaultClassPath();
-      } else if (Options.v().prepend_classpath()) {
+      } else if (options.prepend_classpath()) {
         cp += File.pathSeparatorChar + defaultClassPath();
       }
       List<String> dirs = new LinkedList<String>();
-      dirs.addAll(Options.v().process_dir());
+      dirs.addAll(options.process_dir());
       // Add process-jar-dirs
-      List<String> jarDirs = Options.v().process_jar_dir();
-      if (!jarDirs.isEmpty()) {
-        for (String jarDirName : jarDirs) {
-          File jarDir = new File(jarDirName);
-          File[] contents = jarDir.listFiles();
-          for (File f : contents) {
-            if (f.getAbsolutePath().endsWith(".jar")) {
-              dirs.add(f.getAbsolutePath());
-            }
-          }
-        }
-      }
+      dirs.addAll(getJarsFromDirs(options.process_jar_dir()));
       // Add process-dirs (if applicable)
       if (!dirs.isEmpty()) {
         StringBuilder pds = new StringBuilder();
         for (String path : dirs) {
           if (!cp.contains(path)) {
+            // To support paths to jars with ':' in the name, escape the path separator if it was not already escaped.
+            path = path.replaceAll("(?<!\\\\)" + Pattern.quote(File.pathSeparator), "\\\\" + File.pathSeparator);
             pds.append(path).append(File.pathSeparatorChar);
           }
         }
@@ -359,6 +375,11 @@ public class Scene {
     }
 
     return sootClassPath;
+  }
+
+  private List<String> getJarsFromDirs(List<String> dirs) {
+    return dirs.stream().flatMap(d -> Arrays.stream(new File(d).listFiles())).map(f -> f.getAbsolutePath())
+        .filter(n -> n.endsWith(".jar")).collect(Collectors.toList());
   }
 
   /**
@@ -418,7 +439,7 @@ public class Scene {
 
   public int getAndroidAPIVersion() {
     return androidAPIVersion > 0 ? androidAPIVersion
-        : (Options.v().android_api_version() > 0 ? Options.v().android_api_version() : defaultSdkVersion);
+        : (options.android_api_version() > 0 ? options.android_api_version() : defaultSdkVersion);
   }
 
   private int getAndroidAPIVersion(String jars, String apk) {
@@ -441,8 +462,8 @@ public class Scene {
     androidAPIVersion = defaultSdkVersion;
 
     // Do we have an explicit API version?
-    if (Options.v().android_api_version() > 0) {
-      androidAPIVersion = Options.v().android_api_version();
+    if (options.android_api_version() > 0) {
+      androidAPIVersion = options.android_api_version();
     } else if (apk != null) {
       if (apk.toLowerCase().endsWith(".apk")) {
         androidAPIVersion = getTargetSDKVersion(apk, jars);
@@ -588,19 +609,37 @@ public class Scene {
     return androidSDKVersionInfo;
   }
 
+  static boolean isUsingAndroid() {
+    int srcprec = Options.v().src_prec();
+    return srcprec == Options.src_prec_apk || srcprec == Options.src_prec_apk_c_j
+        || srcprec == Options.src_prec_apk_class_jimple;
+  }
+
+  static boolean isUsingJava() {
+    int srcprec = Options.v().src_prec();
+    return srcprec == Options.src_prec_c || srcprec == Options.src_prec_class || srcprec == Options.src_prec_only_class
+        || srcprec == Options.src_prec_apk_c_j || srcprec == Options.src_prec_apk_class_jimple;
+  }
+
+  static boolean isUsingDotNet() {
+    int srcprec = Options.v().src_prec();
+    return srcprec == Options.src_prec_dotnet;
+  }
+
   public String defaultClassPath() {
-    if (Options.v().src_prec() != Options.src_prec_apk) {
+    if (!isUsingAndroid()) {
       // If we have an apk file on the process dir and do not have a src-prec
       // option that loads APK files, we give a warning
-      for (String entry : Options.v().process_dir()) {
-        if (entry.toLowerCase().endsWith(".apk")) {
+      for (String entry : options.process_dir()) {
+        final String e = entry.toLowerCase();
+        if (e.endsWith(".apk") || e.endsWith(".dex")) {
           System.err.println("APK file on process dir, but chosen src-prec does not support loading APKs");
           break;
         }
       }
       String path = defaultJavaClassPath();
       if (path == null) {
-        throw new RuntimeException("Error: cannot find rt.jar.");
+        throw new UserInputException("Error: Cannot find rt.jar.");
       }
       return path;
     } else {
@@ -610,11 +649,18 @@ public class Scene {
 
   private String defaultAndroidClassPath() {
     // check that android.jar is not in classpath
-    String androidJars = Options.v().android_jars();
-    String forceAndroidJar = Options.v().force_android_jar();
+    String androidJars = options.android_jars();
+    String forceAndroidJar = options.force_android_jar();
     if ((androidJars == null || androidJars.isEmpty()) && (forceAndroidJar == null || forceAndroidJar.isEmpty())) {
-      throw new RuntimeException("You are analyzing an Android application but did "
-          + "not define android.jar. Options -android-jars or -force-android-jar should be used.");
+      String msgSuffix;
+      if (Main.usedAsCommandLineApp) {
+        msgSuffix = "Options --android-jars or --force-android-jar should be used.";
+      } else {
+        msgSuffix = "Options.v().set_android_jars or Options.v().set_force_android_jar should be used";
+      }
+      throw new UserInputException("You are analyzing an Android application but did not define android.jar. " + msgSuffix
+          + "\nUse android-jars to specify the Android SDK's platform path "
+          + "and force-android-jar to supply a direct path to a specific android.jar file");
     }
 
     // Get the platform JAR file. It either directly specified, or
@@ -624,8 +670,8 @@ public class Scene {
     if (forceAndroidJar != null && !forceAndroidJar.isEmpty()) {
       jarPath = forceAndroidJar;
 
-      if (Options.v().android_api_version() > 0) {
-        androidAPIVersion = Options.v().android_api_version();
+      if (options.android_api_version() > 0) {
+        androidAPIVersion = options.android_api_version();
       } else if (forceAndroidJar.contains("android-")) {
         Pattern pt = Pattern.compile("\\" + File.separatorChar + "android-(\\d+)" + "\\" + File.separatorChar);
         Matcher m = pt.matcher(forceAndroidJar);
@@ -637,15 +683,15 @@ public class Scene {
       }
     } else if (androidJars != null && !androidJars.isEmpty()) {
       List<String> classPathEntries
-          = new ArrayList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
-      classPathEntries.addAll(Options.v().process_dir());
+          = new ArrayList<String>(Arrays.asList(options.soot_classpath().split(File.pathSeparator)));
+      classPathEntries.addAll(options.process_dir());
 
       String targetApk = "";
       Set<String> targetDexs = new HashSet<String>();
       for (String entry : classPathEntries) {
         if (isApk(new File(entry))) {
           if (targetApk != null && !targetApk.isEmpty()) {
-            throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
+            throw new UserInputException("Only one Android application can be analyzed when using option -android-jars.");
           }
           targetApk = entry;
         }
@@ -658,7 +704,7 @@ public class Scene {
       // We need at least one file to process
       if (targetApk == null || targetApk.isEmpty()) {
         if (targetDexs.isEmpty()) {
-          throw new RuntimeException("no apk file given");
+          throw new UserInputException("No apk file given");
         }
         jarPath = getAndroidJarPath(androidJars, null);
       } else {
@@ -668,13 +714,13 @@ public class Scene {
 
     // We must have a platform JAR file when analyzing Android apps
     if (jarPath.isEmpty()) {
-      throw new RuntimeException("android.jar not found.");
+      throw new UserInputException("android.jar not found.");
     }
 
     // Check the platform JAR file
     File f = new File(jarPath);
     if (!f.exists()) {
-      throw new RuntimeException("file '" + jarPath + "' does not exist!");
+      throw new UserInputException("File '" + jarPath + "' does not exist!");
     } else {
       logger.debug("Using '" + jarPath + "' as android.jar");
     }
@@ -782,13 +828,14 @@ public class Scene {
       }
     }
 
-    if (!javaGEQ9
-        && (Options.v().whole_program() || Options.v().whole_shimple()
-            || Options.v().output_format() == Options.output_format_dava)) {
-      // add jce.jar, which is necessary for whole program mode
-      // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
-      sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib").append(File.separatorChar)
-          .append("jce.jar");
+    if (!javaGEQ9) {
+      final Options options = Options.v();
+      if (options.whole_program() || options.whole_shimple()) {
+        // add jce.jar, which is necessary for whole program mode
+        // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
+        sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib")
+            .append(File.separatorChar).append("jce.jar");
+      }
     }
 
     return sb.toString();
@@ -848,6 +895,8 @@ public class Scene {
       }
       nameToClass.computeIfAbsent(c.getName(), k -> c.getType());
     }
+
+    classAddedListeners.stream().forEach(l -> l.onSootClassAdded(c));
   }
 
   public void removeClass(SootClass c) {
@@ -959,14 +1008,11 @@ public class Scene {
    */
   public SootClass tryLoadClass(String className, int desiredLevel) {
     /*
-     * if(Options.v().time()) Main.v().resolveTimer.start();
+     * if(options.time()) Main.v().resolveTimer.start();
      */
-
-    setPhantomRefs(true);
     ClassSource source = SourceLocator.v().getClassSource(className);
     try {
       if (!getPhantomRefs() && source == null) {
-        setPhantomRefs(false);
         return null;
       }
     } finally {
@@ -975,11 +1021,10 @@ public class Scene {
       }
     }
     SootClass toReturn = SootResolver.v().resolveClass(className, desiredLevel);
-    setPhantomRefs(false);
     return toReturn;
 
     /*
-     * if(Options.v().time()) Main.v().resolveTimer.end();
+     * if(options.time()) Main.v().resolveTimer.end();
      */
   }
 
@@ -993,19 +1038,8 @@ public class Scene {
   }
 
   public SootClass loadClass(String className, int desiredLevel) {
-    /*
-     * if(Options.v().time()) Main.v().resolveTimer.start();
-     */
-
-    setPhantomRefs(true);
     SootClass toReturn = SootResolver.v().resolveClass(className, desiredLevel);
-    setPhantomRefs(false);
-
     return toReturn;
-
-    /*
-     * if(Options.v().time()) Main.v().resolveTimer.end();
-     */
   }
 
   /**
@@ -1056,7 +1090,15 @@ public class Scene {
    * @return The Type if it can be resolved and null otherwise
    */
   public Type getTypeUnsafe(String arg, boolean phantomNonExist) {
-    String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
+    String type = arg;
+    int arrayCount = -1;
+    if (arg.contains("[")) {
+      Matcher m = arrayPattern.matcher(arg);
+      if (m.matches()) {
+        type = m.group(1);
+        arrayCount = m.group(2).length() / 2;
+      }
+    }
     Type result = getRefTypeUnsafe(type);
     if (result == null) {
       switch (type) {
@@ -1075,8 +1117,18 @@ public class Scene {
         case "float":
           result = FloatType.v();
           break;
-        case "byte":
+        case "sbyte":
           result = ByteType.v();
+          break;
+        case "ubyte":
+          result = UByteType.v();
+          break;
+        case "byte":
+          if (options.src_prec() == Options.src_prec_dotnet) {
+            result = UByteType.v();
+          } else {
+            result = ByteType.v();
+          }
           break;
         case "char":
           result = CharType.v();
@@ -1096,11 +1148,8 @@ public class Scene {
       }
     }
 
-    if (result != null) {
-      int arrayCount = arg.contains("[") ? arg.replaceAll("([^\\[\\]]*)(.*)", "$2").length() / 2 : 0;
-      if (arrayCount != 0) {
-        result = ArrayType.v(result, arrayCount);
-      }
+    if (result != null && arrayCount > 0) {
+      result = ArrayType.v(result, arrayCount);
     }
     return result;
   }
@@ -1131,7 +1180,22 @@ public class Scene {
 
   /** Returns the {@link RefType} for {@link Object}. */
   public RefType getObjectType() {
+    if (options.src_prec() == Options.src_prec_dotnet) {
+      return getRefType(DotNetBasicTypes.SYSTEM_OBJECT);
+    }
     return getRefType("java.lang.Object");
+  }
+
+  /**
+   * Returns the base class of exceptions.
+   * 
+   * @return RefType with the given className
+   */
+  public RefType getBaseExceptionType() {
+    if (options.src_prec() == Options.src_prec_dotnet) {
+      return getRefType(DotNetBasicTypes.SYSTEM_EXCEPTION);
+    }
+    return getRefType("java.lang.Throwable");
   }
 
   /**
@@ -1168,7 +1232,7 @@ public class Scene {
     RefType type = nameToClass.get(className);
     if (type != null) {
       synchronized (type) {
-        if (type.hasSootClass() || !SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(className)) {
+        if (type.hasSootClass()) {
           SootClass tsc = type.getSootClass();
           if (tsc != null) {
             return tsc;
@@ -1196,7 +1260,7 @@ public class Scene {
 
   /**
    * Returns the SootClass with the given className.
-   * 
+   *
    * @param className
    *          The name of the class to get; throws RuntimeException if this class does not exist.
    */
@@ -1331,7 +1395,7 @@ public class Scene {
   }
 
   /** Retrieves the active fast hierarchy */
-  public synchronized FastHierarchy getFastHierarchy() {
+  public FastHierarchy getFastHierarchy() {
     FastHierarchy temp = this.activeFastHierarchy;
     if (temp == null) {
       throw new RuntimeException("no active FastHierarchy present for scene");
@@ -1340,15 +1404,15 @@ public class Scene {
   }
 
   /** Sets the active hierarchy */
-  public synchronized void setFastHierarchy(FastHierarchy hierarchy) {
+  public void setFastHierarchy(FastHierarchy hierarchy) {
     activeFastHierarchy = hierarchy;
   }
 
-  public synchronized boolean hasFastHierarchy() {
+  public boolean hasFastHierarchy() {
     return activeFastHierarchy != null;
   }
 
-  public synchronized void releaseFastHierarchy() {
+  public void releaseFastHierarchy() {
     activeFastHierarchy = null;
   }
 
@@ -1364,15 +1428,15 @@ public class Scene {
   }
 
   /** Sets the active hierarchy */
-  public synchronized void setActiveHierarchy(Hierarchy hierarchy) {
+  public void setActiveHierarchy(Hierarchy hierarchy) {
     activeHierarchy = hierarchy;
   }
 
-  public synchronized boolean hasActiveHierarchy() {
+  public boolean hasActiveHierarchy() {
     return activeHierarchy != null;
   }
 
-  public synchronized void releaseActiveHierarchy() {
+  public void releaseActiveHierarchy() {
     activeHierarchy = null;
   }
 
@@ -1452,60 +1516,19 @@ public class Scene {
   }
 
   public boolean getPhantomRefs() {
-    // if( !Options.v().allow_phantom_refs() ) return false;
-    // return allowsPhantomRefs;
-    return Options.v().allow_phantom_refs();
-  }
-
-  public void setPhantomRefs(boolean value) {
-    allowsPhantomRefs = value;
+    return options.allow_phantom_refs();
   }
 
   public boolean allowsPhantomRefs() {
     return getPhantomRefs();
   }
 
-  public Numberer<Kind> kindNumberer() {
-    return kindNumberer;
-  }
-
   public IterableNumberer<Type> getTypeNumberer() {
     return typeNumberer;
   }
 
-  public IterableNumberer<SootMethod> getMethodNumberer() {
-    return methodNumberer;
-  }
-
-  public Numberer<Context> getContextNumberer() {
-    return contextNumberer;
-  }
-
-  public Numberer<Unit> getUnitNumberer() {
-    return unitNumberer;
-  }
-
-  public Numberer<SparkField> getFieldNumberer() {
-    return fieldNumberer;
-  }
-
-  public IterableNumberer<SootClass> getClassNumberer() {
-    return classNumberer;
-  }
-
   public StringNumberer getSubSigNumberer() {
     return subSigNumberer;
-  }
-
-  public IterableNumberer<Local> getLocalNumberer() {
-    return localNumberer;
-  }
-
-  public void setContextNumberer(Numberer<Context> n) {
-    if (contextNumberer != null) {
-      throw new RuntimeException("Attempt to set context numberer when it is already set.");
-    }
-    contextNumberer = n;
   }
 
   /**
@@ -1515,7 +1538,7 @@ public class Scene {
    */
   public ThrowAnalysis getDefaultThrowAnalysis() {
     if (defaultThrowAnalysis == null) {
-      switch (Options.v().throw_analysis()) {
+      switch (options.throw_analysis()) {
         case Options.throw_analysis_pedantic:
           defaultThrowAnalysis = PedanticThrowAnalysis.v();
           break;
@@ -1525,15 +1548,21 @@ public class Scene {
         case Options.throw_analysis_dalvik:
           defaultThrowAnalysis = DalvikThrowAnalysis.v();
           break;
+        case Options.throw_analysis_dotnet:
+          defaultThrowAnalysis = DotnetThrowAnalysis.v();
+          break;
+
         case Options.throw_analysis_auto_select:
-          if (Options.v().src_prec() == Options.src_prec_apk) {
+          if (options.src_prec() == Options.src_prec_apk) {
             defaultThrowAnalysis = DalvikThrowAnalysis.v();
+          } else if (options.src_prec() == Options.src_prec_dotnet) {
+            defaultThrowAnalysis = DotnetThrowAnalysis.v();
           } else {
             defaultThrowAnalysis = UnitThrowAnalysis.v();
           }
           break;
         default:
-          throw new IllegalStateException("Options.v().throw_analysis() == " + Options.v().throw_analysis());
+          throw new IllegalStateException("options.throw_analysis() == " + options.throw_analysis());
       }
     }
     return defaultThrowAnalysis;
@@ -1637,6 +1666,7 @@ public class Scene {
 
     addBasicClass("java.lang.String");
     addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
+    addBasicClass("java.lang.StringBuilder", SootClass.SIGNATURES);
     addBasicClass("java.lang.Enum", SootClass.SIGNATURES);
 
     addBasicClass("java.lang.Error");
@@ -1682,6 +1712,92 @@ public class Scene {
     addBasicClass("java.lang.ref.Finalizer");
 
     addBasicClass("java.lang.invoke.LambdaMetafactory");
+  }
+
+  private void addSootBasicDotnetClasses() {
+    basicclasses[SootClass.HIERARCHY] = new LinkedHashSet<>();
+    basicclasses[SootClass.SIGNATURES] = new LinkedHashSet<>();
+    basicclasses[SootClass.BODIES] = new LinkedHashSet<>();
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_OBJECT, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_VOID, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_BOOLEAN, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_BYTE, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_CHAR, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INT16, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INT32, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INT64, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_SINGLE, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_DOUBLE, SootClass.SIGNATURES);
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_STRING, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ENUM, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_TYPE, SootClass.SIGNATURES);
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_SBYTE, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_DECIMAL, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INTPTR, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_UINTPTR, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_UINTPTR, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_UINT16, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_UINT32, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_UINT64, SootClass.SIGNATURES);
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_EXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ACCESSVIOLATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_AGGREGATEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_APPDOMAINUNLOADEDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_APPLICATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ARGUMENTEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ARGUMENTNULLEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ARGUMENTOUTOFRANGEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ARITHMETICEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ARRAYTYPEMISMATCHEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_BADIMAGEFORMATEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_CANNOTUNLOADAPPDOMAINEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_CONTEXTMARSHALEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_DATAMISALIGNEDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_DIVIDEBYZEROEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_DLLNOTFOUNDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_DUPLICATEWAITOBJECTEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_ENTRYPOINTNOTFOUNDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_EXECUTIONENGINEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_FIELDACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_FORMATEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INSUFFICIENTEXECUTIONSTACKEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INSUFFICIENTMEMORYEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INVALIDCASTEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INVALIDOPERATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INVALIDPROGRAMEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_INVALIDTIMEZONEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_OUTOFMEMORYEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_SYSTEMEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_TYPEACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_TYPEINITIALIZATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_TYPEUNLOADEDEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_UNAUTHORIZEDACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_URIFORMATEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_VERIFICATIONEXCEPTION, SootClass.SIGNATURES);
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_SECURITYEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_METHODACCESSEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_VERIFICATIONEXCEPTION, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_STACKOVERFLOWEXCEPTION, SootClass.SIGNATURES);
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_THREADING, SootClass.SIGNATURES);
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_SERIALIZEABLEATTRIBUTE, SootClass.SIGNATURES);
+
+    addBasicClass(DotNetBasicTypes.SYSTEM_CONSOLE, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_RUNTIMEFIELDHANDLE, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_RUNTIMEMETHODHANDLE, SootClass.SIGNATURES);
+    addBasicClass(DotNetBasicTypes.SYSTEM_RUNTIMETYPEHANDLE, SootClass.SIGNATURES);
   }
 
   public void addBasicClass(String name) {
@@ -1750,6 +1866,8 @@ public class Scene {
             classNames.add(source.substring(0, source.lastIndexOf('.')));
             switch (kind) {
               case "Class.forName":
+              case "Class.getFields":
+              case "Class.getMethods":
                 classNames.add(target);
                 break;
               case "Class.newInstance":
@@ -1757,11 +1875,35 @@ public class Scene {
                 break;
               case "Method.invoke":
               case "Constructor.newInstance":
+              case "Method.toString":
+              case "Class.getDeclaredField":
+              case "Class.getDeclaredMethod":
+              case "Class.getMethod":
+              case "Class.getField":
+              case "Constructor.getModifiers":
+              case "Field.getModifiers":
+              case "Method.getModifiers":
+              case "Method.getName":
+              case "Method.getDeclaringClass":
+              case "Constructor.toString":
+              case "Method.toGenericString":
                 classNames.add(signatureToClass(target));
+                break;
+              case "Class.getDeclaredFields":
+              case "Class.getDeclaredMethods":
+                if (!target.startsWith("[")) {
+                  classNames.add(target);
+                }
                 break;
               case "Field.set*":
               case "Field.get*":
+              case "Field.toString":
+              case "Field.getName":
+              case "Field.getDeclaringClass":
                 classNames.add(signatureToClass(target));
+                break;
+              case "Array.newInstance":
+                // not do anything
                 break;
               default:
                 throw new RuntimeException("Unknown entry kind: " + kind);
@@ -1797,7 +1939,7 @@ public class Scene {
   public void loadNecessaryClasses() {
     loadBasicClasses();
 
-    final Options opts = Options.v();
+    final Options opts = options;
     for (String name : opts.classes()) {
       loadNecessaryClass(name);
     }
@@ -1809,7 +1951,9 @@ public class Scene {
         throw new IllegalArgumentException("If switch -oaat is used, then also -process-dir must be given.");
       }
     } else {
-      for (String path : opts.process_dir()) {
+      List<String> todo = new ArrayList<>(opts.process_dir());
+      todo.addAll(getJarsFromDirs(opts.process_jar_dir()));
+      for (String path : todo) {
         for (String cl : SourceLocator.v().getClassesUnder(path)) {
           SootClass theClass = loadClassAndSupport(cl);
           if (!theClass.isPhantom) {
@@ -1825,7 +1969,7 @@ public class Scene {
 
   public void loadDynamicClasses() {
     final ArrayList<SootClass> dynamicClasses = new ArrayList<SootClass>();
-    final Options opts = Options.v();
+    final Options opts = options;
 
     final HashSet<String> temp = new HashSet<String>(opts.dynamic_class());
 
@@ -1859,7 +2003,7 @@ public class Scene {
    * Generate classes to process, adding or removing package marked by command line options.
    */
   protected void prepareClasses() {
-    final List<String> optionsClasses = Options.v().classes();
+    final List<String> optionsClasses = options.classes();
     // Remove/add all classes from packageInclusionMask as per -i option
     Chain<SootClass> processedClasses = new HashChain<SootClass>();
     while (true) {
@@ -1873,7 +2017,7 @@ public class Scene {
         if (s.isPhantom()) {
           continue;
         }
-        if (Options.v().app()) {
+        if (options.app()) {
           s.setApplicationClass();
         }
         if (optionsClasses.contains(s.getName())) {
@@ -1899,6 +2043,9 @@ public class Scene {
   }
 
   public boolean isExcluded(String className) {
+    if (excludedPackages == null) {
+      return false;
+    }
     for (String pkg : excludedPackages) {
       if (className.equals(pkg)
           || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
@@ -1913,7 +2060,7 @@ public class Scene {
   }
 
   public boolean isIncluded(String className) {
-    for (String pkg : Options.v().include()) {
+    for (String pkg : options.include()) {
       if (className.equals(pkg)
           || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && className.startsWith(pkg.substring(0, pkg.length() - 1)))) {
         return true;
@@ -1937,6 +2084,30 @@ public class Scene {
       return new PolymorphicMethodRef(declaringClass, name, parameterTypes, returnType, isStatic);
     } else {
       return new SootMethodRefImpl(declaringClass, name, parameterTypes, returnType, isStatic);
+    }
+  }
+
+  /** Create an unresolved reference to a method. */
+  public SootMethodRef makeMethodRef(SootClass declaringClass, String subsig, boolean isStatic) {
+    NumberedString numbered = Scene.v().getSubSigNumberer().findOrAdd(subsig);
+    MethodSubSignature sootSubsig = new MethodSubSignature(numbered);
+    if (PolymorphicMethodRef.handlesClass(declaringClass)) {
+      return new PolymorphicMethodRef(declaringClass, sootSubsig.getMethodName(), sootSubsig.getParameterTypes(),
+          sootSubsig.getReturnType(), isStatic);
+    } else {
+      return new SootMethodRefImpl(declaringClass, sootSubsig.getMethodName(), sootSubsig.getParameterTypes(),
+          sootSubsig.getReturnType(), isStatic);
+    }
+  }
+
+  /** Create an unresolved reference to a method. */
+  public SootMethodRef makeMethodRef(SootClass declaringClass, MethodSubSignature subsig, boolean isStatic) {
+    if (PolymorphicMethodRef.handlesClass(declaringClass)) {
+      return new PolymorphicMethodRef(declaringClass, subsig.getMethodName(), subsig.getParameterTypes(),
+          subsig.getReturnType(), isStatic);
+    } else {
+      return new SootMethodRefImpl(declaringClass, subsig.getMethodName(), subsig.getParameterTypes(),
+          subsig.getReturnType(), isStatic);
     }
   }
 
@@ -1969,21 +2140,26 @@ public class Scene {
     doneResolving = true;
   }
 
-  void setResolving(boolean value) {
+  public void setResolving(boolean value) {
     doneResolving = value;
   }
 
   public void setMainClassFromOptions() {
     if (mainClass == null) {
-      String optsMain = Options.v().main_class();
+      String optsMain = options.main_class();
       if (optsMain != null && !optsMain.isEmpty()) {
         setMainClass(getSootClass(optsMain));
       } else {
-        final List<Type> mainArgs = Collections.singletonList(ArrayType.v(RefType.v("java.lang.String"), 1));
+        final List<Type> mainArgs = Collections.singletonList(
+            ArrayType.v(options.src_prec() == Options.src_prec_dotnet ? RefType.v(DotNetBasicTypes.SYSTEM_STRING)
+                : RefType.v("java.lang.String"), 1));
         // try to infer a main class from the command line if none is given
-        for (String next : Options.v().classes()) {
+        for (String next : options.classes()) {
           SootClass c = getSootClass(next);
-          if (c.declaresMethod("main", mainArgs, VoidType.v())) {
+          boolean declaresMethod
+              = options.src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+                  : c.declaresMethod("Main", mainArgs, VoidType.v());
+          if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
             setMainClass(c);
             return;
@@ -1992,7 +2168,10 @@ public class Scene {
 
         // try to infer a main class from the usual classpath if none is given
         for (SootClass c : getApplicationClasses()) {
-          if (c.declaresMethod("main", mainArgs, VoidType.v())) {
+          boolean declaresMethod
+              = options.src_prec() != Options.src_prec_dotnet ? c.declaresMethod("main", mainArgs, VoidType.v())
+                  : c.declaresMethod("Main", mainArgs, VoidType.v());
+          if (declaresMethod) {
             logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
             setMainClass(c);
             return;
@@ -2078,5 +2257,46 @@ public class Scene {
    */
   public CallGraph internalMakeCallGraph() {
     return new CallGraph();
+  }
+
+  public LocalGenerator createLocalGenerator(Body stmtBody) {
+    return new DefaultLocalGenerator(stmtBody);
+  }
+
+  public LocalCreation createLocalCreation(Chain<Local> locals) {
+    return new DefaultLocalCreation(locals);
+  }
+
+  public LocalCreation createLocalCreation(Chain<Local> locals, String prefix) {
+    return new DefaultLocalCreation(locals, prefix);
+  }
+
+  /**
+   * Resets the sootClassPath to null. This method allows for subsequent calls to {@link #loadNecessaryClasses()} to
+   * recompute and load the classes using updated configurations if provided.
+   */
+  public void resetSootClassPathCache() {
+    this.sootClassPath = null;
+  }
+
+  /**
+   * Registers a new listener that is invoked when a new SootClass is added to the scene
+   * 
+   * @param listener
+   *          The listener that shall be invoked when a new SootClass is added to the scene
+   */
+  public void registerSootClassAddedListener(ISootClassAddedListener listener) {
+    classAddedListeners.add(listener);
+  }
+
+  /**
+   * Unrgisters a listener that processes new SootClases being added to the scene
+   * 
+   * @param listener
+   *          The listener to remove
+   */
+  public void unregisterSootClassAddedListener(ISootClassAddedListener listener) {
+    classAddedListeners.remove(listener);
+
   }
 }

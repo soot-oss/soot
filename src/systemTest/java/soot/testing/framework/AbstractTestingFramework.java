@@ -181,7 +181,7 @@ public abstract class AbstractTestingFramework {
    */
   protected List<String> getExcludes() {
     List<String> excludeList = new ArrayList<>();
-    excludeList.add("java.*");
+    // excludeList.add("java.*");
     excludeList.add("sun.*");
     excludeList.add("android.*");
     excludeList.add("org.apache.*");
@@ -240,13 +240,10 @@ public abstract class AbstractTestingFramework {
     return sootClass;
   }
 
-  private String classFromSignature(String targetMethod) {
-    return targetMethod.substring(1, targetMethod.indexOf(':'));
-  }
-
-  private SootMethod getMethodForSig(String sig) {
-    Scene.v().forceResolve(classFromSignature(sig), SootClass.BODIES);
-    return Scene.v().getMethod(sig);
+  private static SootMethod getMethodForSig(String sig) {
+    final Scene scene = Scene.v();
+    scene.forceResolve(Scene.signatureToClass(sig), SootClass.BODIES);
+    return scene.getMethod(sig);
   }
 
   /**
@@ -277,7 +274,7 @@ public abstract class AbstractTestingFramework {
     // First, convert all method Body instances to BafBody
     for (SootMethod m : sc.getMethods()) {
       if (m.isConcrete()) {
-        convertBodyToBaf(m);
+        convertBodyToJimple(m);
       }
     }
 
@@ -285,6 +282,21 @@ public abstract class AbstractTestingFramework {
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     new BafASMBackend(sc, Options.v().java_version()).generateClassFile(os);
     return os.toByteArray();
+  }
+
+  /**
+   * Converts the {@link Body} of the given {@link SootMethod} to a {@link JimpleBody}.
+   * 
+   * @param m
+   */
+  public static void convertBodyToJimple(SootMethod m) {
+    Body b = m.retrieveActiveBody();
+    Assert.assertNotNull(b);
+    // If ShimpleBody, first convert to JimpleBody
+    if (b instanceof ShimpleBody) {
+      JimpleBody jb = ((ShimpleBody) b).toJimpleBody();
+      m.setActiveBody(jb);
+    }
   }
 
   /**
@@ -307,7 +319,6 @@ public abstract class AbstractTestingFramework {
       // Convert JimpleBody to BafBody (based on PackManager#convertJimpleBodyToBaf)
       BafBody bafBody = Baf.v().newBody((JimpleBody) b);
       PackManager.v().getPack("bop").apply(bafBody);
-      PackManager.v().getPack("tag").apply(bafBody);
 
       m.setActiveBody(bafBody);
     }

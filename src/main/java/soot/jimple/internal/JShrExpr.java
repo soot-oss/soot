@@ -25,6 +25,7 @@ package soot.jimple.internal;
 import soot.IntType;
 import soot.LongType;
 import soot.Type;
+import soot.ULongType;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
@@ -65,6 +66,10 @@ public class JShrExpr extends AbstractJimpleIntLongBinopExpr implements ShrExpr 
       final LongType tyLong = LongType.v();
       if (tyLong.equals(t1)) {
         return tyLong;
+      }
+      final ULongType tyuLong = ULongType.v();
+      if (tyuLong.equals(t1)) {
+        return tyuLong;
       }
     }
     return UnknownType.v();

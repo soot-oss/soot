@@ -41,21 +41,6 @@ public class ArrayCheckTag implements OneByteCodeTag {
   }
 
   /**
-   * Returns back the check information in binary form, which will be written into the class file.
-   */
-  @Override
-  public byte[] getValue() {
-    byte b = 0;
-    if (lowerCheck) {
-      b |= 0x01;
-    }
-    if (upperCheck) {
-      b |= 0x02;
-    }
-    return new byte[] { b };
-  }
-
-  /**
    * Needs upper bound check?
    */
   public boolean isCheckUpper() {

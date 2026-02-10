@@ -22,12 +22,11 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -35,8 +34,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,11 +50,14 @@ import soot.EntryPoints;
 import soot.FastHierarchy;
 import soot.FloatType;
 import soot.IntType;
+import soot.JavaMethods;
 import soot.Kind;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.LongType;
 import soot.MethodContext;
 import soot.MethodOrMethodContext;
+import soot.MethodSubSignature;
 import soot.NullType;
 import soot.PackManager;
 import soot.PhaseOptions;
@@ -75,7 +75,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
-import soot.javaToJimple.LocalGenerator;
+import soot.dotnet.members.DotnetMethod;
 import soot.jimple.AssignStmt;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
@@ -94,25 +94,23 @@ import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.AllocDotField;
-import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
 import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DeferredVirtualEdgeTarget;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.DirectTarget;
-import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.RegisteredHandlerTarget;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.IndirectTarget;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.InvocationVirtualEdgeTarget;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
 import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdgeTarget;
-import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.WrapperTarget;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.options.SparkOptions;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.HashMultiMap;
-import soot.util.IterableNumberer;
-import soot.util.LargeNumberedMap;
 import soot.util.MultiMap;
 import soot.util.NumberedString;
-import soot.util.SmallNumberedMap;
 import soot.util.StringNumberer;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
@@ -127,9 +125,6 @@ public class OnFlyCallGraphBuilder {
 
   // NOTE: this field must be static to avoid adding the transformation again if the call graph is rebuilt.
   static boolean registeredGuardsTransformation = false;
-
-  private static final Pattern PATTERN_METHOD_SUBSIG
-      = Pattern.compile("(?<returnType>.*?) (?<methodName>.*?)\\((?<parameters>.*?)\\)");
 
   private static final PrimType[] CHAR_NARROWINGS;
   private static final PrimType[] INT_NARROWINGS;
@@ -169,12 +164,12 @@ public class OnFlyCallGraphBuilder {
   private final CallGraph cicg = Scene.v().internalMakeCallGraph();
 
   // end type based reflection resolution
-  protected final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs;
-  protected final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants;
-  protected final SmallNumberedMap<Local, List<VirtualCallSite>> stringConstToSites;
+  protected final Map<Local, List<VirtualCallSite>> receiverToSites;
+  protected final Map<SootMethod, List<Local>> methodToReceivers;
+  protected final Map<SootMethod, List<Local>> methodToInvokeBases;
+  protected final Map<SootMethod, List<Local>> methodToInvokeArgs;
+  protected final Map<SootMethod, List<Local>> methodToStringConstants;
+  protected final Map<Local, List<VirtualCallSite>> stringConstToSites;
 
   protected final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
   protected final MultiMap<Local, InvokeCallSite> baseToInvokeSite = new HashMultiMap<>();
@@ -195,7 +190,7 @@ public class OnFlyCallGraphBuilder {
   protected final QueueReader<MethodOrMethodContext> worklist;
   protected final ContextManager cm;
 
-  protected final VirtualEdgesSummaries virtualEdgeSummaries = new VirtualEdgesSummaries();
+  protected final VirtualEdgesSummaries virtualEdgeSummaries = initializeEdgeSummaries();
 
   protected NullnessAnalysis nullnessCache = null;
   protected ConstantArrayAnalysis arrayCache = null;
@@ -205,18 +200,21 @@ public class OnFlyCallGraphBuilder {
     final Scene sc = Scene.v();
     {
       final StringNumberer nmbr = sc.getSubSigNumberer();
-      this.sigFinalize = nmbr.findOrAdd("void finalize()");
-      this.sigInit = nmbr.findOrAdd("void <init>()");
-      this.sigForName = nmbr.findOrAdd("java.lang.Class forName(java.lang.String)");
+      if (Options.v().src_prec() == Options.src_prec_dotnet) {
+        this.sigFinalize = nmbr.findOrAdd("void " + DotnetMethod.DESTRUCTOR_NAME + "()");
+      } else {
+        this.sigFinalize = nmbr.findOrAdd(JavaMethods.SIG_FINALIZE);
+      }
+      this.sigInit = nmbr.findOrAdd(JavaMethods.SIG_INIT);
+      this.sigForName = nmbr.findOrAdd(JavaMethods.SIG_FOR_NAME);
     }
     {
-      this.receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>(sc.getLocalNumberer());
-      final IterableNumberer<SootMethod> methodNumberer = sc.getMethodNumberer();
-      this.methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>(methodNumberer);
-      this.stringConstToSites = new SmallNumberedMap<Local, List<VirtualCallSite>>();
+      this.receiverToSites = new HashMap<Local, List<VirtualCallSite>>();
+      this.methodToReceivers = new HashMap<SootMethod, List<Local>>();
+      this.methodToInvokeBases = new HashMap<SootMethod, List<Local>>();
+      this.methodToInvokeArgs = new HashMap<SootMethod, List<Local>>();
+      this.methodToStringConstants = new HashMap<SootMethod, List<Local>>();
+      this.stringConstToSites = new HashMap<Local, List<VirtualCallSite>>();
     }
 
     this.cm = cm;
@@ -244,23 +242,33 @@ public class OnFlyCallGraphBuilder {
     this(cm, rm, false);
   }
 
+  /**
+   * Initializes the edge summaries that model callbacks in library classes. Custom implementations may override this method
+   * to supply a specialized summary provider.
+   *
+   * @return A provider object for virtual edge summaries
+   */
+  protected VirtualEdgesSummaries initializeEdgeSummaries() {
+    return new VirtualEdgesSummaries();
+  }
+
   public ContextManager getContextManager() {
     return cm;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() {
+  public Map<SootMethod, List<Local>> methodToReceivers() {
     return methodToReceivers;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs() {
+  public Map<SootMethod, List<Local>> methodToInvokeArgs() {
     return methodToInvokeArgs;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases() {
+  public Map<SootMethod, List<Local>> methodToInvokeBases() {
     return methodToInvokeBases;
   }
 
-  public LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants() {
+  public Map<SootMethod, List<Local>> methodToStringConstants() {
     return methodToStringConstants;
   }
 
@@ -273,6 +281,9 @@ public class OnFlyCallGraphBuilder {
         }
       }
       MethodOrMethodContext momc = worklist.next();
+      if (momc == null) {
+        continue;
+      }
       SootMethod m = momc.method();
       if (appOnly && !m.getDeclaringClass().isApplicationClass()) {
         continue;
@@ -401,7 +412,7 @@ public class OnFlyCallGraphBuilder {
           assert (!baseClass.isInterface());
           for (Iterator<SootMethod> mIt = getPublicNullaryMethodIterator(baseClass); mIt.hasNext();) {
             SootMethod sm = mIt.next();
-            cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+            cm.addVirtualEdge(ics.getContainer(), ics.getStmt(), sm, Kind.REFL_INVOKE, null);
           }
         }
       } else {
@@ -429,7 +440,7 @@ public class OnFlyCallGraphBuilder {
             Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, reachingTypes, methodSizes, mustNotBeNull);
             while (mIt.hasNext()) {
               SootMethod sm = mIt.next();
-              cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+              cm.addVirtualEdge(ics.getContainer(), ics.getStmt(), sm, Kind.REFL_INVOKE, null);
             }
           }
         }
@@ -593,22 +604,10 @@ public class OnFlyCallGraphBuilder {
           // Fake edges map to a different method signature, e.g., from execute(a) to a.run()
           if (receiverType instanceof RefType) {
             SootClass receiverClass = ((RefType) receiverType).getSootClass();
-            Matcher m = PATTERN_METHOD_SUBSIG.matcher(site.subSig().toString());
-            if (m.matches()) {
-              String methodName = m.group("methodName");
-              String returnType = m.group("returnType");
-              if (methodName != null && returnType != null) {
-                List<Type> params = new ArrayList<>();
-                String parameters = m.group("parameters");
-                if (parameters != null && !parameters.isEmpty()) {
-                  for (String p : parameters.split(",")) {
-                    params.add(sc.getTypeUnsafe(p.trim()));
-                  }
-                }
-                ref = sc.makeMethodRef(receiverClass, methodName, params, sc.getTypeUnsafe(returnType),
-                    Kind.isStatic(site.kind()));
-              }
-            }
+
+            MethodSubSignature subsig = site.subSig();
+            ref = sc.makeMethodRef(receiverClass, subsig.methodName, subsig.parameterTypes, subsig.getReturnType(),
+                Kind.isStatic(site.kind()));
           } else {
             ref = site.getStmt().getInvokeExpr().getMethodRef();
           }
@@ -750,7 +749,7 @@ public class OnFlyCallGraphBuilder {
       ics = new InvokeCallSite(s, container, d, l);
     } else {
       if (analysisKey != container) {
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(container.getActiveBody());
+        ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(container.getActiveBody());
         nullnessCache = new NullnessAnalysis(graph);
         arrayCache = new ConstantArrayAnalysis(graph, container.getActiveBody());
         analysisKey = container;
@@ -778,7 +777,7 @@ public class OnFlyCallGraphBuilder {
     baseToInvokeSite.put(l, ics);
   }
 
-  private void addVirtualCallSite(Stmt s, SootMethod m, Local receiver, InstanceInvokeExpr iie, NumberedString subSig,
+  private void addVirtualCallSite(Stmt s, SootMethod m, Local receiver, InstanceInvokeExpr iie, MethodSubSignature subSig,
       Kind kind) {
     List<VirtualCallSite> sites = receiverToSites.get(receiver);
     if (sites == null) {
@@ -792,7 +791,7 @@ public class OnFlyCallGraphBuilder {
     sites.add(new VirtualCallSite(s, m, iie, subSig, kind));
   }
 
-  private void processNewMethod(SootMethod m) {
+  protected void processNewMethod(SootMethod m) {
     if (m.isConcrete()) {
       Body b = m.retrieveActiveBody();
       getImplicitTargets(m);
@@ -800,7 +799,7 @@ public class OnFlyCallGraphBuilder {
     }
   }
 
-  private void findReceivers(SootMethod m, Body b) {
+  protected void findReceivers(SootMethod m, Body b) {
     for (final Unit u : b.getUnits()) {
       final Stmt s = (Stmt) u;
       if (s.containsInvokeExpr()) {
@@ -808,52 +807,25 @@ public class OnFlyCallGraphBuilder {
         if (ie instanceof InstanceInvokeExpr) {
           InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
           Local receiver = (Local) iie.getBase();
-          NumberedString subSig = iie.getMethodRef().getSubSignature();
-          addVirtualCallSite(s, m, receiver, iie, subSig, Edge.ieToKind(iie));
-          VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingSubSig(subSig);
-          if (virtualEdge != null) {
-            for (VirtualEdgeTarget t : virtualEdge.targets) {
-              if (t instanceof DirectTarget) {
-                DirectTarget directTarget = (DirectTarget) t;
-                if (t.isBase) {
-                  addVirtualCallSite(s, m, receiver, iie, directTarget.targetMethod, virtualEdge.edgeType);
-                } else {
-                  Value runnable = iie.getArg(t.argIndex);
-                  if (runnable instanceof Local) {
-                    addVirtualCallSite(s, m, (Local) runnable, iie, directTarget.targetMethod, virtualEdge.edgeType);
-                  }
-                }
-              } else if (t instanceof WrapperTarget) {
-                WrapperTarget w = (WrapperTarget) t;
-                Local wrapperObject = null;
-                if (t.isBase) {
-                  wrapperObject = receiver;
-                } else {
-                  Value runnable = iie.getArg(t.argIndex);
-                  if (runnable instanceof Local) {
-                    wrapperObject = (Local) runnable;
-                  }
-                }
+          if (!(iie instanceof SpecialInvokeExpr)) {
+            MethodSubSignature subSig = new MethodSubSignature(iie.getMethodRef());
 
-                if (wrapperObject != null && receiverToSites.get(wrapperObject) != null) {
-                  // addVirtualCallSite() may change receiverToSites, which may lead to a ConcurrentModificationException
-                  // I'm not entirely sure whether we ought to deal with the new call sites that are being added, instead of
-                  // just working on a snapshot, though.
-                  List<VirtualCallSite> callSites = new ArrayList<>(receiverToSites.get(wrapperObject));
-                  for (final VirtualCallSite site : callSites) {
-                    if (w.registrationSignature == site.subSig()) {
-                      for (RegisteredHandlerTarget target : w.targets) {
-                        Value runnable = iie.getArg(t.argIndex);
-                        if (runnable instanceof Local) {
-                          addVirtualCallSite(s, m, (Local) runnable, iie, target.targetMethod, virtualEdge.edgeType);
-                        }
-                      }
-                    }
-                  }
+            VirtualEdge virtualEdge = virtualEdgeSummaries.getVirtualEdgesMatchingSubSig(subSig);
+            if (virtualEdge != null) {
+              for (VirtualEdgeTarget t : virtualEdge.targets) {
+                if (t instanceof InvocationVirtualEdgeTarget) {
+                  processVirtualEdgeSummary(m, s, receiver, (InvocationVirtualEdgeTarget) t, virtualEdge.edgeType);
+                } else if (t instanceof DeferredVirtualEdgeTarget) {
+                  addVirtualCallSite(s, m, receiver, iie, new MethodSubSignature(iie.getMethodRef()), Kind.GENERIC_FAKE);
                 }
               }
             }
+          } else {
+            addEdge(m, s, ie.getMethod(), Kind.SPECIAL);
           }
+
+          // if (!hasVirtualEdge || !iie.getMethod().isPhantom())
+          addVirtualCallSite(s, m, receiver, iie, new MethodSubSignature(iie.getMethodRef()), Edge.ieToKind(iie));
         } else if (ie instanceof DynamicInvokeExpr) {
           if (options.verbose()) {
             logger.warn("InvokeDynamic to " + ie + " not resolved during call-graph construction.");
@@ -868,10 +840,10 @@ public class OnFlyCallGraphBuilder {
               for (VirtualEdgeTarget t : virtualEdge.targets) {
                 if (t instanceof DirectTarget) {
                   DirectTarget directTarget = (DirectTarget) t;
-                  if (t.isBase) {
+                  if (directTarget.isBase()) {
                     // this should not happen
                   } else {
-                    Value runnable = ie.getArg(t.argIndex);
+                    Value runnable = ie.getArg(directTarget.argIndex);
                     if (runnable instanceof Local) {
                       addVirtualCallSite(s, m, (Local) runnable, null, directTarget.targetMethod, Kind.GENERIC_FAKE);
                     }
@@ -888,12 +860,118 @@ public class OnFlyCallGraphBuilder {
     }
   }
 
+  protected void processVirtualEdgeSummary(SootMethod m, final Stmt s, Local receiver, InvocationVirtualEdgeTarget target,
+      Kind edgeType) {
+    processVirtualEdgeSummary(m, s, s, receiver, target, edgeType);
+  }
+
+  private Local getLocalForTarget(InvokeExpr ie, InvocationVirtualEdgeTarget target) {
+    if (target.isBase() && ie instanceof InstanceInvokeExpr) {
+      return (Local) ((InstanceInvokeExpr) ie).getBase();
+    }
+
+    int index = target.getArgIndex();
+    if (index < ie.getArgCount()) {
+      Value arg = ie.getArg(index);
+      if (arg instanceof Local) {
+        return (Local) arg;
+      }
+    }
+
+    return null;
+  }
+
+  /** Returns all values that should be mapped to this in the edge target. **/
+  public Set<Local> getReceiversOfVirtualEdge(InvocationVirtualEdgeTarget edgeTarget, InvokeExpr invokeExpr) {
+    if (edgeTarget instanceof VirtualEdgesSummaries.IndirectTarget) {
+      VirtualEdgesSummaries.IndirectTarget indirectTarget = (VirtualEdgesSummaries.IndirectTarget) edgeTarget;
+      // Recursion case: We have an indirect target, which leads us to the statement where the local,
+      // that gets $this inside the callee, resides.
+
+      // First find the receiver of another call
+      Local l = getLocalForTarget(invokeExpr, edgeTarget);
+      if (l == null) {
+        return Collections.emptySet();
+      }
+
+      List<VirtualCallSite> sites = receiverToSites.get(l);
+      if (sites == null) {
+        return Collections.emptySet();
+      }
+      Set<Local> results = new HashSet<>();
+      MethodSubSignature methodName = edgeTarget.getTargetMethod();
+      // Lookup all call sites on the receiver to find the indirect target method
+      for (VirtualCallSite site : sites) {
+        if (methodName.equals(site.subSig())) {
+          for (VirtualEdgeTarget subTargets : indirectTarget.getTargets()) {
+            if (subTargets instanceof InvocationVirtualEdgeTarget) {
+              // We have found the indirect target, recursively go down till we have a direct target,
+              // where we can get the local that finally gets converted to $this inside the callee.
+              results.addAll(getReceiversOfVirtualEdge((InvocationVirtualEdgeTarget) subTargets, site.iie()));
+              // We might have multiple calls of the same method on the receiver (e.g. if else)
+              // as well as multiple sub-targets, thus, we can't break here.
+            }
+          }
+        }
+      }
+      return results;
+    }
+
+    assert edgeTarget instanceof DirectTarget;
+    // Base case: Lookup the value based on the index referenced by the VirtualEdgeTarget.
+    // That local represents the $this local inside the callee.
+    Local l = getLocalForTarget(invokeExpr, edgeTarget);
+    return l == null ? Collections.emptySet() : Collections.singleton(l);
+  }
+
+  protected void processVirtualEdgeSummary(SootMethod callSiteMethod, Stmt callSite, final Stmt curStmt, Local receiver,
+      InvocationVirtualEdgeTarget target, Kind edgeType) {
+    // Get the target object referenced by this edge summary
+    InvokeExpr ie = curStmt.getInvokeExpr();
+    Local targetLocal = getLocalForTarget(ie, target);
+    if (targetLocal == null) {
+      return;
+    }
+
+    if (target instanceof DirectTarget) {
+      // A direct target means that we need to build an edge from the call site to a method on the current base object or a
+      // parameter argument
+      DirectTarget directTarget = (DirectTarget) target;
+      addVirtualCallSite(callSite, callSiteMethod, targetLocal, (InstanceInvokeExpr) ie, directTarget.targetMethod,
+          edgeType);
+    } else if (target instanceof IndirectTarget) {
+      // For an indirect target, we need to find out where the base object or a specific parameter argument was
+      // constructed. We then either have a direct target on that statement, or again an indirect one for searching further
+      // up in the code.
+      IndirectTarget w = (IndirectTarget) target;
+
+      // addVirtualCallSite() may change receiverToSites, which may lead to a ConcurrentModificationException
+      // I'm not entirely sure whether we ought to deal with the new call sites that are being added, instead of
+      // just working on a snapshot, though.
+
+      List<VirtualCallSite> indirectSites = receiverToSites.get(targetLocal);
+      if (indirectSites != null) {
+        for (final VirtualCallSite site : new ArrayList<>(indirectSites)) {
+          if (w.getTargetMethod().equals(site.subSig())) {
+            for (VirtualEdgeTarget siteTarget : w.getTargets()) {
+              Stmt siteStmt = site.getStmt();
+              if (siteStmt.containsInvokeExpr() && siteTarget instanceof InvocationVirtualEdgeTarget) {
+                processVirtualEdgeSummary(callSiteMethod, callSite, siteStmt, receiver,
+                    (InvocationVirtualEdgeTarget) siteTarget, edgeType);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
   private void getImplicitTargets(SootMethod source) {
     final SootClass scl = source.getDeclaringClass();
     if (!source.isConcrete()) {
       return;
     }
-    if (source.getSubSignature().contains("<init>")) {
+    if (source.isConstructor()) {
       handleInit(source, scl);
     }
     for (Unit u : source.retrieveActiveBody().getUnits()) {
@@ -999,8 +1077,8 @@ public class OnFlyCallGraphBuilder {
   }
 
   private void addEdge(SootMethod src, Stmt stmt, SootMethod tgt, Kind kind) {
-    if (src.equals(tgt) && src.isStaticInitializer()) { 
-      return; 
+    if (src.equals(tgt) && src.isStaticInitializer()) {
+      return;
     }
     cicg.addEdge(new Edge(src, stmt, tgt, kind));
   }
@@ -1284,7 +1362,7 @@ public class OnFlyCallGraphBuilder {
         final Jimple jimp = Jimple.v();
         final Body body = container.getActiveBody();
         final UnitPatchingChain units = body.getUnits();
-        final LocalGenerator lg = new LocalGenerator(body);
+        final LocalGenerator lg = Scene.v().createLocalGenerator(body);
 
         // exc = new Error
         RefType runtimeExceptionType = RefType.v("java.lang.Error");
@@ -1302,8 +1380,9 @@ public class OnFlyCallGraphBuilder {
         switch (options.guards()) {
           case "print":
             // logger.error(exc.getMessage(), exc);
-            VirtualInvokeExpr printStackTraceExpr = jimp.newVirtualInvokeExpr(exceptionLocal, Scene.v()
-                .getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
+            VirtualInvokeExpr printStackTraceExpr = jimp.newVirtualInvokeExpr(exceptionLocal,
+                Scene.v().getSootClass(Scene.v().getBaseExceptionType().toString())
+                    .getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
             units.insertAfter(jimp.newInvokeStmt(printStackTraceExpr), initStmt);
             break;
           case "throw":
@@ -1360,7 +1439,7 @@ public class OnFlyCallGraphBuilder {
             return;
           }
           SootClass superclass = currClass.getSuperclass();
-          if (superclass.isPhantom() || "java.lang.Object".equals(superclass.getName())) {
+          if (superclass.isPhantom() || Scene.v().getObjectType().toString().equals(superclass.getName())) {
             methodIterator = null;
             return;
           } else {
@@ -1390,4 +1469,9 @@ public class OnFlyCallGraphBuilder {
 
     protected abstract boolean acceptMethod(SootMethod m);
   }
+
+  public VirtualEdgesSummaries getVirtualEdgeSummaries() {
+    return virtualEdgeSummaries;
+  }
+
 }

@@ -24,6 +24,7 @@ package soot.baf.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import soot.Type;
 import soot.UnitPrinter;
 import soot.baf.Baf;

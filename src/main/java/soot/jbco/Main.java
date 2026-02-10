@@ -318,7 +318,6 @@ public class Main {
       }
 
       bb.add(new Transform("bb.jbco_bln", new BafLineNumberer()));
-      bb.add(new Transform("bb.jbco_lta", soot.tagkit.LineNumberTagAggregator.v()));
     } else {
       argv = checkWhole(argv, false);
     }

@@ -33,7 +33,7 @@ import soot.Unit;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 
 /**
@@ -69,7 +69,7 @@ public class SynchronizedMethodTransformer extends BodyTransformer {
         b.getUnits().insertBeforeNoRedirect(Jimple.v().newEnterMonitorStmt(b.getThisLocal()), u);
 
         // We also need to leave the monitor when the method terminates
-        UnitGraph graph = new ExceptionalUnitGraph(b);
+        UnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
         for (Unit tail : graph.getTails()) {
           b.getUnits().insertBefore(Jimple.v().newExitMonitorStmt(b.getThisLocal()), tail);
         }

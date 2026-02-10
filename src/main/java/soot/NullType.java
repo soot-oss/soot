@@ -29,12 +29,14 @@ import soot.util.Switch;
  */
 @SuppressWarnings("serial")
 public class NullType extends RefLikeType {
+  public static final NullType INSTANCE = new NullType();
 
-  public NullType(Singletons.Global g) {
+  private NullType() {
+    super(false);
   }
 
   public static NullType v() {
-    return G.v().soot_NullType();
+    return INSTANCE;
   }
 
   @Override

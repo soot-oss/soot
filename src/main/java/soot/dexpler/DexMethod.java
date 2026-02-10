@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,17 +25,20 @@ package soot.dexpler;
  * #L%
  */
 
+package soot.dexpler;
+
+import com.android.tools.smali.dexlib2.iface.Annotation;
+import com.android.tools.smali.dexlib2.iface.AnnotationElement;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer.DexEntry;
+import com.android.tools.smali.dexlib2.iface.value.ArrayEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.EncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.TypeEncodedValue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib2.iface.Annotation;
-import org.jf.dexlib2.iface.AnnotationElement;
-import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.Method;
-import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
-import org.jf.dexlib2.iface.value.ArrayEncodedValue;
-import org.jf.dexlib2.iface.value.EncodedValue;
-import org.jf.dexlib2.iface.value.TypeEncodedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,11 +95,8 @@ public class DexMethod {
 
     // if the method is abstract or native, no code needs to be transformed
     int flags = method.getAccessFlags();
-    if (Modifier.isAbstract(flags) || Modifier.isNative(flags)) {
-      return sm;
-    }
-
-    if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES) {
+    if (Modifier.isAbstract(flags) || Modifier.isNative(flags)
+        || (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)) {
       return sm;
     }
 

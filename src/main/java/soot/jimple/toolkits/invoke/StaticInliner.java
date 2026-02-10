@@ -100,11 +100,7 @@ public class StaticInliner extends SceneTransformer {
             continue;
           }
           final SootMethod target = (SootMethod) targets.next();
-          if (targets.hasNext()) {
-            continue;
-          }
-
-          if (!target.isConcrete() || !target.getDeclaringClass().isApplicationClass()
+          if (targets.hasNext() || !target.isConcrete() || !target.getDeclaringClass().isApplicationClass()
               || !InlinerSafetyManager.ensureInlinability(target, s, container, modifierOptions)) {
             continue;
           }

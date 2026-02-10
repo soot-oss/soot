@@ -377,6 +377,7 @@ class_name_list =
     {integer} minus? integer_constant |
     {float}   minus? float_constant |
     {string}  string_constant |
+    {bool}    bool_constant |
     {null}    null;
 
   binop =

@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,9 +25,11 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction;
 
 import soot.ByteType;
 import soot.CharType;
@@ -40,12 +40,10 @@ import soot.LongType;
 import soot.ShortType;
 import soot.Type;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.LongOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
@@ -68,11 +66,6 @@ public class CastInstruction extends TaggedInstruction {
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().setType(assign.getLeftOpBox(), cast.getType(), false);
-      // DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
-    }
   }
 
   /**
@@ -85,53 +78,53 @@ public class CastInstruction extends TaggedInstruction {
     Opcode opcode = instruction.getOpcode();
     switch (opcode) {
       case INT_TO_BYTE:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return ByteType.v();
       case INT_TO_CHAR:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return CharType.v();
       case INT_TO_SHORT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return ShortType.v();
 
       case LONG_TO_INT:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return IntType.v();
       case DOUBLE_TO_INT:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return IntType.v();
       case FLOAT_TO_INT:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return IntType.v();
 
       case INT_TO_LONG:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return LongType.v();
       case DOUBLE_TO_LONG:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return LongType.v();
       case FLOAT_TO_LONG:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return LongType.v();
 
       case LONG_TO_FLOAT:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return FloatType.v();
       case DOUBLE_TO_FLOAT:
-        setTag(new DoubleOpTag());
+        setTag(DoubleOpTag.INSTANCE);
         return FloatType.v();
       case INT_TO_FLOAT:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return FloatType.v();
 
       case INT_TO_DOUBLE:
-        setTag(new IntOpTag());
+        setTag(IntOpTag.INSTANCE);
         return DoubleType.v();
       case FLOAT_TO_DOUBLE:
-        setTag(new FloatOpTag());
+        setTag(FloatOpTag.INSTANCE);
         return DoubleType.v();
       case LONG_TO_DOUBLE:
-        setTag(new LongOpTag());
+        setTag(LongOpTag.INSTANCE);
         return DoubleType.v();
 
       default:

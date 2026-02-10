@@ -1,5 +1,9 @@
 package soot.jimple;
 
+import soot.DecimalConstant;
+import soot.ShortConstant;
+import soot.UByteConstant;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -38,8 +42,32 @@ public interface ConstantSwitch extends soot.util.Switch {
   public abstract void caseClassConstant(ClassConstant v);
 
   public abstract void caseMethodHandle(MethodHandle handle);
-  
+
   public abstract void caseMethodType(MethodType type);
 
   public abstract void defaultCase(Object object);
+
+  public default void caseDecimalConstant(DecimalConstant v) {
+    throw new RuntimeException("Unsupported");
+  }
+
+  public default void caseUIntConstant(UIntConstant v) {
+    throw new RuntimeException("Unsupported");
+  }
+
+  public default void caseShortConstant(ShortConstant v) {
+    caseIntConstant(v);
+  }
+
+  public default void caseUByteConstant(UByteConstant v) {
+    throw new RuntimeException("Unsupported");
+  }
+
+  public default void caseULongConstant(ULongConstant v) {
+    throw new RuntimeException("Unsupported");
+  }
+
+  public default void caseUShortConstant(UShortConstant v) {
+    throw new RuntimeException("Unsupported");
+  }
 }

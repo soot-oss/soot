@@ -23,23 +23,23 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import soot.MethodOrMethodContext;
-import soot.Scene;
 import soot.SootMethod;
-import soot.util.NumberedSet;
 
 public class TopologicalOrderer {
   private final CallGraph cg;
   private final List<SootMethod> order;
-  private final NumberedSet<SootMethod> visited;
+  private final Set<SootMethod> visited;
 
   public TopologicalOrderer(CallGraph cg) {
     this.cg = cg;
     this.order = new ArrayList<SootMethod>();
-    this.visited = new NumberedSet<SootMethod>(Scene.v().getMethodNumberer());
+    this.visited = new HashSet<SootMethod>();
   }
 
   public void go() {

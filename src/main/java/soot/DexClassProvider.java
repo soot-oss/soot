@@ -1,5 +1,3 @@
-package soot;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,6 +20,11 @@ package soot;
  * #L%
  */
 
+package soot;
+
+import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,8 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.DexFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

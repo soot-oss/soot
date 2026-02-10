@@ -25,20 +25,23 @@ package soot;
 import com.google.common.base.Optional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.Chain;
 import soot.util.EmptyChain;
 import soot.util.HashChain;
-import soot.util.Numberable;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.validation.ClassFlagsValidator;
@@ -67,7 +70,7 @@ import soot.validation.ValidationException;
  * Soot representation of a Java class. They are usually created by a Scene, but can also be constructed manually through the
  * given constructors.
  */
-public class SootClass extends AbstractHost implements Numberable {
+public class SootClass extends AbstractHost {
   private static final Logger logger = LoggerFactory.getLogger(SootClass.class);
 
   public final static String INVOKEDYNAMIC_DUMMY_CLASS_NAME = "soot.dummy.InvokeDynamic";
@@ -97,8 +100,15 @@ public class SootClass extends AbstractHost implements Numberable {
   private RefType refType;
 
   private volatile int resolvingLevel = DANGLING;
+  protected ConcurrentMap<NameAndNumber, Collection<SootMethod>> methodParameterMap = new ConcurrentHashMap<>();
 
-  protected volatile int number = 0;
+  private static final Function<? super NameAndNumber, Collection<SootMethod>> NEW_SET_FACTORY
+      = new Function<NameAndNumber, Collection<SootMethod>>() {
+        @Override
+        public Collection<SootMethod> apply(NameAndNumber t) {
+          return new ConcurrentLinkedDeque<SootMethod>();
+        }
+      };
 
   /**
    * Lazy initialized array containing some validators in order to validate the SootClass.
@@ -127,6 +137,9 @@ public class SootClass extends AbstractHost implements Numberable {
   }
 
   public SootClass(String name, int modifiers, String moduleName) {
+    if (name.length() == 0) {
+      throw new RuntimeException("Class must not be empty!");
+    }
     if (name.length() > 0 && name.charAt(0) == '[') {
       throw new RuntimeException("Attempt to make a class whose name starts with [");
     }
@@ -182,10 +195,7 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void checkLevel(int level) {
     // Fast check: e.g. FastHierarchy.canStoreClass calls this method quite often
-    if (resolvingLevel() >= level) {
-      return;
-    }
-    if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
+    if ((resolvingLevel() >= level) || !Scene.v().doneResolving() || Options.v().ignore_resolving_levels()) {
       return;
     }
     checkLevelIgnoreResolving(level);
@@ -203,7 +213,7 @@ public class SootClass extends AbstractHost implements Numberable {
     int currentLevel = resolvingLevel();
     if (currentLevel < level) {
       String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n"
-          + "Scene.v().addBasicClass(" + getName() + "," + levelToString(level) + ");\n"
+          + "Scene.v().addBasicClass(\"" + getName() + "\"," + levelToString(level) + ");\n"
           + "Otherwise, try whole-program mode (-w).";
       throw new RuntimeException("This operation requires resolving level " + levelToString(level) + " but " + name
           + " is at resolving level " + levelToString(currentLevel) + hint);
@@ -227,7 +237,6 @@ public class SootClass extends AbstractHost implements Numberable {
    */
   public void setInScene(boolean isInScene) {
     this.isInScene = isInScene;
-    Scene.v().getClassNumberer().add(this);
   }
 
   /**
@@ -266,9 +275,9 @@ public class SootClass extends AbstractHost implements Numberable {
     if (fields == null) {
       fields = new HashChain<>();
     }
-    fields.add(f);
     f.setDeclared(true);
     f.setDeclaringClass(this);
+    fields.add(f);
   }
 
   /**
@@ -684,10 +693,17 @@ public class SootClass extends AbstractHost implements Numberable {
       throw new RuntimeException("Attempting to add method " + m.getSubSignature() + " to class " + this
           + ", but the class already has a method with that signature.");
     }
-    this.subSigToMethods.put(m.getNumberedSubSignature(), m);
-    this.methodList.add(m);
     m.setDeclared(true);
     m.setDeclaringClass(this);
+    this.subSigToMethods.put(m.getNumberedSubSignature(), m);
+    this.methodList.add(m);
+    addToNameAndParamMap(m);
+  }
+
+  protected void addToNameAndParamMap(SootMethod m) {
+    Collection<SootMethod> use
+        = methodParameterMap.computeIfAbsent(new NameAndNumber(m.getName(), m.getParameterCount()), NEW_SET_FACTORY);
+    use.add(m);
   }
 
   public synchronized SootMethod getOrAddMethod(SootMethod m) {
@@ -705,10 +721,11 @@ public class SootClass extends AbstractHost implements Numberable {
     if (old != null) {
       return old;
     }
-    this.subSigToMethods.put(m.getNumberedSubSignature(), m);
-    this.methodList.add(m);
     m.setDeclared(true);
     m.setDeclaringClass(this);
+    addToNameAndParamMap(m);
+    this.subSigToMethods.put(m.getNumberedSubSignature(), m);
+    this.methodList.add(m);
     return m;
   }
 
@@ -726,9 +743,9 @@ public class SootClass extends AbstractHost implements Numberable {
       this.fields = new HashChain<>();
     }
 
-    this.fields.add(f);
     f.setDeclared(true);
     f.setDeclaringClass(this);
+    this.fields.add(f);
     return f;
   }
 
@@ -749,8 +766,11 @@ public class SootClass extends AbstractHost implements Numberable {
     m.setDeclared(false);
     m.setDeclaringClass(null);
     Scene scene = Scene.v();
-    scene.getMethodNumberer().remove(m);
 
+    Collection<SootMethod> l = methodParameterMap.get(new NameAndNumber(m.getName(), m.getParameterCount()));
+    if (l != null) {
+      l.remove(m);
+    }
     // We have caches for resolving default methods in the FastHierarchy, which are no longer valid
     scene.modifyHierarchy();
   }
@@ -911,37 +931,31 @@ public class SootClass extends AbstractHost implements Numberable {
   }
 
   /**
-   * Returns the name of this class.
+   * Returns the full name of this class (including package).
    */
   public String getName() {
     return name;
   }
 
+  /**
+   * Returns the full name of this class (including package).
+   */
   public String getJavaStyleName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedShortName == null) {
-        fixedShortName = PackageNamer.v().get_FixedClassName(name);
-      }
-      if (!PackageNamer.v().use_ShortName(getJavaPackageName(), fixedShortName)) {
-        return getJavaPackageName() + '.' + fixedShortName;
-      }
-      return fixedShortName;
-    } else {
-      return shortName;
-    }
+    return name;
   }
 
+  /**
+   * Returns the name of this class without package as returned by {@link Class#getSimpleName()}
+   * 
+   * Considers Dava {@link PackageNamer} fixed names.
+   */
   public String getShortJavaStyleName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedShortName == null) {
-        fixedShortName = PackageNamer.v().get_FixedClassName(name);
-      }
-      return fixedShortName;
-    } else {
-      return shortName;
-    }
+    return shortName;
   }
 
+  /**
+   * Returns the name of this class without package as returned by {@link Class#getSimpleName()}
+   */
   public String getShortName() {
     return shortName;
   }
@@ -953,15 +967,13 @@ public class SootClass extends AbstractHost implements Numberable {
     return packageName;
   }
 
+  /**
+   * Get package name of this class.
+   * 
+   * @return
+   */
   public String getJavaPackageName() {
-    if (PackageNamer.v().has_FixedNames()) {
-      if (fixedPackageName == null) {
-        fixedPackageName = PackageNamer.v().get_FixedPackageName(packageName);
-      }
-      return fixedPackageName;
-    } else {
-      return packageName;
-    }
+    return packageName;
   }
 
   /**
@@ -1203,16 +1215,6 @@ public class SootClass extends AbstractHost implements Numberable {
     return Modifier.isStatic(this.getModifiers());
   }
 
-  @Override
-  public final int getNumber() {
-    return number;
-  }
-
-  @Override
-  public void setNumber(int number) {
-    this.number = number;
-  }
-
   public void rename(String newName) {
     this.name = newName;
     // resolvingLevel = BODIES;
@@ -1302,5 +1304,22 @@ public class SootClass extends AbstractHost implements Numberable {
     }
     SootModuleInfo moduleInfo = this.getModuleInformation();
     return (moduleInfo == null) ? true : moduleInfo.openPackagePublic(this.getJavaPackageName());
+  }
+
+  /**
+   * Returns all methods with exactly the number of parameters specified.
+   * 
+   * @param name
+   *          the name of the method
+   * @param paramCount
+   *          the parameter count
+   * @return the methods
+   */
+  public Collection<SootMethod> getMethodsByNameAndParamCount(String name, int paramCount) {
+    Collection<SootMethod> l = methodParameterMap.get(new NameAndNumber(name, paramCount));
+    if (l == null) {
+      return Collections.emptyList();
+    }
+    return l;
   }
 }

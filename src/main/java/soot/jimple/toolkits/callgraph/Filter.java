@@ -48,6 +48,9 @@ public class Filter implements Iterator<Edge> {
   private void advance() {
     while (source.hasNext()) {
       next = source.next();
+      if (next == null) {
+    	continue;
+      }
       if (pred.want(next)) {
         return;
       }

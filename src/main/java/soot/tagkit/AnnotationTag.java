@@ -85,12 +85,6 @@ public class AnnotationTag implements Tag {
     }
   }
 
-  @Deprecated
-  public AnnotationTag(String type, int numElem) {
-    this.type = type;
-    this.elems = new ArrayList<AnnotationElem>(numElem);
-  }
-
   // should also print here number of annotations and perhaps the annotations themselves
   @Override
   public String toString() {
@@ -118,11 +112,6 @@ public class AnnotationTag implements Tag {
 
   public String getType() {
     return type;
-  }
-
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("AnnotationTag has no value for bytecode");
   }
 
   /**

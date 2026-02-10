@@ -51,7 +51,7 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.ValueBox;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.util.Chain;
@@ -164,8 +164,8 @@ public class XMLPrinter {
 
     // Print fields
     {
-      XMLNode xmlTempNode =
-          xmlClassNode.addChild("fields", "", new String[] { "count" }, new String[] { String.valueOf(cl.getFieldCount()) });
+      XMLNode xmlTempNode = xmlClassNode.addChild("fields", "", new String[] { "count" },
+          new String[] { String.valueOf(cl.getFieldCount()) });
 
       int i = 0;
       for (SootField f : cl.getFields()) {
@@ -185,8 +185,8 @@ public class XMLPrinter {
 
     // Print methods
     {
-      XMLNode methodsNode =
-          xmlClassNode.addChild("methods", new String[] { "count" }, new String[] { String.valueOf(cl.getMethodCount()) });
+      XMLNode methodsNode
+          = xmlClassNode.addChild("methods", new String[] { "count" }, new String[] { String.valueOf(cl.getMethodCount()) });
 
       for (Iterator<SootMethod> methodIt = cl.methodIterator(); methodIt.hasNext();) {
         SootMethod method = methodIt.next();
@@ -233,7 +233,7 @@ public class XMLPrinter {
     // add method node
     XMLNode methodNode = methodsNode.addChild("method", new String[] { "name", "returntype", "class" }, new String[] {
         cleanMethodName, body.getMethod().getReturnType().toString(), body.getMethod().getDeclaringClass().getName() });
-    String declarationStr = body.getMethod().getDeclaration().trim();
+    String declarationStr = body.getMethod().getQuotedDeclaration().trim();
     methodNode.addChild("declaration", toCDATA(declarationStr), new String[] { "length" },
         new String[] { String.valueOf(declarationStr.length()) });
 
@@ -249,7 +249,7 @@ public class XMLPrinter {
         new String[] { String.valueOf(labelCount++), currentLabel, cleanMethodName });
 
     // include any analysis which will be used in the xml output
-    final LiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(body));
+    final LiveLocals sll = new SimpleLiveLocals(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body));
 
     // lists
     ArrayList<String> useList = new ArrayList<String>();
@@ -553,8 +553,8 @@ public class XMLPrinter {
       localsNode.addAttribute("count", String.valueOf(locals.size()));
 
       // add types node to locals node, and each type with each local per type
-      XMLNode typesNode =
-          localsNode.addChild("types", new String[] { "count" }, new String[] { String.valueOf(localTypes.size()) });
+      XMLNode typesNode
+          = localsNode.addChild("types", new String[] { "count" }, new String[] { String.valueOf(localTypes.size()) });
 
       for (ListIterator<String> it = localTypes.listIterator(); it.hasNext();) {
         int i = it.nextIndex();// index must be retrieved before 'next()'

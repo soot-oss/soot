@@ -1,5 +1,7 @@
 package soot.toolkits.scalar;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -52,12 +54,12 @@ public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
 
   @Override
   protected FlowSet<Local> entryInitialFlow() {
-    return new ArraySparseSet<Local>();
+    return new HashSparseSet<Local>();
   }
 
   @Override
   protected FlowSet<Local> newInitialFlow() {
-    FlowSet<Local> ret = new ArraySparseSet<Local>();
+    FlowSet<Local> ret = new HashSparseSet<Local>();
     allLocals.copy(ret);
     return ret;
   }
@@ -66,7 +68,8 @@ public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
   protected void flowThrough(FlowSet<Local> in, Unit unit, FlowSet<Local> out) {
     in.copy(out);
 
-    for (ValueBox defBox : unit.getDefBoxes()) {
+    for (Iterator<ValueBox> iterator = unit.getDefBoxesIterator(); iterator.hasNext();) {
+      ValueBox defBox = iterator.next();
       Value lhs = defBox.getValue();
       if (lhs instanceof Local) {
         out.add((Local) lhs);

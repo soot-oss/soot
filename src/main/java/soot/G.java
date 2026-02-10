@@ -31,10 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import soot.coffi.Utf8_Enumeration;
-import soot.dava.internal.SET.SETBasicBlock;
-import soot.dava.internal.SET.SETNode;
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.pag.Parm;
@@ -43,7 +41,6 @@ import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.typing.ClassHierarchy;
-import soot.toolkits.astmetrics.ClassData;
 import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
@@ -91,11 +88,7 @@ public class G extends Singletons {
   public class Global {
   }
 
-  public long coffi_BasicBlock_ids = 0;
-  public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e1 = new Utf8_Enumeration();
-  public Utf8_Enumeration coffi_CONSTANT_Utf8_info_e2 = new Utf8_Enumeration();
   public int SETNodeLabel_uniqueId = 0;
-  public HashMap<SETNode, SETBasicBlock> SETBasicBlock_binding = new HashMap<SETNode, SETBasicBlock>();
   public boolean ASTAnalysis_modified;
   public NativeHelper NativeHelper_helper = null;
   public P2SetFactory newSetFactory;
@@ -116,7 +109,7 @@ public class G extends Singletons {
   public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
   public int Timer_count;
   public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<Scene, ClassHierarchy>();
-  public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<MethodContext, MethodContext>();
+  public final Map<MethodContext, MethodContext> MethodContext_map = new ConcurrentHashMap<MethodContext, MethodContext>();
 
   public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis = null;
 
@@ -151,9 +144,6 @@ public class G extends Singletons {
   public boolean SootMethodAddedByDava;
   public ArrayList<SootClass> SootClassNeedsDavaSuperHandlerClass = new ArrayList<SootClass>();
   public ArrayList<SootMethod> SootMethodsAdded = new ArrayList<SootMethod>();
-
-  // ASTMetrics Data
-  public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();
 
   public void resetSpark() {
     // We reset SPARK the hard way.

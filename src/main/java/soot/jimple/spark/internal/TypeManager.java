@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -44,9 +47,9 @@ import soot.TypeSwitch;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.util.ArrayNumberer;
 import soot.util.BitVector;
-import soot.util.LargeNumberedMap;
 import soot.util.queue.QueueReader;
 
 /**
@@ -65,6 +68,8 @@ public final class TypeManager {
   private Map<SootClass, List<AllocNode>> class2allocs = new HashMap<SootClass, List<AllocNode>>(1024);
   private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();
 
+  private static final Logger logger = LoggerFactory.getLogger(TypeManager.class);
+
   protected final RefType rtObject;
   protected final RefType rtSerializable;
   protected final RefType rtCloneable;
@@ -72,7 +77,7 @@ public final class TypeManager {
   public TypeManager(PAG pag) {
     this.pag = pag;
 
-    this.rtObject = RefType.v("java.lang.Object");
+    this.rtObject = Scene.v().getObjectType();
     this.rtSerializable = RefType.v("java.io.Serializable");
     this.rtCloneable = RefType.v("java.lang.Cloneable");
   }
@@ -87,7 +92,17 @@ public final class TypeManager {
     }
     RefType rt = (RefType) type;
     if (!rt.hasSootClass()) {
-      return true;
+      if (rt instanceof WeakObjectType) {
+        // try to resolve sootClass one more time.
+        SootClass c = Scene.v().forceResolve(rt.getClassName(), SootClass.HIERARCHY);
+        if (c == null) {
+          return true;
+        } else {
+          rt.setSootClass(c);
+        }
+      } else {
+        return true;
+      }
     }
     SootClass cl = rt.getSootClass();
     return cl.resolvingLevel() < SootClass.HIERARCHY;
@@ -97,35 +112,40 @@ public final class TypeManager {
     if (type == null) {
       return null;
     }
+    final Scene sc = Scene.v();
     while (allocNodeListener.hasNext()) {
       AllocNode n = allocNodeListener.next();
-      for (final Type t : Scene.v().getTypeNumberer()) {
-        if (!(t instanceof RefLikeType)) {
+      if (n == null) {
+        continue;
+      }
+      Type nt = n.getType();
+      Iterable<Type> types;
+      if (nt instanceof NullType || nt instanceof AnySubType) {
+        types = sc.getTypeNumberer();
+      } else {
+        types = sc.getOrMakeFastHierarchy().canStoreTypeList(nt);
+      }
+      for (final Type t : types) {
+        if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
           continue;
         }
-        if (t instanceof AnySubType) {
-          continue;
-        }
-        if (isUnresolved(t)) {
-          continue;
-        }
-        if (castNeverFails(n.getType(), t)) {
-          BitVector mask = typeMask.get(t);
-          if (mask == null) {
-            typeMask.put(t, mask = new BitVector());
-            for (final AllocNode an : pag.getAllocNodeNumberer()) {
-              if (castNeverFails(an.getType(), t)) {
-                mask.set(an.getNumber());
-              }
+
+        BitVector mask = typeMask.get(t);
+        if (mask == null) {
+          typeMask.put(t, mask = new BitVector());
+          for (final AllocNode an : pag.getAllocNodeNumberer()) {
+            if (castNeverFails(an.getType(), t)) {
+              mask.set(an.getNumber());
             }
-            continue;
           }
-          mask.set(n.getNumber());
+          continue;
         }
+        mask.set(n.getNumber());
+
       }
     }
     BitVector ret = (BitVector) typeMask.get(type);
-    if (ret == null && fh != null) {
+    if (ret == null && fh != null && type instanceof RefType) {
       // If we have a phantom class and have no type mask, we assume that
       // it is not cast-compatible to anything
       SootClass curClass = ((RefType) type).getSootClass();
@@ -139,8 +159,14 @@ public final class TypeManager {
             return new BitVector();
           }
         }
-
-        throw new RuntimeException("Type mask not found for type " + type);
+        logger.warn("Type mask not found for type " + type
+            + ". This is casued by a cast operation to a type which is a phantom class "
+            + "and no type mask was found. This may affect the precision of the point-to set.");
+        BitVector soundOverApproxRet = new BitVector();
+        for (int i = 0; i <= 63; i++) {
+          soundOverApproxRet.set(i);
+        }
+        return soundOverApproxRet;
       }
     }
     return ret;
@@ -152,17 +178,17 @@ public final class TypeManager {
 
   final public void makeTypeMask() {
     RefType.v("java.lang.Class");
-    typeMask = new LargeNumberedMap<Type, BitVector>(Scene.v().getTypeNumberer());
+    typeMask = new HashMap<Type, BitVector>();
     if (fh == null) {
       return;
     }
 
     // **
     initClass2allocs();
-    makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
+    makeClassTypeMask(Scene.v().getSootClass(Scene.v().getObjectType().getClassName()));
     BitVector visitedTypes = new BitVector();
     {
-      Iterator<Type> it = typeMask.keyIterator();
+      Iterator<Type> it = typeMask.keySet().iterator();
       while (it.hasNext()) {
         Type t = it.next();
         visitedTypes.set(t.getNumber());
@@ -171,13 +197,7 @@ public final class TypeManager {
     // **
     ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
     for (Type t : Scene.v().getTypeNumberer()) {
-      if (!(t instanceof RefLikeType)) {
-        continue;
-      }
-      if (t instanceof AnySubType) {
-        continue;
-      }
-      if (isUnresolved(t)) {
+      if (!(t instanceof RefLikeType) || (t instanceof AnySubType) || isUnresolved(t)) {
         continue;
       }
       // **
@@ -205,7 +225,7 @@ public final class TypeManager {
     allocNodeListener = pag.allocNodeListener();
   }
 
-  private LargeNumberedMap<Type, BitVector> typeMask = null;
+  private Map<Type, BitVector> typeMask = null;
 
   final public boolean castNeverFails(Type src, Type dst) {
     if (dst == null) {

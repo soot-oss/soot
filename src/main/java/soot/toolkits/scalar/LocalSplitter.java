@@ -44,8 +44,11 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.LocalBitSetPacker;
 
 /**
@@ -82,21 +85,23 @@ public class LocalSplitter extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose()) {
+    Options o = Options.v();
+    if (o.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Splitting locals...");
     }
 
-    if (Options.v().time()) {
-      Timers.v().splitTimer.start();
-      Timers.v().splitPhase1Timer.start();
+    if (o.time()) {
+      Timers timers = Timers.v();
+      timers.splitTimer.start();
+      timers.splitPhase1Timer.start();
     }
 
     if (throwAnalysis == null) {
-      throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+      throwAnalysis = getThrowableAnalysis();
     }
 
     if (!omitExceptingUnitEdges) {
-      omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+      omitExceptingUnitEdges = o.omit_excepting_unit_edges();
     }
 
     // Pack the locals for efficiency
@@ -104,15 +109,17 @@ public class LocalSplitter extends BodyTransformer {
     localPacker.pack();
 
     // Go through the definitions, building the webs
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    ExceptionalUnitGraph graph
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
 
     // run in panic mode on first split (maybe change this depending on the input source)
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
     final LocalUses uses = LocalUses.Factory.newLocalUses(graph, defs);
 
-    if (Options.v().time()) {
-      Timers.v().splitPhase1Timer.end();
-      Timers.v().splitPhase2Timer.start();
+    if (o.time()) {
+      Timers timers = Timers.v();
+      timers.splitPhase1Timer.end();
+      timers.splitPhase2Timer.start();
     }
 
     // Collect the set of locals that we need to split
@@ -150,12 +157,8 @@ public class LocalSplitter extends BodyTransformer {
         if (defsInUnitItr.hasNext()) {
           throw new RuntimeException("stmt with more than 1 defbox!");
         }
-        if (!(singleDef instanceof Local)) {
-          continue;
-        }
-
         // we don't want to visit a node twice
-        if (visited.remove(s)) {
+        if (!(singleDef instanceof Local) || visited.remove(s)) {
           continue;
         }
 
@@ -167,8 +170,11 @@ public class LocalSplitter extends BodyTransformer {
           continue;
         }
 
-        Local newLocal = (Local) oldLocal.clone();
-        newLocal.setName(newLocal.getName() + '#' + (++w)); // renaming should not be done here
+        Local newLocal = (Local) createClonedLocal(oldLocal);
+        String name = newLocal.getName();
+        if (name != null) {
+          newLocal.setName(getNewName(name, ++w));
+        }
         body.getLocals().add(newLocal);
 
         Deque<Unit> queue = new ArrayDeque<Unit>();
@@ -206,9 +212,68 @@ public class LocalSplitter extends BodyTransformer {
     // Restore the original local numbering
     localPacker.unpack();
 
-    if (Options.v().time()) {
-      Timers.v().splitPhase2Timer.end();
-      Timers.v().splitTimer.end();
+    if (o.time()) {
+      Timers timers = Timers.v();
+      timers.splitPhase2Timer.end();
+      timers.splitTimer.end();
     }
+  }
+
+  protected Local createClonedLocal(Local oldLocal) {
+    return (Local) oldLocal.clone();
+  }
+
+  protected String getNewName(String name, int count) {
+    return name + '#' + count;
+  }
+
+  public static ThrowAnalysis getThrowableAnalysis() {
+    ThrowAnalysis throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+    if (throwAnalysis instanceof UnitThrowAnalysis && Options.v().throw_analysis() == Options.throw_analysis_auto_select) {
+      /*
+       * Sadly, the JVM is not smart See https://github.com/soot-oss/soot/issues/1951
+       * 
+       * With the standard UnitThrowAnalysis, soot knows that the definition at (1) is only used at (2), since the event
+       * handler at (3) cannot be reached before overwriting a at (2). Thus, the local splitter splits the variable and uses
+       * the split variable at (1) and at the right side of (2), but not at (3).
+       * 
+       * Input: public static void m1(int) { unknown a, $stack2, $stack3, $stack4, A, $stack5, a#1;
+       * 
+       * a := @parameter0: int; (1)
+       * 
+       * label1: a = a * 2; (2) ...
+       * 
+       * label2: $stack4 := @caughtexception;
+       * 
+       * virtualinvoke $stack5.<java.io.PrintStream: void println(int)>(a); (3)
+       * 
+       * return;
+       * 
+       * catch java.io.IOException from label1 to label2 with label2; }
+       * 
+       * 
+       * Output with UnitThrowAnalysis:
+       * 
+       * public static void m1(int) { unknown a, $stack2, $stack3, $stack4, A, $stack5, a#1;
+       * 
+       * a#1 := @parameter0: int;
+       * 
+       * label1: a = a#1 * 2; ...
+       * 
+       * label2: $stack4 := @caughtexception;
+       * 
+       * virtualinvoke $stack5.<java.io.PrintStream: void println(int)>(a);
+       * 
+       * return;
+       * 
+       * catch java.io.IOException from label1 to label2 with label2; }
+       * 
+       * Now, the JVM assumes conservatively that the exception handler could be reached prior to the definition of a. Thus,
+       * we use the pedantic throw analysis which is conservative.
+       */
+
+      return PedanticThrowAnalysis.v();
+    }
+    return throwAnalysis;
   }
 }

@@ -129,11 +129,7 @@ public class IFDSReachingDefinitions
       @Override
       public FlowFunction<Pair<Value, Set<DefinitionStmt>>> getReturnFlowFunction(final Unit callSite,
           SootMethod calleeMethod, final Unit exitStmt, Unit returnSite) {
-        if (!(callSite instanceof DefinitionStmt)) {
-          return KillAll.v();
-        }
-
-        if (exitStmt instanceof ReturnVoidStmt) {
+        if (!(callSite instanceof DefinitionStmt) || (exitStmt instanceof ReturnVoidStmt)) {
           return KillAll.v();
         }
 

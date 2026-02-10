@@ -37,8 +37,4 @@ public class ThrowCreatedByCompilerTag implements Tag {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("ThrowCreatedByCompilerTag has no value for bytecode");
-  }
 }

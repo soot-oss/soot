@@ -33,6 +33,7 @@ import soot.baf.ReturnInst;
 import soot.baf.ReturnVoidInst;
 import soot.baf.ThrowInst;
 import soot.jimple.GotoStmt;
+import soot.jimple.NopStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.ThrowStmt;
@@ -77,6 +78,10 @@ public enum ReturnStatementsValidator implements BodyValidator {
     //
     // Only check that the execution cannot fall off the code.
     Unit last = body.getUnits().getLast();
+    while (last instanceof NopStmt) {
+      // this can be fine since we can have this as a trap end statement
+      last = body.getUnits().getPredOf(last);
+    }
     if (last instanceof GotoStmt || last instanceof GotoInst || last instanceof ThrowStmt || last instanceof ThrowInst) {
       return;
     }

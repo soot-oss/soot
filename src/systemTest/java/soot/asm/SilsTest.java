@@ -22,52 +22,53 @@ package soot.asm;
  * #L%
  */
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
+
 import soot.Body;
 import soot.Local;
 import soot.SootMethod;
 import soot.options.Options;
 import soot.testing.framework.AbstractTestingFramework;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertTrue;
-
 /**
- * Test for the pahse jb.sils
+ * Test for the phase "jb.sils"
+ * 
  * @author Linghui Luo
  */
 @PowerMockIgnore({ "com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*" })
 public class SilsTest extends AbstractTestingFramework {
 
-    @Override
-    protected void setupSoot() {
-        Options.v().setPhaseOption("jb", "use-original-names:true");
-        Options.v().setPhaseOption("jb.tr", "ignore-nullpointer-dereferences:true");
-        Options.v().set_keep_line_number(true);
-        Options.v().setPhaseOption("cg.cha", "on");
-    }
+  @Override
+  protected void setupSoot() {
+    final Options opts = Options.v();
+    opts.setPhaseOption("jb", "use-original-names:true");
+    opts.setPhaseOption("jb.sils", "enabled:true");
+    opts.setPhaseOption("jb.tr", "ignore-nullpointer-dereferences:true");
+    opts.setPhaseOption("cg", "enabled:false");
+  }
 
-    /**
-     *  This is the case phase jb.sils is enabled (default).
-     *  see the case phase jb.sils is disabled in {@link AsmMethodSourceTest#testSilsDisabled()}
-     */
-    @Ignore
-    public void testSilsEnabled() {
-
-        final String className = "soot.asm.LocalNaming";
-        final String[] params = {};
-        SootMethod target = prepareTarget(methodSigFromComponents(className, "void", "test", params), className);
-        Body body = target.retrieveActiveBody();
-        Set<String> localNames = body.getLocals().stream().map(Local::getName).collect(Collectors.toSet());
-        // test if all expected Local names are present
-        // currently d, f are not preserved.
-        assertTrue(localNames.contains("d"));
-        assertTrue(localNames.contains("f"));
-        assertTrue(localNames.contains("arr"));
-    }
-
+  /**
+   * This is the case phase jb.sils is enabled (default). see the case phase jb.sils is disabled in
+   * {@link AsmMethodSourceTest#testSilsDisabled()}
+   */
+  @Test
+  @Ignore
+  public void testSilsEnabled() {
+    final String className = "soot.asm.LocalNaming";
+    final String[] params = {};
+    SootMethod target = prepareTarget(methodSigFromComponents(className, "void", "test", params), className);
+    Body body = target.retrieveActiveBody();
+    Set<String> localNames = body.getLocals().stream().map(Local::getName).collect(Collectors.toSet());
+    // test if all expected Local names are present
+    // currently d, f are not preserved.
+    Assert.assertTrue(localNames.contains("d"));
+    Assert.assertTrue(localNames.contains("f"));
+    Assert.assertTrue(localNames.contains("arr"));
+  }
 }

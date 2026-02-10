@@ -35,7 +35,7 @@ import java.util.WeakHashMap;
  * @param <T>
  */
 public class WeakMapNumberer<T extends Numberable> implements IterableNumberer<T> {
-    
+
   final Map<T, Integer> map = new WeakHashMap<T, Integer>();
   final Map<Integer, WeakReference<T>> rmap = new WeakHashMap<Integer, WeakReference<T>>();
   int nextIndex = 1;
@@ -91,7 +91,7 @@ public class WeakMapNumberer<T extends Numberable> implements IterableNumberer<T
     if (number == 0) {
       return null;
     }
-    return rmap.get((int)number).get();
+    return rmap.get((int) number).get();
   }
 
   @Override

@@ -22,19 +22,27 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.jimple.internal.IIntLikeType;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
  * Soot representation of the Java built-in type 'boolean'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class BooleanType extends PrimType implements IntegerType {
+public class BooleanType extends PrimType implements IntegerType, IJavaType, DotNetINumber, IIntLikeType {
 
-  public BooleanType(Singletons.Global g) {
+  public static final int HASHCODE = 0x1C4585DA;
+  public static final BooleanType INSTANCE = new BooleanType();
+
+  private BooleanType() {
+    super(false);
   }
 
   public static BooleanType v() {
-    return G.v().soot_BooleanType();
+    return INSTANCE;
   }
 
   @Override
@@ -44,7 +52,7 @@ public class BooleanType extends PrimType implements IntegerType {
 
   @Override
   public int hashCode() {
-    return 0x1C4585DA;
+    return HASHCODE;
   }
 
   @Override
@@ -58,7 +66,20 @@ public class BooleanType extends PrimType implements IntegerType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Boolean");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotNetBasicTypes.SYSTEM_BOOLEAN;
+    }
+    return JavaBasicTypes.JAVA_LANG_BOOLEAN;
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Boolean.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return boolean.class;
   }
 }

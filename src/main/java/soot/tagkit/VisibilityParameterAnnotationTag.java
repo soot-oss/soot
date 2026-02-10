@@ -75,11 +75,6 @@ public class VisibilityParameterAnnotationTag implements Tag {
     return "VisibilityParameterAnnotation";
   }
 
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("VisibilityParameterAnnotationTag has no value for bytecode");
-  }
-
   public void addVisibilityAnnotation(VisibilityAnnotationTag a) {
     if (visibilityAnnotations == null) {
       visibilityAnnotations = new ArrayList<VisibilityAnnotationTag>();

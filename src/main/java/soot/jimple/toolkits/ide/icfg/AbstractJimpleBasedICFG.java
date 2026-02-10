@@ -25,35 +25,33 @@ package soot.jimple.toolkits.ide.icfg;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import soot.Body;
 import soot.PatchingChain;
 import soot.SootMethod;
 import soot.Unit;
 import soot.UnitBox;
-import soot.Value;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 
 public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<Unit, SootMethod> {
 
   protected final boolean enableExceptions;
 
-  @DontSynchronize("written by single thread; read afterwards")
+  @SynchronizedBy("thread-safe data structure")
   private final Map<Unit, Body> unitToOwner = createUnitToOwnerMap();
 
   @SynchronizedBy("by use of synchronized LoadingCache class")
@@ -62,15 +60,6 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
         @Override
         public DirectedGraph<Unit> load(Body body) throws Exception {
           return makeGraph(body);
-        }
-      });
-
-  @SynchronizedBy("by use of synchronized LoadingCache class")
-  protected LoadingCache<SootMethod, List<Value>> methodToParameterRefs
-      = IDESolver.DEFAULT_CACHE_BUILDER.build(new CacheLoader<SootMethod, List<Value>>() {
-        @Override
-        public List<Value> load(SootMethod m) throws Exception {
-          return m.getActiveBody().getParameterRefs();
         }
       });
 
@@ -87,8 +76,13 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
     this(true);
   }
 
+  /**
+   * Creates a new map used for the unitToOwner map. Must be thread-safe.
+   *
+   * @return a new thread-safe map
+   */
   protected Map<Unit, Body> createUnitToOwnerMap() {
-    return new LinkedHashMap<Unit, Body>();
+    return new ConcurrentHashMap<>();
   }
 
   public AbstractJimpleBasedICFG(boolean enableExceptions) {
@@ -96,8 +90,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   public Body getBodyOf(Unit u) {
-    assert unitToOwner.containsKey(u) : "Statement " + u + " not in unit-to-owner mapping";
-    Body b = unitToOwner.get(u);
+    Body b = ((Stmt) u).getContainingBody();
     return b;
   }
 
@@ -127,7 +120,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   }
 
   protected DirectedGraph<Unit> makeGraph(Body body) {
-    return enableExceptions ? new ExceptionalUnitGraph(body) : new BriefUnitGraph(body);
+    return enableExceptions ? ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body) : new BriefUnitGraph(body);
   }
 
   protected Set<Unit> getCallsFromWithinMethod(SootMethod m) {
@@ -179,11 +172,6 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
       }
     }
     return false;
-  }
-
-  @Override
-  public List<Value> getParameterRefs(SootMethod m) {
-    return methodToParameterRefs.getUnchecked(m);
   }
 
   @Override
@@ -242,10 +230,14 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
   public void initializeUnitToOwner(SootMethod m) {
     if (m.hasActiveBody()) {
       Body b = m.getActiveBody();
-      PatchingChain<Unit> units = b.getUnits();
-      for (Unit unit : units) {
-        unitToOwner.put(unit, b);
-      }
+      initializeUnitToOwner(b);
+    }
+  }
+
+  public void initializeUnitToOwner(Body b) {
+    PatchingChain<Unit> units = b.getUnits();
+    for (Unit unit : units) {
+      unitToOwner.put(unit, b);
     }
   }
 

@@ -25,6 +25,7 @@ package soot.jimple.internal;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.ValueBox;
 import soot.baf.Baf;
 import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
@@ -34,6 +35,10 @@ import soot.util.Switch;
 public class JRemExpr extends AbstractJimpleFloatBinopExpr implements RemExpr {
 
   public JRemExpr(Value op1, Value op2) {
+    super(op1, op2);
+  }
+
+  public JRemExpr(ValueBox op1, ValueBox op2) {
     super(op1, op2);
   }
 

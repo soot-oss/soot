@@ -24,7 +24,6 @@ package soot.jimple.toolkits.annotation.nullcheck;
  */
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.Immediate;
@@ -67,6 +66,33 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
  * @author Julian Tibble
  */
 public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalysis.AnalysisInfo> {
+
+  public static enum NullnessLattice {
+    BOTTOM(NullnessAnalysis.BOTTOM), NULL(NullnessAnalysis.NULL), NON_NULL(NullnessAnalysis.NON_NULL), TOP(
+        NullnessAnalysis.TOP);
+
+    public final int val;
+
+    NullnessLattice(int t) {
+      this.val = t;
+    }
+
+    static NullnessLattice of(int i) {
+      switch (i) {
+        case NullnessAnalysis.BOTTOM:
+          return BOTTOM;
+        case NullnessAnalysis.NULL:
+          return NULL;
+        case NullnessAnalysis.NON_NULL:
+          return NON_NULL;
+        case NullnessAnalysis.TOP:
+          return TOP;
+        default:
+          throw new IllegalArgumentException(String.format("Unknown: %d", i));
+      }
+    }
+  }
+
   /**
    * The analysis info is a simple mapping of type {@link Value} to any of the constants BOTTOM, NON_NULL, NULL or TOP. This
    * class returns BOTTOM by default.
@@ -83,6 +109,10 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     public AnalysisInfo(AnalysisInfo other) {
       super(used);
       or(other);
+    }
+
+    public NullnessLattice getLattice(Value key) {
+      return NullnessLattice.of(get(key));
     }
 
     public int get(Value key) {
@@ -107,10 +137,10 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
   }
 
-  protected final static int BOTTOM = 0;
-  protected final static int NULL = 1;
-  protected final static int NON_NULL = 2;
-  protected final static int TOP = 3;
+  public final static int BOTTOM = 0;
+  public final static int NULL = 1;
+  public final static int NON_NULL = 2;
+  public final static int TOP = 3;
 
   protected final HashMap<Value, Integer> valueToIndex = new HashMap<Value, Integer>();
   protected int used = 0;
@@ -137,7 +167,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
 
     Stmt s = (Stmt) u;
 
-    // in case of an if statement, we neet to compute the branch-flow;
+    // in case of an if statement, we need to compute the branch-flow;
     // e.g. for a statement "if(x!=null) goto s" we have x==null for the fallOut and
     // x!=null for the branchOut
     // or for an instanceof expression
@@ -183,7 +213,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
   }
 
   /**
-   * This can be overwritten by sublasses to mark a certain value as constantly non-null.
+   * This can be overwritten by subclasses to mark a certain value as constantly non-null.
    *
    * @param v
    *          any value
@@ -221,7 +251,7 @@ public class NullnessAnalysis extends ForwardBranchedFlowAnalysis<NullnessAnalys
     }
 
     // if we compare a local with null then process further...
-    if (val != null && val instanceof Local) {
+    if (val instanceof Local) {
       if (eqExpr instanceof JEqExpr) {
         // a==null
         handleEquality(val, out, outBranch);

@@ -21,9 +21,6 @@ package soot.tagkit;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import java.io.UnsupportedEncodingException;
-
 import soot.SootClass;
 
 public class OuterClassTag implements Tag {
@@ -43,15 +40,6 @@ public class OuterClassTag implements Tag {
   @Override
   public String getName() {
     return NAME;
-  }
-
-  @Override
-  public byte[] getValue() {
-    try {
-      return outerClass.getName().getBytes("UTF8");
-    } catch (UnsupportedEncodingException e) {
-      return new byte[0];
-    }
   }
 
   public SootClass getOuterClass() {

@@ -211,7 +211,7 @@ public class Shimple {
     if (remove.getBoxesPointingToThis().isEmpty()) {
       return;
     }
-    
+
     /* Ok, continuing... */
     boolean debug = Options.v().debug();
     if (body instanceof ShimpleBody) {

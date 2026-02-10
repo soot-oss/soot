@@ -23,10 +23,10 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import soot.Kind;
+import soot.MethodSubSignature;
 import soot.SootMethod;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
-import soot.util.NumberedString;
 
 /**
  * Holds relevant information about a particular virtual call site.
@@ -36,10 +36,10 @@ import soot.util.NumberedString;
 public class VirtualCallSite extends AbstractCallSite {
 
   private final InstanceInvokeExpr iie;
-  private final NumberedString subSig;
+  private final MethodSubSignature subSig;
   final Kind kind;
 
-  public VirtualCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, NumberedString subSig, Kind kind) {
+  public VirtualCallSite(Stmt stmt, SootMethod container, InstanceInvokeExpr iie, MethodSubSignature subSig, Kind kind) {
     super(stmt, container);
     this.iie = iie;
     this.subSig = subSig;
@@ -66,7 +66,7 @@ public class VirtualCallSite extends AbstractCallSite {
     return iie;
   }
 
-  public NumberedString subSig() {
+  public MethodSubSignature subSig() {
     return subSig;
   }
 

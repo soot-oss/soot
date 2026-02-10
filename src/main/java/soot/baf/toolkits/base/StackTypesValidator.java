@@ -121,7 +121,7 @@ import soot.baf.VirtualInvokeInst;
 import soot.baf.XorInst;
 import soot.jimple.IdentityRef;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
@@ -261,7 +261,7 @@ public enum StackTypesValidator implements BodyValidator {
     protected static Type canonicalize(Type t) {
       return (t instanceof RefLikeType || t instanceof NullType) ? TYPE_REF : (t instanceof IntegerType) ? TYPE_INT : t;
     }
-    
+
     /**
      * Performs {@link #canonicalize(Type)} and converts the canonical {@link Type} to its 3-bit representation.
      *
@@ -294,7 +294,7 @@ public enum StackTypesValidator implements BodyValidator {
      * 
      * @param bits
      * 
-     * @return 
+     * @return
      */
     protected static Type bitsToType(int bits) {
       switch (bits) {
@@ -327,7 +327,7 @@ public enum StackTypesValidator implements BodyValidator {
     protected final BitArray initFlow;
 
     public VMStateAnalysis(BafBody body, List<ValidationException> exceptions) {
-      super(new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(), false));
+      super(ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, PedanticThrowAnalysis.v(), false));
       this.exceptions = exceptions;
       this.opStacks = OpStackCalculator.calculateStacks(body);
       assert (opStacks.keySet().equals(new HashSet<>(body.getUnits())));
@@ -438,8 +438,8 @@ public enum StackTypesValidator implements BodyValidator {
       }
 
       // If there is a mismatch, return erroneous type.
-      exceptions.add(new ValidationException(u, "Ambiguous type: '" + toString(bitsToType(in1))
-          + "' vs '" + toString(bitsToType(in2)) + "'"));
+      exceptions.add(new ValidationException(u,
+          "Ambiguous type: '" + toString(bitsToType(in1)) + "' vs '" + toString(bitsToType(in2)) + "'"));
       return TYPE_ERR_BITS;
     }
 

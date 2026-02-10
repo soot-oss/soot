@@ -1,5 +1,3 @@
-package soot.dexpler.instructions;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -27,8 +25,10 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.instruction.Instruction;
+package soot.dexpler.instructions;
+
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
 
 /**
  * Factory that returns an appropriate Instruction instances for given dexlib instructions and opcodes.
@@ -243,9 +243,10 @@ public class InstructionFactory {
 
       case INVOKE_DIRECT:
       case INVOKE_DIRECT_RANGE:
+        return new InvokeSpecialDirectInstruction(instruction, codeAddress);
       case INVOKE_SUPER:
       case INVOKE_SUPER_RANGE:
-        return new InvokeSpecialInstruction(instruction, codeAddress);
+        return new InvokeSpecialSuperInstruction(instruction, codeAddress);
 
       case INVOKE_STATIC:
       case INVOKE_STATIC_RANGE:
@@ -254,11 +255,11 @@ public class InstructionFactory {
       case EXECUTE_INLINE:
       case EXECUTE_INLINE_RANGE:
         return new ExecuteInlineInstruction(instruction, codeAddress);
-        
+
       case INVOKE_POLYMORPHIC:
       case INVOKE_POLYMORPHIC_RANGE:
         return new InvokePolymorphicInstruction(instruction, codeAddress);
- 
+
       case INVOKE_CUSTOM:
       case INVOKE_CUSTOM_RANGE:
         return new InvokeCustomInstruction(instruction, codeAddress);

@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 
 /**
@@ -46,8 +45,6 @@ public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 
   // also exposed to some clients who need it
   public DirectedGraph<N> getOrCreateUnitGraph(M body);
-
-  public List<Value> getParameterRefs(M m);
 
   /**
    * Gets whether the given statement is a return site of at least one call

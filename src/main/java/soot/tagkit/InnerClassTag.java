@@ -21,9 +21,6 @@ package soot.tagkit;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import java.io.UnsupportedEncodingException;
-
 public class InnerClassTag implements Tag {
 
   public static final String NAME = "InnerClassTag";
@@ -54,19 +51,6 @@ public class InnerClassTag implements Tag {
   @Override
   public String getName() {
     return NAME;
-  }
-
-  /**
-   * Returns the inner class name (only) encoded in UTF8. There is no obvious standalone byte[] encoding for this attribute
-   * because it contains embedded constant pool indices.
-   */
-  @Override
-  public byte[] getValue() {
-    try {
-      return innerClass.getBytes("UTF8");
-    } catch (UnsupportedEncodingException e) {
-      return new byte[0];
-    }
   }
 
   public String getInnerClass() {

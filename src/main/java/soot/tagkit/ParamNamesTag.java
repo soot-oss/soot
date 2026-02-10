@@ -68,9 +68,4 @@ public class ParamNamesTag implements Tag {
   public List<String> getInfo() {
     return getNames();
   }
-
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("ParamNamesTag has no value for bytecode");
-  }
 }

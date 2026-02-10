@@ -59,9 +59,6 @@ public class AbnormalTest {
         Options.v().set_output_format(Options.output_format_baf);
         runTest();
         setup();
-        Options.v().set_output_format(Options.output_format_dava);
-        runTest();
-        setup();
         Options.v().set_output_format(Options.output_format_shimp);
         runTest();
         setup();
@@ -75,7 +72,8 @@ public class AbnormalTest {
         // The method test in class E has no opcode instruction at all.
         // Such method can be created by a bytecode editor.
         SootMethod method = Scene.v().getSootClass("E").getMethodByName("test");
-        assertTrue(!method.hasActiveBody());
+        Body body = method.retrieveActiveBody();
+        assertTrue(body.toString().contains("Soot has detected that this method has no instructions"));
         assertTrue(method.isConcrete());
     }
 }

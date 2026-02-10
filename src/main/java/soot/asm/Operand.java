@@ -24,10 +24,13 @@ package soot.asm;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.objectweb.asm.tree.AbstractInsnNode;
+
 import soot.Local;
 import soot.Value;
 import soot.ValueBox;
+import soot.tagkit.Tag;
 
 /**
  * Stack operand.
@@ -36,8 +39,16 @@ import soot.ValueBox;
  */
 final class Operand {
 
+  public static enum OperandType {
+    INT, LONG, FLOAT, DOUBLE
+  }
+
   final AbstractInsnNode insn;
   final Value value;
+
+  OperandType type;
+  Tag tag;
+
   Local stack;
   private Object boxes;
 
@@ -52,6 +63,7 @@ final class Operand {
   Operand(AbstractInsnNode insn, Value value) {
     this.insn = insn;
     this.value = value;
+    this.type = null;
   }
 
   /**
@@ -146,4 +158,22 @@ final class Operand {
   public boolean equals(Object other) {
     return other instanceof Operand && equivTo((Operand) other);
   }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    boolean hasStack = false;
+    if (stack != null) {
+      sb.append(stack.toString());
+      hasStack = true;
+    }
+    if (value != null) {
+      if (hasStack) {
+        sb.append(" - ");
+        sb.append(value.toString());
+      }
+    }
+    return sb.toString();
+  }
+
 }

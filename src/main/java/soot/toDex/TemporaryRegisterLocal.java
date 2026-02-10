@@ -102,4 +102,9 @@ public class TemporaryRegisterLocal implements Local {
     this.type = t;
   }
 
+  @Override
+  public boolean isStackLocal() {
+    throw new RuntimeException("Not implemented.");
+  }
+
 }

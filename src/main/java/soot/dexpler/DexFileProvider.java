@@ -1,5 +1,3 @@
-package soot.dexpler;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,6 +20,15 @@ package soot.dexpler;
  * #L%
  */
 
+package soot.dexpler;
+
+import com.android.tools.smali.dexlib2.DexFileFactory;
+import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile;
+import com.android.tools.smali.dexlib2.iface.DexFile;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer;
+import com.android.tools.smali.dexlib2.iface.MultiDexContainer.DexEntry;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -37,12 +44,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.jf.dexlib2.DexFileFactory;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
-import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.MultiDexContainer;
-import org.jf.dexlib2.iface.MultiDexContainer.DexEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,19 +70,26 @@ public class DexFileProvider {
 
           // "classes.dex" has highest priority
           if (s1.equals("classes.dex")) {
-            return 1;
-          } else if (s2.equals("classes.dex")) {
             return -1;
+          } else if (s2.equals("classes.dex")) {
+            return 1;
           }
 
-          // if one of the strings starts with "classes", we give it the edge right here
-          boolean s1StartsClasses = s1.startsWith("classes");
-          boolean s2StartsClasses = s2.startsWith("classes");
+          // if only one of the string is a valide dex file name, we give it the edge right here
+          boolean s1IsValidDexName = s1.matches("classes[1-9]\\d*.dex") && !s1.equals("classes1.dex");
+          boolean s2IsValidDexName = s2.matches("classes[1-9]\\d*.dex") && !s2.equals("classes1.dex");
 
-          if (s1StartsClasses && !s2StartsClasses) {
-            return 1;
-          } else if (s2StartsClasses && !s1StartsClasses) {
+          if (s1IsValidDexName && !s2IsValidDexName) {
             return -1;
+          } else if (s2IsValidDexName && !s1IsValidDexName) {
+            return 1;
+          }
+
+          // if both are valid, compare the dexfiles numbers as numbers ("classes9.dex" has priority over "classes10.dex")
+          if (s1IsValidDexName && s2IsValidDexName) {
+            Long d1 = new Long(s1.substring(7, s1.length() - 4));
+            Long d2 = new Long(s2.substring(7, s2.length() - 4));
+            return d1.compareTo(d2);
           }
 
           // otherwise, use natural string ordering
@@ -230,6 +238,10 @@ public class DexFileProvider {
     while (entryNameIterator.hasPrevious()) {
       String entryName = entryNameIterator.previous();
       DexEntry<? extends DexFile> entry = dexContainer.getEntry(entryName);
+      if (!acceptFile(entry)) {
+        continue;
+      }
+
       entryName = deriveDexName(entryName);
       logger.debug("" + String.format("Found dex file '%s' with %d classes in '%s'", entryName,
           entry.getDexFile().getClasses().size(), dexSourceFile.getCanonicalPath()));
@@ -247,6 +259,10 @@ public class DexFileProvider {
       }
     }
     return Collections.unmodifiableMap(dexMap);
+  }
+
+  protected boolean acceptFile(DexEntry<? extends DexFile> entry) {
+    return true;
   }
 
   private String deriveDexName(String entryName) {

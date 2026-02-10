@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Jimple Body Creation. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class JBOptions {
 
     private Map<String, String> options;
@@ -45,12 +45,25 @@ public class JBOptions {
 
     /**
      * Use Original Names
-     * Retain the original names for local variables when the source 
+     * Retain the original names for local variables when the bytecode 
      * includes those names. Otherwise, Soot gives variables generic 
      * names based on their types.
      */
     public boolean use_original_names() {
         return soot.PhaseOptions.getBoolean(options, "use-original-names");
+    }
+
+    /**
+     * Use Original Types
+     * Retain the original types for local variables when the bytecode 
+     * includes those types. Note that this can cause problems when the 
+     * bytecode is obfuscated and the types are deliberately wrong! 
+     * Otherwise, Soot assigns types automatically based on the 
+     * context. Note that this option only makes sense when 
+     * use-original-names is set.
+     */
+    public boolean use_original_types() {
+        return soot.PhaseOptions.getBoolean(options, "use-original-types");
     }
 
     /**

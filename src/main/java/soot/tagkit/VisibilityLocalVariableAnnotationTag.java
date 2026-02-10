@@ -74,14 +74,4 @@ public class VisibilityLocalVariableAnnotationTag extends VisibilityParameterAnn
   public String getInfo() {
     return "VisibilityLocalVariableAnnotation";
   }
-
-  /**
-   * VisibilityLocalVariableAnnotationTag not support
-   * 
-   * @return
-   */
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("VisibilityLocalVariableAnnotationTag has no value for bytecode");
-  }
 }

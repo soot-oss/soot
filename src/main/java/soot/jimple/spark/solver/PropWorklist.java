@@ -46,6 +46,7 @@ import soot.jimple.spark.pag.SparkField;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.options.Options;
 import soot.util.queue.QueueReader;
 
 /**
@@ -56,7 +57,7 @@ import soot.util.queue.QueueReader;
 
 public class PropWorklist extends Propagator {
   private static final Logger logger = LoggerFactory.getLogger(PropWorklist.class);
-  protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
+  protected final TreeSet<VarNode> varNodeWorkList = new TreeSet<VarNode>();
 
   public PropWorklist(PAG pag) {
     this.pag = pag;
@@ -66,8 +67,17 @@ public class PropWorklist extends Propagator {
   public void propagate() {
     ofcg = pag.getOnFlyCallGraph();
     new TopoSorter(pag, false).sort();
+    boolean ignoreErrors = Options.v().allow_cg_errors();
     for (AllocNode object : pag.allocSources()) {
-      handleAllocNode(object);
+      try {
+        handleAllocNode(object);
+      } catch (Exception e) {
+        if (ignoreErrors) {
+          logger.error("An error occurred during SPARK worklist propagation; continuing", e);
+        } else {
+          throw e;
+        }
+      }
     }
 
     boolean verbose = pag.getOpts().verbose();
@@ -75,16 +85,22 @@ public class PropWorklist extends Propagator {
       if (verbose) {
         logger.debug("Worklist has " + varNodeWorkList.size() + " nodes.");
       }
-      while (!varNodeWorkList.isEmpty()) {
-        VarNode src = varNodeWorkList.iterator().next();
-        varNodeWorkList.remove(src);
-        handleVarNode(src);
+      VarNode vsrc;
+      while ((vsrc = varNodeWorkList.pollFirst()) != null) {
+        try {
+          handleVarNode(vsrc);
+        } catch (Exception e) {
+          if (ignoreErrors) {
+            logger.error("An error occurred during SPARK worklist propagation; continuing", e);
+          } else {
+            throw e;
+          }
+        }
       }
       if (verbose) {
         logger.debug("Now handling field references");
       }
-      for (Object object : pag.storeSources()) {
-        final VarNode src = (VarNode) object;
+      for (VarNode src : pag.storeSources()) {
         Node[] targets = pag.storeLookup(src);
         for (Node element0 : targets) {
           final FieldRefNode target = (FieldRefNode) element0;
@@ -100,8 +116,16 @@ public class PropWorklist extends Propagator {
         }
       }
       HashSet<Object[]> edgesToPropagate = new HashSet<Object[]>();
-      for (Object object : pag.loadSources()) {
-        handleFieldRefNode((FieldRefNode) object, edgesToPropagate);
+      for (FieldRefNode object : pag.loadSources()) {
+        try {
+          handleFieldRefNode(object, edgesToPropagate);
+        } catch (Exception e) {
+          if (ignoreErrors) {
+            logger.error("An error occurred during SPARK worklist propagation; continuing", e);
+          } else {
+            throw e;
+          }
+        }
       }
       Set<PointsToSetInternal> nodesToFlush = Collections.newSetFromMap(new IdentityHashMap<PointsToSetInternal, Boolean>());
       for (Object[] pair : edgesToPropagate) {

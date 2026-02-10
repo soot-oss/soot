@@ -25,18 +25,12 @@ package soot;
 import static java.net.URLEncoder.encode;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import soot.options.CGOptions;
 import soot.options.Options;
-import soot.toolkits.astmetrics.ClassData;
 
 /**
  * Main class for Soot; provides Soot's command-line user interface.
@@ -134,6 +128,8 @@ public class Main {
 
   public String[] cmdLineArgs = new String[0];
 
+  public static boolean usedAsCommandLineApp;
+
   /**
    * Entry point for cmd line invocation of soot.
    */
@@ -153,58 +149,49 @@ public class Main {
       System.err.println("For example (for 2GB): java -Xmx2g soot.Main ...");
       throw e;
     } catch (RuntimeException e) {
-      e.printStackTrace();
+      if (e instanceof UserInputException) {
+        // For user input problems, the stack trace doesn't really help much.
+        System.err.println(e.getMessage());
+      } else {
+        e.printStackTrace();
 
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      e.printStackTrace(new PrintStream(bos));
-      String stackStraceString = bos.toString();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        e.printStackTrace(new PrintStream(bos));
+        String stackStraceString = bos.toString();
 
-      final String TRACKER_URL = "https://github.com/soot-oss/soot/issues/new?";
-      String body = "Steps to reproduce:\n1.) ...\n\n"
-              + "Files used to reproduce: \n...\n\n"
-              + "Soot version: "
-              + "<pre>"
-              + escape(versionString)
-              + "</pre>\n\n"
-              + "Command line:\n"
-              + "<pre>"
-              + escape(String.join(" ", args))
-              + "</pre>\n\n"
-              + "Max Memory:\n"
-              + "<pre>"
-              + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
-              + "</pre>\n\n"
-              + "Stack trace:\n"
-              + "<pre>"
-              + escape(stackStraceString)
-              + "</pre>";
-      String title = e.getClass().getName() + " when ...";
+        final String TRACKER_URL = "https://github.com/soot-oss/soot/issues/new?";
+        String body = "Steps to reproduce:\n1.) ...\n\n" + "Files used to reproduce: \n...\n\n" + "Soot version: " + "<pre>"
+            + escape(versionString) + "</pre>\n\n" + "Command line:\n" + "<pre>" + escape(String.join(" ", args))
+            + "</pre>\n\n" + "Max Memory:\n" + "<pre>" + escape((Runtime.getRuntime().maxMemory() / (1024 * 1024)) + "MB")
+            + "</pre>\n\n" + "Stack trace:\n" + "<pre>" + escape(stackStraceString) + "</pre>";
+        String title = e.getClass().getName() + " when ...";
 
-      try {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n\nOuuups... something went wrong! Sorry about that.\n");
-        sb.append("Follow these steps to fix the problem:\n");
-        sb.append("1.) Are you sure you used the right command line?\n");
-        sb.append("    Click here to double-check:\n");
-        sb.append("    https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc\n");
-        sb.append('\n');
-        sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
-        sb.append("    the issue on the Soot mailing list:\n");
-        sb.append("    https://github.com/soot-oss/soot/wiki/Getting-help\n");
-        sb.append('\n');
-        sb.append("3.) Sure it's a bug? Click this link to report it.\n");
-        sb.append("    " + TRACKER_URL + "title=").append(encode(title, "UTF-8"));
-        sb.append("&body=").append(encode(body, "UTF-8")).append('\n');
-        sb.append("    Please be as precise as possible when giving us\n");
-        sb.append("    information on how to reproduce the problem. Thanks!");
-        System.err.println(sb);
-
-        // Exit with an exit code 1
-        System.exit(1);
-      } catch (UnsupportedEncodingException e1) {
-
-        // Exit with an exit code 1
-        System.exit(1);
+        try {
+          StringBuilder sb = new StringBuilder();
+          sb.append("\n\nOuuups... something went wrong! Sorry about that.\n");
+          sb.append("Follow these steps to fix the problem:\n");
+          sb.append("1.) Are you sure you used the right command line?\n");
+          sb.append("    Click here to double-check:\n");
+          sb.append("    https://github.com/soot-oss/soot/wiki/Options-and-JavaDoc\n");
+          sb.append('\n');
+          sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
+          sb.append("    the issue on the Soot mailing list:\n");
+          sb.append("    https://github.com/soot-oss/soot/wiki/Getting-help\n");
+          sb.append('\n');
+          sb.append("3.) Sure it's a bug? Click this link to report it.\n");
+          sb.append("    " + TRACKER_URL + "title=").append(encode(title, "UTF-8"));
+          sb.append("&body=").append(encode(body, "UTF-8")).append('\n');
+          sb.append("    Please be as precise as possible when giving us\n");
+          sb.append("    information on how to reproduce the problem.\n");
+          sb.append("    Please also supply the files you used as input files for your analysis. Thanks!");
+          System.err.println(sb);
+        } catch (UnsupportedEncodingException e1) {
+          // So that the Checkstyle checker is happy. This cannot really happen.
+          throw new RuntimeException(e1);
+        } finally {
+          // Exit with an exit code 1
+          System.exit(1);
+        }
       }
     }
   }
@@ -237,6 +224,7 @@ public class Main {
    * Entry point to the soot's compilation process.
    */
   public void run(String[] args) {
+    usedAsCommandLineApp = true;
     cmdLineArgs = args;
 
     start = new Date();
@@ -252,30 +240,6 @@ public class Main {
       System.out.println("Soot started on " + start);
 
       Scene.v().loadNecessaryClasses();
-
-      /*
-       * By this all the java to jimple has occured so we just check ast-metrics flag
-       *
-       * If it is set......print the astMetrics.xml file and stop executing soot
-       */
-      if (Options.v().ast_metrics()) {
-        try (OutputStream streamOut = new FileOutputStream("../astMetrics.xml")) {
-          PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-          writerOut.println("<?xml version='1.0'?>");
-          writerOut.println("<ASTMetrics>");
-
-          for (ClassData cData : G.v().ASTMetricsData) {
-            // each is a classData object
-            writerOut.println(cData);
-          }
-
-          writerOut.println("</ASTMetrics>");
-          writerOut.flush();
-        } catch (IOException e) {
-          throw new CompilationDeathException("Cannot output file astMetrics", e);
-        }
-        return;
-      }
 
       PackManager.v().runPacks();
       if (!Options.v().oaat()) {

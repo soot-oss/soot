@@ -69,7 +69,7 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
    */
   public void java_lang_SecurityManager_getClassContext(SootMethod method, ReferenceVariable thisVar,
       ReferenceVariable returnVar, ReferenceVariable params[]) {
-    helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+    helper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**

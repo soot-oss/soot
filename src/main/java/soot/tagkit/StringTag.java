@@ -58,9 +58,4 @@ public class StringTag implements Tag {
   public String getInfo() {
     return s;
   }
-
-  @Override
-  public byte[] getValue() {
-    throw new RuntimeException("StringTag has no value for bytecode");
-  }
 }

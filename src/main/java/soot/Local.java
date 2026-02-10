@@ -37,4 +37,7 @@ public interface Local extends Value, Numberable, Immediate {
 
   /** Sets the type of the current variable. */
   public void setType(Type t);
+
+  public boolean isStackLocal();
+
 }

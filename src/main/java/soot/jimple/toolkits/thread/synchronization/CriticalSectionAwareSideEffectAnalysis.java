@@ -449,7 +449,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
       }
     }
     RWSet ntr = ntReadSet(method, stmt);
-    if (inaccessibleUses == false && ntr != null && stmt instanceof AssignStmt) {
+    if (!inaccessibleUses && ntr != null && stmt instanceof AssignStmt) {
       AssignStmt a = (AssignStmt) stmt;
       Value r = a.getRightOp();
       if (r instanceof InstanceFieldRef) {

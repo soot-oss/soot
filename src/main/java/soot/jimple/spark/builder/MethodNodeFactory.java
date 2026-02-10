@@ -40,6 +40,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.Expr;
 import soot.jimple.IdentityRef;
 import soot.jimple.IdentityStmt;
@@ -62,6 +63,7 @@ import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.pag.NewInstanceNode;
 import soot.jimple.spark.pag.Node;
@@ -71,6 +73,7 @@ import soot.jimple.spark.pag.VarNode;
 import soot.options.CGOptions;
 import soot.shimple.AbstractShimpleValueSwitch;
 import soot.shimple.PhiExpr;
+import soot.tagkit.ExpectedTypeTag;
 import soot.toolkits.scalar.Pair;
 
 /**
@@ -131,6 +134,15 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
   /** Adds the edges required for this statement to the graph. */
   final public void handleStmt(Stmt s) {
+    if (s.hasTag(ExpectedTypeTag.NAME)) {
+      ExpectedTypeTag tag = (ExpectedTypeTag) s.getTag(ExpectedTypeTag.NAME);
+      Local l = (Local) ((DefinitionStmt) s).getLeftOp();
+      AllocNode src = pag.makeAllocNode(tag, tag.getExpectedType(), method);
+      LocalVarNode dest = pag.makeLocalVarNode(l, l.getType(), method);
+      mpag.addInternalEdge(src, dest);
+      return;
+    }
+
     // We only consider reflective class creation when it is enabled
     if (s.containsInvokeExpr()) {
       if (!pag.getCGOpts().types_for_invoke()) {
@@ -147,7 +159,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
       }
     }
 
-    s.apply(new AbstractStmtSwitch() {
+    s.apply(new AbstractStmtSwitch<Node>() {
       @Override
       final public void caseAssignStmt(AssignStmt as) {
         Value l = as.getLeftOp();
@@ -155,8 +167,10 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         if (!(l.getType() instanceof RefLikeType)) {
           return;
         }
-        assert r.getType() instanceof RefLikeType : "Type mismatch in assignment " + as + " in method "
-            + method.getSignature();
+        if (!(r.getType() instanceof RefLikeType)) {
+          // sadly, this can happen in .NET Jimple code, where primitives can be used without boxing
+          return;
+        }
         l.apply(MethodNodeFactory.this);
         Node dest = getNode();
         r.apply(MethodNodeFactory.this);
@@ -249,7 +263,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
       if (vie.getBase().getType() instanceof RefType) {
         RefType rt = (RefType) vie.getBase().getType();
         if (rt.getSootClass().getName().equals("java.lang.Class")) {
-          if (vie.getMethodRef().name().equals("newInstance") && vie.getMethodRef().parameterTypes().size() == 0) {
+          SootMethodRef ref = vie.getMethodRef();
+          if (ref.getName().equals("newInstance") && ref.getParameterTypes().size() == 0) {
             return true;
           }
         }
@@ -270,8 +285,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   }
 
   final public Node caseParm(int index) {
-    //if we connect method with different param counts in virtualedges.xml, we may be calling caseParam with
-    //out-of-bound index. see PAG.addCallTarget
+    // if we connect method with different param counts in virtualedges.xml, we may be calling caseParam with
+    // out-of-bound index. see PAG.addCallTarget
     if (method.getParameterCount() < index + 1) {
       return null;
     }
@@ -354,10 +369,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     }
     RefType rt = (RefType) t;
     String s = rt.toString();
-    if (s.equals("java.lang.StringBuffer")) {
-      return true;
-    }
-    if (s.equals("java.lang.StringBuilder")) {
+    if (s.equals("java.lang.StringBuffer") || s.equals("java.lang.StringBuilder")) {
       return true;
     }
     return false;
@@ -401,7 +413,11 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
   @Override
   final public void caseStaticFieldRef(StaticFieldRef sfr) {
-    setResult(pag.makeGlobalVarNode(sfr.getField(), sfr.getField().getType()));
+    if (sfr.getField() != null) {
+      setResult(pag.makeGlobalVarNode(sfr.getField(), sfr.getField().getType()));
+    } else if (sfr.getFieldRef() != null) {
+      setResult(pag.makeGlobalVarNode(sfr.getFieldRef(), sfr.getFieldRef().type()));
+    }
   }
 
   @Override
@@ -471,4 +487,13 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
   protected final MethodPAG mpag;
   protected SootMethod method;
   protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
+
+  /**
+   * Returns the method
+   * 
+   * @return the method
+   */
+  public SootMethod getMethod() {
+    return method;
+  }
 }

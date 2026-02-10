@@ -107,7 +107,8 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
 
   @Override
   public void toString(UnitPrinter up) {
-    up.literal(Jimple.STATICINVOKE + " ");
+    up.literal(Jimple.STATICINVOKE);
+    up.literal(" ");
     up.methodRef(methodRef);
     up.literal("(");
     if (argBoxes != null) {
@@ -137,5 +138,10 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     Unit u = Baf.v().newStaticInvokeInst(methodRef);
     out.add(u);
     u.addAllTagsOf(context.getCurrentUnit());
+  }
+
+  @Override
+  public boolean hasDefiniteMethodTarget() {
+    return true;
   }
 }

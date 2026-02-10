@@ -27,7 +27,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Type Assigner. */
-@javax.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
+@jakarta.annotation.Generated(value = "Saxonica v3.0", comments = "from soot_options.xml")
 public class JBTROptions {
 
     private Map<String, String> options;
@@ -57,6 +57,19 @@ public class JBTROptions {
      */
     public boolean use_older_type_assigner() {
         return soot.PhaseOptions.getBoolean(options, "use-older-type-assigner");
+    }
+
+    /**
+     * Use precise typing --
+     * Uses a more precise type assigner, which is much slower.
+     *
+     * When precise typing is enabled, Soot try to find the global best 
+     * typing, i.e., the typing with the least amount of assignments. 
+     * This might cause Soot require excessive amounts of computation 
+     * resources (memory and CPU runtime).
+     */
+    public boolean use_precise_typing() {
+        return soot.PhaseOptions.getBoolean(options, "use-precise-typing");
     }
 
     /**

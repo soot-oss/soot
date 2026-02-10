@@ -44,9 +44,11 @@ import soot.ValueBox;
 import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
+import soot.jimple.ClassConstant;
 import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
 import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IdentityStmt;
@@ -63,6 +65,8 @@ import soot.tagkit.Tag;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
+import soot.util.EmptyDevNullMap;
 import soot.util.LocalBitSetPacker;
 
 //@formatter:off
@@ -103,7 +107,8 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose()) {
+    final Options o = Options.v();
+    if (o.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Splitting for shared initialization of locals...");
     }
 
@@ -111,15 +116,16 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       throwAnalysis = Scene.v().getDefaultThrowAnalysis();
     }
 
-    if (omitExceptingUnitEdges == false) {
-      omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+    if (!omitExceptingUnitEdges) {
+      omitExceptingUnitEdges = o.omit_excepting_unit_edges();
     }
 
     final LocalBitSetPacker localPacker = new LocalBitSetPacker(body);
     localPacker.pack();
 
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
-    BetterConstantPropagator bcp = new BetterConstantPropagator(graph);
+    ExceptionalUnitGraph graph
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+    BetterConstantPropagator bcp = createBetterConstantPropagator(graph);
     bcp.doAnalysis();
     boolean propagatedThrow = false;
     for (Unit u : body.getUnits()) {
@@ -133,9 +139,9 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
           Constant c = v.getConstant(l);
           if (c != null) {
             List<Tag> oldTags = assign.getRightOpBox().getTags();
-            assign.setRightOp((Constant) c);
+            assign.setRightOp(c);
             assign.getRightOpBox().getTags().addAll(oldTags);
-            CopyPropagator.copyLineTags(assign.getUseBoxes().get(0), assign);
+            CopyPropagator.copyLineTags(assign.getUseBoxesIterator().next(), assign);
             continue;
           }
         }
@@ -145,7 +151,8 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
         expectsRealValue = expectsRealValue(((IfStmt) u).getCondition());
       }
 
-      for (ValueBox r : u.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox r = iterator.next();
         if (r instanceof ImmediateBox) {
           Value src = r.getValue();
           if (src instanceof Local) {
@@ -161,11 +168,10 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
                   val = DoubleConstant.v(((LongConstant) val).value);
                 }
               }
-              r.setValue((Constant) val);
+              r.setValue(val);
             }
           }
         }
-
       }
     }
     localPacker.unpack();
@@ -175,13 +181,21 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
     DexNullArrayRefTransformer.v().transform(body);
   }
 
+  protected BetterConstantPropagator createBetterConstantPropagator(ExceptionalUnitGraph graph) {
+    return new BetterConstantPropagator(graph);
+  }
+
   private static boolean expectsRealValue(Value op) {
     return op instanceof CmpgExpr || op instanceof CmplExpr;
   }
 
-  private static class ConstantState {
-    BitSet nonConstant = new BitSet();
-    Map<Local, Constant> constants = new HashMap<>();
+  protected static class ConstantState {
+    public BitSet nonConstant = new BitSet();
+    public Map<Local, Constant> constants = createMap();
+
+    protected Map<Local, Constant> createMap() {
+      return new HashMap<>();
+    }
 
     public Constant getConstant(Local l) {
       Constant r = constants.get(l);
@@ -234,10 +248,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
       if (this == obj) {
         return true;
       }
-      if (obj == null) {
-        return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if ((obj == null) || (getClass() != obj.getClass())) {
         return false;
       }
       ConstantState other = (ConstantState) obj;
@@ -291,7 +302,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     public void clear() {
       nonConstant.clear();
-      constants = new HashMap<>();
+      constants = createMap();
     }
 
     public void mergeInto(ConstantState in) {
@@ -310,10 +321,23 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
   }
 
-  private class BetterConstantPropagator extends ForwardFlowAnalysis<Unit, ConstantState> {
+  protected class BetterConstantPropagator extends ForwardFlowAnalysis<Unit, ConstantState> {
 
     public BetterConstantPropagator(DirectedGraph<Unit> graph) {
       super(graph);
+    }
+
+    @Override
+    protected void doAnalysis() {
+      doAnalysis(GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, EmptyDevNullMap.v());
+    }
+
+    @Override
+    protected boolean omissible(Unit n) {
+      if (!(n instanceof DefinitionStmt)) {
+        return true;
+      }
+      return super.omissible(n);
     }
 
     @Override
@@ -328,7 +352,15 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
             Object rop = assign.getRightOp();
             Constant value = null;
             if (rop instanceof Constant) {
-              value = (Constant) rop;
+              // Class Constants can trigger a NoClassDefFoundError.
+              // Therefore, cannot not propagate them in some cases, since we might change the semantics of the original
+              // program w.r.t. traps.
+              // The normal constant propagator propagates them when they are safe to propagate.
+              // Implementing this here is harder,
+              // since we need to keep track of trap handlers at all assigns in the original code.
+              if (!(rop instanceof ClassConstant)) {
+                value = (Constant) rop;
+              }
             } else {
               if (rop instanceof Local) {
                 value = in.getConstant((Local) rop);
@@ -364,7 +396,17 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     @Override
     protected void copy(ConstantState source, ConstantState dest) {
+      if (source == dest) {
+        return;
+      }
       source.copyTo(dest);
+    }
+
+    @Override
+    protected void copyFreshToExisting(ConstantState in, ConstantState dest) {
+      // in is fresh, so we can directly reuse the inputs
+      dest.constants = in.constants;
+      dest.nonConstant = in.nonConstant;
     }
 
   }

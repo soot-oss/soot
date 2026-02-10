@@ -181,11 +181,15 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -196,6 +200,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.objectweb.asm.ConstantDynamic;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -216,11 +221,14 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
+import org.objectweb.asm.util.Textifier;
+import org.objectweb.asm.util.TraceMethodVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Body;
+import soot.BooleanConstant;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -252,7 +260,12 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
-import soot.coffi.Util;
+import soot.asm.Operand.OperandType;
+import soot.dexpler.Util;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
+import soot.dexpler.tags.IntOpTag;
+import soot.dexpler.tags.LongOpTag;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -289,9 +302,18 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
+import soot.jimple.internal.JimpleLocal;
+import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
+import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
+import soot.toolkits.exceptions.TrapTightener;
+import soot.toolkits.scalar.LocalPacker;
 import soot.util.Chain;
 
 /**
@@ -299,7 +321,7 @@ import soot.util.Chain;
  *
  * @author Aaloan Miftah
  */
-final class AsmMethodSource implements MethodSource {
+public class AsmMethodSource implements MethodSource {
   private static final Logger logger = LoggerFactory.getLogger(AsmMethodSource.class);
 
   private static final Operand DWORD_DUMMY = new Operand(null, null);
@@ -323,20 +345,20 @@ final class AsmMethodSource implements MethodSource {
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 
   /* -state fields- */
-  private int nextLocal;
-  private Map<Integer, Local> locals;
+  protected int nextLocal;
+  protected Map<Integer, JimpleLocal> locals;
   private Multimap<LabelNode, UnitBox> labels;
   private Map<AbstractInsnNode, Unit> units;
   private ArrayList<Operand> stack;
   private Map<AbstractInsnNode, StackFrame> frames;
   private Multimap<LabelNode, UnitBox> trapHandlers;
   private JimpleBody body;
-  private int lastLineNumber = -1;
   private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
   private ArrayDeque<Edge> conversionWorklist;
+  private Map<AbstractInsnNode, Integer> lineNumberMap;
 
-  AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars, List<TryCatchBlockNode> tryCatchBlocks,
-      String module) {
+  public AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars,
+      List<TryCatchBlockNode> tryCatchBlocks, String module) {
     this.maxLocals = maxLocals;
     this.instructions = insns;
     this.localVars = localVars;
@@ -380,34 +402,56 @@ final class AsmMethodSource implements MethodSource {
     return result;
   }
 
+  private final boolean useOriginalTypes
+      = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-types");
+
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
       throw new IllegalArgumentException("Invalid local index: " + idx);
     }
     Integer i = idx;
-    Local l = locals.get(i);
+    JimpleLocal l = locals.get(i);
     if (l == null) {
-      String name;
-      if (localVars != null) {
-        name = null;
-        for (LocalVariableNode lvn : localVars) {
-          // Ignore LocalVariableNode which don't cover any real units
-          if (lvn.index == idx && lvn.start != lvn.end) {
-            name = lvn.name;
-            break;
-          }
+      String name = getLocalName(idx);
+      Type type = UnknownType.v();
+      if (useOriginalTypes) {
+        LocalVariableNode local = getLocalVarNode(i);
+        if (local != null && local.desc != null) {
+          type = AsmUtil.toJimpleType(local.desc, Optional.absent());
         }
-        /* normally for try-catch blocks */
-        if (name == null) {
-          name = "l" + idx;
-        }
-      } else {
-        name = "l" + idx;
       }
-      l = Jimple.v().newLocal(name, UnknownType.v());
+      l = Jimple.v().newLocal(name, type);
+      l.setUserDefinedLocal();
       locals.put(i, l);
     }
     return l;
+  }
+
+  protected String getLocalName(int idx) {
+    String name = null;
+    if (localVars != null) {
+      LocalVariableNode n = getLocalVarNode(idx);
+      /* normally for try-catch blocks */
+      if (n != null) {
+        name = n.name;
+      }
+      if (n == null) {
+        name = "l" + idx;
+      }
+    } else {
+      name = "l" + idx;
+    }
+    return name;
+  }
+
+  private LocalVariableNode getLocalVarNode(int idx) {
+    for (LocalVariableNode lvn : localVars) {
+      // Ignore LocalVariableNode which don't cover any real units
+      if (lvn.index == idx && lvn.start != lvn.end) {
+        return lvn;
+      }
+    }
+    return null;
   }
 
   private void push(Operand opr) {
@@ -456,7 +500,7 @@ final class AsmMethodSource implements MethodSource {
     Local l = o.stack;
     if (l == null && !(v instanceof Local)) {
       l = o.stack = newStackLocal();
-      setUnit(o.insn, Jimple.v().newAssignStmt(l, v));
+      setUnit(o, Jimple.v().newAssignStmt(l, v));
       o.updateBoxes();
     }
     return o;
@@ -467,7 +511,7 @@ final class AsmMethodSource implements MethodSource {
     Local l = o.stack;
     if (l == null && !(v instanceof Local) && !(v instanceof Constant)) {
       l = o.stack = newStackLocal();
-      setUnit(o.insn, Jimple.v().newAssignStmt(l, v));
+      setUnit(o, Jimple.v().newAssignStmt(l, v));
       o.updateBoxes();
     }
     return o;
@@ -478,7 +522,7 @@ final class AsmMethodSource implements MethodSource {
     Local l = o.stack;
     if (l == null && !(v instanceof Constant)) {
       l = o.stack = newStackLocal();
-      setUnit(o.insn, Jimple.v().newAssignStmt(l, v));
+      setUnit(o, Jimple.v().newAssignStmt(l, v));
       o.updateBoxes();
     }
     return o;
@@ -522,20 +566,34 @@ final class AsmMethodSource implements MethodSource {
     return AsmUtil.isDWord(t) ? popStackConstDual() : popStackConst();
   }
 
-  void setUnit(AbstractInsnNode insn, Unit u) {
-    if (Options.v().keep_line_number() && lastLineNumber >= 0) {
-      Tag lineTag = u.getTag(LineNumberTag.NAME);
-      if (lineTag == null) {
-        lineTag = new LineNumberTag(lastLineNumber);
-        u.addTag(lineTag);
-      } else if (((LineNumberTag) lineTag).getLineNumber() != lastLineNumber) {
-        throw new RuntimeException("Line tag mismatch");
+  protected void setUnit(Operand op, Unit u) {
+    setUnit(op.insn, u);
+    if (op.tag != null) {
+      u.addTag(op.tag);
+    }
+  }
+
+  protected void setUnit(AbstractInsnNode insn, Unit u) {
+    if (lineNumberMap != null) {
+      Integer ln = lineNumberMap.get(insn);
+      if (ln != null && ln >= 0) {
+        setLineNumber(u, ln);
       }
     }
 
     Unit o = units.put(insn, u);
     if (o != null) {
       throw new AssertionError(insn.getOpcode() + " already has a unit, " + o);
+    }
+  }
+
+  protected void setLineNumber(Unit u, int lineNumber) {
+    Tag lineTag = u.getTag(LineNumberTag.NAME);
+    if (lineTag == null) {
+      lineTag = new LineNumberTag(lineNumber);
+      u.addTag(lineTag);
+    } else if (((LineNumberTag) lineTag).getLineNumber() != lineNumber) {
+      throw new RuntimeException("Line tag mismatch");
     }
   }
 
@@ -547,9 +605,9 @@ final class AsmMethodSource implements MethodSource {
     }
   }
 
-  Local newStackLocal() {
+  protected Local newStackLocal() {
     Integer idx = nextLocal++;
-    Local l = Jimple.v().newLocal("$stack" + idx, UnknownType.v());
+    JimpleLocal l = Jimple.v().newLocal("$stack" + idx, UnknownType.v());
     locals.put(idx, l);
     return l;
   }
@@ -568,10 +626,10 @@ final class AsmMethodSource implements MethodSource {
         continue;
       }
       if (l != null && !opr.value.equivTo(l)) {
-        List<ValueBox> uses = opr.value.getUseBoxes();
+        Iterator<ValueBox> uses = opr.value.getUseBoxesIterator();
         boolean noref = true;
-        for (ValueBox use : uses) {
-          Value val = use.getValue();
+        while (uses.hasNext()) {
+          Value val = uses.next().getValue();
           if (val.equivTo(l)) {
             noref = false;
             break;
@@ -582,14 +640,14 @@ final class AsmMethodSource implements MethodSource {
         }
       }
       int op = opr.insn.getOpcode();
-      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD && op > SALOAD)) {
+      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD || op > SALOAD)) {
         continue;
       }
       Local stack = newStackLocal();
       opr.stack = stack;
       AssignStmt as = Jimple.v().newAssignStmt(stack, opr.value);
       opr.updateBoxes();
-      setUnit(opr.insn, as);
+      setUnit(opr, as);
     }
   }
 
@@ -927,6 +985,28 @@ final class AsmMethodSource implements MethodSource {
       op1.addBox(binop.getOp1Box());
       op2.addBox(binop.getOp2Box());
       opr = new Operand(insn, binop);
+      if (op >= IADD && op <= DDIV) {
+        // The operations in this range always exists in four flavors: one for int, long, float, double
+        int flavor = op & 0x3;
+        switch (flavor) {
+          case 0b00:
+            opr.tag = IntOpTag.INSTANCE;
+            opr.type = OperandType.INT;
+            break;
+          case 0b01:
+            opr.tag = LongOpTag.INSTANCE;
+            opr.type = OperandType.LONG;
+            break;
+          case 0b10:
+            opr.tag = FloatOpTag.INSTANCE;
+            opr.type = OperandType.FLOAT;
+            break;
+          case 0b11:
+            opr.tag = DoubleOpTag.INSTANCE;
+            opr.type = OperandType.DOUBLE;
+            break;
+        }
+      }
       frame.in(op2, op1);
       frame.boxes(binop.getOp2Box(), binop.getOp1Box());
       frame.out(opr);
@@ -1098,6 +1178,21 @@ final class AsmMethodSource implements MethodSource {
     } else if (op >= IRETURN && op <= ARETURN) {
       convertReturnInsn(insn);
     } else if (op == RETURN) {
+      // We might be at the end of the stack, but there is still a dangling instruction, i.e., a method call whose return
+      // value
+      // was never used. Since the method may have side effects, we need to handle the call.
+      if (!stack.isEmpty()) {
+        Operand o1 = pop();
+        if (!units.containsKey(o1.insn)) {
+          Value p = getFrame(o1.insn).out()[0].value;
+          if (!(p instanceof InvokeExpr)) {
+            // we don't care.
+            return;
+          }
+          InvokeExpr iexpr = (InvokeExpr) p;
+          setUnit(o1, Jimple.v().newInvokeStmt(iexpr));
+        }
+      }
       if (!units.containsKey(insn)) {
         setUnit(insn, Jimple.v().newReturnVoidStmt());
       }
@@ -1246,7 +1341,7 @@ final class AsmMethodSource implements MethodSource {
       } else {
         switch (op) {
           case IFEQ:
-            cond = Jimple.v().newEqExpr(v, IntConstant.v(0));
+            cond = Jimple.v().newEqExpr(v, BooleanConstant.v(false));
             break;
           case IFNE:
             cond = Jimple.v().newNeExpr(v, IntConstant.v(0));
@@ -1333,9 +1428,16 @@ final class AsmMethodSource implements MethodSource {
     } else if (val instanceof Handle) {
       Handle h = (Handle) val;
       if (MethodHandle.isMethodRef(h.getTag())) {
-        v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle) val).getTag());
+        v = MethodHandle.v(toSootMethodRef(h), h.getTag());
       } else {
-        v = MethodHandle.v(toSootFieldRef((Handle) val), ((Handle) val).getTag());
+        v = MethodHandle.v(toSootFieldRef(h), h.getTag());
+      }
+    } else if (val instanceof ConstantDynamic) {
+      ConstantDynamic cd = (ConstantDynamic) val;
+      if (MethodHandle.isMethodRef(cd.getBootstrapMethod().getTag())) {
+        v = MethodHandle.v(toSootMethodRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
+      } else {
+        v = MethodHandle.v(toSootFieldRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
       }
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
@@ -1384,11 +1486,11 @@ final class AsmMethodSource implements MethodSource {
       if (clsName.charAt(0) == '[') {
         clsName = "java.lang.Object";
       }
-      List<Type> sigTypes =
-          AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+      List<Type> sigTypes
+          = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
       returnType = sigTypes.remove(sigTypes.size() - 1);
-      SootMethodRef ref =
-          Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
+      SootMethodRef ref
+          = Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
       int nrArgs = sigTypes.size();
       final Operand[] args;
       List<Value> argList = Collections.emptyList();
@@ -1498,7 +1600,7 @@ final class AsmMethodSource implements MethodSource {
       // create ref to actual method
 
       // Generate parameters & returnType & parameterTypes
-      Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
+      Type[] types = AsmUtil.jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
       int nrArgs = types.length - 1;
       List<Type> parameterTypes = new ArrayList<Type>(nrArgs);
       List<Value> methodArgs = new ArrayList<Value>(nrArgs);
@@ -1524,8 +1626,8 @@ final class AsmMethodSource implements MethodSource {
         String bsmMethodRefStr = bsmMethodRef.toString();
         if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
           SootClass enclosingClass = body.getMethod().getDeclaringClass();
-          bootstrap_model =
-              LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
+          bootstrap_model
+              = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
         }
       }
 
@@ -1808,10 +1910,6 @@ final class AsmMethodSource implements MethodSource {
     push(opr);
   }
 
-  private void convertLine(LineNumberNode ln) {
-    lastLineNumber = ln.line;
-  }
-
   private void addEdges(AbstractInsnNode cur, AbstractInsnNode tgt1, List<LabelNode> tgts) {
     int lastIdx = tgts == null ? -1 : tgts.size() - 1;
     Operand[] stackss = stack.toArray(new Operand[stack.size()]);
@@ -1821,12 +1919,10 @@ final class AsmMethodSource implements MethodSource {
     tgt_loop: do {
       Edge edge = edges.get(cur, tgt);
       if (edge == null) {
-        // make sure to store last line number to stay sound if the branch that comes later in
-        // bytecode is processed first
-        edge = new Edge(tgt, lastLineNumber);
+        edge = new Edge(tgt);
         edge.prevStacks.add(stackssL);
         edges.put(cur, tgt, edge);
-        conversionWorklist.add(edge);
+        conversionWorklist.addLast(edge);
         continue;
       }
       if (edge.stack != null) {
@@ -1835,18 +1931,66 @@ final class AsmMethodSource implements MethodSource {
           throw new AssertionError("Multiple un-equal stacks!");
         }
         for (int j = 0; j != stackss.length; j++) {
-          if (!stackTemp.get(j).equivTo(stackss[j])) {
-            throw new AssertionError("Multiple un-equal stacks!");
+          Operand tempOp = stackTemp.get(j);
+          Operand stackOp = stackss[j];
+          if (!tempOp.equivTo(stackOp)) {
+            // We need to merge the two operands. We have a join point, where the two paths have stacks of the same size, but
+            // with different locals. Since the execution contains on the same statements after the join point, we must make
+            // sure that they can operate on the same locals, regardless of which path the execution came from.
+            merge(tempOp, stackOp);
           }
         }
         continue;
       }
+
       if (!edge.prevStacks.add(stackssL)) {
         continue tgt_loop;
       }
+
       edge.stack = new ArrayList<Operand>(stack);
-      conversionWorklist.add(edge);
+      conversionWorklist.addLast(edge);
     } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
+  }
+
+  /**
+   * Merges the given operands, i.e., the second operand will receive assignments to the stack locals of the first operand so
+   * that both operands become compatible.
+   *
+   * @param firstOp
+   */
+  private void merge(Operand firstOp, Operand secondOp) {
+    if (secondOp.stack != null) {
+      if (firstOp.stack == null) {
+        Local stack = secondOp.stack;
+        AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
+        firstOp.stack = stack;
+        setUnit(firstOp, as);
+      } else {
+        // Both operands have a stack local. We need to create an assignment to a temporary variable.
+        Local stack = firstOp.stack;
+        AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
+        mergeUnits(secondOp.insn, as);
+        secondOp.addBox(as.getRightOpBox());
+        secondOp.stack = stack;
+      }
+    } else {
+      if (firstOp.stack != null) {
+        Local stack = firstOp.stack;
+        AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
+        secondOp.stack = stack;
+        setUnit(secondOp, as);
+      } else {
+        Local stack = newStackLocal();
+        AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
+        firstOp.stack = stack;
+        mergeUnits(firstOp.insn, as);
+        firstOp.addBox(as.getRightOpBox());
+        AssignStmt as2 = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
+        mergeUnits(secondOp.insn, as2);
+        secondOp.addBox(as2.getRightOpBox());
+        secondOp.stack = stack;
+      }
+    }
   }
 
   private void convert() {
@@ -1863,17 +2007,15 @@ final class AsmMethodSource implements MethodSource {
     }
     worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
     conversionWorklist = worklist;
-    edges = HashBasedTable.create(1, 1);
+    edges = HashBasedTable.create(instructions.size(), 1);
+    if (Options.v().keep_line_number()) {
+      setLineNumberMap();
+    }
 
     do {
-      Edge edge = worklist.pollLast();
+      Edge edge = worklist.pollFirst();
       AbstractInsnNode insn = edge.insn;
       stack = edge.stack;
-      // restore line. this is important since we might have traversed the edge that leads to
-      // bytecode far away from the branch statement first and are now processing the statement
-      // right after the branch which should start with the lastLineNumber as it was for the branch
-      // statement
-      lastLineNumber = edge.lastLineNumber == -1 ? lastLineNumber : edge.lastLineNumber;
       edge.stack = null;
       insnLoop: do {
         int type = insn.getType();
@@ -1946,7 +2088,7 @@ final class AsmMethodSource implements MethodSource {
             convertLabel((LabelNode) insn);
             continue;
           case LINE:
-            convertLine((LineNumberNode) insn);
+            // was already handled in setLineNumberMap()
             continue;
           case FRAME:
             // we can ignore it
@@ -1958,6 +2100,35 @@ final class AsmMethodSource implements MethodSource {
     } while (!worklist.isEmpty());
     conversionWorklist = null;
     edges = null;
+  }
+
+  // For potential future debugging efforts
+  private static String getInstructionAsString(AbstractInsnNode n) {
+    Textifier textifier = new Textifier();
+    TraceMethodVisitor tm = new TraceMethodVisitor(textifier);
+    n.accept(tm);
+
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    try (PrintWriter pw = new PrintWriter(bos)) {
+      textifier.print(pw);
+    }
+    return new String(bos.toByteArray(), StandardCharsets.UTF_8).trim();
+  }
+
+  private void setLineNumberMap() {
+    lineNumberMap = new HashMap<>(instructions.size() * 2 + 1);
+    AbstractInsnNode current = instructions.getFirst();
+
+    int lastNumber = -1;
+    while (current != null) {
+      if (current.getType() == LINE) {
+        LineNumberNode ln = (LineNumberNode) current;
+        lastNumber = ln.line;
+      } else if (lastNumber >= 0) {
+        lineNumberMap.put(current, lastNumber);
+      }
+      current = current.getNext();
+    }
   }
 
   private void handleInlineExceptionHandler(LabelNode ln, ArrayDeque<Edge> worklist) {
@@ -2181,15 +2352,24 @@ final class AsmMethodSource implements MethodSource {
 
   @Override
   public Body getBody(SootMethod m, String phaseName) {
-    if (!m.isConcrete() || instructions == null || instructions.size() == 0) {
+    if (!m.isConcrete()) {
       return null;
     }
     final Jimple jimp = Jimple.v();
     final JimpleBody jb = jimp.newBody(m);
+    if (instructions == null || instructions.size() == 0) {
+      logger.warn(m.getSignature() + " has no instructions");
+
+      Util.emptyBody(jb);
+      Util.addExceptionAfterUnit(jb, "java.lang.RuntimeException", jb.getUnits().getLast(),
+          "Soot has detected that this method has no instructions. The JVM would throw an exception when loading the class");
+      TypeAssigner.v().transform(jb);
+      return jb;
+    }
     /* initialize */
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
-    locals = new LinkedHashMap<Integer, Local>(maxLocals + (maxLocals / 2));
+    locals = new LinkedHashMap<Integer, JimpleLocal>(maxLocals + (maxLocals / 2));
     labels = LinkedListMultimap.create(4);
     units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
@@ -2222,6 +2402,32 @@ final class AsmMethodSource implements MethodSource {
     stack = null;
     frames = null;
     body = null;
+    lineNumberMap = null;
+
+    // We want to have somewhat correct ordering of the locals
+    // (the asm backend's code depends on this)
+    Set<Local> seenLocals = new HashSet<>();
+    jb.getLocals().clear();
+    for (Unit i : jb.getUnits()) {
+      Iterator<ValueBox> it = i.getUseAndDefBoxesIterator();
+      while (it.hasNext()) {
+        ValueBox vb = it.next();
+        Value v = vb.getValue();
+        if (v instanceof Local && seenLocals.add((Local) v)) {
+          Local l = (Local) v;
+          jb.getLocals().add(l);
+        }
+      }
+    }
+
+    if (!"false".equalsIgnoreCase(PhaseOptions.v().getPhaseOptions("jb.cp").get("enabled"))) {
+      CopyPropagator.v().transform(jb);
+      ConditionalBranchFolder.v().transform(jb);
+    }
+
+    // We can have cases where the Java compiler inserts unnecessary traps, which might cause problems later in typing
+    TrapTightener.v().transform(jb);
+    UnreachableCodeEliminator.v().transform(jb);
 
     // Make sure to inline patterns of the form to enable proper variable
     // splitting and type assignment:
@@ -2237,6 +2443,12 @@ final class AsmMethodSource implements MethodSource {
     } catch (Throwable t) {
       throw new RuntimeException("Failed to apply jb to " + m, t);
     }
+    TrapTightener.removeInvalidTraps(jb);
+    LocalPacker.v().transform(jb);
+    DeadAssignmentEliminator.v().transform(jb);
+    UnconditionalBranchFolder.v().transform(jb);
+
+    ensureUniqueNames(jb.getLocals());
 
     return jb;
   }
@@ -2264,7 +2476,7 @@ final class AsmMethodSource implements MethodSource {
    * Thus, this method checks for these ambiguous cases while the LocalVariableTable is still available, and assigns a unique
    * name to each local that is based on the original name from the LocalVariableTable and does not use the '#' character.
    */
-  private void tryCorrectingLocalNames(final Jimple jimp, final JimpleBody jb) {
+  protected void tryCorrectingLocalNames(final Jimple jimp, final JimpleBody jb) {
     final Chain<Local> jbLocals = jb.getLocals();
     final int sizeLVT = this.localVars.size();
     if (sizeLVT > 0) {
@@ -2283,12 +2495,18 @@ final class AsmMethodSource implements MethodSource {
       // the LocalVariableTable allows multiple local variable indices to
       // have the same name simultaneously but they must be distinguished here.
       final Chain<Unit> jbUnits = jb.getUnits();
-      Table<Integer, String, Local> newLocals = null;
+      Table<Integer, String, JimpleLocal> newLocals = null;
       for (Map.Entry<Integer, Collection<LocalVariableNode>> e : groups.asMap().entrySet()) {
         Collection<LocalVariableNode> lvns = e.getValue();
         if (lvns.size() > 1) {
           final Integer localNum = e.getKey();
-          final Local chosen = this.locals.get(localNum);
+
+          // Skip this index if it has not been referenced by a converted instruction
+          if (!this.locals.containsKey(localNum)) {
+            continue;
+          }
+
+          final JimpleLocal chosen = this.locals.get(localNum);
           final String chosenName = chosen.getName();
           final Type chosenType = chosen.getType();
           // Detect inconsistencies in the LocalVariableTable.
@@ -2309,7 +2527,8 @@ final class AsmMethodSource implements MethodSource {
           // changes should be made.
           IdentityHashMap<ValueBox, Local> boxToNewLoc = new IdentityHashMap<>();
           for (Unit u : jbUnits) {
-            for (ValueBox box : u.getUseAndDefBoxes()) {
+            for (Iterator<ValueBox> iterator = u.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+              ValueBox box = iterator.next();
               Value val = box.getValue();
               if (val == chosen) {
                 Local old = boxToNewLoc.put(box, null);
@@ -2326,26 +2545,34 @@ final class AsmMethodSource implements MethodSource {
               // the initial instruction to check, the bytecode generated by
               // some compilers has the start PC one instruction late it seems.
               Unit uStart;
-              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null;) {
+              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null && i != null;) {
                 i = i.getNext();
+              }
+              if (uStart instanceof UnitContainer) {
+                uStart = ((UnitContainer) uStart).getFirstUnit();
               }
               // Get the previous real instruction before 'end'
               Unit uEnd;
-              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null;) {
+              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null && i != null;) {
                 i = i.getPrevious();
+              }
+              if (uEnd instanceof UnitContainer) {
+                uEnd = ((UnitContainer) uEnd).getFirstUnit();
               }
               if (newLocals == null) {
                 newLocals = HashBasedTable.create(this.maxLocals, 1);
               }
-              Local newLocal = newLocals.get(localNum, name);
+              JimpleLocal newLocal = newLocals.get(localNum, name);
               if (newLocal == null) {
                 newLocal = jimp.newLocal(name, chosenType);
+                newLocal.setUserDefinedLocal();
                 Local old = newLocals.put(localNum, name, newLocal);
                 assert (old == null);
               }
               for (Iterator<Unit> it = jbUnits.iterator(uStart, uEnd); it.hasNext();) {
                 Unit u = it.next();
-                for (ValueBox box : u.getUseAndDefBoxes()) {
+                for (Iterator<ValueBox> iterator = u.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+                  ValueBox box = iterator.next();
                   Value val = box.getValue();
                   if (val == chosen) {
                     assert (boxToNewLoc.containsKey(box));// it was found at the start
@@ -2377,7 +2604,7 @@ final class AsmMethodSource implements MethodSource {
   /**
    * If any locals have the same name, append a unique id so that each is different.
    */
-  private void ensureUniqueNames(Chain<Local> jbLocals) {
+  public static void ensureUniqueNames(Chain<Local> jbLocals) {
     Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
     for (Local l : jbLocals) {
       nameToLocal.put(l.getName(), l);
@@ -2397,7 +2624,6 @@ final class AsmMethodSource implements MethodSource {
     final AbstractInsnNode insn;
     /* previous stacks at edge */
     final Set<List<Operand>> prevStacks;
-    private int lastLineNumber = -1;
     /* current stack at edge */
     ArrayList<Operand> stack;
 
@@ -2407,9 +2633,20 @@ final class AsmMethodSource implements MethodSource {
       this.stack = stack;
     }
 
-    Edge(AbstractInsnNode insn, int lastLineNumber) {
+    Edge(AbstractInsnNode insn) {
       this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
-      this.lastLineNumber = lastLineNumber;
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder(insn.toString());
+      if (stack != null) {
+        sb.append("\nCurrent stack:");
+        for (Operand i : stack) {
+          sb.append("\n").append(i.toString());
+        }
+      }
+      return sb.toString();
     }
   }
 }

@@ -54,10 +54,10 @@ import soot.util.Switch;
 public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
   @SuppressWarnings("serial")
-  private static class LinkedVariableBox extends VariableBox {
+  public static class LinkedVariableBox extends VariableBox {
     ValueBox otherBox = null;
 
-    private LinkedVariableBox(Value v) {
+    public LinkedVariableBox(Value v) {
       super(v);
     }
 
@@ -75,10 +75,10 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
   }
 
   @SuppressWarnings("serial")
-  private static class LinkedRValueBox extends RValueBox {
+  public static class LinkedRValueBox extends RValueBox {
     ValueBox otherBox = null;
 
-    private LinkedRValueBox(Value v) {
+    public LinkedRValueBox(Value v) {
       super(v);
     }
 
@@ -103,12 +103,20 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
     if (!leftBox.canContainValue(variable) || !rightBox.canContainValue(rvalue)) {
       throw new RuntimeException(
-          "Illegal assignment statement. Make sure that either left side or right hand side has a local or constant.");
+          "Illegal assignment statement. Make sure that either left side or right hand side has a local or constant."
+              + "Variable is class " + variable.getClass().getName() + "(" + leftBox.canContainValue(variable) + ")"
+              + " and rvalue is class " + rvalue.getClass().getName() + "(" + rightBox.canContainValue(rvalue) + ").");
     }
   }
 
   protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox) {
     super(variableBox, rvalueBox);
+    if (leftBox instanceof LinkedVariableBox) {
+      ((LinkedVariableBox) leftBox).setOtherBox(rightBox);
+    }
+    if (rightBox instanceof LinkedRValueBox) {
+      ((LinkedRValueBox) rightBox).setOtherBox(leftBox);
+    }
   }
 
   @Override
@@ -119,6 +127,15 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
   @Override
   public InvokeExpr getInvokeExpr() {
     return (InvokeExpr) getInvokeExprBox().getValue();
+  }
+
+  @Override
+  public InvokeExpr getInvokeExprUnsafe() {
+    Value rop = getRightOp();
+    if (rop instanceof InvokeExpr) {
+      return (InvokeExpr) rop;
+    }
+    return null;
   }
 
   @Override
@@ -138,6 +155,19 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
   @Override
   public ArrayRef getArrayRef() {
     return (ArrayRef) getArrayRefBox().getValue();
+  }
+
+  @Override
+  public ArrayRef getArrayRefUnsafe() {
+    Value lb = leftBox.getValue();
+    if (lb instanceof ArrayRef) {
+      return (ArrayRef) lb;
+    }
+    Value rb = rightBox.getValue();
+    if (rb instanceof ArrayRef) {
+      return (ArrayRef) rb;
+    }
+    return null;
   }
 
   @Override
@@ -164,6 +194,19 @@ public class JAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
       throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
     }
     return (leftBox.getValue() instanceof FieldRef) ? leftBox : rightBox;
+  }
+
+  @Override
+  public FieldRef getFieldRefUnsafe() {
+    Value lb = leftBox.getValue();
+    if (lb instanceof FieldRef) {
+      return (FieldRef) lb;
+    }
+    Value rb = rightBox.getValue();
+    if (rb instanceof FieldRef) {
+      return (FieldRef) rb;
+    }
+    return null;
   }
 
   @Override

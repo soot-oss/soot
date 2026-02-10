@@ -22,11 +22,11 @@ package soot.baf.internal;
  * #L%
  */
 
-import soot.AbstractJasminClass;
 import soot.Type;
 import soot.baf.InstSwitch;
 import soot.baf.ShrInst;
 import soot.util.Switch;
+import soot.util.backend.ASMBackendUtils;
 
 public class BShrInst extends AbstractOpTypeInst implements ShrInst {
 
@@ -46,7 +46,7 @@ public class BShrInst extends AbstractOpTypeInst implements ShrInst {
 
   @Override
   public int getInMachineCount() {
-    return AbstractJasminClass.sizeOfType(getOpType()) + 1;
+    return ASMBackendUtils.sizeOfType(getOpType()) + 1;
   }
 
   @Override
@@ -56,7 +56,7 @@ public class BShrInst extends AbstractOpTypeInst implements ShrInst {
 
   @Override
   public int getOutMachineCount() {
-    return 1 * AbstractJasminClass.sizeOfType(getOpType());
+    return 1 * ASMBackendUtils.sizeOfType(getOpType());
   }
 
   @Override

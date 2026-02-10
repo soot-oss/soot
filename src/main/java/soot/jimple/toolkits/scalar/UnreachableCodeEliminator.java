@@ -45,7 +45,7 @@ import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 
 public class UnreachableCodeEliminator extends BodyTransformer {
@@ -83,7 +83,7 @@ public class UnreachableCodeEliminator extends BodyTransformer {
     final Chain<Unit> units = body.getUnits();
     final int origSize = units.size();
     final Set<Unit> reachable = origSize == 0 ? Collections.emptySet()
-        : reachable(units.getFirst(), new ExceptionalUnitGraph(body, throwAnalysis, false));
+        : reachable(units.getFirst(), ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, false));
 
     // Now eliminate empty traps. (and unreachable handlers)
     //
@@ -117,11 +117,16 @@ public class UnreachableCodeEliminator extends BodyTransformer {
     }
 
     Set<Unit> notReachable = null;
-    if (verbose) {
-      notReachable = new HashSet<Unit>();
-      for (Unit u : units) {
-        if (!reachable.contains(u)) {
+    for (Unit u : units) {
+      if (!reachable.contains(u)) {
+    	if (verbose) {
+    	  if (notReachable == null) {
+    	    notReachable = new HashSet<Unit>();
+    	  }
           notReachable.add(u);
+    	}
+        if (Scene.v().hasCallGraph()) {
+          Scene.v().getCallGraph().removeAllEdgesOutOf(u);
         }
       }
     }
@@ -131,8 +136,10 @@ public class UnreachableCodeEliminator extends BodyTransformer {
     if (verbose) {
       final String name = body.getMethod().getName();
       logger.debug("[" + name + "]	 Removed " + (origSize - units.size()) + " statements: ");
-      for (Unit u : notReachable) {
-        logger.debug("[" + name + "]	         " + u);
+      if (notReachable != null) {
+        for (Unit u : notReachable) {
+          logger.debug("[" + name + "]	         " + u);
+        }
       }
     }
   }

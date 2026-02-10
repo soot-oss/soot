@@ -37,9 +37,11 @@ import java.util.RandomAccess;
 import java.util.Set;
 
 import soot.baf.GotoInst;
+import soot.jimple.BranchableStmt;
 import soot.jimple.GotoStmt;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.interaction.FlowInfo;
 import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.util.Numberable;
@@ -132,53 +134,49 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
       List<D> entries = null;
       List<D> actualEntries = gv.getEntries(g);
 
-      if (!actualEntries.isEmpty()) {
-        // normal cases: there is at least
-        // one return statement for a backward analysis
-        // or one entry statement for a forward analysis
-        entries = actualEntries;
-      } else {
-        // cases without any entry statement
-
-        if (isForward) {
+      if (isForward) {
+        if (!actualEntries.isEmpty()) {
+          // normal cases: there is at least
+          // one return statement for a backward analysis
+          // or one entry statement for a forward analysis
+          entries = actualEntries;
+        } else {
           // case of a forward flow analysis on
           // a method without any entry point
           throw new RuntimeException("error: no entry point for method in forward analysis");
-        } else {
-          // case of backward analysis on
-          // a method which potentially has
-          // an infinite loop and no return statement
-          entries = new ArrayList<D>();
+        }
+      } else {
+        entries = new ArrayList<D>(actualEntries);
 
-          // a single head is expected
-          assert g.getHeads().size() == 1;
-          D head = g.getHeads().get(0);
-
-          // collect all 'goto' statements to catch the 'goto' from the infinite loop
-          Set<D> visitedNodes = new HashSet<D>();
-          List<D> workList = new ArrayList<D>();
-          workList.add(head);
-          for (D current; !workList.isEmpty();) {
-            current = workList.remove(0);
-            visitedNodes.add(current);
-
-            // only add 'goto' statements
-            if (current instanceof GotoInst || current instanceof GotoStmt) {
-              entries.add(current);
+        // case of backward analysis on
+        // a method which potentially has
+        // an infinite loop and no return statement
+        StronglyConnectedComponentsFast<D> scc = new StronglyConnectedComponentsFast<>(g);
+        Set<D> actualEntriesSet = new HashSet<>(actualEntries);
+        nextComponent: for (List<D> i : scc.getComponents()) {
+          Set<D> allLoopNodesSet = null;
+          for (D u : i) {
+            if (actualEntriesSet.contains(u)) {
+              continue nextComponent;
             }
-
-            for (D next : g.getSuccsOf(current)) {
-              if (visitedNodes.contains(next)) {
-                continue;
+            if (u instanceof BranchableStmt) {
+              BranchableStmt b = (BranchableStmt) u;
+              if (allLoopNodesSet == null) {
+                allLoopNodesSet = new HashSet<>(i);
               }
-              workList.add(next);
+              if (!allLoopNodesSet.contains(b.getTarget())) {
+                //we've found a goto to out of the loop, this is fine
+                continue nextComponent;
+              }
             }
           }
-
-          //
-          if (entries.isEmpty()) {
-            throw new RuntimeException("error: backward analysis on an empty entry set.");
-          }
+          //we've found a case where we have a strongly connected component (loop)
+          //that has no exit node. We just add one representative from that SCC.
+          entries.add(i.get(0));
+        }
+        //
+        if (entries.isEmpty()) {
+          throw new RuntimeException("error: backward analysis on an empty entry set.");
         }
       }
 
@@ -248,19 +246,15 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     private <D, F> Entry<D, F> getEntryOf(Map<D, Entry<D, F>> visited, D d, Entry<D, F> v) {
       // either we reach a new node or a merge node, the latter one is rare
       // so put and restore should be better that a lookup
-      // putIfAbsent would be the ideal strategy
 
       // add and restore if required
       Entry<D, F> newEntry = new Entry<D, F>(d, v);
-      Entry<D, F> oldEntry = visited.put(d, newEntry);
+      Entry<D, F> oldEntry = visited.putIfAbsent(d, newEntry);
 
       // no restore required
       if (oldEntry == null) {
         return newEntry;
       }
-
-      // false prediction, restore the entry
-      visited.put(d, oldEntry);
 
       // adding self ref (real strongly connected with itself)
       if (oldEntry == v) {
@@ -553,7 +547,9 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
       // Update queue appropriately
       if (hasChanged) {
-        q.addAll(Arrays.asList(e.out));
+        for (Entry<N, A> i : e.out) {
+          q.add(i);
+        }
       }
     }
   }
@@ -579,12 +575,29 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
         return false;
       }
       // copy back the result, as it has changed
-      copy(out, d.outFlow);
+      copyFreshToExisting(out, d.outFlow);
       return true;
     }
 
     // no back-references, just calculate "flowThrough"
     flowThrough(d.inFlow, d.data, d.outFlow);
     return true;
+  }
+
+  /**
+   * Copies a *fresh* copy of in to dest. The input is not referenced somewhere else. This allows subclasses for a smarter
+   * and faster copying.
+   * 
+   * @param in
+   * @param dest
+   */
+  protected void copyFreshToExisting(A in, A dest) {
+    if (in instanceof FlowSet && dest instanceof FlowSet) {
+      FlowSet<?> fin = (FlowSet<?>) in;
+      FlowSet fdest = (FlowSet) dest;
+      fin.copyFreshToExisting(fdest);
+    } else {
+      copy(in, dest);
+    }
   }
 }

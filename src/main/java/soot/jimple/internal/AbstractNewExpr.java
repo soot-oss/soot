@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.RefType;
@@ -86,6 +87,11 @@ public abstract class AbstractNewExpr implements NewExpr {
   @Override
   public List<ValueBox> getUseBoxes() {
     return Collections.emptyList();
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return Collections.emptyIterator();
   }
 
   @Override

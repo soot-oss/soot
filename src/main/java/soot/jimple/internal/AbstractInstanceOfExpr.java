@@ -23,6 +23,7 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import soot.BooleanType;
@@ -33,6 +34,7 @@ import soot.ValueBox;
 import soot.jimple.ExprSwitch;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
+import soot.util.IteratorConcatElement;
 import soot.util.Switch;
 
 @SuppressWarnings("serial")
@@ -96,6 +98,11 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
     List<ValueBox> list = new ArrayList<ValueBox>(opBox.getValue().getUseBoxes());
     list.add(opBox);
     return list;
+  }
+
+  @Override
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    return IteratorConcatElement.v(opBox.getValue().getUseBoxesIterator(), opBox);
   }
 
   @Override

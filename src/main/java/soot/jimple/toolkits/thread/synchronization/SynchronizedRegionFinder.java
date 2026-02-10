@@ -52,6 +52,7 @@ import soot.jimple.toolkits.pointer.Union;
 import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
@@ -99,7 +100,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
     if (graph instanceof ExceptionalUnitGraph) {
       egraph = (ExceptionalUnitGraph) graph;
     } else {
-      egraph = new ExceptionalUnitGraph(b);
+      egraph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(b);
     }
 
     slu = LocalUses.Factory.newLocalUses(egraph);
@@ -187,7 +188,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
     Iterator<SynchronizedRegionFlowPair> outIt0 = out.iterator();
     while (outIt0.hasNext()) {
       SynchronizedRegionFlowPair srfp = outIt0.next();
-      if (srfp.tn.nestLevel > nestLevel && srfp.inside == true) {
+      if (srfp.tn.nestLevel > nestLevel && srfp.inside) {
         nestLevel = srfp.tn.nestLevel;
       }
     }
@@ -208,7 +209,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
       }
 
       // if this is the immediately enclosing transaction
-      if (srfp.inside == true && (tn.nestLevel == nestLevel || optionOpenNesting == false)) {
+      if (srfp.inside && (tn.nestLevel == nestLevel || !optionOpenNesting)) {
         printed = true; // for debugging purposes, indicated that we'll print a debug output for this statement
 
         // Add this unit to the current transactional region

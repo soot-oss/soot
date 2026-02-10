@@ -145,6 +145,19 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     innerChain.insertBefore(toInsert, point);
   }
 
+  /** Inserts <code>toInsert</code> in the Chain before <code>point</code> WITHOUT redirecting jumps. */
+  public void insertBeforeNoRedirect(List<E> toInsert, E point) {
+    if (!toInsert.isEmpty()) {
+      // Insert toInsert backwards into the list
+      E previousPoint = point;
+      for (ListIterator<E> it = toInsert.listIterator(toInsert.size()); it.hasPrevious();) {
+        E o = it.previous();
+        insertBeforeNoRedirect(o, previousPoint);
+        previousPoint = o;
+      }
+    }
+  }
+
   /** Returns true if object <code>a</code> follows object <code>b</code> in the Chain. */
   @Override
   public boolean follows(E a, E b) {

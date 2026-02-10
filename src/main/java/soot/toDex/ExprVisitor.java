@@ -1,5 +1,3 @@
-package soot.toDex;
-
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -22,12 +20,17 @@ package soot.toDex;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
+package soot.toDex;
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
+import com.android.tools.smali.dexlib2.iface.reference.Reference;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableMethodProtoReference;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import soot.ArrayType;
 import soot.DoubleType;
@@ -39,10 +42,13 @@ import soot.LongType;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.Type;
 import soot.Value;
+import soot.dexpler.tags.SpecialInvokeTypeTag;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.CastExpr;
@@ -96,7 +102,10 @@ import soot.toDex.instructions.Insn22t;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.Insn35c;
 import soot.toDex.instructions.Insn3rc;
+import soot.toDex.instructions.Insn45cc;
+import soot.toDex.instructions.Insn4rcc;
 import soot.toDex.instructions.InsnWithOffset;
+import soot.util.NumberedString;
 import soot.util.Switchable;
 
 /**
@@ -157,17 +166,54 @@ public class ExprVisitor implements ExprSwitch {
 
   @Override
   public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
-    MethodReference method = DexPrinter.toMethodReference(sie.getMethodRef());
+    SootMethodRef mr = sie.getMethodRef();
+    MethodReference method = DexPrinter.toMethodReference(mr);
     List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
     lastInvokeInstructionPosition = stmtV.getInstructionCount();
+    SpecialInvokeTypeTag tg = (SpecialInvokeTypeTag) origStmt.getTag(SpecialInvokeTypeTag.NAME);
+    if (tg != null) {
+      // eliminate the guesswork...
+      switch (tg.getType()) {
+        case DIRECT:
+          stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
+          return;
+        case SUPER:
+          stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
+          return;
+        case UNKNOWN:
+          // well... revert to original algorithm
+          break;
+        default:
+          throw new RuntimeException("Unsupported special invoke type: " + tg.getType());
+
+      }
+    }
     if (isCallToConstructor(sie) || isCallToPrivate(sie)) {
       stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
     } else if (isCallToSuper(sie)) {
       stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
     } else {
+      if (sie.getMethodRef().getDeclaringClass().isInterface()) {
+        List<SootClass> allInterfaces
+            = Scene.v().getActiveHierarchy().getSuperinterfacesOfIncluding(sie.getMethodRef().getDeclaringClass());
+        NumberedString subsig = sie.getMethodRef().getSubSignature();
+        for (SootClass i : allInterfaces) {
+          SootMethod m = i.getMethodUnsafe(subsig);
+          if (m != null && (m.isConcrete() || m.hasActiveBody())) {
+            // In that case, it must be a call to an interface implementation.
+            // See https://source.android.com/docs/core/runtime/dalvik-bytecode
+            // In Dex files version 037 or later, if the method_id refers to an interface method, invoke-super is used to
+            // invoke
+            // the most specific, non-overridden version of that method defined on that interface.
+            stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
+            return;
+          }
+        }
+      }
       // This should normally never happen, but if we have such a
       // broken call (happens in malware for instance), we fix it.
       stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, arguments), origStmt);
+
     }
   }
 
@@ -200,20 +246,17 @@ public class ExprVisitor implements ExprSwitch {
   }
 
   private boolean isCallToSuper(SpecialInvokeExpr sie) {
-    SootClass classWithInvokation = sie.getMethod().getDeclaringClass();
+    SootClass classWithInvokation = sie.getMethodRef().getDeclaringClass();
     SootClass currentClass = stmtV.getBelongingClass();
 
     while (currentClass != null) {
       currentClass = currentClass.getSuperclassUnsafe();
       if (currentClass != null) {
-        if (currentClass == classWithInvokation) {
-          return true;
-        }
-
         // If we're dealing with phantom classes, we might not actually
         // arrive at java.lang.Object. In this case, we should not fail
         // the check
-        if (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object")) {
+        if ((currentClass == classWithInvokation)
+            || (currentClass.isPhantom() && !currentClass.getName().equals("java.lang.Object"))) {
           return true;
         }
       }
@@ -229,10 +272,44 @@ public class ExprVisitor implements ExprSwitch {
      * for final methods we build an invoke-virtual opcode, too, although the dex spec says that a virtual method is not
      * final. An alternative would be the invoke-direct opcode, but this is inconsistent with dx's output...
      */
-    MethodReference method = DexPrinter.toMethodReference(vie.getMethodRef());
+    SootMethodRef mr = vie.getMethodRef();
+    MethodReference method = DexPrinter.toMethodReference(mr);
     List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
     lastInvokeInstructionPosition = stmtV.getInstructionCount();
+    if (mr.getDeclaringClass().getName().equals("java.lang.invoke.MethodHandle")) {
+      String name = mr.getName();
+      if (name.equals("invoke") || name.equals("invokeExact")) {
+        stmtV.addInsn(handleMethodHandleInvoke(vie, method, argumentRegs), origStmt);
+        return;
+      }
+    }
+
     stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, argumentRegs), origStmt);
+  }
+
+  private Insn handleMethodHandleInvoke(VirtualInvokeExpr vie, MethodReference method, List<Register> argumentRegs) {
+    Insn invokeInsn;
+    int regCountForArguments = SootToDexUtils.getRealRegCount(argumentRegs);
+    Reference m = new ImmutableMethodProtoReference(method.getParameterTypes(), method.getReturnType());
+    MethodReference methodH
+        = DexPrinter.toMethodReference(Scene.v().makeMethodRef(vie.getMethodRef().getDeclaringClass(), method.getName(),
+            Collections.singletonList(ArrayType.v(Scene.v().getObjectType(), 1)), Scene.v().getObjectType(), false));
+    if (regCountForArguments <= 5) {
+      Register[] paddedArray = pad35cRegs(argumentRegs);
+      Opcode opc = Opcode.INVOKE_POLYMORPHIC;
+      invokeInsn = new Insn45cc(opc, regCountForArguments, paddedArray[0], paddedArray[1], paddedArray[2], paddedArray[3],
+          paddedArray[4], methodH, m);
+    } else if (regCountForArguments <= 255) {
+      Opcode opc = Opcode.INVOKE_POLYMORPHIC_RANGE;
+      invokeInsn = new Insn4rcc(opc, argumentRegs, (short) regCountForArguments, methodH, m);
+    } else {
+      throw new Error(
+          "too many parameter registers for invoke-* (> 255): " + regCountForArguments + " or registers too big (> 4 bits)");
+    }
+    // save the return type for the move-result insn
+    stmtV.setLastReturnTypeDescriptor(method.getReturnType());
+    return invokeInsn;
+
   }
 
   private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
@@ -667,7 +744,7 @@ public class ExprVisitor implements ExprSwitch {
     }
   }
 
-  private void castPrimitive(Register sourceReg, Value source, Type castSootType) {
+  protected void castPrimitive(Register sourceReg, Value source, Type castSootType) {
     PrimitiveType castType = PrimitiveType.getByName(castSootType.toString());
 
     // Fix null_types on the fly. This should not be necessary, but better
@@ -730,12 +807,7 @@ public class ExprVisitor implements ExprSwitch {
   }
 
   private boolean isMoveCompatible(PrimitiveType sourceType, PrimitiveType castType) {
-    if (sourceType == castType) {
-      // at this point, the types are "bigger" or equal to int, so no
-      // "should cast from int" is needed
-      return true;
-    }
-    if (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT)) {
+    if ((sourceType == castType) || (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT))) {
       // there is no "upgrade" cast from "smaller than int" to int, so
       // move it
       return true;
@@ -744,11 +816,7 @@ public class ExprVisitor implements ExprSwitch {
   }
 
   private boolean shouldCastFromInt(PrimitiveType sourceType, PrimitiveType castType) {
-    if (isEqualOrBigger(sourceType, PrimitiveType.INT)) {
-      // source is already "big" enough
-      return false;
-    }
-    if (castType == PrimitiveType.INT) {
+    if (isEqualOrBigger(sourceType, PrimitiveType.INT) || (castType == PrimitiveType.INT)) {
       // would lead to an int-to-int cast, so leave it as it is
       return false;
     }

@@ -23,13 +23,34 @@ package soot.jimple.internal;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DecimalType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.RefType;
+import soot.Scene;
+import soot.ShortType;
+import soot.SootClass;
+import soot.Type;
+import soot.UByteType;
+import soot.ULongType;
+import soot.UShortType;
 import soot.UnitPrinter;
+import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
 import soot.grimp.PrecedenceTest;
 import soot.jimple.Expr;
+import soot.options.Options;
 
 @SuppressWarnings("serial")
 public abstract class AbstractBinopExpr implements Expr {
@@ -86,6 +107,60 @@ public abstract class AbstractBinopExpr implements Expr {
   }
 
   @Override
+  public final Iterator<ValueBox> getUseBoxesIterator() {
+
+    return new Iterator<ValueBox>() {
+
+      Iterator<ValueBox> op1 = op1Box.getValue().getUseBoxesIterator();
+      Iterator<ValueBox> op2 = op2Box.getValue().getUseBoxesIterator();
+      // 0 = op1 inner
+      // 1 = op1 box
+      // 2 = op2 inner
+      // 3 = op2 box
+      int state = 0;
+
+      @Override
+      public boolean hasNext() {
+        switch (state) {
+          case 0:
+            boolean b = op1.hasNext();
+            if (b) {
+              return true;
+            } else {
+              state = 1;
+            }
+          case 1:
+          case 2:
+            return true;
+          default:
+            return false;
+        }
+      }
+
+      @Override
+      public ValueBox next() {
+        switch (state) {
+          case 0:
+            if (op1.hasNext()) {
+              return op1.next();
+            }
+          case 1:
+            state = 2;
+            return op1Box;
+          case 2:
+            if (op2.hasNext()) {
+              return op2.next();
+            }
+          default:
+            state = 3;
+            return op2Box;
+        }
+      }
+    };
+
+  }
+
+  @Override
   public boolean equivTo(Object o) {
     if (o instanceof AbstractBinopExpr) {
       AbstractBinopExpr abe = (AbstractBinopExpr) o;
@@ -131,5 +206,96 @@ public abstract class AbstractBinopExpr implements Expr {
         up.literal(")");
       }
     }
+  }
+
+  protected Type getType(BinopExprEnum exprTypes) {
+    final Type t1 = this.op1Box.getValue().getType();
+    final Type t2 = this.op2Box.getValue().getType();
+
+    final IntType tyInt = IntType.v();
+    final ByteType tyByte = ByteType.v();
+    final ShortType tyShort = ShortType.v();
+    final CharType tyChar = CharType.v();
+    final BooleanType tyBool = BooleanType.v();
+    final UByteType tyUByte = UByteType.v();
+    final UShortType tyUShort = UShortType.v();
+
+    boolean isDotNet = Options.v().src_prec() == Options.src_prec_dotnet;
+    if (isDotNet && t1.equals(t2)) {
+      return t1;
+    }
+    if ((tyInt.equals(t1) || tyByte.equals(t1) || tyShort.equals(t1) || tyChar.equals(t1) || tyBool.equals(t1)
+        || tyUByte.equals(t1) || tyUShort.equals(t1))
+        && (tyInt.equals(t2) || tyByte.equals(t2) || tyShort.equals(t2) || tyChar.equals(t2) || tyBool.equals(t2)
+            || tyUByte.equals(t2) || tyUShort.equals(t2))) {
+      return tyInt;
+    }
+    final LongType tyLong = LongType.v();
+    if (tyLong.equals(t1) || tyLong.equals(t2)) {
+      return tyLong;
+    }
+    if (exprTypes.equals(BinopExprEnum.ABSTRACT_FLOAT_BINOP_EXPR)) {
+      final DecimalType tyDecimal = DecimalType.v();
+      if (tyDecimal.equals(t1) || tyDecimal.equals(t2)) {
+        return tyDecimal;
+      }
+      final DoubleType tyDouble = DoubleType.v();
+      if (tyDouble.equals(t1) || tyDouble.equals(t2)) {
+        return tyDouble;
+      }
+      final FloatType tyFloat = FloatType.v();
+      if (tyFloat.equals(t1) || tyFloat.equals(t2)) {
+        return tyFloat;
+      }
+    }
+
+    // in dotnet enums are value types, such as myBool = 1 is allowed in CIL
+    if (isDotNet) {
+      if (isSuperclassSystemEnum(t1) || isSuperclassSystemEnum(t2)) {
+        return tyInt;
+      }
+      if (t2 instanceof IntType && t1 instanceof DotNetINumber) {
+        return t1;
+      }
+      if (t1 instanceof IntType && t2 instanceof DotNetINumber) {
+        return t2;
+      }
+      if (t1 instanceof ULongType && t2 instanceof IIntLikeType) {
+        return t1;
+      }
+      if (t2 instanceof ULongType && t1 instanceof IIntLikeType) {
+        return t2;
+      }
+    }
+    return UnknownType.v();
+
+  }
+
+  /**
+   * Returns true if the superclass of the given Type is a System.Enum (.Net)
+   * 
+   * @param t
+   * @return
+   */
+  public boolean isSuperclassSystemEnum(Type t) {
+    if ((Options.v().src_prec() != Options.src_prec_dotnet) || !(t instanceof RefType)) {
+      return false;
+    }
+    SootClass sootClass = ((RefType) t).getSootClass();
+    if (sootClass == null) {
+      return false;
+    }
+    SootClass superclass = sootClass.getSuperclassUnsafe();
+    if (superclass == null) {
+      return false;
+    }
+    if (Scene.v().getOrMakeFastHierarchy().canStoreType(superclass.getType(), RefType.v(DotNetBasicTypes.SYSTEM_ENUM))) {
+      return true;
+    }
+    return false;
+  }
+
+  public enum BinopExprEnum {
+    ABASTRACT_INT_LONG_BINOP_EXPR, ABSTRACT_FLOAT_BINOP_EXPR
   }
 }

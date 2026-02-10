@@ -30,6 +30,7 @@ import soot.Body;
 import soot.ClassMember;
 import soot.Hierarchy;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.Modifier;
 import soot.Scene;
 import soot.SootClass;
@@ -39,7 +40,6 @@ import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.VoidType;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
@@ -140,10 +140,7 @@ public class AccessManager {
   public static void createAccessorMethods(final Body body, final Stmt before, final Stmt after) {
     final Chain<Unit> units = body.getUnits();
 
-    if (before != null && !units.contains(before)) {
-      throw new RuntimeException();
-    }
-    if (after != null && !units.contains(after)) {
+    if ((before != null && !units.contains(before)) || (after != null && !units.contains(after))) {
       throw new RuntimeException();
     }
 
@@ -230,7 +227,7 @@ public class AccessManager {
     if (accessor == null) {
       final JimpleBody accessorBody = jimp.newBody();
       final Chain<Unit> accStmts = accessorBody.getUnits();
-      final LocalGenerator lg = new LocalGenerator(accessorBody);
+      final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
 
       List<Type> parameterTypes;
       final Type targetType = target.getType();
@@ -243,8 +240,9 @@ public class AccessManager {
       }
       final Type refFieldType = ref.getField().getType();
       Local l = lg.generateLocal(refFieldType);
-      accStmts.add(jimp.newAssignStmt(l, (ref instanceof InstanceFieldRef)
-          ? jimp.newInstanceFieldRef(thisLocal, ref.getFieldRef()) : jimp.newStaticFieldRef(ref.getFieldRef())));
+      accStmts.add(
+          jimp.newAssignStmt(l, (ref instanceof InstanceFieldRef) ? jimp.newInstanceFieldRef(thisLocal, ref.getFieldRef())
+              : jimp.newStaticFieldRef(ref.getFieldRef())));
       accStmts.add(jimp.newReturnStmt(l));
 
       accessor = Scene.v().makeSootMethod(name, parameterTypes, refFieldType, Modifier.PUBLIC | Modifier.STATIC,
@@ -268,7 +266,7 @@ public class AccessManager {
     if (accessor == null) {
       final JimpleBody accessorBody = jimp.newBody();
       final Chain<Unit> accStmts = accessorBody.getUnits();
-      final LocalGenerator lg = new LocalGenerator(accessorBody);
+      final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
       Local thisLocal = lg.generateLocal(target.getType());
       List<Type> parameterTypes = new ArrayList<Type>(2);
       int paramID = 0;
@@ -317,7 +315,7 @@ public class AccessManager {
     if (accessor == null) {
       final JimpleBody accessorBody = jimp.newBody();
       final Chain<Unit> accStmts = accessorBody.getUnits();
-      final LocalGenerator lg = new LocalGenerator(accessorBody);
+      final LocalGenerator lg = Scene.v().createLocalGenerator(accessorBody);
 
       List<Type> parameterTypes = new ArrayList<Type>();
       if (expr instanceof InstanceInvokeExpr) {

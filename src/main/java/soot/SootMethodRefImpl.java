@@ -29,7 +29,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.javaToJimple.LocalGenerator;
+import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -58,6 +58,8 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   private SootMethod resolveCache = null;
 
+  private NumberedString subsig;
+
   /**
    * Constructor.
    *
@@ -83,7 +85,8 @@ public class SootMethodRefImpl implements SootMethodRef {
       throw new IllegalArgumentException("Attempt to create SootMethodRef with null name");
     }
     if (returnType == null) {
-      throw new IllegalArgumentException("Attempt to create SootMethodRef with null returnType");
+      throw new IllegalArgumentException("Attempt to create SootMethodRef with null returnType (Method: " + name
+          + " at declaring class: " + declaringClass.getName() + ")");
     }
 
     this.declaringClass = declaringClass;
@@ -151,7 +154,17 @@ public class SootMethodRefImpl implements SootMethodRef {
 
   @Override
   public NumberedString getSubSignature() {
-    return Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    if (subsig != null) {
+      return subsig;
+    }
+    if (resolveCache != null) {
+      subsig = resolveCache.getNumberedSubSignature();
+      return subsig;
+    }
+
+    // This method is expensive, so it makes sense to cache the result
+    subsig = Scene.v().getSubSigNumberer().findOrAdd(SootMethod.getSubSignature(name, parameterTypes, returnType));
+    return subsig;
   }
 
   @Override
@@ -211,21 +224,23 @@ public class SootMethodRefImpl implements SootMethodRef {
   }
 
   protected SootMethod tryResolve(final StringBuilder trace) {
+    final Scene scene = Scene.v();
     // let's do a dispatch and allow abstract method for resolution
     // we do not have a base object for call so we just take the type of the declaring class
-    SootMethod resolved = Scene.v().getOrMakeFastHierarchy().resolveMethod(declaringClass, declaringClass, name,
-        parameterTypes, returnType, true);
+    final NumberedString subsig = this.getSubSignature();
+    SootMethod resolved = scene.getOrMakeFastHierarchy().resolveMethod(declaringClass, declaringClass, name, parameterTypes,
+        returnType, true, isStatic(), subsig);
 
     if (resolved != null) {
       checkStatic(resolved);
       return resolved;
-    } else if (Scene.v().allowsPhantomRefs()) {
+    } else if (scene.allowsPhantomRefs()) {
       // Try to resolve in the current class and the interface,
       // if not found check for phantom class in the superclass.
       for (SootClass selectedClass = declaringClass; selectedClass != null;) {
         if (selectedClass.isPhantom()) {
           SootMethod phantomMethod
-              = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+              = scene.makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
           phantomMethod.setPhantom(true);
           phantomMethod = selectedClass.getOrAddMethod(phantomMethod);
           checkStatic(phantomMethod);
@@ -236,7 +251,7 @@ public class SootMethodRefImpl implements SootMethodRef {
     }
 
     // If we don't have a method yet, we try to fix it on the fly
-    if (Scene.v().allowsPhantomRefs() && Options.v().ignore_resolution_errors()) {
+    if (scene.allowsPhantomRefs() && Options.v().ignore_resolution_errors()) {
       // if we have a phantom class in the hierarchy, we add the method to it.
       SootClass classToAddTo = declaringClass;
       while (classToAddTo != null && !classToAddTo.isPhantom()) {
@@ -270,13 +285,14 @@ public class SootMethodRefImpl implements SootMethodRef {
     // at runtime. Furthermore, the declaring class of dynamic invocations is
     // not known at compile time, treat as phantom class regardless if phantom
     // classes are enabled or not.
-    if (Options.v().allow_phantom_refs() || SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(declaringClass.getName())) {
+    final Options o = Options.v();
+    if (o.allow_phantom_refs() || SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME.equals(declaringClass.getName())) {
       return createUnresolvedErrorMethod(declaringClass);
     }
 
     if (trace == null) {
       ClassResolutionFailedException e = new ClassResolutionFailedException();
-      if (Options.v().ignore_resolution_errors()) {
+      if (o.ignore_resolution_errors()) {
         logger.debug(e.getMessage());
       } else {
         throw e;
@@ -296,7 +312,8 @@ public class SootMethodRefImpl implements SootMethodRef {
   private SootMethod createUnresolvedErrorMethod(SootClass declaringClass) {
     final Jimple jimp = Jimple.v();
 
-    SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+    final Scene scene = Scene.v();
+    SootMethod m = scene.makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
     int modifiers = Modifier.PUBLIC; // we don't know who will be calling us
     if (isStatic()) {
       modifiers |= Modifier.STATIC;
@@ -305,21 +322,28 @@ public class SootMethodRefImpl implements SootMethodRef {
     JimpleBody body = jimp.newBody(m);
     m.setActiveBody(body);
 
-    final LocalGenerator lg = new LocalGenerator(body);
+    final LocalGenerator lg = scene.createLocalGenerator(body);
 
     // For producing valid Jimple code, we need to access all parameters.
     // Otherwise, methods like "getThisLocal()" will fail.
     body.insertIdentityStmts(declaringClass);
 
     // exc = new Error
-    RefType runtimeExceptionType = RefType.v("java.lang.Error");
+    RefType runtimeExceptionType = RefType.v("java.lang.NoSuchMethodError");
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      runtimeExceptionType = RefType.v(DotNetBasicTypes.SYSTEM_MISSINGMETHODEXCEPTION);
+    }
     Local exceptionLocal = lg.generateLocal(runtimeExceptionType);
     AssignStmt assignStmt = jimp.newAssignStmt(exceptionLocal, jimp.newNewExpr(runtimeExceptionType));
     body.getUnits().add(assignStmt);
 
     // exc.<init>(message)
-    SootMethodRef cref = Scene.v().makeConstructorRef(runtimeExceptionType.getSootClass(),
+    SootMethodRef cref = scene.makeConstructorRef(runtimeExceptionType.getSootClass(),
         Collections.<Type>singletonList(RefType.v("java.lang.String")));
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      cref = scene.makeConstructorRef(runtimeExceptionType.getSootClass(),
+          Collections.<Type>singletonList(RefType.v(DotNetBasicTypes.SYSTEM_STRING)));
+    }
     SpecialInvokeExpr constructorInvokeExpr = jimp.newSpecialInvokeExpr(exceptionLocal, cref,
         StringConstant.v("Unresolved compilation error: Method " + getSignature() + " does not exist!"));
     InvokeStmt initStmt = jimp.newInvokeStmt(constructorInvokeExpr);

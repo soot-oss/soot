@@ -68,7 +68,7 @@ public abstract class PtSensVisitor<VarType extends ContextVar> {
    * Called after each round of collection.
    */
   public void finish() {
-    if (readyToUse == false) {
+    if (!readyToUse) {
       // We flatten the list
       readyToUse = true;
       outList.clear();

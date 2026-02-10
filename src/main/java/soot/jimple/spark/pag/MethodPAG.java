@@ -165,7 +165,7 @@ public final class MethodPAG {
 
   public static MethodPAG v(PAG pag, SootMethod m) {
     MethodPAG ret = G.v().MethodPAG_methodToPag.get(m);
-    if (ret == null) {
+    if (ret == null || pag != ret.pag) {
       ret = new MethodPAG(pag, m);
       G.v().MethodPAG_methodToPag.put(m, ret);
     }

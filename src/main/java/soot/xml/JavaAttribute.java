@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.tagkit.ColorTag;
 import soot.tagkit.Host;
 import soot.tagkit.JimpleLineNumberTag;
 import soot.tagkit.LineNumberTag;
@@ -44,7 +43,6 @@ public class JavaAttribute {
 
   private int startLn;
   private ArrayList<Tag> tags;
-  private ArrayList<PosColorAttribute> vbAttrs;
   public PrintWriter writerOut;
 
   public JavaAttribute() {
@@ -68,36 +66,6 @@ public class JavaAttribute {
       this.tags = tags = new ArrayList<Tag>();
     }
     tags.add(t);
-  }
-
-  public ArrayList<PosColorAttribute> vbAttrs() {
-    return this.vbAttrs;
-  }
-
-  public void addVbAttr(PosColorAttribute vbAttr) {
-    ArrayList<PosColorAttribute> vbAttrs = this.vbAttrs;
-    if (vbAttrs == null) {
-      this.vbAttrs = vbAttrs = new ArrayList<PosColorAttribute>();
-    }
-    vbAttrs.add(vbAttr);
-  }
-
-  public boolean hasColorTag() {
-    if (tags != null) {
-      for (Tag t : tags) {
-        if (t instanceof ColorTag) {
-          return true;
-        }
-      }
-    }
-    if (vbAttrs != null) {
-      for (PosColorAttribute t : vbAttrs) {
-        if (t.hasColor()) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   private void printAttributeTag(Tag t) {
@@ -124,9 +92,6 @@ public class JavaAttribute {
     } else if (t instanceof PositionTag) {
       PositionTag pt = (PositionTag) t;
       printJimplePositionAttr(pt.getStartOffset(), pt.getEndOffset());
-    } else if (t instanceof ColorTag) {
-      ColorTag ct = (ColorTag) t;
-      printColorAttr(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground());
     } else {
       printTextAttr(t.toString());
     }
@@ -169,13 +134,6 @@ public class JavaAttribute {
     writerOut.println("<jimpleEndPos>" + end + "</jimpleEndPos>");
   }
 
-  private void printColorAttr(int r, int g, int b, boolean fg) {
-    writerOut.println("<red>" + r + "</red>");
-    writerOut.println("<green>" + g + "</green>");
-    writerOut.println("<blue>" + b + "</blue>");
-    writerOut.println(fg ? "<fg>1</fg>" : "<fg>0</fg>");
-  }
-
   private void endPrintValBoxAttr() {
     writerOut.println("</value_box_attribute>");
   }
@@ -186,17 +144,6 @@ public class JavaAttribute {
     if (tags != null) {
       for (Tag t : tags) {
         printAttributeTag(t);
-      }
-    }
-    if (vbAttrs != null) {
-      for (PosColorAttribute attr : vbAttrs) {
-        if (attr.hasColor()) {
-          startPrintValBoxAttr();
-          printSourcePositionAttr(attr.javaStartPos(), attr.javaEndPos());
-          printJimplePositionAttr(attr.jimpleStartPos(), attr.jimpleEndPos());
-          // printColorAttr(attr.color().red(), attr.color().green(), attr.color().blue(), attr.color().fg());
-          endPrintValBoxAttr();
-        }
       }
     }
   }

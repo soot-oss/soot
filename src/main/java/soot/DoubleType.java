@@ -22,19 +22,26 @@ package soot;
  * #L%
  */
 
+import soot.dotnet.types.DotNetBasicTypes;
+import soot.dotnet.types.DotNetINumber;
+import soot.options.Options;
 import soot.util.Switch;
 
 /**
  * Soot representation of the Java built-in type 'double'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class DoubleType extends PrimType {
+public class DoubleType extends PrimType implements DotNetINumber, IJavaType {
 
-  public DoubleType(Singletons.Global g) {
+  public static final int HASHCODE = 0x4B9D7242;
+  public static final DoubleType INSTANCE = new DoubleType();
+
+  private DoubleType() {
+    super(false);
   }
 
   public static DoubleType v() {
-    return G.v().soot_DoubleType();
+    return INSTANCE;
   }
 
   @Override
@@ -44,7 +51,7 @@ public class DoubleType extends PrimType {
 
   @Override
   public int hashCode() {
-    return 0x4B9D7242;
+    return HASHCODE;
   }
 
   @Override
@@ -58,7 +65,20 @@ public class DoubleType extends PrimType {
   }
 
   @Override
-  public RefType boxedType() {
-    return RefType.v("java.lang.Double");
+  public String getTypeAsString() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return DotNetBasicTypes.SYSTEM_DOUBLE;
+    }
+    return JavaBasicTypes.JAVA_LANG_DOUBLE;
+  }
+
+  @Override
+  public Class<?> getJavaBoxedType() {
+    return Double.class;
+  }
+
+  @Override
+  public Class<?> getJavaPrimitiveType() {
+    return double.class;
   }
 }

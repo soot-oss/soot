@@ -22,7 +22,6 @@ package soot.baf;
  * #L%
  */
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.objectweb.asm.Opcodes.*;
 import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;

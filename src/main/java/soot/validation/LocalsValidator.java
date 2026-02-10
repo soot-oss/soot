@@ -1,5 +1,7 @@
 package soot.validation;
 
+import java.util.Iterator;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -39,12 +41,11 @@ public enum LocalsValidator implements BodyValidator {
   @Override
   /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
   public void validate(Body body, List<ValidationException> exception) {
-    for (ValueBox vb : body.getUseBoxes()) {
+    for (Iterator<ValueBox> iterator = body.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+      ValueBox vb = iterator.next();
       validateLocal(body, vb, exception);
     }
-    for (ValueBox vb : body.getDefBoxes()) {
-      validateLocal(body, vb, exception);
-    }
+
   }
 
   private void validateLocal(Body body, ValueBox vb, List<ValidationException> exception) {

@@ -43,6 +43,7 @@ import soot.FloatType;
 import soot.G;
 import soot.IntType;
 import soot.Local;
+import soot.LocalGenerator;
 import soot.LongType;
 import soot.NullType;
 import soot.PatchingChain;
@@ -52,7 +53,6 @@ import soot.SootClass;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -172,7 +172,7 @@ public class TypeResolver {
 
   private TypeResolver(JimpleBody stmtBody, Scene scene) {
     this.stmtBody = stmtBody;
-    this.localGenerator = new LocalGenerator(stmtBody);
+    this.localGenerator = Scene.v().createLocalGenerator(stmtBody);
     hierarchy = ClassHierarchy.classHierarchy(scene);
 
     OBJECT = hierarchy.OBJECT;
@@ -621,7 +621,7 @@ public class TypeResolver {
       TypeVariable var = typeVariable(local);
 
       if (var == null) {
-        local.setType(RefType.v("java.lang.Object"));
+        local.setType(Scene.v().getObjectType());
       } else if (var.depth() == 0) {
         if (var.type() == null) {
           TypeVariable.error("Type Error(5):  Variable without type");
@@ -664,7 +664,7 @@ public class TypeResolver {
       TypeVariable var = typeVariable(local);
 
       if (var == null || var.approx() == null || var.approx().type() == null) {
-        local.setType(RefType.v("java.lang.Object"));
+        local.setType(Scene.v().getObjectType());
       } else {
         local.setType(var.approx().type());
       }

@@ -280,6 +280,18 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
   }
 
   @Override
+  public void copyFreshToExisting(FlowSet<T> destFlow) {
+    if (sameType(destFlow)) {
+      ArraySparseSet<T> dest = (ArraySparseSet<T>) destFlow;
+      dest.maxElements = maxElements;
+      dest.elements = elements;
+      dest.numElements = this.numElements;
+    } else {
+      super.copy(destFlow);
+    }
+  }
+
+  @Override
   public Iterator<T> iterator() {
     return new Iterator<T>() {
 
