@@ -54,22 +54,6 @@ public abstract class Type implements Switchable, Serializable, Numberable {
   public abstract String toString();
 
   /**
-   * Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format
-   */
-  public String toQuotedString() {
-    return toString();
-  }
-
-  /**
-   * Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format Replaced
-   * by toQuotedString; only here for backwards compatibility.
-   */
-  @Deprecated
-  public String getEscapedName() {
-    return toQuotedString();
-  }
-
-  /**
    * Converts the int-like types (short, byte, boolean and char) to IntType.
    */
   public static Type toMachineType(Type t) {

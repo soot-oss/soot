@@ -29,10 +29,12 @@ import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Body;
-import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
+import soot.Scene;
+import soot.SceneTransformer;
 import soot.Singletons;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
@@ -47,7 +49,7 @@ import soot.options.Options;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
-public class ArrayBoundsChecker extends BodyTransformer {
+public class ArrayBoundsChecker extends SceneTransformer {
   private static final Logger logger = LoggerFactory.getLogger(ArrayBoundsChecker.class);
   private static final int UNSAFE_LOWER_UNSAFE_UPPER = 0;
   private static final int UNSAFE_LOWER_SAFE_UPPER = 1;
@@ -66,26 +68,10 @@ public class ArrayBoundsChecker extends BodyTransformer {
   protected boolean takeArrayRef = false;
   protected boolean takeCSE = false;
   protected boolean takeRectArray = false;
+  private final boolean verbose = Options.v().verbose();
 
-  @Override
-  protected void internalTransform(Body body, String phaseName, Map<String, String> opts) {
-    ABCOptions options = new ABCOptions(opts);
-    if (options.with_all()) {
-      takeClassField = true;
-      takeFieldRef = true;
-      takeArrayRef = true;
-      takeCSE = true;
-      takeRectArray = true;
-    } else {
-      takeClassField = options.with_classfield();
-      takeFieldRef = options.with_fieldref();
-      takeArrayRef = options.with_arrayref();
-      takeCSE = options.with_cse();
-      takeRectArray = options.with_rectarray();
-    }
-
+  public void transformBody(Body body, ABCOptions options) {
     long start = 0;
-    final boolean verbose = Options.v().verbose();
     final SootMethod m = body.getMethod();
     if (verbose) {
       start = System.currentTimeMillis();
@@ -145,7 +131,7 @@ public class ArrayBoundsChecker extends BodyTransformer {
     if (takeRectArray) {
       RectangularArrayFinder raf = RectangularArrayFinder.v();
       for (Iterator<ValueBox> vbIt = body.getUseAndDefBoxesIterator(); vbIt.hasNext();) {
-        final ValueBox vb = (ValueBox) vbIt.next();
+        final ValueBox vb = vbIt.next();
         Value v = vb.getValue();
         if (!(v instanceof Local)) {
           continue;
@@ -237,6 +223,32 @@ public class ArrayBoundsChecker extends BodyTransformer {
       return SAFE_LOWER_UNSAFE_UPPER;
     } else {
       return SAFE_LOWER_SAFE_UPPER;
+    }
+  }
+
+  @Override
+  protected void internalTransform(String phaseName, Map<String, String> opts) {
+    ABCOptions options = new ABCOptions(opts);
+    if (options.with_all()) {
+      takeClassField = true;
+      takeFieldRef = true;
+      takeArrayRef = true;
+      takeCSE = true;
+      takeRectArray = true;
+    } else {
+      takeClassField = options.with_classfield();
+      takeFieldRef = options.with_fieldref();
+      takeArrayRef = options.with_arrayref();
+      takeCSE = options.with_cse();
+      takeRectArray = options.with_rectarray();
+    }
+
+    for (SootClass sc : Scene.v().getClasses()) {
+      for (SootMethod m : sc.getMethods()) {
+        if (m.hasActiveBody()) {
+          transformBody(m.getActiveBody(), options);
+        }
+      }
     }
   }
 }

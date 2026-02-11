@@ -435,7 +435,7 @@ public class ArrayWriteAggregator extends BodyTransformer {
               !body.getUnits().contains(insertNewArray)) {
             // last resort... but we've established that neither the array initialization
             // nor any of it's non-constant writes are in a loop, so this should be fine
-            insertNewArray = ((JimpleBody) body).getFirstNonIdentityStmt();
+            insertNewArray = body.getFirstNonIdentityStmt();
           }
 
           // make sure we get a new one
