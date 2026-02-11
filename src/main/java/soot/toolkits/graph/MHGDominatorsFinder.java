@@ -251,7 +251,11 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     if (idx == null) {
       return false;
     }
-    return getDominatorsBitSet(node).get(idx);
+    BitSet n = getDominatorsBitSet(node);
+    if (n == null) {
+      return false;
+    }
+    return n.get(idx);
   }
 
   @Override
@@ -276,7 +280,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     }
     for (N n : given) {
       BitSet s1 = getDominatorsBitSet(n);
-      if (!s1.get(c)) {
+      if (s1 == null || !s1.get(c)) {
         return false;
       }
     }
