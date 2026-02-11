@@ -158,14 +158,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     return className;
   }
 
-  /**
-   * Returns a textual representation, quoted as needed, of this type for serialization, e.g. to .jimple format
-   */
-  @Override
-  public String toQuotedString() {
-    return Scene.v().quotedNameOf(className);
-  }
-
   @Override
   public int hashCode() {
     return className.hashCode();
@@ -186,7 +178,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     }
 
     if (!(other instanceof RefType)) {
-      throw new RuntimeException("illegal type merge: " + this + " and " + other);
+      throw new RuntimeException(String.format("Illegal type merge: %s and %s", this, other));
     }
 
     {

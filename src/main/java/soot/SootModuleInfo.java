@@ -77,6 +77,24 @@ public class SootModuleInfo extends SootClass {
   public void setAutomaticModule(boolean automaticModule) {
     isAutomaticModule = automaticModule;
   }
+  
+  
+  //See
+  //https://gitlab.ow2.org/asm/asm/-/blob/6a119d77037796d41e091379803eb121f13f7fca/src/org/objectweb/asm/util/CheckClassAdapter.java#L357
+  @Override
+  public SootClass getSuperclass() {
+    return null;
+  }
+  
+  @Override
+  public boolean hasSuperclass() {
+    return false;
+  }
+  
+  @Override
+  public SootClass getSuperclassUnsafe() {
+    return null;
+  }
 
   private Map<String, List<String>> getExportedPackages() {
     return exportedPackages;

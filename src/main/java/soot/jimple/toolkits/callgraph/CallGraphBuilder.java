@@ -22,19 +22,28 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
+import com.google.common.collect.Iterables;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import soot.AnySubType;
 import soot.EntryPoints;
+import soot.FastHierarchy;
 import soot.Local;
 import soot.MethodOrMethodContext;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
+import soot.RefType;
 import soot.Scene;
+import soot.SootClass;
 import soot.Type;
 import soot.Value;
 import soot.jimple.IntConstant;
@@ -58,6 +67,8 @@ public class CallGraphBuilder {
   private final ReachableMethods reachables;
   private final OnFlyCallGraphBuilder ofcgb;
   private final CallGraph cg;
+
+  private final Scene scene = Scene.v();
 
   /**
    * This constructor builds the incomplete hack call graph for the Dava ThrowFinder. It uses all application class methods
@@ -186,7 +197,7 @@ public class CallGraphBuilder {
     List<Local> bases = ofcgb.methodToInvokeArgs().get(momc.method());
     if (bases != null) {
       for (Local base : bases) {
-        for (Type ty : pa.reachingObjects(base).possibleTypes()) {
+        for (Type ty : getPossibleTypes(base)) {
           ofcgb.addBaseType(base, momc.context(), ty);
         }
       }
@@ -197,10 +208,64 @@ public class CallGraphBuilder {
     List<Local> receivers = ofcgb.methodToReceivers().get(momc.method());
     if (receivers != null) {
       for (Local receiver : receivers) {
-        for (Type type : pa.reachingObjects(receiver).possibleTypes()) {
+        for (Type type : getPossibleTypes(receiver)) {
           ofcgb.addType(receiver, momc.context(), type, null);
         }
       }
     }
+  }
+
+  protected Set<Type> getPossibleTypes(Local receiver) {
+    Set<Type> possibleTypes = pa.reachingObjects(receiver).possibleTypes();
+    FastHierarchy fh = scene.getOrMakeFastHierarchy();
+    final Type receiverType = receiver.getType();
+    for (Type i : possibleTypes) {
+      if (!fh.canStoreType(i, receiverType)) {
+        //a mismatch, so we restrict the set
+        Set<Type> filteredPossibleTypes = new HashSet<>(possibleTypes.size());
+
+        next: for (Type t : possibleTypes) {
+          if (fh.canStoreType(t, receiverType)) {
+            if (t instanceof AnySubType) {
+              AnySubType at = (AnySubType) t;
+              RefType atB = at.getBase();
+              Iterable<SootClass> allSubClasses;
+              SootClass base = atB.getSootClass();
+              allSubClasses = getSubClasses(fh, base);
+              for (SootClass sub : allSubClasses) {
+                if (!fh.canStoreType(sub.getType(), receiverType)) {
+                  //In this case, we have found a class that does not correspond
+                  //to the sub type
+                  //So, we'll just add all possible types instead
+                  if (receiverType instanceof RefType) {
+                    RefType rt = (RefType) receiverType;
+                    for (SootClass sc : getSubClasses(fh, rt.getSootClass())) {
+                      filteredPossibleTypes.add(sc.getType());
+                    }
+                  } else {
+                    filteredPossibleTypes.add(receiverType);
+                  }
+                  continue next;
+                }
+              }
+            }
+            filteredPossibleTypes.add(t);
+          }
+        }
+        return filteredPossibleTypes;
+      }
+    }
+    return possibleTypes;
+  }
+
+  protected Iterable<SootClass> getSubClasses(FastHierarchy fh, SootClass base) {
+    Iterable<SootClass> allSubClasses;
+    if (base.isInterface()) {
+      allSubClasses = Iterables.concat(Collections.singleton(base), fh.getAllSubinterfaces(base),
+          fh.getAllImplementersOfInterface(base));
+    } else {
+      allSubClasses = Iterables.concat(Collections.singleton(base), fh.getSubclassesOf(base));
+    }
+    return allSubClasses;
   }
 }

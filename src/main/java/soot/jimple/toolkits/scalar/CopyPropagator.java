@@ -53,6 +53,7 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
 import soot.options.CPOptions;
 import soot.options.Options;
+import soot.shimple.PhiExpr;
 import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
@@ -62,6 +63,7 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.ValueUnitPair;
 
 public class CopyPropagator extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(CopyPropagator.class);
@@ -116,12 +118,19 @@ public class CopyPropagator extends BodyTransformer {
     Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>(b.getLocalCount() * 2 + 1);
     for (Unit u : b.getUnits()) {
       if (u instanceof DefinitionStmt) {
-        Value leftOp = ((DefinitionStmt) u).getLeftOp();
+        DefinitionStmt def = ((DefinitionStmt) u);
+        Value leftOp = def.getLeftOp();
         if (leftOp instanceof Local) {
           Local loc = (Local) leftOp;
 
           Integer old = localToDefCount.get(loc);
-          localToDefCount.put(loc, (old == null) ? 1 : (old + 1));
+          Value rop  = def.getRightOp();
+          int count = 1;
+          if (rop instanceof PhiExpr) {
+            PhiExpr  e = (PhiExpr) rop;
+            count = e.getArgCount();
+          }
+          localToDefCount.put(loc, (old == null) ? count : (old + count));
         }
       }
     }
@@ -150,6 +159,7 @@ public class CopyPropagator extends BodyTransformer {
 
       // Perform a local propagation pass.
       for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(graph, false)) {
+        nextUseBox:
         for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
           ValueBox useBox = iterator.next();
           Value value = useBox.getValue();
@@ -170,11 +180,27 @@ public class CopyPropagator extends BodyTransformer {
             Iterator<Unit> defsOfUse = localDefs.getDefsOfAtIterator(l, u);
             Unit firstElement = defsOfUse.hasNext() ? defsOfUse.next() : null;
             boolean propagateDef = !defsOfUse.hasNext() && firstElement != null;
+            Value rightOp = null;
+            if (firstElement instanceof AssignStmt) {
+              AssignStmt f = (AssignStmt) firstElement;
+              rightOp = f.getRightOp();
+              if (rightOp instanceof PhiExpr) {
+                PhiExpr phi = (PhiExpr) rightOp;
+                Value v = null;
+                for (ValueUnitPair expr : phi.getArgs()) {
+                  if (v == null) {
+                    v = expr.getValue();
+                  } else if (!v.equivTo(expr.getValue())) {
+                    continue nextUseBox;
+                  }
+                }
+                rightOp = v;
+              }
+            }
             if (!propagateDef && firstElement != null) {
               boolean agrees = false;
               Constant constVal = null;
               if (firstElement instanceof AssignStmt) {
-                Value rightOp = ((AssignStmt) firstElement).getRightOp();
                 if (rightOp instanceof Constant) {
                   constVal = (Constant) rightOp;
                   agrees = true;
@@ -186,12 +212,12 @@ public class CopyPropagator extends BodyTransformer {
                   Unit defUnit = defsOfUse.next();
                   boolean defAgrees = false;
                   if (defUnit instanceof AssignStmt) {
-                    Value rightOp = ((AssignStmt) defUnit).getRightOp();
-                    if (rightOp instanceof Constant) {
+                    Value rightOpN = ((AssignStmt) defUnit).getRightOp();
+                    if (rightOpN instanceof Constant) {
                       if (constVal == null) {
-                        constVal = (Constant) rightOp;
+                        constVal = (Constant) rightOpN;
                         defAgrees = true;
-                      } else if (constVal.equals(rightOp)) {
+                      } else if (constVal.equals(rightOpN)) {
                         defAgrees = true;
                       }
                     }
@@ -207,7 +233,6 @@ public class CopyPropagator extends BodyTransformer {
 
             if (propagateDef) {
               final DefinitionStmt def = (DefinitionStmt) firstElement;
-              final Value rightOp = def.getRightOp();
 
               if (rightOp instanceof Constant) {
                 if (ConstantPropagatorUtils.mayPropagate(graph, rightOp, def, u, useBox)) {
@@ -252,7 +277,6 @@ public class CopyPropagator extends BodyTransformer {
                       // no path in the extended basic block
                       continue;
                     }
-                    boolean isRedefined = false;
 
                     Iterator<Unit> pathIt = path.iterator();
                     // Skip first node
@@ -268,15 +292,12 @@ public class CopyPropagator extends BodyTransformer {
                       }
                       if (s instanceof DefinitionStmt) {
                         if (((DefinitionStmt) s).getLeftOp() == m) {
-                          isRedefined = true;
-                          break;
+                          //was redefined
+                          continue nextUseBox;
                         }
                       }
                     }
 
-                    if (isRedefined) {
-                      continue;
-                    }
                   } else {
                     boolean agree = localDefs.doDefsAgreeAt(m, def, u);
                     if (!agree) {
