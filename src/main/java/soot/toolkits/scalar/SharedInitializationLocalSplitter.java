@@ -334,7 +334,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           //string or class.
           boolean needsSplitting = false;
           Type t = ClassConstant.getClassType();
-          Type strType = StringConstant.EMPTY_STRING.getType();
+          Type strType = StringConstant.getClassType();
           for (Unit assignS : constantInit) {
             AssignStmt assign = (AssignStmt) assignS;
             Type type = assign.getRightOp().getType();
