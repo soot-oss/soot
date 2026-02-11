@@ -94,7 +94,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
         public Set<SootMethod> load(Unit u) throws Exception {
           Stmt stmt = (Stmt) u;
           InvokeExpr ie = stmt.getInvokeExpr();
-          FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
+          FastHierarchy fastHierarchy = Scene.v().getOrMakeFastHierarchy();
           // FIXME Handle Thread.start etc.
           if (ie instanceof InstanceInvokeExpr) {
             if (ie instanceof SpecialInvokeExpr) {

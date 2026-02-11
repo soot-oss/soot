@@ -121,7 +121,7 @@ public enum CheckTypesValidator implements BodyValidator {
           return;
         }
         if (leftType instanceof RefType) {
-          FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
+          FastHierarchy fastHierarchy = Scene.v().getOrMakeFastHierarchy();
           if (fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
               Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
@@ -144,7 +144,7 @@ public enum CheckTypesValidator implements BodyValidator {
 
         }
         if (rightType instanceof RefType) {
-          FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
+          FastHierarchy fastHierarchy = Scene.v().getOrMakeFastHierarchy();
           if (fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
               Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_VALUETYPE))) {
             return;
@@ -199,7 +199,7 @@ public enum CheckTypesValidator implements BodyValidator {
             "Warning: trying to use interface type where non-Object class expected" + errorSuffix));
       } else if (Options.v().src_prec() == Options.src_prec_dotnet) {
         // if dotnet check for ValueTypes, assignment can only be correct from compiler
-        FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
+        FastHierarchy fastHierarchy = Scene.v().getOrMakeFastHierarchy();
         boolean lTypeIsChild = fastHierarchy.canStoreClass(((RefType) leftType).getSootClass(),
             Scene.v().getSootClass(DotNetBasicTypes.SYSTEM_VALUETYPE));
         boolean rTypeIsChild = fastHierarchy.canStoreClass(((RefType) rightType).getSootClass(),
