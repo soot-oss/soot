@@ -205,7 +205,11 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
       return null;
     }
 
-    BitSet doms = (BitSet) getDominatorsBitSet(node).clone();
+    BitSet bs = getDominatorsBitSet(node);
+    if (bs == null) {
+      return null;
+    }
+    BitSet doms = (BitSet) bs.clone();
     if (doms == null) {
       return null;
     }
