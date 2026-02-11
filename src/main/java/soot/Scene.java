@@ -1385,11 +1385,16 @@ public class Scene {
 
   /** ************************************************************************* */
   /** Makes a new fast hierarchy is none is active, and returns the active fast hierarchy. */
-  public synchronized FastHierarchy getOrMakeFastHierarchy() {
+  public FastHierarchy getOrMakeFastHierarchy() {
     FastHierarchy temp = this.activeFastHierarchy;
     if (temp == null) {
-      temp = new FastHierarchy();
-      this.activeFastHierarchy = temp;
+      synchronized (this) {
+        temp = activeFastHierarchy;
+        if (temp == null) {
+          temp = new FastHierarchy();
+          this.activeFastHierarchy = temp;
+        }
+      }
     }
     return temp;
   }
