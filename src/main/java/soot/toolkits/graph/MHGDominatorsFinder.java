@@ -138,6 +138,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
         // intersect over all predecessors
         for (N next : graph.getPredsOf(o)) {
           BitSet s = getDominatorsBitSet(next);
+          if (s == null) {
+            continue;
+          }
           if (predsIntersect == null) {
             predsIntersect = (BitSet) s.clone();
           } else {
@@ -202,7 +205,11 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
       return null;
     }
 
-    BitSet doms = (BitSet) getDominatorsBitSet(node).clone();
+    BitSet bs = getDominatorsBitSet(node);
+    if (bs == null) {
+      return null;
+    }
+    BitSet doms = (BitSet) bs.clone();
     if (doms == null) {
       return null;
     }
@@ -244,7 +251,11 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     if (idx == null) {
       return false;
     }
-    return getDominatorsBitSet(node).get(idx);
+    BitSet n = getDominatorsBitSet(node);
+    if (n == null) {
+      return false;
+    }
+    return n.get(idx);
   }
 
   @Override
@@ -269,7 +280,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
     }
     for (N n : given) {
       BitSet s1 = getDominatorsBitSet(n);
-      if (!s1.get(c)) {
+      if (s1 == null || !s1.get(c)) {
         return false;
       }
     }
