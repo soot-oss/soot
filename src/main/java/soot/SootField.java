@@ -1,5 +1,7 @@
 package soot;
 
+import java.util.Objects;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -239,5 +241,13 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
   public SootFieldRef makeRef() {
     return Scene.v().makeFieldRef(declaringClass, name, type, isStatic());
+  }
+
+  public boolean isValidResolve(SootFieldRef f) {
+    if (!isDeclared) {
+      return false;
+    }
+    return (this.isStatic() == f.isStatic()) && Objects.equals(declaringClass, f.declaringClass())
+        && Objects.equals(name, f.name()) && Objects.equals(type, f.type());
   }
 }
