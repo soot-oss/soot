@@ -138,6 +138,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N> {
         // intersect over all predecessors
         for (N next : graph.getPredsOf(o)) {
           BitSet s = getDominatorsBitSet(next);
+          if (s == null) {
+            continue;
+          }
           if (predsIntersect == null) {
             predsIntersect = (BitSet) s.clone();
           } else {
