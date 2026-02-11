@@ -128,7 +128,8 @@ public class ContextInsensitiveBuilder {
   /* End of package methods. */
   protected void handleClass(SootClass c) {
     boolean incedClasses = false;
-    if (c.isConcrete() || Scene.v().getFastHierarchy().getSubclassesOf(c).stream().anyMatch(SootClass::isConcrete)) {
+    if (c.isConcrete() || Scene.v().getOrMakeFastHierarchy().getSubclassesOf(c).stream()
+        .anyMatch(SootClass::isConcrete)) {
       for (SootMethod m : c.getMethods()) {
         if (!m.isConcrete() && !m.isNative()) {
           continue;
