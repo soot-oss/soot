@@ -420,8 +420,15 @@ public class AsmMethodSource implements MethodSource {
           type = AsmUtil.toJimpleType(local.desc, Optional.absent());
         }
       }
+      boolean userDefinedName = true;
+      if (name == null) {
+        name = "l" + idx;
+        userDefinedName = false;
+      }
       l = Jimple.v().newLocal(name, type);
-      l.setUserDefinedLocal();
+      if (userDefinedName) {
+        l.setUserDefinedLocal();
+      }
       locals.put(i, l);
     }
     return l;
@@ -435,11 +442,6 @@ public class AsmMethodSource implements MethodSource {
       if (n != null) {
         name = n.name;
       }
-      if (n == null) {
-        name = "l" + idx;
-      }
-    } else {
-      name = "l" + idx;
     }
     return name;
   }

@@ -37,6 +37,7 @@ import soot.BodyTransformer;
 import soot.G;
 import soot.Local;
 import soot.Singletons;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -44,9 +45,11 @@ import soot.asm.AsmMethodSource;
 import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.AssignStmt;
+import soot.jimple.ClassConstant;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Jimple;
+import soot.jimple.StringConstant;
 import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
@@ -324,6 +327,27 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         Set<AssignStmt> constantInit = cluster.constantInitializers;
         if (!actAsNormalLocalSplitter && constantInit.isEmpty()) {
           continue;
+        }
+
+        if (cluster.nonConstantDefs == null) {
+          //we don't need to split when we only have constants of type
+          //string or class.
+          boolean needsSplitting = false;
+          Type t = ClassConstant.getClassType();
+          Type strType = StringConstant.getClassType();
+          for (Unit assignS : constantInit) {
+            AssignStmt assign = (AssignStmt) assignS;
+            Type type = assign.getRightOp().getType();
+            if (type == t || type == strType) {
+              continue;
+            }
+            needsSplitting = true;
+            break;
+          }
+          if (!needsSplitting) {
+            continue;
+          }
+
         }
         // we have an overlap, we need to split.
         Local newLocal = (Local) lcl.clone();

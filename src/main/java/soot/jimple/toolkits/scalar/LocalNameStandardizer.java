@@ -50,6 +50,7 @@ import soot.Type;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.internal.JimpleLocal;
 import soot.util.Chain;
 
 public class LocalNameStandardizer extends BodyTransformer {
@@ -163,6 +164,12 @@ public class LocalNameStandardizer extends BodyTransformer {
       int nullCount = 0;
 
       for (Local l : locals) {
+        if (l instanceof JimpleLocal) {
+          JimpleLocal jl = (JimpleLocal) l;
+          if (jl.isUserDefinedLocal()) {
+            continue;
+          }
+        }
         final String prefix = l.getName().startsWith("$") ? "$" : "";
         final Type type = l.getType();
         if (booleanType.equals(type)) {
