@@ -30,7 +30,6 @@ import soot.Pack;
 import soot.PackManager;
 import soot.PhaseOptions;
 import soot.Transform;
-import soot.plugins.internal.PluginLoader;
 
 /**
  * Soot command-line options parser base class.
@@ -115,14 +114,4 @@ abstract class OptionsBase {
     return PhaseOptions.v().processPhaseOptions(phase, option);
   }
 
-  /**
-   * Handles the value of a plugin parameter.
-   *
-   * @param file
-   *          the plugin parameter value.
-   * @return {@code true} on success.
-   */
-  protected boolean loadPluginConfiguration(String file) {
-    return PluginLoader.load(file);
-  }
 }

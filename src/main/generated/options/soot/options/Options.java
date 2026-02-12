@@ -932,11 +932,6 @@ public class Options extends OptionsBase {
                 if (plugin == null)
                     plugin = new LinkedList<>();
                 plugin.add(value);
-                if (!loadPluginConfiguration(value)) {
-                    G.v().out.println("Failed to load plugin " + value);
-                    return false;
-                }
-        
             }
             else if (false
                     || option.equals("wrong-staticness")
