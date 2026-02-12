@@ -38,11 +38,13 @@ import soot.options.Options;
 public class AbstractSootFieldRef implements SootFieldRef {
   private static final Logger logger = LoggerFactory.getLogger(AbstractSootFieldRef.class);
 
+  private final SootClass declaringClass;
+  private final String name;
+  private final Type type;
+  private final boolean isStatic;
+  private SootField resolveCache = null;
+  
   public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
-    this.declaringClass = declaringClass;
-    this.name = name;
-    this.type = type;
-    this.isStatic = isStatic;
     if (declaringClass == null) {
       throw new RuntimeException("Attempt to create SootFieldRef with null class");
     }
@@ -52,12 +54,11 @@ public class AbstractSootFieldRef implements SootFieldRef {
     if (type == null) {
       throw new RuntimeException("Attempt to create SootFieldRef with null type");
     }
+    this.declaringClass = declaringClass;
+    this.name = name;
+    this.type = type;
+    this.isStatic = isStatic;
   }
-
-  private final SootClass declaringClass;
-  private final String name;
-  private final Type type;
-  private final boolean isStatic;
 
   @Override
   public SootClass declaringClass() {
@@ -106,7 +107,13 @@ public class AbstractSootFieldRef implements SootFieldRef {
 
   @Override
   public SootField resolve() {
-    return resolve(null);
+    SootField cached = this.resolveCache;
+    // Use the cached SootField if available and still valid
+    if (cached == null || !cached.isValidResolve(this)) {
+      cached = resolve(null);
+      this.resolveCache = cached;
+    }
+    return cached;
   }
 
   private SootField checkStatic(SootField ret) {
