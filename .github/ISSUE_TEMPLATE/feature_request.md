@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for Soot.
 title: ''
-labels: ''
+labels: 'enhancement'
 assignees: ''
 
 ---
