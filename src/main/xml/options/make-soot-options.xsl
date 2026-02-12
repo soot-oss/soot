@@ -215,12 +215,6 @@ public class Options extends OptionsBase {
                 if (<xsl:copy-of select="$name"/> == null)
                     <xsl:copy-of select="$name"/> = new LinkedList&lt;&gt;();
                 <xsl:copy-of select="$name"/>.add(value);<xsl:text/>
-        <xsl:if test="'plugin' = $name">
-                if (!loadPluginConfiguration(value)) {
-                    G.v().out.println("Failed to load plugin " + value);
-                    return false;
-                }
-        </xsl:if>
             }<xsl:text/>
     </xsl:template>
 
