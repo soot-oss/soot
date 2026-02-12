@@ -67,14 +67,18 @@ public class StringConstant extends Constant {
 
   @Override
   public Type getType() {
-    if (Options.v().src_prec() == Options.src_prec_dotnet) {
-      return RefType.v(DotNetBasicTypes.SYSTEM_STRING);
-    }
-    return RefType.v("java.lang.String");
+    return getClassType();
   }
 
   @Override
   public void apply(Switch sw) {
     ((ConstantSwitch) sw).caseStringConstant(this);
+  }
+
+  public static Type getClassType() {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return RefType.v(DotNetBasicTypes.SYSTEM_STRING);
+    }
+    return RefType.v("java.lang.String");
   }
 }
