@@ -69,8 +69,7 @@ public class Main {
     System.out.println("Visit the Soot website:");
     System.out.println("  http://www.sable.mcgill.ca/soot/");
 
-    System.out.println("For a list of command line options, enter:");
-    System.out.println("  java soot.Main --help");
+    System.out.println("For a list of command line options use --help");
   }
 
   private void processCmdLine(String[] args) {
@@ -141,12 +140,12 @@ public class Main {
     } catch (StackOverflowError e) {
       System.err.println("Soot has run out of stack memory.");
       System.err.println("To allocate more stack memory to Soot, use the -Xss switch to Java.");
-      System.err.println("For example (for 2MB): java -Xss2m soot.Main ...");
+      System.err.println("For example (for 2MB): java -Xss2m ...");
       throw e;
     } catch (OutOfMemoryError e) {
       System.err.println("Soot has run out of the memory allocated to it by the Java VM.");
       System.err.println("To allocate more memory to Soot, use the -Xmx switch to Java.");
-      System.err.println("For example (for 2GB): java -Xmx2g soot.Main ...");
+      System.err.println("For example (for 4GB): java -Xmx4g ...");
       throw e;
     } catch (RuntimeException e) {
       if (e instanceof UserInputException) {

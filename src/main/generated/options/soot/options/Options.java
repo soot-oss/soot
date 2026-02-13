@@ -290,10 +290,6 @@ public class Options extends OptionsBase {
             )
                 ignore_classpath_errors = true;
             else if (false
-                    || option.equals("no-process-multiple-dex")
-            )
-                process_multiple_dex = false;
-            else if (false
                     || option.equals("search-dex-in-archives")
             )
                 search_dex_in_archives = true;
@@ -1512,10 +1508,6 @@ public class Options extends OptionsBase {
     private boolean ignore_classpath_errors = false;
     public void set_ignore_classpath_errors(boolean setting) { ignore_classpath_errors = setting; }
 
-    public boolean process_multiple_dex() { return process_multiple_dex; }
-    private boolean process_multiple_dex = true;
-    public void set_process_multiple_dex(boolean setting) { process_multiple_dex = setting; }
-
     public boolean search_dex_in_archives() { return search_dex_in_archives; }
     private boolean search_dex_in_archives = false;
     public void set_search_dex_in_archives(boolean setting) { search_dex_in_archives = setting; }
@@ -1813,7 +1805,6 @@ public class Options extends OptionsBase {
                 + padOpt("-dotnet-nativehost-path ARG", "Use  to locate your NativeHost Java JNI library.")
                 + padOpt("-pp, -prepend-classpath", "Prepend the given soot classpath to the default classpath.")
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
-                + padOpt("-process-multiple-dex", "Process all DEX files found in APK.")
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")
                 + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG (but not classes within JAR files in ARG , use process-jar-dir for that)")
                 + padOpt("-process-jar-dir ARG", "Process all classes found in JAR files found in ARG")
