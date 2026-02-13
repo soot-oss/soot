@@ -172,14 +172,7 @@ public class DexFileProvider {
   private List<File> allSourcesFromFile(File dexSource) throws IOException {
     if (dexSource.isDirectory()) {
       List<File> dexFiles = getAllDexFilesInDirectory(dexSource);
-      if (dexFiles.size() > 1 && !Options.v().process_multiple_dex()) {
-        File file = dexFiles.get(0);
-        logger.warn("Multiple dex files detected, only processing '" + file.getCanonicalPath()
-            + "'. Use '-process-multiple-dex' option to process them all.");
-        return Collections.singletonList(file);
-      } else {
-        return dexFiles;
-      }
+      return dexFiles;
     } else {
       String ext = com.google.common.io.Files.getFileExtension(dexSource.getName()).toLowerCase();
       if ((ext.equals("jar") || ext.equals("zip")) && !Options.v().search_dex_in_archives()) {
@@ -213,7 +206,6 @@ public class DexFileProvider {
    */
   private Map<String, DexContainer<? extends DexFile>> mappingForFile(File dexSourceFile) throws IOException {
     int api = Scene.v().getAndroidAPIVersion();
-    boolean multiple_dex = Options.v().process_multiple_dex();
 
     // load dex files from apk/folder/file
     MultiDexContainer<? extends DexBackedDexFile> dexContainer
@@ -246,17 +238,7 @@ public class DexFileProvider {
       logger.debug("" + String.format("Found dex file '%s' with %d classes in '%s'", entryName,
           entry.getDexFile().getClasses().size(), dexSourceFile.getCanonicalPath()));
 
-      if (multiple_dex) {
-        dexMap.put(entryName, new DexContainer<>(entry, entryName, dexSourceFile));
-      } else if (dexMap.isEmpty() && (entryName.equals("classes.dex") || !entryNameIterator.hasPrevious())) {
-        // We prefer to have classes.dex in single dex mode.
-        // If we haven't found a classes.dex until the last element, take the last!
-        dexMap = Collections.singletonMap(entryName, new DexContainer<>(entry, entryName, dexSourceFile));
-        if (dexFileCount > 1) {
-          logger.warn("Multiple dex files detected, only processing '" + entryName
-              + "'. Use '-process-multiple-dex' option to process them all.");
-        }
-      }
+      dexMap.put(entryName, new DexContainer<>(entry, entryName, dexSourceFile));
     }
     return Collections.unmodifiableMap(dexMap);
   }

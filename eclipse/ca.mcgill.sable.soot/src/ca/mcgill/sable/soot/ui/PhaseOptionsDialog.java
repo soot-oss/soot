@@ -967,12 +967,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsignore_classpath_errors_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getInput_Optionsprocess_multiple_dex_widget().getButton().getSelection();
-		defBoolRes = true;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getInput_Optionssearch_dex_in_archives_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4153,16 +4147,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getInput_Optionsignore_classpath_errors_widget() {
 		return Input_Optionsignore_classpath_errors_widget;
-	}	
-	
-	private BooleanOptionWidget Input_Optionsprocess_multiple_dex_widget;
-	
-	private void setInput_Optionsprocess_multiple_dex_widget(BooleanOptionWidget widget) {
-		Input_Optionsprocess_multiple_dex_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Optionsprocess_multiple_dex_widget() {
-		return Input_Optionsprocess_multiple_dex_widget;
 	}	
 	
 	private BooleanOptionWidget Input_Optionssearch_dex_in_archives_widget;
@@ -7898,17 +7882,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setInput_Optionsignore_classpath_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore classpath error", "", "","ice ignore-classpath-errors", "\nNormally, Soot throws an exception when an invalid classpath \nentry is detected. To instead silently ignore such errors, \nenable this option.", defaultBool)));
-
-		defKey = ""+" "+""+" "+"process-multiple-dex";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = true;
-		}
-
-		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"search-dex-in-archives";
 		defKey = defKey.trim();
