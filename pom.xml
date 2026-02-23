@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <name>Soot - a J*va Optimization Framework</name>
-    <version>4.7.1</version>
+    <name>Soot - a Java Optimization Framework</name>
+    <version>4.8.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
     <url>https://soot-oss.github.io/soot</url>
     <organization>
