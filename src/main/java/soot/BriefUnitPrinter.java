@@ -106,6 +106,6 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
   @Override
   public void type(Type t) {
     handleIndent();
-    output.append(t.toString());
+    output.append(t);
   }
 }

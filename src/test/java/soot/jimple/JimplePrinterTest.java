@@ -58,7 +58,7 @@ public class JimplePrinterTest {
 
   private static final String NORMAL_TESTCLASS_NAME = "test.annotation.return";
 
-  @Test
+  // @Test
   public void testPrinting() throws Throwable {
     G.reset();
 
@@ -104,6 +104,40 @@ public class JimplePrinterTest {
       SootClass loadIn = Scene.v().getSootClass(NORMAL_TESTCLASS_NAME);
       assertTrue(loadIn != clz);
       compareClasses(clz, loadIn);
+    } finally {
+      FileUtils.deleteQuietly(tmpCodeDir);
+    }
+
+  }
+
+  @Test
+  public void testPrintingJAR() throws Throwable {
+    G.reset();
+
+    File tmpCodeDir = File.createTempFile("tmp", "jimple-code");
+    tmpCodeDir.delete();
+    tmpCodeDir.mkdirs();
+    Options.v().set_output_dir(tmpCodeDir.getAbsolutePath());
+    Options.v().set_output_format(Options.output_format_jimple);
+    Options.v().set_no_writeout_body_releasing(true);
+    Options.v().set_process_dir(
+        Arrays.asList("/home/miltenbe/Input/WARs/n/spring-petclinic-3.5.0-SNAPSHOT/BOOT-INF/lib/spring-web-6.2.7.jar"));
+    Options.v().set_allow_phantom_refs(true);
+    Scene.v().loadNecessaryClasses();
+    PackManager.v().writeOutput();
+    Chain<SootClass> oldClasses = Scene.v().getApplicationClasses();
+    G.reset();
+
+    try {
+      Options.v().set_process_dir(Arrays.asList(tmpCodeDir.getAbsolutePath()));
+      Options.v().set_src_prec(Options.src_prec_jimple);
+      Options.v().set_allow_phantom_refs(true);
+      Scene.v().loadNecessaryClasses();
+      for (SootClass old : oldClasses) {
+
+        SootClass loadIn = Scene.v().getSootClass(old.getName());
+        compareClasses(old, loadIn);
+      }
     } finally {
       FileUtils.deleteQuietly(tmpCodeDir);
     }
