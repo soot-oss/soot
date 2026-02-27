@@ -42,7 +42,7 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
   @Override
   public void type(Type t) {
     handleIndent();
-    output.append(t == null ? "<null>" : scene.quotedNameOf(t.toString()));
+    output.append(t == null ? "<null>" : scene.quotedTypeNameOf(t));
   }
 
   @Override
@@ -50,14 +50,14 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
     handleIndent();
     // we need to quote the signature
     output.append('<').append(scene.quotedNameOf(m.declaringClass().getName())).append(": ");
-    output.append(scene.quotedNameOf(m.getReturnType().toString()));
+    output.append(scene.quotedTypeNameOf(m.getReturnType()));
     output.append(' ').append(scene.quotedNameOf(m.name())).append('(');
     final List<Type> pt = m.getParameterTypes();
     for (int i = 0; i < pt.size(); i++) {
       if (i != 0) {
         output.append(',');
       }
-      output.append(scene.quotedNameOf(pt.get(i).toString()));
+      output.append(scene.quotedTypeNameOf(pt.get(i)));
     }
     output.append(")>");
   }
@@ -67,7 +67,7 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
     handleIndent();
     // we need to quote the signature
     output.append('<').append(scene.quotedNameOf(f.declaringClass().getName())).append(": ");
-    output.append(scene.quotedNameOf(f.type().toString()));
+    output.append(scene.quotedTypeNameOf(f.type()));
     output.append(' ').append(scene.quotedNameOf(f.name()));
     output.append('>');
   }

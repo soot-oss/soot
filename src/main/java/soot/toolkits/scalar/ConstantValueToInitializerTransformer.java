@@ -123,7 +123,7 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
               smInit = getOrCreateInitializer(sc);
             }
             if (smInit != null) {
-              smInit.getActiveBody().getUnits().addFirst(initStmt);
+              smInit.retrieveActiveBody().getUnits().addFirst(initStmt);
             }
           } else {
             // We have a default value for a non-static field
