@@ -40,6 +40,7 @@ import soot.Body;
 import soot.G;
 import soot.Immediate;
 import soot.Local;
+import soot.Modifier;
 import soot.PackManager;
 import soot.RefType;
 import soot.Scene;
@@ -48,6 +49,7 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.VoidType;
 import soot.jimple.internal.JimpleLocal;
 import soot.options.Options;
 import soot.util.Chain;
@@ -60,11 +62,13 @@ public class JimplePrinterTest {
   public void testPrinting() throws Throwable {
     G.reset();
 
-    //we use names that need quotations
+    // we use names that need quotations
     SootClass clz = new SootClass(NORMAL_TESTCLASS_NAME);
     ArrayType at = ArrayType.v(clz.getType(), 2);
     SootMethod m = new SootMethod("throws", Arrays.asList(clz.getType(), at, RefType.v("java.lang.String")), at);
     clz.addMethod(m);
+    SootMethod m2 = new SootMethod("throws", Arrays.asList(), VoidType.v(), Modifier.NATIVE);
+    clz.addMethod(m2);
 
     SootField field = new SootField("return", clz.getType());
     clz.addField(field);
