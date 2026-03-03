@@ -37,7 +37,9 @@ import soot.AbstractSootFieldRef;
 import soot.ArrayType;
 import soot.BooleanConstant;
 import soot.BooleanType;
+import soot.ByteConstant;
 import soot.ByteType;
+import soot.CharConstant;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -49,6 +51,7 @@ import soot.Modifier;
 import soot.NullType;
 import soot.RefType;
 import soot.Scene;
+import soot.ShortConstant;
 import soot.ShortType;
 import soot.SootClass;
 import soot.SootField;
@@ -215,6 +218,11 @@ public class Walker extends DepthFirstAdapter {
   public void outAAnnotationAnnotationValue(AAnnotationAnnotationValue node) {
     AnnotationTag tag = (AnnotationTag) mProductions.removeLast();
     String name = (String) mProductions.removeLast();
+    if (node.getName() instanceof AQuotedName && name.equals("generatedName")) {
+      // Remove the generated name only in case it is quoted, since user code might
+      // still use that name
+      name = null;
+    }
     mProductions.addLast(new AnnotationAnnotationElem(tag, '@', name));
   }
 
@@ -255,6 +263,12 @@ public class Walker extends DepthFirstAdapter {
     final String enumName = ASMBackendUtils.getSignatureRefType(Scene.signatureToClass(constant.getSignature()));
 
     String subsig = Scene.signatureToSubsignature(constant.getSignature());
+
+    if (node.getName() instanceof AQuotedName && name.equals("generatedName")) {
+      // Remove the generated name only in case it is quoted, since user code might
+      // still use that name
+      name = null;
+    }
     mProductions.addLast(new AnnotationEnumElem(enumName, subsig.substring(subsig.indexOf(' ') + 1), 'e', name));
   }
 
@@ -263,8 +277,19 @@ public class Walker extends DepthFirstAdapter {
     Constant constant = (Constant) mProductions.removeLast();
     String name = (String) mProductions.removeLast();
 
+    if (node.getName() instanceof AQuotedName && name.equals("generatedName")) {
+      // Remove the generated name only in case it is quoted, since user code might
+      // still use that name
+      name = null;
+    }
     if (constant instanceof BooleanConstant) {
       mProductions.addLast(new AnnotationBooleanElem(((BooleanConstant) constant).value == 1, 'Z', name));
+    } else if (constant instanceof CharConstant) {
+      mProductions.addLast(new AnnotationIntElem(((IntConstant) constant).value, 'C', name));
+    } else if (constant instanceof ShortConstant) {
+      mProductions.addLast(new AnnotationIntElem(((IntConstant) constant).value, 'S', name));
+    } else if (constant instanceof ByteConstant) {
+      mProductions.addLast(new AnnotationIntElem(((IntConstant) constant).value, 'B', name));
     } else if (constant instanceof IntConstant) {
       mProductions.addLast(new AnnotationIntElem(((IntConstant) constant).value, 'I', name));
     } else if (constant instanceof LongConstant) {
@@ -1180,6 +1205,12 @@ public class Walker extends DepthFirstAdapter {
 
     if (s.endsWith("L")) {
       mProductions.addLast(LongConstant.v(sign * Long.parseLong(s.substring(0, s.length() - 1))));
+    } else if (s.endsWith("B")) {
+      mProductions.addLast(ByteConstant.v(sign * Integer.parseInt(s.substring(0, s.length() - 1))));
+    } else if (s.endsWith("S")) {
+      mProductions.addLast(ShortConstant.v(sign * Integer.parseInt(s.substring(0, s.length() - 1))));
+    } else if (s.endsWith("C")) {
+      mProductions.addLast(CharConstant.v(sign * Integer.parseInt(s.substring(0, s.length() - 1))));
     } else if (s.equals("2147483648")) {
       mProductions.addLast(IntConstant.v(sign * Integer.MIN_VALUE));
     } else {
@@ -1224,6 +1255,12 @@ public class Walker extends DepthFirstAdapter {
     s = buf.toString();
     if (s.endsWith("L")) {
       mProductions.addLast(LongConstant.v(Long.parseLong(s.substring(0, s.length() - 1))));
+    } else if (s.endsWith("B")) {
+      mProductions.addLast(ByteConstant.v(Integer.parseInt(s.substring(0, s.length() - 1))));
+    } else if (s.endsWith("S")) {
+      mProductions.addLast(ShortConstant.v(Integer.parseInt(s.substring(0, s.length() - 1))));
+    } else if (s.endsWith("C")) {
+      mProductions.addLast(CharConstant.v(Integer.parseInt(s.substring(0, s.length() - 1))));
     } else if (s.equals("2147483648")) {
       mProductions.addLast(IntConstant.v(Integer.MIN_VALUE));
     } else {

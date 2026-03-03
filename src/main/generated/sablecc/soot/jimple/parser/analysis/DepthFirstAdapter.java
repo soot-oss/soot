@@ -1102,10 +1102,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getDeprecatedannotation().apply(this);
         }
-        if(node.getAnnotationParams() != null)
-        {
-            node.getAnnotationParams().apply(this);
-        }
         outADeprecatedAnnotationDefinedAnnotation(node);
     }
 

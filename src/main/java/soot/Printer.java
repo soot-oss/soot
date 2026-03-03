@@ -60,7 +60,6 @@ import soot.tagkit.VisibilityAnnotationTag;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 import soot.util.DeterministicHashMap;
-import soot.util.StringTools;
 
 /**
  * Prints out a class and all its methods.
@@ -74,7 +73,7 @@ public class Printer {
   private Function<Body, LabeledUnitPrinter> customUnitPrinter;
   private Function<SootClass, String> customClassSignaturePrinter;
   private Function<SootMethod, String> customMethodSignaturePrinter;
-  private static final String DUMMY_NAME = "generatedName=";
+  private static final String DUMMY_NAME = "'generatedName'=";
 
   public Printer(Singletons.Global g) {
   }
@@ -370,11 +369,6 @@ public class Printer {
       final AnnotationIntElem intElement = (AnnotationIntElem) annotation;
       // I: int; B: byte; Z: boolean; C: char; S: short;
       switch (intElement.getKind()) {
-        case 'C':
-          String esc = StringTools.getQuotedStringOf(String.valueOf((char) intElement.getValue()));
-          esc = esc.substring(1, esc.length() - 1);
-          out.append("\'").append(esc).append("\'");
-          break;
         case 'J':
           out.print(intElement.getValue());
           out.print("L");
@@ -387,11 +381,17 @@ public class Printer {
           break;
         default:
         case 'B':
-          // For bytes we have no other alternative at the moment
+          out.print(intElement.getValue() + "B");
+          break;
         case 'S':
-          // For shorts we have no other alternative at the moment
+          out.print(intElement.getValue() + "S");
+          break;
+        case 'C':
+          out.print(intElement.getValue() + "C");
+          break;
         case 'I':
           out.print(intElement.getValue());
+          break;
       }
     } else if (annotation instanceof AnnotationLongElem) {
       final AnnotationLongElem longElement = (AnnotationLongElem) annotation;

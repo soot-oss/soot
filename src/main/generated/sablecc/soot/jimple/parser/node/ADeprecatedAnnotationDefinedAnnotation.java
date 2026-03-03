@@ -8,7 +8,6 @@ import soot.jimple.parser.analysis.*;
 public final class ADeprecatedAnnotationDefinedAnnotation extends PDefinedAnnotation
 {
     private TDeprecatedannotation _deprecatedannotation_;
-    private PAnnotationParams _annotationParams_;
 
     public ADeprecatedAnnotationDefinedAnnotation()
     {
@@ -16,13 +15,10 @@ public final class ADeprecatedAnnotationDefinedAnnotation extends PDefinedAnnota
     }
 
     public ADeprecatedAnnotationDefinedAnnotation(
-        @SuppressWarnings("hiding") TDeprecatedannotation _deprecatedannotation_,
-        @SuppressWarnings("hiding") PAnnotationParams _annotationParams_)
+        @SuppressWarnings("hiding") TDeprecatedannotation _deprecatedannotation_)
     {
         // Constructor
         setDeprecatedannotation(_deprecatedannotation_);
-
-        setAnnotationParams(_annotationParams_);
 
     }
 
@@ -30,8 +26,7 @@ public final class ADeprecatedAnnotationDefinedAnnotation extends PDefinedAnnota
     public Object clone()
     {
         return new ADeprecatedAnnotationDefinedAnnotation(
-            cloneNode(this._deprecatedannotation_),
-            cloneNode(this._annotationParams_));
+            cloneNode(this._deprecatedannotation_));
     }
 
     @Override
@@ -65,37 +60,11 @@ public final class ADeprecatedAnnotationDefinedAnnotation extends PDefinedAnnota
         this._deprecatedannotation_ = node;
     }
 
-    public PAnnotationParams getAnnotationParams()
-    {
-        return this._annotationParams_;
-    }
-
-    public void setAnnotationParams(PAnnotationParams node)
-    {
-        if(this._annotationParams_ != null)
-        {
-            this._annotationParams_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._annotationParams_ = node;
-    }
-
     @Override
     public String toString()
     {
         return ""
-            + toString(this._deprecatedannotation_)
-            + toString(this._annotationParams_);
+            + toString(this._deprecatedannotation_);
     }
 
     @Override
@@ -105,12 +74,6 @@ public final class ADeprecatedAnnotationDefinedAnnotation extends PDefinedAnnota
         if(this._deprecatedannotation_ == child)
         {
             this._deprecatedannotation_ = null;
-            return;
-        }
-
-        if(this._annotationParams_ == child)
-        {
-            this._annotationParams_ = null;
             return;
         }
 
@@ -124,12 +87,6 @@ public final class ADeprecatedAnnotationDefinedAnnotation extends PDefinedAnnota
         if(this._deprecatedannotation_ == oldChild)
         {
             setDeprecatedannotation((TDeprecatedannotation) newChild);
-            return;
-        }
-
-        if(this._annotationParams_ == oldChild)
-        {
-            setAnnotationParams((PAnnotationParams) newChild);
             return;
         }
 

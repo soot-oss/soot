@@ -1106,10 +1106,6 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseADeprecatedAnnotationDefinedAnnotation(ADeprecatedAnnotationDefinedAnnotation node)
     {
         inADeprecatedAnnotationDefinedAnnotation(node);
-        if(node.getAnnotationParams() != null)
-        {
-            node.getAnnotationParams().apply(this);
-        }
         if(node.getDeprecatedannotation() != null)
         {
             node.getDeprecatedannotation().apply(this);
