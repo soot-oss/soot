@@ -372,6 +372,7 @@ public class Printer {
       switch (intElement.getKind()) {
         case 'C':
           String esc = StringTools.getQuotedStringOf(String.valueOf((char) intElement.getValue()));
+          esc = esc.substring(1, esc.length() - 1);
           out.append("\'").append(esc).append("\'");
           break;
         case 'J':
