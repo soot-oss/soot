@@ -21,143 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
-import static org.objectweb.asm.Opcodes.ACONST_NULL;
-import static org.objectweb.asm.Opcodes.ALOAD;
-import static org.objectweb.asm.Opcodes.ANEWARRAY;
-import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ARRAYLENGTH;
-import static org.objectweb.asm.Opcodes.ASTORE;
-import static org.objectweb.asm.Opcodes.ATHROW;
-import static org.objectweb.asm.Opcodes.BIPUSH;
-import static org.objectweb.asm.Opcodes.CHECKCAST;
-import static org.objectweb.asm.Opcodes.D2F;
-import static org.objectweb.asm.Opcodes.D2I;
-import static org.objectweb.asm.Opcodes.D2L;
-import static org.objectweb.asm.Opcodes.DADD;
-import static org.objectweb.asm.Opcodes.DALOAD;
-import static org.objectweb.asm.Opcodes.DASTORE;
-import static org.objectweb.asm.Opcodes.DCMPG;
-import static org.objectweb.asm.Opcodes.DCMPL;
-import static org.objectweb.asm.Opcodes.DCONST_0;
-import static org.objectweb.asm.Opcodes.DCONST_1;
-import static org.objectweb.asm.Opcodes.DDIV;
-import static org.objectweb.asm.Opcodes.DLOAD;
-import static org.objectweb.asm.Opcodes.DMUL;
-import static org.objectweb.asm.Opcodes.DNEG;
-import static org.objectweb.asm.Opcodes.DREM;
-import static org.objectweb.asm.Opcodes.DRETURN;
-import static org.objectweb.asm.Opcodes.DSTORE;
-import static org.objectweb.asm.Opcodes.DSUB;
-import static org.objectweb.asm.Opcodes.DUP;
-import static org.objectweb.asm.Opcodes.DUP2;
-import static org.objectweb.asm.Opcodes.DUP2_X1;
-import static org.objectweb.asm.Opcodes.DUP2_X2;
-import static org.objectweb.asm.Opcodes.DUP_X1;
-import static org.objectweb.asm.Opcodes.DUP_X2;
-import static org.objectweb.asm.Opcodes.F2D;
-import static org.objectweb.asm.Opcodes.F2I;
-import static org.objectweb.asm.Opcodes.F2L;
-import static org.objectweb.asm.Opcodes.FCMPG;
-import static org.objectweb.asm.Opcodes.FCMPL;
-import static org.objectweb.asm.Opcodes.FCONST_0;
-import static org.objectweb.asm.Opcodes.FCONST_2;
-import static org.objectweb.asm.Opcodes.GETFIELD;
-import static org.objectweb.asm.Opcodes.GETSTATIC;
-import static org.objectweb.asm.Opcodes.GOTO;
-import static org.objectweb.asm.Opcodes.I2B;
-import static org.objectweb.asm.Opcodes.I2C;
-import static org.objectweb.asm.Opcodes.I2D;
-import static org.objectweb.asm.Opcodes.I2F;
-import static org.objectweb.asm.Opcodes.I2L;
-import static org.objectweb.asm.Opcodes.I2S;
-import static org.objectweb.asm.Opcodes.IADD;
-import static org.objectweb.asm.Opcodes.IALOAD;
-import static org.objectweb.asm.Opcodes.IAND;
-import static org.objectweb.asm.Opcodes.IASTORE;
-import static org.objectweb.asm.Opcodes.ICONST_0;
-import static org.objectweb.asm.Opcodes.ICONST_5;
-import static org.objectweb.asm.Opcodes.ICONST_M1;
-import static org.objectweb.asm.Opcodes.IDIV;
-import static org.objectweb.asm.Opcodes.IFEQ;
-import static org.objectweb.asm.Opcodes.IFGE;
-import static org.objectweb.asm.Opcodes.IFGT;
-import static org.objectweb.asm.Opcodes.IFLE;
-import static org.objectweb.asm.Opcodes.IFLT;
-import static org.objectweb.asm.Opcodes.IFNE;
-import static org.objectweb.asm.Opcodes.IFNONNULL;
-import static org.objectweb.asm.Opcodes.IFNULL;
-import static org.objectweb.asm.Opcodes.IF_ACMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ACMPNE;
-import static org.objectweb.asm.Opcodes.IF_ICMPEQ;
-import static org.objectweb.asm.Opcodes.IF_ICMPGE;
-import static org.objectweb.asm.Opcodes.IF_ICMPGT;
-import static org.objectweb.asm.Opcodes.IF_ICMPLE;
-import static org.objectweb.asm.Opcodes.IF_ICMPLT;
-import static org.objectweb.asm.Opcodes.IF_ICMPNE;
-import static org.objectweb.asm.Opcodes.ILOAD;
-import static org.objectweb.asm.Opcodes.IMUL;
-import static org.objectweb.asm.Opcodes.INEG;
-import static org.objectweb.asm.Opcodes.INSTANCEOF;
-import static org.objectweb.asm.Opcodes.INVOKEINTERFACE;
-import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
-import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
-import static org.objectweb.asm.Opcodes.IOR;
-import static org.objectweb.asm.Opcodes.IREM;
-import static org.objectweb.asm.Opcodes.IRETURN;
-import static org.objectweb.asm.Opcodes.ISHL;
-import static org.objectweb.asm.Opcodes.ISHR;
-import static org.objectweb.asm.Opcodes.ISTORE;
-import static org.objectweb.asm.Opcodes.ISUB;
-import static org.objectweb.asm.Opcodes.IUSHR;
-import static org.objectweb.asm.Opcodes.IXOR;
-import static org.objectweb.asm.Opcodes.JSR;
-import static org.objectweb.asm.Opcodes.L2D;
-import static org.objectweb.asm.Opcodes.L2F;
-import static org.objectweb.asm.Opcodes.L2I;
-import static org.objectweb.asm.Opcodes.LADD;
-import static org.objectweb.asm.Opcodes.LALOAD;
-import static org.objectweb.asm.Opcodes.LAND;
-import static org.objectweb.asm.Opcodes.LASTORE;
-import static org.objectweb.asm.Opcodes.LCMP;
-import static org.objectweb.asm.Opcodes.LCONST_0;
-import static org.objectweb.asm.Opcodes.LCONST_1;
-import static org.objectweb.asm.Opcodes.LDIV;
-import static org.objectweb.asm.Opcodes.LLOAD;
-import static org.objectweb.asm.Opcodes.LMUL;
-import static org.objectweb.asm.Opcodes.LNEG;
-import static org.objectweb.asm.Opcodes.LOR;
-import static org.objectweb.asm.Opcodes.LREM;
-import static org.objectweb.asm.Opcodes.LRETURN;
-import static org.objectweb.asm.Opcodes.LSHL;
-import static org.objectweb.asm.Opcodes.LSHR;
-import static org.objectweb.asm.Opcodes.LSTORE;
-import static org.objectweb.asm.Opcodes.LSUB;
-import static org.objectweb.asm.Opcodes.LUSHR;
-import static org.objectweb.asm.Opcodes.LXOR;
-import static org.objectweb.asm.Opcodes.MONITORENTER;
-import static org.objectweb.asm.Opcodes.MONITOREXIT;
-import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.NEWARRAY;
-import static org.objectweb.asm.Opcodes.NOP;
-import static org.objectweb.asm.Opcodes.POP;
-import static org.objectweb.asm.Opcodes.POP2;
-import static org.objectweb.asm.Opcodes.PUTFIELD;
-import static org.objectweb.asm.Opcodes.RET;
-import static org.objectweb.asm.Opcodes.RETURN;
-import static org.objectweb.asm.Opcodes.SALOAD;
-import static org.objectweb.asm.Opcodes.SASTORE;
-import static org.objectweb.asm.Opcodes.SIPUSH;
-import static org.objectweb.asm.Opcodes.SWAP;
-import static org.objectweb.asm.Opcodes.T_BOOLEAN;
-import static org.objectweb.asm.Opcodes.T_BYTE;
-import static org.objectweb.asm.Opcodes.T_CHAR;
-import static org.objectweb.asm.Opcodes.T_DOUBLE;
-import static org.objectweb.asm.Opcodes.T_FLOAT;
-import static org.objectweb.asm.Opcodes.T_INT;
-import static org.objectweb.asm.Opcodes.T_LONG;
-import static org.objectweb.asm.Opcodes.T_SHORT;
+import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -200,6 +64,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.jspecify.annotations.NonNull;
 import org.objectweb.asm.ConstantDynamic;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -298,6 +163,7 @@ import soot.jimple.NewMultiArrayExpr;
 import soot.jimple.NopStmt;
 import soot.jimple.NullConstant;
 import soot.jimple.ReturnStmt;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
@@ -344,11 +210,17 @@ public class AsmMethodSource implements MethodSource {
   private final Map<LabelNode, Unit> inlineExceptionHandlers = new LinkedHashMap<LabelNode, Unit>();
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 
+  /** Labels at which a trap handler range (try block) begins */
+  private final Map<LabelNode, TryCatchBlockNode> startTrapHandler = new HashMap<>();
+
+  /** Labels at which a trap handler range (try block) ends */
+  private final Map<LabelNode, TryCatchBlockNode> endTrapHandler = new HashMap<>();
+
   /* -state fields- */
   protected int nextLocal;
   protected Map<Integer, JimpleLocal> locals;
   private Multimap<LabelNode, UnitBox> labels;
-  private Map<AbstractInsnNode, Unit> units;
+  private Map<AbstractInsnNode, Unit> insnToStmt;
   private ArrayList<Operand> stack;
   private Map<AbstractInsnNode, StackFrame> frames;
   private Multimap<LabelNode, UnitBox> trapHandlers;
@@ -404,6 +276,9 @@ public class AsmMethodSource implements MethodSource {
 
   private final boolean useOriginalTypes
       = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-types");
+
+  /** Keeps track of all trap handlers that are active at the current instruction */
+  Set<TryCatchBlockNode> activeTrapHandlers = new HashSet<>();
 
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
@@ -583,7 +458,7 @@ public class AsmMethodSource implements MethodSource {
       }
     }
 
-    Unit o = units.put(insn, u);
+    Unit o = insnToStmt.put(insn, u);
     if (o != null) {
       throw new AssertionError(insn.getOpcode() + " already has a unit, " + o);
     }
@@ -600,10 +475,10 @@ public class AsmMethodSource implements MethodSource {
   }
 
   void mergeUnits(AbstractInsnNode insn, Unit u) {
-    Unit prev = units.put(insn, u);
+    Unit prev = insnToStmt.put(insn, u);
     if (prev != null) {
       Unit merged = new UnitContainer(prev, u);
-      units.put(insn, merged);
+      insnToStmt.put(insn, merged);
     }
   }
 
@@ -616,7 +491,7 @@ public class AsmMethodSource implements MethodSource {
 
   @SuppressWarnings("unchecked")
   <A extends Unit> A getUnit(AbstractInsnNode insn) {
-    return (A) units.get(insn);
+    return (A) insnToStmt.get(insn);
   }
 
   private void assignReadOps(Local l) {
@@ -752,7 +627,7 @@ public class AsmMethodSource implements MethodSource {
   private void convertIincInsn(IincInsnNode insn) {
     Local local = getLocal(insn.var);
     assignReadOps(local);
-    if (!units.containsKey(insn)) {
+    if (!insnToStmt.containsKey(insn)) {
       AddExpr add = Jimple.v().newAddExpr(local, IntConstant.v(insn.incr));
       setUnit(insn, Jimple.v().newAssignStmt(local, add));
     }
@@ -842,7 +717,7 @@ public class AsmMethodSource implements MethodSource {
     int op = insn.getOpcode();
     boolean dword = op == LASTORE || op == DASTORE;
     StackFrame frame = getFrame(insn);
-    if (!units.containsKey(insn)) {
+    if (!insnToStmt.containsKey(insn)) {
       Operand valu = dword ? popImmediateDual() : popImmediate();
       Operand indx = popImmediate();
       Operand base = popLocal();
@@ -1128,7 +1003,7 @@ public class AsmMethodSource implements MethodSource {
     int op = insn.getOpcode();
     boolean dword = op == LRETURN || op == DRETURN;
     StackFrame frame = getFrame(insn);
-    if (!units.containsKey(insn)) {
+    if (!insnToStmt.containsKey(insn)) {
       Operand val = dword ? popImmediateDual() : popImmediate();
       ReturnStmt ret = Jimple.v().newReturnStmt(val.stackOrValue());
       val.addBox(ret.getOpBox());
@@ -1146,8 +1021,8 @@ public class AsmMethodSource implements MethodSource {
       /*
        * We can ignore NOP instructions, but for completeness, we handle them
        */
-      if (!units.containsKey(insn)) {
-        units.put(insn, Jimple.v().newNopStmt());
+      if (!insnToStmt.containsKey(insn)) {
+        insnToStmt.put(insn, Jimple.v().newNopStmt());
       }
     } else if (op >= ACONST_NULL && op <= DCONST_1) {
       convertConstInsn(insn);
@@ -1185,7 +1060,7 @@ public class AsmMethodSource implements MethodSource {
       // was never used. Since the method may have side effects, we need to handle the call.
       if (!stack.isEmpty()) {
         Operand o1 = pop();
-        if (!units.containsKey(o1.insn)) {
+        if (!insnToStmt.containsKey(o1.insn)) {
           Value p = getFrame(o1.insn).out()[0].value;
           if (!(p instanceof InvokeExpr)) {
             // we don't care.
@@ -1195,13 +1070,13 @@ public class AsmMethodSource implements MethodSource {
           setUnit(o1, Jimple.v().newInvokeStmt(iexpr));
         }
       }
-      if (!units.containsKey(insn)) {
+      if (!insnToStmt.containsKey(insn)) {
         setUnit(insn, Jimple.v().newReturnVoidStmt());
       }
     } else if (op == ATHROW) {
       StackFrame frame = getFrame(insn);
       Operand opr;
-      if (!units.containsKey(insn)) {
+      if (!insnToStmt.containsKey(insn)) {
         opr = popImmediate();
         ThrowStmt ts = Jimple.v().newThrowStmt(opr.stackOrValue());
         opr.addBox(ts.getOpBox());
@@ -1216,7 +1091,7 @@ public class AsmMethodSource implements MethodSource {
       push(opr);
     } else if (op == MONITORENTER || op == MONITOREXIT) {
       StackFrame frame = getFrame(insn);
-      if (!units.containsKey(insn)) {
+      if (!insnToStmt.containsKey(insn)) {
         Operand opr = popStackConst();
         MonitorStmt ts = op == MONITORENTER ? Jimple.v().newEnterMonitorStmt(opr.stackOrValue())
             : Jimple.v().newExitMonitorStmt(opr.stackOrValue());
@@ -1292,7 +1167,7 @@ public class AsmMethodSource implements MethodSource {
   private void convertJumpInsn(JumpInsnNode insn) {
     int op = insn.getOpcode();
     if (op == GOTO) {
-      if (!units.containsKey(insn)) {
+      if (!insnToStmt.containsKey(insn)) {
         UnitBox box = Jimple.v().newStmtBox(null);
         labels.put(insn.label, box);
         setUnit(insn, Jimple.v().newGotoStmt(box));
@@ -1301,7 +1176,7 @@ public class AsmMethodSource implements MethodSource {
     }
     /* must be ifX insn */
     StackFrame frame = getFrame(insn);
-    if (!units.containsKey(insn)) {
+    if (!insnToStmt.containsKey(insn)) {
       Operand val = popImmediate();
       Value v = val.stackOrValue();
       ConditionExpr cond;
@@ -1449,7 +1324,7 @@ public class AsmMethodSource implements MethodSource {
 
   private void convertLookupSwitchInsn(LookupSwitchInsnNode insn) {
     StackFrame frame = getFrame(insn);
-    if (units.containsKey(insn)) {
+    if (insnToStmt.containsKey(insn)) {
       frame.mergeIn(pop());
       return;
     }
@@ -1578,7 +1453,7 @@ public class AsmMethodSource implements MethodSource {
       pushDual(opr);
     } else if (!(returnType instanceof VoidType)) {
       push(opr);
-    } else if (!units.containsKey(insn)) {
+    } else if (!insnToStmt.containsKey(insn)) {
       setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
     }
     /*
@@ -1682,7 +1557,7 @@ public class AsmMethodSource implements MethodSource {
       pushDual(opr);
     } else if (!(returnType instanceof VoidType)) {
       push(opr);
-    } else if (!units.containsKey(insn)) {
+    } else if (!insnToStmt.containsKey(insn)) {
       setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
     }
     /*
@@ -1752,7 +1627,7 @@ public class AsmMethodSource implements MethodSource {
 
   private void convertTableSwitchInsn(TableSwitchInsnNode insn) {
     StackFrame frame = getFrame(insn);
-    if (units.containsKey(insn)) {
+    if (insnToStmt.containsKey(insn)) {
       frame.mergeIn(pop());
       return;
     }
@@ -1849,7 +1724,7 @@ public class AsmMethodSource implements MethodSource {
     StackFrame frame = getFrame(insn);
     Operand opr = dword ? popDual() : pop();
     Local local = getLocal(insn.var);
-    if (!units.containsKey(insn)) {
+    if (!insnToStmt.containsKey(insn)) {
       DefinitionStmt as = Jimple.v().newAssignStmt(local, opr.stackOrValue());
       opr.addBox(as.getRightOpBox());
       frame.boxes(as.getRightOpBox());
@@ -1869,7 +1744,7 @@ public class AsmMethodSource implements MethodSource {
       convertVarStoreInsn(insn);
     } else if (op == RET) {
       /* we handle it, even thought it should be removed */
-      if (!units.containsKey(insn)) {
+      if (!insnToStmt.containsKey(insn)) {
         setUnit(insn, Jimple.v().newRetStmt(getLocal(insn.var)));
       }
     } else {
@@ -1888,7 +1763,7 @@ public class AsmMethodSource implements MethodSource {
     // somewhere from the real exception handler in case this is inline
     // code
     if (inlineExceptionLabels.contains(ln)) {
-      if (!units.containsKey(ln)) {
+      if (!insnToStmt.containsKey(ln)) {
         NopStmt nop = Jimple.v().newNopStmt();
         setUnit(ln, nop);
       }
@@ -1919,12 +1794,12 @@ public class AsmMethodSource implements MethodSource {
     AbstractInsnNode tgt = tgt1;
     int i = 0;
     tgt_loop: do {
-      Edge edge = edges.get(cur, tgt);
+      BranchedInsnInfo edge = edges.get(cur, tgt);
       if (edge == null) {
-        edge = new Edge(tgt);
+        edge = new BranchedInsnInfo(tgt);
         edge.prevStacks.add(stackssL);
         edges.put(cur, tgt, edge);
-        conversionWorklist.addLast(edge);
+        conversionWorklist.add(edge);
         continue;
       }
       if (edge.stack != null) {
@@ -1995,21 +1870,84 @@ public class AsmMethodSource implements MethodSource {
     }
   }
 
+  // inline exceptionhandler := exceptionhandler thats reachable through unexceptional "normal" flow
+  // and exceptional flow
+  private void indexInlineExceptionHandlers() {
+    final Set<LabelNode> handlerLabelNodes = trapHandlers.keySet();
+
+    if (handlerLabelNodes.isEmpty()) {
+      // my job is done here
+      return;
+    }
+
+    for (AbstractInsnNode node : instructions) {
+      if (node instanceof JumpInsnNode) {
+        final LabelNode handlerLabel = ((JumpInsnNode) node).label;
+        if (handlerLabelNodes.contains(handlerLabel)) {
+          inlineExceptionLabels.add(handlerLabel);
+        }
+      } else if (node instanceof LookupSwitchInsnNode) {
+
+        final LookupSwitchInsnNode lookupSwitchInsnNode = (LookupSwitchInsnNode) node;
+        if (handlerLabelNodes.contains(lookupSwitchInsnNode.dflt)) {
+          inlineExceptionLabels.add(lookupSwitchInsnNode.dflt);
+          continue;
+        }
+        for (LabelNode l : lookupSwitchInsnNode.labels) {
+          if (handlerLabelNodes.contains(l)) {
+            inlineExceptionLabels.add(l);
+            break;
+          }
+        }
+      } else if (node instanceof TableSwitchInsnNode) {
+
+        final TableSwitchInsnNode tableSwitchInsnNode = (TableSwitchInsnNode) node;
+        if (handlerLabelNodes.contains(tableSwitchInsnNode.dflt)) {
+          inlineExceptionLabels.add(tableSwitchInsnNode.dflt);
+          continue;
+        }
+        for (LabelNode l : tableSwitchInsnNode.labels) {
+          if (handlerLabelNodes.contains(l)) {
+            inlineExceptionLabels.add(l);
+            break;
+          }
+        }
+      }
+    }
+  }
+
   private void convert() {
     if (instructions == null || instructions.size() == 0) {
       return;
     }
-    ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
-    for (LabelNode ln : trapHandlers.keySet()) {
-      if (checkInlineExceptionHandler(ln)) {
-        handleInlineExceptionHandler(ln, worklist);
+    indexInlineExceptionHandlers();
+
+    // If this label is reachable through an exception and through normal
+    // code, we have to split the exceptional case (with the exception on
+    // the stack) from the normal fall-through case without anything on the
+    // stack.
+    for (LabelNode handlerNode : trapHandlers.keySet()) {
+      if (inlineExceptionLabels.contains(handlerNode)) {
+        // Catch the exception
+        CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
+        Local local = newStackLocal();
+        IdentityStmt as = Jimple.v().newIdentityStmt(local, ref);
+
+        Operand opr = new Operand(handlerNode, ref, this);
+        opr.stackLocal = local;
+
+        worklist
+            .add(new BranchedInsnInfo(handlerNode, Collections.singletonList(opr), currentLineNumber, activeTrapHandlers));
+
+        // Save the statements
+        inlineExceptionHandlers.put(handlerNode, as);
       } else {
-        worklist.add(new Edge(ln, new ArrayList<Operand>()));
+        worklist.add(new BranchedInsnInfo(handlerNode, new ArrayList<>(), currentLineNumber, activeTrapHandlers));
       }
     }
-    worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
-    conversionWorklist = worklist;
-    edges = HashBasedTable.create(instructions.size(), 1);
+    worklist
+        .add(new BranchedInsnInfo(instructions.getFirst(), Collections.emptyList(), currentLineNumber, activeTrapHandlers));
+    Table<AbstractInsnNode, AbstractInsnNode, BranchedInsnInfo> edges = HashBasedTable.create(1, 1);
     if (Options.v().keep_line_number()) {
       setLineNumberMap();
     }
@@ -2269,7 +2207,7 @@ public class AsmMethodSource implements MethodSource {
       }
 
       // Get the unit associated with the current instruction
-      Unit u = units.get(insn);
+      Unit u = insnToStmt.get(insn);
       if (u == null) {
         insn = insn.getNext();
         continue;
@@ -2319,7 +2257,7 @@ public class AsmMethodSource implements MethodSource {
       }
 
       // We need to jump to the original implementation
-      Unit targetUnit = units.get(ln);
+      Unit targetUnit = insnToStmt.get(ln);
       GotoStmt gotoImpl = Jimple.v().newGotoStmt(targetUnit);
       body.getUnits().add(gotoImpl);
     }
@@ -2357,6 +2295,8 @@ public class AsmMethodSource implements MethodSource {
     if (!m.isConcrete()) {
       return null;
     }
+    if (m.getSignature().contains("<org.aspectj.weaver.NewConstructorTypeMunger: boolean equals(java.lang.Object)>"))
+      System.out.println();
     final Jimple jimp = Jimple.v();
     final JimpleBody jb = jimp.newBody(m);
     if (instructions == null || instructions.size() == 0) {
@@ -2373,13 +2313,15 @@ public class AsmMethodSource implements MethodSource {
     nextLocal = maxLocals;
     locals = new LinkedHashMap<Integer, JimpleLocal>(maxLocals + (maxLocals / 2));
     labels = LinkedListMultimap.create(4);
-    units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
+    insnToStmt = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
     trapHandlers = LinkedListMultimap.create(tryCatchBlocks.size());
     body = jb;
     /* retrieve all trap handlers */
     for (TryCatchBlockNode tc : tryCatchBlocks) {
       trapHandlers.put(tc.handler, jimp.newStmtBox(null));
+      startTrapHandler.put(tc.start, tc);
+      endTrapHandler.put(tc.end, tc);
     }
     /* convert instructions */
     try {
@@ -2400,7 +2342,7 @@ public class AsmMethodSource implements MethodSource {
     /* clean up */
     locals = null;
     labels = null;
-    units = null;
+    insnToStmt = null;
     stack = null;
     frames = null;
     body = null;
@@ -2439,6 +2381,7 @@ public class AsmMethodSource implements MethodSource {
     // b = (B) a;
     // return b;
     castAndReturnInliner.transform(jb);
+    DeadAssignmentEliminator.v().transform(jb);
 
     try {
       PackManager.v().getPack("jb").apply(jb);
@@ -2547,7 +2490,7 @@ public class AsmMethodSource implements MethodSource {
               // the initial instruction to check, the bytecode generated by
               // some compilers has the start PC one instruction late it seems.
               Unit uStart;
-              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null && i != null;) {
+              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = insnToStmt.get(i)) == null && i != null;) {
                 i = i.getNext();
               }
               if (uStart instanceof UnitContainer) {
@@ -2555,7 +2498,7 @@ public class AsmMethodSource implements MethodSource {
               }
               // Get the previous real instruction before 'end'
               Unit uEnd;
-              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null && i != null;) {
+              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = insnToStmt.get(i)) == null && i != null;) {
                 i = i.getPrevious();
               }
               if (uEnd instanceof UnitContainer) {
@@ -2621,34 +2564,12 @@ public class AsmMethodSource implements MethodSource {
     }
   }
 
-  private final class Edge {
-    /* edge endpoint */
-    final AbstractInsnNode insn;
-    /* previous stacks at edge */
-    final Set<List<Operand>> prevStacks;
-    /* current stack at edge */
-    ArrayList<Operand> stack;
+  void setStmt(@NonNull AbstractInsnNode insn, @NonNull Stmt stmt) {
+    insnToStmt.put(insn, stmt);
+  }
 
-    Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
-      this.insn = insn;
-      this.prevStacks = new HashSet<List<Operand>>();
-      this.stack = stack;
-    }
-
-    Edge(AbstractInsnNode insn) {
-      this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder(insn.toString());
-      if (stack != null) {
-        sb.append("\nCurrent stack:");
-        for (Operand i : stack) {
-          sb.append("\n").append(i.toString());
-        }
-      }
-      return sb.toString();
-    }
+  @SuppressWarnings("unchecked")
+  <A extends Stmt> A getStmt(@NonNull AbstractInsnNode insn) {
+    return (A) insnToStmt.get(insn);
   }
 }
