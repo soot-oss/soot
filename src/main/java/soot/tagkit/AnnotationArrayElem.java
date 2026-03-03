@@ -22,7 +22,7 @@ package soot.tagkit;
  * #L%
  */
 
-import java.util.ArrayList;
+import java.util.List;
 
 import soot.util.Switch;
 
@@ -31,13 +31,13 @@ import soot.util.Switch;
  */
 public class AnnotationArrayElem extends AnnotationElem {
 
-  private final ArrayList<AnnotationElem> values;
+  private final List<AnnotationElem> values;
 
-  public AnnotationArrayElem(ArrayList<AnnotationElem> types, String elemName) {
+  public AnnotationArrayElem(List<AnnotationElem> types, String elemName) {
     this(types, '[', elemName);
   }
 
-  public AnnotationArrayElem(ArrayList<AnnotationElem> t, char kind, String name) {
+  public AnnotationArrayElem(List<AnnotationElem> t, char kind, String name) {
     super(kind, name);
     this.values = t;
   }
@@ -47,7 +47,7 @@ public class AnnotationArrayElem extends AnnotationElem {
     return super.toString() + " values: " + values.toString();
   }
 
-  public ArrayList<AnnotationElem> getValues() {
+  public List<AnnotationElem> getValues() {
     return values;
   }
 

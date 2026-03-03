@@ -35,11 +35,13 @@ import soot.Type;
 import soot.jimple.parser.node.AFile;
 import soot.jimple.parser.node.AMethodMember;
 import soot.jimple.parser.node.AThrowsClause;
+import soot.jimple.parser.node.PDefinedAnnotation;
 import soot.jimple.parser.node.PModifier;
+import soot.tagkit.Tag;
 
 /*
    Walks a jimple AST and extracts the fields, and method signatures and produces
-   a new squeleton SootClass instance.
+   a new skeleton SootClass instance.
 */
 public class SkeletonExtractorWalker extends Walker {
 
@@ -51,8 +53,14 @@ public class SkeletonExtractorWalker extends Walker {
     super(aResolver);
   }
 
+  @Override
   public void caseAFile(AFile node) {
     inAFile(node);
+    if (node.getDefinedAnnotation() != null) {
+      for (PDefinedAnnotation i : node.getDefinedAnnotation()) {
+        i.apply(this);
+      }
+    }
     {
       Object temp[] = node.getModifier().toArray();
       for (Object element : temp) {
@@ -89,6 +97,7 @@ public class SkeletonExtractorWalker extends Walker {
     outAFile(node);
   }
 
+  @Override
   public void outAFile(AFile node) {
     List implementsList = null;
     String superClass = null;
@@ -111,6 +120,10 @@ public class SkeletonExtractorWalker extends Walker {
     }
 
     mSootClass.setModifiers(modifierFlags);
+    List<Tag> tags = null;
+    if (node.getDefinedAnnotation() != null) {
+      tags = processAnnotationTags(node.getDefinedAnnotation());
+    }
 
     if (superClass != null) {
       mSootClass.setSuperclass(mResolver.makeClassRef(superClass));
@@ -123,6 +136,11 @@ public class SkeletonExtractorWalker extends Walker {
         mSootClass.addInterface(interfaceClass);
       }
     }
+    if (tags != null) {
+      for (Tag tag : tags) {
+        mSootClass.addTag(tag);
+      }
+    }
 
     mProductions.addLast(mSootClass);
   }
@@ -132,8 +150,15 @@ public class SkeletonExtractorWalker extends Walker {
    * throws_clause? method_body;
    */
 
+  @Override
   public void caseAMethodMember(AMethodMember node) {
     inAMethodMember(node);
+
+    if (node.getDefinedAnnotation() != null) {
+      for (PDefinedAnnotation i : node.getDefinedAnnotation()) {
+        i.apply(this);
+      }
+    }
     {
       Object temp[] = node.getModifier().toArray();
       for (Object element : temp) {
@@ -164,6 +189,7 @@ public class SkeletonExtractorWalker extends Walker {
     outAMethodMember(node);
   }
 
+  @Override
   public void outAMethodMember(AMethodMember node) {
     int modifier = 0;
     Type type;
@@ -185,6 +211,10 @@ public class SkeletonExtractorWalker extends Walker {
     name = (String) o;
     type = (Type) mProductions.removeLast();
     modifier = processModifiers(node.getModifier());
+    List<Tag> tags = null;
+    if (node.getDefinedAnnotation() != null) {
+      tags = processAnnotationTags(node.getDefinedAnnotation());
+    }
 
     SootMethod method;
 
@@ -193,6 +223,11 @@ public class SkeletonExtractorWalker extends Walker {
     } else {
       method = Scene.v().makeSootMethod(name, parameterList, type, modifier);
     }
+    if (tags != null) {
+      for (Tag tag : tags) {
+        method.addTag(tag);
+      }
+    }
 
     mSootClass.addMethod(method);
   }
@@ -200,6 +235,7 @@ public class SkeletonExtractorWalker extends Walker {
   /*
    * throws_clause = throws class_name_list;
    */
+  @Override
   public void outAThrowsClause(AThrowsClause node) {
     List l = (List) mProductions.removeLast();
 

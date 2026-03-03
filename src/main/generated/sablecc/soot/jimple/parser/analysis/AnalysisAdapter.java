@@ -261,6 +261,84 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseASingleAnnotationValuesList(ASingleAnnotationValuesList node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMultiAnnotationValuesList(AMultiAnnotationValuesList node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASetConstantAnnotationValue(ASetConstantAnnotationValue node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAnnotationAnnotationValue(AAnnotationAnnotationValue node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAFieldAnnotationValue(AFieldAnnotationValue node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAnnotationBlockAnnotationValue(AAnnotationBlockAnnotationValue node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAClassAnnotationDefinedAnnotation(AClassAnnotationDefinedAnnotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAVisibilityDefinedAnnotation(AVisibilityDefinedAnnotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseADefaultAnnotationDefinedAnnotation(ADefaultAnnotationDefinedAnnotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseADeprecatedAnnotationDefinedAnnotation(ADeprecatedAnnotationDefinedAnnotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseASignatureAnnotationDefinedAnnotation(ASignatureAnnotationDefinedAnnotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAInnerclassAnnotationDefinedAnnotation(AInnerclassAnnotationDefinedAnnotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAAnnotationparamsAnnotationParams(AAnnotationparamsAnnotationParams node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseABooleanBaseTypeNoName(ABooleanBaseTypeNoName node)
     {
         defaultCase(node);
@@ -831,7 +909,13 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
-    public void caseABoolConstant(ABoolConstant node)
+    public void caseABoolTrueConstant(ABoolTrueConstant node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseABoolFalseConstant(ABoolFalseConstant node)
     {
         defaultCase(node);
     }
@@ -844,6 +928,18 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseANullConstant(ANullConstant node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMethodhandlefieldConstant(AMethodhandlefieldConstant node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseAMethodhandlemethodConstant(AMethodhandlemethodConstant node)
     {
         defaultCase(node);
     }
@@ -1389,6 +1485,12 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTMh(TMh node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTComma(TComma node)
     {
         defaultCase(node);
@@ -1569,6 +1671,54 @@ public class AnalysisAdapter implements Analysis
     }
 
     @Override
+    public void caseTAt(TAt node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTTrue(TTrue node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTFalse(TFalse node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTVisibility(TVisibility node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTDefaultannotation(TDefaultannotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTDeprecatedannotation(TDeprecatedannotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTSignatureannotation(TSignatureannotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
+    public void caseTInnerclassannotation(TInnerclassannotation node)
+    {
+        defaultCase(node);
+    }
+
+    @Override
     public void caseTQuotedName(TQuotedName node)
     {
         defaultCase(node);
@@ -1588,12 +1738,6 @@ public class AnalysisAdapter implements Analysis
 
     @Override
     public void caseTAtIdentifier(TAtIdentifier node)
-    {
-        defaultCase(node);
-    }
-
-    @Override
-    public void caseTBoolConstant(TBoolConstant node)
     {
         defaultCase(node);
     }

@@ -2,11 +2,13 @@
 
 package soot.jimple.parser.node;
 
+import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
 public final class AParameter extends PParameter
 {
+    private final LinkedList<PDefinedAnnotation> _definedAnnotation_ = new LinkedList<PDefinedAnnotation>();
     private PNonvoidType _nonvoidType_;
 
     public AParameter()
@@ -15,9 +17,12 @@ public final class AParameter extends PParameter
     }
 
     public AParameter(
+        @SuppressWarnings("hiding") List<?> _definedAnnotation_,
         @SuppressWarnings("hiding") PNonvoidType _nonvoidType_)
     {
         // Constructor
+        setDefinedAnnotation(_definedAnnotation_);
+
         setNonvoidType(_nonvoidType_);
 
     }
@@ -26,6 +31,7 @@ public final class AParameter extends PParameter
     public Object clone()
     {
         return new AParameter(
+            cloneList(this._definedAnnotation_),
             cloneNode(this._nonvoidType_));
     }
 
@@ -33,6 +39,32 @@ public final class AParameter extends PParameter
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAParameter(this);
+    }
+
+    public LinkedList<PDefinedAnnotation> getDefinedAnnotation()
+    {
+        return this._definedAnnotation_;
+    }
+
+    public void setDefinedAnnotation(List<?> list)
+    {
+        for(PDefinedAnnotation e : this._definedAnnotation_)
+        {
+            e.parent(null);
+        }
+        this._definedAnnotation_.clear();
+
+        for(Object obj_e : list)
+        {
+            PDefinedAnnotation e = (PDefinedAnnotation) obj_e;
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+            this._definedAnnotation_.add(e);
+        }
     }
 
     public PNonvoidType getNonvoidType()
@@ -64,6 +96,7 @@ public final class AParameter extends PParameter
     public String toString()
     {
         return ""
+            + toString(this._definedAnnotation_)
             + toString(this._nonvoidType_);
     }
 
@@ -71,6 +104,11 @@ public final class AParameter extends PParameter
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
+        if(this._definedAnnotation_.remove(child))
+        {
+            return;
+        }
+
         if(this._nonvoidType_ == child)
         {
             this._nonvoidType_ = null;
@@ -84,6 +122,24 @@ public final class AParameter extends PParameter
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
+        for(ListIterator<PDefinedAnnotation> i = this._definedAnnotation_.listIterator(); i.hasNext();)
+        {
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PDefinedAnnotation) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
+
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
+        }
+
         if(this._nonvoidType_ == oldChild)
         {
             setNonvoidType((PNonvoidType) newChild);

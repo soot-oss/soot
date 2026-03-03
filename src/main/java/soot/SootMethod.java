@@ -799,7 +799,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
 
     // return type + name
     Scene sc = Scene.v();
-    buffer.append(sc.quotedNameOf(this.getReturnType().toString())).append(' ');
+    buffer.append(sc.quotedTypeNameOf(this.getReturnType())).append(' ');
     buffer.append(sc.quotedNameOf(this.getName()));
 
     // parameters
@@ -807,7 +807,7 @@ public class SootMethod extends AbstractHost implements ClassMember, MethodOrMet
     for (Iterator<Type> typeIt = this.getParameterTypes().iterator(); typeIt.hasNext();) {
       Type t = typeIt.next();
 
-      buffer.append(sc.quotedNameOf(t.toString()));
+      buffer.append(sc.quotedTypeNameOf(t));
       if (typeIt.hasNext()) {
         buffer.append(", ");
       }

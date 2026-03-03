@@ -5,46 +5,46 @@ package soot.jimple.parser.node;
 import soot.jimple.parser.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ABoolConstant extends PConstant
+public final class ASingleAnnotationValuesList extends PAnnotationValuesList
 {
-    private TBoolConstant _boolConstant_;
+    private PAnnotationValue _annotationValue_;
 
-    public ABoolConstant()
+    public ASingleAnnotationValuesList()
     {
         // Constructor
     }
 
-    public ABoolConstant(
-        @SuppressWarnings("hiding") TBoolConstant _boolConstant_)
+    public ASingleAnnotationValuesList(
+        @SuppressWarnings("hiding") PAnnotationValue _annotationValue_)
     {
         // Constructor
-        setBoolConstant(_boolConstant_);
+        setAnnotationValue(_annotationValue_);
 
     }
 
     @Override
     public Object clone()
     {
-        return new ABoolConstant(
-            cloneNode(this._boolConstant_));
+        return new ASingleAnnotationValuesList(
+            cloneNode(this._annotationValue_));
     }
 
     @Override
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseABoolConstant(this);
+        ((Analysis) sw).caseASingleAnnotationValuesList(this);
     }
 
-    public TBoolConstant getBoolConstant()
+    public PAnnotationValue getAnnotationValue()
     {
-        return this._boolConstant_;
+        return this._annotationValue_;
     }
 
-    public void setBoolConstant(TBoolConstant node)
+    public void setAnnotationValue(PAnnotationValue node)
     {
-        if(this._boolConstant_ != null)
+        if(this._annotationValue_ != null)
         {
-            this._boolConstant_.parent(null);
+            this._annotationValue_.parent(null);
         }
 
         if(node != null)
@@ -57,23 +57,23 @@ public final class ABoolConstant extends PConstant
             node.parent(this);
         }
 
-        this._boolConstant_ = node;
+        this._annotationValue_ = node;
     }
 
     @Override
     public String toString()
     {
         return ""
-            + toString(this._boolConstant_);
+            + toString(this._annotationValue_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._boolConstant_ == child)
+        if(this._annotationValue_ == child)
         {
-            this._boolConstant_ = null;
+            this._annotationValue_ = null;
             return;
         }
 
@@ -84,9 +84,9 @@ public final class ABoolConstant extends PConstant
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._boolConstant_ == oldChild)
+        if(this._annotationValue_ == oldChild)
         {
-            setBoolConstant((TBoolConstant) newChild);
+            setAnnotationValue((PAnnotationValue) newChild);
             return;
         }
 

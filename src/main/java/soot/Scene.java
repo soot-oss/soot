@@ -2304,4 +2304,20 @@ public class Scene {
     classAddedListeners.remove(listener);
 
   }
+
+  public String quotedTypeNameOf(Type t) {
+    if (t instanceof ArrayType) {
+      ArrayType at = ((ArrayType) t);
+      StringBuilder bt = new StringBuilder(quotedTypeNameOf(at.getBaseType()));
+      for (int i = 0; i < at.numDimensions; i++) {
+        bt.append("[]");
+      }
+      return bt.toString();
+    }
+    if (t instanceof RefType) {
+      RefType rt = (RefType) t;
+      return quotedNameOf(rt.getClassName());
+    }
+    return t.toString();
+  }
 }
