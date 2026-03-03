@@ -34,6 +34,7 @@ import soot.dotnet.types.DotNetBasicTypes;
 import soot.options.Options;
 import soot.util.Switch;
 
+//See https://docs.oracle.com/javase/8/docs/api/java/lang/invoke/MethodHandleInfo.html
 public class MethodHandle extends Constant {
 
   private static final long serialVersionUID = -7948291265532721191L;

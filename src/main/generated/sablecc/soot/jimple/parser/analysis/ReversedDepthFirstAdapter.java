@@ -78,6 +78,14 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
+        {
+            List<PDefinedAnnotation> copy = new ArrayList<PDefinedAnnotation>(node.getDefinedAnnotation());
+            Collections.reverse(copy);
+            for(PDefinedAnnotation e : copy)
+            {
+                e.apply(this);
+            }
+        }
         outAFile(node);
     }
 
@@ -613,6 +621,14 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 e.apply(this);
             }
         }
+        {
+            List<PDefinedAnnotation> copy = new ArrayList<PDefinedAnnotation>(node.getDefinedAnnotation());
+            Collections.reverse(copy);
+            for(PDefinedAnnotation e : copy)
+            {
+                e.apply(this);
+            }
+        }
         outAFieldMember(node);
     }
 
@@ -662,6 +678,14 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             List<PModifier> copy = new ArrayList<PModifier>(node.getModifier());
             Collections.reverse(copy);
             for(PModifier e : copy)
+            {
+                e.apply(this);
+            }
+        }
+        {
+            List<PDefinedAnnotation> copy = new ArrayList<PDefinedAnnotation>(node.getDefinedAnnotation());
+            Collections.reverse(copy);
+            for(PDefinedAnnotation e : copy)
             {
                 e.apply(this);
             }
@@ -779,6 +803,14 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getNonvoidType().apply(this);
         }
+        {
+            List<PDefinedAnnotation> copy = new ArrayList<PDefinedAnnotation>(node.getDefinedAnnotation());
+            Collections.reverse(copy);
+            for(PDefinedAnnotation e : copy)
+            {
+                e.apply(this);
+            }
+        }
         outAParameter(node);
     }
 
@@ -805,6 +837,363 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getThrows().apply(this);
         }
         outAThrowsClause(node);
+    }
+
+    public void inASingleAnnotationValuesList(ASingleAnnotationValuesList node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASingleAnnotationValuesList(ASingleAnnotationValuesList node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASingleAnnotationValuesList(ASingleAnnotationValuesList node)
+    {
+        inASingleAnnotationValuesList(node);
+        if(node.getAnnotationValue() != null)
+        {
+            node.getAnnotationValue().apply(this);
+        }
+        outASingleAnnotationValuesList(node);
+    }
+
+    public void inAMultiAnnotationValuesList(AMultiAnnotationValuesList node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAMultiAnnotationValuesList(AMultiAnnotationValuesList node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAMultiAnnotationValuesList(AMultiAnnotationValuesList node)
+    {
+        inAMultiAnnotationValuesList(node);
+        if(node.getAnnotationValuesList() != null)
+        {
+            node.getAnnotationValuesList().apply(this);
+        }
+        if(node.getComma() != null)
+        {
+            node.getComma().apply(this);
+        }
+        if(node.getAnnotationValue() != null)
+        {
+            node.getAnnotationValue().apply(this);
+        }
+        outAMultiAnnotationValuesList(node);
+    }
+
+    public void inASetConstantAnnotationValue(ASetConstantAnnotationValue node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASetConstantAnnotationValue(ASetConstantAnnotationValue node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASetConstantAnnotationValue(ASetConstantAnnotationValue node)
+    {
+        inASetConstantAnnotationValue(node);
+        if(node.getConstant() != null)
+        {
+            node.getConstant().apply(this);
+        }
+        if(node.getEquals() != null)
+        {
+            node.getEquals().apply(this);
+        }
+        if(node.getName() != null)
+        {
+            node.getName().apply(this);
+        }
+        outASetConstantAnnotationValue(node);
+    }
+
+    public void inAAnnotationAnnotationValue(AAnnotationAnnotationValue node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAnnotationAnnotationValue(AAnnotationAnnotationValue node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAAnnotationAnnotationValue(AAnnotationAnnotationValue node)
+    {
+        inAAnnotationAnnotationValue(node);
+        if(node.getAnnotation() != null)
+        {
+            node.getAnnotation().apply(this);
+        }
+        if(node.getEquals() != null)
+        {
+            node.getEquals().apply(this);
+        }
+        if(node.getName() != null)
+        {
+            node.getName().apply(this);
+        }
+        outAAnnotationAnnotationValue(node);
+    }
+
+    public void inAFieldAnnotationValue(AFieldAnnotationValue node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFieldAnnotationValue(AFieldAnnotationValue node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAFieldAnnotationValue(AFieldAnnotationValue node)
+    {
+        inAFieldAnnotationValue(node);
+        if(node.getFieldsig() != null)
+        {
+            node.getFieldsig().apply(this);
+        }
+        if(node.getEquals() != null)
+        {
+            node.getEquals().apply(this);
+        }
+        if(node.getName() != null)
+        {
+            node.getName().apply(this);
+        }
+        outAFieldAnnotationValue(node);
+    }
+
+    public void inAAnnotationBlockAnnotationValue(AAnnotationBlockAnnotationValue node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAnnotationBlockAnnotationValue(AAnnotationBlockAnnotationValue node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAAnnotationBlockAnnotationValue(AAnnotationBlockAnnotationValue node)
+    {
+        inAAnnotationBlockAnnotationValue(node);
+        if(node.getRBrace() != null)
+        {
+            node.getRBrace().apply(this);
+        }
+        if(node.getList() != null)
+        {
+            node.getList().apply(this);
+        }
+        if(node.getLBrace() != null)
+        {
+            node.getLBrace().apply(this);
+        }
+        if(node.getEquals() != null)
+        {
+            node.getEquals().apply(this);
+        }
+        if(node.getName() != null)
+        {
+            node.getName().apply(this);
+        }
+        outAAnnotationBlockAnnotationValue(node);
+    }
+
+    public void inAClassAnnotationDefinedAnnotation(AClassAnnotationDefinedAnnotation node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAClassAnnotationDefinedAnnotation(AClassAnnotationDefinedAnnotation node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAClassAnnotationDefinedAnnotation(AClassAnnotationDefinedAnnotation node)
+    {
+        inAClassAnnotationDefinedAnnotation(node);
+        if(node.getAnnotationParams() != null)
+        {
+            node.getAnnotationParams().apply(this);
+        }
+        if(node.getClassname() != null)
+        {
+            node.getClassname().apply(this);
+        }
+        if(node.getAt() != null)
+        {
+            node.getAt().apply(this);
+        }
+        outAClassAnnotationDefinedAnnotation(node);
+    }
+
+    public void inAVisibilityDefinedAnnotation(AVisibilityDefinedAnnotation node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAVisibilityDefinedAnnotation(AVisibilityDefinedAnnotation node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAVisibilityDefinedAnnotation(AVisibilityDefinedAnnotation node)
+    {
+        inAVisibilityDefinedAnnotation(node);
+        if(node.getAnnotationParams() != null)
+        {
+            node.getAnnotationParams().apply(this);
+        }
+        if(node.getVisibility() != null)
+        {
+            node.getVisibility().apply(this);
+        }
+        outAVisibilityDefinedAnnotation(node);
+    }
+
+    public void inADefaultAnnotationDefinedAnnotation(ADefaultAnnotationDefinedAnnotation node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADefaultAnnotationDefinedAnnotation(ADefaultAnnotationDefinedAnnotation node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADefaultAnnotationDefinedAnnotation(ADefaultAnnotationDefinedAnnotation node)
+    {
+        inADefaultAnnotationDefinedAnnotation(node);
+        if(node.getAnnotationParams() != null)
+        {
+            node.getAnnotationParams().apply(this);
+        }
+        if(node.getDefaultannotation() != null)
+        {
+            node.getDefaultannotation().apply(this);
+        }
+        outADefaultAnnotationDefinedAnnotation(node);
+    }
+
+    public void inADeprecatedAnnotationDefinedAnnotation(ADeprecatedAnnotationDefinedAnnotation node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADeprecatedAnnotationDefinedAnnotation(ADeprecatedAnnotationDefinedAnnotation node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseADeprecatedAnnotationDefinedAnnotation(ADeprecatedAnnotationDefinedAnnotation node)
+    {
+        inADeprecatedAnnotationDefinedAnnotation(node);
+        if(node.getAnnotationParams() != null)
+        {
+            node.getAnnotationParams().apply(this);
+        }
+        if(node.getDeprecatedannotation() != null)
+        {
+            node.getDeprecatedannotation().apply(this);
+        }
+        outADeprecatedAnnotationDefinedAnnotation(node);
+    }
+
+    public void inASignatureAnnotationDefinedAnnotation(ASignatureAnnotationDefinedAnnotation node)
+    {
+        defaultIn(node);
+    }
+
+    public void outASignatureAnnotationDefinedAnnotation(ASignatureAnnotationDefinedAnnotation node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseASignatureAnnotationDefinedAnnotation(ASignatureAnnotationDefinedAnnotation node)
+    {
+        inASignatureAnnotationDefinedAnnotation(node);
+        if(node.getAnnotationParams() != null)
+        {
+            node.getAnnotationParams().apply(this);
+        }
+        if(node.getSignatureannotation() != null)
+        {
+            node.getSignatureannotation().apply(this);
+        }
+        outASignatureAnnotationDefinedAnnotation(node);
+    }
+
+    public void inAInnerclassAnnotationDefinedAnnotation(AInnerclassAnnotationDefinedAnnotation node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAInnerclassAnnotationDefinedAnnotation(AInnerclassAnnotationDefinedAnnotation node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAInnerclassAnnotationDefinedAnnotation(AInnerclassAnnotationDefinedAnnotation node)
+    {
+        inAInnerclassAnnotationDefinedAnnotation(node);
+        if(node.getAnnotationParams() != null)
+        {
+            node.getAnnotationParams().apply(this);
+        }
+        if(node.getInnerclassannotation() != null)
+        {
+            node.getInnerclassannotation().apply(this);
+        }
+        outAInnerclassAnnotationDefinedAnnotation(node);
+    }
+
+    public void inAAnnotationparamsAnnotationParams(AAnnotationparamsAnnotationParams node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAnnotationparamsAnnotationParams(AAnnotationparamsAnnotationParams node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAAnnotationparamsAnnotationParams(AAnnotationparamsAnnotationParams node)
+    {
+        inAAnnotationparamsAnnotationParams(node);
+        if(node.getRParen() != null)
+        {
+            node.getRParen().apply(this);
+        }
+        if(node.getAnnotationValuesList() != null)
+        {
+            node.getAnnotationValuesList().apply(this);
+        }
+        if(node.getLParen() != null)
+        {
+            node.getLParen().apply(this);
+        }
+        outAAnnotationparamsAnnotationParams(node);
     }
 
     public void inABooleanBaseTypeNoName(ABooleanBaseTypeNoName node)
@@ -3374,25 +3763,46 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAStringConstant(node);
     }
 
-    public void inABoolConstant(ABoolConstant node)
+    public void inABoolTrueConstant(ABoolTrueConstant node)
     {
         defaultIn(node);
     }
 
-    public void outABoolConstant(ABoolConstant node)
+    public void outABoolTrueConstant(ABoolTrueConstant node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseABoolConstant(ABoolConstant node)
+    public void caseABoolTrueConstant(ABoolTrueConstant node)
     {
-        inABoolConstant(node);
-        if(node.getBoolConstant() != null)
+        inABoolTrueConstant(node);
+        if(node.getTrue() != null)
         {
-            node.getBoolConstant().apply(this);
+            node.getTrue().apply(this);
         }
-        outABoolConstant(node);
+        outABoolTrueConstant(node);
+    }
+
+    public void inABoolFalseConstant(ABoolFalseConstant node)
+    {
+        defaultIn(node);
+    }
+
+    public void outABoolFalseConstant(ABoolFalseConstant node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseABoolFalseConstant(ABoolFalseConstant node)
+    {
+        inABoolFalseConstant(node);
+        if(node.getFalse() != null)
+        {
+            node.getFalse().apply(this);
+        }
+        outABoolFalseConstant(node);
     }
 
     public void inAClzzConstant(AClzzConstant node)
@@ -3439,6 +3849,64 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getNull().apply(this);
         }
         outANullConstant(node);
+    }
+
+    public void inAMethodhandlefieldConstant(AMethodhandlefieldConstant node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAMethodhandlefieldConstant(AMethodhandlefieldConstant node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAMethodhandlefieldConstant(AMethodhandlefieldConstant node)
+    {
+        inAMethodhandlefieldConstant(node);
+        if(node.getField() != null)
+        {
+            node.getField().apply(this);
+        }
+        if(node.getKind() != null)
+        {
+            node.getKind().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAMethodhandlefieldConstant(node);
+    }
+
+    public void inAMethodhandlemethodConstant(AMethodhandlemethodConstant node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAMethodhandlemethodConstant(AMethodhandlemethodConstant node)
+    {
+        defaultOut(node);
+    }
+
+    @Override
+    public void caseAMethodhandlemethodConstant(AMethodhandlemethodConstant node)
+    {
+        inAMethodhandlemethodConstant(node);
+        if(node.getMethod() != null)
+        {
+            node.getMethod().apply(this);
+        }
+        if(node.getKind() != null)
+        {
+            node.getKind().apply(this);
+        }
+        if(node.getId() != null)
+        {
+            node.getId().apply(this);
+        }
+        outAMethodhandlemethodConstant(node);
     }
 
     public void inAAndBinop(AAndBinop node)

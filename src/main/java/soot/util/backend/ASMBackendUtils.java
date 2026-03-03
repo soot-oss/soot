@@ -365,4 +365,15 @@ public class ASMBackendUtils {
     type.apply(sw);
     return sw.getResult();
   }
+
+  /**
+   * Returns the JVM style type signature for a
+   * class name, e.g. input is <code>java.lang.Object</code>,
+   * output is <code>Ljava/lang/Object;</code>
+   * @param className
+   * @return
+   */
+  public static String getSignatureRefType(String className) {
+    return "L" + className.replace(".", "/") + ";";
+  }
 }
