@@ -2,7 +2,6 @@ package soot.asm;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.jspecify.annotations.NonNull;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -11,12 +10,12 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 import soot.Immediate;
 import soot.Local;
 import soot.Value;
+import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.jimple.internal.JAssignStmt;
 import soot.jimple.internal.JCaughtExceptionRef;
-import soot.jimple.internal.JIdentityStmt;
 import soot.tagkit.Tag;
 
 /**
@@ -96,7 +95,7 @@ final class Operand {
     if (!(stmt instanceof JAssignStmt)) {
       // emit `$newStackLocal = value`
       if (value instanceof JCaughtExceptionRef) {
-        JIdentityStmt identityStmt = Jimple.newIdentityStmt(newStackLocal, (JCaughtExceptionRef) value, positionInfo);
+        IdentityStmt identityStmt = Jimple.v().newIdentityStmt(newStackLocal, value);
         methodSource.setStmt(insn, identityStmt);
       } else {
         methodSource.setStmt(insn, Jimple.v().newAssignStmt(newStackLocal, value));
@@ -110,16 +109,7 @@ final class Operand {
 
     // Replace all usages of `oldStackLocal` with `newStackLocal`
     if (oldStackLocal != null) {
-      oldStackLocal.getUseBoxesIterator();
-      ReplaceUseStmtVisitor replaceStmtVisitor = new ReplaceUseStmtVisitor(oldStackLocal, newStackLocal);
-      for (Stmt oldUsage : methodSource.getStmtsThatUse(oldStackLocal).collect(Collectors.toList())) {
-        oldUsage.accept(replaceStmtVisitor);
-        Stmt newUsage = replaceStmtVisitor.getResult();
-
-        if (newUsage != null && oldUsage != newUsage) {
-          methodSource.replaceStmt(oldUsage, newUsage);
-        }
-      }
+      methodSource.replace(oldStackLocal, newStackLocal);
     }
 
     this.stackLocal = newStackLocal;
