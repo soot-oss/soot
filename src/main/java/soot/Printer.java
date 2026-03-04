@@ -283,8 +283,9 @@ public class Printer {
   }
 
   private void printAnnotationTag(PrintWriter out, VisibilityAnnotationTag visTag) {
-    if (!visTag.hasAnnotations())
+    if (!visTag.hasAnnotations()) {
       return;
+    }
     final String prolog = "@Visibility(retention=\"";
     final String epilog = "\", annotations= { ";
 
@@ -301,10 +302,11 @@ public class Printer {
     }
     boolean isFirstElem = true;
     for (AnnotationTag annotationTag : visTag.getAnnotations()) {
-      if (isFirstElem)
+      if (isFirstElem) {
         isFirstElem = false;
-      else
+      } else {
         out.write(", ");
+      }
 
       out.write("element = ");
       printAnnotationTag(out, annotationTag);
@@ -314,8 +316,9 @@ public class Printer {
 
   private void printAnnotationTag(PrintWriter out, AnnotationTag tag) {
     String quoted = tag.getType();
-    if (!quoted.startsWith("("))
+    if (!quoted.startsWith("(")) {
       quoted = getJimpleTypeString(tag.getType());
+    }
 
     out.append("@").append(quoted);
     final Collection<AnnotationElem> elements = tag.getElems();
@@ -323,39 +326,44 @@ public class Printer {
       out.write("(");
       boolean isFirstElement = true;
       for (AnnotationElem elem : elements) {
-        if (isFirstElement)
+        if (isFirstElement) {
           isFirstElement = false;
-        else
+        } else {
           out.write(", ");
+        }
         printAnnotationElement(out, elem);
       }
       out.write(")");
     }
+
   }
 
   private void printAnnotationElement(PrintWriter out, AnnotationElem annotation) {
-    if (annotation.getName() == null)
+    if (annotation.getName() == null) {
       out.write(DUMMY_NAME);
-    else
+    } else {
       out.append(Scene.v().quotedNameOf(annotation.getName())).append("=");
+    }
     if (annotation instanceof AnnotationArrayElem) {
       final AnnotationArrayElem annotationArray = (AnnotationArrayElem) annotation;
       out.write('{');
       boolean isFirstElement = true;
       for (final AnnotationElem childAnnotation : annotationArray.getValues()) {
-        if (isFirstElement)
+        if (isFirstElement) {
           isFirstElement = false;
-        else
+        } else {
           out.write(", ");
+        }
         printAnnotationElement(out, childAnnotation);
       }
       out.write('}');
     } else if (annotation instanceof AnnotationBooleanElem) {
       final AnnotationBooleanElem celem = (AnnotationBooleanElem) annotation;
-      if (celem.getValue())
+      if (celem.getValue()) {
         out.write("true");
-      else
+      } else {
         out.write("false");
+      }
     } else if (annotation instanceof AnnotationClassElem) {
       final AnnotationClassElem classElement = (AnnotationClassElem) annotation;
       printClassConstant(out, classElement.getDesc());
@@ -374,10 +382,11 @@ public class Printer {
           out.print("L");
           break;
         case 'Z':
-          if (intElement.getValue() == 1)
+          if (intElement.getValue() == 1) {
             out.write("true");
-          else
+          } else {
             out.write("false");
+          }
           break;
         default:
         case 'B':
@@ -398,10 +407,11 @@ public class Printer {
       out.append(String.valueOf(longElement.getValue())).append("L");
     } else if (annotation instanceof AnnotationStringElem) {
       final AnnotationStringElem stringElement = (AnnotationStringElem) annotation;
-      if (stringElement.getValue() == null)
+      if (stringElement.getValue() == null) {
         out.write("null");
-      else
+      } else {
         out.write(soot.util.StringTools.getQuotedStringOf(stringElement.getValue()));
+      }
     } else if (annotation instanceof AnnotationEnumElem) {
       final AnnotationEnumElem enumElem = (AnnotationEnumElem) annotation;
       out.write("<");
@@ -412,9 +422,10 @@ public class Printer {
     } else if (annotation instanceof AnnotationAnnotationElem) {
       final AnnotationAnnotationElem annotationElem = (AnnotationAnnotationElem) annotation;
       printAnnotationTag(out, annotationElem.getValue());
-    } else
+    } else {
       throw new RuntimeException(
           String.format("%s - unsupported annotation type: ", getClass().getName(), annotation.toString()));
+    }
   }
 
   private static String getJimpleTypeString(String jni) {
@@ -437,25 +448,29 @@ public class Printer {
 
   private String getFloatConstant(float floatValue) {
     if (Float.isInfinite(floatValue)) {
-      if (floatValue > 0)
+      if (floatValue > 0) {
         return "#InfinityF";
-      else
+      } else {
         return "#-InfinityF";
+      }
     }
-    if (Float.isNaN(floatValue))
+    if (Float.isNaN(floatValue)) {
       return "#NaNF";
+    }
     return floatValue + "F";
   }
 
   private String getDoubleConstant(double doubleValue) {
     if (Double.isInfinite(doubleValue)) {
-      if (doubleValue > 0)
+      if (doubleValue > 0) {
         return "#Infinity";
-      else
+      } else {
         return "#-Infinity";
+      }
     }
-    if (Double.isNaN(doubleValue))
+    if (Double.isNaN(doubleValue)) {
       return "#NaN";
+    }
     return String.valueOf(doubleValue);
   }
 
