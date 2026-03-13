@@ -31,13 +31,13 @@ import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.toolkits.exceptions.ThrowAnalysisFactory;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.InitAnalysis;
 import soot.toolkits.scalar.SimpleLocalDefs;
-import soot.toolkits.scalar.SmartLocalDefs;
 
 public enum CheckInitValidator implements BodyValidator {
   INSTANCE;
@@ -48,8 +48,8 @@ public enum CheckInitValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exception) {
-    ExceptionalUnitGraph g
-        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
+    ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
+    ExceptionalUnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, false);
 
     InitAnalysis analysis = new InitAnalysis(g);
     for (Unit s : body.getUnits()) {
@@ -62,12 +62,11 @@ public enum CheckInitValidator implements BodyValidator {
           if (!init.contains(l)) {
             SimpleLocalDefs defs = new SimpleLocalDefs(g);
             List<Unit> allDefs = defs.getDefsOfAt(l, s);
-            ValidationException e = new ValidationException(s, "Local variable " + l.getName() + 
-                " is not definitively defined at this point",
-                "Warning: Local variable " + l + " not definitely defined at " + s + " in " + 
-                body.getMethod() + "\nFound definition sites: " + allDefs);
-            exception.add(
-                e);
+            ValidationException e
+                = new ValidationException(s, "Local variable " + l.getName() + " is not definitively defined at this point",
+                    "Warning: Local variable " + l + " not definitely defined at " + s + " in " + body.getMethod()
+                        + "\nFound definition sites: " + allDefs);
+            exception.add(e);
           }
         }
       }

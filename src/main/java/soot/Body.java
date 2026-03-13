@@ -88,6 +88,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    * The chain of traps for this Body.
    */
   protected Chain<Trap> trapChain = new HashChain<Trap>() {
+    @Override
     protected void elementRemoved(Trap removed) {
       Unit u = removed.getBeginUnit();
       if (u != null) {
@@ -114,7 +115,7 @@ public abstract class Body extends AbstractHost implements Serializable {
    */
   private static class LazyValidatorsSingleton {
     static final BodyValidator[] V = new BodyValidator[] { LocalsValidator.v(), TrapsValidator.v(), UnitBoxesValidator.v(),
-        UsesValidator.v(), ValueBoxesValidator.v(), /* CheckInitValidator.v(), */ CheckTypesValidator.v(),
+        UsesValidator.v(), ValueBoxesValidator.v(), CheckInitValidator.v(), CheckTypesValidator.v(),
         CheckVoidLocalesValidator.v(), CheckEscapingValidator.v() };
 
     private LazyValidatorsSingleton() {
