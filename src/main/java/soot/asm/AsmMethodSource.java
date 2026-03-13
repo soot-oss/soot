@@ -482,6 +482,7 @@ public class AsmMethodSource implements MethodSource {
     if (prev != null) {
       Unit merged = new UnitContainer(prev, u);
       insnToStmt.put(insn, merged);
+      merged.addAllTagsOf(prev);
     }
   }
 
@@ -669,7 +670,7 @@ public class AsmMethodSource implements MethodSource {
     merging.mergeInputs(valueOp, indexOp, baseOp);
     ArrayRef ar = Jimple.v().newArrayRef(baseOp.toLocal(), indexOp.toImmediate());
     AssignStmt as = Jimple.v().newAssignStmt(ar, valueOp.toImmediate());
-    setStmt(insn, as);
+    setUnit(insn, as);
   }
 
   private void convertDupInsn(InsnNode insn) {
@@ -874,7 +875,7 @@ public class AsmMethodSource implements MethodSource {
     Operand val = dword ? operandStack.popDual() : operandStack.pop();
     merging.mergeInputs(val);
     ReturnStmt ret = Jimple.v().newReturnStmt(val.toImmediate());
-    setStmt(insn, ret);
+    setUnit(insn, ret);
   }
 
   private void convertInsn(InsnNode insn) {
@@ -922,7 +923,7 @@ public class AsmMethodSource implements MethodSource {
       Operand opr = operandStack.pop();
       merging.mergeInputs(opr);
       ThrowStmt ts = Jimple.v().newThrowStmt(opr.toImmediate());
-      setStmt(insn, ts);
+      setUnit(insn, ts);
       merging.mergeOutput(opr);
       operandStack.push(opr);
     } else if (op == MONITORENTER || op == MONITOREXIT) {
@@ -931,7 +932,7 @@ public class AsmMethodSource implements MethodSource {
       merging.mergeInputs(opr);
       Stmt ts = op == MONITORENTER ? Jimple.v().newEnterMonitorStmt(opr.toImmediate())
           : Jimple.v().newExitMonitorStmt(opr.toImmediate());
-      setStmt(insn, ts);
+      setUnit(insn, ts);
     } else {
       throw new AssertionError("Unknown insn op: " + op);
     }
@@ -1162,7 +1163,7 @@ public class AsmMethodSource implements MethodSource {
     stmtsThatBranchToLabel.putAll(lss, insn.labels);
     stmtsThatBranchToLabel.put(lss, insn.dflt);
 
-    setStmt(insn, lss);
+    setUnit(insn, lss);
 
   }
 
@@ -1235,7 +1236,7 @@ public class AsmMethodSource implements MethodSource {
       operandStack.push(opr);
     } else if (!insnToStmt.containsKey(insn)) {
       InvokeStmt stmt = Jimple.v().newInvokeStmt(opr.value);
-      setStmt(insn, stmt);
+      setUnit(insn, stmt);
     }
     /*
      * assign all read ops in case the method modifies any of the fields
@@ -1302,7 +1303,7 @@ public class AsmMethodSource implements MethodSource {
       operandStack.push(opr);
     } else if (!insnToStmt.containsKey(insn)) {
       InvokeStmt stmt = Jimple.v().newInvokeStmt(opr.value);
-      setStmt(insn, stmt);
+      setUnit(insn, stmt);
     }
     /*
      * assign all read ops in case the method modifies any of the fields
@@ -1378,7 +1379,7 @@ public class AsmMethodSource implements MethodSource {
     stmtsThatBranchToLabel.putAll(tss, insn.labels);
     stmtsThatBranchToLabel.put(tss, insn.dflt);
 
-    setStmt(insn, tss);
+    setUnit(insn, tss);
   }
 
   private void convertTypeInsn(TypeInsnNode insn) {
@@ -1444,10 +1445,10 @@ public class AsmMethodSource implements MethodSource {
       as = Jimple.v().newAssignStmt(local, opr.value);
       // TODO check that this works correctly with the merging
       opr.stackLocal = local;
-      setStmt(opr.insn, as);
+      setUnit(opr.insn, as);
     } else if (opr.stackLocal != local) {
       as = Jimple.v().newAssignStmt(local, opr.toImmediate());
-      setStmt(insn, as);
+      setUnit(insn, as);
     }
     // The `local` has just been assigned a new value,
     // but an operand with `value == local` might still be on the stack.
@@ -1479,7 +1480,7 @@ public class AsmMethodSource implements MethodSource {
     if (inlineExceptionLabels.contains(ln)) {
       if (!insnToStmt.containsKey(ln)) {
         NopStmt nop = Jimple.v().newNopStmt();
-        setStmt(ln, nop);
+        setUnit(ln, nop);
       }
       return;
     }
@@ -1492,7 +1493,7 @@ public class AsmMethodSource implements MethodSource {
       opr.stackLocal = newStackLocal();
     }
     IdentityStmt as = Jimple.v().newIdentityStmt(opr.stackLocal, ref);
-    setStmt(ln, as);
+    setUnit(ln, as);
     operandStack.push(opr);
   }
 
@@ -1722,7 +1723,7 @@ public class AsmMethodSource implements MethodSource {
     } else if (op == RET) {
       /* we handle it, even though it should be removed */
       if (!insnToStmt.containsKey(insn)) {
-        setStmt(insn, Jimple.v().newRetStmt(getLocal(insn.var)));
+        setUnit(insn, Jimple.v().newRetStmt(getLocal(insn.var)));
       }
     } else {
       throw new UnsupportedOperationException("Unknown var op: " + op);
@@ -2208,10 +2209,6 @@ public class AsmMethodSource implements MethodSource {
         }
       }
     }
-  }
-
-  void setStmt(@NonNull AbstractInsnNode insn, @NonNull Stmt stmt) {
-    insnToStmt.put(insn, stmt);
   }
 
   /**

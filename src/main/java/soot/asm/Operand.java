@@ -75,7 +75,7 @@ final class Operand {
     }
 
     if (value instanceof AbstractInvokeExpr) {
-      methodSource.setStmt(insn, Jimple.v().newInvokeStmt(value));
+      methodSource.setUnit(insn, Jimple.v().newInvokeStmt(value));
     } else {
       // create an assignment that uses the value because it might have side effects
       getOrAssignValueToStackLocal();
@@ -96,7 +96,7 @@ final class Operand {
       if (value instanceof JCaughtExceptionRef) {
         methodSource.updateInlineExceptionHandler(insn, newStackLocal);
       } else {
-        methodSource.setStmt(insn, Jimple.v().newAssignStmt(newStackLocal, value));
+        methodSource.setUnit(insn, Jimple.v().newAssignStmt(newStackLocal, value));
       }
     } else {
       JAssignStmt assignStmt = (JAssignStmt) stmt;
