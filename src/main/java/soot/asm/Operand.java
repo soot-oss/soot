@@ -10,7 +10,6 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 import soot.Immediate;
 import soot.Local;
 import soot.Value;
-import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.internal.AbstractInvokeExpr;
@@ -95,8 +94,7 @@ final class Operand {
     if (!(stmt instanceof JAssignStmt)) {
       // emit `$newStackLocal = value`
       if (value instanceof JCaughtExceptionRef) {
-        IdentityStmt identityStmt = Jimple.v().newIdentityStmt(newStackLocal, value);
-        methodSource.setStmt(insn, identityStmt);
+        methodSource.updateInlineExceptionHandler(insn, newStackLocal);
       } else {
         methodSource.setStmt(insn, Jimple.v().newAssignStmt(newStackLocal, value));
       }

@@ -332,7 +332,7 @@ public class AsmMethodSource implements MethodSource {
   private final List<LocalVariableNode> localVars;
   private final List<TryCatchBlockNode> tryCatchBlocks;
   private final Set<LabelNode> inlineExceptionLabels = new LinkedHashSet<LabelNode>();
-  private final Map<LabelNode, Unit> inlineExceptionHandlers = new LinkedHashMap<LabelNode, Unit>();
+  private final Map<LabelNode, IdentityStmt> inlineExceptionHandlers = new LinkedHashMap<LabelNode, IdentityStmt>();
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 
   /** Labels at which a trap handler range (try block) begins */
@@ -2212,6 +2212,24 @@ public class AsmMethodSource implements MethodSource {
 
   void setStmt(@NonNull AbstractInsnNode insn, @NonNull Stmt stmt) {
     insnToStmt.put(insn, stmt);
+  }
+
+  /**
+   * Updates the identity statement of an inline exception handler to use a new local variable. This is needed when operand
+   * merging assigns a common stack local to the caught exception operand.
+   *
+   * @param insn
+   *          the handler label node
+   * @param newLocal
+   *          the new local to assign the caught exception to
+   */
+  void updateInlineExceptionHandler(@NonNull AbstractInsnNode insn, @NonNull Local newLocal) {
+    LabelNode labelNode = (LabelNode) insn;
+    IdentityStmt oldStmt = inlineExceptionHandlers.get(labelNode);
+    if (oldStmt != null) {
+      IdentityStmt newStmt = Jimple.v().newIdentityStmt(newLocal, oldStmt.getRightOp());
+      inlineExceptionHandlers.put(labelNode, newStmt);
+    }
   }
 
   @SuppressWarnings("unchecked")
