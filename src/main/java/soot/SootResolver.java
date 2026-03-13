@@ -26,11 +26,11 @@ package soot;
 import com.google.common.base.Joiner;
 
 import java.io.File;
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +54,9 @@ public class SootResolver {
   private final Deque<SootClass>[] worklist = new Deque[4];
 
   public SootResolver(Singletons.Global g) {
-    worklist[SootClass.HIERARCHY] = new ArrayDeque<SootClass>();
-    worklist[SootClass.SIGNATURES] = new ArrayDeque<SootClass>();
-    worklist[SootClass.BODIES] = new ArrayDeque<SootClass>();
+    worklist[SootClass.HIERARCHY] = new ConcurrentLinkedDeque<SootClass>();
+    worklist[SootClass.SIGNATURES] = new ConcurrentLinkedDeque<SootClass>();
+    worklist[SootClass.BODIES] = new ConcurrentLinkedDeque<SootClass>();
   }
 
   public static SootResolver v() {
@@ -124,14 +124,17 @@ public class SootResolver {
   }
 
   /** Resolve all classes on toResolveWorklist. */
-  protected void processResolveWorklist() {
+  protected synchronized void processResolveWorklist() {
     final Scene scene = Scene.v();
     final boolean resolveEverything = resolveEverything();
     final boolean no_bodies_for_excluded = Options.v().no_bodies_for_excluded();
     for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
       Deque<SootClass> currWorklist = worklist[i];
-      while (!currWorklist.isEmpty()) {
-        SootClass sc = currWorklist.pop();
+      while (true) {
+        SootClass sc = currWorklist.pollFirst();
+        if (sc == null) {
+          break;
+        }
         if (resolveEverything) {
           // Whole program mode
           boolean onlySignatures
@@ -162,9 +165,6 @@ public class SootResolver {
           }
         }
       }
-      // The ArrayDeque can grow particularly large but the implementation will
-      // never shrink the backing array, leaving a possibly large memory leak.
-      worklist[i] = new ArrayDeque<SootClass>(0);
     }
   }
 
