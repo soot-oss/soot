@@ -70,6 +70,7 @@ import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
+import soot.validation.CheckInitValidator;
 
 //@formatter:off
 /**
@@ -232,6 +233,10 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
   }
 
   public void transformOnly(Body body) {
+    /*
+     * int x = 1000; for (Unit u : body.getUnits()) { if (u instanceof IfStmt) { BinopExpr cond = (BinopExpr) ((IfStmt)
+     * u).getCondition(); cond.setOp2(IntConstant.v(x)); x++; } }
+     */
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
@@ -253,6 +258,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       idx++;
 
     }
+
+    SimpleLocalUses uses = new SimpleLocalUses(body, defs);
     for (Unit s : units) {
       nextUse: for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
         ValueBox useBox = iterator.next();
@@ -264,6 +271,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           Set<AssignStmt> constantDefs = new HashSet<>();
           TreeSet<Integer> nonConstantDefs = null;
 
+          Set<Unit> useset = new HashSet<>();
+          useset.add(s);
           while (allAffectingDefs.hasNext()) {
             Unit affect = allAffectingDefs.next();
             if (affect instanceof DefinitionStmt) {
@@ -274,6 +283,9 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
               } else {
                 if (nonConstantDefs == null) {
                   nonConstantDefs = new TreeSet<>();
+                }
+                for (UnitValueBoxPair use : uses.getUsesOf(def)) {
+                  useset.add(use.unit);
                 }
                 int actualidx = stmtToIndex.get(def);
                 nonConstantDefs.add(actualidx);
@@ -298,7 +310,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                       use = existing;
                     }
                     // we have an overlap
-                    use.uses.add(s);
+                    use.uses.addAll(useset);
                     use.constantInitializers.addAll(constantDefs);
                     use.nonConstantDefs.addAll(nonConstantDefs);
                     c.updateMinMax(nonConstantDefs);
@@ -316,9 +328,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
             }
           }
           if (use == null) {
-            Set<Unit> useset = new HashSet<>();
-            useset.add(s);
-            Cluster c = new Cluster(useset, constantDefs, nonConstantDefs, indexToStmt);
             if (nonConstantDefs == null) {
               Set<Cluster> otherClusters = clustersPerLocal.get(luse);
               for (Cluster other : otherClusters) {
@@ -329,7 +338,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                 }
               }
             }
-
+            Cluster c = new Cluster(useset, constantDefs, nonConstantDefs, indexToStmt);
             clustersPerLocal.put(luse, c);
             if (nonConstantDefs != null) {
               nonConstantClustersPerLocal.put(luse, c);
@@ -390,8 +399,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           CopyPropagator.copyLineTags(newAssign.getUseBoxesIterator().next(), assign);
         }
 
-        Set<Unit> uses = cluster.uses;
-        for (Unit use : uses) {
+        for (Unit use : cluster.uses) {
           if (use == null) {
             throw new AssertionError("Wrong indice");
           }
@@ -410,6 +418,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
             }
           }
         }
+        CheckInitValidator.v().validate(body, null);
       }
     }
     UnusedLocalEliminator.v().transform(body);
