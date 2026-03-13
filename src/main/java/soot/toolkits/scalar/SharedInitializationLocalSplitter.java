@@ -34,22 +34,32 @@ import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.FloatType;
 import soot.G;
+import soot.IntType;
 import soot.Local;
 import soot.Singletons;
 import soot.Type;
 import soot.Unit;
+import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.asm.AsmMethodSource;
 import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
+import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.ClassConstant;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
+import soot.jimple.internal.AbstractFloatBinopExpr;
+import soot.jimple.internal.AbstractIntBinopExpr;
 import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
@@ -82,6 +92,10 @@ import soot.util.MultiMap;
  */
 
 // @formatter:on
+/**
+ * @author miltenbe
+ *
+ */
 public class SharedInitializationLocalSplitter extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(SharedInitializationLocalSplitter.class);
 
@@ -127,9 +141,11 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       for (Unit i : constantInitializers) {
         sb.append("\t").append(i).append("\n");
       }
-      sb.append("Non-Constant Definitions:\n");
-      for (Integer i : nonConstantDefs) {
-        sb.append("\t").append(indexToStmt[i]).append("\n");
+      if (nonConstantDefs != null) {
+        sb.append("Non-Constant Definitions:\n");
+        for (Integer i : nonConstantDefs) {
+          sb.append("\t").append(indexToStmt[i]).append("\n");
+        }
       }
       sb.append("Uses:\n");
       for (Unit i : uses) {
@@ -303,6 +319,17 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
             Set<Unit> useset = new HashSet<>();
             useset.add(s);
             Cluster c = new Cluster(useset, constantDefs, nonConstantDefs, indexToStmt);
+            if (nonConstantDefs == null) {
+              Set<Cluster> otherClusters = clustersPerLocal.get(luse);
+              for (Cluster other : otherClusters) {
+                if (other.nonConstantDefs == null && areUsesOfEquivalentType(luse, other.uses, useset)
+                    && other.constantInitializers.equals(constantDefs)) {
+                  other.uses.addAll(useset);
+                  continue nextUse;
+                }
+              }
+            }
+
             clustersPerLocal.put(luse, c);
             if (nonConstantDefs != null) {
               nonConstantClustersPerLocal.put(luse, c);
@@ -330,8 +357,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
         }
 
         if (cluster.nonConstantDefs == null) {
-          //we don't need to split when we only have constants of type
-          //string or class.
+          // we don't need to split when we only have constants of type
+          // string or class.
           boolean needsSplitting = false;
           Type t = ClassConstant.getClassType();
           Type strType = StringConstant.getClassType();
@@ -387,6 +414,89 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     }
     UnusedLocalEliminator.v().transform(body);
     AsmMethodSource.ensureUniqueNames(body.getLocals());
+  }
+
+  /**
+   * Checks whether all given uses of a local in a set of statements is guaranteed to be type compatible without cast.
+   * 
+   * @param luse
+   *          the local variable
+   * @param u1
+   *          the first set of uses
+   * @param u2
+   *          the second set of uses
+   * @return whether all given uses are of equivalent type (whatever it is)
+   */
+  private boolean areUsesOfEquivalentType(Local luse, Set<Unit> u1, Set<Unit> u2) {
+    Type use1 = getUseType(luse, u1);
+    if (use1 == null) {
+      return false;
+    }
+    Type use2 = getUseType(luse, u2);
+    return use1.equals(use2);
+  }
+
+  /**
+   * Gets a type on how an untyped local is used
+   * 
+   * @param luse
+   *          the local
+   * @param units
+   *          the units where the local is used
+   * @return the type or null
+   */
+  private Type getUseType(Local luse, Set<Unit> units) {
+    Type tall = null;
+    for (Unit u : units) {
+      Type tcurrent = null;
+      if (u instanceof IfStmt) {
+        IfStmt ifstmt = (IfStmt) u;
+        Value condition = ifstmt.getCondition();
+        if (condition instanceof AbstractIntBinopExpr) {
+          tcurrent = IntType.v();
+        } else if (condition instanceof AbstractFloatBinopExpr) {
+          tcurrent = FloatType.v();
+        }
+      } else if (u instanceof DefinitionStmt) {
+        DefinitionStmt assign = (DefinitionStmt) u;
+        if (assign.getLeftOp() == luse) {
+          tcurrent = assign.getRightOp().getType();
+        } else {
+          tcurrent = assign.getLeftOp().getType();
+        }
+      } else {
+        Stmt stmt = (Stmt) u;
+        if (stmt.containsInvokeExpr()) {
+          InvokeExpr inv = stmt.getInvokeExpr();
+          if (inv instanceof InstanceInvokeExpr) {
+            InstanceInvokeExpr iinv = (InstanceInvokeExpr) inv;
+            if (iinv.getBase() == luse) {
+              tcurrent = inv.getMethodRef().getDeclaringClass().getType();
+            }
+          }
+          for (int i = 0; i < inv.getArgCount(); i++) {
+            if (inv.getArg(i) == luse) {
+              tcurrent = inv.getMethodRef().getParameterType(i);
+              break;
+            }
+          }
+        } else if (stmt.containsArrayRef()) {
+          ArrayRef arr = stmt.getArrayRef();
+          if (arr.getBase() == luse) {
+            tcurrent = IntType.v();
+          }
+        }
+      }
+      if (tcurrent == null || tcurrent instanceof UnknownType) {
+        return null;
+      }
+      if (tall == null) {
+        tall = tcurrent;
+      } else if (!tall.equals(tcurrent)) {
+        return null;
+      }
+    }
+    return tall;
   }
 
   private boolean intersects(TreeSet<Integer> t1, TreeSet<Integer> t2) {
