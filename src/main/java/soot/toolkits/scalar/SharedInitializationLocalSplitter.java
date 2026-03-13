@@ -70,7 +70,6 @@ import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.Chain;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
-import soot.validation.CheckInitValidator;
 
 //@formatter:off
 /**
@@ -93,10 +92,6 @@ import soot.validation.CheckInitValidator;
  */
 
 // @formatter:on
-/**
- * @author miltenbe
- *
- */
 public class SharedInitializationLocalSplitter extends BodyTransformer {
   private static final Logger logger = LoggerFactory.getLogger(SharedInitializationLocalSplitter.class);
 
@@ -418,7 +413,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
             }
           }
         }
-        CheckInitValidator.v().validate(body, null);
       }
     }
     UnusedLocalEliminator.v().transform(body);
