@@ -31,8 +31,7 @@ import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.toolkits.exceptions.PedanticThrowAnalysis;
-import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.ThrowAnalysisFactory;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.toolkits.scalar.FlowSet;
@@ -48,8 +47,8 @@ public enum CheckInitValidator implements BodyValidator {
 
   @Override
   public void validate(Body body, List<ValidationException> exception) {
-    ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
-    ExceptionalUnitGraph g = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, false);
+    ExceptionalUnitGraph g
+        = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
 
     InitAnalysis analysis = new InitAnalysis(g);
     for (Unit s : body.getUnits()) {
