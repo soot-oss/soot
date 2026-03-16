@@ -73,6 +73,8 @@ import soot.jimple.RemExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.options.Options;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
@@ -238,11 +240,12 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       allEssential &= isEssential;
     }
 
+    ExceptionalUnitGraph ug;
     if (checkInvoke || !allEssential) {
       // Add all the statements which are used to compute values
       // for the essential statements, recursively
-
-      final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(b);
+      ug = new ExceptionalUnitGraph(b, PedanticThrowAnalysis.v());
+      final LocalDefs localDefs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(ug);
 
       if (!allEssential) {
         Set<Unit> essential = new HashSet<Unit>(units.size());
@@ -267,7 +270,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
       }
 
       if (checkInvoke) {
-        final LocalUses localUses = LocalUses.Factory.newLocalUses(b, localDefs);
+        final LocalUses localUses = LocalUses.Factory.newLocalUses(ug, localDefs);
         // Eliminate dead assignments from invokes such as x = f(), where
         // x is no longer used
 
