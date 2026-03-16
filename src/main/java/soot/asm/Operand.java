@@ -122,7 +122,6 @@ final class Operand {
       }
     } else {
       JAssignStmt assignStmt = (JAssignStmt) stmt;
-      assert assignStmt.getLeftOp() == oldStackLocal || assignStmt.getLeftOp() == newStackLocal;
       // replace `$oldStackLocal = value` with `$newStackLocal = value`
       assignStmt.setLeftOp(newStackLocal);
     }
