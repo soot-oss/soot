@@ -24,7 +24,6 @@ package soot.asm;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.tree.AbstractInsnNode;
 
 import soot.Local;
@@ -54,7 +53,6 @@ final class OperandMerging {
    * Interestingly, none of the operations that need to have any inputs/outputs tracked produce more than a single output, so
    * this doesn't need to be a list.
    */
-  @Nullable
   private Operand output;
 
   final ArrayList<Operand[]> inputOperands = new ArrayList<>(1);

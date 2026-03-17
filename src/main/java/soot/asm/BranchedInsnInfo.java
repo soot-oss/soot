@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 
@@ -40,7 +39,6 @@ class BranchedInsnInfo {
 
   private final LinkedList<Operand[]> prevStacks;
   /* current stack at edge */
-  @Nullable
   private final List<List<Operand>> operandStacks = new ArrayList<>();
   private final Set<TryCatchBlockNode> activeTrapHandlers;
 
@@ -59,7 +57,7 @@ class BranchedInsnInfo {
     return operandStacks;
   }
 
-  public void addOperandStack(@Nullable List<Operand> operandStack) {
+  public void addOperandStack(List<Operand> operandStack) {
     operandStacks.add(operandStack);
   }
 
