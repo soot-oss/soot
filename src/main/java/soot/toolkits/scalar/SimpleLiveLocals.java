@@ -34,8 +34,11 @@ import soot.Timers;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.GotoStmt;
+import soot.jimple.ReturnVoidStmt;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedBodyGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 
 /**
  * Analysis that provides an implementation of the LiveLocals interface.
@@ -96,6 +99,15 @@ public class SimpleLiveLocals implements LiveLocals {
     @Override
     protected FlowSet<Local> newInitialFlow() {
       return new HashSparseSet<Local>();
+    }
+
+    @Override
+    protected boolean omissible(Unit n) {
+      if (n instanceof ReturnVoidStmt || n instanceof GotoStmt) {
+        // Do not have any uses or definitions
+        return true;
+      }
+      return false;
     }
 
     @Override
