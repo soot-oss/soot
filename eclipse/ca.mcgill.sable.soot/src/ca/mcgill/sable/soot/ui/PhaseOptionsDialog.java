@@ -883,12 +883,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getGeneral_Optionsinteractive_mode_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionsinteractive_mode_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getGeneral_Optionsunfriendly_mode_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -4005,16 +3999,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getGeneral_Optionsverbose_widget() {
 		return General_Optionsverbose_widget;
-	}	
-	
-	private BooleanOptionWidget General_Optionsinteractive_mode_widget;
-	
-	private void setGeneral_Optionsinteractive_mode_widget(BooleanOptionWidget widget) {
-		General_Optionsinteractive_mode_widget = widget;
-	}
-	
-	public BooleanOptionWidget getGeneral_Optionsinteractive_mode_widget() {
-		return General_Optionsinteractive_mode_widget;
 	}	
 	
 	private BooleanOptionWidget General_Optionsunfriendly_mode_widget;
@@ -7697,17 +7681,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v verbose", "\nProvide detailed information about what Soot is doing as it \nruns.", defaultBool)));
-
-		defKey = ""+" "+""+" "+"interactive-mode";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing detailed information as \nit iterates through intra-procedural analyses.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"unfriendly-mode";
 		defKey = defKey.trim();

@@ -271,15 +271,7 @@
                 Provide detailed information about what Soot is doing as it runs.
             </long_desc>
         </boolopt>
-        <boolopt>
-            <name>Interactive Mode</name>
-            <alias>interactive-mode</alias>
-            <short_desc>Run in interactive mode</short_desc>
-            <long_desc>
-                Runs interactively, with Soot providing detailed information as it iterates through intra-procedural
-                analyses.
-            </long_desc>
-        </boolopt>
+
         <boolopt>
             <name>Unfriendly Mode</name>
             <alias>unfriendly-mode</alias>

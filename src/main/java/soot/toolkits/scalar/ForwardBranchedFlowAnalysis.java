@@ -37,11 +37,8 @@ import soot.Timers;
 import soot.Trap;
 import soot.Unit;
 import soot.UnitBox;
-import soot.options.Options;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
 import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.graph.interaction.FlowInfo;
-import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.util.Chain;
 
 /**
@@ -206,34 +203,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
         {
           List<A> afterFallFlow = unitToAfterFallFlow.get(s);
           List<A> afterBranchFlow = getBranchFlowAfter(s);
-          boolean interactiveMode = Options.v().interactive_mode();
-          if (interactiveMode) {
-            InteractionHandler ih = InteractionHandler.v();
-            A savedFlow = newInitialFlow();
-            copy(beforeFlow, savedFlow);
-            FlowInfo<A, Unit> fi = new FlowInfo<A, Unit>(savedFlow, s, true);
-            if (ih.getStopUnitList() != null && ih.getStopUnitList().contains(s)) {
-              ih.handleStopAtNodeEvent(s);
-            }
-            ih.handleBeforeAnalysisEvent(fi);
-          }
           flowThrough(beforeFlow, s, afterFallFlow, afterBranchFlow);
-          if (interactiveMode) {
-            List<A> l = new ArrayList<A>();
-            if (!afterFallFlow.isEmpty()) {
-              l.addAll(afterFallFlow);
-            }
-            if (!afterBranchFlow.isEmpty()) {
-              l.addAll(afterBranchFlow);
-            }
-
-            /*
-             * if (s instanceof soot.jimple.IfStmt){ l.addAll((List)afterFallFlow); l.addAll((List)afterBranchFlow); } else {
-             * l.addAll((List)afterFallFlow); }
-             */
-            FlowInfo<List<A>, Unit> fi = new FlowInfo<List<A>, Unit>(l, s, false);
-            InteractionHandler.v().handleAfterAnalysisEvent(fi);
-          }
           numComputations++;
         }
 

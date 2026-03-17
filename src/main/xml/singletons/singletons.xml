@@ -93,7 +93,6 @@
   <class>soot.jimple.toolkits.pointer.ParameterAliasTagger</class>
   <class>soot.jimple.toolkits.annotation.defs.ReachingDefsTagger</class>
   <class>soot.jimple.toolkits.annotation.liveness.LiveVarsTagger</class>
-  <class>soot.toolkits.graph.interaction.InteractionHandler</class>
   <class>soot.jimple.toolkits.annotation.logic.LoopInvariantFinder</class>
   <class>soot.jimple.toolkits.annotation.AvailExprTagger</class>
   <class>soot.util.PhaseDumper</class>
@@ -106,7 +105,6 @@
   <class>soot.toolkits.exceptions.TrapTightener</class>
   <class>soot.toolkits.exceptions.DuplicateCatchAllTrapRemover</class>
   <class>soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis</class>
-  <class>soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher</class>
   <class>soot.SootResolver</class>
   <class>soot.SootModuleResolver</class>
   <class>soot.jimple.paddle.PaddleHook</class>

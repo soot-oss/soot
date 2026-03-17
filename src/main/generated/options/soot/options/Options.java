@@ -183,10 +183,6 @@ public class Options extends OptionsBase {
             )
                 verbose = true;
             else if (false
-                    || option.equals("interactive-mode")
-            )
-                interactive_mode = true;
-            else if (false
                     || option.equals("unfriendly-mode")
             )
                 unfriendly_mode = true;
@@ -1444,10 +1440,6 @@ public class Options extends OptionsBase {
     private boolean verbose = false;
     public void set_verbose(boolean setting) { verbose = setting; }
 
-    public boolean interactive_mode() { return interactive_mode; }
-    private boolean interactive_mode = false;
-    public void set_interactive_mode(boolean setting) { interactive_mode = setting; }
-
     public boolean unfriendly_mode() { return unfriendly_mode; }
     private boolean unfriendly_mode = false;
     public void set_unfriendly_mode(boolean setting) { unfriendly_mode = setting; }
@@ -1788,7 +1780,6 @@ public class Options extends OptionsBase {
                 + padOpt("-ph ARG -phase-help ARG", "Print help for specified ARG")
                 + padOpt("-version", "Display version information and exit")
                 + padOpt("-v, -verbose", "Verbose mode")
-                + padOpt("-interactive-mode", "Run in interactive mode")
                 + padOpt("-unfriendly-mode", "Allow Soot to run with no command-line options")
                 + padOpt("-app", "Run in application mode")
                 + padOpt("-w, -whole-program", "Run in whole-program mode")

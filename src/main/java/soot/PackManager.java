@@ -66,8 +66,6 @@ import soot.jimple.toolkits.annotation.DominatorsTagger;
 import soot.jimple.toolkits.annotation.LineNumberAdder;
 import soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker;
 import soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder;
-import soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher;
-import soot.jimple.toolkits.annotation.callgraph.CallGraphTagger;
 import soot.jimple.toolkits.annotation.defs.ReachingDefsTagger;
 import soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger;
 import soot.jimple.toolkits.annotation.liveness.LiveVarsTagger;
@@ -116,7 +114,6 @@ import soot.tagkit.InnerClassTagAggregator;
 import soot.toDex.DexPrinter;
 import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
 import soot.toolkits.exceptions.TrapTightener;
-import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
 import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
@@ -233,7 +230,6 @@ public class PackManager {
       p.add(new Transform("wjap.umt", UnusedMethodsTagger.v()));
       p.add(new Transform("wjap.uft", UnusedFieldsTagger.v()));
       p.add(new Transform("wjap.tqt", TightestQualifiersTagger.v()));
-      p.add(new Transform("wjap.cgg", CallGraphGrapher.v()));
       p.add(new Transform("wjap.purity", PurityAnalysis.v())); // [AM]
     }
 
@@ -277,7 +273,6 @@ public class PackManager {
       p.add(new Transform("jap.npcolorer", NullPointerColorer.v()));
       p.add(new Transform("jap.sea", SideEffectTagger.v()));
       p.add(new Transform("jap.fieldrw", FieldTagger.v()));
-      p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));
       p.add(new Transform("jap.parity", ParityTagger.v()));
       p.add(new Transform("jap.pat", ParameterAliasTagger.v()));
       p.add(new Transform("jap.rdtagger", ReachingDefsTagger.v()));
@@ -460,14 +455,6 @@ public class PackManager {
       }
     }
 
-    if (Options.v().interactive_mode()) {
-      if (InteractionHandler.v().getInteractionListener() == null) {
-        logger.debug("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
-        Options.v().set_interactive_mode(false);
-      } else {
-        logger.debug("Running in interactive mode.");
-      }
-    }
     runBodyPacks();
     handleInnerClasses();
   }
