@@ -1981,10 +1981,6 @@ public class AsmMethodSource implements MethodSource {
     emitTraps();
     emitUnits();
 
-    if (jb.getMethod().getSignature().equals(
-        "<io.netty.util.internal.NativeLibraryLoader: void loadLibrary(java.lang.ClassLoader,java.lang.String,boolean)>"))
-      System.out.println();
-
     if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-names")) {
       tryCorrectingLocalNames(jimp, jb);
     }
