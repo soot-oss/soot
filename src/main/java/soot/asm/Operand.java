@@ -25,7 +25,6 @@ package soot.asm;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jspecify.annotations.NonNull;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 
@@ -162,7 +161,7 @@ final class Operand {
    *          the other operand.
    * @return {@code true} if this operand is equal to another operand, {@code false} otherwise.
    */
-  boolean equivTo(@NonNull Operand other) {
+  boolean equivTo(Operand other) {
     Value stackOrValue = stackLocal == null ? value : stackLocal;
     Value stackOrValueOther = other.stackLocal == null ? other.value : other.stackLocal;
 
@@ -177,7 +176,6 @@ final class Operand {
     return "Operand{" + "insn=" + insn + ", value=" + value + ", stack=" + stackLocal + '}';
   }
 
-  @NonNull
   public AbstractInsnNode getInsn() {
     return insn;
   }

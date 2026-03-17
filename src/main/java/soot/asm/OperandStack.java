@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jspecify.annotations.NonNull;
 import org.objectweb.asm.tree.AbstractInsnNode;
 
 import soot.Type;
@@ -37,19 +36,17 @@ import soot.Type;
  */
 public class OperandStack {
 
-  @NonNull
   private final AsmMethodSource methodSource;
   private List<Operand> stack;
-  @NonNull
+
   public Map<AbstractInsnNode, OperandMerging> mergings;
 
-  public OperandStack(@NonNull AsmMethodSource methodSource, int nrInsn) {
+  public OperandStack(AsmMethodSource methodSource, int nrInsn) {
     this.methodSource = methodSource;
     mergings = new LinkedHashMap<>(nrInsn);
   }
 
-  @NonNull
-  public OperandMerging getOrCreateMerging(@NonNull AbstractInsnNode insn) {
+  public OperandMerging getOrCreateMerging(AbstractInsnNode insn) {
     OperandMerging merging = this.mergings.get(insn);
     if (merging == null) {
       merging = new OperandMerging(insn, methodSource);
@@ -58,16 +55,15 @@ public class OperandStack {
     return merging;
   }
 
-  public void push(@NonNull Operand opr) {
+  public void push(Operand opr) {
     stack.add(opr);
   }
 
-  public void pushDual(@NonNull Operand opr) {
+  public void pushDual(Operand opr) {
     stack.add(Operand.DWORD_DUMMY);
     stack.add(opr);
   }
 
-  @NonNull
   public Operand peek() {
     if (stack.isEmpty()) {
       throw new RuntimeException("Stack underrun");
@@ -75,7 +71,7 @@ public class OperandStack {
     return stack.get(stack.size() - 1);
   }
 
-  public void push(@NonNull Type t, @NonNull Operand opr) {
+  public void push(Type t, Operand opr) {
     if (AsmUtil.isDWord(t)) {
       pushDual(opr);
     } else {
@@ -83,7 +79,6 @@ public class OperandStack {
     }
   }
 
-  @NonNull
   public Operand pop() {
     if (stack.isEmpty()) {
       throw new RuntimeException("Stack underrun");
@@ -91,7 +86,6 @@ public class OperandStack {
     return stack.remove(stack.size() - 1);
   }
 
-  @NonNull
   public Operand popDual() {
     Operand o = pop();
     Operand o2 = pop();
@@ -101,28 +95,23 @@ public class OperandStack {
     return o;
   }
 
-  @NonNull
-  public Operand pop(@NonNull Type t) {
+  public Operand pop(Type t) {
     return AsmUtil.isDWord(t) ? popDual() : pop();
   }
 
-  @NonNull
   public Operand popStackConst() {
     return pop();
   }
 
-  @SuppressWarnings("unused")
-  @NonNull
   public Operand popStackConstDual() {
     return popDual();
   }
 
-  @NonNull
   public List<Operand> getStack() {
     return stack;
   }
 
-  public void setOperandStack(@NonNull List<Operand> stack) {
+  public void setOperandStack(List<Operand> stack) {
     this.stack = stack;
   }
 }

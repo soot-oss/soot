@@ -24,7 +24,6 @@ package soot.asm;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.tree.AbstractInsnNode;
 
@@ -43,7 +42,7 @@ import soot.jimple.Stmt;
  * @author Aaloan Miftah
  */
 final class OperandMerging {
-  @NonNull
+
   private final AbstractInsnNode insn;
 
   /**
@@ -58,9 +57,8 @@ final class OperandMerging {
   @Nullable
   private Operand output;
 
-  @NonNull
   final ArrayList<Operand[]> inputOperands = new ArrayList<>(1);
-  @NonNull
+
   private final AsmMethodSource src;
 
   /**
@@ -69,7 +67,7 @@ final class OperandMerging {
    * @param src
    *          source the merging belongs to.
    */
-  OperandMerging(@NonNull AbstractInsnNode insn, @NonNull AsmMethodSource src) {
+  OperandMerging(AbstractInsnNode insn, AsmMethodSource src) {
     this.insn = insn;
     this.src = src;
   }
@@ -84,7 +82,7 @@ final class OperandMerging {
    * @param outputOperand
    *          the newly produced operand that will get pushed onto the operand stack
    */
-  void mergeOutput(@NonNull Operand outputOperand) {
+  void mergeOutput(Operand outputOperand) {
     if (output == null) {
       output = outputOperand;
     } else if (output.stackLocal != null) {
@@ -128,7 +126,7 @@ final class OperandMerging {
    * @throws IllegalArgumentException
    *           if the number of new operands is not equal to the number of old operands.
    */
-  void mergeInputs(@NonNull Operand... oprs) {
+  void mergeInputs(Operand... oprs) {
     if (inputOperands.isEmpty()) {
       inputOperands.add(oprs);
       // There are no other operands to merge with

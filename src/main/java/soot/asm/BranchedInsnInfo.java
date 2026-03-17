@@ -27,7 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
@@ -35,30 +34,27 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 // FIXME: [AD] is it reasonable to get rid of it?
 class BranchedInsnInfo {
   /* edge endpoint */
-  @NonNull
+
   final AbstractInsnNode insn;
   /* previous stacks at edge */
-  @NonNull
+
   private final LinkedList<Operand[]> prevStacks;
   /* current stack at edge */
   @Nullable
   private final List<List<Operand>> operandStacks = new ArrayList<>();
   private final Set<TryCatchBlockNode> activeTrapHandlers;
 
-  BranchedInsnInfo(@NonNull AbstractInsnNode insn, @NonNull List<Operand> operands,
-      Set<TryCatchBlockNode> activeTrapHandlers) {
+  BranchedInsnInfo(AbstractInsnNode insn, List<Operand> operands, Set<TryCatchBlockNode> activeTrapHandlers) {
     this.insn = insn;
     this.prevStacks = new LinkedList<>();
     this.operandStacks.add(operands);
     this.activeTrapHandlers = new HashSet<>(activeTrapHandlers);
   }
 
-  @NonNull
   public AbstractInsnNode getInsn() {
     return insn;
   }
 
-  @NonNull
   public List<List<Operand>> getOperandStacks() {
     return operandStacks;
   }
@@ -67,12 +63,11 @@ class BranchedInsnInfo {
     operandStacks.add(operandStack);
   }
 
-  @NonNull
   public LinkedList<Operand[]> getPrevStacks() {
     return prevStacks;
   }
 
-  public void addToPrevStack(@NonNull Operand[] stacksOperands) {
+  public void addToPrevStack(Operand[] stacksOperands) {
     prevStacks.add(stacksOperands);
   }
 

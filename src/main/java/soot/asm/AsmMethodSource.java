@@ -200,7 +200,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.function.BiFunction;
 
-import org.jspecify.annotations.NonNull;
 import org.objectweb.asm.ConstantDynamic;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -565,7 +564,7 @@ public class AsmMethodSource implements MethodSource {
     });
   }
 
-  private void addReadOperandAssignments(@NonNull Local local) {
+  private void addReadOperandAssignments(Local local) {
     addReadOperandAssignments_internal((opValue, operand) -> {
       if (!opValue.equivTo(local)) {
         boolean noRef = true;
@@ -644,7 +643,7 @@ public class AsmMethodSource implements MethodSource {
     }
   }
 
-  private void convertArrayLoadInsn(@NonNull InsnNode insn) {
+  private void convertArrayLoadInsn(InsnNode insn) {
     OperandMerging merging = operandStack.getOrCreateMerging(insn);
     Operand indx = operandStack.pop();
     Operand base = operandStack.pop();
@@ -868,7 +867,7 @@ public class AsmMethodSource implements MethodSource {
     }
   }
 
-  private void convertReturnInsn(@NonNull InsnNode insn) {
+  private void convertReturnInsn(InsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LRETURN || op == DRETURN;
     OperandMerging merging = operandStack.getOrCreateMerging(insn);
@@ -1418,7 +1417,7 @@ public class AsmMethodSource implements MethodSource {
     operandStack.push(opr);
   }
 
-  private void convertVarLoadInsn(@NonNull VarInsnNode insn) {
+  private void convertVarLoadInsn(VarInsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LLOAD || op == DLOAD;
     OperandMerging merging = operandStack.getOrCreateMerging(insn);
@@ -1431,7 +1430,7 @@ public class AsmMethodSource implements MethodSource {
     }
   }
 
-  private void convertVarStoreInsn(@NonNull VarInsnNode insn) {
+  private void convertVarStoreInsn(VarInsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LSTORE || op == DSTORE;
     OperandMerging merging = operandStack.getOrCreateMerging(insn);
@@ -1544,13 +1543,12 @@ public class AsmMethodSource implements MethodSource {
   }
 
   /* Conversion */
-  private void addEdges(@NonNull Table<AbstractInsnNode, AbstractInsnNode, BranchedInsnInfo> edges,
-      @NonNull ArrayDeque<BranchedInsnInfo> conversionWorklist, @NonNull AbstractInsnNode branchingInsn, /*
-                                                                                                          * branching
-                                                                                                          * instruction node
-                                                                                                          */
-      @NonNull AbstractInsnNode tgt, /* "default" targets i.e. LabelNode or fallsthrough "target" of if */
-      @NonNull List<LabelNode> tgts /* other branch target(s) */) {
+  private void addEdges(Table<AbstractInsnNode, AbstractInsnNode, BranchedInsnInfo> edges,
+      ArrayDeque<BranchedInsnInfo> conversionWorklist, AbstractInsnNode branchingInsn, /*
+                                                                                        * branching instruction node
+                                                                                        */
+      AbstractInsnNode tgt, /* "default" targets i.e. LabelNode or fallsthrough "target" of if */
+      List<LabelNode> tgts /* other branch target(s) */) {
     Operand[] stackss = operandStack.getStack().toArray(new Operand[0]);
     /* iterate over possible following/successing instructions which is: combined(tgt, tgts) */
     int i = 0;
@@ -1714,7 +1712,7 @@ public class AsmMethodSource implements MethodSource {
     edges = null;
   }
 
-  private void convertVarInsn(@NonNull VarInsnNode insn) {
+  private void convertVarInsn(VarInsnNode insn) {
     int op = insn.getOpcode();
     if (op >= ILOAD && op <= ALOAD) {
       convertVarLoadInsn(insn);
@@ -2202,7 +2200,7 @@ public class AsmMethodSource implements MethodSource {
    * @param newLocal
    *          the new local to assign the caught exception to
    */
-  void updateInlineExceptionHandler(@NonNull AbstractInsnNode insn, @NonNull Local newLocal) {
+  void updateInlineExceptionHandler(AbstractInsnNode insn, Local newLocal) {
     LabelNode labelNode = (LabelNode) insn;
     IdentityStmt oldStmt = inlineExceptionHandlers.get(labelNode);
     if (oldStmt != null) {
@@ -2212,7 +2210,7 @@ public class AsmMethodSource implements MethodSource {
   }
 
   @SuppressWarnings("unchecked")
-  <A extends Stmt> A getStmt(@NonNull AbstractInsnNode insn) {
+  <A extends Stmt> A getStmt(AbstractInsnNode insn) {
     return (A) insnToStmt.get(insn);
   }
 
