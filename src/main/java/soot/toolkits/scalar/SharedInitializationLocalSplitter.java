@@ -44,7 +44,6 @@ import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
-import soot.asm.AsmMethodSource;
 import soot.dexpler.DexNullArrayRefTransformer;
 import soot.dexpler.DexNullThrowTransformer;
 import soot.jimple.ArrayRef;
@@ -416,7 +415,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
       }
     }
     UnusedLocalEliminator.v().transform(body);
-    AsmMethodSource.ensureUniqueNames(body.getLocals());
+    body.ensureUniqueLocalNames();
   }
 
   /**

@@ -1981,6 +1981,10 @@ public class AsmMethodSource implements MethodSource {
     emitTraps();
     emitUnits();
 
+    if (jb.getMethod().getSignature().equals(
+        "<io.netty.util.internal.NativeLibraryLoader: void loadLibrary(java.lang.ClassLoader,java.lang.String,boolean)>"))
+      System.out.println();
+
     if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-names")) {
       tryCorrectingLocalNames(jimp, jb);
     }
@@ -2040,7 +2044,7 @@ public class AsmMethodSource implements MethodSource {
     DeadAssignmentEliminator.v().transform(jb);
     UnconditionalBranchFolder.v().transform(jb);
 
-    ensureUniqueNames(jb.getLocals());
+    jb.ensureUniqueLocalNames();
 
     return jb;
   }
@@ -2190,25 +2194,7 @@ public class AsmMethodSource implements MethodSource {
       }
     }
     // In the end, ensure the names of locals (not just from those that were newly added) are unique.
-    ensureUniqueNames(jbLocals);
-  }
-
-  /**
-   * If any locals have the same name, append a unique id so that each is different.
-   */
-  public static void ensureUniqueNames(Chain<Local> jbLocals) {
-    Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
-    for (Local l : jbLocals) {
-      nameToLocal.put(l.getName(), l);
-    }
-    for (Collection<Local> locs : nameToLocal.asMap().values()) {
-      if (locs.size() > 1) {
-        int num = 0;
-        for (Local l : locs) {
-          l.setName(l.getName() + '_' + (++num));
-        }
-      }
-    }
+    jb.ensureUniqueLocalNames();
   }
 
   /**

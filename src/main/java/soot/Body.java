@@ -1,6 +1,8 @@
 package soot;
 
 import com.google.common.collect.Iterators;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 
 /*-
  * #%L
@@ -30,6 +32,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -716,4 +719,24 @@ public abstract class Body extends AbstractHost implements Serializable {
     }
     throw new RuntimeException("No non-id statements!");
   }
+
+  /**
+   * If any locals have the same name, append a unique id so that each is different.
+   */
+  public void ensureUniqueLocalNames() {
+    Chain<Local> jbLocals = localChain;
+    Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
+    for (Local l : jbLocals) {
+      nameToLocal.put(l.getName(), l);
+    }
+    for (Collection<Local> locs : nameToLocal.asMap().values()) {
+      if (locs.size() > 1) {
+        int num = 0;
+        for (Local l : locs) {
+          l.setName(l.getName() + '_' + (++num));
+        }
+      }
+    }
+  }
+
 }
