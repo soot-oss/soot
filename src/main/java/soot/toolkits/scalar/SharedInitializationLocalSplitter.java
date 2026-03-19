@@ -227,10 +227,6 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
   }
 
   public void transformOnly(Body body) {
-    /*
-     * int x = 1000; for (Unit u : body.getUnits()) { if (u instanceof IfStmt) { BinopExpr cond = (BinopExpr) ((IfStmt)
-     * u).getCondition(); cond.setOp2(IntConstant.v(x)); x++; } }
-     */
     final ExceptionalUnitGraph graph
         = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
     final LocalDefs defs = G.v().soot_toolkits_scalar_LocalDefsFactory().newLocalDefs(graph, true);
