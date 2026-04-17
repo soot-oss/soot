@@ -54,6 +54,7 @@ import soot.baf.BafBody;
 import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.baf.toolkits.base.PeepholeOptimizer;
 import soot.baf.toolkits.base.StoreChainOptimizer;
+import soot.dexpler.Util;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.grimp.toolkits.base.ConstructorFolder;
@@ -689,7 +690,7 @@ public class PackManager {
 
         // whole shimple or not?
         {
-          Body body = m.retrieveActiveBody();
+          Body body = retrieveActiveBody(m);
           if (!m.hasActiveBody()) {
             continue;
           }
@@ -713,7 +714,7 @@ public class PackManager {
       }
 
       if (produceJimple) {
-        Body body = m.retrieveActiveBody();
+        Body body = retrieveActiveBody(m);
         if (body != null) {
           getTransform("jb.cp").apply(body); // CopyPropagator
           getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
@@ -749,6 +750,36 @@ public class PackManager {
       processXMLForClass(c, tc);
     }
 
+  }
+
+  private Body retrieveActiveBody(SootMethod m) {
+    if (m == null) {
+      throw new IllegalArgumentException("Given method is null");
+    }
+    try {
+      return m.retrieveActiveBody();
+    } catch (Exception e) {
+      String msg = "An error occurred while reading in the method body of method " + m.getSignature();
+      if (Options.v().ignore_methodsource_error()) {
+        logger.warn(msg + "; continuing", e);
+        JimpleBody jb = new JimpleBody(m);
+        m.setActiveBody(jb);
+        Util.emptyBody(jb);
+        Util.addExceptionAfterUnit(jb, "java.lang.RuntimeException", jb.getUnits().getLast(),
+            "Soot encountered an internal exception while importing the body: " + e.getMessage());
+        TypeAssigner.v().transform(jb);
+        return jb;
+      } else {
+        final String ignoreSuggestion;
+        if (Main.usedAsCommandLineApp) {
+          ignoreSuggestion = "use the command line argument -ignore-methodsource-error for that.";
+        } else {
+          ignoreSuggestion = "use Options.v().set_ignore_classpath_errors(true);";
+        }
+
+        throw new MethodSourceException(m, msg + ". If you want to ignore the error, " + ignoreSuggestion, e);
+      }
+    }
   }
 
   public BafBody convertJimpleBodyToBaf(SootMethod m) {
@@ -926,7 +957,7 @@ public class PackManager {
       // are added during resolution
       for (SootMethod m : new ArrayList<SootMethod>(cl.getMethods())) {
         if (m.isConcrete()) {
-          executor.execute(() -> m.retrieveActiveBody());
+          executor.execute(() -> retrieveActiveBody(m));
         }
       }
     }
