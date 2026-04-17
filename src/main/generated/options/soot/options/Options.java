@@ -1966,7 +1966,6 @@ public class Options extends OptionsBase {
                     + padVal("wjap.umt", "Tags all unreachable methods")
                     + padVal("wjap.uft", "Tags all unreachable fields")
                     + padVal("wjap.tqt", "Tags all qualifiers that could be tighter")
-                    + padVal("wjap.cgg", "Creates graphical call graph.")
                     + padVal("wjap.purity", "Emit purity attributes")
                 + padOpt("shimple", "Sets parameters for Shimple SSA form")
                 + padOpt("stp", "Shimple transformation pack")
@@ -1992,7 +1991,6 @@ public class Options extends OptionsBase {
                     + padVal("jap.npcolorer", "Null pointer colourer: tags references for eclipse")
                     + padVal("jap.sea", "Side effect tagger")
                     + padVal("jap.fieldrw", "Field read/write tagger")
-                    + padVal("jap.cgtagger", "Call graph tagger")
                     + padVal("jap.parity", "Parity tagger")
                     + padVal("jap.pat", "Colour-codes method parameters that may be aliased")
                     + padVal("jap.lvtagger", "Creates color tags for live variables")
@@ -2501,13 +2499,6 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "");
 
-        if (phaseName.equals("wjap.cgg"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nCreates graphical call graph."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "")
-                    + padOpt("show-lib-meths (false)", "");
-
         if (phaseName.equals("wjap.purity"))
             return "Phase " + phaseName + ":\n"
                     + "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis for Java Programs \nby Alexandru Salcianu and Martin Rinard."
@@ -2685,12 +2676,6 @@ public class Options extends OptionsBase {
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (false)", "")
                     + padOpt("threshold (100)", "");
-
-        if (phaseName.equals("jap.cgtagger"))
-            return "Phase " + phaseName + ":\n"
-                    + "\nThe Call Graph Tagger produces LinkTags based on the call graph. \nThe Eclipse plugin uses these tags to produce linked popup lists \nwhich indicate the source and target methods of the statement. \nSelecting a link from the list moves the cursor to the indicated \nmethod."
-                    + "\n\nRecognized options (with default values):\n"
-                    + padOpt("enabled (false)", "");
 
         if (phaseName.equals("jap.parity"))
             return "Phase " + phaseName + ":\n"
@@ -3194,12 +3179,6 @@ public class Options extends OptionsBase {
                     "enabled"
             );
 
-        if (phaseName.equals("wjap.cgg"))
-            return String.join(" ", 
-                    "enabled",
-                    "show-lib-meths"
-            );
-
         if (phaseName.equals("wjap.purity"))
             return String.join(" ", 
                     "enabled",
@@ -3348,11 +3327,6 @@ public class Options extends OptionsBase {
             return String.join(" ", 
                     "enabled",
                     "threshold"
-            );
-
-        if (phaseName.equals("jap.cgtagger"))
-            return String.join(" ", 
-                    "enabled"
             );
 
         if (phaseName.equals("jap.parity"))
@@ -3790,11 +3764,6 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:false ";
 
-        if (phaseName.equals("wjap.cgg"))
-            return ""
-                    + "enabled:false "
-                    + "show-lib-meths:false ";
-
         if (phaseName.equals("wjap.purity"))
             return ""
                     + "enabled:false "
@@ -3919,10 +3888,6 @@ public class Options extends OptionsBase {
             return ""
                     + "enabled:false "
                     + "threshold:100 ";
-
-        if (phaseName.equals("jap.cgtagger"))
-            return ""
-                    + "enabled:false ";
 
         if (phaseName.equals("jap.parity"))
             return ""
@@ -4074,7 +4039,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("wjap.umt")
                 || phaseName.equals("wjap.uft")
                 || phaseName.equals("wjap.tqt")
-                || phaseName.equals("wjap.cgg")
                 || phaseName.equals("wjap.purity")
                 || phaseName.equals("shimple")
                 || phaseName.equals("stp")
@@ -4100,7 +4064,6 @@ public class Options extends OptionsBase {
                 || phaseName.equals("jap.npcolorer")
                 || phaseName.equals("jap.sea")
                 || phaseName.equals("jap.fieldrw")
-                || phaseName.equals("jap.cgtagger")
                 || phaseName.equals("jap.parity")
                 || phaseName.equals("jap.pat")
                 || phaseName.equals("jap.lvtagger")
@@ -4214,8 +4177,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase wjap.uft");
         if (!PackManager.v().hasPhase("wjap.tqt"))
             G.v().out.println("Warning: Options exist for non-existent phase wjap.tqt");
-        if (!PackManager.v().hasPhase("wjap.cgg"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap.cgg");
         if (!PackManager.v().hasPhase("wjap.purity"))
             G.v().out.println("Warning: Options exist for non-existent phase wjap.purity");
         if (!PackManager.v().hasPhase("shimple"))
@@ -4266,8 +4227,6 @@ public class Options extends OptionsBase {
             G.v().out.println("Warning: Options exist for non-existent phase jap.sea");
         if (!PackManager.v().hasPhase("jap.fieldrw"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.fieldrw");
-        if (!PackManager.v().hasPhase("jap.cgtagger"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.cgtagger");
         if (!PackManager.v().hasPhase("jap.parity"))
             G.v().out.println("Warning: Options exist for non-existent phase jap.parity");
         if (!PackManager.v().hasPhase("jap.pat"))
