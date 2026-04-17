@@ -329,7 +329,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
     @Override
     protected void doAnalysis() {
-      doAnalysis(GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, EmptyDevNullMap.v());
+      doAnalysis(GraphView.FORWARD, unitToBeforeFlow, EmptyDevNullMap.v());
     }
 
     @Override

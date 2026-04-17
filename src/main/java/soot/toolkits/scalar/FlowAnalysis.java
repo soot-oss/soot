@@ -36,14 +36,9 @@ import java.util.Queue;
 import java.util.RandomAccess;
 import java.util.Set;
 
-import soot.baf.GotoInst;
 import soot.jimple.BranchableStmt;
-import soot.jimple.GotoStmt;
-import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.StronglyConnectedComponentsFast;
-import soot.toolkits.graph.interaction.FlowInfo;
-import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.util.Numberable;
 import soot.util.PriorityQueue;
 
@@ -165,13 +160,13 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
                 allLoopNodesSet = new HashSet<>(i);
               }
               if (!allLoopNodesSet.contains(b.getTarget())) {
-                //we've found a goto to out of the loop, this is fine
+                // we've found a goto to out of the loop, this is fine
                 continue nextComponent;
               }
             }
           }
-          //we've found a case where we have a strongly connected component (loop)
-          //that has no exit node. We just add one representative from that SCC.
+          // we've found a case where we have a strongly connected component (loop)
+          // that has no exit node. We just add one representative from that SCC.
           entries.add(i.get(0));
         }
         //
@@ -299,64 +294,6 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
           return;
         }
       }
-    }
-  }
-
-  enum InteractionFlowHandler {
-    NONE, FORWARD {
-      @Override
-      public <A, N> void handleFlowIn(FlowAnalysis<N, A> a, N s) {
-        beforeEvent(stop(s), a, s);
-      }
-
-      @Override
-      public <A, N> void handleFlowOut(FlowAnalysis<N, A> a, N s) {
-        afterEvent(InteractionHandler.v(), a, s);
-      }
-    },
-    BACKWARD {
-      @Override
-      public <A, N> void handleFlowIn(FlowAnalysis<N, A> a, N s) {
-        afterEvent(stop(s), a, s);
-      }
-
-      @Override
-      public <A, N> void handleFlowOut(FlowAnalysis<N, A> a, N s) {
-        beforeEvent(InteractionHandler.v(), a, s);
-      }
-    };
-
-    <A, N> void beforeEvent(InteractionHandler i, FlowAnalysis<N, A> a, N s) {
-      A savedFlow = a.filterUnitToBeforeFlow.get(s);
-      if (savedFlow == null) {
-        savedFlow = a.newInitialFlow();
-      }
-      a.copy(a.unitToBeforeFlow.get(s), savedFlow);
-      i.handleBeforeAnalysisEvent(new FlowInfo<A, N>(savedFlow, s, true));
-    }
-
-    <A, N> void afterEvent(InteractionHandler i, FlowAnalysis<N, A> a, N s) {
-      A savedFlow = a.filterUnitToAfterFlow.get(s);
-      if (savedFlow == null) {
-        savedFlow = a.newInitialFlow();
-      }
-      a.copy(a.unitToAfterFlow.get(s), savedFlow);
-      i.handleAfterAnalysisEvent(new FlowInfo<A, N>(savedFlow, s, false));
-    }
-
-    InteractionHandler stop(Object s) {
-      InteractionHandler h = InteractionHandler.v();
-      List<?> stopList = h.getStopUnitList();
-      if (stopList != null && stopList.contains(s)) {
-        h.handleStopAtNodeEvent(s);
-      }
-      return h;
-    }
-
-    public <A, N> void handleFlowIn(FlowAnalysis<N, A> a, N s) {
-    }
-
-    public <A, N> void handleFlowOut(FlowAnalysis<N, A> a, N s) {
     }
   }
 
@@ -520,11 +457,8 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
     }
   }
 
-  final int doAnalysis(GraphView gv, InteractionFlowHandler ifh, Map<N, A> inFlow, Map<N, A> outFlow) {
+  final int doAnalysis(GraphView gv, Map<N, A> inFlow, Map<N, A> outFlow) {
     assert gv != null;
-    assert ifh != null;
-
-    ifh = Options.v().interactive_mode() ? ifh : InteractionFlowHandler.NONE;
 
     final List<Entry<N, A>> universe = Orderer.INSTANCE.newUniverse(graph, gv, entryInitialFlow(), isForward());
     initFlow(universe, inFlow, outFlow);
@@ -541,9 +475,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
       meetFlows(e);
 
       // Compute beforeFlow and store it.
-      ifh.handleFlowIn(this, e.data);
       boolean hasChanged = flowThrough(e);
-      ifh.handleFlowOut(this, e.data);
 
       // Update queue appropriately
       if (hasChanged) {

@@ -125,7 +125,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite wjapwjap_umtChild = wjapwjap_umtCreate(getPageContainer());
 		Composite wjapwjap_uftChild = wjapwjap_uftCreate(getPageContainer());
 		Composite wjapwjap_tqtChild = wjapwjap_tqtCreate(getPageContainer());
-		Composite wjapwjap_cggChild = wjapwjap_cggCreate(getPageContainer());
 		Composite wjapwjap_purityChild = wjapwjap_purityCreate(getPageContainer());
 		Composite sopsop_cpfChild = sopsop_cpfCreate(getPageContainer());
 		Composite jopjop_cseChild = jopjop_cseCreate(getPageContainer());
@@ -145,7 +144,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		Composite japjap_npcolorerChild = japjap_npcolorerCreate(getPageContainer());
 		Composite japjap_seaChild = japjap_seaCreate(getPageContainer());
 		Composite japjap_fieldrwChild = japjap_fieldrwCreate(getPageContainer());
-		Composite japjap_cgtaggerChild = japjap_cgtaggerCreate(getPageContainer());
 		Composite japjap_parityChild = japjap_parityCreate(getPageContainer());
 		Composite japjap_patChild = japjap_patCreate(getPageContainer());
 		Composite japjap_lvtaggerChild = japjap_lvtaggerCreate(getPageContainer());
@@ -554,12 +552,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("wjap", "wjap.tqt", getwjapwjap_tqtenabled_widget(), "enabled");
 		getwjapwjap_tqtenabled_widget().getButton().addSelectionListener(this);
 
-		makeNewEnableGroup("wjap", "wjap.cgg");
-		addToEnableGroup("wjap", "wjap.cgg", getwjapwjap_cggenabled_widget(), "enabled");
-		addToEnableGroup("wjap", "wjap.cgg", getwjapwjap_cggshow_lib_meths_widget(), "show-lib-meths");
-		getwjapwjap_cggenabled_widget().getButton().addSelectionListener(this);
-		getwjapwjap_cggshow_lib_meths_widget().getButton().addSelectionListener(this);
-
 		makeNewEnableGroup("wjap", "wjap.purity");
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityenabled_widget(), "enabled");
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_summaries_widget(), "dump-summaries");
@@ -707,10 +699,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jap", "jap.fieldrw", getjapjap_fieldrwenabled_widget(), "enabled");
 		addToEnableGroup("jap", "jap.fieldrw", getjapjap_fieldrwthreshold_widget(), "threshold");
 		getjapjap_fieldrwenabled_widget().getButton().addSelectionListener(this);
-
-		makeNewEnableGroup("jap", "jap.cgtagger");
-		addToEnableGroup("jap", "jap.cgtagger", getjapjap_cgtaggerenabled_widget(), "enabled");
-		getjapjap_cgtaggerenabled_widget().getButton().addSelectionListener(this);
 
 		makeNewEnableGroup("jap", "jap.parity");
 		addToEnableGroup("jap", "jap.parity", getjapjap_parityenabled_widget(), "enabled");
@@ -882,12 +870,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsverbose_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getGeneral_Optionsinteractive_mode_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionsinteractive_mode_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getGeneral_Optionsunfriendly_mode_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -2358,18 +2340,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_tqtenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getwjapwjap_cggenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getwjapwjap_cggenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		boolRes = getwjapwjap_cggshow_lib_meths_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getwjapwjap_cggshow_lib_meths_widget().getAlias(), new Boolean(boolRes));
-		}
 		boolRes = getwjapwjap_purityenabled_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -2669,12 +2639,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getjapjap_fieldrwthreshold_widget().getAlias(), stringRes);
-		}
-		boolRes = getjapjap_cgtaggerenabled_widget().getButton().getSelection();
-		defBoolRes = false;
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_cgtaggerenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getjapjap_parityenabled_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -3468,16 +3432,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			subSectParent = wjap_wjap_tqt_branch;
 			
 			
-			SootOption wjap_wjap_cgg_branch = new SootOption("Call Graph Grapher", "wjapwjap_cgg");
-			subParent.addChild(wjap_wjap_cgg_branch);
-
-
-			
-
-			
-			subSectParent = wjap_wjap_cgg_branch;
-			
-			
 			SootOption wjap_wjap_purity_branch = new SootOption("Purity Analysis [AM]", "wjapwjap_purity");
 			subParent.addChild(wjap_wjap_purity_branch);
 
@@ -3708,16 +3662,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 			
 			subSectParent = jap_jap_fieldrw_branch;
-			
-			
-			SootOption jap_jap_cgtagger_branch = new SootOption("Call Graph Tagger", "japjap_cgtagger");
-			subParent.addChild(jap_jap_cgtagger_branch);
-
-
-			
-
-			
-			subSectParent = jap_jap_cgtagger_branch;
 			
 			
 			SootOption jap_jap_parity_branch = new SootOption("Parity Tagger", "japjap_parity");
@@ -4005,16 +3949,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getGeneral_Optionsverbose_widget() {
 		return General_Optionsverbose_widget;
-	}	
-	
-	private BooleanOptionWidget General_Optionsinteractive_mode_widget;
-	
-	private void setGeneral_Optionsinteractive_mode_widget(BooleanOptionWidget widget) {
-		General_Optionsinteractive_mode_widget = widget;
-	}
-	
-	public BooleanOptionWidget getGeneral_Optionsinteractive_mode_widget() {
-		return General_Optionsinteractive_mode_widget;
 	}	
 	
 	private BooleanOptionWidget General_Optionsunfriendly_mode_widget;
@@ -6583,26 +6517,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return wjapwjap_tqtenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wjapwjap_cggenabled_widget;
-	
-	private void setwjapwjap_cggenabled_widget(BooleanOptionWidget widget) {
-		wjapwjap_cggenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwjapwjap_cggenabled_widget() {
-		return wjapwjap_cggenabled_widget;
-	}	
-	
-	private BooleanOptionWidget wjapwjap_cggshow_lib_meths_widget;
-	
-	private void setwjapwjap_cggshow_lib_meths_widget(BooleanOptionWidget widget) {
-		wjapwjap_cggshow_lib_meths_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwjapwjap_cggshow_lib_meths_widget() {
-		return wjapwjap_cggshow_lib_meths_widget;
-	}	
-	
 	private BooleanOptionWidget wjapwjap_purityenabled_widget;
 	
 	private void setwjapwjap_purityenabled_widget(BooleanOptionWidget widget) {
@@ -7106,16 +7020,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return japjap_fieldrwthreshold_widget;
 	}
 	
-	
-	private BooleanOptionWidget japjap_cgtaggerenabled_widget;
-	
-	private void setjapjap_cgtaggerenabled_widget(BooleanOptionWidget widget) {
-		japjap_cgtaggerenabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapjap_cgtaggerenabled_widget() {
-		return japjap_cgtaggerenabled_widget;
-	}	
 	
 	private BooleanOptionWidget japjap_parityenabled_widget;
 	
@@ -7697,17 +7601,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v verbose", "\nProvide detailed information about what Soot is doing as it \nruns.", defaultBool)));
-
-		defKey = ""+" "+""+" "+"interactive-mode";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing detailed information as \nit iterates through intra-procedural analyses.", defaultBool)));
 
 		defKey = ""+" "+""+" "+"unfriendly-mode";
 		defKey = defKey.trim();
@@ -12850,58 +12743,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 
-	private Composite wjapwjap_cggCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupwjapwjap_cgg = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupwjapwjap_cgg.setLayout(layout);
-	
-	 	editGroupwjapwjap_cgg.setText("Call Graph Grapher");
-	 	
-		editGroupwjapwjap_cgg.setData("id", "wjapwjap_cgg");
-		
-		String descwjapwjap_cgg = "Creates graphical call graph.";	
-		if (descwjapwjap_cgg.length() > 0) {
-			Label descLabelwjapwjap_cgg = new Label(editGroupwjapwjap_cgg, SWT.WRAP);
-			descLabelwjapwjap_cgg.setText(descwjapwjap_cgg);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"wjap.cgg"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setwjapwjap_cggenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_cgg, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.cgg","enabled", "\n", defaultBool)));
-
-		defKey = "p phase-option"+" "+"wjap.cgg"+" "+"show-lib-meths";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setwjapwjap_cggshow_lib_meths_widget(new BooleanOptionWidget(editGroupwjapwjap_cgg, SWT.NONE, new OptionData("Show Library Methods", "p phase-option", "wjap.cgg","show-lib-meths", "\n", defaultBool)));
-
-
-		return editGroupwjapwjap_cgg;
-	}
-
-
-
 	private Composite wjapwjap_purityCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -14216,47 +14057,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 
 		return editGroupjapjap_fieldrw;
-	}
-
-
-
-	private Composite japjap_cgtaggerCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-	    String defaultArray;
-       
-		Group editGroupjapjap_cgtagger = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupjapjap_cgtagger.setLayout(layout);
-	
-	 	editGroupjapjap_cgtagger.setText("Call Graph Tagger");
-	 	
-		editGroupjapjap_cgtagger.setData("id", "japjap_cgtagger");
-		
-		String descjapjap_cgtagger = "Call graph tagger";	
-		if (descjapjap_cgtagger.length() > 0) {
-			Label descLabeljapjap_cgtagger = new Label(editGroupjapjap_cgtagger, SWT.WRAP);
-			descLabeljapjap_cgtagger.setText(descjapjap_cgtagger);
-		}
-		OptionData [] data;	
-		
-		
-		
-
-		defKey = "p phase-option"+" "+"jap.cgtagger"+" "+"enabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		} else {
-			defaultBool = false;
-		}
-
-		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.cgtagger","enabled", "\n", defaultBool)));
-
-
-		return editGroupjapjap_cgtagger;
 	}
 
 

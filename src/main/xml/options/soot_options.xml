@@ -271,15 +271,7 @@
                 Provide detailed information about what Soot is doing as it runs.
             </long_desc>
         </boolopt>
-        <boolopt>
-            <name>Interactive Mode</name>
-            <alias>interactive-mode</alias>
-            <short_desc>Run in interactive mode</short_desc>
-            <long_desc>
-                Runs interactively, with Soot providing detailed information as it iterates through intra-procedural
-                analyses.
-            </long_desc>
-        </boolopt>
+
         <boolopt>
             <name>Unfriendly Mode</name>
             <alias>unfriendly-mode</alias>
@@ -4894,25 +4886,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                     </boolopt>
                 </sub_phase>
                 <sub_phase>
-                    <name>Call Graph Grapher</name>
-                    <class>CGGOptions</class>
-                    <alias>wjap.cgg</alias>
-                    <short_desc>Creates graphical call graph.</short_desc>
-                    <long_desc>
-                        <p>Creates graphical call graph.</p>
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                    </boolopt>
-                    <boolopt>
-                        <name>Show Library Methods</name>
-                        <alias>show-lib-meths</alias>
-                        <default>false</default>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
                     <name>Purity Analysis [AM]</name>
                     <class>PurityOptions</class>
                     <alias>wjap.purity</alias>
@@ -5732,23 +5705,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                             produced for it, in order to keep the size of the tags reasonable.
                         </long_desc>
                     </intopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Call Graph Tagger</name>
-                    <alias>jap.cgtagger</alias>
-                    <short_desc>Call graph tagger</short_desc>
-                    <long_desc>
-                        The Call Graph Tagger produces LinkTags based on the call
-                        graph. The Eclipse plugin uses these tags to produce
-                        linked popup lists which indicate the source and target methods
-                        of the statement. Selecting a link from the list moves the
-                        cursor to the indicated method.
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                    </boolopt>
                 </sub_phase>
                 <sub_phase>
                     <name>Parity Tagger</name>

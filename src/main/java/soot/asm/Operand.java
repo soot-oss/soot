@@ -22,14 +22,20 @@ package soot.asm;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.TryCatchBlockNode;
 
+import soot.Immediate;
 import soot.Local;
 import soot.Value;
-import soot.ValueBox;
+import soot.jimple.Jimple;
+import soot.jimple.Stmt;
+import soot.jimple.internal.AbstractInvokeExpr;
+import soot.jimple.internal.JAssignStmt;
+import soot.jimple.internal.JCaughtExceptionRef;
 import soot.tagkit.Tag;
 
 /**
@@ -38,6 +44,8 @@ import soot.tagkit.Tag;
  * @author Aaloan Miftah
  */
 final class Operand {
+
+  static final Operand DWORD_DUMMY = new Operand(null, null, null);
 
   public static enum OperandType {
     INT, LONG, FLOAT, DOUBLE
@@ -49,8 +57,9 @@ final class Operand {
   OperandType type;
   Tag tag;
 
-  Local stack;
-  private Object boxes;
+  Local stackLocal;
+  private AsmMethodSource methodSource;
+  private Set<TryCatchBlockNode> activeTrapHandlers;
 
   /**
    * Constructs a new stack operand.
@@ -60,120 +69,120 @@ final class Operand {
    * @param value
    *          the generated value.
    */
-  Operand(AbstractInsnNode insn, Value value) {
+  Operand(AbstractInsnNode insn, Value value, AsmMethodSource methodSource) {
     this.insn = insn;
     this.value = value;
     this.type = null;
+    this.methodSource = methodSource;
+    this.activeTrapHandlers = methodSource == null ? new HashSet<>() : new HashSet<>(methodSource.activeTrapHandlers);
   }
 
-  /**
-   * Removes a value box from this operand.
-   * 
-   * @param vb
-   *          the value box.
-   */
-  @SuppressWarnings("unchecked")
-  void removeBox(ValueBox vb) {
-    if (vb == null) {
+  Local getOrAssignValueToStackLocal() {
+    if (stackLocal == null) {
+      changeStackLocal(methodSource.newStackLocal());
+    }
+
+    return stackLocal;
+  }
+
+  void emitStatement() {
+    if (this == DWORD_DUMMY) {
       return;
     }
-    if (boxes == vb) {
-      boxes = null;
-    } else if (boxes instanceof List) {
-      List<ValueBox> list = (List<ValueBox>) boxes;
-      list.remove(vb);
-    }
-  }
 
-  /**
-   * Adds a value box to this operand.
-   * 
-   * @param vb
-   *          the value box.
-   */
-  @SuppressWarnings("unchecked")
-  void addBox(ValueBox vb) {
-    if (boxes instanceof List) {
-      List<ValueBox> list = (List<ValueBox>) boxes;
-      list.add(vb);
-    } else if (boxes instanceof ValueBox) {
-      ValueBox ovb = (ValueBox) boxes;
-      List<ValueBox> list = new ArrayList<ValueBox>();
-      list.add(ovb);
-      list.add(vb);
-      boxes = list;
+    if (methodSource.getStmt(insn) != null) {
+      // the operand is already used, which means side effects already happen as well
+      return;
+    }
+
+    if (value instanceof AbstractInvokeExpr) {
+      methodSource.setUnit(insn, Jimple.v().newInvokeStmt(value));
     } else {
-      boxes = vb;
+      // create an assignment that uses the value because it might have side effects
+      getOrAssignValueToStackLocal();
     }
   }
 
-  /**
-   * Updates all value boxes registered to this operand.
-   */
-  @SuppressWarnings("unchecked")
-  void updateBoxes() {
-    Value val = stackOrValue();
-    if (boxes instanceof List) {
-      for (ValueBox vb : (List<ValueBox>) boxes) {
-        vb.setValue(val);
+  void changeStackLocal(Local newStackLocal) {
+    Local oldStackLocal = this.stackLocal;
+
+    if (oldStackLocal == newStackLocal) {
+      // nothing to change
+      return;
+    }
+
+    Stmt stmt = methodSource.getStmt(insn);
+    if (!(stmt instanceof JAssignStmt)) {
+      // emit `$newStackLocal = value`
+      if (value instanceof JCaughtExceptionRef) {
+        methodSource.updateInlineExceptionHandler(insn, newStackLocal);
+      } else {
+        methodSource.setUnit(insn, Jimple.v().newAssignStmt(newStackLocal, value));
       }
-    } else if (boxes instanceof ValueBox) {
-      ((ValueBox) boxes).setValue(val);
+    } else {
+      JAssignStmt assignStmt = (JAssignStmt) stmt;
+      // replace `$oldStackLocal = value` with `$newStackLocal = value`
+      assignStmt.setLeftOp(newStackLocal);
     }
+
+    // Replace all usages of `oldStackLocal` with `newStackLocal`
+    if (oldStackLocal != null) {
+      methodSource.replace(oldStackLocal, newStackLocal);
+    }
+
+    this.stackLocal = newStackLocal;
   }
 
-  /**
-   * @param <A>
-   *          type of value to cast to.
-   * @return the value.
-   */
-  @SuppressWarnings("unchecked")
-  <A> A value() {
-    return (A) value;
+  Local toLocal() {
+    if (stackLocal == null && value instanceof Local) {
+      return (Local) value;
+    }
+
+    return getOrAssignValueToStackLocal();
   }
 
-  /**
-   * @return either the stack local allocated for this operand, or its value.
-   */
-  Value stackOrValue() {
-    Local s = stack;
-    return s == null ? value : s;
+  Immediate toImmediate() {
+    // Don't inline when the trap handlers (catch blocks) change between the operand and the usage.
+    // Even though immediates are just locals or constants,
+    // the corresponding instructions could still throw a `VirtualMachineError`.
+    boolean matchingTrapHandlers = this.activeTrapHandlers.equals(methodSource.activeTrapHandlers);
+
+    if (stackLocal == null && value instanceof Immediate && matchingTrapHandlers) {
+      return (Immediate) value;
+    }
+
+    return getOrAssignValueToStackLocal();
   }
 
   /**
    * Determines if this operand is equal to another operand.
-   * 
+   *
    * @param other
    *          the other operand.
    * @return {@code true} if this operand is equal to another operand, {@code false} otherwise.
    */
   boolean equivTo(Operand other) {
-    if (other.value == null && value == null) {
-      return true;
-    }
-    return stackOrValue().equivTo(other.stackOrValue());
+    Value stackOrValue = stackLocal == null ? value : stackLocal;
+    Value stackOrValueOther = other.stackLocal == null ? other.value : other.stackLocal;
+
+    // care for DWORD comparison, as asValue is null, which would result in a
+    // NullPointerException
+    return (this == other)
+        || ((this == Operand.DWORD_DUMMY) == (other == Operand.DWORD_DUMMY) && stackOrValue.equivTo(stackOrValueOther));
+  }
+
+  @Override
+  public String toString() {
+    return "Operand{" + "insn=" + insn + ", value=" + value + ", stack=" + stackLocal + '}';
+  }
+
+  public AbstractInsnNode getInsn() {
+    return insn;
   }
 
   @Override
   public boolean equals(Object other) {
     return other instanceof Operand && equivTo((Operand) other);
-  }
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    boolean hasStack = false;
-    if (stack != null) {
-      sb.append(stack.toString());
-      hasStack = true;
-    }
-    if (value != null) {
-      if (hasStack) {
-        sb.append(" - ");
-        sb.append(value.toString());
-      }
-    }
-    return sb.toString();
   }
 
 }

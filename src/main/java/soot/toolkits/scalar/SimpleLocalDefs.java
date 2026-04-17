@@ -91,14 +91,14 @@ public class SimpleLocalDefs implements LocalDefs {
           AssignStmt assign = (AssignStmt) ua;
           Value rop = assign.getRightOp();
           if (rop instanceof PhiExpr) {
-            //Definitions do not necessarily agree!
+            // Definitions do not necessarily agree!
             return false;
           }
         }
       }
       return !lb.hasNext();
     }
-    
+
     @Override
     public List<Unit> getDefsOfAt(Local l, Unit s) {
       List<Unit> lst = result.get(l);
@@ -314,7 +314,7 @@ public class SimpleLocalDefs implements LocalDefs {
         }
       }
       this.fromUnitToHandler = fromUnitToHandler;
-      doAnalysis(GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, EmptyDevNullMap.v());
+      doAnalysis(GraphView.FORWARD, unitToBeforeFlow, EmptyDevNullMap.v());
 
       this.indexOfUnit = null;// release memory
     }

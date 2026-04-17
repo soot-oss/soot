@@ -21,7 +21,6 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -139,7 +138,6 @@ import static org.objectweb.asm.Opcodes.LXOR;
 import static org.objectweb.asm.Opcodes.MONITORENTER;
 import static org.objectweb.asm.Opcodes.MONITOREXIT;
 import static org.objectweb.asm.Opcodes.NEW;
-import static org.objectweb.asm.Opcodes.NEWARRAY;
 import static org.objectweb.asm.Opcodes.NOP;
 import static org.objectweb.asm.Opcodes.POP;
 import static org.objectweb.asm.Opcodes.POP2;
@@ -195,10 +193,12 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.function.BiFunction;
 
 import org.objectweb.asm.ConstantDynamic;
 import org.objectweb.asm.Handle;
@@ -234,6 +234,7 @@ import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
+import soot.Immediate;
 import soot.IntType;
 import soot.LambdaMetaFactory;
 import soot.Local;
@@ -260,52 +261,43 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
-import soot.asm.Operand.OperandType;
 import soot.dexpler.Util;
-import soot.dexpler.tags.DoubleOpTag;
-import soot.dexpler.tags.FloatOpTag;
-import soot.dexpler.tags.IntOpTag;
-import soot.dexpler.tags.LongOpTag;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
-import soot.jimple.ConditionExpr;
-import soot.jimple.Constant;
-import soot.jimple.DefinitionStmt;
 import soot.jimple.DoubleConstant;
-import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
-import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.LookupSwitchStmt;
 import soot.jimple.MethodHandle;
 import soot.jimple.MethodType;
-import soot.jimple.MonitorStmt;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewMultiArrayExpr;
 import soot.jimple.NopStmt;
 import soot.jimple.NullConstant;
 import soot.jimple.ReturnStmt;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
-import soot.jimple.UnopExpr;
 import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
@@ -324,8 +316,6 @@ import soot.util.Chain;
 public class AsmMethodSource implements MethodSource {
   private static final Logger logger = LoggerFactory.getLogger(AsmMethodSource.class);
 
-  private static final Operand DWORD_DUMMY = new Operand(null, null);
-
   private static final String METAFACTORY_SIGNATURE = "<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite "
       + "metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,"
       + "java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>";
@@ -341,20 +331,23 @@ public class AsmMethodSource implements MethodSource {
   private final List<LocalVariableNode> localVars;
   private final List<TryCatchBlockNode> tryCatchBlocks;
   private final Set<LabelNode> inlineExceptionLabels = new LinkedHashSet<LabelNode>();
-  private final Map<LabelNode, Unit> inlineExceptionHandlers = new LinkedHashMap<LabelNode, Unit>();
+  private final Map<LabelNode, IdentityStmt> inlineExceptionHandlers = new LinkedHashMap<LabelNode, IdentityStmt>();
   private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
+
+  /** Labels at which a trap handler range (try block) begins */
+  private final Map<LabelNode, TryCatchBlockNode> startTrapHandler = new HashMap<>();
+
+  /** Labels at which a trap handler range (try block) ends */
+  private final Map<LabelNode, TryCatchBlockNode> endTrapHandler = new HashMap<>();
 
   /* -state fields- */
   protected int nextLocal;
   protected Map<Integer, JimpleLocal> locals;
-  private Multimap<LabelNode, UnitBox> labels;
-  private Map<AbstractInsnNode, Unit> units;
-  private ArrayList<Operand> stack;
-  private Map<AbstractInsnNode, StackFrame> frames;
+  Map<AbstractInsnNode, Unit> insnToStmt;
+
+  private LinkedListMultimap<Stmt, LabelNode> stmtsThatBranchToLabel;
   private Multimap<LabelNode, UnitBox> trapHandlers;
   private JimpleBody body;
-  private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
-  private ArrayDeque<Edge> conversionWorklist;
   private Map<AbstractInsnNode, Integer> lineNumberMap;
 
   public AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars,
@@ -364,15 +357,6 @@ public class AsmMethodSource implements MethodSource {
     this.localVars = localVars;
     this.tryCatchBlocks = tryCatchBlocks;
     this.module = module;
-  }
-
-  private StackFrame getFrame(AbstractInsnNode insn) {
-    StackFrame frame = frames.get(insn);
-    if (frame == null) {
-      frame = new StackFrame(this);
-      frames.put(insn, frame);
-    }
-    return frame;
   }
 
   private SootClass getClassFromScene(String className) {
@@ -404,6 +388,13 @@ public class AsmMethodSource implements MethodSource {
 
   private final boolean useOriginalTypes
       = PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "use-original-types");
+
+  /** Keeps track of all trap handlers that are active at the current instruction */
+  Set<TryCatchBlockNode> activeTrapHandlers = new HashSet<>();
+
+  private OperandStack operandStack;
+
+  private LinkedListMultimap<Object, UnitBox> labels;
 
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
@@ -456,118 +447,6 @@ public class AsmMethodSource implements MethodSource {
     return null;
   }
 
-  private void push(Operand opr) {
-    stack.add(opr);
-  }
-
-  private void pushDual(Operand opr) {
-    stack.add(DWORD_DUMMY);
-    stack.add(opr);
-  }
-
-  private Operand peek() {
-    return stack.get(stack.size() - 1);
-  }
-
-  private void push(Type t, Operand opr) {
-    if (AsmUtil.isDWord(t)) {
-      pushDual(opr);
-    } else {
-      push(opr);
-    }
-  }
-
-  private Operand pop() {
-    if (stack.isEmpty()) {
-      throw new RuntimeException("Stack underrun");
-    }
-    return stack.remove(stack.size() - 1);
-  }
-
-  private Operand popDual() {
-    Operand o = pop();
-    Operand o2 = pop();
-    if (o2 != DWORD_DUMMY && o2 != o) {
-      throw new AssertionError("Not dummy operand, " + o2.value + " -- " + o.value);
-    }
-    return o;
-  }
-
-  private Operand pop(Type t) {
-    return AsmUtil.isDWord(t) ? popDual() : pop();
-  }
-
-  private Operand popLocal(Operand o) {
-    Value v = o.value;
-    Local l = o.stack;
-    if (l == null && !(v instanceof Local)) {
-      l = o.stack = newStackLocal();
-      setUnit(o, Jimple.v().newAssignStmt(l, v));
-      o.updateBoxes();
-    }
-    return o;
-  }
-
-  private Operand popImmediate(Operand o) {
-    Value v = o.value;
-    Local l = o.stack;
-    if (l == null && !(v instanceof Local) && !(v instanceof Constant)) {
-      l = o.stack = newStackLocal();
-      setUnit(o, Jimple.v().newAssignStmt(l, v));
-      o.updateBoxes();
-    }
-    return o;
-  }
-
-  private Operand popStackConst(Operand o) {
-    Value v = o.value;
-    Local l = o.stack;
-    if (l == null && !(v instanceof Constant)) {
-      l = o.stack = newStackLocal();
-      setUnit(o, Jimple.v().newAssignStmt(l, v));
-      o.updateBoxes();
-    }
-    return o;
-  }
-
-  private Operand popLocal() {
-    return popLocal(pop());
-  }
-
-  private Operand popLocalDual() {
-    return popLocal(popDual());
-  }
-
-  @SuppressWarnings("unused")
-  private Operand popLocal(Type t) {
-    return AsmUtil.isDWord(t) ? popLocalDual() : popLocal();
-  }
-
-  private Operand popImmediate() {
-    return popImmediate(pop());
-  }
-
-  private Operand popImmediateDual() {
-    return popImmediate(popDual());
-  }
-
-  private Operand popImmediate(Type t) {
-    return AsmUtil.isDWord(t) ? popImmediateDual() : popImmediate();
-  }
-
-  private Operand popStackConst() {
-    return popStackConst(pop());
-  }
-
-  private Operand popStackConstDual() {
-    return popStackConst(popDual());
-  }
-
-  @SuppressWarnings("unused")
-  private Operand popStackConst(Type t) {
-    return AsmUtil.isDWord(t) ? popStackConstDual() : popStackConst();
-  }
-
   protected void setUnit(Operand op, Unit u) {
     setUnit(op.insn, u);
     if (op.tag != null) {
@@ -583,10 +462,8 @@ public class AsmMethodSource implements MethodSource {
       }
     }
 
-    Unit o = units.put(insn, u);
-    if (o != null) {
-      throw new AssertionError(insn.getOpcode() + " already has a unit, " + o);
-    }
+    insnToStmt.put(insn, u);
+
   }
 
   protected void setLineNumber(Unit u, int lineNumber) {
@@ -600,10 +477,11 @@ public class AsmMethodSource implements MethodSource {
   }
 
   void mergeUnits(AbstractInsnNode insn, Unit u) {
-    Unit prev = units.put(insn, u);
+    Unit prev = insnToStmt.put(insn, u);
     if (prev != null) {
       Unit merged = new UnitContainer(prev, u);
-      units.put(insn, merged);
+      insnToStmt.put(insn, merged);
+      merged.addAllTagsOf(prev);
     }
   }
 
@@ -616,128 +494,109 @@ public class AsmMethodSource implements MethodSource {
 
   @SuppressWarnings("unchecked")
   <A extends Unit> A getUnit(AbstractInsnNode insn) {
-    return (A) units.get(insn);
+    return (A) insnToStmt.get(insn);
   }
 
   private void assignReadOps(Local l) {
-    if (stack.isEmpty()) {
-      return;
-    }
-    for (Operand opr : stack) {
-      if (opr == DWORD_DUMMY || opr.stack != null || (l == null && opr.value instanceof Local)) {
-        continue;
-      }
-      if (l != null && !opr.value.equivTo(l)) {
-        Iterator<ValueBox> uses = opr.value.getUseBoxesIterator();
-        boolean noref = true;
-        while (uses.hasNext()) {
-          Value val = uses.next().getValue();
-          if (val.equivTo(l)) {
-            noref = false;
-            break;
-          }
-        }
-        if (noref) {
-          continue;
-        }
-      }
-      int op = opr.insn.getOpcode();
-      if (l == null && op != GETFIELD && op != GETSTATIC && (op < IALOAD || op > SALOAD)) {
-        continue;
-      }
-      Local stack = newStackLocal();
-      opr.stack = stack;
-      AssignStmt as = Jimple.v().newAssignStmt(stack, opr.value);
-      opr.updateBoxes();
-      setUnit(opr, as);
-    }
+    addReadOperandAssignments(l);
   }
 
   private void convertGetFieldInsn(FieldInsnNode insn) {
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
     Type type;
-    if (out == null) {
-      SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
-      type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
-      Value val;
-      SootFieldRef ref;
-      if (insn.getOpcode() == GETSTATIC) {
-        ref = Scene.v().makeFieldRef(declClass, insn.name, type, true);
-        val = Jimple.v().newStaticFieldRef(ref);
-      } else {
-        Operand base = popLocal();
-        ref = Scene.v().makeFieldRef(declClass, insn.name, type, false);
-        InstanceFieldRef ifr = Jimple.v().newInstanceFieldRef(base.stackOrValue(), ref);
-        val = ifr;
-        base.addBox(ifr.getBaseBox());
-        frame.in(base);
-        frame.boxes(ifr.getBaseBox());
-      }
-      opr = new Operand(insn, val);
-      frame.out(opr);
+    SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
+    type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+    Value val;
+    SootFieldRef ref;
+    if (insn.getOpcode() == GETSTATIC) {
+      ref = Scene.v().makeFieldRef(declClass, insn.name, type, true);
+      val = Jimple.v().newStaticFieldRef(ref);
     } else {
-      opr = out[0];
-      type = opr.<FieldRef>value().getFieldRef().type();
-      if (insn.getOpcode() == GETFIELD) {
-        frame.mergeIn(pop());
-      }
+      Operand base = operandStack.pop();
+      merging.mergeInputs(base);
+      ref = Scene.v().makeFieldRef(declClass, insn.name, type, false);
+      InstanceFieldRef ifr = Jimple.v().newInstanceFieldRef(base.toLocal(), ref);
+      val = ifr;
     }
-    push(type, opr);
+    Operand opr = new Operand(insn, val, this);
+    merging.mergeOutput(opr);
+    operandStack.push(type, opr);
   }
 
   private void convertPutFieldInsn(FieldInsnNode insn) {
     boolean instance = insn.getOpcode() == PUTFIELD;
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr, rvalue;
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
     Type type;
-    if (out == null) {
-      SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
-      type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
-      Value val;
-      SootFieldRef ref;
-      rvalue = popImmediate(type);
-      if (!instance) {
-        ref = Scene.v().makeFieldRef(declClass, insn.name, type, true);
-        val = Jimple.v().newStaticFieldRef(ref);
-        frame.in(rvalue);
-      } else {
-        Operand base = popLocal();
-        ref = Scene.v().makeFieldRef(declClass, insn.name, type, false);
-        InstanceFieldRef ifr = Jimple.v().newInstanceFieldRef(base.stackOrValue(), ref);
-        val = ifr;
-        base.addBox(ifr.getBaseBox());
-        frame.in(rvalue, base);
-      }
-      opr = new Operand(insn, val);
-      frame.out(opr);
-      AssignStmt as = Jimple.v().newAssignStmt(val, rvalue.stackOrValue());
-      rvalue.addBox(as.getRightOpBox());
-      if (!instance) {
-        frame.boxes(as.getRightOpBox());
-      } else {
-        frame.boxes(as.getRightOpBox(), ((InstanceFieldRef) val).getBaseBox());
-      }
-      setUnit(insn, as);
+    SootClass declClass = this.getClassFromScene(AsmUtil.toQualifiedName(insn.owner));
+    type = AsmUtil.toJimpleType(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+
+    Operand rvalue = operandStack.pop(type);
+    Value val;
+    SootFieldRef ref;
+    if (!instance) {
+      merging.mergeInputs(rvalue);
+      ref = Scene.v().makeFieldRef(declClass, insn.name, type, true);
+      val = Jimple.v().newStaticFieldRef(ref);
     } else {
-      opr = out[0];
-      type = opr.<FieldRef>value().getFieldRef().type();
-      rvalue = pop(type);
-      if (!instance) {
-        /* PUTSTATIC only needs one operand on the stack, the rvalue */
-        frame.mergeIn(rvalue);
-      } else {
-        /* PUTFIELD has a rvalue and a base */
-        frame.mergeIn(rvalue, pop());
-      }
+      Operand base = operandStack.pop();
+      merging.mergeInputs(rvalue, base);
+      ref = Scene.v().makeFieldRef(declClass, insn.name, type, false);
+      InstanceFieldRef ifr = Jimple.v().newInstanceFieldRef(base.toLocal(), ref);
+      val = ifr;
     }
+    AssignStmt as = Jimple.v().newAssignStmt(val, rvalue.toImmediate());
+    setUnit(insn, as);
     /*
      * in case any static field or array is read from, and the static constructor or the field this instruction writes to,
      * modifies that field, write out any previous read from field/array
      */
-    assignReadOps(null);
+    addReadOperandAssignments();
+
+  }
+
+  private void addReadOperandAssignments() {
+    addReadOperandAssignments_internal((opValue, operand) -> {
+      if (opValue instanceof Local) {
+        return true;
+      }
+      int op = operand.insn.getOpcode();
+      return op != GETFIELD && op != GETSTATIC && (op < IALOAD || op > SALOAD);
+    });
+  }
+
+  private void addReadOperandAssignments(Local local) {
+    addReadOperandAssignments_internal((opValue, operand) -> {
+      if (!opValue.equivTo(local)) {
+        boolean noRef = true;
+        for (Unit i : insnToStmt.values()) {
+          for (Iterator<ValueBox> iterator = i.getUseAndDefBoxesIterator(); iterator.hasNext();) {
+            ValueBox use = iterator.next();
+            if (local.equivTo(use.getValue())) {
+              noRef = false;
+              break;
+            }
+          }
+
+        }
+        return noRef;
+      }
+      return false;
+    });
+  }
+
+  private void addReadOperandAssignments_internal(BiFunction<Value, Operand, Boolean> func) {
+    // determine which Operand(s) from the stack needs explicit assignments in Jimple
+    for (Operand operand : operandStack.getStack()) {
+      final Value opValue = operand.value;
+      if (operand == Operand.DWORD_DUMMY || operand.stackLocal != null) {
+        continue;
+      }
+      if (func.apply(opValue, operand)) {
+        continue;
+      }
+
+      operand.emitStatement();
+    }
   }
 
   private void convertFieldInsn(FieldInsnNode insn) {
@@ -752,7 +611,7 @@ public class AsmMethodSource implements MethodSource {
   private void convertIincInsn(IincInsnNode insn) {
     Local local = getLocal(insn.var);
     assignReadOps(local);
-    if (!units.containsKey(insn)) {
+    if (!insnToStmt.containsKey(insn)) {
       AddExpr add = Jimple.v().newAddExpr(local, IntConstant.v(insn.incr));
       setUnit(insn, Jimple.v().newAssignStmt(local, add));
     }
@@ -760,182 +619,123 @@ public class AsmMethodSource implements MethodSource {
 
   private void convertConstInsn(InsnNode insn) {
     int op = insn.getOpcode();
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Value v;
-      if (op == ACONST_NULL) {
-        v = NullConstant.v();
-      } else if (op >= ICONST_M1 && op <= ICONST_5) {
-        v = IntConstant.v(op - ICONST_0);
-      } else if (op == LCONST_0 || op == LCONST_1) {
-        v = LongConstant.v(op - LCONST_0);
-      } else if (op >= FCONST_0 && op <= FCONST_2) {
-        v = FloatConstant.v(op - FCONST_0);
-      } else if (op == DCONST_0 || op == DCONST_1) {
-        v = DoubleConstant.v(op - DCONST_0);
-      } else {
-        throw new AssertionError("Unknown constant opcode: " + op);
-      }
-      opr = new Operand(insn, v);
-      frame.out(opr);
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Value v;
+    if (op == ACONST_NULL) {
+      v = NullConstant.v();
+    } else if (op >= ICONST_M1 && op <= ICONST_5) {
+      v = IntConstant.v(op - ICONST_0);
+    } else if (op == LCONST_0 || op == LCONST_1) {
+      v = LongConstant.v(op - LCONST_0);
+    } else if (op >= FCONST_0 && op <= FCONST_2) {
+      v = FloatConstant.v(op - FCONST_0);
+    } else if (op == DCONST_0 || op == DCONST_1) {
+      v = DoubleConstant.v(op - DCONST_0);
     } else {
-      opr = out[0];
+      throw new UnsupportedOperationException("Unknown constant opcode: " + op);
     }
+    Operand opr = new Operand(insn, v, this);
+    merging.mergeOutput(opr);
     if (op == LCONST_0 || op == LCONST_1 || op == DCONST_0 || op == DCONST_1) {
-      pushDual(opr);
+      operandStack.pushDual(opr);
     } else {
-      push(opr);
+      operandStack.push(opr);
     }
   }
 
-  /*
-   * Following version is more complex, using stack frames as opposed to simply swapping
-   */
-  /*
-   * StackFrame frame = getFrame(insn); Operand[] out = frame.out(); Operand dup, dup2 = null, dupd, dupd2 = null; if (out ==
-   * null) { dupd = popImmediate(); dup = new Operand(insn, dupd.stackOrValue()); if (dword) { dupd2 = peek(); if (dupd2 ==
-   * DWORD_DUMMY) { pop(); dupd2 = dupd; } else { dupd2 = popImmediate(); } dup2 = new Operand(insn, dupd2.stackOrValue());
-   * frame.out(dup, dup2); frame.in(dupd, dupd2); } else { frame.out(dup); frame.in(dupd); } } else { dupd = pop(); dup =
-   * out[0]; if (dword) { dupd2 = pop(); if (dupd2 == DWORD_DUMMY) dupd2 = dupd; dup2 = out[1]; frame.mergeIn(dupd, dupd2); }
-   * else { frame.mergeIn(dupd); } }
-   */
-
   private void convertArrayLoadInsn(InsnNode insn) {
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Operand indx = popImmediate();
-      Operand base = popImmediate();
-
-      // We have a sample of totally broken code with a reference to a null array
-      // x = null[i]
-      // We silently fix this issue and return a null value
-      if (base.value == NullConstant.v()) {
-        opr = new Operand(insn, NullConstant.v());
-        frame.in(indx, base);
-        frame.out(opr);
-      } else {
-        ArrayRef ar = Jimple.v().newArrayRef(base.stackOrValue(), indx.stackOrValue());
-        indx.addBox(ar.getIndexBox());
-        base.addBox(ar.getBaseBox());
-        opr = new Operand(insn, ar);
-        frame.in(indx, base);
-        frame.boxes(ar.getIndexBox(), ar.getBaseBox());
-        frame.out(opr);
-      }
-    } else {
-      opr = out[0];
-      frame.mergeIn(pop(), pop());
-    }
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Operand indx = operandStack.pop();
+    Operand base = operandStack.pop();
+    merging.mergeInputs(indx, base);
+    ArrayRef ar = Jimple.v().newArrayRef(base.toLocal(), indx.toImmediate());
+    Operand opr = new Operand(insn, ar, this);
+    merging.mergeOutput(opr);
     int op = insn.getOpcode();
     if (op == DALOAD || op == LALOAD) {
-      pushDual(opr);
+      operandStack.pushDual(opr);
     } else {
-      push(opr);
+      operandStack.push(opr);
     }
   }
 
   private void convertArrayStoreInsn(InsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LASTORE || op == DASTORE;
-    StackFrame frame = getFrame(insn);
-    if (!units.containsKey(insn)) {
-      Operand valu = dword ? popImmediateDual() : popImmediate();
-      Operand indx = popImmediate();
-      Operand base = popLocal();
-      ArrayRef ar = Jimple.v().newArrayRef(base.stackOrValue(), indx.stackOrValue());
-      indx.addBox(ar.getIndexBox());
-      base.addBox(ar.getBaseBox());
-      AssignStmt as = Jimple.v().newAssignStmt(ar, valu.stackOrValue());
-      valu.addBox(as.getRightOpBox());
-      frame.in(valu, indx, base);
-      frame.boxes(as.getRightOpBox(), ar.getIndexBox(), ar.getBaseBox());
-      setUnit(insn, as);
-    } else {
-      frame.mergeIn(dword ? popDual() : pop(), pop(), pop());
-    }
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Operand valueOp = dword ? operandStack.popDual() : operandStack.pop();
+    Operand indexOp = operandStack.pop();
+    Operand baseOp = operandStack.pop();
+    merging.mergeInputs(valueOp, indexOp, baseOp);
+    ArrayRef ar = Jimple.v().newArrayRef(baseOp.toLocal(), indexOp.toImmediate());
+    AssignStmt as = Jimple.v().newAssignStmt(ar, valueOp.toImmediate());
+    setUnit(insn, as);
   }
 
   private void convertDupInsn(InsnNode insn) {
     int op = insn.getOpcode();
 
     // Get the top stack value which we need in either case
-    Operand dupd = popImmediate();
+    Operand dupd = operandStack.pop();
     Operand dupd2 = null;
 
     // Some instructions allow operands that take two registers
     boolean dword = op == DUP2 || op == DUP2_X1 || op == DUP2_X2;
     if (dword) {
-      if (peek() == DWORD_DUMMY) {
-        pop();
+      if (operandStack.peek() == Operand.DWORD_DUMMY) {
+        operandStack.pop();
         dupd2 = dupd;
       } else {
-        dupd2 = popImmediate();
+        dupd2 = operandStack.pop();
       }
     }
 
-    switch (op) {
-      case DUP: {
-        // val -> val, val
-        push(dupd);
-        push(dupd);
-        break;
-      }
-      case DUP_X1: {
-        // val2, val1 -> val1, val2, val1
-        // value1, value2 must not be of type double or long
-        Operand o2 = popImmediate();
-        push(dupd);
-        push(o2);
-        push(dupd);
-        break;
-      }
-      case DUP_X2: {
-        // value3, value2, value1 -> value1, value3, value2, value1
-        Operand o2 = popImmediate();
-        Operand o3 = peek() == DWORD_DUMMY ? pop() : popImmediate();
-        push(dupd);
-        push(o3);
-        push(o2);
-        push(dupd);
-        break;
-      }
-      case DUP2: {
-        // value2, value1 -> value2, value1, value2, value1
-        push(dupd2);
-        push(dupd);
-        push(dupd2);
-        push(dupd);
-        break;
-      }
-      case DUP2_X1: {
-        // value3, value2, value1 -> value2, value1, value3, value2, value1
-        // Attention: value2 may be
-        Operand o2 = popImmediate();
-        push(dupd2);
-        push(dupd);
-        push(o2);
-        push(dupd2);
-        push(dupd);
-        break;
-      }
-      case DUP2_X2: {
-        // (value4, value3), (value2, value1) -> (value2, value1), (value4, value3), (value2, value1)
-        Operand o2 = popImmediate();
-        Operand o2h = peek() == DWORD_DUMMY ? pop() : popImmediate();
-        push(dupd2);
-        push(dupd);
-        push(o2h);
-        push(o2);
-        push(dupd2);
-        push(dupd);
-        break;
-      }
-      default:
-        break;
+    if (op == DUP) {
+      // val -> val, val
+      operandStack.push(dupd);
+      operandStack.push(dupd);
+    } else if (op == DUP_X1) {
+      // val2, val1 -> val1, val2, val1
+      // value1, value2 must not be of type double or long
+      Operand o2 = operandStack.pop();
+      operandStack.push(dupd);
+      operandStack.push(o2);
+      operandStack.push(dupd);
+    } else if (op == DUP_X2) {
+      // value3, value2, value1 -> value1, value3, value2, value1
+      Operand o2 = operandStack.pop();
+      // pops either the `Operand.DWORD_DUMMY` or the third value
+      Operand o3 = operandStack.pop();
+      operandStack.push(dupd);
+      operandStack.push(o3);
+      operandStack.push(o2);
+      operandStack.push(dupd);
+    } else if (op == DUP2) {
+      // value2, value1 -> value2, value1, value2, value1
+      operandStack.push(dupd2);
+      operandStack.push(dupd);
+      operandStack.push(dupd2);
+      operandStack.push(dupd);
+    } else if (op == DUP2_X1) {
+      // value3, value2, value1 -> value2, value1, value3, value2, value1
+      // Attention: value2 may be
+      Operand o2 = operandStack.pop();
+      operandStack.push(dupd2);
+      operandStack.push(dupd);
+      operandStack.push(o2);
+      operandStack.push(dupd2);
+      operandStack.push(dupd);
+    } else if (op == DUP2_X2) {
+      // (value4, value3), (value2, value1) -> (value2, value1), (value4, value3),
+      // (value2, value1)
+      Operand o2 = operandStack.pop();
+      Operand o2h = operandStack.pop();
+      operandStack.push(dupd2);
+      operandStack.push(dupd);
+      operandStack.push(o2h);
+      operandStack.push(o2);
+      operandStack.push(dupd2);
+      operandStack.push(dupd);
     }
   }
 
@@ -944,123 +744,75 @@ public class AsmMethodSource implements MethodSource {
     boolean dword = op == DADD || op == LADD || op == DSUB || op == LSUB || op == DMUL || op == LMUL || op == DDIV
         || op == LDIV || op == DREM || op == LREM || op == LSHL || op == LSHR || op == LUSHR || op == LAND || op == LOR
         || op == LXOR || op == LCMP || op == DCMPL || op == DCMPG;
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Operand op2 = (dword && op != LSHL && op != LSHR && op != LUSHR) ? popImmediateDual() : popImmediate();
-      Operand op1 = dword ? popImmediateDual() : popImmediate();
-      Value v1 = op1.stackOrValue();
-      Value v2 = op2.stackOrValue();
-      BinopExpr binop;
-      if (op >= IADD && op <= DADD) {
-        binop = Jimple.v().newAddExpr(v1, v2);
-      } else if (op >= ISUB && op <= DSUB) {
-        binop = Jimple.v().newSubExpr(v1, v2);
-      } else if (op >= IMUL && op <= DMUL) {
-        binop = Jimple.v().newMulExpr(v1, v2);
-      } else if (op >= IDIV && op <= DDIV) {
-        binop = Jimple.v().newDivExpr(v1, v2);
-      } else if (op >= IREM && op <= DREM) {
-        binop = Jimple.v().newRemExpr(v1, v2);
-      } else if (op >= ISHL && op <= LSHL) {
-        binop = Jimple.v().newShlExpr(v1, v2);
-      } else if (op >= ISHR && op <= LSHR) {
-        binop = Jimple.v().newShrExpr(v1, v2);
-      } else if (op >= IUSHR && op <= LUSHR) {
-        binop = Jimple.v().newUshrExpr(v1, v2);
-      } else if (op >= IAND && op <= LAND) {
-        binop = Jimple.v().newAndExpr(v1, v2);
-      } else if (op >= IOR && op <= LOR) {
-        binop = Jimple.v().newOrExpr(v1, v2);
-      } else if (op >= IXOR && op <= LXOR) {
-        binop = Jimple.v().newXorExpr(v1, v2);
-      } else if (op == LCMP) {
-        binop = Jimple.v().newCmpExpr(v1, v2);
-      } else if (op == FCMPL || op == DCMPL) {
-        binop = Jimple.v().newCmplExpr(v1, v2);
-      } else if (op == FCMPG || op == DCMPG) {
-        binop = Jimple.v().newCmpgExpr(v1, v2);
-      } else {
-        throw new AssertionError("Unknown binop: " + op);
-      }
-      op1.addBox(binop.getOp1Box());
-      op2.addBox(binop.getOp2Box());
-      opr = new Operand(insn, binop);
-      if (op >= IADD && op <= DDIV) {
-        // The operations in this range always exists in four flavors: one for int, long, float, double
-        int flavor = op & 0x3;
-        switch (flavor) {
-          case 0b00:
-            opr.tag = IntOpTag.INSTANCE;
-            opr.type = OperandType.INT;
-            break;
-          case 0b01:
-            opr.tag = LongOpTag.INSTANCE;
-            opr.type = OperandType.LONG;
-            break;
-          case 0b10:
-            opr.tag = FloatOpTag.INSTANCE;
-            opr.type = OperandType.FLOAT;
-            break;
-          case 0b11:
-            opr.tag = DoubleOpTag.INSTANCE;
-            opr.type = OperandType.DOUBLE;
-            break;
-        }
-      }
-      frame.in(op2, op1);
-      frame.boxes(binop.getOp2Box(), binop.getOp1Box());
-      frame.out(opr);
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Operand op2 = (dword && op != LSHL && op != LSHR && op != LUSHR) ? operandStack.popDual() : operandStack.pop();
+    Operand op1 = dword ? operandStack.popDual() : operandStack.pop();
+    merging.mergeInputs(op2, op1);
+    Immediate v1 = op1.toImmediate();
+    Immediate v2 = op2.toImmediate();
+    Value binop;
+    if (op >= IADD && op <= DADD) {
+      binop = Jimple.v().newAddExpr(v1, v2);
+    } else if (op >= ISUB && op <= DSUB) {
+      binop = Jimple.v().newSubExpr(v1, v2);
+    } else if (op >= IMUL && op <= DMUL) {
+      binop = Jimple.v().newMulExpr(v1, v2);
+    } else if (op >= IDIV && op <= DDIV) {
+      binop = Jimple.v().newDivExpr(v1, v2);
+    } else if (op >= IREM && op <= DREM) {
+      binop = Jimple.v().newRemExpr(v1, v2);
+    } else if (op >= ISHL && op <= LSHL) {
+      binop = Jimple.v().newShlExpr(v1, v2);
+    } else if (op >= ISHR && op <= LSHR) {
+      binop = Jimple.v().newShrExpr(v1, v2);
+    } else if (op >= IUSHR && op <= LUSHR) {
+      binop = Jimple.v().newUshrExpr(v1, v2);
+    } else if (op >= IAND && op <= LAND) {
+      binop = Jimple.v().newAndExpr(v1, v2);
+    } else if (op >= IOR && op <= LOR) {
+      binop = Jimple.v().newOrExpr(v1, v2);
+    } else if (op >= IXOR && op <= LXOR) {
+      binop = Jimple.v().newXorExpr(v1, v2);
+    } else if (op == LCMP) {
+      binop = Jimple.v().newCmpExpr(v1, v2);
+    } else if (op == FCMPL || op == DCMPL) {
+      binop = Jimple.v().newCmplExpr(v1, v2);
+    } else if (op == FCMPG || op == DCMPG) {
+      binop = Jimple.v().newCmpgExpr(v1, v2);
     } else {
-      opr = out[0];
-      if (dword) {
-        if (op != LSHL && op != LSHR && op != LUSHR) {
-          frame.mergeIn(popDual(), popDual());
-        } else {
-          frame.mergeIn(pop(), popDual());
-        }
-      } else {
-        frame.mergeIn(pop(), pop());
-      }
+      throw new UnsupportedOperationException("Unknown binop: " + op);
     }
-    if (dword && (op < LCMP || op > DCMPG)) {
-      pushDual(opr);
+
+    Operand opr = new Operand(insn, binop, this);
+    merging.mergeOutput(opr);
+
+    if (dword && op < LCMP) {
+      operandStack.pushDual(opr);
     } else {
-      push(opr);
+      operandStack.push(opr);
     }
   }
 
   private void convertUnopInsn(InsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LNEG || op == DNEG;
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Operand op1 = dword ? popImmediateDual() : popImmediate();
-      Value v1 = op1.stackOrValue();
-      UnopExpr unop;
-      if (op >= INEG && op <= DNEG) {
-        unop = Jimple.v().newNegExpr(v1);
-      } else if (op == ARRAYLENGTH) {
-        unop = Jimple.v().newLengthExpr(v1);
-      } else {
-        throw new AssertionError("Unknown unop: " + op);
-      }
-      op1.addBox(unop.getOpBox());
-      opr = new Operand(insn, unop);
-      frame.in(op1);
-      frame.boxes(unop.getOpBox());
-      frame.out(opr);
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Operand op1 = dword ? operandStack.popDual() : operandStack.pop();
+    merging.mergeInputs(op1);
+    Value unop;
+    if (op >= INEG && op <= DNEG) {
+      unop = Jimple.v().newNegExpr(op1.toImmediate());
+    } else if (op == ARRAYLENGTH) {
+      unop = Jimple.v().newLengthExpr(op1.toImmediate());
     } else {
-      opr = out[0];
-      frame.mergeIn(dword ? popDual() : pop());
+      throw new UnsupportedOperationException("Unknown unop: " + op);
     }
+    Operand opr = new Operand(insn, unop, this);
+    merging.mergeOutput(opr);
     if (dword) {
-      pushDual(opr);
+      operandStack.pushDual(opr);
     } else {
-      push(opr);
+      operandStack.push(opr);
     }
   }
 
@@ -1068,76 +820,61 @@ public class AsmMethodSource implements MethodSource {
     int op = insn.getOpcode();
     boolean tod = op == I2L || op == I2D || op == F2L || op == F2D || op == D2L || op == L2D;
     boolean fromd = op == D2L || op == L2D || op == D2I || op == L2I || op == D2F || op == L2F;
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Type totype;
-      switch (op) {
-        case I2L:
-        case F2L:
-        case D2L:
-          totype = LongType.v();
-          break;
-        case L2I:
-        case F2I:
-        case D2I:
-          totype = IntType.v();
-          break;
-        case I2F:
-        case L2F:
-        case D2F:
-          totype = FloatType.v();
-          break;
-        case I2D:
-        case L2D:
-        case F2D:
-          totype = DoubleType.v();
-          break;
-        case I2B:
-          totype = ByteType.v();
-          break;
-        case I2S:
-          totype = ShortType.v();
-          break;
-        case I2C:
-          totype = CharType.v();
-          break;
-        default:
-          throw new AssertionError("Unknonw prim cast op: " + op);
-      }
-      Operand val = fromd ? popImmediateDual() : popImmediate();
-      CastExpr cast = Jimple.v().newCastExpr(val.stackOrValue(), totype);
-      opr = new Operand(insn, cast);
-      val.addBox(cast.getOpBox());
-      frame.in(val);
-      frame.boxes(cast.getOpBox());
-      frame.out(opr);
-    } else {
-      opr = out[0];
-      frame.mergeIn(fromd ? popDual() : pop());
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Type totype;
+    switch (op) {
+      case I2L:
+      case F2L:
+      case D2L:
+        totype = LongType.v();
+        break;
+      case L2I:
+      case F2I:
+      case D2I:
+        totype = IntType.v();
+        break;
+      case I2F:
+      case L2F:
+      case D2F:
+        totype = FloatType.v();
+        break;
+      case I2D:
+      case L2D:
+      case F2D:
+        totype = DoubleType.v();
+        break;
+      case I2B:
+        totype = ByteType.v();
+        break;
+      case I2S:
+        totype = ShortType.v();
+        break;
+      case I2C:
+        totype = CharType.v();
+        break;
+      default:
+        throw new IllegalStateException("Unknown prim cast op: " + op);
     }
+    Operand val = fromd ? operandStack.popDual() : operandStack.pop();
+    merging.mergeInputs(val);
+    CastExpr cast = Jimple.v().newCastExpr(val.toImmediate(), totype);
+    Operand opr = new Operand(insn, cast, this);
+    merging.mergeOutput(opr);
     if (tod) {
-      pushDual(opr);
+      operandStack.pushDual(opr);
     } else {
-      push(opr);
+      operandStack.push(opr);
     }
   }
 
   private void convertReturnInsn(InsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LRETURN || op == DRETURN;
-    StackFrame frame = getFrame(insn);
-    if (!units.containsKey(insn)) {
-      Operand val = dword ? popImmediateDual() : popImmediate();
-      ReturnStmt ret = Jimple.v().newReturnStmt(val.stackOrValue());
-      val.addBox(ret.getOpBox());
-      frame.in(val);
-      frame.boxes(ret.getOpBox());
-      setUnit(insn, ret);
-    } else {
-      frame.mergeIn(dword ? popDual() : pop());
-    }
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Operand val = dword ? operandStack.popDual() : operandStack.pop();
+    merging.mergeInputs(val);
+    ReturnStmt ret = Jimple.v().newReturnStmt(val.toImmediate());
+    setUnit(insn, ret);
   }
 
   private void convertInsn(InsnNode insn) {
@@ -1146,8 +883,8 @@ public class AsmMethodSource implements MethodSource {
       /*
        * We can ignore NOP instructions, but for completeness, we handle them
        */
-      if (!units.containsKey(insn)) {
-        units.put(insn, Jimple.v().newNopStmt());
+      if (!insnToStmt.containsKey(insn)) {
+        insnToStmt.put(insn, Jimple.v().newNopStmt());
       }
     } else if (op >= ACONST_NULL && op <= DCONST_1) {
       convertConstInsn(insn);
@@ -1156,21 +893,18 @@ public class AsmMethodSource implements MethodSource {
     } else if (op >= IASTORE && op <= SASTORE) {
       convertArrayStoreInsn(insn);
     } else if (op == POP) {
-      popImmediate();
+      operandStack.pop().emitStatement();
     } else if (op == POP2) {
-      popImmediate();
-      if (peek() == DWORD_DUMMY) {
-        pop();
-      } else {
-        popImmediate();
-      }
+      operandStack.pop().emitStatement();
+      // pops the `Operand.DWORD_DUMMY` or the second value
+      operandStack.pop().emitStatement();
     } else if (op >= DUP && op <= DUP2_X2) {
       convertDupInsn(insn);
     } else if (op == SWAP) {
-      Operand o1 = popImmediate();
-      Operand o2 = popImmediate();
-      push(o1);
-      push(o2);
+      Operand o1 = operandStack.pop();
+      Operand o2 = operandStack.pop();
+      operandStack.push(o1);
+      operandStack.push(o2);
     } else if ((op >= IADD && op <= DREM) || (op >= ISHL && op <= LXOR) || (op >= LCMP && op <= DCMPG)) {
       convertBinopInsn(insn);
     } else if ((op >= INEG && op <= DNEG) || op == ARRAYLENGTH) {
@@ -1180,53 +914,24 @@ public class AsmMethodSource implements MethodSource {
     } else if (op >= IRETURN && op <= ARETURN) {
       convertReturnInsn(insn);
     } else if (op == RETURN) {
-      // We might be at the end of the stack, but there is still a dangling instruction, i.e., a method call whose return
-      // value
-      // was never used. Since the method may have side effects, we need to handle the call.
-      if (!stack.isEmpty()) {
-        Operand o1 = pop();
-        if (!units.containsKey(o1.insn)) {
-          Value p = getFrame(o1.insn).out()[0].value;
-          if (!(p instanceof InvokeExpr)) {
-            // we don't care.
-            return;
-          }
-          InvokeExpr iexpr = (InvokeExpr) p;
-          setUnit(o1, Jimple.v().newInvokeStmt(iexpr));
-        }
-      }
-      if (!units.containsKey(insn)) {
+      if (!insnToStmt.containsKey(insn)) {
         setUnit(insn, Jimple.v().newReturnVoidStmt());
       }
     } else if (op == ATHROW) {
-      StackFrame frame = getFrame(insn);
-      Operand opr;
-      if (!units.containsKey(insn)) {
-        opr = popImmediate();
-        ThrowStmt ts = Jimple.v().newThrowStmt(opr.stackOrValue());
-        opr.addBox(ts.getOpBox());
-        frame.in(opr);
-        frame.out(opr);
-        frame.boxes(ts.getOpBox());
-        setUnit(insn, ts);
-      } else {
-        opr = pop();
-        frame.mergeIn(opr);
-      }
-      push(opr);
+      OperandMerging merging = operandStack.getOrCreateMerging(insn);
+      Operand opr = operandStack.pop();
+      merging.mergeInputs(opr);
+      ThrowStmt ts = Jimple.v().newThrowStmt(opr.toImmediate());
+      setUnit(insn, ts);
+      merging.mergeOutput(opr);
+      operandStack.push(opr);
     } else if (op == MONITORENTER || op == MONITOREXIT) {
-      StackFrame frame = getFrame(insn);
-      if (!units.containsKey(insn)) {
-        Operand opr = popStackConst();
-        MonitorStmt ts = op == MONITORENTER ? Jimple.v().newEnterMonitorStmt(opr.stackOrValue())
-            : Jimple.v().newExitMonitorStmt(opr.stackOrValue());
-        opr.addBox(ts.getOpBox());
-        frame.in(opr);
-        frame.boxes(ts.getOpBox());
-        setUnit(insn, ts);
-      } else {
-        frame.mergeIn(pop());
-      }
+      OperandMerging merging = operandStack.getOrCreateMerging(insn);
+      Operand opr = operandStack.popStackConst();
+      merging.mergeInputs(opr);
+      Stmt ts = op == MONITORENTER ? Jimple.v().newEnterMonitorStmt(opr.toImmediate())
+          : Jimple.v().newExitMonitorStmt(opr.toImmediate());
+      setUnit(insn, ts);
     } else {
       throw new AssertionError("Unknown insn op: " + op);
     }
@@ -1234,82 +939,76 @@ public class AsmMethodSource implements MethodSource {
 
   private void convertIntInsn(IntInsnNode insn) {
     int op = insn.getOpcode();
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Value v;
-      if (op == BIPUSH || op == SIPUSH) {
-        v = IntConstant.v(insn.operand);
-      } else {
-        Type type;
-        switch (insn.operand) {
-          case T_BOOLEAN:
-            type = BooleanType.v();
-            break;
-          case T_CHAR:
-            type = CharType.v();
-            break;
-          case T_FLOAT:
-            type = FloatType.v();
-            break;
-          case T_DOUBLE:
-            type = DoubleType.v();
-            break;
-          case T_BYTE:
-            type = ByteType.v();
-            break;
-          case T_SHORT:
-            type = ShortType.v();
-            break;
-          case T_INT:
-            type = IntType.v();
-            break;
-          case T_LONG:
-            type = LongType.v();
-            break;
-          default:
-            throw new AssertionError("Unknown NEWARRAY type!");
-        }
-        Operand size = popImmediate();
-        NewArrayExpr anew = Jimple.v().newNewArrayExpr(type, size.stackOrValue());
-        size.addBox(anew.getSizeBox());
-        frame.in(size);
-        frame.boxes(anew.getSizeBox());
-        v = anew;
-      }
-      opr = new Operand(insn, v);
-      frame.out(opr);
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Value v;
+    if (op == BIPUSH || op == SIPUSH) {
+      v = IntConstant.v(insn.operand);
     } else {
-      opr = out[0];
-      if (op == NEWARRAY) {
-        frame.mergeIn(pop());
+      Type type;
+      switch (insn.operand) {
+        case T_BOOLEAN:
+          type = BooleanType.v();
+          break;
+        case T_CHAR:
+          type = CharType.v();
+          break;
+        case T_FLOAT:
+          type = FloatType.v();
+          break;
+        case T_DOUBLE:
+          type = DoubleType.v();
+          break;
+        case T_BYTE:
+          type = ByteType.v();
+          break;
+        case T_SHORT:
+          type = ShortType.v();
+          break;
+        case T_INT:
+          type = IntType.v();
+          break;
+        case T_LONG:
+          type = LongType.v();
+          break;
+        default:
+          throw new AssertionError("Unknown NEWARRAY type!");
       }
+      Operand size = operandStack.pop();
+      merging.mergeInputs(size);
+      v = Jimple.v().newNewArrayExpr(type, size.toImmediate());
     }
-    push(opr);
+    Operand opr = new Operand(insn, v, this);
+    merging.mergeOutput(opr);
+    operandStack.push(opr);
   }
 
   private void convertJumpInsn(JumpInsnNode insn) {
     int op = insn.getOpcode();
     if (op == GOTO) {
-      if (!units.containsKey(insn)) {
+      if (!insnToStmt.containsKey(insn)) {
         UnitBox box = Jimple.v().newStmtBox(null);
+        GotoStmt gotoStmt = Jimple.v().newGotoStmt(box);
+        stmtsThatBranchToLabel.put(gotoStmt, insn.label);
         labels.put(insn.label, box);
-        setUnit(insn, Jimple.v().newGotoStmt(box));
+        setUnit(insn, gotoStmt);
       }
       return;
     }
+
     /* must be ifX insn */
-    StackFrame frame = getFrame(insn);
-    if (!units.containsKey(insn)) {
-      Operand val = popImmediate();
-      Value v = val.stackOrValue();
-      ConditionExpr cond;
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    if (!insnToStmt.containsKey(insn)) {
+      Operand val = operandStack.pop();
+      Immediate v = val.toImmediate();
+      Value cond;
+
       if (op >= IF_ICMPEQ && op <= IF_ACMPNE) {
-        Operand val1 = popImmediate();
-        Value v1 = val1.stackOrValue();
+        Operand val1 = operandStack.pop();
+        merging.mergeInputs(val, val1);
+        Immediate v1 = val1.toImmediate();
         switch (op) {
           case IF_ICMPEQ:
+          case IF_ACMPEQ:
             cond = Jimple.v().newEqExpr(v1, v);
             break;
           case IF_ICMPNE:
@@ -1327,20 +1026,14 @@ public class AsmMethodSource implements MethodSource {
           case IF_ICMPLE:
             cond = Jimple.v().newLeExpr(v1, v);
             break;
-          case IF_ACMPEQ:
-            cond = Jimple.v().newEqExpr(v1, v);
-            break;
           case IF_ACMPNE:
             cond = Jimple.v().newNeExpr(v1, v);
             break;
           default:
-            throw new AssertionError("Unknown if op: " + op);
+            throw new UnsupportedOperationException("Unknown if op: " + op);
         }
-        val1.addBox(cond.getOp1Box());
-        val.addBox(cond.getOp2Box());
-        frame.boxes(cond.getOp2Box(), cond.getOp1Box());
-        frame.in(val, val1);
       } else {
+        merging.mergeInputs(val);
         switch (op) {
           case IFEQ:
             cond = Jimple.v().newEqExpr(v, BooleanConstant.v(false));
@@ -1367,20 +1060,19 @@ public class AsmMethodSource implements MethodSource {
             cond = Jimple.v().newNeExpr(v, NullConstant.v());
             break;
           default:
-            throw new AssertionError("Unknown if op: " + op);
+            throw new UnsupportedOperationException("Unknown if op: " + op);
         }
-        val.addBox(cond.getOp1Box());
-        frame.boxes(cond.getOp1Box());
-        frame.in(val);
       }
       UnitBox box = Jimple.v().newStmtBox(null);
       labels.put(insn.label, box);
-      setUnit(insn, Jimple.v().newIfStmt(cond, box));
+      IfStmt ifStmt = Jimple.v().newIfStmt(cond, box);
+      stmtsThatBranchToLabel.put(ifStmt, insn.label);
+      setUnit(insn, ifStmt);
     } else {
       if (op >= IF_ICMPEQ && op <= IF_ACMPNE) {
-        frame.mergeIn(pop(), pop());
+        merging.mergeInputs(operandStack.pop(), operandStack.pop());
       } else {
-        frame.mergeIn(pop());
+        merging.mergeInputs(operandStack.pop());
       }
     }
   }
@@ -1388,20 +1080,14 @@ public class AsmMethodSource implements MethodSource {
   private void convertLdcInsn(LdcInsnNode insn) {
     Object val = insn.cst;
     boolean dword = val instanceof Long || val instanceof Double;
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Value v = toSootValue(val);
-      opr = new Operand(insn, v);
-      frame.out(opr);
-    } else {
-      opr = out[0];
-    }
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Value v = toSootValue(val);
+    Operand opr = new Operand(insn, v, this);
+    merging.mergeOutput(opr);
     if (dword) {
-      pushDual(opr);
+      operandStack.pushDual(opr);
     } else {
-      push(opr);
+      operandStack.push(opr);
     }
   }
 
@@ -1448,247 +1134,180 @@ public class AsmMethodSource implements MethodSource {
   }
 
   private void convertLookupSwitchInsn(LookupSwitchInsnNode insn) {
-    StackFrame frame = getFrame(insn);
-    if (units.containsKey(insn)) {
-      frame.mergeIn(pop());
+
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    if (insnToStmt.containsKey(insn)) {
+      merging.mergeInputs(operandStack.pop());
       return;
     }
-    Operand key = popImmediate();
-    UnitBox dflt = Jimple.v().newStmtBox(null);
+    Operand key = operandStack.pop();
+    merging.mergeInputs(key);
+
+    List<IntConstant> keys = new ArrayList<>(insn.keys.size());
+    for (Integer i : insn.keys) {
+      keys.add(IntConstant.v(i));
+    }
 
     List<UnitBox> targets = new ArrayList<UnitBox>(insn.labels.size());
+    UnitBox dflt = Jimple.v().newStmtBox(null);
     labels.put(insn.dflt, dflt);
     for (LabelNode ln : insn.labels) {
       UnitBox box = Jimple.v().newStmtBox(null);
       targets.add(box);
       labels.put(ln, box);
     }
+    LookupSwitchStmt lss = Jimple.v().newLookupSwitchStmt(key.toImmediate(), keys, targets, dflt);
 
-    List<IntConstant> keys = new ArrayList<IntConstant>(insn.keys.size());
-    for (Integer i : insn.keys) {
-      keys.add(IntConstant.v(i));
-    }
+    // uphold insertion order!
+    stmtsThatBranchToLabel.putAll(lss, insn.labels);
+    stmtsThatBranchToLabel.put(lss, insn.dflt);
 
-    LookupSwitchStmt lss = Jimple.v().newLookupSwitchStmt(key.stackOrValue(), keys, targets, dflt);
-    key.addBox(lss.getKeyBox());
-    frame.in(key);
-    frame.boxes(lss.getKeyBox());
     setUnit(insn, lss);
+
   }
 
   private void convertMethodInsn(MethodInsnNode insn) {
+
     int op = insn.getOpcode();
-    boolean instance = op != INVOKESTATIC;
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    Type returnType;
-    if (out == null) {
-      String clsName = AsmUtil.toQualifiedName(insn.owner);
-      if (clsName.charAt(0) == '[') {
-        clsName = "java.lang.Object";
-      }
-      List<Type> sigTypes
-          = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
-      returnType = sigTypes.remove(sigTypes.size() - 1);
-      SootMethodRef ref
-          = Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !instance);
-      int nrArgs = sigTypes.size();
-      final Operand[] args;
-      List<Value> argList = Collections.emptyList();
-      if (!instance) {
-        args = nrArgs == 0 ? null : new Operand[nrArgs];
-        if (args != null) {
-          argList = new ArrayList<Value>(nrArgs);
-        }
-      } else {
-        args = new Operand[nrArgs + 1];
-        if (nrArgs != 0) {
-          argList = new ArrayList<Value>(nrArgs);
-        }
-      }
-      while (nrArgs-- != 0) {
-        args[nrArgs] = popImmediate(sigTypes.get(nrArgs));
-        argList.add(args[nrArgs].stackOrValue());
-      }
-      if (argList.size() > 1) {
-        Collections.reverse(argList);
-      }
-      if (instance) {
-        args[args.length - 1] = popLocal();
-      }
-      ValueBox[] boxes = args == null ? null : new ValueBox[args.length];
-      InvokeExpr invoke;
-      if (!instance) {
-        invoke = Jimple.v().newStaticInvokeExpr(ref, argList);
-      } else {
-        Local base = (Local) args[args.length - 1].stackOrValue();
-        InstanceInvokeExpr iinvoke;
-        switch (op) {
-          case INVOKESPECIAL:
-            iinvoke = Jimple.v().newSpecialInvokeExpr(base, ref, argList);
-            break;
-          case INVOKEVIRTUAL:
-            iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
-            break;
-          case INVOKEINTERFACE:
-            iinvoke = Jimple.v().newInterfaceInvokeExpr(base, ref, argList);
-            break;
-          default:
-            throw new AssertionError("Unknown invoke op:" + op);
-        }
-        boxes[boxes.length - 1] = iinvoke.getBaseBox();
-        args[args.length - 1].addBox(boxes[boxes.length - 1]);
-        invoke = iinvoke;
-      }
-      if (boxes != null) {
-        for (int i = 0; i != sigTypes.size(); i++) {
-          boxes[i] = invoke.getArgBox(i);
-          args[i].addBox(boxes[i]);
-        }
-        frame.boxes(boxes);
-        frame.in(args);
-      }
-      opr = new Operand(insn, invoke);
-      frame.out(opr);
-    } else {
-      opr = out[0];
-      InvokeExpr expr = (InvokeExpr) opr.value;
-      List<Type> types = expr.getMethodRef().getParameterTypes();
-      Operand[] oprs;
-      int nrArgs = types.size();
-      if (expr.getMethodRef().isStatic()) {
-        oprs = nrArgs == 0 ? null : new Operand[nrArgs];
-      } else {
-        oprs = new Operand[nrArgs + 1];
-      }
-      if (oprs != null) {
-        while (nrArgs-- != 0) {
-          oprs[nrArgs] = pop(types.get(nrArgs));
-        }
-        if (!expr.getMethodRef().isStatic()) {
-          oprs[oprs.length - 1] = pop();
-        }
-        frame.mergeIn(oprs);
-        nrArgs = types.size();
-      }
-      returnType = expr.getMethodRef().getReturnType();
+    boolean isInstance = op != INVOKESTATIC;
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    String clsName = AsmUtil.toQualifiedName(insn.owner);
+    if (clsName.charAt(0) == '[') {
+      clsName = "java.lang.Object";
     }
+
+    List<Type> sigTypes
+        = AsmUtil.toJimpleDesc(insn.desc, Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+    Type returnType = sigTypes.remove(sigTypes.size() - 1);
+    SootMethodRef ref
+        = Scene.v().makeMethodRef(this.getClassFromScene(clsName), insn.name, sigTypes, returnType, !isInstance);
+
+    int nrArgs = sigTypes.size();
+    final Operand[] operands;
+    Immediate[] argList = new Immediate[nrArgs];
+    final List<Immediate> args;
+    if (!isInstance) {
+      operands = nrArgs == 0 ? null : new Operand[nrArgs];
+    } else {
+      operands = new Operand[nrArgs + 1];
+    }
+    while (nrArgs-- != 0) {
+      operands[nrArgs] = operandStack.pop(sigTypes.get(nrArgs));
+    }
+    if (isInstance) {
+      operands[operands.length - 1] = operandStack.pop();
+    }
+    if (operands != null) {
+      merging.mergeInputs(operands);
+    }
+    nrArgs = sigTypes.size();
+    while (nrArgs-- != 0) {
+      argList[nrArgs] = operands[nrArgs].toImmediate();
+    }
+    args = Arrays.asList(argList);
+    Value invoke;
+    if (!isInstance) {
+      invoke = Jimple.v().newStaticInvokeExpr(ref, args);
+    } else {
+      Operand baseOperand = operands[operands.length - 1];
+      Local base = baseOperand.toLocal();
+
+      switch (op) {
+        case INVOKESPECIAL:
+          invoke = Jimple.v().newSpecialInvokeExpr(base, ref, args);
+          break;
+        case INVOKEVIRTUAL:
+          invoke = Jimple.v().newVirtualInvokeExpr(base, ref, args);
+          break;
+        case INVOKEINTERFACE:
+          invoke = Jimple.v().newInterfaceInvokeExpr(base, ref, args);
+          break;
+        default:
+          throw new UnsupportedOperationException("Unknown invoke op:" + op);
+      }
+    }
+    Operand opr = new Operand(insn, invoke, this);
+    merging.mergeOutput(opr);
+
     if (AsmUtil.isDWord(returnType)) {
-      pushDual(opr);
-    } else if (!(returnType instanceof VoidType)) {
-      push(opr);
-    } else if (!units.containsKey(insn)) {
-      setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+      operandStack.pushDual(opr);
+    } else if (returnType != VoidType.v()) {
+      operandStack.push(opr);
+    } else if (!insnToStmt.containsKey(insn)) {
+      InvokeStmt stmt = Jimple.v().newInvokeStmt(opr.value);
+      setUnit(insn, stmt);
     }
     /*
      * assign all read ops in case the method modifies any of the fields
      */
-    assignReadOps(null);
+    addReadOperandAssignments();
   }
 
   private void convertInvokeDynamicInsn(InvokeDynamicInsnNode insn) {
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    Type returnType;
-    if (out == null) {
-      // convert info on bootstrap method
-      SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
-      List<Value> bsmMethodArgs = new ArrayList<Value>(insn.bsmArgs.length);
-      for (Object bsmArg : insn.bsmArgs) {
-        bsmMethodArgs.add(toSootValue(bsmArg));
-      }
-      // create ref to actual method
 
-      // Generate parameters & returnType & parameterTypes
-      Type[] types = AsmUtil.jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
-      int nrArgs = types.length - 1;
-      List<Type> parameterTypes = new ArrayList<Type>(nrArgs);
-      List<Value> methodArgs = new ArrayList<Value>(nrArgs);
-
-      Operand[] args = new Operand[nrArgs];
-      ValueBox[] boxes = new ValueBox[nrArgs];
-
-      // Beware: Call stack is FIFO, Jimple is linear
-
-      while (nrArgs-- != 0) {
-        parameterTypes.add(types[nrArgs]);
-        args[nrArgs] = popImmediate(types[nrArgs]);
-        methodArgs.add(args[nrArgs].stackOrValue());
-      }
-      if (methodArgs.size() > 1) {
-        Collections.reverse(methodArgs); // Call stack is FIFO, Jimple is linear
-        Collections.reverse(parameterTypes);
-      }
-      returnType = types[types.length - 1];
-
-      SootMethodRef bootstrap_model = null;
-      if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory")) {
-        String bsmMethodRefStr = bsmMethodRef.toString();
-        if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
-          SootClass enclosingClass = body.getMethod().getDeclaringClass();
-          bootstrap_model
-              = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
-        }
-      }
-
-      InvokeExpr indy;
-      if (bootstrap_model != null) {
-        indy = Jimple.v().newStaticInvokeExpr(bootstrap_model, methodArgs);
-      } else {
-        // if not mimicking the LambdaMetaFactory, we model invokeDynamic method refs as static
-        // method references of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
-        SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
-        SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
-        indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
-      }
-
-      if (boxes != null) {
-        for (int i = 0; i < types.length - 1; i++) {
-          boxes[i] = indy.getArgBox(i);
-          args[i].addBox(boxes[i]);
-        }
-
-        frame.boxes(boxes);
-        frame.in(args);
-      }
-      opr = new Operand(insn, indy);
-      frame.out(opr);
-    } else {
-      opr = out[0];
-      InvokeExpr expr = (InvokeExpr) opr.value;
-      List<Type> types = expr.getMethodRef().getParameterTypes();
-      Operand[] oprs;
-      int nrArgs = types.size();
-      if (expr.getMethodRef().isStatic()) {
-        oprs = nrArgs == 0 ? null : new Operand[nrArgs];
-      } else {
-        oprs = new Operand[nrArgs + 1];
-      }
-      if (oprs != null) {
-        while (nrArgs-- != 0) {
-          oprs[nrArgs] = pop(types.get(nrArgs));
-        }
-        if (!expr.getMethodRef().isStatic()) {
-          oprs[oprs.length - 1] = pop();
-        }
-        frame.mergeIn(oprs);
-        nrArgs = types.size();
-      }
-      returnType = expr.getMethodRef().getReturnType();
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    // convert info on bootstrap method
+    SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
+    List<Value> bsmMethodArgs = new ArrayList<>(insn.bsmArgs.length);
+    for (Object bsmArg : insn.bsmArgs) {
+      bsmMethodArgs.add(toSootValue(bsmArg));
     }
+
+    // Generate parameters & returnType & parameterTypes
+    Type[] types = AsmUtil.jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
+    SootMethodRef bootstrap_model = null;
+    if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory")) {
+      String bsmMethodRefStr = bsmMethodRef.toString();
+      if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
+        SootClass enclosingClass = body.getMethod().getDeclaringClass();
+        bootstrap_model
+            = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
+      }
+    }
+
+    int nrArgs = types.length - 1;
+    Type[] parameterTypes = new Type[nrArgs];
+    Immediate[] methodArgs = new Immediate[nrArgs];
+
+    Operand[] args = new Operand[nrArgs];
+    // Beware: Call stack is FIFO, Jimple is linear
+
+    for (int i = nrArgs - 1; i >= 0; i--) {
+      parameterTypes[i] = types[i];
+
+      args[i] = operandStack.pop(types[i]);
+    }
+    Type returnType = types[types.length - 1];
+    merging.mergeInputs(args);
+    for (int i = nrArgs - 1; i >= 0; i--) {
+      methodArgs[i] = args[i].toImmediate();
+    }
+
+    InvokeExpr indy;
+    if (bootstrap_model != null) {
+      indy = Jimple.v().newStaticInvokeExpr(bootstrap_model, methodArgs);
+    } else {
+      // if not mimicking the LambdaMetaFactory, we model invokeDynamic method refs as static
+      // method references of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
+      SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+      SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, Arrays.asList(parameterTypes), returnType, true);
+      indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(),
+          Arrays.asList(methodArgs));
+    }
+    Operand opr = new Operand(insn, indy, this);
+    merging.mergeOutput(opr);
     if (AsmUtil.isDWord(returnType)) {
-      pushDual(opr);
+      operandStack.pushDual(opr);
     } else if (!(returnType instanceof VoidType)) {
-      push(opr);
-    } else if (!units.containsKey(insn)) {
-      setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+      operandStack.push(opr);
+    } else if (!insnToStmt.containsKey(insn)) {
+      InvokeStmt stmt = Jimple.v().newInvokeStmt(opr.value);
+      setUnit(insn, stmt);
     }
     /*
      * assign all read ops in case the method modifies any of the fields
      */
-    assignReadOps(null);
+    addReadOperandAssignments();
   }
 
   private SootMethodRef toSootMethodRef(Handle methodHandle) {
@@ -1714,49 +1333,35 @@ public class AsmMethodSource implements MethodSource {
   }
 
   private void convertMultiANewArrayInsn(MultiANewArrayInsnNode insn) {
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc,
-          Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
-      int dims = insn.dims;
-      Operand[] sizes = new Operand[dims];
-      Value[] sizeVals = new Value[dims];
-      ValueBox[] boxes = new ValueBox[dims];
-      while (dims-- != 0) {
-        sizes[dims] = popImmediate();
-        sizeVals[dims] = sizes[dims].stackOrValue();
-      }
-      NewMultiArrayExpr nm = Jimple.v().newNewMultiArrayExpr(t, Arrays.asList(sizeVals));
-      for (int i = 0; i != boxes.length; i++) {
-        ValueBox vb = nm.getSizeBox(i);
-        sizes[i].addBox(vb);
-        boxes[i] = vb;
-      }
-      frame.boxes(boxes);
-      frame.in(sizes);
-      opr = new Operand(insn, nm);
-      frame.out(opr);
-    } else {
-      opr = out[0];
-      int dims = insn.dims;
-      Operand[] sizes = new Operand[dims];
-      while (dims-- != 0) {
-        sizes[dims] = pop();
-      }
-      frame.mergeIn(sizes);
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    ArrayType t = (ArrayType) AsmUtil.toJimpleType(insn.desc,
+        Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+    int dims = insn.dims;
+    Operand[] sizes = new Operand[dims];
+    Immediate[] sizeVals = new Immediate[dims];
+    while (dims-- != 0) {
+      sizes[dims] = operandStack.pop();
     }
-    push(opr);
+    merging.mergeInputs(sizes);
+    dims = insn.dims;
+    while (dims-- != 0) {
+      sizeVals[dims] = sizes[dims].toImmediate();
+    }
+    NewMultiArrayExpr nm = Jimple.v().newNewMultiArrayExpr(t, Arrays.asList(sizeVals));
+    Operand opr = new Operand(insn, nm, this);
+    merging.mergeOutput(opr);
+    operandStack.push(opr);
   }
 
   private void convertTableSwitchInsn(TableSwitchInsnNode insn) {
-    StackFrame frame = getFrame(insn);
-    if (units.containsKey(insn)) {
-      frame.mergeIn(pop());
+
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    if (insnToStmt.containsKey(insn)) {
+      merging.mergeInputs(operandStack.pop());
       return;
     }
-    Operand key = popImmediate();
+    Operand key = operandStack.pop();
+    merging.mergeInputs(key);
     UnitBox dflt = Jimple.v().newStmtBox(null);
     List<UnitBox> targets = new ArrayList<UnitBox>(insn.labels.size());
     labels.put(insn.dflt, dflt);
@@ -1765,121 +1370,105 @@ public class AsmMethodSource implements MethodSource {
       targets.add(box);
       labels.put(ln, box);
     }
-    TableSwitchStmt tss = Jimple.v().newTableSwitchStmt(key.stackOrValue(), insn.min, insn.max, targets, dflt);
-    key.addBox(tss.getKeyBox());
-    frame.in(key);
-    frame.boxes(tss.getKeyBox());
+
+    TableSwitchStmt tss = Jimple.v().newTableSwitchStmt(key.toImmediate(), insn.min, insn.max, targets, dflt);
+
+    // key.addBox(tss.getKeyBox());
+    // uphold insertion order!
+    stmtsThatBranchToLabel.putAll(tss, insn.labels);
+    stmtsThatBranchToLabel.put(tss, insn.dflt);
+
     setUnit(insn, tss);
   }
 
   private void convertTypeInsn(TypeInsnNode insn) {
     int op = insn.getOpcode();
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      Optional<String> module = Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName);
-      Type t = AsmUtil.toJimpleRefType(insn.desc, module);
-      Value val;
-      if (op == NEW) {
-        val = Jimple.v().newNewExpr((RefType) t);
-      } else {
-        Operand op1 = popImmediate();
-        Value v1 = op1.stackOrValue();
-        ValueBox vb;
-        switch (op) {
-          case ANEWARRAY: {
-            NewArrayExpr expr = Jimple.v().newNewArrayExpr(t, v1);
-            vb = expr.getSizeBox();
-            val = expr;
-            break;
-          }
-          case CHECKCAST: {
-            CastExpr expr = Jimple.v().newCastExpr(v1, t);
-            vb = expr.getOpBox();
-            val = expr;
-            break;
-          }
-          case INSTANCEOF: {
-            InstanceOfExpr expr = Jimple.v().newInstanceOfExpr(v1, t);
-            vb = expr.getOpBox();
-            val = expr;
-            break;
-          }
-          default:
-            throw new AssertionError("Unknown type op: " + op);
-        }
-        op1.addBox(vb);
-        frame.in(op1);
-        frame.boxes(vb);
-      }
-      opr = new Operand(insn, val);
-      frame.out(opr);
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Optional<String> module = Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName);
+    Type t = AsmUtil.toJimpleRefType(insn.desc, module);
+    Value val;
+    if (op == NEW) {
+      val = Jimple.v().newNewExpr((RefType) t);
     } else {
-      opr = out[0];
-      if (op != NEW) {
-        frame.mergeIn(pop());
+      Operand op1 = operandStack.pop();
+      merging.mergeInputs(op1);
+      switch (op) {
+        case ANEWARRAY: {
+          NewArrayExpr expr = Jimple.v().newNewArrayExpr(t, op1.toImmediate());
+          val = expr;
+          break;
+        }
+        case CHECKCAST: {
+          CastExpr expr = Jimple.v().newCastExpr(op1.toImmediate(), t);
+          val = expr;
+          break;
+        }
+        case INSTANCEOF: {
+          InstanceOfExpr expr = Jimple.v().newInstanceOfExpr(op1.toImmediate(), t);
+          val = expr;
+          break;
+        }
+        default:
+          throw new UnsupportedOperationException("Unknown type op: " + op);
       }
     }
-    push(opr);
+    Operand opr = new Operand(insn, val, this);
+    merging.mergeOutput(opr);
+    operandStack.push(opr);
   }
 
   private void convertVarLoadInsn(VarInsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LLOAD || op == DLOAD;
-    StackFrame frame = getFrame(insn);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      opr = new Operand(insn, getLocal(insn.var));
-      frame.out(opr);
-    } else {
-      opr = out[0];
-    }
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Operand opr = new Operand(insn, getLocal(insn.var), this);
+    merging.mergeOutput(opr);
     if (dword) {
-      pushDual(opr);
+      operandStack.pushDual(opr);
     } else {
-      push(opr);
+      operandStack.push(opr);
     }
   }
 
   private void convertVarStoreInsn(VarInsnNode insn) {
     int op = insn.getOpcode();
     boolean dword = op == LSTORE || op == DSTORE;
-    StackFrame frame = getFrame(insn);
-    Operand opr = dword ? popDual() : pop();
+    OperandMerging merging = operandStack.getOrCreateMerging(insn);
+    Operand opr = dword ? operandStack.popDual() : operandStack.pop();
+    merging.mergeInputs(opr);
     Local local = getLocal(insn.var);
-    if (!units.containsKey(insn)) {
-      DefinitionStmt as = Jimple.v().newAssignStmt(local, opr.stackOrValue());
-      opr.addBox(as.getRightOpBox());
-      frame.boxes(as.getRightOpBox());
-      frame.in(opr);
+    Stmt as;
+    if (opr.stackLocal == null) {
+      // Can skip creating a new stack local for the operand
+      // and store the value in the local directly.
+      as = Jimple.v().newAssignStmt(local, opr.value);
+      // TODO check that this works correctly with the merging
+      opr.stackLocal = local;
+      setUnit(opr.insn, as);
+    } else if (opr.stackLocal != local) {
+      as = Jimple.v().newAssignStmt(local, opr.toImmediate());
       setUnit(insn, as);
-    } else {
-      frame.mergeIn(opr);
     }
-    assignReadOps(local);
-  }
-
-  private void convertVarInsn(VarInsnNode insn) {
-    int op = insn.getOpcode();
-    if (op >= ILOAD && op <= ALOAD) {
-      convertVarLoadInsn(insn);
-    } else if (op >= ISTORE && op <= ASTORE) {
-      convertVarStoreInsn(insn);
-    } else if (op == RET) {
-      /* we handle it, even thought it should be removed */
-      if (!units.containsKey(insn)) {
-        setUnit(insn, Jimple.v().newRetStmt(getLocal(insn.var)));
-      }
-    } else {
-      throw new AssertionError("Unknown var op: " + op);
-    }
+    // The `local` has just been assigned a new value,
+    // but an operand with `value == local` might still be on the stack.
+    // That operand should use the old value,
+    // so the following call adds a `$stackLocalX = $local` statement
+    // to persist the old value when necessary.
+    addReadOperandAssignments(local);
   }
 
   /* Conversion */
 
   private void convertLabel(LabelNode ln) {
+    if (startTrapHandler.containsKey(ln)) {
+      activeTrapHandlers.add(startTrapHandler.get(ln));
+    }
+
+    if (endTrapHandler.containsKey(ln)) {
+      activeTrapHandlers.remove(endTrapHandler.get(ln));
+    }
+
+    // only do it for Labels which are referring to a traphandler
     if (!trapHandlers.containsKey(ln)) {
       return;
     }
@@ -1888,137 +1477,156 @@ public class AsmMethodSource implements MethodSource {
     // somewhere from the real exception handler in case this is inline
     // code
     if (inlineExceptionLabels.contains(ln)) {
-      if (!units.containsKey(ln)) {
+      if (!insnToStmt.containsKey(ln)) {
         NopStmt nop = Jimple.v().newNopStmt();
         setUnit(ln, nop);
       }
       return;
     }
 
-    StackFrame frame = getFrame(ln);
-    Operand[] out = frame.out();
-    Operand opr;
-    if (out == null) {
-      CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
-      Local stack = newStackLocal();
-      DefinitionStmt as = Jimple.v().newIdentityStmt(stack, ref);
-      opr = new Operand(ln, ref);
-      opr.stack = stack;
-      frame.out(opr);
-      setUnit(ln, as);
-    } else {
-      opr = out[0];
+    OperandMerging merging = operandStack.getOrCreateMerging(ln);
+    CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
+    Operand opr = new Operand(ln, ref, this);
+    merging.mergeOutput(opr);
+    if (opr.stackLocal == null) {
+      opr.stackLocal = newStackLocal();
     }
-    push(opr);
+    IdentityStmt as = Jimple.v().newIdentityStmt(opr.stackLocal, ref);
+    setUnit(ln, as);
+    operandStack.push(opr);
   }
 
-  private void addEdges(AbstractInsnNode cur, AbstractInsnNode tgt1, List<LabelNode> tgts) {
-    int lastIdx = tgts == null ? -1 : tgts.size() - 1;
-    Operand[] stackss = stack.toArray(new Operand[stack.size()]);
-    List<Operand> stackssL = Arrays.asList(stackss);
-    AbstractInsnNode tgt = tgt1;
-    int i = 0;
-    tgt_loop: do {
-      Edge edge = edges.get(cur, tgt);
-      if (edge == null) {
-        edge = new Edge(tgt);
-        edge.prevStacks.add(stackssL);
-        edges.put(cur, tgt, edge);
-        conversionWorklist.addLast(edge);
-        continue;
-      }
-      if (edge.stack != null) {
-        ArrayList<Operand> stackTemp = edge.stack;
-        if (stackTemp.size() != stackss.length) {
-          throw new AssertionError("Multiple un-equal stacks!");
+  // inline exceptionhandler := exceptionhandler thats reachable through unexceptional "normal" flow
+  // and exceptional flow
+  private void indexInlineExceptionHandlers() {
+    final Set<LabelNode> handlerLabelNodes = trapHandlers.keySet();
+
+    if (handlerLabelNodes.isEmpty()) {
+      // my job is done here
+      return;
+    }
+
+    for (AbstractInsnNode node : instructions) {
+      if (node instanceof JumpInsnNode) {
+        final LabelNode handlerLabel = ((JumpInsnNode) node).label;
+        if (handlerLabelNodes.contains(handlerLabel)) {
+          inlineExceptionLabels.add(handlerLabel);
         }
-        for (int j = 0; j != stackss.length; j++) {
-          Operand tempOp = stackTemp.get(j);
-          Operand stackOp = stackss[j];
-          if (!tempOp.equivTo(stackOp)) {
-            // We need to merge the two operands. We have a join point, where the two paths have stacks of the same size, but
-            // with different locals. Since the execution contains on the same statements after the join point, we must make
-            // sure that they can operate on the same locals, regardless of which path the execution came from.
-            merge(tempOp, stackOp);
+      } else if (node instanceof LookupSwitchInsnNode) {
+
+        final LookupSwitchInsnNode lookupSwitchInsnNode = (LookupSwitchInsnNode) node;
+        if (handlerLabelNodes.contains(lookupSwitchInsnNode.dflt)) {
+          inlineExceptionLabels.add(lookupSwitchInsnNode.dflt);
+          continue;
+        }
+        for (LabelNode l : lookupSwitchInsnNode.labels) {
+          if (handlerLabelNodes.contains(l)) {
+            inlineExceptionLabels.add(l);
+            break;
           }
         }
-        continue;
-      }
+      } else if (node instanceof TableSwitchInsnNode) {
 
-      if (!edge.prevStacks.add(stackssL)) {
-        continue tgt_loop;
-      }
-
-      edge.stack = new ArrayList<Operand>(stack);
-      conversionWorklist.addLast(edge);
-    } while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
-  }
-
-  /**
-   * Merges the given operands, i.e., the second operand will receive assignments to the stack locals of the first operand so
-   * that both operands become compatible.
-   *
-   * @param firstOp
-   */
-  private void merge(Operand firstOp, Operand secondOp) {
-    if (secondOp.stack != null) {
-      if (firstOp.stack == null) {
-        Local stack = secondOp.stack;
-        AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
-        firstOp.stack = stack;
-        setUnit(firstOp, as);
-      } else {
-        // Both operands have a stack local. We need to create an assignment to a temporary variable.
-        Local stack = firstOp.stack;
-        AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
-        mergeUnits(secondOp.insn, as);
-        secondOp.addBox(as.getRightOpBox());
-        secondOp.stack = stack;
-      }
-    } else {
-      if (firstOp.stack != null) {
-        Local stack = firstOp.stack;
-        AssignStmt as = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
-        secondOp.stack = stack;
-        setUnit(secondOp, as);
-      } else {
-        Local stack = newStackLocal();
-        AssignStmt as = Jimple.v().newAssignStmt(stack, firstOp.stackOrValue());
-        firstOp.stack = stack;
-        mergeUnits(firstOp.insn, as);
-        firstOp.addBox(as.getRightOpBox());
-        AssignStmt as2 = Jimple.v().newAssignStmt(stack, secondOp.stackOrValue());
-        mergeUnits(secondOp.insn, as2);
-        secondOp.addBox(as2.getRightOpBox());
-        secondOp.stack = stack;
+        final TableSwitchInsnNode tableSwitchInsnNode = (TableSwitchInsnNode) node;
+        if (handlerLabelNodes.contains(tableSwitchInsnNode.dflt)) {
+          inlineExceptionLabels.add(tableSwitchInsnNode.dflt);
+          continue;
+        }
+        for (LabelNode l : tableSwitchInsnNode.labels) {
+          if (handlerLabelNodes.contains(l)) {
+            inlineExceptionLabels.add(l);
+            break;
+          }
+        }
       }
     }
+  }
+
+  /* Conversion */
+  private void addEdges(Table<AbstractInsnNode, AbstractInsnNode, BranchedInsnInfo> edges,
+      ArrayDeque<BranchedInsnInfo> conversionWorklist, AbstractInsnNode branchingInsn, /*
+                                                                                        * branching instruction node
+                                                                                        */
+      AbstractInsnNode tgt, /* "default" targets i.e. LabelNode or fallsthrough "target" of if */
+      List<LabelNode> tgts /* other branch target(s) */) {
+    Operand[] stackss = operandStack.getStack().toArray(new Operand[0]);
+    /* iterate over possible following/successing instructions which is: combined(tgt, tgts) */
+    int i = 0;
+    int lastIdx = tgts.size();
+    outer_loop: do {
+      BranchedInsnInfo edge = edges.get(branchingInsn, tgt);
+      if (edge == null) {
+        // [ms] check why this edge could be already there
+        edge = new BranchedInsnInfo(tgt, operandStack.getStack(), activeTrapHandlers);
+        edge.addToPrevStack(stackss);
+        edges.put(branchingInsn, tgt, edge);
+        conversionWorklist.add(edge);
+        continue;
+      }
+      for (List<Operand> stackTemp : edge.getOperandStacks()) {
+        if (stackTemp.size() == stackss.length) {
+          int j = 0;
+          while (j < stackss.length && stackTemp.get(j).equivTo(stackss[j])) {
+            j++;
+          }
+          if (j == stackss.length) {
+            continue outer_loop;
+          }
+        }
+      }
+      final LinkedList<Operand[]> prevStacks = edge.getPrevStacks();
+      for (Operand[] ps : prevStacks) {
+        if (Arrays.equals(ps, stackss)) {
+          continue outer_loop;
+        }
+      }
+      edge.addOperandStack(operandStack.getStack());
+      edge.addToPrevStack(stackss);
+      conversionWorklist.add(edge);
+    } while (i < lastIdx && (tgt = tgts.get(i++)) != null);
   }
 
   private void convert() {
     if (instructions == null || instructions.size() == 0) {
       return;
     }
-    ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
-    for (LabelNode ln : trapHandlers.keySet()) {
-      if (checkInlineExceptionHandler(ln)) {
-        handleInlineExceptionHandler(ln, worklist);
+    ArrayDeque<BranchedInsnInfo> worklist = new ArrayDeque<>();
+    indexInlineExceptionHandlers();
+
+    // If this label is reachable through an exception and through normal
+    // code, we have to split the exceptional case (with the exception on
+    // the stack) from the normal fall-through case without anything on the
+    // stack.
+    for (LabelNode handlerNode : trapHandlers.keySet()) {
+      if (inlineExceptionLabels.contains(handlerNode)) {
+        // Catch the exception
+        CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
+        Local local = newStackLocal();
+        IdentityStmt as = Jimple.v().newIdentityStmt(local, ref);
+
+        Operand opr = new Operand(handlerNode, ref, this);
+        opr.stackLocal = local;
+
+        worklist.add(new BranchedInsnInfo(handlerNode, Collections.singletonList(opr), activeTrapHandlers));
+
+        // Save the statements
+        inlineExceptionHandlers.put(handlerNode, as);
       } else {
-        worklist.add(new Edge(ln, new ArrayList<Operand>()));
+        worklist.add(new BranchedInsnInfo(handlerNode, new ArrayList<>(), activeTrapHandlers));
       }
     }
-    worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
-    conversionWorklist = worklist;
-    edges = HashBasedTable.create(instructions.size(), 1);
+    worklist.add(new BranchedInsnInfo(instructions.getFirst(), Collections.emptyList(), activeTrapHandlers));
+    Table<AbstractInsnNode, AbstractInsnNode, BranchedInsnInfo> edges = HashBasedTable.create(1, 1);
     if (Options.v().keep_line_number()) {
       setLineNumberMap();
     }
 
     do {
-      Edge edge = worklist.pollFirst();
-      AbstractInsnNode insn = edge.insn;
-      stack = edge.stack;
-      edge.stack = null;
+      BranchedInsnInfo edge = worklist.pollLast();
+      AbstractInsnNode insn = edge.getInsn();
+      operandStack.setOperandStack(new ArrayList<>(edge.getOperandStacks().get(edge.getOperandStacks().size() - 1)));
+      activeTrapHandlers = edge.getActiveTrapHandlers();
+
       insnLoop: do {
         int type = insn.getType();
         switch (type) {
@@ -2051,16 +1659,16 @@ public class AsmMethodSource implements MethodSource {
             if (op != GOTO) {
               /* ifX opcode, i.e. two successors */
               AbstractInsnNode next = insn.getNext();
-              addEdges(insn, next, Collections.singletonList(jmp.label));
+              addEdges(edges, worklist, insn, next, Collections.singletonList(jmp.label));
             } else {
-              addEdges(insn, jmp.label, null);
+              addEdges(edges, worklist, insn, jmp.label, Collections.emptyList());
             }
             break insnLoop;
           case LOOKUPSWITCH_INSN:
             LookupSwitchInsnNode swtch = (LookupSwitchInsnNode) insn;
             convertLookupSwitchInsn(swtch);
             LabelNode dflt = swtch.dflt;
-            addEdges(insn, dflt, swtch.labels);
+            addEdges(edges, worklist, insn, dflt, swtch.labels);
             break insnLoop;
           case METHOD_INSN:
             convertMethodInsn((MethodInsnNode) insn);
@@ -2075,7 +1683,7 @@ public class AsmMethodSource implements MethodSource {
             TableSwitchInsnNode tswtch = (TableSwitchInsnNode) insn;
             convertTableSwitchInsn(tswtch);
             LabelNode ldflt = tswtch.dflt;
-            addEdges(insn, ldflt, tswtch.labels);
+            addEdges(edges, worklist, insn, ldflt, tswtch.labels);
             break insnLoop;
           case TYPE_INSN:
             convertTypeInsn((TypeInsnNode) insn);
@@ -2100,8 +1708,24 @@ public class AsmMethodSource implements MethodSource {
         }
       } while ((insn = insn.getNext()) != null);
     } while (!worklist.isEmpty());
-    conversionWorklist = null;
+    worklist = null;
     edges = null;
+  }
+
+  private void convertVarInsn(VarInsnNode insn) {
+    int op = insn.getOpcode();
+    if (op >= ILOAD && op <= ALOAD) {
+      convertVarLoadInsn(insn);
+    } else if (op >= ISTORE && op <= ASTORE) {
+      convertVarStoreInsn(insn);
+    } else if (op == RET) {
+      /* we handle it, even though it should be removed */
+      if (!insnToStmt.containsKey(insn)) {
+        setUnit(insn, Jimple.v().newRetStmt(getLocal(insn.var)));
+      }
+    } else {
+      throw new UnsupportedOperationException("Unknown var op: " + op);
+    }
   }
 
   // For potential future debugging efforts
@@ -2131,48 +1755,6 @@ public class AsmMethodSource implements MethodSource {
       }
       current = current.getNext();
     }
-  }
-
-  private void handleInlineExceptionHandler(LabelNode ln, ArrayDeque<Edge> worklist) {
-    // Catch the exception
-    CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
-    Local local = newStackLocal();
-    DefinitionStmt as = Jimple.v().newIdentityStmt(local, ref);
-
-    Operand opr = new Operand(ln, ref);
-    opr.stack = local;
-
-    ArrayList<Operand> stack = new ArrayList<Operand>();
-    stack.add(opr);
-    worklist.add(new Edge(ln, stack));
-
-    // Save the statements
-    inlineExceptionHandlers.put(ln, as);
-  }
-
-  private boolean checkInlineExceptionHandler(LabelNode ln) {
-    // If this label is reachable through an exception and through normal
-    // code, we have to split the exceptional case (with the exception on the
-    // stack) from the normal fall-through case without anything on the stack.
-    for (AbstractInsnNode node : instructions) {
-      if (node instanceof JumpInsnNode) {
-        if (((JumpInsnNode) node).label == ln) {
-          inlineExceptionLabels.add(ln);
-          return true;
-        }
-      } else if (node instanceof LookupSwitchInsnNode) {
-        if (((LookupSwitchInsnNode) node).labels.contains(ln)) {
-          inlineExceptionLabels.add(ln);
-          return true;
-        }
-      } else if (node instanceof TableSwitchInsnNode) {
-        if (((TableSwitchInsnNode) node).labels.contains(ln)) {
-          inlineExceptionLabels.add(ln);
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   private void emitLocals() {
@@ -2269,7 +1851,7 @@ public class AsmMethodSource implements MethodSource {
       }
 
       // Get the unit associated with the current instruction
-      Unit u = units.get(insn);
+      Unit u = insnToStmt.get(insn);
       if (u == null) {
         insn = insn.getNext();
         continue;
@@ -2319,7 +1901,7 @@ public class AsmMethodSource implements MethodSource {
       }
 
       // We need to jump to the original implementation
-      Unit targetUnit = units.get(ln);
+      Unit targetUnit = insnToStmt.get(ln);
       GotoStmt gotoImpl = Jimple.v().newGotoStmt(targetUnit);
       body.getUnits().add(gotoImpl);
     }
@@ -2372,14 +1954,18 @@ public class AsmMethodSource implements MethodSource {
     int nrInsn = instructions.size();
     nextLocal = maxLocals;
     locals = new LinkedHashMap<Integer, JimpleLocal>(maxLocals + (maxLocals / 2));
-    labels = LinkedListMultimap.create(4);
-    units = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
-    frames = new LinkedHashMap<AbstractInsnNode, StackFrame>(nrInsn);
+    labels = LinkedListMultimap.create();
+    stmtsThatBranchToLabel = LinkedListMultimap.create();
+
+    insnToStmt = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     trapHandlers = LinkedListMultimap.create(tryCatchBlocks.size());
+    operandStack = new OperandStack(this, instructions.size());
     body = jb;
     /* retrieve all trap handlers */
     for (TryCatchBlockNode tc : tryCatchBlocks) {
       trapHandlers.put(tc.handler, jimp.newStmtBox(null));
+      startTrapHandler.put(tc.start, tc);
+      endTrapHandler.put(tc.end, tc);
     }
     /* convert instructions */
     try {
@@ -2400,9 +1986,8 @@ public class AsmMethodSource implements MethodSource {
     /* clean up */
     locals = null;
     labels = null;
-    units = null;
-    stack = null;
-    frames = null;
+    stmtsThatBranchToLabel = null;
+    insnToStmt = null;
     body = null;
     lineNumberMap = null;
 
@@ -2431,6 +2016,8 @@ public class AsmMethodSource implements MethodSource {
     TrapTightener.v().transform(jb);
     UnreachableCodeEliminator.v().transform(jb);
 
+    NopEliminator.v().transform(jb);
+
     // Make sure to inline patterns of the form to enable proper variable
     // splitting and type assignment:
     // a = new A();
@@ -2439,6 +2026,7 @@ public class AsmMethodSource implements MethodSource {
     // b = (B) a;
     // return b;
     castAndReturnInliner.transform(jb);
+    DeadAssignmentEliminator.v().transform(jb);
 
     try {
       PackManager.v().getPack("jb").apply(jb);
@@ -2450,7 +2038,7 @@ public class AsmMethodSource implements MethodSource {
     DeadAssignmentEliminator.v().transform(jb);
     UnconditionalBranchFolder.v().transform(jb);
 
-    ensureUniqueNames(jb.getLocals());
+    jb.ensureUniqueLocalNames();
 
     return jb;
   }
@@ -2547,7 +2135,7 @@ public class AsmMethodSource implements MethodSource {
               // the initial instruction to check, the bytecode generated by
               // some compilers has the start PC one instruction late it seems.
               Unit uStart;
-              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = units.get(i)) == null && i != null;) {
+              for (AbstractInsnNode i = lvn.start.getPrevious(); (uStart = insnToStmt.get(i)) == null && i != null;) {
                 i = i.getNext();
               }
               if (uStart instanceof UnitContainer) {
@@ -2555,7 +2143,7 @@ public class AsmMethodSource implements MethodSource {
               }
               // Get the previous real instruction before 'end'
               Unit uEnd;
-              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = units.get(i)) == null && i != null;) {
+              for (AbstractInsnNode i = lvn.end.getPrevious(); (uEnd = insnToStmt.get(i)) == null && i != null;) {
                 i = i.getPrevious();
               }
               if (uEnd instanceof UnitContainer) {
@@ -2600,55 +2188,42 @@ public class AsmMethodSource implements MethodSource {
       }
     }
     // In the end, ensure the names of locals (not just from those that were newly added) are unique.
-    ensureUniqueNames(jbLocals);
+    jb.ensureUniqueLocalNames();
   }
 
   /**
-   * If any locals have the same name, append a unique id so that each is different.
+   * Updates the identity statement of an inline exception handler to use a new local variable. This is needed when operand
+   * merging assigns a common stack local to the caught exception operand.
+   *
+   * @param insn
+   *          the handler label node
+   * @param newLocal
+   *          the new local to assign the caught exception to
    */
-  public static void ensureUniqueNames(Chain<Local> jbLocals) {
-    Multimap<String, Local> nameToLocal = LinkedListMultimap.create(jbLocals.size());
-    for (Local l : jbLocals) {
-      nameToLocal.put(l.getName(), l);
-    }
-    for (Collection<Local> locs : nameToLocal.asMap().values()) {
-      if (locs.size() > 1) {
-        int num = 0;
-        for (Local l : locs) {
-          l.setName(l.getName() + '_' + (++num));
-        }
-      }
+  void updateInlineExceptionHandler(AbstractInsnNode insn, Local newLocal) {
+    LabelNode labelNode = (LabelNode) insn;
+    IdentityStmt oldStmt = inlineExceptionHandlers.get(labelNode);
+    if (oldStmt != null) {
+      IdentityStmt newStmt = Jimple.v().newIdentityStmt(newLocal, oldStmt.getRightOp());
+      inlineExceptionHandlers.put(labelNode, newStmt);
     }
   }
 
-  private final class Edge {
-    /* edge endpoint */
-    final AbstractInsnNode insn;
-    /* previous stacks at edge */
-    final Set<List<Operand>> prevStacks;
-    /* current stack at edge */
-    ArrayList<Operand> stack;
+  @SuppressWarnings("unchecked")
+  <A extends Stmt> A getStmt(AbstractInsnNode insn) {
+    return (A) insnToStmt.get(insn);
+  }
 
-    Edge(AbstractInsnNode insn, ArrayList<Operand> stack) {
-      this.insn = insn;
-      this.prevStacks = new HashSet<List<Operand>>();
-      this.stack = stack;
-    }
-
-    Edge(AbstractInsnNode insn) {
-      this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder(insn.toString());
-      if (stack != null) {
-        sb.append("\nCurrent stack:");
-        for (Operand i : stack) {
-          sb.append("\n").append(i.toString());
+  void replace(Value old, Local newStackLocal) {
+    for (Unit i : insnToStmt.values()) {
+      Iterator<ValueBox> it = i.getUseAndDefBoxesIterator();
+      while (it.hasNext()) {
+        ValueBox vb = it.next();
+        if (vb.getValue() == old) {
+          vb.setValue(newStackLocal);
         }
       }
-      return sb.toString();
     }
+
   }
 }

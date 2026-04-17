@@ -388,7 +388,6 @@ public class Printer {
             out.write("false");
           }
           break;
-        default:
         case 'B':
           out.print(intElement.getValue() + "B");
           break;
@@ -401,6 +400,8 @@ public class Printer {
         case 'I':
           out.print(intElement.getValue());
           break;
+        default:
+          throw new IllegalStateException("Not understood: " + intElement.getKind());
       }
     } else if (annotation instanceof AnnotationLongElem) {
       final AnnotationLongElem longElement = (AnnotationLongElem) annotation;

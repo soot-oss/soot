@@ -418,6 +418,15 @@
                         </manifest>
                     </archive>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -487,7 +496,7 @@
         <dependency>
             <groupId>org.soot-oss</groupId>
             <artifactId>heros</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5</version>
         </dependency>
         <!-- Logging dependencies -->
         <dependency>

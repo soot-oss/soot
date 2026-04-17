@@ -39,11 +39,8 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.annotation.parity.ParityAnalysis.Parity;
-import soot.options.Options;
 import soot.tagkit.StringTag;
 import soot.toolkits.graph.BriefUnitGraph;
-import soot.toolkits.scalar.LiveLocals;
-import soot.toolkits.scalar.SimpleLiveLocals;
 
 /**
  * A body transformer that records parity analysis information in tags.
@@ -60,18 +57,7 @@ public class ParityTagger extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
-    boolean isInteractive = Options.v().interactive_mode();
-    Options.v().set_interactive_mode(false);
-    ParityAnalysis a;
-
-    if (isInteractive) {
-      LiveLocals sll = new SimpleLiveLocals(new BriefUnitGraph(b));
-      Options.v().set_interactive_mode(isInteractive);
-
-      a = new ParityAnalysis(new BriefUnitGraph(b), sll);
-    } else {
-      a = new ParityAnalysis(new BriefUnitGraph(b));
-    }
+    ParityAnalysis a = new ParityAnalysis(new BriefUnitGraph(b));
 
     Iterator<Unit> sIt = b.getUnits().iterator();
     while (sIt.hasNext()) {
@@ -83,7 +69,7 @@ public class ParityTagger extends BodyTransformer {
       Iterator<Value> it = parityVars.keySet().iterator();
       while (it.hasNext()) {
 
-        final Value variable = (Value) it.next();
+        final Value variable = it.next();
         if ((variable instanceof IntConstant) || (variable instanceof LongConstant)) {
           // don't add string tags (just color tags)
         } else {
