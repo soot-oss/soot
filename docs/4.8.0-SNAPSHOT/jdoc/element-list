@@ -103,10 +103,8 @@ soot.sootify
 soot.tagkit
 soot.toDex
 soot.toDex.instructions
-soot.toolkits.astmetrics.DataHandlingApplication
 soot.toolkits.exceptions
 soot.toolkits.graph
-soot.toolkits.graph.interaction
 soot.toolkits.graph.pdg
 soot.toolkits.scalar
 soot.tools
