@@ -22,10 +22,11 @@ package soot.tagkit;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+
+import soot.util.ConcurrentList;
 
 // extended by SootClass, SootField, SootMethod, Scene
 
@@ -120,7 +121,7 @@ public class AbstractHost implements Host {
   @Override
   public void addTag(Tag t) {
     if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(1);
+      mTagList = new ConcurrentList<Tag>();
     }
     mTagList.add(t);
   }
@@ -143,7 +144,7 @@ public class AbstractHost implements Host {
     List<Tag> tags = h.getTags();
     if (!tags.isEmpty()) {
       if (mTagList == null) {
-        mTagList = new ArrayList<Tag>(tags.size());
+        mTagList = new ConcurrentList<Tag>();
       }
       mTagList.addAll(tags);
     }
@@ -174,7 +175,7 @@ public class AbstractHost implements Host {
   @Override
   public Tag getOrComputeTag(String aName, Supplier<Tag> supplier) {
     if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(1);
+      mTagList = new ConcurrentList<Tag>();
     }
     for (int i = 0; i < mTagList.size(); i++) {
       Tag p = mTagList.get(i);

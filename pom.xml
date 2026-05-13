@@ -307,6 +307,7 @@
                         --add-opens=java.base/java.nio.file=ALL-UNNAMED
                         --add-opens=java.base/java.nio.channels.spi=ALL-UNNAMED
                         --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+                        --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
                     </argLine>
                 </configuration>
                 <executions>
