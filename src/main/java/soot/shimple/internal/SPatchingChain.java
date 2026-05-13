@@ -407,11 +407,10 @@ public class SPatchingChain extends UnitPatchingChain {
 
     @Override
     public void remove() {
-      if (!state) {
-        throw new IllegalStateException("remove called before first next() call");
-      }
-      state = false;
       Unit victim = lastObject;
+      if (victim == null) {
+        throw new IllegalStateException("Remove called before first next() call");
+      }
       Shimple.redirectToPreds(SPatchingChain.this.body, victim);
       patchBeforeRemoval(innerChain, victim);
       innerIterator.remove();
