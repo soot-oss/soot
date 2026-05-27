@@ -43,7 +43,7 @@ public class AbstractHost implements Host {
 
   // avoid creating an empty list for each element, when it is not used
   // use lazy instantiation (in addTag) instead
-  protected ConcurrentList<Tag> mTagList = null;
+  protected volatile ConcurrentList<Tag> mTagList = null;
 
   /**
    * Get the {@link List} of {@link Tag Tags} on {@code this} {@link Host}. This list should not be modified!
