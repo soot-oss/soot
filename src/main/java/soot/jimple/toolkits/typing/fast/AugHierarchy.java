@@ -33,6 +33,7 @@ import soot.ByteType;
 import soot.CharType;
 import soot.IntType;
 import soot.IntegerType;
+import soot.NullType;
 import soot.ShortType;
 import soot.Type;
 
@@ -130,6 +131,8 @@ public class AugHierarchy implements IHierarchy {
           || child instanceof ShortType;
     } else if (child instanceof IntegerType) {
       return false;
+    } else if (ancestor instanceof NullType && child instanceof WeakObjectType) {
+      return true;
     } else {
       return BytecodeHierarchy.ancestor_(ancestor, child);
     }
