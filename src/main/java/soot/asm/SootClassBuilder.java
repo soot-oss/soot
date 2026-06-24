@@ -57,6 +57,7 @@ import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.InnerClassTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.PermittedSubclassesTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.SourceFileTag;
 import soot.tagkit.StringConstantValueTag;
@@ -257,6 +258,13 @@ public class SootClassBuilder extends ClassVisitor {
   @Override
   public void visitAttribute(Attribute attr) {
     getTagBuilder().visitAttribute(attr);
+  }
+
+  @Override
+  public void visitPermittedSubclass(String permittedSubclass) {
+    PermittedSubclassesTag p
+        = (PermittedSubclassesTag) klass.getOrComputeTag(PermittedSubclassesTag.NAME, () -> new PermittedSubclassesTag());
+    p.addPermittedSubClass(permittedSubclass);
   }
 
   @Override
