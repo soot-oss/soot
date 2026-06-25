@@ -273,6 +273,10 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return interproceduralAnalysis;
   }
 
+  protected boolean canThrowResolveClassError(Unit statement, Type baseType) {
+    return !(baseType instanceof PrimType);
+  }
+
   protected ThrowableSet defaultResult() {
     return mgr.VM_ERRORS;
   }
@@ -281,13 +285,17 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     return new UnitSwitch(sm);
   }
 
+  protected ValueSwitch valueSwitch(Unit s) {
+    return new ValueSwitch(s);
+  }
+
   protected ValueSwitch valueSwitch() {
-    return new ValueSwitch();
+    return valueSwitch(null);
   }
 
   @Override
   public ThrowableSet mightThrow(Unit u) {
-    return mightThrow(u, null);
+    return mightThrow(u, (SootMethod) null);
   }
 
   public ThrowableSet mightThrow(Unit u, SootMethod sm) {
@@ -307,13 +315,22 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
   }
 
   protected ThrowableSet mightThrow(Value v) {
-    ValueSwitch sw = valueSwitch();
+    return mightThrow(null, v);
+  }
+
+  protected ThrowableSet mightThrow(Unit s, Value v) {
+    ValueSwitch sw = valueSwitch(s);
     v.apply(sw);
     return sw.getResult();
   }
 
+  protected boolean canBeNull(Unit unit, Value base) {
+    // assume the worst case
+    return true;
+  }
+
   public ThrowableSet mightThrow(SootMethodRef m) {
-    // The throw analysis is used in the front-ends. Conseqeuently, some
+    // The throw analysis is used in the front-ends. Consequently, some
     // methods might not yet be loaded. If this is the case, we make
     // conservative assumptions.
     SootMethod sm = m.tryResolve();
@@ -824,7 +841,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         // This corresponds to an aastore byte code.
         result = result.add(mgr.ARRAY_STORE_EXCEPTION);
       }
-      result = result.add(mightThrow(s.getLeftOp()));
+      result = result.add(mightThrow(s, s.getLeftOp()));
 
       Value rightOp = s.getRightOp();
       if (rightOp instanceof DivExpr && (s.hasTag(FloatOpTag.NAME) || s.hasTag(DoubleOpTag.NAME))) {
@@ -833,7 +850,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         // building the Jimple body the value types are not yet known so we can not know from the expression
         // if it is an int or float/double division
       } else {
-        result = result.add(mightThrow(rightOp));
+        result = result.add(mightThrow(s, rightOp));
       }
     }
 
@@ -843,15 +860,19 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseEnterMonitorStmt(EnterMonitorStmt s) {
-      result = result.add(mgr.NULL_POINTER_EXCEPTION);
-      result = result.add(mightThrow(s.getOp()));
+      if (canBeNull(s, s.getOp())) {
+        result = result.add(mgr.NULL_POINTER_EXCEPTION);
+      }
+      result = result.add(mightThrow(s, s.getOp()));
     }
 
     @Override
     public void caseExitMonitorStmt(ExitMonitorStmt s) {
       result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
-      result = result.add(mgr.NULL_POINTER_EXCEPTION);
-      result = result.add(mightThrow(s.getOp()));
+      if (canBeNull(s, s.getOp())) {
+        result = result.add(mgr.NULL_POINTER_EXCEPTION);
+      }
+      result = result.add(mightThrow(s, s.getOp()));
     }
 
     @Override
@@ -866,17 +887,17 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseIfStmt(IfStmt s) {
-      result = result.add(mightThrow(s.getCondition()));
+      result = result.add(mightThrow(s, s.getCondition()));
     }
 
     @Override
     public void caseInvokeStmt(InvokeStmt s) {
-      result = result.add(mightThrow(s.getInvokeExpr()));
+      result = result.add(mightThrow(s, s.getInvokeExpr()));
     }
 
     @Override
     public void caseLookupSwitchStmt(LookupSwitchStmt s) {
-      result = result.add(mightThrow(s.getKey()));
+      result = result.add(mightThrow(s, s.getKey()));
     }
 
     @Override
@@ -902,7 +923,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     @Override
     public void caseTableSwitchStmt(TableSwitchStmt s) {
-      result = result.add(mightThrow(s.getKey()));
+      result = result.add(mightThrow(s, s.getKey()));
     }
 
     @Override
@@ -920,6 +941,15 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     // Asynchronous errors are always possible:
     protected ThrowableSet result = defaultResult();
+    protected final Unit statement;
+
+    public ValueSwitch(Unit s) {
+      this.statement = s;
+    }
+
+    public ValueSwitch() {
+      this.statement = null;
+    }
 
     ThrowableSet getResult() {
       return result;
@@ -1104,7 +1134,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     public void caseStaticInvokeExpr(StaticInvokeExpr expr) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
       for (int i = 0; i < expr.getArgCount(); i++) {
-        result = result.add(mightThrow(expr.getArg(i)));
+        result = result.add(mightThrow(statement, expr.getArg(i)));
       }
       result = result.add(mightThrow(expr.getMethodRef()));
     }
@@ -1124,7 +1154,7 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     public void caseCastExpr(CastExpr expr) {
       Type fromType = expr.getOp().getType();
       Type toType = expr.getCastType();
-      if (!(fromType instanceof PrimType) || !(toType instanceof PrimType)) {
+      if (canThrowResolveClassError(statement, fromType) || canThrowResolveClassError(statement, toType)) {
         result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       }
       if (toType instanceof RefLikeType) {
@@ -1136,58 +1166,62 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
           result = result.add(mgr.CLASS_CAST_EXCEPTION);
         }
       }
-      result = result.add(mightThrow(expr.getOp()));
+      result = result.add(mightThrow(statement, expr.getOp()));
     }
 
     @Override
     public void caseInstanceOfExpr(InstanceOfExpr expr) {
-      result = result.add(mgr.RESOLVE_CLASS_ERRORS);
-      result = result.add(mightThrow(expr.getOp()));
+      if (canThrowResolveClassError(statement, expr.getCheckType())) {
+        result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+      }
+      result = result.add(mightThrow(statement, expr.getOp()));
     }
 
     @Override
     public void caseNewArrayExpr(NewArrayExpr expr) {
-      if (expr.getBaseType() instanceof RefLikeType) {
+      Type bt = expr.getBaseType();
+      if (bt instanceof RefLikeType && canThrowResolveClassError(statement, bt)) {
         result = result.add(mgr.RESOLVE_CLASS_ERRORS);
       }
       Value count = expr.getSize();
       if ((!(count instanceof IntConstant)) || (((IntConstant) count).isLessThan(INT_CONSTANT_ZERO))) {
         result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
       }
-      result = result.add(mightThrow(count));
+      result = result.add(mightThrow(statement, count));
     }
 
     @Override
     public void caseNewMultiArrayExpr(NewMultiArrayExpr expr) {
-      result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+      if (canThrowResolveClassError(statement, expr.getBaseType())) {
+        result = result.add(mgr.RESOLVE_CLASS_ERRORS);
+      }
       for (int i = 0; i < expr.getSizeCount(); i++) {
         Value count = expr.getSize(i);
         if ((!(count instanceof IntConstant)) || (((IntConstant) count).isLessThan(INT_CONSTANT_ZERO))) {
           result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
         }
-        result = result.add(mightThrow(count));
+        result = result.add(mightThrow(statement, count));
       }
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void caseNewExpr(NewExpr expr) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
       for (Iterator<ValueBox> iterator = expr.getUseBoxesIterator(); iterator.hasNext();) {
         ValueBox box = iterator.next();
-        result = result.add(mightThrow(box.getValue()));
+        result = result.add(mightThrow(statement, box.getValue()));
       }
     }
 
     @Override
     public void caseLengthExpr(LengthExpr expr) {
       result = result.add(mgr.NULL_POINTER_EXCEPTION);
-      result = result.add(mightThrow(expr.getOp()));
+      result = result.add(mightThrow(statement, expr.getOp()));
     }
 
     @Override
     public void caseNegExpr(NegExpr expr) {
-      result = result.add(mightThrow(expr.getOp()));
+      result = result.add(mightThrow(statement, expr.getOp()));
     }
 
     // Declared by RefSwitch interface:
@@ -1195,9 +1229,15 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @Override
     public void caseArrayRef(ArrayRef ref) {
       result = result.add(mgr.NULL_POINTER_EXCEPTION);
-      result = result.add(mgr.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-      result = result.add(mightThrow(ref.getBase()));
-      result = result.add(mightThrow(ref.getIndex()));
+      if (canBeOutOfBounds(ref)) {
+        result = result.add(mgr.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
+      }
+      result = result.add(mightThrow(statement, ref.getBase()));
+      result = result.add(mightThrow(statement, ref.getIndex()));
+    }
+
+    protected boolean canBeOutOfBounds(ArrayRef ref) {
+      return true;
     }
 
     @Override
@@ -1208,8 +1248,10 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @Override
     public void caseInstanceFieldRef(InstanceFieldRef ref) {
       result = result.add(mgr.RESOLVE_FIELD_ERRORS);
-      result = result.add(mgr.NULL_POINTER_EXCEPTION);
-      result = result.add(mightThrow(ref.getBase()));
+      if (canBeNull(statement, ref.getBase())) {
+        result = result.add(mgr.NULL_POINTER_EXCEPTION);
+      }
+      result = result.add(mightThrow(statement, ref.getBase()));
     }
 
     @Override
@@ -1233,12 +1275,11 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
       caseStaticInvokeExpr(e);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public void casePhiExpr(PhiExpr e) {
       for (Iterator<ValueBox> iterator = e.getUseBoxesIterator(); iterator.hasNext();) {
         ValueBox box = iterator.next();
-        result = result.add(mightThrow(box.getValue()));
+        result = result.add(mightThrow(statement, box.getValue()));
       }
     }
 
@@ -1250,8 +1291,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     // but are used to factor out code common to several cases.
 
     private void caseBinopExpr(BinopExpr expr) {
-      result = result.add(mightThrow(expr.getOp1()));
-      result = result.add(mightThrow(expr.getOp2()));
+      result = result.add(mightThrow(statement, expr.getOp1()));
+      result = result.add(mightThrow(statement, expr.getOp2()));
     }
 
     private void caseBinopDivExpr(BinopExpr expr) {
@@ -1274,11 +1315,13 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 
     private void caseInstanceInvokeExpr(InstanceInvokeExpr expr) {
       result = result.add(mgr.RESOLVE_METHOD_ERRORS);
-      result = result.add(mgr.NULL_POINTER_EXCEPTION);
-      for (int i = 0; i < expr.getArgCount(); i++) {
-        result = result.add(mightThrow(expr.getArg(i)));
+      if (canBeNull(statement, expr.getBase())) {
+        result = result.add(mgr.NULL_POINTER_EXCEPTION);
       }
-      result = result.add(mightThrow(expr.getBase()));
+      for (int i = 0; i < expr.getArgCount(); i++) {
+        result = result.add(mightThrow(statement, expr.getArg(i)));
+      }
+      result = result.add(mightThrow(statement, expr.getBase()));
       result = result.add(mightThrow(expr.getMethodRef()));
     }
   }

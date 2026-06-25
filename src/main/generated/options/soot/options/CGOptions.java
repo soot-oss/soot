@@ -44,6 +44,24 @@ public class CGOptions {
     }
 
     /**
+     * Add exception edges --
+     * Create edges to JVM exceptions that might be thrown.
+     *
+     * This option creates edges to JVM induced exceptions. As an 
+     * example, consider a program call to x.foo() when the variable x 
+     * might be null. In this case, the JVM might create a 
+     * NullPointerException at runtime and thus could call a 
+     * constructor of the NullPointerException class. When this option 
+     * is enabled, we use the default throw analysis (see the Default 
+     * ThrowAnalysis option) to determine all possible exceptions and 
+     * introduce call edges to each possible constructor of each 
+     * exception.
+     */
+    public boolean add_exception_edges() {
+        return soot.PhaseOptions.getBoolean(options, "add-exception-edges");
+    }
+
+    /**
      * Safe forName --
      * Handle Class.forName() calls conservatively.
      *

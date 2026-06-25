@@ -336,6 +336,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		makeNewEnableGroup("cg");
 		addToEnableGroup("cg", getcgenabled_widget(), "enabled");
+		addToEnableGroup("cg", getcgadd_exception_edges_widget(), "add-exception-edges");
 		addToEnableGroup("cg", getcgsafe_forname_widget(), "safe-forname");
 		addToEnableGroup("cg", getcgsafe_newinstance_widget(), "safe-newinstance");
 		addToEnableGroup("cg", getcglibrary_widget(), "library");
@@ -347,6 +348,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("cg", getcgtypes_for_invoke_widget(), "types-for-invoke");
 		addToEnableGroup("cg", getcgresolve_all_abstract_invokes_widget(), "resolve-all-abstract-invokes");
 		getcgenabled_widget().getButton().addSelectionListener(this);
+		getcgadd_exception_edges_widget().getButton().addSelectionListener(this);
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
 		getcgsafe_newinstance_widget().getButton().addSelectionListener(this);
 		getcgverbose_widget().getButton().addSelectionListener(this);
@@ -1517,6 +1519,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		boolRes = getcgadd_exception_edges_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgadd_exception_edges_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getcgsafe_forname_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -5077,6 +5085,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return cgenabled_widget;
 	}	
 	
+	private BooleanOptionWidget cgadd_exception_edges_widget;
+	
+	private void setcgadd_exception_edges_widget(BooleanOptionWidget widget) {
+		cgadd_exception_edges_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgadd_exception_edges_widget() {
+		return cgadd_exception_edges_widget;
+	}	
+	
 	private BooleanOptionWidget cgsafe_forname_widget;
 	
 	private void setcgsafe_forname_widget(BooleanOptionWidget widget) {
@@ -8576,6 +8594,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 						"unit",
 						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program.",
 						false),
+				new OptionData("Precise",
+						"precise",
+						"\nA variant of the Unit Throw Analysis which omits exceptions that \ncannot be thrown. For example, it utilizes a nullness analysis \nto exclude NullPointerException when the value cannot be null. \nNote that this analysis might be relatively slow due to the \noverhead of checking plausible exceptions.",
+						false),
 				new OptionData("Dalvik",
 						"dalvik",
 						"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
@@ -9854,6 +9876,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setcgenabled_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Enabled", "p phase-option", "cg","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"add-exception-edges";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setcgadd_exception_edges_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Add exception edges", "p phase-option", "cg","add-exception-edges", "\nThis option creates edges to JVM induced exceptions. As an \nexample, consider a program call to x.foo() when the variable x \nmight be null. In this case, the JVM might create a \nNullPointerException at runtime and thus could call a \nconstructor of the NullPointerException class. When this option \nis enabled, we use the default throw analysis (see the Default \nThrowAnalysis option) to determine all possible exceptions and \nintroduce call edges to each possible constructor of each \nexception.", defaultBool)));
 
 		defKey = "p phase-option"+" "+"cg"+" "+"safe-forname";
 		defKey = defKey.trim();

@@ -117,10 +117,11 @@ public class Options extends OptionsBase {
     public static final int field_type_mismatches_MAX = 3;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
-    public static final int throw_analysis_dalvik = 3;
-    public static final int throw_analysis_dotnet = 4;
-    public static final int throw_analysis_auto_select = 5;
-    public static final int throw_analysis_MAX = 5;
+    public static final int throw_analysis_precise = 3;
+    public static final int throw_analysis_dalvik = 4;
+    public static final int throw_analysis_dotnet = 5;
+    public static final int throw_analysis_auto_select = 6;
+    public static final int throw_analysis_MAX = 6;
     public static final int check_init_throw_analysis_auto = 1;
     public static final int check_init_throw_analysis_pedantic = 2;
     public static final int check_init_throw_analysis_unit = 3;
@@ -1129,6 +1130,15 @@ public class Options extends OptionsBase {
                     throw_analysis = throw_analysis_unit;
                 }
                 else if (false
+                        || value.equals("precise")
+                ) {
+                    if (throw_analysis != 0 && throw_analysis != throw_analysis_precise) {
+                        G.v().out.println("Multiple values given for option " + option);
+                        return false;
+                    }
+                    throw_analysis = throw_analysis_precise;
+                }
+                else if (false
                         || value.equals("dalvik")
                 ) {
                     if (throw_analysis != 0 && throw_analysis != throw_analysis_dalvik) {
@@ -1885,6 +1895,7 @@ public class Options extends OptionsBase {
                 + padOpt("-throw-analysis ARG", "")
                     + padVal("pedantic", "Pedantically conservative throw analysis")
                     + padVal("unit", "Unit Throw Analysis")
+                    + padVal("precise", "Precise Throw Analysis")
                     + padVal("dalvik", "Dalvik Throw Analysis")
                     + padVal("dotnet", "Dotnet Throw Analysis")
                     + padVal("auto-select (default)", "Automatically Select Throw Analysis")
@@ -2179,6 +2190,7 @@ public class Options extends OptionsBase {
                     + "\nThe Call Graph Constructor computes a call graph for whole \nprogram analysis. When this pack finishes, a call graph is \navailable in the Scene. The different phases in this pack are \ndifferent ways to construct the call graph. Exactly one phase in \nthis pack must be enabled; Soot will raise an error otherwise."
                     + "\n\nRecognized options (with default values):\n"
                     + padOpt("enabled (true)", "")
+                    + padOpt("add-exception-edges (false)", "Create edges to JVM exceptions that might be thrown")
                     + padOpt("safe-forname (false)", "Handle Class.forName() calls conservatively")
                     + padOpt("safe-newinstance (false)", "Handle Class.newInstance() calls conservatively")
                     + padOpt("library", "Specifies whether the target classes should be treated as an application or a library.")
@@ -2968,6 +2980,7 @@ public class Options extends OptionsBase {
         if (phaseName.equals("cg"))
             return String.join(" ", 
                     "enabled",
+                    "add-exception-edges",
                     "safe-forname",
                     "safe-newinstance",
                     "library",
@@ -3573,6 +3586,7 @@ public class Options extends OptionsBase {
         if (phaseName.equals("cg"))
             return ""
                     + "enabled:true "
+                    + "add-exception-edges:false "
                     + "safe-forname:false "
                     + "safe-newinstance:false "
                     + "library:disabled "
