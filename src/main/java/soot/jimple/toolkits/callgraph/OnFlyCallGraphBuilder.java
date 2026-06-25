@@ -106,6 +106,7 @@ import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.options.SparkOptions;
+import soot.toolkits.exceptions.ThrowableSet;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
 import soot.util.HashMultiMap;
@@ -802,10 +803,26 @@ public class OnFlyCallGraphBuilder {
   protected void findReceivers(SootMethod m, Body b) {
     for (final Unit u : b.getUnits()) {
       final Stmt s = (Stmt) u;
+      if (options.add_exception_edges()) {
+        ThrowableSet throwables = Scene.v().getDefaultThrowAnalysis().mightThrow(u);
+        for (RefLikeType throwableType : throwables.typesIncluded()) {
+          if (throwableType instanceof RefType) {
+            RefType rt = (RefType) throwableType;
+            SootClass sc = rt.getSootClass();
+            for (SootMethod method : sc.getMethods()) {
+              if (method.isConstructor() && method.isPublic()) {
+                addEdge(m, s, method, Kind.EXCEPTION);
+
+              }
+            }
+          }
+        }
+      }
       if (s.containsInvokeExpr()) {
         InvokeExpr ie = s.getInvokeExpr();
         if (ie instanceof InstanceInvokeExpr) {
           InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+
           Local receiver = (Local) iie.getBase();
           if (!(iie instanceof SpecialInvokeExpr)) {
             MethodSubSignature subSig = new MethodSubSignature(iie.getMethodRef());

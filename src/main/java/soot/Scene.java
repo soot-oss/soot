@@ -74,6 +74,7 @@ import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.PreciseThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.util.ArrayNumberer;
@@ -1555,6 +1556,9 @@ public class Scene {
           break;
         case Options.throw_analysis_dotnet:
           defaultThrowAnalysis = DotnetThrowAnalysis.v();
+          break;
+        case Options.throw_analysis_precise:
+          defaultThrowAnalysis = PreciseThrowAnalysis.v();
           break;
 
         case Options.throw_analysis_auto_select:

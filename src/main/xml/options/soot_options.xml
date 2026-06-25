@@ -2170,6 +2170,19 @@
                     <default>true</default>
                 </boolopt>
                 <boolopt>
+                    <name>Add exception edges</name>
+                    <alias>add-exception-edges</alias>
+                    <default>false</default>
+                    <short_desc>Create edges to JVM exceptions that might be thrown</short_desc>
+                    <long_desc>This option creates edges to JVM induced exceptions.
+                        As an example, consider a program call to x.foo() when the variable x might be null.
+                        In this case, the JVM  might create a NullPointerException at runtime and thus could call 
+                        a constructor of the NullPointerException class. When this option is enabled, we use
+                        the default throw analysis (see the Default ThrowAnalysis option) to determine all possible
+                        exceptions and introduce call edges to each possible constructor of each exception.
+                    </long_desc>
+                </boolopt>
+                <boolopt>
                     <name>Safe forName</name>
                     <alias>safe-forname</alias>
                     <default>false</default>
@@ -6406,6 +6419,17 @@ This locking scheme aims to achieve simple fine-grained locking.
                     Java bytecode instructions in the JVM Specification. The
                     analysis deals with each statement in isolation, without regard
                     to the surrounding program.
+                </long_desc>
+            </value>
+            <value>
+                <name>Precise</name>
+                <alias>precise</alias>
+                <short_desc>Precise Throw Analysis</short_desc>
+                <long_desc>
+                    A variant of the Unit Throw Analysis which omits exceptions that cannot be thrown.
+                    For example, it utilizes a nullness analysis to exclude NullPointerException when
+                    the value cannot be null. Note that this analysis might be relatively slow due to 
+                    the overhead of checking plausible exceptions.
                 </long_desc>
             </value>
             <value>

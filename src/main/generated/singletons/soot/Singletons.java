@@ -1420,6 +1420,20 @@ public class Singletons {
     	instance_soot_toolkits_exceptions_UnitThrowAnalysis = null;
     }
 
+    private soot.toolkits.exceptions.PreciseThrowAnalysis instance_soot_toolkits_exceptions_PreciseThrowAnalysis;
+    public soot.toolkits.exceptions.PreciseThrowAnalysis soot_toolkits_exceptions_PreciseThrowAnalysis() {
+        if (instance_soot_toolkits_exceptions_PreciseThrowAnalysis == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_exceptions_PreciseThrowAnalysis == null)
+	        		instance_soot_toolkits_exceptions_PreciseThrowAnalysis = new soot.toolkits.exceptions.PreciseThrowAnalysis(g);
+	       	}
+       	}
+        return instance_soot_toolkits_exceptions_PreciseThrowAnalysis;
+    }
+    protected void release_soot_toolkits_exceptions_PreciseThrowAnalysis() {
+    	instance_soot_toolkits_exceptions_PreciseThrowAnalysis = null;
+    }
+
     private soot.dexpler.DalvikThrowAnalysis instance_soot_dexpler_DalvikThrowAnalysis;
     public soot.dexpler.DalvikThrowAnalysis soot_dexpler_DalvikThrowAnalysis() {
         if (instance_soot_dexpler_DalvikThrowAnalysis == null) {
