@@ -796,6 +796,7 @@
             <td><tt>-throw-analysis <var>arg</var></tt><br></td>
             <td><tt>pedantic&nbsp;
                   </tt><br><tt>unit&nbsp;
+                  </tt><br><tt>precise&nbsp;
                   </tt><br><tt>dalvik&nbsp;
                   </tt><br><tt>dotnet&nbsp;
                   </tt><br><tt>auto-select&nbsp;
@@ -1863,6 +1864,24 @@
             )
             
             <p></p>
+         </li>
+         <li><b>Add exception edges</b>
+            (add-exception-edges)
+            <br>
+            (default value:
+            <span class="value">false</span>
+            )
+            
+            <p>This option creates edges to JVM induced exceptions.
+               As an example, consider a program call to x.foo() when the variable x might be null.
+               In this case, the JVM  might create a NullPointerException at runtime and thus could
+               call 
+               a constructor of the NullPointerException class. When this option is enabled, we use
+               the default throw analysis (see the Default ThrowAnalysis option) to determine all
+               possible
+               exceptions and introduce call edges to each possible constructor of each exception.
+               
+            </p>
          </li>
          <li><b>Safe forName</b>
             (safe-forname)
