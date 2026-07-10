@@ -156,10 +156,13 @@ public class OnFlyCallGraphBuilder {
   protected final NumberedString sigFinalize;
   protected final NumberedString sigInit;
   protected final NumberedString sigForName;
+  protected final VirtualEdgesSummaries virtualEdgesSummaries=initializeEdgeSummaries();
 
-  protected final RefType clRunnable = RefType.v("java.lang.Runnable");
-  protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
-  protected final RefType clHandler = RefType.v("android.os.Handler");
+  protected final Map<Kind,VirtualCallSiteFilter> callSiteFilters=initializeVirtualCallSiteFilters();
+
+//  protected final RefType clRunnable = RefType.v("java.lang.Runnable");
+//  protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
+//  protected final RefType clHandler = RefType.v("android.os.Handler");
 
   /** context-insensitive stuff */
   private final CallGraph cicg = Scene.v().internalMakeCallGraph();
@@ -252,6 +255,41 @@ public class OnFlyCallGraphBuilder {
   protected VirtualEdgesSummaries initializeEdgeSummaries() {
     return new VirtualEdgesSummaries();
   }
+
+// NAYA method:
+    /**
+     * Builds the default set of {@link VirtualCallSiteFilter}s used to validate
+     * reaching types at call sites that model concurrency helper classes.
+     * Subclasses may override this to add or replace filters -- e.g. to support
+     * a custom Executor implementation or Kotlin coroutines -- without touching
+     * any other part of this class.
+     *
+     * @return a mutable map from {@link Kind} to the filter responsible for it
+     */
+    protected Map<Kind, VirtualCallSiteFilter> initializeVirtualCallSiteFilters() {
+        Map<Kind, VirtualCallSiteFilter> filters = new HashMap<>();
+        VirtualCallSiteFilter runnableFilter = new AssignableTypeFilter(clRunnable());
+        filters.put(Kind.THREAD, runnableFilter);
+        filters.put(Kind.EXECUTOR, runnableFilter);
+        filters.put(Kind.ASYNCTASK, new AssignableTypeFilter(clAsyncTask()));
+        filters.put(Kind.HANDLER, new AssignableTypeFilter(clHandler()));
+        return filters;
+    }
+
+    /** @return the {@link RefType} for {@code java.lang.Runnable}. */
+    protected static RefType clRunnable() {
+        return RefType.v("java.lang.Runnable");
+    }
+
+    /** @return the {@link RefType} for {@code android.os.AsyncTask}. */
+    protected static RefType clAsyncTask() {
+        return RefType.v("android.os.AsyncTask");
+    }
+
+    /** @return the {@link RefType} for {@code android.os.Handler}. */
+    protected static RefType clHandler() {
+        return RefType.v("android.os.Handler");
+    }
 
   public ContextManager getContextManager() {
     return cm;
@@ -646,20 +684,19 @@ public class OnFlyCallGraphBuilder {
     }
   }
 
-  protected boolean skipSite(VirtualCallSite site, FastHierarchy fh, Type type) {
-    Kind k = site.kind();
-    if (k == Kind.THREAD) {
-      return !fh.canStoreType(type, clRunnable);
-    } else if (k == Kind.EXECUTOR) {
-      return !fh.canStoreType(type, clRunnable);
-    } else if (k == Kind.ASYNCTASK) {
-      return !fh.canStoreType(type, clAsyncTask);
-    } else if (k == Kind.HANDLER) {
-      return !fh.canStoreType(type, clHandler);
-    } else {
-      return false;
+    protected boolean skipSite(VirtualCallSite site, FastHierarchy fh, Type type) {
+        VirtualCallSiteFilter filter = callSiteFilters.get(site.kind());
+        return filter != null && filter.skipSite(site, fh, type);
     }
-  }
+
+    /**
+     * Registers (or replaces) the filter used for a given {@link Kind}. Allows
+     * callers to plug in support for additional concurrency helper classes
+     * without subclassing {@link OnFlyCallGraphBuilder}.
+     */
+    public void registerVirtualCallSiteFilter(Kind kind, VirtualCallSiteFilter filter) {
+        callSiteFilters.put(kind, filter);
+    }
 
   public boolean wantStringConstants(Local stringConst) {
     return stringConstToSites.get(stringConst) != null;
