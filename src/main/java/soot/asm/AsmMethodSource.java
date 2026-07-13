@@ -1121,16 +1121,54 @@ public class AsmMethodSource implements MethodSource {
         v = MethodHandle.v(toSootFieldRef(h), h.getTag());
       }
     } else if (val instanceof ConstantDynamic) {
-      ConstantDynamic cd = (ConstantDynamic) val;
-      if (MethodHandle.isMethodRef(cd.getBootstrapMethod().getTag())) {
-        v = MethodHandle.v(toSootMethodRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
-      } else {
-        v = MethodHandle.v(toSootFieldRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
-      }
+      // JEP 309: dynamic class-file constants (CONSTANT_Dynamic). Soot does not resolve these
+      // to their computed value. We model them gracefully as a dynamic invocation of their
+      // bootstrap method, which preserves the declared constant type as well as the bootstrap
+      // method and its static arguments, and warn that the value is not resolved.
+      v = toSootDynamicConstant((ConstantDynamic) val);
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
     }
     return v;
+  }
+
+  /**
+   * Models a JEP 309 dynamic class-file constant (CONSTANT_Dynamic). Soot cannot resolve the value that the constant's
+   * bootstrap method would compute at run time, so the constant is represented as a dynamic invocation of its bootstrap
+   * method. The resulting expression carries the constant's declared type, the bootstrap method reference and the static
+   * bootstrap arguments, so that downstream analyses can at least reason about the type and the bootstrap linkage. A
+   * warning is issued because the actual constant value is not resolved.
+   *
+   * @param cd
+   *          the dynamic constant to model
+   * @return a {@link soot.jimple.DynamicInvokeExpr} approximating the dynamic constant
+   */
+  private Value toSootDynamicConstant(ConstantDynamic cd) {
+    logger.warn(
+        "Encountered dynamic class-file constant (JEP 309) '{}' of type '{}' in method {}. "
+            + "Soot does not resolve the computed value and models it as a dynamic invocation of its bootstrap method.",
+        cd.getName(), cd.getDescriptor(), body.getMethod().getSignature());
+
+    Handle bsm = cd.getBootstrapMethod();
+    SootMethodRef bsmMethodRef = toSootMethodRef(bsm);
+
+    int argCount = cd.getBootstrapMethodArgumentCount();
+    List<Value> bsmArgs = new ArrayList<>(argCount);
+    for (int i = 0; i < argCount; i++) {
+      bsmArgs.add(toSootValue(cd.getBootstrapMethodArgument(i)));
+    }
+
+    Type constType = AsmUtil.toJimpleType(cd.getDescriptor(),
+        Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+
+    // A dynamic constant takes no dynamic arguments; it resolves to a single value of its declared type. We model it on
+    // the synthetic invokedynamic dummy class, mirroring how genuine invokedynamic call sites are handled.
+    SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+    SootMethodRef methodRef
+        = Scene.v().makeMethodRef(bclass, cd.getName(), Collections.<Type>emptyList(), constType, true);
+
+    return Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmArgs, methodRef, bsm.getTag(),
+        Collections.<Value>emptyList());
   }
 
   private void convertLookupSwitchInsn(LookupSwitchInsnNode insn) {
