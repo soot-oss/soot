@@ -57,6 +57,8 @@ import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.InnerClassTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.NestHostTag;
+import soot.tagkit.NestMembersTag;
 import soot.tagkit.PermittedSubclassesTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.SourceFileTag;
@@ -265,6 +267,19 @@ public class SootClassBuilder extends ClassVisitor {
     PermittedSubclassesTag p
         = (PermittedSubclassesTag) klass.getOrComputeTag(PermittedSubclassesTag.NAME, () -> new PermittedSubclassesTag());
     p.addPermittedSubClass(permittedSubclass);
+  }
+
+  @Override
+  public void visitNestHost(String nestHost) {
+    // JEP 181 (Nest-Based Access Control): record the host of the nest this class belongs to.
+    klass.addTag(new NestHostTag(nestHost));
+  }
+
+  @Override
+  public void visitNestMember(String nestMember) {
+    // JEP 181 (Nest-Based Access Control): record a member of the nest hosted by this class.
+    NestMembersTag t = (NestMembersTag) klass.getOrComputeTag(NestMembersTag.NAME, () -> new NestMembersTag());
+    t.addNestMember(nestMember);
   }
 
   @Override
