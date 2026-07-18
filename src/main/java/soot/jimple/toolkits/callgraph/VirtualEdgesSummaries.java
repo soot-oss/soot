@@ -31,15 +31,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -80,6 +72,7 @@ public class VirtualEdgesSummaries {
   protected final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new LinkedHashMap<>();
   protected final HashMap<String, VirtualEdge> staticinvokeEdges = new LinkedHashMap<>();
 
+    protected final Map<Kind, RefType> requiredTypeByKind = new HashMap<>();
   private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
   /**
@@ -165,6 +158,11 @@ public class VirtualEdgesSummaries {
             edg.edgeType = Kind.GENERIC_FAKE;
             break;
         }
+
+          String requiredTypeAttr = edge.getAttribute("requiredType");
+          if (requiredTypeAttr != null && !requiredTypeAttr.isEmpty()) {
+              requiredTypeByKind.put(edg.edgeType, RefType.v(requiredTypeAttr));
+          }
         edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
         edg.targets = new HashSet<VirtualEdgeTarget>();
         Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
@@ -304,6 +302,10 @@ public class VirtualEdgesSummaries {
   public VirtualEdge getVirtualEdgesMatchingSubSig(MethodSubSignature subsig) {
     return instanceinvokeEdges.get(subsig);
   }
+
+    public RefType getRequiredType(Kind kind) {
+        return requiredTypeByKind.get(kind);
+    }
 
   public VirtualEdge getVirtualEdgesMatchingFunction(String signature) {
     return staticinvokeEdges.get(signature);

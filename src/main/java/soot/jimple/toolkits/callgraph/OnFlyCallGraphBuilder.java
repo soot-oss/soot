@@ -685,8 +685,8 @@ public class OnFlyCallGraphBuilder {
   }
 
     protected boolean skipSite(VirtualCallSite site, FastHierarchy fh, Type type) {
-        VirtualCallSiteFilter filter = callSiteFilters.get(site.kind());
-        return filter != null && filter.skipSite(site, fh, type);
+        RefType requiredType = virtualEdgeSummaries.getRequiredType(site.kind());
+        return requiredType != null && !fh.canStoreType(type, requiredType);
     }
 
     /**
