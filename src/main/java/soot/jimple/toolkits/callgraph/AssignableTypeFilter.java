@@ -34,19 +34,19 @@ import soot.Type;
  */
 public class AssignableTypeFilter implements VirtualCallSiteFilter {
 
-    private final RefType requiredType;
+  private final RefType requiredType;
 
-    public AssignableTypeFilter(RefType requiredType) {
-        if (requiredType == null) {
-            throw new IllegalArgumentException("requiredType must not be null");
-        }
-        this.requiredType = requiredType;
+  public AssignableTypeFilter(RefType requiredType) {
+    if (requiredType == null) {
+      throw new IllegalArgumentException("requiredType must not be null");
     }
+    this.requiredType = requiredType;
+  }
 
-    @Override
-    public boolean skipSite(VirtualCallSite site, FastHierarchy fh, Type type) {
-        return !fh.canStoreType(type, requiredType);
-    }
+  @Override
+  public boolean skipSite(VirtualCallSite site, FastHierarchy fh, Type type) {
+    return !fh.canStoreType(type, requiredType);
+  }
 }
 
 //A reusable class .Here we can reuse this class for THREAD,EXECUTOR,ASYNCTASK,HANDLER

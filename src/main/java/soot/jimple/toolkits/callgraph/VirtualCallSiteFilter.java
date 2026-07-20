@@ -29,5 +29,5 @@ import soot.Type;
 // Extension point for filtering out reaching types at virtual call sites that model special framework control flow
 public interface VirtualCallSiteFilter {
 
-    boolean skipSite(VirtualCallSite site,FastHierarchy fh,Type type);
+  boolean skipSite(VirtualCallSite site, FastHierarchy fh, Type type);
 }

@@ -22,38 +22,140 @@ package soot.jimple.toolkits.callgraph;
  * #L%
  */
 
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import org.junit.Before;
 import org.junit.Test;
+import soot.G;
 import soot.Kind;
 import soot.RefType;
+import soot.Scene;
+import soot.jimple.toolkits.callgraph.VirtualEdgesSummaries.VirtualEdge;
 
+/**
+ * Tests for the {@code requiredType} attribute support in {@link VirtualEdgesSummaries}. This attribute lets
+ * {@code virtualedges.xml} declaratively specify the type a reaching value must be assignable to for a given
+ * {@link Kind} of virtual call site (e.g. {@code Runnable} for {@link Kind#THREAD}/{@link Kind#EXECUTOR},
+ * {@code Handler} for {@link Kind#HANDLER}, {@code AsyncTask} for {@link Kind#ASYNCTASK}), instead of that
+ * information being hardcoded in {@link OnFlyCallGraphBuilder#skipSite}.
+ */
 public class VirtualEdgesSummariesRequiredTypeTest {
 
-    @Test
-    public void parsesRequiredTypeAttribute() throws Exception {
-        String xml = "<virtualedges>"
-                + "<edge type=\"EXECUTOR\" requiredType=\"java.lang.Runnable\">"
-                + "<source declaringclass=\"java.util.concurrent.Executor\" invoketype=\"instance\" "
-                + "subsignature=\"void execute(java.lang.Runnable)\"/>"
-                + "<targets><direct index=\"0\" subsignature=\"void run()\" target-position=\"argument\"/></targets>"
-                + "</edge></virtualedges>";
+  private static final String XML_HEADER = "<?xml version=\"1.0\"?><virtualedges>";
+  private static final String XML_FOOTER = "</virtualedges>";
 
-        VirtualEdgesSummaries summaries = new TestableVirtualEdgesSummaries();
-        summaries.loadSummaries(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+  @Before
+  public void resetSoot() {
+    // Soot keeps global state (Scene, RefType numbering) in singletons; reset before each test
+    // so that RefType.v(...) calls do not interfere across test methods.
+    G.reset();
+  }
 
-        assertEquals(RefType.v("java.lang.Runnable"), summaries.getRequiredType(Kind.EXECUTOR));
-        assertNull(summaries.getRequiredType(Kind.VIRTUAL));
+  private VirtualEdgesSummaries load(String edgesXml) throws Exception {
+    String xml = XML_HEADER + edgesXml + XML_FOOTER;
+    return new TestableVirtualEdgesSummaries(xml);
+  }
+
+  @Test
+  public void parsesRequiredTypeForExecutor() throws Exception {
+    VirtualEdgesSummaries summaries = load(
+            "<edge type=\"EXECUTOR\" requiredType=\"java.lang.Runnable\">"
+                    + "<source declaringclass=\"java.util.concurrent.Executor\" invoketype=\"instance\" "
+                    + "subsignature=\"void execute(java.lang.Runnable)\"/>"
+                    + "<targets><direct index=\"0\" subsignature=\"void run()\" target-position=\"argument\"/></targets>"
+                    + "</edge>");
+
+    RefType required = summaries.getRequiredType(Kind.EXECUTOR);
+    assertNotNull("EXECUTOR should have a required type declared", required);
+    assertEquals("java.lang.Runnable", required.getClassName());
+  }
+
+  @Test
+  public void parsesRequiredTypeForHandler() throws Exception {
+    VirtualEdgesSummaries summaries = load(
+            "<edge type=\"HANDLER\" requiredType=\"android.os.Handler\">"
+                    + "<source declaringclass=\"android.os.Handler\" invoketype=\"instance\" "
+                    + "subsignature=\"boolean sendEmptyMessage(int)\"/>"
+                    + "<targets><direct subsignature=\"void handleMessage(android.os.Message)\" "
+                    + "target-position=\"base\"/></targets>"
+                    + "</edge>");
+
+    RefType required = summaries.getRequiredType(Kind.HANDLER);
+    assertNotNull("HANDLER should have a required type declared", required);
+    assertEquals("android.os.Handler", required.getClassName());
+  }
+
+  @Test
+  public void parsesRequiredTypeForAsyncTask() throws Exception {
+    VirtualEdgesSummaries summaries = load(
+            "<edge type=\"ASYNCTASK\" requiredType=\"android.os.AsyncTask\">"
+                    + "<source declaringclass=\"android.os.AsyncTask\" invoketype=\"instance\" "
+                    + "subsignature=\"android.os.AsyncTask execute(java.lang.Object[])\"/>"
+                    + "<targets><direct subsignature=\"java.lang.Object doInBackground(java.lang.Object[])\" "
+                    + "target-position=\"base\"/></targets>"
+                    + "</edge>");
+
+    RefType required = summaries.getRequiredType(Kind.ASYNCTASK);
+    assertNotNull("ASYNCTASK should have a required type declared", required);
+    assertEquals("android.os.AsyncTask", required.getClassName());
+  }
+
+  @Test
+  public void parsesRequiredTypeForThread() throws Exception {
+    VirtualEdgesSummaries summaries = load(
+            "<edge type=\"THREAD\" requiredType=\"java.lang.Runnable\">"
+                    + "<source declaringclass=\"java.lang.Thread\" invoketype=\"instance\" subsignature=\"void start()\"/>"
+                    + "<targets><direct subsignature=\"void run()\" target-position=\"base\"/></targets>"
+                    + "</edge>");
+
+    RefType required = summaries.getRequiredType(Kind.THREAD);
+    assertNotNull("THREAD should have a required type declared", required);
+    assertEquals("java.lang.Runnable", required.getClassName());
+  }
+
+  @Test
+  public void returnsNullWhenNoRequiredTypeIsDeclared() throws Exception {
+    // An edge with no requiredType attribute (e.g. a plain GENERIC_FAKE summary) must not
+    // register any entry in the required-type map.
+    VirtualEdgesSummaries summaries = load(
+            "<edge>"
+                    + "<source declaringclass=\"java.util.Iterator\" invoketype=\"instance\" "
+                    + "subsignature=\"java.lang.Object next()\"/>"
+                    + "<targets><direct subsignature=\"void accept(java.lang.Object)\" target-position=\"base\"/></targets>"
+                    + "</edge>");
+
+    assertNull("Kinds without a declared requiredType must resolve to null",
+            summaries.getRequiredType(Kind.GENERIC_FAKE));
+  }
+
+  @Test
+  public void requiredTypeDoesNotAffectEdgeLookup() throws Exception {
+    // Sanity check: adding requiredType parsing must not break the existing edge lookup mechanism.
+    VirtualEdgesSummaries summaries = load(
+            "<edge type=\"EXECUTOR\" requiredType=\"java.lang.Runnable\">"
+                    + "<source declaringclass=\"java.util.concurrent.Executor\" invoketype=\"instance\" "
+                    + "subsignature=\"void execute(java.lang.Runnable)\"/>"
+                    + "<targets><direct index=\"0\" subsignature=\"void run()\" target-position=\"argument\"/></targets>"
+                    + "</edge>");
+
+    VirtualEdge edge = summaries.getVirtualEdgesMatchingSubSig(
+            new soot.MethodSubSignature(Scene.v().getSubSigNumberer().findOrAdd("void execute(java.lang.Runnable)")));
+
+    assertNotNull("The edge itself should still be resolvable by its subsignature", edge);
+    assertEquals(Kind.EXECUTOR, edge.getEdgeType());
+    assertTrue("The edge summaries collection must not be empty", !summaries.isEmpty());
+  }
+
+  /** Exposes {@code loadSummaries} for testing without needing a real {@code virtualedges.xml} file on disk. */
+  private static final class TestableVirtualEdgesSummaries extends VirtualEdgesSummaries {
+    TestableVirtualEdgesSummaries(String xml) throws Exception {
+      super(java.util.Collections.emptyList());
+      loadSummaries(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
     }
-
-    /** Exposes the protected loadSummaries() method for testing without touching the real XML file. */
-    private static class TestableVirtualEdgesSummaries extends VirtualEdgesSummaries {
-        TestableVirtualEdgesSummaries() {
-            super(java.util.Collections.emptyList());
-        }
-    }
+  }
 }
