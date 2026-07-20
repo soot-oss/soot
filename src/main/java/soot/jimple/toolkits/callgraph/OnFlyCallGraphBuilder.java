@@ -1332,14 +1332,7 @@ public class OnFlyCallGraphBuilder {
       }
     }
 
-    /**
-     * Adds a special edge of kind {@link Kind#REFL_CONSTR_NEWINSTANCE} to all possible target constructors of this call to
-     * {@link Constructor#newInstance(Object...)}. Those kinds of edges are treated specially in terms of how parameters are
-     * assigned, as parameters to the reflective call are passed into the argument array of
-     * {@link Constructor#newInstance(Object...)}.
-     *
-     * @see PAG#addCallTarget(Edge)
-     */
+
     @Override
     public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
       Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
@@ -1355,14 +1348,7 @@ public class OnFlyCallGraphBuilder {
       }
     }
 
-    /**
-     * Adds a special edge of kind {@link Kind#REFL_INVOKE} to all possible target methods of this call to
-     * {@link Method#invoke(Object, Object...)}. Those kinds of edges are treated specially in terms of how parameters are
-     * assigned, as parameters to the reflective call are passed into the argument array of
-     * {@link Method#invoke(Object, Object...)}.
-     *
-     * @see PAG#addCallTarget(Edge)
-     */
+
     @Override
     public void methodInvoke(SootMethod container, Stmt invokeStmt) {
       Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);
