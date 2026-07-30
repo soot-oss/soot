@@ -75,6 +75,8 @@ import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
+import soot.tagkit.NestHostTag;
+import soot.tagkit.NestMembersTag;
 import soot.tagkit.OuterClassTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.SourceFileTag;
@@ -320,6 +322,10 @@ public abstract class AbstractASMBackend {
       }
     }
 
+    // Retrieve information about the nest host (JEP 181) if present. Per ASM's expected visit order this must be
+    // emitted before the outer class reference.
+    generateNestHostReference();
+
     // Retrieve information about outer class if present
     if (sc.hasOuterClass() || sc.hasTag(EnclosingMethodTag.NAME) || sc.hasTag(OuterClassTag.NAME)) {
       generateOuterClassReference();
@@ -330,6 +336,9 @@ public abstract class AbstractASMBackend {
 
     // Retrieve information about attributes
     generateAttributes();
+
+    // Retrieve information about the nest members (JEP 181) if present.
+    generateNestMemberReferences();
 
     // Retrieve information about inner classes
     generateInnerClassReferences();
@@ -511,6 +520,30 @@ public abstract class AbstractASMBackend {
       String innerName = ASMBackendUtils.slashify(ict.getShortName());
       int access = ict.getAccessFlags();
       cv.visitInnerClass(name, outerClassName, innerName, access);
+    }
+  }
+
+  /**
+   * Emits the {@code NestHost} attribute (JEP 181, Nest-Based Access Control) if the class declares one.
+   */
+  protected void generateNestHostReference() {
+    NestHostTag t = (NestHostTag) sc.getTag(NestHostTag.NAME);
+    if (t != null) {
+      cv.visitNestHost(ASMBackendUtils.slashify(t.getHost()));
+    }
+  }
+
+  /**
+   * Emits the {@code NestMembers} attribute (JEP 181, Nest-Based Access Control) if the class declares any nest members.
+   */
+  protected void generateNestMemberReferences() {
+    NestMembersTag t = (NestMembersTag) sc.getTag(NestMembersTag.NAME);
+    if (t != null) {
+      List<String> sortedMembers = new ArrayList<>(t.getNestMembers());
+      Collections.sort(sortedMembers);
+      for (String member : sortedMembers) {
+        cv.visitNestMember(ASMBackendUtils.slashify(member));
+      }
     }
   }
 
