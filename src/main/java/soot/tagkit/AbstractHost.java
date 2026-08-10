@@ -22,10 +22,12 @@ package soot.tagkit;
  * #L%
  */
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
+
+import soot.util.ConcurrentList;
 
 // extended by SootClass, SootField, SootMethod, Scene
 
@@ -35,11 +37,13 @@ import java.util.function.Supplier;
  */
 public class AbstractHost implements Host {
 
+  private final Object lock = new Object();
+
   protected int line;
 
   // avoid creating an empty list for each element, when it is not used
   // use lazy instantiation (in addTag) instead
-  protected List<Tag> mTagList = null;
+  protected volatile ConcurrentList<Tag> mTagList = null;
 
   /**
    * Get the {@link List} of {@link Tag Tags} on {@code this} {@link Host}. This list should not be modified!
@@ -58,25 +62,14 @@ public class AbstractHost implements Host {
    */
   @Override
   public void removeTag(String aName) {
-    int tagIndex = searchForTag(aName);
-    if (tagIndex != -1) {
-      mTagList.remove(tagIndex);
-    }
-  }
-
-  /**
-   * Search for {@link Tag} named {@code aName}.
-   */
-  private int searchForTag(String aName) {
-    if (mTagList != null) {
-      for (int i = 0; i < mTagList.size(); i++) {
-        Tag tag = mTagList.get(i);
-        if (tag != null && tag.getName().equals(aName)) {
-          return i;
-        }
+    Iterator<Tag> it = mTagList.iterator();
+    while (it.hasNext()) {
+      Tag tag = it.next();
+      if (tag != null && tag.getName().equals(aName)) {
+        it.remove();
+        break;
       }
     }
-    return -1;
   }
 
   /**
@@ -90,8 +83,7 @@ public class AbstractHost implements Host {
   @Override
   public Tag getTag(String aName) {
     if (mTagList != null) {
-      for (int i = 0; i < mTagList.size(); i++) {
-        Tag tag = mTagList.get(i);
+      for (Tag tag : mTagList) {
         if (tag != null && tag.getName().equals(aName)) {
           return tag;
         }
@@ -109,7 +101,14 @@ public class AbstractHost implements Host {
    */
   @Override
   public boolean hasTag(String aName) {
-    return (searchForTag(aName) != -1);
+    if (mTagList != null) {
+      for (Tag tag : mTagList) {
+        if (tag != null && tag.getName().equals(aName)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -119,10 +118,22 @@ public class AbstractHost implements Host {
    */
   @Override
   public void addTag(Tag t) {
-    if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(1);
+    List<Tag> l = getOrCreateTagList();
+    l.add(t);
+  }
+
+  private List<Tag> getOrCreateTagList() {
+    ConcurrentList<Tag> l = mTagList;
+    if (l == null) {
+      synchronized (lock) {
+        l = mTagList;
+        if (l == null) {
+          l = new ConcurrentList<Tag>();
+          mTagList = l;
+        }
+      }
     }
-    mTagList.add(t);
+    return l;
   }
 
   /**
@@ -142,10 +153,7 @@ public class AbstractHost implements Host {
   public void addAllTagsOf(Host h) {
     List<Tag> tags = h.getTags();
     if (!tags.isEmpty()) {
-      if (mTagList == null) {
-        mTagList = new ArrayList<Tag>(tags.size());
-      }
-      mTagList.addAll(tags);
+      getOrCreateTagList().addAll(tags);
     }
   }
 
@@ -173,11 +181,9 @@ public class AbstractHost implements Host {
 
   @Override
   public Tag getOrComputeTag(String aName, Supplier<Tag> supplier) {
-    if (mTagList == null) {
-      mTagList = new ArrayList<Tag>(1);
-    }
-    for (int i = 0; i < mTagList.size(); i++) {
-      Tag p = mTagList.get(i);
+    List<Tag> l = getOrCreateTagList();
+    
+    for (Tag p : l) {
       if (p != null && p.getName().equals(aName)) {
         return p;
       }

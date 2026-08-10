@@ -351,8 +351,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
         // handle all exceptions in expressions
-        result = result.add(mightThrow(s.getLeftOp()));
-        result = result.add(mightThrow(s.getRightOp()));
+        result = result.add(mightThrow(s, s.getLeftOp()));
+        result = result.add(mightThrow(s, s.getRightOp()));
       }
 
       // does not exist
@@ -373,18 +373,18 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
       public void caseIdentityStmt(IdentityStmt s) {
         Value rightOp = s.getRightOp();
         if (rightOp instanceof CaughtExceptionRef) {
-          result = result.add(Scene.v().getRefType(s.getLeftOp().getType().toString()));
+          result = result.add((RefType) s.getLeftOp().getType());
         }
       }
 
       @Override
       public void caseIfStmt(IfStmt s) {
-        result = result.add(mightThrow(s.getCondition()));
+        result = result.add(mightThrow(s, s.getCondition()));
       }
 
       @Override
       public void caseInvokeStmt(InvokeStmt s) {
-        result = result.add(mightThrow(s.getInvokeExpr()));
+        result = result.add(mightThrow(s, s.getInvokeExpr()));
       }
 
       @Override
@@ -409,13 +409,13 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
 
       @Override
       public void caseTableSwitchStmt(TableSwitchStmt s) {
-        result = result.add(mightThrow(s.getKey()));
+        result = result.add(mightThrow(s, s.getKey()));
       }
 
       @Override
       public void caseThrowStmt(ThrowStmt s) {
         // result = mightThrowImplicitly(s);
-        result = result.add(Scene.v().getRefType(s.getOp().getType().toString()));
+        result = result.add((RefType) (s.getOp().getType()));
         result = result.add(mightThrowExplicitly(s, sm));
       }
 
@@ -517,13 +517,13 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
             result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
           }
         }
-        result = result.add(mightThrow(expr.getOp()));
+        result = result.add(mightThrow(statement, expr.getOp()));
       }
 
       @Override
       public void caseInstanceOfExpr(InstanceOfExpr expr) {
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_TYPELOADEXCEPTION));
-        result = result.add(mightThrow(expr.getOp()));
+        result = result.add(mightThrow(statement, expr.getOp()));
       }
 
       @Override
@@ -533,7 +533,7 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
         if (!(count instanceof IntConstant) || ((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO)) {
           result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
         }
-        result = result.add(mightThrow(count));
+        result = result.add(mightThrow(statement, count));
       }
 
       @Override
@@ -545,7 +545,7 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
               || (((IntConstant) count).lessThan(INT_CONSTANT_ZERO).equals(INT_CONSTANT_ZERO))) {
             result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_OVERFLOWEXCEPTION));
           }
-          result = result.add(mightThrow(count));
+          result = result.add(mightThrow(statement, count));
         }
       }
 
@@ -556,7 +556,7 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
       @Override
       public void caseLengthExpr(LengthExpr expr) {
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(mightThrow(expr.getOp()));
+        result = result.add(mightThrow(statement, expr.getOp()));
       }
 
       // Declared by RefSwitch interface:
@@ -565,8 +565,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
       public void caseArrayRef(ArrayRef ref) {
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INDEXOUTOFRANGEEXCEPTION));
-        result = result.add(mightThrow(ref.getBase()));
-        result = result.add(mightThrow(ref.getIndex()));
+        result = result.add(mightThrow(statement, ref.getBase()));
+        result = result.add(mightThrow(statement, ref.getIndex()));
       }
 
       // static field load
@@ -583,7 +583,7 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_INVALIDOPERATIONEXCEPTION));
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_MISSINGFIELDEXCEPTION));
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
-        result = result.add(mightThrow(ref.getBase()));
+        result = result.add(mightThrow(statement, ref.getBase()));
       }
 
       @Override
@@ -631,8 +631,8 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
         // result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_OVERFLOWEXCEPTION)); //Implementation specific
         // (Microsoft)
 
-        result = result.add(mightThrow(expr.getOp1()));
-        result = result.add(mightThrow(expr.getOp2()));
+        result = result.add(mightThrow(statement, expr.getOp1()));
+        result = result.add(mightThrow(statement, expr.getOp2()));
       }
 
       private void caseInstanceInvokeExpr(InvokeExpr expr, boolean staticInvoke) {
@@ -641,10 +641,10 @@ public class DotnetThrowAnalysis extends UnitThrowAnalysis {
         result = result.add(Scene.v().getRefType(DotNetBasicTypes.SYSTEM_NULLREFERENCEEXCEPTION));
         // result = result.add(Scene.v().getRefType(DotnetBasicTypes.SYSTEM_SECURITYEXCEPTION));
         for (int i = 0; i < expr.getArgCount(); i++) {
-          result = result.add(mightThrow(expr.getArg(i)));
+          result = result.add(mightThrow(statement, expr.getArg(i)));
         }
         if (!staticInvoke) {
-          result = result.add(mightThrow(((InstanceInvokeExpr) expr).getBase()));
+          result = result.add(mightThrow(statement, ((InstanceInvokeExpr) expr).getBase()));
         }
         result = result.add(mightThrow(expr.getMethodRef()));
       }

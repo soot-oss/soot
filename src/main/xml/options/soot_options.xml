@@ -271,15 +271,7 @@
                 Provide detailed information about what Soot is doing as it runs.
             </long_desc>
         </boolopt>
-        <boolopt>
-            <name>Interactive Mode</name>
-            <alias>interactive-mode</alias>
-            <short_desc>Run in interactive mode</short_desc>
-            <long_desc>
-                Runs interactively, with Soot providing detailed information as it iterates through intra-procedural
-                analyses.
-            </long_desc>
-        </boolopt>
+
         <boolopt>
             <name>Unfriendly Mode</name>
             <alias>unfriendly-mode</alias>
@@ -2176,6 +2168,19 @@
                     <name>Enabled</name>
                     <alias>enabled</alias>
                     <default>true</default>
+                </boolopt>
+                <boolopt>
+                    <name>Add exception edges</name>
+                    <alias>add-exception-edges</alias>
+                    <default>false</default>
+                    <short_desc>Create edges to JVM exceptions that might be thrown</short_desc>
+                    <long_desc>This option creates edges to JVM induced exceptions.
+                        As an example, consider a program call to x.foo() when the variable x might be null.
+                        In this case, the JVM  might create a NullPointerException at runtime and thus could call 
+                        a constructor of the NullPointerException class. When this option is enabled, we use
+                        the default throw analysis (see the Default ThrowAnalysis option) to determine all possible
+                        exceptions and introduce call edges to each possible constructor of each exception.
+                    </long_desc>
                 </boolopt>
                 <boolopt>
                     <name>Safe forName</name>
@@ -4894,25 +4899,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                     </boolopt>
                 </sub_phase>
                 <sub_phase>
-                    <name>Call Graph Grapher</name>
-                    <class>CGGOptions</class>
-                    <alias>wjap.cgg</alias>
-                    <short_desc>Creates graphical call graph.</short_desc>
-                    <long_desc>
-                        <p>Creates graphical call graph.</p>
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                    </boolopt>
-                    <boolopt>
-                        <name>Show Library Methods</name>
-                        <alias>show-lib-meths</alias>
-                        <default>false</default>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
                     <name>Purity Analysis [AM]</name>
                     <class>PurityOptions</class>
                     <alias>wjap.purity</alias>
@@ -5734,23 +5720,6 @@ This locking scheme aims to achieve simple fine-grained locking.
                     </intopt>
                 </sub_phase>
                 <sub_phase>
-                    <name>Call Graph Tagger</name>
-                    <alias>jap.cgtagger</alias>
-                    <short_desc>Call graph tagger</short_desc>
-                    <long_desc>
-                        The Call Graph Tagger produces LinkTags based on the call
-                        graph. The Eclipse plugin uses these tags to produce
-                        linked popup lists which indicate the source and target methods
-                        of the statement. Selecting a link from the list moves the
-                        cursor to the indicated method.
-                    </long_desc>
-                    <boolopt>
-                        <name>Enabled</name>
-                        <alias>enabled</alias>
-                        <default>false</default>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
                     <name>Parity Tagger</name>
                     <alias>jap.parity</alias>
                     <short_desc>Parity tagger</short_desc>
@@ -6450,6 +6419,17 @@ This locking scheme aims to achieve simple fine-grained locking.
                     Java bytecode instructions in the JVM Specification. The
                     analysis deals with each statement in isolation, without regard
                     to the surrounding program.
+                </long_desc>
+            </value>
+            <value>
+                <name>Precise</name>
+                <alias>precise</alias>
+                <short_desc>Precise Throw Analysis</short_desc>
+                <long_desc>
+                    A variant of the Unit Throw Analysis which omits exceptions that cannot be thrown.
+                    For example, it utilizes a nullness analysis to exclude NullPointerException when
+                    the value cannot be null. Note that this analysis might be relatively slow due to 
+                    the overhead of checking plausible exceptions.
                 </long_desc>
             </value>
             <value>

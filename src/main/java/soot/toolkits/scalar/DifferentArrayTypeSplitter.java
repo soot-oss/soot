@@ -59,7 +59,7 @@ import soot.util.Chain;
  * 
  * x:
  * staticinvoke <useAsObject: void x(java.lang.Object)>(a);
- * </code> In this case, it is hard to find a good typing for <code>a</<code>. Since both usages (as int[] and char[]) both
+ * </code> In this case, it is hard to find a good typing for <code>a</code>. Since both usages (as int[] and char[]) both
  * are used by the staticinvoke, the local splitter does not split the locals here.
  *
  * This analysis will split the locals and merge the different locals right before the join.
@@ -130,8 +130,9 @@ public class DifferentArrayTypeSplitter extends BodyTransformer {
           }
           if (!doTypesAgree && usedAsArray) {
             // now we need to find clusters of variables that are used together that we want to change
-            List<Unit> alldefsList = defs.getDefsOfAt(lcl, u);
-            for (Unit def : alldefsList) {
+            List<Unit> alldefsAtUnitList = defs.getDefsOfAt(lcl, u);
+            List<Unit> alldefsList = defs.getDefsOf(lcl);
+            for (Unit def : alldefsAtUnitList) {
               if (!handledDef.add(def)) {
                 continue;
               }
@@ -157,7 +158,12 @@ public class DifferentArrayTypeSplitter extends BodyTransformer {
                 IdentityStmt ipos = (IdentityStmt) pos;
                 if (!(ipos.getRightOp() instanceof CaughtExceptionRef)) {
                   // we cannot place this at the parameter identity statement
-                  pos = body.getUnits().getSuccOf(pos);
+                  Unit succ = body.getUnits().getSuccOf(pos);
+                  if (succ instanceof IdentityStmt) {
+                    pos = succ;
+                  } else {
+                    break;
+                  }
                 }
               }
               body.getUnits().insertAfter(Jimple.v().newAssignStmt(lcl, newLocal), pos);

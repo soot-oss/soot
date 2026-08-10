@@ -23,7 +23,6 @@ package soot.jimple.toolkits.callgraph;
  */
 
 import com.google.common.collect.Iterables;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,13 +37,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -52,7 +50,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import soot.Body;
 import soot.Kind;
 import soot.MethodSubSignature;
@@ -69,7 +66,7 @@ import soot.util.StringNumberer;
 /**
  * Utility class used by {@link OnFlyCallGraphBuilder} for finding functions at which to place virtual callgraph edges.
  * Function signatures are configurable in {@link #SUMMARIESFILE}.
- * 
+ *
  * @author Julius Naeumann
  */
 public class VirtualEdgesSummaries {
@@ -80,6 +77,7 @@ public class VirtualEdgesSummaries {
   protected final HashMap<MethodSubSignature, VirtualEdge> instanceinvokeEdges = new LinkedHashMap<>();
   protected final HashMap<String, VirtualEdge> staticinvokeEdges = new LinkedHashMap<>();
 
+  protected final Map<Kind, RefType> requiredTypeByKind = new HashMap<>();
   private static final Logger logger = LoggerFactory.getLogger(VirtualEdgesSummaries.class);
 
   /**
@@ -101,7 +99,7 @@ public class VirtualEdgesSummaries {
       summariesFile = Paths.get(SUMMARIESFILE);
     }
     try (InputStream in = Files.exists(summariesFile) ? Files.newInputStream(summariesFile)
-        : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
+            : ModuleUtil.class.getResourceAsStream("/" + SUMMARIESFILE)) {
       if (in == null) {
         logger.error("Virtual edge summaries file not found");
       } else {
@@ -114,9 +112,8 @@ public class VirtualEdgesSummaries {
 
   /**
    * Creates a new instance of the {@link VirtualEdgesSummaries} class and loads the summaries from the given input file
-   * 
-   * @param summariesFile
-   *          The file from which to load the virtual edge summaries
+   *
+   * @param summariesFile The file from which to load the virtual edge summaries
    */
   public VirtualEdgesSummaries(File summariesFile) {
     try (InputStream in = new FileInputStream(summariesFile)) {
@@ -128,9 +125,8 @@ public class VirtualEdgesSummaries {
 
   /**
    * Loads the edge summaries from the given stream
-   * 
-   * @param in
-   *          The {@link InputStream} from which to load the summaries
+   *
+   * @param in The {@link InputStream} from which to load the summaries
    * @throws SAXException
    * @throws IOException
    * @throws ParserConfigurationException
@@ -165,6 +161,11 @@ public class VirtualEdgesSummaries {
             edg.edgeType = Kind.GENERIC_FAKE;
             break;
         }
+
+        String requiredTypeAttr = edge.getAttribute("requiredType");
+        if (requiredTypeAttr != null && !requiredTypeAttr.isEmpty()) {
+          requiredTypeByKind.put(edg.edgeType, RefType.v(requiredTypeAttr));
+        }
         edg.source = parseEdgeSource((Element) (edge.getElementsByTagName("source").item(0)));
         edg.targets = new HashSet<VirtualEdgeTarget>();
         Element targetsElement = (Element) edge.getElementsByTagName("targets").item(0);
@@ -183,7 +184,7 @@ public class VirtualEdgesSummaries {
       }
     }
     logger.debug("Found {} instanceinvoke, {} staticinvoke edge descriptions", instanceinvokeEdges.size(),
-        staticinvokeEdges.size());
+            staticinvokeEdges.size());
   }
 
   protected void addInstanceInvoke(VirtualEdge edg, MethodSubSignature subsig) {
@@ -305,6 +306,10 @@ public class VirtualEdgesSummaries {
     return instanceinvokeEdges.get(subsig);
   }
 
+  public RefType getRequiredType(Kind kind) {
+    return requiredTypeByKind.get(kind);
+  }
+
   public VirtualEdge getVirtualEdgesMatchingFunction(String signature) {
     return staticinvokeEdges.get(signature);
   }
@@ -342,7 +347,7 @@ public class VirtualEdgesSummaries {
         switch (targetElement.getTagName()) {
           case "direct": {
             MethodSubSignature subsignature
-                = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
+                    = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
 
             String tpos = targetElement.getAttribute("target-position");
             DirectTarget dt;
@@ -375,7 +380,7 @@ public class VirtualEdgesSummaries {
             // Parse the attributes of the current target
             IndirectTarget target;
             MethodSubSignature subsignature
-                = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
+                    = new MethodSubSignature(nmbr.findOrAdd(targetElement.getAttribute("subsignature")));
             String tpos = targetElement.getAttribute("target-position");
             switch (tpos) {
               case "argument":
@@ -490,11 +495,9 @@ public class VirtualEdgesSummaries {
     /**
      * Creates a new instance of the {@link InstanceinvokeSource} class based on a method that is being invoked on the
      * current object instance
-     * 
-     * @param declaringType
-     *          A type where the method with the subsignature is declared.
-     * @param subSignature
-     *          The subsignature of the method that is invoked
+     *
+     * @param declaringType A type where the method with the subsignature is declared.
+     * @param subSignature  The subsignature of the method that is invoked
      */
     public InstanceinvokeSource(RefType declaringType, String subSignature) {
       this.subSignature = new MethodSubSignature(Scene.v().getSubSigNumberer().findOrAdd(subSignature));
@@ -503,13 +506,12 @@ public class VirtualEdgesSummaries {
 
     /**
      * Convenience constructor that extracts the subsignature of the callee from a call site statement
-     * 
-     * @param invokeStmt
-     *          The statement at the call site
+     *
+     * @param invokeStmt The statement at the call site
      */
     public InstanceinvokeSource(Stmt invokeStmt) {
       this(invokeStmt.getInvokeExpr().getMethodRef().getDeclaringClass().getType(),
-          invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
+              invokeStmt.getInvokeExpr().getMethodRef().getSubSignature().getString());
     }
 
     @Override
@@ -567,7 +569,7 @@ public class VirtualEdgesSummaries {
 
   /**
    * Abstract base class for all virtual edge targets.
-   * 
+   *
    * @author Steven Arzt
    *
    */
@@ -616,7 +618,7 @@ public class VirtualEdgesSummaries {
    * A deferred edge target models cases in which a call does not immediately invoke the callback, but instead returns an
    * object on which a callback an be invoked later.
    * </p>
-   * 
+   *
    * <pre>
    * List<String> l = ...
    * Spliterator<String> split = l.spliterator();
@@ -647,12 +649,12 @@ public class VirtualEdgesSummaries {
    * <p>
    * The target of a PAG or callgraph edge that corresponds to the immediate execution of a method.
    * </p>
-   * 
+   *
    * <p>
    * The method can either be specified directly, or indirectly by following a chain obf subsequent calls, which is modeled
    * by the respective derived classes of this abstract base class.
    * </p>
-   * 
+   *
    */
   public static abstract class InvocationVirtualEdgeTarget extends VirtualEdgeTarget {
 
@@ -694,9 +696,8 @@ public class VirtualEdgesSummaries {
 
     /**
      * Clones the edge, but with a potentially different arg index
-     * 
-     * @param argIndex
-     *          the arg index to set in the clone
+     *
+     * @param argIndex the arg index to set in the clone
      * @return the clone
      */
     public abstract VirtualEdgeTarget clone(int argIndex);
@@ -740,12 +741,9 @@ public class VirtualEdgesSummaries {
      * Creates a new direct method invocation on an object passed to the original source as an argument. For example,
      * <code>foo.do(x)></code> could invoke <code>x.bar()</code> as a callback.
      *
-     * @param targetType
-     *          The declaring class of the target method
-     * @param targetMethod
-     *          The target method that is invoked on the argument object
-     * @param argIndex
-     *          The index of the argument that receives the target object
+     * @param targetType   The declaring class of the target method
+     * @param targetMethod The target method that is invoked on the argument object
+     * @param argIndex     The index of the argument that receives the target object
      */
     public DirectTarget(RefType targetType, MethodSubSignature targetMethod, int argIndex) {
       super(targetType, targetMethod, argIndex);
@@ -755,10 +753,8 @@ public class VirtualEdgesSummaries {
      * Creates a new direct method invocation on the base object of the original source. For example, <code>foo.do()></code>
      * could invoke <code>foo.bar()</code> as a callback.
      *
-     * @param targetType
-     *          The declaring class of the target method
-     * @param targetMethod
-     *          The target method that is invoked on the base object
+     * @param targetType   The declaring class of the target method
+     * @param targetMethod The target method that is invoked on the base object
      */
     public DirectTarget(RefType targetType, MethodSubSignature targetMethod) {
       super(targetType, targetMethod);
@@ -775,7 +771,7 @@ public class VirtualEdgesSummaries {
     @Override
     public String toString() {
       return String.format("Direct to %s%s on %s", targetType != null ? targetType.getClassName() + ": " : "",
-          targetMethod.toString(), super.toString());
+              targetMethod.toString(), super.toString());
     }
 
     @Override
@@ -853,14 +849,11 @@ public class VirtualEdgesSummaries {
      * Creates a new direct method invocation. The signature of this indirect target references a method that was called
      * earlier, and which received the object on which the callback is invoked. This constructor assumes that the earlier
      * method has created an object which is passed the current method as an argument.
-     * 
-     * @param targetType
-     *          The target type which declares the target method
-     * @param targetMethod
-     *          The method with which the original callback was registered
-     * @param argIndex
-     *          The index of the argument that holds the object that holds the callback or next step of the indirect
-     *          invocation
+     *
+     * @param targetType   The target type which declares the target method
+     * @param targetMethod The method with which the original callback was registered
+     * @param argIndex     The index of the argument that holds the object that holds the callback or next step of the
+     *                     indirect invocation
      */
     public IndirectTarget(RefType targetType, MethodSubSignature targetMethod, int argIndex) {
       super(targetType, targetMethod, argIndex);
@@ -868,9 +861,8 @@ public class VirtualEdgesSummaries {
 
     /**
      * Creates a new indirect target as an indirection from a method that was previously considered a source
-     * 
-     * @param source
-     *          The source from which to create the indirect target
+     *
+     * @param source The source from which to create the indirect target
      */
     public IndirectTarget(InstanceinvokeSource source) {
       super(source.declaringType, source.subSignature);
@@ -879,11 +871,9 @@ public class VirtualEdgesSummaries {
     /**
      * Creates a new direct method invocation. The signature of this indirect target references a method that was called
      * earlier, and which received the object on which the callback is invoked.
-     * 
-     * @param targetType
-     *          The target type which declares the target method
-     * @param targetMethod
-     *          The method with which the original callback was registered
+     *
+     * @param targetType   The target type which declares the target method
+     * @param targetMethod The method with which the original callback was registered
      */
     public IndirectTarget(RefType targetType, MethodSubSignature targetMethod) {
       super(targetType, targetMethod);
@@ -928,7 +918,7 @@ public class VirtualEdgesSummaries {
         sb.append('(').append(t.toString()).append(") ");
       }
       return String.format("(Instances passed to <" + (targetType != null ? targetType : "?") + ": %s> on %s => %s)",
-          targetMethod.toString(), super.toString(), sb.toString());
+              targetMethod.toString(), super.toString(), sb.toString());
 
     }
 
@@ -996,9 +986,8 @@ public class VirtualEdgesSummaries {
 
     /**
      * Adds the given targets to this edge summary
-     * 
-     * @param newTargets
-     *          The targets to add
+     *
+     * @param newTargets The targets to add
      */
     public void addTargets(Collection<VirtualEdgeTarget> newTargets) {
       this.targets.addAll(newTargets);

@@ -220,23 +220,23 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
       public void caseEnterMonitorStmt(EnterMonitorStmt s) {
         result = result.add(mgr.NULL_POINTER_EXCEPTION);
         result = result.add(mgr.ILLEGAL_MONITOR_STATE_EXCEPTION);
-        result = result.add(mightThrow(s.getOp()));
+        result = result.add(mightThrow(s, s.getOp()));
       }
 
       @Override
       public void caseAssignStmt(AssignStmt s) {
-        // Dalvik only throws ArrayIndexOutOfBounds and NullPointerException which are both handled 
+        // Dalvik only throws ArrayIndexOutOfBounds and NullPointerException which are both handled
         // through the ArrayRef expressions. There is no ArrayStoreException in Dalvik.
-        result = result.add(mightThrow(s.getLeftOp()));
-        
+        result = result.add(mightThrow(s, s.getLeftOp()));
+
         Value rightOp = s.getRightOp();
         if (rightOp instanceof DivExpr && (s.hasTag(FloatOpTag.NAME) || s.hasTag(DoubleOpTag.NAME))) {
           // workaround for https://github.com/soot-oss/soot/issues/2188
-          // skip right op processing - float and double divisions don't throw any exceptions but when 
-          // building the Jimple body the value types are not yet known so we can not know from the expression 
-          // if it is an int or float/double division  
+          // skip right op processing - float and double divisions don't throw any exceptions but when
+          // building the Jimple body the value types are not yet known so we can not know from the expression
+          // if it is an int or float/double division
         } else {
-          result = result.add(mightThrow(rightOp));
+          result = result.add(mightThrow(s, rightOp));
         }
       }
 
@@ -332,7 +332,7 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
             result = result.add(mgr.CLASS_CAST_EXCEPTION);
           }
         }
-        result = result.add(mightThrow(expr.getOp()));
+        result = result.add(mightThrow(statement, expr.getOp()));
       }
     };
 

@@ -55,10 +55,10 @@ public class Main {
 
   private void printVersion() {
     System.out.println("Soot version " + versionString);
-    System.out.println("Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
+    System.out.println("Copyright (C) 1997-2026 Raja Vallee-Rai and others.");
     System.out.println("All rights reserved.");
     System.out.println();
-    System.out.println("Contributions are copyright (C) 1997-2010 by their respective contributors.");
+    System.out.println("Contributions are copyright (C) 1997-2026 by their respective contributors.");
     System.out.println("See the file 'credits' for a list of contributors.");
     System.out.println("See individual source files for details.");
     System.out.println();

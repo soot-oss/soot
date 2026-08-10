@@ -47,6 +47,8 @@ import soot.Type;
 import soot.Unit;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -77,7 +79,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
      */
     IMMEDIATE_CALLEES,
     /**
-     * Assume Class-Hierarchy Analysis style that all subclasses are possible. 
+     * Assume Class-Hierarchy Analysis style that all subclasses are possible.
      */
     CHA
   }
@@ -128,22 +130,25 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
         res.trimToSize();
         return res;
       } else {
-        if (fallback != Fallback.NONE && u instanceof Stmt) {
+        if (u instanceof Stmt) {
           Stmt s = (Stmt) u;
-          if (s.containsInvokeExpr()) {
-            InvokeExpr invExpr = s.getInvokeExpr();
-            SootMethod immediate = invExpr.getMethod();
-            if (fallback == Fallback.CHA && invExpr instanceof InstanceInvokeExpr) {
-              InstanceInvokeExpr instinv = (InstanceInvokeExpr) invExpr;
-              FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
-              Type t = instinv.getBase().getType();
-              if (t instanceof RefType) {
-                RefType rt = (RefType) t;
-                return fh.resolveAbstractDispatch(rt.getSootClass(), instinv.getMethodRef());
+          InvokeExpr inv = s.getInvokeExprUnsafe();
+          if (fallback != Fallback.NONE || inv instanceof StaticInvokeExpr || inv instanceof SpecialInvokeExpr) {
+            if (s.containsInvokeExpr()) {
+              InvokeExpr invExpr = s.getInvokeExpr();
+              SootMethod immediate = invExpr.getMethod();
+              if (fallback == Fallback.CHA && invExpr instanceof InstanceInvokeExpr) {
+                InstanceInvokeExpr instinv = (InstanceInvokeExpr) invExpr;
+                FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+                Type t = instinv.getBase().getType();
+                if (t instanceof RefType) {
+                  RefType rt = (RefType) t;
+                  return fh.resolveAbstractDispatch(rt.getSootClass(), instinv.getMethodRef());
+                }
               }
-            }
-            if (includePhantomCallees || immediate.hasActiveBody()) {
-              return Collections.singleton(immediate);
+              if (includePhantomCallees || immediate.hasActiveBody()) {
+                return Collections.singleton(immediate);
+              }
             }
           }
         }
@@ -223,7 +228,8 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
   /**
    * Sets the fallback mode. The fallback is used when the call graph reports no outgoing edges.
    * 
-   * @param fallbackMode the fallback mode to use
+   * @param fallbackMode
+   *          the fallback mode to use
    */
   public void setFallbackMode(Fallback fallbackMode) {
     this.fallback = fallbackMode;

@@ -26,9 +26,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.interaction.InteractionHandler;
 
 /**
  * An abstract class providing a meta-framework for carrying out dataflow analysis. This class provides common methods and
@@ -55,9 +53,6 @@ public abstract class AbstractFlowAnalysis<N, A> {
     this.graph = graph;
     this.unitToBeforeFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
     this.filterUnitToBeforeFlow = Collections.emptyMap();
-    if (Options.v().interactive_mode()) {
-      InteractionHandler.v().handleCfgEvent(graph);
-    }
   }
 
   /**

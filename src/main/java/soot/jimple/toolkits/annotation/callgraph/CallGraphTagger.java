@@ -50,6 +50,7 @@ public class CallGraphTagger extends BodyTransformer {
 
   private MethodToContexts methodToContexts;
 
+  @Override
   protected void internalTransform(Body b, String phaseName, Map options) {
 
     CallGraph cg = Scene.v().getCallGraph();

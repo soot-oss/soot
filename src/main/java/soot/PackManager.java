@@ -54,6 +54,7 @@ import soot.baf.BafBody;
 import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.baf.toolkits.base.PeepholeOptimizer;
 import soot.baf.toolkits.base.StoreChainOptimizer;
+import soot.dexpler.Util;
 import soot.grimp.Grimp;
 import soot.grimp.GrimpBody;
 import soot.grimp.toolkits.base.ConstructorFolder;
@@ -66,8 +67,6 @@ import soot.jimple.toolkits.annotation.DominatorsTagger;
 import soot.jimple.toolkits.annotation.LineNumberAdder;
 import soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker;
 import soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder;
-import soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher;
-import soot.jimple.toolkits.annotation.callgraph.CallGraphTagger;
 import soot.jimple.toolkits.annotation.defs.ReachingDefsTagger;
 import soot.jimple.toolkits.annotation.fields.UnusedFieldsTagger;
 import soot.jimple.toolkits.annotation.liveness.LiveVarsTagger;
@@ -116,7 +115,6 @@ import soot.tagkit.InnerClassTagAggregator;
 import soot.toDex.DexPrinter;
 import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
 import soot.toolkits.exceptions.TrapTightener;
-import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
 import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
@@ -233,7 +231,6 @@ public class PackManager {
       p.add(new Transform("wjap.umt", UnusedMethodsTagger.v()));
       p.add(new Transform("wjap.uft", UnusedFieldsTagger.v()));
       p.add(new Transform("wjap.tqt", TightestQualifiersTagger.v()));
-      p.add(new Transform("wjap.cgg", CallGraphGrapher.v()));
       p.add(new Transform("wjap.purity", PurityAnalysis.v())); // [AM]
     }
 
@@ -277,7 +274,6 @@ public class PackManager {
       p.add(new Transform("jap.npcolorer", NullPointerColorer.v()));
       p.add(new Transform("jap.sea", SideEffectTagger.v()));
       p.add(new Transform("jap.fieldrw", FieldTagger.v()));
-      p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));
       p.add(new Transform("jap.parity", ParityTagger.v()));
       p.add(new Transform("jap.pat", ParameterAliasTagger.v()));
       p.add(new Transform("jap.rdtagger", ReachingDefsTagger.v()));
@@ -460,14 +456,6 @@ public class PackManager {
       }
     }
 
-    if (Options.v().interactive_mode()) {
-      if (InteractionHandler.v().getInteractionListener() == null) {
-        logger.debug("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
-        Options.v().set_interactive_mode(false);
-      } else {
-        logger.debug("Running in interactive mode.");
-      }
-    }
     runBodyPacks();
     handleInnerClasses();
   }
@@ -702,7 +690,7 @@ public class PackManager {
 
         // whole shimple or not?
         {
-          Body body = m.retrieveActiveBody();
+          Body body = retrieveActiveBody(m);
           if (!m.hasActiveBody()) {
             continue;
           }
@@ -726,7 +714,7 @@ public class PackManager {
       }
 
       if (produceJimple) {
-        Body body = m.retrieveActiveBody();
+        Body body = retrieveActiveBody(m);
         if (body != null) {
           getTransform("jb.cp").apply(body); // CopyPropagator
           getTransform("jb.cbf").apply(body); // ConditionalBranchFolder
@@ -762,6 +750,36 @@ public class PackManager {
       processXMLForClass(c, tc);
     }
 
+  }
+
+  private Body retrieveActiveBody(SootMethod m) {
+    if (m == null) {
+      throw new IllegalArgumentException("Given method is null");
+    }
+    try {
+      return m.retrieveActiveBody();
+    } catch (Exception e) {
+      String msg = "An error occurred while reading in the method body of method " + m.getSignature();
+      if (Options.v().ignore_methodsource_error()) {
+        logger.warn(msg + "; continuing", e);
+        JimpleBody jb = new JimpleBody(m);
+        m.setActiveBody(jb);
+        Util.emptyBody(jb);
+        Util.addExceptionAfterUnit(jb, "java.lang.RuntimeException", jb.getUnits().getLast(),
+            "Soot encountered an internal exception while importing the body: " + e.getMessage());
+        TypeAssigner.v().transform(jb);
+        return jb;
+      } else {
+        final String ignoreSuggestion;
+        if (Main.usedAsCommandLineApp) {
+          ignoreSuggestion = "use the command line argument -ignore-methodsource-error for that.";
+        } else {
+          ignoreSuggestion = "use Options.v().set_ignore_classpath_errors(true);";
+        }
+
+        throw new MethodSourceException(m, msg + ". If you want to ignore the error, " + ignoreSuggestion, e);
+      }
+    }
   }
 
   public BafBody convertJimpleBodyToBaf(SootMethod m) {
@@ -939,7 +957,7 @@ public class PackManager {
       // are added during resolution
       for (SootMethod m : new ArrayList<SootMethod>(cl.getMethods())) {
         if (m.isConcrete()) {
-          executor.execute(() -> m.retrieveActiveBody());
+          executor.execute(() -> retrieveActiveBody(m));
         }
       }
     }

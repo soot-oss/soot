@@ -74,6 +74,7 @@ import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.PreciseThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.util.ArrayNumberer;
@@ -1556,6 +1557,9 @@ public class Scene {
         case Options.throw_analysis_dotnet:
           defaultThrowAnalysis = DotnetThrowAnalysis.v();
           break;
+        case Options.throw_analysis_precise:
+          defaultThrowAnalysis = PreciseThrowAnalysis.v();
+          break;
 
         case Options.throw_analysis_auto_select:
           if (options.src_prec() == Options.src_prec_apk) {
@@ -2303,5 +2307,21 @@ public class Scene {
   public void unregisterSootClassAddedListener(ISootClassAddedListener listener) {
     classAddedListeners.remove(listener);
 
+  }
+
+  public String quotedTypeNameOf(Type t) {
+    if (t instanceof ArrayType) {
+      ArrayType at = ((ArrayType) t);
+      StringBuilder bt = new StringBuilder(quotedTypeNameOf(at.getBaseType()));
+      for (int i = 0; i < at.numDimensions; i++) {
+        bt.append("[]");
+      }
+      return bt.toString();
+    }
+    if (t instanceof RefType) {
+      RefType rt = (RefType) t;
+      return quotedNameOf(rt.getClassName());
+    }
+    return t.toString();
   }
 }

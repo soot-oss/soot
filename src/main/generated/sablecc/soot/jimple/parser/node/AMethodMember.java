@@ -8,6 +8,7 @@ import soot.jimple.parser.analysis.*;
 @SuppressWarnings("nls")
 public final class AMethodMember extends PMember
 {
+    private final LinkedList<PDefinedAnnotation> _definedAnnotation_ = new LinkedList<PDefinedAnnotation>();
     private final LinkedList<PModifier> _modifier_ = new LinkedList<PModifier>();
     private PType _type_;
     private PName _name_;
@@ -23,6 +24,7 @@ public final class AMethodMember extends PMember
     }
 
     public AMethodMember(
+        @SuppressWarnings("hiding") List<?> _definedAnnotation_,
         @SuppressWarnings("hiding") List<?> _modifier_,
         @SuppressWarnings("hiding") PType _type_,
         @SuppressWarnings("hiding") PName _name_,
@@ -33,6 +35,8 @@ public final class AMethodMember extends PMember
         @SuppressWarnings("hiding") PMethodBody _methodBody_)
     {
         // Constructor
+        setDefinedAnnotation(_definedAnnotation_);
+
         setModifier(_modifier_);
 
         setType(_type_);
@@ -55,6 +59,7 @@ public final class AMethodMember extends PMember
     public Object clone()
     {
         return new AMethodMember(
+            cloneList(this._definedAnnotation_),
             cloneList(this._modifier_),
             cloneNode(this._type_),
             cloneNode(this._name_),
@@ -69,6 +74,32 @@ public final class AMethodMember extends PMember
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMethodMember(this);
+    }
+
+    public LinkedList<PDefinedAnnotation> getDefinedAnnotation()
+    {
+        return this._definedAnnotation_;
+    }
+
+    public void setDefinedAnnotation(List<?> list)
+    {
+        for(PDefinedAnnotation e : this._definedAnnotation_)
+        {
+            e.parent(null);
+        }
+        this._definedAnnotation_.clear();
+
+        for(Object obj_e : list)
+        {
+            PDefinedAnnotation e = (PDefinedAnnotation) obj_e;
+            if(e.parent() != null)
+            {
+                e.parent().removeChild(e);
+            }
+
+            e.parent(this);
+            this._definedAnnotation_.add(e);
+        }
     }
 
     public LinkedList<PModifier> getModifier()
@@ -276,6 +307,7 @@ public final class AMethodMember extends PMember
     public String toString()
     {
         return ""
+            + toString(this._definedAnnotation_)
             + toString(this._modifier_)
             + toString(this._type_)
             + toString(this._name_)
@@ -290,6 +322,11 @@ public final class AMethodMember extends PMember
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
+        if(this._definedAnnotation_.remove(child))
+        {
+            return;
+        }
+
         if(this._modifier_.remove(child))
         {
             return;
@@ -344,6 +381,24 @@ public final class AMethodMember extends PMember
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
+        for(ListIterator<PDefinedAnnotation> i = this._definedAnnotation_.listIterator(); i.hasNext();)
+        {
+            if(i.next() == oldChild)
+            {
+                if(newChild != null)
+                {
+                    i.set((PDefinedAnnotation) newChild);
+                    newChild.parent(this);
+                    oldChild.parent(null);
+                    return;
+                }
+
+                i.remove();
+                oldChild.parent(null);
+                return;
+            }
+        }
+
         for(ListIterator<PModifier> i = this._modifier_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)

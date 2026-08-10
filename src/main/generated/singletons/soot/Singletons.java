@@ -1336,20 +1336,6 @@ public class Singletons {
     	instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger = null;
     }
 
-    private soot.toolkits.graph.interaction.InteractionHandler instance_soot_toolkits_graph_interaction_InteractionHandler;
-    public soot.toolkits.graph.interaction.InteractionHandler soot_toolkits_graph_interaction_InteractionHandler() {
-        if (instance_soot_toolkits_graph_interaction_InteractionHandler == null) {
-	       	synchronized (this) {
-		        if (instance_soot_toolkits_graph_interaction_InteractionHandler == null)
-	        		instance_soot_toolkits_graph_interaction_InteractionHandler = new soot.toolkits.graph.interaction.InteractionHandler(g);
-	       	}
-       	}
-        return instance_soot_toolkits_graph_interaction_InteractionHandler;
-    }
-    protected void release_soot_toolkits_graph_interaction_InteractionHandler() {
-    	instance_soot_toolkits_graph_interaction_InteractionHandler = null;
-    }
-
     private soot.jimple.toolkits.annotation.logic.LoopInvariantFinder instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder;
     public soot.jimple.toolkits.annotation.logic.LoopInvariantFinder soot_jimple_toolkits_annotation_logic_LoopInvariantFinder() {
         if (instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder == null) {
@@ -1434,6 +1420,20 @@ public class Singletons {
     	instance_soot_toolkits_exceptions_UnitThrowAnalysis = null;
     }
 
+    private soot.toolkits.exceptions.PreciseThrowAnalysis instance_soot_toolkits_exceptions_PreciseThrowAnalysis;
+    public soot.toolkits.exceptions.PreciseThrowAnalysis soot_toolkits_exceptions_PreciseThrowAnalysis() {
+        if (instance_soot_toolkits_exceptions_PreciseThrowAnalysis == null) {
+	       	synchronized (this) {
+		        if (instance_soot_toolkits_exceptions_PreciseThrowAnalysis == null)
+	        		instance_soot_toolkits_exceptions_PreciseThrowAnalysis = new soot.toolkits.exceptions.PreciseThrowAnalysis(g);
+	       	}
+       	}
+        return instance_soot_toolkits_exceptions_PreciseThrowAnalysis;
+    }
+    protected void release_soot_toolkits_exceptions_PreciseThrowAnalysis() {
+    	instance_soot_toolkits_exceptions_PreciseThrowAnalysis = null;
+    }
+
     private soot.dexpler.DalvikThrowAnalysis instance_soot_dexpler_DalvikThrowAnalysis;
     public soot.dexpler.DalvikThrowAnalysis soot_dexpler_DalvikThrowAnalysis() {
         if (instance_soot_dexpler_DalvikThrowAnalysis == null) {
@@ -1516,20 +1516,6 @@ public class Singletons {
     }
     protected void release_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis() {
     	instance_soot_dotnet_exceptiontoolkits_DotnetThrowAnalysis = null;
-    }
-
-    private soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher;
-    public soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher() {
-        if (instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null) {
-	       	synchronized (this) {
-		        if (instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null)
-	        		instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher = new soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher(g);
-	       	}
-       	}
-        return instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher;
-    }
-    protected void release_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher() {
-    	instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher = null;
     }
 
     private soot.SootResolver instance_soot_SootResolver;

@@ -47,7 +47,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.MulExpr;
 import soot.jimple.SubExpr;
-import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 import soot.toolkits.scalar.LiveLocals;
@@ -247,12 +246,6 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
       }
     }
 
-    // if (useS){
-    if (Options.v().interactive_mode()) {
-      buildAfterFilterMap(s);
-      updateAfterFilterMap(s);
-    }
-    // }
   }
 
   private void buildAfterFilterMap(Unit s) {
@@ -325,10 +318,6 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit, Map<Value, ParityA
       if (val instanceof ArithmeticConstant) {
         initMap.put(val, getParity(initMap, val));
       }
-    }
-
-    if (Options.v().interactive_mode()) {
-      updateBeforeFilterMap();
     }
 
     return initMap;

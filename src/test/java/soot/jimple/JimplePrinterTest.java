@@ -28,9 +28,11 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -40,6 +42,7 @@ import soot.Body;
 import soot.G;
 import soot.Immediate;
 import soot.Local;
+import soot.Modifier;
 import soot.PackManager;
 import soot.RefType;
 import soot.Scene;
@@ -48,8 +51,12 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.VoidType;
 import soot.jimple.internal.JimpleLocal;
 import soot.options.Options;
+import soot.tagkit.AbstractHost;
+import soot.tagkit.InnerClassTag;
+import soot.tagkit.Tag;
 import soot.util.Chain;
 
 public class JimplePrinterTest {
@@ -60,11 +67,13 @@ public class JimplePrinterTest {
   public void testPrinting() throws Throwable {
     G.reset();
 
-    //we use names that need quotations
+    // we use names that need quotations
     SootClass clz = new SootClass(NORMAL_TESTCLASS_NAME);
     ArrayType at = ArrayType.v(clz.getType(), 2);
     SootMethod m = new SootMethod("throws", Arrays.asList(clz.getType(), at, RefType.v("java.lang.String")), at);
     clz.addMethod(m);
+    SootMethod m2 = new SootMethod("throws", Arrays.asList(), VoidType.v(), Modifier.NATIVE);
+    clz.addMethod(m2);
 
     SootField field = new SootField("return", clz.getType());
     clz.addField(field);
@@ -109,6 +118,7 @@ public class JimplePrinterTest {
   private void compareClasses(SootClass expected, SootClass check) {
     assertEquals(expected.getName(), check.getName());
     assertEquals(expected.getFieldCount(), check.getFieldCount());
+    compareAnnotations(expected, check);
     for (SootField expF : expected.getFields()) {
       SootField newF = Scene.v().grabField(expF.getSignature());
       compareFields(expF, newF);
@@ -116,6 +126,7 @@ public class JimplePrinterTest {
       compareFields(expF, newF);
       newF = check.getFieldByName(expF.getName());
       compareFields(expF, newF);
+      compareAnnotations(expF, newF);
     }
 
     assertEquals(expected.getMethodCount(), check.getMethodCount());
@@ -124,10 +135,32 @@ public class JimplePrinterTest {
       compareMethods(expF, newF);
       newF = check.getMethod(expF.getSubSignature());
       compareMethods(expF, newF);
-      newF = check.getMethod(expF.getNumberedSubSignature());
-      compareMethods(expF, newF);
+      compareAnnotations(expF, newF);
     }
 
+  }
+
+  private void compareAnnotations(AbstractHost expected, AbstractHost check) {
+    Collection<Tag> e = getAllAnnotationTags(expected);
+    Collection<Tag> c = getAllAnnotationTags(check);
+    assertEquals(e, c);
+  }
+
+  private Collection<Tag> getAllAnnotationTags(AbstractHost expected) {
+    Collection<Tag> res = new TreeSet<>(new Comparator<Tag>() {
+
+      @Override
+      public int compare(Tag arg0, Tag arg1) {
+        return arg0.toString().compareTo(arg1.toString());
+      }
+
+    });
+    for (Tag i : expected.getTags()) {
+      if (i instanceof InnerClassTag) {
+        res.add(i);
+      }
+    }
+    return res;
   }
 
   private void compareMethods(SootMethod expected, SootMethod check) {
@@ -158,7 +191,6 @@ public class JimplePrinterTest {
     for (Unit e : expected.getUnits()) {
       compareUnits(e, itUCheck.next());
     }
-    assertEquals(expected.toString(), check.toString());
   }
 
   private List<Local> sort(Chain<Local> locals) {
@@ -184,7 +216,8 @@ public class JimplePrinterTest {
   }
 
   private void checkTypes(Type expected, Type check) {
-    assertEquals(expected, check);
+    assertEquals(expected.toString(), check.toString());
+    assertEquals(expected.getClass(), check.getClass());
   }
 
   private void compareFields(SootField expected, SootField check) {

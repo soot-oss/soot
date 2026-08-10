@@ -30,6 +30,7 @@ import org.objectweb.asm.Type;
 
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
+import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
@@ -63,7 +64,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
     if (value instanceof Byte) {
       elem = new AnnotationIntElem((Byte) value, 'B', name);
     } else if (value instanceof Boolean) {
-      elem = new AnnotationIntElem(((Boolean) value) ? 1 : 0, 'Z', name);
+      elem = new AnnotationBooleanElem(((Boolean) value), 'Z', name);
     } else if (value instanceof Character) {
       elem = new AnnotationIntElem((Character) value, 'C', name);
     } else if (value instanceof Short) {

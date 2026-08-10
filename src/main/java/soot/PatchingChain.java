@@ -298,7 +298,6 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     protected final Chain<E> innerChain;
     protected final Iterator<E> innerIterator;
     protected E lastObject;
-    protected boolean state = false;
 
     protected PatchingIterator(Chain<E> innerChain) {
       this.innerChain = innerChain;
@@ -322,19 +321,19 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
 
     @Override
     public E next() {
-      lastObject = innerIterator.next();
-      state = true;
-      return lastObject;
+      E lo = innerIterator.next();
+      lastObject = lo;
+      return lo;
     }
 
     @Override
     public void remove() {
-      if (!state) {
-        throw new IllegalStateException("remove called before first next() call");
+      if (lastObject == null) {
+        throw new IllegalStateException("Remove called before first next() call");
       } else {
-        state = false;
         patchBeforeRemoval(innerChain, lastObject);
         innerIterator.remove();
+        lastObject = null;
       }
     }
   }

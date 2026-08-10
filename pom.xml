@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.soot-oss</groupId>
     <artifactId>soot</artifactId>
-    <name>Soot - a J*va Optimization Framework</name>
+    <name>Soot - a Java Optimization Framework</name>
     <version>4.8.0-SNAPSHOT</version>
     <description>A Java Optimization Framework</description>
     <url>https://soot-oss.github.io/soot</url>
@@ -307,6 +307,7 @@
                         --add-opens=java.base/java.nio.file=ALL-UNNAMED
                         --add-opens=java.base/java.nio.channels.spi=ALL-UNNAMED
                         --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+                        --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
                     </argLine>
                 </configuration>
                 <executions>
@@ -418,6 +419,15 @@
                         </manifest>
                     </archive>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -439,7 +449,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.17.0</version>
+            <version>2.21.0</version>
         </dependency>
         <dependency>
             <groupId>com.android.tools.smali</groupId>
@@ -473,11 +483,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>xmlpull</groupId>
-            <artifactId>xmlpull</artifactId>
-            <version>1.1.3.4d_b4_min</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
             <version>1.10.15</version>
@@ -492,7 +497,7 @@
         <dependency>
             <groupId>org.soot-oss</groupId>
             <artifactId>heros</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5</version>
         </dependency>
         <!-- Logging dependencies -->
         <dependency>
@@ -554,12 +559,12 @@
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>3.25.5</version>
+            <version>3.25.8</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
-            <version>3.25.5</version>
+            <version>3.25.8</version>
         </dependency>
 		<dependency>
 		    <groupId>io.agentscope</groupId>

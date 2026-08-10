@@ -120,9 +120,7 @@
                            </a></li>
                      <li><a href="#phase_9_5">Tightest Qualifiers Tagger (wjap.tqt)
                            </a></li>
-                     <li><a href="#phase_9_6">Call Graph Grapher (wjap.cgg)
-                           </a></li>
-                     <li><a href="#phase_9_7">Purity Analysis [AM] (wjap.purity)
+                     <li><a href="#phase_9_6">Purity Analysis [AM] (wjap.purity)
                            </a></li>
                   </ul>
                </li>
@@ -178,25 +176,23 @@
                            </a></li>
                      <li><a href="#phase_15_4">Field Read/Write Tagger (jap.fieldrw)
                            </a></li>
-                     <li><a href="#phase_15_5">Call Graph Tagger (jap.cgtagger)
+                     <li><a href="#phase_15_5">Parity Tagger (jap.parity)
                            </a></li>
-                     <li><a href="#phase_15_6">Parity Tagger (jap.parity)
+                     <li><a href="#phase_15_6">Parameter Alias Tagger (jap.pat)
                            </a></li>
-                     <li><a href="#phase_15_7">Parameter Alias Tagger (jap.pat)
+                     <li><a href="#phase_15_7">Live Variables Tagger (jap.lvtagger)
                            </a></li>
-                     <li><a href="#phase_15_8">Live Variables Tagger (jap.lvtagger)
+                     <li><a href="#phase_15_8">Reaching Defs Tagger (jap.rdtagger)
                            </a></li>
-                     <li><a href="#phase_15_9">Reaching Defs Tagger (jap.rdtagger)
+                     <li><a href="#phase_15_9">Cast Elimination Check Tagger (jap.che)
                            </a></li>
-                     <li><a href="#phase_15_10">Cast Elimination Check Tagger (jap.che)
+                     <li><a href="#phase_15_10">Unreachable Method Transformer (jap.umt)
                            </a></li>
-                     <li><a href="#phase_15_11">Unreachable Method Transformer (jap.umt)
+                     <li><a href="#phase_15_11">Loop Invariant Tagger (jap.lit)
                            </a></li>
-                     <li><a href="#phase_15_12">Loop Invariant Tagger (jap.lit)
+                     <li><a href="#phase_15_12">Available Expressions Tagger (jap.aet)
                            </a></li>
-                     <li><a href="#phase_15_13">Available Expressions Tagger (jap.aet)
-                           </a></li>
-                     <li><a href="#phase_15_14">Dominators Tagger (jap.dmt)
+                     <li><a href="#phase_15_13">Dominators Tagger (jap.dmt)
                            </a></li>
                   </ul>
                </li>
@@ -415,10 +411,6 @@
          <tr>
             <td><tt>-v </tt><br><tt>-verbose </tt><br></td>
             <td colspan="2">Verbose mode</td>
-         </tr>
-         <tr>
-            <td><tt>-interactive-mode </tt><br></td>
-            <td colspan="2">Run in interactive mode</td>
          </tr>
          <tr>
             <td><tt>-unfriendly-mode </tt><br></td>
@@ -804,6 +796,7 @@
             <td><tt>-throw-analysis <var>arg</var></tt><br></td>
             <td><tt>pedantic&nbsp;
                   </tt><br><tt>unit&nbsp;
+                  </tt><br><tt>precise&nbsp;
                   </tt><br><tt>dalvik&nbsp;
                   </tt><br><tt>dotnet&nbsp;
                   </tt><br><tt>auto-select&nbsp;
@@ -1871,6 +1864,24 @@
             )
             
             <p></p>
+         </li>
+         <li><b>Add exception edges</b>
+            (add-exception-edges)
+            <br>
+            (default value:
+            <span class="value">false</span>
+            )
+            
+            <p>This option creates edges to JVM induced exceptions.
+               As an example, consider a program call to x.foo() when the variable x might be null.
+               In this case, the JVM  might create a NullPointerException at runtime and thus could
+               call 
+               a constructor of the NullPointerException class. When this option is enabled, we use
+               the default throw analysis (see the Default ThrowAnalysis option) to determine all
+               possible
+               exceptions and introduce call edges to each possible constructor of each exception.
+               
+            </p>
          </li>
          <li><b>Safe forName</b>
             (safe-forname)
@@ -4947,34 +4958,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_9_6">Call Graph Grapher (wjap.cgg)
-            </a></h2>
-      <p>
-         Creates graphical call graph.
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p></p>
-         </li>
-         <li><b>Show Library Methods</b>
-            (show-lib-meths)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p></p>
-         </li>
-      </ul>
-      <h2><a name="phase_9_7">Purity Analysis [AM] (wjap.purity)
+      <h2><a name="phase_9_6">Purity Analysis [AM] (wjap.purity)
             </a></h2>
       <p>
          Purity anaysis implemented by Antoine Mine and based on the paper
@@ -5954,29 +5938,7 @@
             </p>
          </li>
       </ul>
-      <h2><a name="phase_15_5">Call Graph Tagger (jap.cgtagger)
-            </a></h2>
-      <p>
-         The Call Graph Tagger produces LinkTags based on the call
-         graph. The Eclipse plugin uses these tags to produce
-         linked popup lists which indicate the source and target methods
-         of the statement. Selecting a link from the list moves the
-         cursor to the indicated method.
-         
-      </p>
-      <h4>Accepted phase options:</h4>
-      <ul>
-         <li><b>Enabled</b>
-            (enabled)
-            <br>
-            (default value:
-            <span class="value">false</span>
-            )
-            
-            <p></p>
-         </li>
-      </ul>
-      <h2><a name="phase_15_6">Parity Tagger (jap.parity)
+      <h2><a name="phase_15_5">Parity Tagger (jap.parity)
             </a></h2>
       <p>
          The Parity Tagger produces StringTags and ColorTags indicating
@@ -5999,7 +5961,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_7">Parameter Alias Tagger (jap.pat)
+      <h2><a name="phase_15_6">Parameter Alias Tagger (jap.pat)
             </a></h2>
       <p>For each method with parameters of reference type, this tagger indicates the aliasing
          relationships between the parameters using colour tags. Parameters that may be aliased
@@ -6019,7 +5981,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_8">Live Variables Tagger (jap.lvtagger)
+      <h2><a name="phase_15_7">Live Variables Tagger (jap.lvtagger)
             </a></h2>
       <p>Colors live variables.</p>
       <h4>Accepted phase options:</h4>
@@ -6034,7 +5996,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_9">Reaching Defs Tagger (jap.rdtagger)
+      <h2><a name="phase_15_8">Reaching Defs Tagger (jap.rdtagger)
             </a></h2>
       <p>For each use of a local in a stmt creates a link to the reaching def.</p>
       <h4>Accepted phase options:</h4>
@@ -6049,7 +6011,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_10">Cast Elimination Check Tagger (jap.che)
+      <h2><a name="phase_15_9">Cast Elimination Check Tagger (jap.che)
             </a></h2>
       <p>Indicates whether cast checks can be eliminated.</p>
       <h4>Accepted phase options:</h4>
@@ -6064,7 +6026,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_11">Unreachable Method Transformer (jap.umt)
+      <h2><a name="phase_15_10">Unreachable Method Transformer (jap.umt)
             </a></h2>
       <p>When the whole-program analysis determines a method to be unreachable, this transformer
          inserts an assertion into the method to check that it is indeed unreachable.
@@ -6082,7 +6044,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_12">Loop Invariant Tagger (jap.lit)
+      <h2><a name="phase_15_11">Loop Invariant Tagger (jap.lit)
             </a></h2>
       <p>An expression whose operands are constant or have reaching definitions from outside
          the
@@ -6101,7 +6063,7 @@
             <p></p>
          </li>
       </ul>
-      <h2><a name="phase_15_13">Available Expressions Tagger (jap.aet)
+      <h2><a name="phase_15_12">Available Expressions Tagger (jap.aet)
             </a></h2>
       <p>A each statement a set of available expressions is after the statement is added as
          a
@@ -6143,7 +6105,7 @@
             </table>
          </li>
       </ul>
-      <h2><a name="phase_15_14">Dominators Tagger (jap.dmt)
+      <h2><a name="phase_15_13">Dominators Tagger (jap.dmt)
             </a></h2>
       <p>Provides link tags at a statement to all of the satements dominators.</p>
       <h4>Accepted phase options:</h4>

@@ -95,7 +95,6 @@ You can also obtain older builds of the `develop` branch. A complete listing of 
 # How do I obtain Soot without Maven?
 **We recommend using Soot with Maven**
 You can obtain the latest release build of Soot [directly](https://repo1.maven.org/maven2/org/soot-oss/soot/).
-You can obtain the latest SNAPSHOT build of Soot [directly](https://oss.sonatype.org/content/repositories/snapshots/org/soot-oss/soot/).
 
 The `soot-<RELEASE>-jar-with-dependencies.jar` file is an all-in-one file that also contains all the required libraries. 
 

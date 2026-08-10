@@ -100,6 +100,11 @@ public final class Kind implements Numberable {
    * Due to call to Class.newInstance(..) when reflection log is enabled.
    */
   public static final Kind REFL_CLASS_NEWINSTANCE = new Kind("REFL_CLASS_NEWINSTANCE");
+  /**
+   * A call to exception classes, usually used to model an implicit edge that might occur at runtime but is not thrown
+   * explicitly (e.g. a NullPointerException constructed by the runtime)
+   */
+  public static final Kind EXCEPTION = new Kind("EXCEPTION");
 
   private final String name;
   private int num;

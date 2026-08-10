@@ -93,20 +93,19 @@
   <class>soot.jimple.toolkits.pointer.ParameterAliasTagger</class>
   <class>soot.jimple.toolkits.annotation.defs.ReachingDefsTagger</class>
   <class>soot.jimple.toolkits.annotation.liveness.LiveVarsTagger</class>
-  <class>soot.toolkits.graph.interaction.InteractionHandler</class>
   <class>soot.jimple.toolkits.annotation.logic.LoopInvariantFinder</class>
   <class>soot.jimple.toolkits.annotation.AvailExprTagger</class>
   <class>soot.util.PhaseDumper</class>
   <class>soot.util.cfgcmd.AltClassLoader</class>
   <class>soot.toolkits.exceptions.ThrowableSet.Manager</class>
   <class>soot.toolkits.exceptions.UnitThrowAnalysis</class>
+  <class>soot.toolkits.exceptions.PreciseThrowAnalysis</class>
   <class>soot.dexpler.DalvikThrowAnalysis</class>
   <class>soot.dexpler.DexFileProvider</class>
   <class>soot.toolkits.exceptions.PedanticThrowAnalysis</class>
   <class>soot.toolkits.exceptions.TrapTightener</class>
   <class>soot.toolkits.exceptions.DuplicateCatchAllTrapRemover</class>
   <class>soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis</class>
-  <class>soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher</class>
   <class>soot.SootResolver</class>
   <class>soot.SootModuleResolver</class>
   <class>soot.jimple.paddle.PaddleHook</class>
