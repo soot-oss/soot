@@ -248,7 +248,7 @@
 	</edge>
 	<!-- Java reflection -->
 	<edge>
-		<source declaringclass="java.lang.reflect.Proxy" invoketype="instance" subsignature="java.lang.Object newProxyInstance(java.lang.ClassLoader,java.lang.Class[],java.lang.reflect.InvocationHandler)"/>
+		<source invoketype="static" signature="&lt;java.lang.reflect.Proxy: java.lang.Object newProxyInstance(java.lang.ClassLoader,java.lang.Class[],java.lang.reflect.InvocationHandler)&gt;"/>
 		<targets>
 			<direct index="2" subsignature="java.lang.Object invoke(java.lang.Object,java.lang.reflect.Method,java.lang.Object[])" target-position="argument"/>
 		</targets>
