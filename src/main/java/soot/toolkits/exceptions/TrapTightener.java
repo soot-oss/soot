@@ -84,6 +84,7 @@ public final class TrapTightener extends TrapTransformer {
     Chain<Unit> unitChain = body.getUnits();
     final SootClass baseException = scene.getBaseExceptionType().getSootClass();
     if (trapChain.size() > 0) {
+      boolean removedTraps = false;
       ExceptionalUnitGraph graph = ExceptionalUnitGraphFactory.createExceptionalUnitGraph(body, throwAnalysis);
       Set<Unit> unitsWithMonitor = getUnitsWithMonitor(graph);
 
@@ -125,6 +126,7 @@ public final class TrapTightener extends TrapTransformer {
         // remove the complete trap.
         if (firstTrappedThrower == null) {
           trapIt.remove();
+          removedTraps = true;
         } else {
           if (firstTrappedThrower != null && firstTrappedUnit != firstTrappedThrower) {
             trap.setBeginUnit(firstTrappedThrower);
@@ -136,6 +138,10 @@ public final class TrapTightener extends TrapTransformer {
             trap.setEndUnit(unitChain.getSuccOf(lastTrappedThrower));
           }
         }
+      }
+
+      if (removedTraps) {
+        new UnreachableCodeEliminator(throwAnalysis).transform(body);
       }
     }
   }

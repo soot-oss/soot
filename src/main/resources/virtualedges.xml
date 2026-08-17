@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <virtualedges>
 	<!-- Thread.start() -->
-	<edge>
+	<edge type="THREAD" requiredType="java.lang.Runnable">
 		<source declaringclass="java.lang.Thread" invoketype="instance" subsignature="void start()"/>
 		<targets>
 			<direct subsignature="void run()" target-position="base"/>
@@ -23,87 +23,87 @@
 		</targets>
 	</edge>
 	<!-- execute and post methods -->
-	<edge type="EXECUTOR">
+	<edge type="EXECUTOR" requiredType="java.lang.Runnable">
 		<source declaringclass="java.util.concurrent.Executor" invoketype="instance" subsignature="void execute(java.lang.Runnable)"/>
 		<targets>
 			<direct index="0" subsignature="void run()" target-position="argument"/>
 		</targets>
 	</edge>
-	<edge type="EXECUTOR">
+	<edge type="EXECUTOR" requiredType="java.lang.Runnable">
 		<source declaringclass="java.util.concurrent.Executor" invoketype="instance" subsignature="boolean post(java.lang.Runnable)"/>
 		<targets>
 			<direct index="0" subsignature="void run()" target-position="argument"/>
 		</targets>
 	</edge>
-	<edge type="EXECUTOR">
+	<edge type="EXECUTOR" requiredType="java.lang.Runnable">
 		<source declaringclass="java.util.concurrent.Executor" invoketype="instance" subsignature="boolean postAtFrontOfQueue(java.lang.Runnable)"/>
 		<targets>
 			<direct index="0" subsignature="void run()" target-position="argument"/>
 		</targets>
 	</edge>
-	<edge type="EXECUTOR">
+	<edge type="EXECUTOR" requiredType="java.lang.Runnable">
 		<source declaringclass="java.util.concurrent.Executor" invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,long)"/>
 		<targets>
 			<direct index="0" subsignature="void run()" target-position="argument"/>
 		</targets>
 	</edge>
-	<edge type="EXECUTOR">
+	<edge type="EXECUTOR" requiredType="java.lang.Runnable">
 		<source declaringclass="java.util.concurrent.Executor" invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,java.lang.Object,long)"/>
 		<targets>
 			<direct index="0" subsignature="void run()" target-position="argument"/>
 		</targets>
 	</edge>
-	<edge type="EXECUTOR">
+	<edge type="EXECUTOR" requiredType="java.lang.Runnable">
 		<source declaringclass="java.util.concurrent.Executor" invoketype="instance" subsignature="boolean postDelayed(java.lang.Runnable,long)"/>
 		<targets>
 			<direct index="0" subsignature="void run()" target-position="argument"/>
 		</targets>
 	</edge>
 	<!-- Android runOnUIThread -->
-	<edge type="EXECUTOR">
+	<edge type="EXECUTOR" requiredType="java.lang.Runnable">
 		<source declaringclass="android.app.Activity" invoketype="instance" subsignature="void runOnUiThread(java.lang.Runnable)"/>
 		<targets>
 			<direct index="0" subsignature="void run()" target-position="argument"/>
 		</targets>
 	</edge>
 	<!-- Handlers -->
-	<edge type="HANDLER">
+	<edge type="HANDLER" requiredType="android.os.Handler">
 		<source declaringclass="android.os.Handler" invoketype="instance" subsignature="boolean sendEmptyMessage(int)"/>
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
-	<edge type="HANDLER">
+	<edge type="HANDLER" requiredType="android.os.Handler">
 		<source declaringclass="android.os.Handler" invoketype="instance" subsignature="boolean sendEmptyMessageAtTime(int,long)"/>
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
-	<edge type="HANDLER">
+	<edge type="HANDLER" requiredType="android.os.Handler">
 		<source declaringclass="android.os.Handler" invoketype="instance" subsignature="boolean sendEmptyMessageDelayed(int,long)"/>
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
-	<edge type="HANDLER">
+	<edge type="HANDLER" requiredType="android.os.Handler">
 		<source declaringclass="android.os.Handler" invoketype="instance" subsignature="boolean postAtTime(java.lang.Runnable,long)"/>
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
-	<edge type="HANDLER">
+	<edge type="HANDLER" requiredType="android.os.Handler">
 		<source declaringclass="android.os.Handler" invoketype="instance" subsignature="boolean sendMessageAtFrontOfQueue(android.os.Message)"/>
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
-	<edge type="HANDLER">
+	<edge type="HANDLER" requiredType="android.os.Handler">
 		<source declaringclass="android.os.Handler" invoketype="instance" subsignature="boolean sendMessageAtTime(android.os.Message,long)"/>
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
 		</targets>
 	</edge>
-	<edge type="HANDLER">
+	<edge type="HANDLER" requiredType="android.os.Handler">
 		<source declaringclass="android.os.Handler" invoketype="instance" subsignature="boolean sendMessageDelayed(android.os.Message,long)"/>
 		<targets>
 			<direct subsignature="void handleMessage(android.os.Message)" target-position="base"/>
@@ -122,7 +122,7 @@
 		</targets>
 	</edge>
 	<!-- Android AsyncTask -->
-	<edge type="ASYNCTASK">
+	<edge type="ASYNCTASK" requiredType="android.os.AsyncTask">
 		<source declaringclass="android.os.AsyncTask" invoketype="instance" subsignature="android.os.AsyncTask execute(java.lang.Object[])"/>
 		<targets>
 			<direct subsignature="java.lang.Object doInBackground(java.lang.Object[])" target-position="base">

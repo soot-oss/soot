@@ -798,7 +798,12 @@ public class ThrowableSet {
           // will already have been copied to caughtExcluded by
           // the preceding loop.
           caughtIncluded = addExceptionToSet(inclusion, caughtIncluded);
-        } else if (h.canStoreType(catcher, base)) {
+        } else if (h.canStoreType(catcher, base) ||
+
+        // when we don't have specific information we just assume that it is included.
+            (catcher.getSootClass().getSuperclassUnsafe() == null
+                || catcher.getSootClass().getSuperclass().getType().equals(scene.getObjectType()))
+                && catcher.getSootClass().isPhantomClass()) {
           // Some subtypes of base will be caught, and
           // we know that not all of those catchable subtypes
           // are among exceptionsExcluded, since in that case we

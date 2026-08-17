@@ -41,6 +41,7 @@ import java.util.function.Function;
 
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.jimple.spark.internal.TypeManager;
+import soot.jimple.toolkits.typing.fast.WeakObjectType;
 import soot.options.Options;
 import soot.toolkits.scalar.Pair;
 import soot.util.ConcurrentHashMultiMap;
@@ -336,7 +337,7 @@ public class FastHierarchy {
           return base == cilArray;
         }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        return base == rtObject || base == rtSerializable || base == rtCloneable;
+        return base == rtObject || base == rtSerializable || base == rtCloneable || base instanceof WeakObjectType;
       } else {
         // We can story any_subtype_of(x) in a variable of type x
         RefType childBase = ((AnySubType) child).getBase();
@@ -375,7 +376,7 @@ public class FastHierarchy {
           return parent == cilArray;
         }
         // From Java Language Spec 2nd ed., Chapter 10, Arrays
-        return parent == rtObject || parent == rtSerializable || parent == rtCloneable;
+        return parent == rtObject || parent == rtSerializable || parent == rtCloneable || parent instanceof WeakObjectType;
       } else if (parent instanceof ArrayType) {
         // You can store a int[][] in a Object[]. Yuck!
         // Also, you can store a Interface[] in a Object[]

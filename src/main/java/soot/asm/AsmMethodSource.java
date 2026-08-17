@@ -156,6 +156,7 @@ import static org.objectweb.asm.Opcodes.T_FLOAT;
 import static org.objectweb.asm.Opcodes.T_INT;
 import static org.objectweb.asm.Opcodes.T_LONG;
 import static org.objectweb.asm.Opcodes.T_SHORT;
+
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -304,6 +305,7 @@ import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.scalar.LocalPacker;
 import soot.util.Chain;
@@ -345,7 +347,6 @@ public class AsmMethodSource implements MethodSource {
   protected Map<Integer, JimpleLocal> locals;
   Map<AbstractInsnNode, Unit> insnToStmt;
 
-  private LinkedListMultimap<Stmt, LabelNode> stmtsThatBranchToLabel;
   private Multimap<LabelNode, UnitBox> trapHandlers;
   private JimpleBody body;
   private Map<AbstractInsnNode, Integer> lineNumberMap;
@@ -394,7 +395,7 @@ public class AsmMethodSource implements MethodSource {
 
   private OperandStack operandStack;
 
-  private LinkedListMultimap<Object, UnitBox> labels;
+  private LinkedListMultimap<LabelNode, UnitBox> labels;
 
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
@@ -988,7 +989,6 @@ public class AsmMethodSource implements MethodSource {
       if (!insnToStmt.containsKey(insn)) {
         UnitBox box = Jimple.v().newStmtBox(null);
         GotoStmt gotoStmt = Jimple.v().newGotoStmt(box);
-        stmtsThatBranchToLabel.put(gotoStmt, insn.label);
         labels.put(insn.label, box);
         setUnit(insn, gotoStmt);
       }
@@ -1066,7 +1066,6 @@ public class AsmMethodSource implements MethodSource {
       UnitBox box = Jimple.v().newStmtBox(null);
       labels.put(insn.label, box);
       IfStmt ifStmt = Jimple.v().newIfStmt(cond, box);
-      stmtsThatBranchToLabel.put(ifStmt, insn.label);
       setUnit(insn, ifStmt);
     } else {
       if (op >= IF_ICMPEQ && op <= IF_ACMPNE) {
@@ -1121,16 +1120,54 @@ public class AsmMethodSource implements MethodSource {
         v = MethodHandle.v(toSootFieldRef(h), h.getTag());
       }
     } else if (val instanceof ConstantDynamic) {
-      ConstantDynamic cd = (ConstantDynamic) val;
-      if (MethodHandle.isMethodRef(cd.getBootstrapMethod().getTag())) {
-        v = MethodHandle.v(toSootMethodRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
-      } else {
-        v = MethodHandle.v(toSootFieldRef(cd.getBootstrapMethod()), cd.getBootstrapMethod().getTag());
-      }
+      // JEP 309: dynamic class-file constants (CONSTANT_Dynamic). Soot does not resolve these
+      // to their computed value. We model them gracefully as a dynamic invocation of their
+      // bootstrap method, which preserves the declared constant type as well as the bootstrap
+      // method and its static arguments, and warn that the value is not resolved.
+      v = toSootDynamicConstant((ConstantDynamic) val);
     } else {
       throw new AssertionError("Unknown constant type: " + val.getClass());
     }
     return v;
+  }
+
+  /**
+   * Models a JEP 309 dynamic class-file constant (CONSTANT_Dynamic). Soot cannot resolve the value that the constant's
+   * bootstrap method would compute at run time, so the constant is represented as a dynamic invocation of its bootstrap
+   * method. The resulting expression carries the constant's declared type, the bootstrap method reference and the static
+   * bootstrap arguments, so that downstream analyses can at least reason about the type and the bootstrap linkage. A
+   * warning is issued because the actual constant value is not resolved.
+   *
+   * @param cd
+   *          the dynamic constant to model
+   * @return a {@link soot.jimple.DynamicInvokeExpr} approximating the dynamic constant
+   */
+  private Value toSootDynamicConstant(ConstantDynamic cd) {
+    logger.warn(
+        "Encountered dynamic class-file constant (JEP 309) '{}' of type '{}' in method {}. "
+            + "Soot does not resolve the computed value and models it as a dynamic invocation of its bootstrap method.",
+        cd.getName(), cd.getDescriptor(), body.getMethod().getSignature());
+
+    Handle bsm = cd.getBootstrapMethod();
+    SootMethodRef bsmMethodRef = toSootMethodRef(bsm);
+
+    int argCount = cd.getBootstrapMethodArgumentCount();
+    List<Value> bsmArgs = new ArrayList<>(argCount);
+    for (int i = 0; i < argCount; i++) {
+      bsmArgs.add(toSootValue(cd.getBootstrapMethodArgument(i)));
+    }
+
+    Type constType = AsmUtil.toJimpleType(cd.getDescriptor(),
+        Optional.fromNullable(this.body.getMethod().getDeclaringClass().moduleName));
+
+    // A dynamic constant takes no dynamic arguments; it resolves to a single value of its declared type. We model it on
+    // the synthetic invokedynamic dummy class, mirroring how genuine invokedynamic call sites are handled.
+    SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+    SootMethodRef methodRef
+        = Scene.v().makeMethodRef(bclass, cd.getName(), Collections.<Type>emptyList(), constType, true);
+
+    return Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmArgs, methodRef, bsm.getTag(),
+        Collections.<Value>emptyList());
   }
 
   private void convertLookupSwitchInsn(LookupSwitchInsnNode insn) {
@@ -1157,10 +1194,6 @@ public class AsmMethodSource implements MethodSource {
       labels.put(ln, box);
     }
     LookupSwitchStmt lss = Jimple.v().newLookupSwitchStmt(key.toImmediate(), keys, targets, dflt);
-
-    // uphold insertion order!
-    stmtsThatBranchToLabel.putAll(lss, insn.labels);
-    stmtsThatBranchToLabel.put(lss, insn.dflt);
 
     setUnit(insn, lss);
 
@@ -1372,12 +1405,6 @@ public class AsmMethodSource implements MethodSource {
     }
 
     TableSwitchStmt tss = Jimple.v().newTableSwitchStmt(key.toImmediate(), insn.min, insn.max, targets, dflt);
-
-    // key.addBox(tss.getKeyBox());
-    // uphold insertion order!
-    stmtsThatBranchToLabel.putAll(tss, insn.labels);
-    stmtsThatBranchToLabel.put(tss, insn.dflt);
-
     setUnit(insn, tss);
   }
 
@@ -1955,7 +1982,6 @@ public class AsmMethodSource implements MethodSource {
     nextLocal = maxLocals;
     locals = new LinkedHashMap<Integer, JimpleLocal>(maxLocals + (maxLocals / 2));
     labels = LinkedListMultimap.create();
-    stmtsThatBranchToLabel = LinkedListMultimap.create();
 
     insnToStmt = new LinkedHashMap<AbstractInsnNode, Unit>(nrInsn);
     trapHandlers = LinkedListMultimap.create(tryCatchBlocks.size());
@@ -1986,7 +2012,6 @@ public class AsmMethodSource implements MethodSource {
     /* clean up */
     locals = null;
     labels = null;
-    stmtsThatBranchToLabel = null;
     insnToStmt = null;
     body = null;
     lineNumberMap = null;
@@ -2013,7 +2038,7 @@ public class AsmMethodSource implements MethodSource {
     }
 
     // We can have cases where the Java compiler inserts unnecessary traps, which might cause problems later in typing
-    TrapTightener.v().transform(jb);
+    new TrapTightener(PedanticThrowAnalysis.v()).transform(jb);
     UnreachableCodeEliminator.v().transform(jb);
 
     NopEliminator.v().transform(jb);
