@@ -61,7 +61,8 @@ public class LambdaMetaFactory {
 
   public LambdaMetaFactory(Singletons.Global g) {
     wrapper = new Wrapper();
-    String strategy = PhaseOptions.getString(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory-namingstrategy");
+    String strategy = PhaseOptions.getString(PhaseOptions.v().getPhaseOptions("jb"), 
+        "model-lambdametafactory-namingstrategy");
     switch (strategy.toLowerCase()) {
       case "default":
         classNameStrategy = new DefaultLambdaClassNameStrategy();
@@ -85,7 +86,7 @@ public class LambdaMetaFactory {
 
   public static class DefaultLambdaClassNameStrategy implements LambdaClassNameStrategy {
 
-    private final AtomicInteger uniq = new AtomicInteger();
+    private final AtomicInteger uniq = new AtomicInteger(1);
 
     @Override
     public String generateLambdaClassName(MethodHandle implMethod, MethodType samMethodType, String name, Type[] invokedType,

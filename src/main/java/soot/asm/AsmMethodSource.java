@@ -1308,7 +1308,8 @@ public class AsmMethodSource implements MethodSource {
       String bsmMethodRefStr = bsmMethodRef.toString();
       if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
         bootstrap_model
-            = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, body.getMethod(), bytecodeOffset);
+            = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name,
+                types, body.getMethod(), bytecodeOffset);
       }
     }
 
@@ -2060,8 +2061,8 @@ public class AsmMethodSource implements MethodSource {
     // We can have cases where the Java compiler inserts unnecessary traps, which might cause problems later in typing
     new TrapTightener(PedanticThrowAnalysis.v()).transform(jb);
     if (!"false".equalsIgnoreCase(PhaseOptions.v().getPhaseOptions("jb.uce").get("enabled"))) {
-        UnreachableCodeEliminator.v().transform(jb);
-      }
+      UnreachableCodeEliminator.v().transform(jb);
+    }
 
     NopEliminator.v().transform(jb);
 
