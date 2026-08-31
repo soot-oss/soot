@@ -211,6 +211,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		addToEnableGroup("jb", getjbpreserve_source_annotations_widget(), "preserve-source-annotations");
 		addToEnableGroup("jb", getjbstabilize_local_names_widget(), "stabilize-local-names");
 		addToEnableGroup("jb", getjbmodel_lambdametafactory_widget(), "model-lambdametafactory");
+		addToEnableGroup("jb", getjbmodel_lambdametafactory_namingstrategy_widget(), "model-lambdametafactory-namingstrategy");
 		getjbenabled_widget().getButton().addSelectionListener(this);
 		getjbuse_original_names_widget().getButton().addSelectionListener(this);
 		getjbuse_original_types_widget().getButton().addSelectionListener(this);
@@ -1297,6 +1298,11 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbmodel_lambdametafactory_widget().getAlias(), new Boolean(boolRes));
+		}
+		stringRes = getjbmodel_lambdametafactory_namingstrategy_widget().getSelectedAlias();
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getjbmodel_lambdametafactory_namingstrategy_widget().getAlias(), stringRes);
 		}
 		boolRes = getjbjb_dtrenabled_widget().getButton().getSelection();
 		defBoolRes = true;
@@ -4715,6 +4721,18 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return jbmodel_lambdametafactory_widget;
 	}	
 	
+	
+	private MultiOptionWidget jbmodel_lambdametafactory_namingstrategy_widget;
+	
+	private void setjbmodel_lambdametafactory_namingstrategy_widget(MultiOptionWidget widget) {
+		jbmodel_lambdametafactory_namingstrategy_widget = widget;
+	}
+	
+	public MultiOptionWidget getjbmodel_lambdametafactory_namingstrategy_widget() {
+		return jbmodel_lambdametafactory_namingstrategy_widget;
+	}	
+	
+	
 	private BooleanOptionWidget jbjb_dtrenabled_widget;
 	
 	private void setjbjb_dtrenabled_widget(BooleanOptionWidget widget) {
@@ -8021,7 +8039,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultString = "";
 		}
 
-		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp soot-class-path soot-classpath", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
+		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp soot-class-path soot-classpath", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home /lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"soot-modulepath";
@@ -8390,7 +8408,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultString = "";
 		}
 
-		setOutput_Optionsdump_body_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Body Dumping Phases",  "", "","dump-body", "\nSpecify that PHASENAME is one of the phases to be dumped. For \nexample -dump-body jb -dump-body jb.a would dump each method \nbefore and after the jb and jb.a phases. The pseudo phase name \n``ALL'' causes all phases to be dumped. Output files appear in \nsubdirectories under the soot output directory, with names like \nclassName/methodSignature/phasename-graphType-number.in and \nclassName/methodSignature/phasename-graphType-number.out. The \n``in'' and ``out'' suffixes distinguish the internal \nrepresentations of the method before and after the phase \nexecuted.", defaultString)));
+		setOutput_Optionsdump_body_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Body Dumping Phases",  "", "","dump-body", "\nSpecify that PHASENAME is one of the phases to be dumped. For \nexample -dump-body jb -dump-body jb.a would dump each method \nbefore and after the jb and jb.a phases. The pseudo phase name \n``ALL'' causes all phases to be dumped. Output files appear in \nsubdirectories under the soot output directory, with names like \nclassName / methodSignature / phasename - graphType - number .in \nand className / methodSignature / phasename - graphType - number \n.out. The ``in'' and ``out'' suffixes distinguish the internal \nrepresentations of the method before and after the phase \nexecuted.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dump-cfg";
@@ -8402,7 +8420,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultString = "";
 		}
 
-		setOutput_Optionsdump_cfg_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("CFG Dumping Phases",  "", "","dump-cfg", "\nSpecify that any control flow graphs constructed during the \nPHASENAME phases should be dumped. For example -dump-cfg jb \n-dump-cfg bb.lso would dump all CFGs constructed during the jb \nand bb.lso phases. The pseudo phase name ``ALL'' causes CFGs \nconstructed in all phases to be dumped. The control flow graphs \nare dumped in the form of a file containing input to dot graph \nvisualization tool. Output dot files are stored beneath the soot \noutput directory, in files with names like: \nclassName/methodSignature/phasename-graphType-number.dot, where \nnumber serves to distinguish graphs in phases that produce more \nthan one (for example, the Aggregator may produce multiple \nExceptionalUnitGraphs).", defaultString)));
+		setOutput_Optionsdump_cfg_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("CFG Dumping Phases",  "", "","dump-cfg", "\nSpecify that any control flow graphs constructed during the \nPHASENAME phases should be dumped. For example -dump-cfg jb \n-dump-cfg bb.lso would dump all CFGs constructed during the jb \nand bb.lso phases. The pseudo phase name ``ALL'' causes CFGs \nconstructed in all phases to be dumped. The control flow graphs \nare dumped in the form of a file containing input to dot graph \nvisualization tool. Output dot files are stored beneath the soot \noutput directory, in files with names like: className / \nmethodSignature / phasename - graphType - number .dot, where \nnumber serves to distinguish graphs in phases that produce more \nthan one (for example, the Aggregator may produce multiple \nExceptionalUnitGraphs).", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"d output-dir";
@@ -8779,6 +8797,30 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setjbmodel_lambdametafactory_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Model LambdaMetafactory", "p phase-option", "jb","model-lambdametafactory", "\nWhen the asm bytecode frontend is used and this option is set to \ntrue, Soot creates an implementation of the LambdaMetafactory \nfor each dynamic invoke and replaces the original dynamic invoke \nby a static invocation of the factory's bootstrap method. This \nallows the call-graph generation to find the lambda body \nreachable, i.e., call-graphs contain paths from the invocation \nof a functional interface to the lambda body implementing this \ninterface. Note that this procedure is not reversed when \nwriting-out. Therefore, written-out code will contain the \ncreated LambdaMetafactories and instrumented calls to the \ncorresponding bootstrap methods.", defaultBool)));
+
+		data = new OptionData [] {
+		
+				new OptionData("Default",
+						"default",
+						"\nCompatible with older soot versions. Generates names such as \nAnonymousFunction$lambda_foobar_0__0 when the method \nAnonymousFunction: int lambda$foobar$0(int,int) is called. The \nlast number as integer that increments every time a new Lambda \nclass is created, thus guaranteeing uniqueness. Note that this \ncounter makes the naming strategy potentially unstable across \nmultiple runs.",
+						false),
+				new OptionData("Bytecode Offset",
+						"bytecodeoffset",
+						"\nThis strategy requires the --keep-bytecode-offset option. \nCreates a name that is unique based on the calling function in a \nfomr that includes the class name and method subsignature as \nwell as the bytecode offset (relative to the start of the \nmethod). Example: public class AnonymousFunction { public static \ndouble foobar(String[] args, int x) { IntUnaryOperator f = (int \ny) -> x + y; return f.applyAsInt(2); } } For this example, this \nstrategy generates the class name \nAnonymousFunction_foobar_double_java_lang_String_array_int_1. \nUnlike the default strategy, this strategy remains stable across \ndifferent runs independent of thread interleavings.",
+						false),
+		};
+
+
+		setjbmodel_lambdametafactory_namingstrategy_widget(new MultiOptionWidget(editGroupjb, SWT.NONE, data, new OptionData("LambdaMetafactory Naming Strategy", "p phase-option", "jb","model-lambdametafactory-namingstrategy", "\nWhen the option for Model LambdaMetafactory is turned on, Soot \ngenerates a class to model each dynamic invocation call that is \nsemantically equivalent with the dynamic invoke. This options \nsets the naming strategy for these classes.")));
+
+		defKey = "p phase-option"+" "+"jb"+" "+"model-lambdametafactory-namingstrategy";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+
+			getjbmodel_lambdametafactory_namingstrategy_widget().setDef(defaultString);
+		}
 
 
 		return editGroupjb;

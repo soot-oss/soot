@@ -1,13 +1,9 @@
 <html>
    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-      <title>Soot Command Line Options</title>
-      <META NAME="description" CONTENT="Soot command-line options">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Soot Command Line Options</title><META NAME="description" CONTENT="Soot command-line options">
       <META NAME="keywords" CONTENT="usage">
       <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
-   </head>
-   <LINK REL="STYLESHEET" HREF="soot_options.css">
-   <body>
+   </head><LINK REL="STYLESHEET" HREF="soot_options.css"><body>
       <H1 ALIGN="CENTER">Soot command-line options</H1>
       <H1>CONTENTS</H1>
       <ul>
@@ -1169,6 +1165,64 @@
                bootstrap methods.
                
             </p>
+         </li>
+         <li><b>LambdaMetafactory Naming Strategy</b>
+            (model-lambdametafactory-namingstrategy)
+            <br>
+            (default value:
+            <span class="value">default</span>
+            )
+            
+            <p>
+               When the option for Model LambdaMetafactory is turned on, Soot generates a class to
+               model each
+               dynamic invocation call that is semantically equivalent with the dynamic invoke. This
+               options sets the naming strategy
+               for these classes.
+               
+            </p>
+            <table border="0">
+               <th colspan="2">
+                  Possible values:
+                  
+               </th>
+               <tr>
+                  <td class="value">default</td>
+                  <td>
+                     Compatible with older soot versions. Generates names such as AnonymousFunction$lambda_foobar_0__0
+                     when the method
+                     AnonymousFunction: int lambda$foobar$0(int,int) is called. The last number as integer
+                     that increments every time
+                     a new Lambda class is created, thus guaranteeing uniqueness. Note that this counter
+                     makes the naming strategy potentially unstable
+                     across multiple runs.
+                     
+                  </td>
+               </tr>
+               <tr>
+                  <td class="value">bytecodeoffset</td>
+                  <td>
+                     This strategy requires the --keep-bytecode-offset option.
+                     Creates a name that is unique based on the calling function in a fomr that includes
+                     the class name and method subsignature as well as the bytecode offset (relative to
+                     the start of the method).
+                     Example:
+                     
+                     public class AnonymousFunction {
+                     
+                     public static double foobar(String[] args, int x) {
+                     IntUnaryOperator f = (int y) -&gt; x + y;
+                     return f.applyAsInt(2);
+                     }
+                     }
+                     
+                     For this example, this strategy generates the class name
+                     AnonymousFunction_foobar_double_java_lang_String_array_int_1. Unlike the default strategy,
+                     this strategy remains stable across different runs independent of thread interleavings.
+                     
+                  </td>
+               </tr>
+            </table>
          </li>
       </ul>
       <h2><a name="phase_1_1">Duplicate CatchAll Trap Remover (jb.dtr)

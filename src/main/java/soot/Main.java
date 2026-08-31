@@ -136,6 +136,12 @@ public class Main {
     try {
       Main.v().run(args);
     } catch (OptionsParseException e) {
+      String msg = "Option parse error";
+      if (e.getMessage() != null) {
+        msg = String.format("%s: %s", msg, e.getMessage());
+      }
+      System.err.println(msg);
+      System.exit(1);
       // error message has already been printed
     } catch (StackOverflowError e) {
       System.err.println("Soot has run out of stack memory.");

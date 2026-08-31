@@ -1787,7 +1787,7 @@ public class Options extends OptionsBase {
                 + "\nGeneral Options:\n"
                 + padOpt("-h, -help", "Display help and exit")
                 + padOpt("-pl, -phase-list", "Print list of available phases")
-                + padOpt("-ph ARG -phase-help ARG", "Print help for specified ARG")
+                + padOpt("-ph ARG -phase-help ARG", "Print help for specified ARG ")
                 + padOpt("-version", "Display version information and exit")
                 + padOpt("-v, -verbose", "Verbose mode")
                 + padOpt("-unfriendly-mode", "Allow Soot to run with no command-line options")
@@ -1808,7 +1808,7 @@ public class Options extends OptionsBase {
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")
                 + padOpt("-process-path ARG -process-dir ARG", "Process all classes found in ARG (but not classes within JAR files in ARG , use process-jar-dir for that)")
-                + padOpt("-process-jar-dir ARG", "Process all classes found in JAR files found in ARG")
+                + padOpt("-process-jar-dir ARG", "Process all classes found in JAR files found in ARG ")
                 + padOpt("-virtualedges-path ARG", "Path to virtual edges configuration used in call graphs")
                 + padOpt("-derive-java-version", "Java version for output and internal processing will be derived from the given input classes")
                 + padOpt("-oaat", "From the process-dir, processes one class at a time.")
@@ -1834,7 +1834,7 @@ public class Options extends OptionsBase {
                 + padOpt("-drop-bodies-after-load", "Drop the method source after it has served its purpose of loading the method body")
                 + padOpt("-nc, -native-code", "Enables native methods to be concrete. Needed for analyzing the Java Native Interface.")
                 + "\nOutput Options:\n"
-                + padOpt("-d ARG -output-dir ARG", "Store output files in ARG")
+                + padOpt("-d ARG -output-dir ARG", "Store output files in ARG ")
                 + padOpt("-f ARG -output-format ARG", "Set output format for Soot")
                     + padVal("J jimple", "Produce .jimple Files")
                     + padVal("j jimp", "Produce .jimp (abbreviated Jimple) files")
@@ -1871,13 +1871,13 @@ public class Options extends OptionsBase {
                 + padOpt("-print-tags, -print-tags-in-output", "Print tags in output files after stmt")
                 + padOpt("-no-output-source-file-attribute", "Don't output Source File Attribute when producing class files")
                 + padOpt("-no-output-inner-classes-attribute", "Don't output inner classes attribute in class files")
-                + padOpt("-dump-body ARG", "Dump the internal representation of each method before and after phase ARG")
-                + padOpt("-dump-cfg ARG", "Dump the internal representation of each CFG constructed during phase ARG")
+                + padOpt("-dump-body ARG", "Dump the internal representation of each method before and after phase ARG ")
+                + padOpt("-dump-cfg ARG", "Dump the internal representation of each CFG constructed during phase ARG ")
                 + padOpt("-show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs")
                 + padOpt("-gzip", "GZip IR output files")
                 + padOpt("-force-overwrite", "Force Overwrite Output Files")
                 + "\nProcessing Options:\n"
-                + padOpt("-plugin ARG", "Load all plugins found in ARG")
+                + padOpt("-plugin ARG", "Load all plugins found in ARG ")
                 + padOpt("-wrong-staticness ARG", "Ignores or fixes errors due to wrong staticness")
                     + padVal("fail", "Raise an error when wrong staticness is detected")
                     + padVal("ignore", "Ignore errors caused by wrong staticness")
@@ -1887,7 +1887,7 @@ public class Options extends OptionsBase {
                     + padVal("fail", "Raise an error when a field type mismatch is detected")
                     + padVal("ignore", "Ignore field type mismatches")
                     + padVal("null (default)", "Return null in case of type mismatch")
-                + padOpt("-p ARG -phase-option ARG", "Set PHASE 's OPT option to VALUE")
+                + padOpt("-p ARG -phase-option ARG", "Set PHASE 's OPT option to VALUE ")
                 + padOpt("-O, -optimize", "Perform intraprocedural optimizations")
                 + padOpt("-W, -whole-optimize", "Perform whole program optimizations")
                 + padOpt("-via-grimp", "Convert to bytecode via Grimp instead of via Baf")
@@ -2037,7 +2037,10 @@ public class Options extends OptionsBase {
                     + padOpt("use-original-types (false)", "")
                     + padOpt("preserve-source-annotations (false)", "")
                     + padOpt("stabilize-local-names (false)", "")
-                    + padOpt("model-lambdametafactory (true)", "Replace dynamic invoke instructions to the LambdaMetafactory by static invokes to a synthetic LambdaMetafactory implementation.");
+                    + padOpt("model-lambdametafactory (true)", "Replace dynamic invoke instructions to the LambdaMetafactory by static invokes to a synthetic LambdaMetafactory implementation.")
+                    + padOpt("model-lambdametafactory-namingstrategy (default)", "Sets the naming strategy used to generate names for the classes generated by LambdaMetafactory")
+                        + padVal("default", "The default naming strategy")
+                        + padVal("bytecodeoffset", "Utilizes caller information and the bytecode offset");
 
         if (phaseName.equals("jb.dtr"))
             return "Phase " + phaseName + ":\n"
@@ -2850,7 +2853,8 @@ public class Options extends OptionsBase {
                     "use-original-types",
                     "preserve-source-annotations",
                     "stabilize-local-names",
-                    "model-lambdametafactory"
+                    "model-lambdametafactory",
+                    "model-lambdametafactory-namingstrategy"
             );
 
         if (phaseName.equals("jb.dtr"))
@@ -3479,7 +3483,8 @@ public class Options extends OptionsBase {
                     + "use-original-types:false "
                     + "preserve-source-annotations:false "
                     + "stabilize-local-names:false "
-                    + "model-lambdametafactory:true ";
+                    + "model-lambdametafactory:true "
+                    + "model-lambdametafactory-namingstrategy:default ";
 
         if (phaseName.equals("jb.dtr"))
             return ""

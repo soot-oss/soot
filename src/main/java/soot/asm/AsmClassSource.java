@@ -24,6 +24,7 @@ package soot.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,7 +69,7 @@ public class AsmClassSource extends ClassSource {
     InputStream d = null;
     try {
       d = foundFile.inputStream();
-      ClassReader clsr = new ClassReader(d);
+      ClassReader clsr = new SootClassReader(d);
       SootClassBuilder scb = new SootClassBuilder(sc);
       clsr.accept(scb, ClassReader.SKIP_FRAMES);
       Dependencies deps = new Dependencies();

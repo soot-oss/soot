@@ -21,6 +21,7 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
+
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -156,7 +157,6 @@ import static org.objectweb.asm.Opcodes.T_FLOAT;
 import static org.objectweb.asm.Opcodes.T_INT;
 import static org.objectweb.asm.Opcodes.T_LONG;
 import static org.objectweb.asm.Opcodes.T_SHORT;
-
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
@@ -303,6 +303,7 @@ import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
+import soot.tagkit.BytecodeOffsetTag;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
@@ -397,6 +398,8 @@ public class AsmMethodSource implements MethodSource {
 
   private LinkedListMultimap<LabelNode, UnitBox> labels;
 
+  private int bytecodeOffset = -1;
+
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
       throw new IllegalArgumentException("Invalid local index: " + idx);
@@ -462,9 +465,23 @@ public class AsmMethodSource implements MethodSource {
         setLineNumber(u, ln);
       }
     }
+    if (bytecodeOffset != -1) {
+      setByteCodeOffset(u, bytecodeOffset);
+    }
 
     insnToStmt.put(insn, u);
 
+  }
+
+  protected void setByteCodeOffset(Unit u, int bytecodeOffset) {
+    Tag offsetTag = u.getTag(BytecodeOffsetTag.NAME);
+    if (offsetTag == null) {
+      offsetTag = new BytecodeOffsetTag(bytecodeOffset);
+      u.addTag(offsetTag);
+    } else if (((BytecodeOffsetTag) offsetTag).getBytecodeOffset() != bytecodeOffset) {
+      throw new RuntimeException("Bytecode offset tag mismatch");
+    }
+    
   }
 
   protected void setLineNumber(Unit u, int lineNumber) {
@@ -1135,8 +1152,8 @@ public class AsmMethodSource implements MethodSource {
    * Models a JEP 309 dynamic class-file constant (CONSTANT_Dynamic). Soot cannot resolve the value that the constant's
    * bootstrap method would compute at run time, so the constant is represented as a dynamic invocation of its bootstrap
    * method. The resulting expression carries the constant's declared type, the bootstrap method reference and the static
-   * bootstrap arguments, so that downstream analyses can at least reason about the type and the bootstrap linkage. A
-   * warning is issued because the actual constant value is not resolved.
+   * bootstrap arguments, so that downstream analyses can at least reason about the type and the bootstrap linkage. A warning
+   * is issued because the actual constant value is not resolved.
    *
    * @param cd
    *          the dynamic constant to model
@@ -1163,11 +1180,9 @@ public class AsmMethodSource implements MethodSource {
     // A dynamic constant takes no dynamic arguments; it resolves to a single value of its declared type. We model it on
     // the synthetic invokedynamic dummy class, mirroring how genuine invokedynamic call sites are handled.
     SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
-    SootMethodRef methodRef
-        = Scene.v().makeMethodRef(bclass, cd.getName(), Collections.<Type>emptyList(), constType, true);
+    SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, cd.getName(), Collections.<Type>emptyList(), constType, true);
 
-    return Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmArgs, methodRef, bsm.getTag(),
-        Collections.<Value>emptyList());
+    return Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmArgs, methodRef, bsm.getTag(), Collections.<Value>emptyList());
   }
 
   private void convertLookupSwitchInsn(LookupSwitchInsnNode insn) {
@@ -1292,9 +1307,9 @@ public class AsmMethodSource implements MethodSource {
     if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory")) {
       String bsmMethodRefStr = bsmMethodRef.toString();
       if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
-        SootClass enclosingClass = body.getMethod().getDeclaringClass();
         bootstrap_model
-            = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, enclosingClass);
+            = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name,
+                types, body.getMethod(), bytecodeOffset);
       }
     }
 
@@ -1730,6 +1745,12 @@ public class AsmMethodSource implements MethodSource {
           case FRAME:
             // we can ignore it
             continue;
+          case BytecodeOffsetNode.BYTECODE_OFFSET_TYPE:
+            if (insn instanceof BytecodeOffsetNode) {
+              BytecodeOffsetNode bytecodeOffset = (BytecodeOffsetNode) insn;
+              this.bytecodeOffset = bytecodeOffset.bytecodeOffset;
+              break;
+            }
           default:
             throw new RuntimeException("Unknown instruction type: " + type);
         }
@@ -2039,7 +2060,9 @@ public class AsmMethodSource implements MethodSource {
 
     // We can have cases where the Java compiler inserts unnecessary traps, which might cause problems later in typing
     new TrapTightener(PedanticThrowAnalysis.v()).transform(jb);
-    UnreachableCodeEliminator.v().transform(jb);
+    if (!"false".equalsIgnoreCase(PhaseOptions.v().getPhaseOptions("jb.uce").get("enabled"))) {
+      UnreachableCodeEliminator.v().transform(jb);
+    }
 
     NopEliminator.v().transform(jb);
 
