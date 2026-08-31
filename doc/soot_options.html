@@ -1,13 +1,9 @@
 <html>
    <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-      <title>Soot Command Line Options</title>
-      <META NAME="description" CONTENT="Soot command-line options">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Soot Command Line Options</title><META NAME="description" CONTENT="Soot command-line options">
       <META NAME="keywords" CONTENT="usage">
       <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
-   </head>
-   <LINK REL="STYLESHEET" HREF="soot_options.css">
-   <body>
+   </head><LINK REL="STYLESHEET" HREF="soot_options.css"><body>
       <H1 ALIGN="CENTER">Soot command-line options</H1>
       <H1>CONTENTS</H1>
       <ul>
@@ -1207,11 +1203,9 @@
                   <td class="value">bytecodeoffset</td>
                   <td>
                      This strategy requires the --keep-bytecode-offset option.
-                     Creates a name that is unique based on the calling function in the form
-                     ClassName_MethodName_ReturnType_Parameter1_Parameter2_..._bytecodeoffset
-                     The bytecode offset is relative to the method start, which is why we need to encode
-                     the method signature.
-                     
+                     Creates a name that is unique based on the calling function in a fomr that includes
+                     the class name and method subsignature as well as the bytecode offset (relative to
+                     the start of the method).
                      Example:
                      
                      public class AnonymousFunction {
@@ -1221,7 +1215,6 @@
                      return f.applyAsInt(2);
                      }
                      }
-                     
                      
                      For this example, this strategy generates the class name
                      AnonymousFunction_foobar_double_java_lang_String_array_int_1. Unlike the default strategy,
