@@ -1170,6 +1170,67 @@
                
             </p>
          </li>
+         <li><b>LambdaMetafactory Naming Strategy</b>
+            (model-lambdametafactory-namingstrategy)
+            <br>
+            (default value:
+            <span class="value">default</span>
+            )
+            
+            <p>
+               When the option for Model LambdaMetafactory is turned on, Soot generates a class to
+               model each
+               dynamic invocation call that is semantically equivalent with the dynamic invoke. This
+               options sets the naming strategy
+               for these classes.
+               
+            </p>
+            <table border="0">
+               <th colspan="2">
+                  Possible values:
+                  
+               </th>
+               <tr>
+                  <td class="value">default</td>
+                  <td>
+                     Compatible with older soot versions. Generates names such as AnonymousFunction$lambda_foobar_0__0
+                     when the method
+                     AnonymousFunction: int lambda$foobar$0(int,int) is called. The last number as integer
+                     that increments every time
+                     a new Lambda class is created, thus guaranteeing uniqueness. Note that this counter
+                     makes the naming strategy potentially unstable
+                     across multiple runs.
+                     
+                  </td>
+               </tr>
+               <tr>
+                  <td class="value">bytecodeoffset</td>
+                  <td>
+                     This strategy requires the --keep-bytecode-offset option.
+                     Creates a name that is unique based on the calling function in the form
+                     ClassName_MethodName_ReturnType_Parameter1_Parameter2_..._bytecodeoffset
+                     The bytecode offset is relative to the method start, which is why we need to encode
+                     the method signature.
+                     
+                     Example:
+                     
+                     public class AnonymousFunction {
+                     
+                     public static double foobar(String[] args, int x) {
+                     IntUnaryOperator f = (int y) -&gt; x + y;
+                     return f.applyAsInt(2);
+                     }
+                     }
+                     
+                     
+                     For this example, this strategy generates the class name
+                     AnonymousFunction_foobar_double_java_lang_String_array_int_1. Unlike the default strategy,
+                     this strategy remains stable across different runs independent of thread interleavings.
+                     
+                  </td>
+               </tr>
+            </table>
+         </li>
       </ul>
       <h2><a name="phase_1_1">Duplicate CatchAll Trap Remover (jb.dtr)
             </a></h2>

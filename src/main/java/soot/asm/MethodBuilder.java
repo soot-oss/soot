@@ -36,6 +36,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
+import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
@@ -45,6 +46,7 @@ import soot.MethodSource;
 import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
+import soot.options.Options;
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationTag;
@@ -69,6 +71,7 @@ public class MethodBuilder extends JSRInlinerAdapter {
   private final SootClassBuilder scb;
   private final String[] parameterNames;
   private final Map<Integer, Integer> slotToParameter;
+  private boolean addByteCodeOffset = Options.v().keep_offset();
 
   public MethodBuilder(SootMethod method, SootClassBuilder scb, String desc, String[] ex) {
     super(Opcodes.ASM6, null, method.getModifiers(), method.getName(), desc, null, ex);
@@ -76,6 +79,22 @@ public class MethodBuilder extends JSRInlinerAdapter {
     this.scb = scb;
     this.parameterNames = new String[method.getParameterCount()];
     this.slotToParameter = createSlotToParameterMap();
+    this.instructions = new InsnList() {
+
+      int lastOffset = -1;
+
+      @Override
+      public void add(AbstractInsnNode insnNode) {
+        if (addByteCodeOffset) {
+          int offset = scb.byteCodeOffset;
+          if (offset != lastOffset) {
+            super.add(new BytecodeOffsetNode(offset));
+            lastOffset = offset;
+          }
+        }
+        super.add(insnNode);
+      }
+    };
   }
 
   private Map<Integer, Integer> createSlotToParameterMap() {

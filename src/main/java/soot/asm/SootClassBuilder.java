@@ -70,11 +70,12 @@ import soot.tagkit.Tag;
  *
  * @author Aaloan Miftah
  */
-public class SootClassBuilder extends ClassVisitor {
+public class SootClassBuilder extends ClassVisitor implements BytecodeOffsetReceiver {
 
   protected final SootClass klass;
   protected final Set<Type> deps;
   protected TagBuilder tb;
+  protected int byteCodeOffset = -1;
 
   /**
    * Constructs a new builder for the given {@link SootClass}.
@@ -301,5 +302,18 @@ public class SootClassBuilder extends ClassVisitor {
     } else {
       return RefType.v(className);
     }
+  }
+
+  @Override
+  public void bytecodeOffsetChanged(int bytecodeOffset) {
+    this.byteCodeOffset = bytecodeOffset;
+  }
+  
+  /**
+   * Returns the current bytecode offset relative to the start of the method
+   * @return the bytecode offset
+   */
+  public int getCurrentBytecodeOffset() {
+    return byteCodeOffset;
   }
 }

@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ import soot.jimple.JimpleBody;
 import soot.jimple.MethodHandle;
 import soot.jimple.MethodType;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
+import soot.options.Options;
 import soot.tagkit.ArtificialEntityTag;
 import soot.util.Chain;
 import soot.util.HashChain;
@@ -54,15 +56,120 @@ public class LambdaMetaFactory {
   private static final Logger LOGGER = LoggerFactory.getLogger(LambdaMetaFactory.class);
 
   private final Wrapper wrapper;
-  private int uniq;
+
+  private LambdaClassNameStrategy classNameStrategy;
 
   public LambdaMetaFactory(Singletons.Global g) {
-    uniq = 0;
     wrapper = new Wrapper();
+    String strategy = PhaseOptions.getString(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory-namingstrategy");
+    switch (strategy.toLowerCase()) {
+      case "default":
+        classNameStrategy = new DefaultLambdaClassNameStrategy();
+        break;
+      case "bytecodeoffset":
+        classNameStrategy  = new BytecodeOffsetLambdaClassNameStrategy();
+        break;
+      default:
+        throw new IllegalArgumentException(String.format("Did not found a strategy named %s", strategy));
+    }
   }
 
   public static LambdaMetaFactory v() {
     return G.v().soot_LambdaMetaFactory();
+  }
+
+  public static interface LambdaClassNameStrategy {
+    public String generateLambdaClassName(MethodHandle implMethod, MethodType samMethodType, String name, Type[] invokedType,
+        SootMethod enclosingMethod, int bytecodeOffset);
+  }
+
+  public static class DefaultLambdaClassNameStrategy implements LambdaClassNameStrategy {
+
+    private final AtomicInteger uniq = new AtomicInteger();
+
+    @Override
+    public String generateLambdaClassName(MethodHandle implMethod, MethodType samMethodType, String name, Type[] invokedType,
+        SootMethod enclosingMethod, int bytecodeOffset) {
+      // class names cannot contain <>
+      String implMethodName = implMethod.getMethodRef().getName();
+      String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
+      // XXX: $ causes confusion in inner class inference; remove for now
+      dummyName = dummyName.replace('$', '_');
+      final String enclosingClassname = enclosingMethod.getDeclaringClass().getName();
+      String prefix
+          = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
+      return prefix + dummyName + "__" + uniq.getAndIncrement();
+    }
+
+  }
+
+  /**
+   * Creates a name that is unique based on the calling function in the form
+   * <pre>ClassName_MethodName_ReturnType_Parameter1_Parameter2_..._bytecodeoffset</pre>
+   * The bytecode offset is relative to the method start, which is why we need to encode
+   * the method signature.
+   * Example:
+   * <pre>
+    public class AnonymousFunction {
+    
+        public static double foobar(String[] args, int x) {
+            IntUnaryOperator f = (int y) -> x + y;
+            return f.applyAsInt(2);
+        }
+    }
+   </pre>
+    
+    For this example, this strategy generates the class name
+     <pre>AnonymousFunction_foobar_double_java_lang_String_array_int_1</pre>
+   */
+  public static class BytecodeOffsetLambdaClassNameStrategy implements LambdaClassNameStrategy {
+
+    public BytecodeOffsetLambdaClassNameStrategy() {
+      if (!Options.v().keep_offset()) {
+        throw new IllegalStateException("--keep-bytecode-offset must be turned on");
+      }
+    }
+
+    @Override
+    public String generateLambdaClassName(MethodHandle implMethod, MethodType samMethodType, String name, Type[] invokedType,
+        SootMethod enclosingMethod, int bytecodeOffset) {
+      // class names cannot contain <>
+      String implMethodName = implMethod.getMethodRef().getName();
+      String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
+      // XXX: $ causes confusion in inner class inference; remove for now
+      dummyName = dummyName.replace('$', '_');
+      final String enclosingClassname = enclosingMethod.getDeclaringClass().getName();
+      String prefix = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy" : enclosingClassname;
+      StringBuilder finalName = new StringBuilder(prefix);
+      finalName.append('_').append(enclosingMethod.getName());
+      finalName.append('_');
+      appendType(finalName, enclosingMethod.getReturnType());
+      for (Type i : enclosingMethod.getParameterTypes()) {
+        finalName.append('_');
+        appendType(finalName, i);
+      }
+      finalName.append('_').append(bytecodeOffset);
+
+      return finalName.toString();
+    }
+
+    private static void appendType(StringBuilder sb, Type t) {
+      if (t instanceof ArrayType) {
+        ArrayType at = (ArrayType) t;
+        appendType(sb, at.baseType);
+        for (int i = 0; i < at.numDimensions; i++) {
+          sb.append("_array");
+        }
+      } else if (t instanceof PrimType) {
+        sb.append(t.toString());
+      } else if (t instanceof RefType) {
+        RefType rt = (RefType) t;
+        sb.append(rt.getClassName().replace('.', '_').replace("$", "__"));
+      } else {
+        throw new IllegalArgumentException("Unsupported type: " + t);
+      }
+    }
+
   }
 
   /**
@@ -71,11 +178,13 @@ public class LambdaMetaFactory {
    * @param name
    * @param invokedType
    *          types of captured arguments, the last element is always the type of the FunctionalInterface
-   * @param enclosingClass
+   * @param enclosingMethod
+   *          the method the method call instruction resides in
+   * @param bytecodeOffset
    * @return
    */
   public SootMethodRef makeLambdaHelper(List<? extends Value> bootstrapArgs, int tag, String name, Type[] invokedType,
-      SootClass enclosingClass) {
+      SootMethod enclosingMethod, int bytecodeOffset) {
     final int argsSize = bootstrapArgs.size();
     if (argsSize < 3 || !(bootstrapArgs.get(0) instanceof MethodType) || !(bootstrapArgs.get(1) instanceof MethodHandle)
         || !(bootstrapArgs.get(2) instanceof MethodType)
@@ -83,6 +192,7 @@ public class LambdaMetaFactory {
       LOGGER.warn("LambdaMetaFactory: unexpected arguments for LambdaMetaFactory.metaFactory: {}", bootstrapArgs);
       return null;
     }
+    final SootClass enclosingClass = enclosingMethod.getDeclaringClass();
     /** implemented method type */
     MethodType samMethodType = ((MethodType) bootstrapArgs.get(0));
 
@@ -154,22 +264,13 @@ public class LambdaMetaFactory {
     // Our thunk class implements the functional interface
     SootClass functionalInterfaceToImplement = ((RefType) invokedType[invokedType.length - 1]).getSootClass();
 
-    final String enclosingClassname = enclosingClass.getName();
-
-    String className;
-    final boolean readableClassnames = true;
-    if (readableClassnames) {
-      // class names cannot contain <>
-      String implMethodName = implMethod.getMethodRef().getName();
-      String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
-      // XXX: $ causes confusion in inner class inference; remove for now
-      dummyName = dummyName.replace('$', '_');
-      String prefix
-          = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy." : enclosingClassname + "$";
-      className = prefix + dummyName + "__" + uniqSupply();
-    } else {
-      className = "soot.dummy.lambda" + uniqSupply();
+    String className = classNameStrategy.generateLambdaClassName(implMethod, samMethodType, name, invokedType,
+        enclosingMethod, bytecodeOffset);
+    if (Scene.v().containsClass(className)) {
+      // bad class name strategy
+      throw new IllegalStateException("Class name is not unique: " + className);
     }
+
     SootClass tclass = Scene.v().makeSootClass(className);
     tclass.setModifiers(Modifier.PUBLIC | Modifier.FINAL);
     tclass.setSuperclass(Scene.v().getObjectType().getSootClass());
@@ -201,6 +302,7 @@ public class LambdaMetaFactory {
     // it can be invoked from the thunk class
     if (MethodHandle.Kind.REF_INVOKE_STATIC.getValue() == implMethod.getKind()) {
       SootClass declClass = implMethod.getMethodRef().getDeclaringClass();
+      final String enclosingClassname = enclosingClass.getName();
       if (declClass.getName().equals(enclosingClassname)) {
         SootMethod method = implMethod.getMethodRef().resolve();
         method.setModifiers((method.getModifiers() & ~Modifier.PRIVATE) | Modifier.PUBLIC);
@@ -282,10 +384,6 @@ public class LambdaMetaFactory {
         Modifier.PUBLIC);
     tclass.addMethod(m);
     m.setSource(ms);
-  }
-
-  private synchronized long uniqSupply() {
-    return ++uniq;
   }
 
   private static class Wrapper {

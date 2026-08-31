@@ -201,7 +201,7 @@ public class PhaseOptions {
   public boolean setPhaseOption(String phaseName, String option) {
     HasPhaseOptions phase = getPM().getPhase(phaseName);
     if (phase == null) {
-      logger.debug("Option " + option + " given for nonexistent phase " + phaseName);
+      logger.warn("Option " + option + " given for nonexistent phase " + phaseName);
       return false;
     } else {
       return setPhaseOption(phase, option);
