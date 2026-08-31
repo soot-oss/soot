@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import soot.G;
 import soot.Main;
+import soot.options.Options;
 
 /**
  * Test for fields that contain constant values
@@ -174,11 +175,9 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
   @Test
   public void loadClass() {
     G.reset();
-    // Location of the rt.jar
-    String rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
 
     // Run Soot and print output to .asm-files.
-    Main.main(new String[] { "-cp", getClassPathFolder() + File.pathSeparator + rtJar, "-process-dir", getTargetFolder(),
+    Main.main(new String[] { "-prepend-classpath", "-cp", getClassPathFolder(), "-process-dir", getTargetFolder(),
         "-src-prec", "only-class", "-output-format", "class", "-allow-phantom-refs", "-java-version",
         getRequiredJavaVersion(), getTargetClass() });
 
