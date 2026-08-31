@@ -179,7 +179,7 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 
     // Run Soot and print output to .asm-files.
     Main.main(new String[] { "-cp", getClassPathFolder() + File.pathSeparator + rtJar, "-process-dir", getTargetFolder(),
-        "-src-prec", "only-class", "-output-format", "class", "-asm-backend", "-allow-phantom-refs", "-java-version",
+        "-src-prec", "only-class", "-output-format", "class", "-allow-phantom-refs", "-java-version",
         getRequiredJavaVersion(), getTargetClass() });
 
     File file = new File("./sootOutput/ConstantPool.class");
