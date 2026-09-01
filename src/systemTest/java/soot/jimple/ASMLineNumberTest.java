@@ -23,6 +23,7 @@ package soot.jimple;
  */
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.io.ByteSource;
 import com.google.common.reflect.ClassPath;
 import com.google.common.reflect.ClassPath.ClassInfo;
 
@@ -38,6 +39,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
@@ -83,6 +87,8 @@ import soot.util.backend.ASMBackendUtils;
 public class ASMLineNumberTest extends AbstractTestingFramework {
 
   private static final boolean DEBUG = false;
+
+  final AtomicInteger checkedMethods = new AtomicInteger();
 
   private abstract static class LineNumberStmt {
     public int lineNumber;
@@ -181,8 +187,15 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
         File pck = new File(tmp, packageName);
         pck.mkdirs();
         String n = getSimpleClassName(name);
+        ByteSource bs;
+        try {
+          bs = c.asByteSource();
+        } catch (Exception e) {
+          // ignore
+          continue;
+        }
         try (FileOutputStream fos = new FileOutputStream(new File(pck, n + ".class"))) {
-          c.asByteSource().copyTo(fos);
+          bs.copyTo(fos);
         }
       }
       testLineNumbers(tmp);
@@ -216,9 +229,11 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
 
     Scene.v().loadNecessaryClasses();
     performMatching(classFolder);
+    System.out.println(String.format("ASMLineNumberTest: Checked %d methods", checkedMethods.get()));
   }
 
   private void performMatching(File classFolder) throws IOException, InterruptedException {
+    ThreadPoolExecutor exec = new ThreadPoolExecutor(2, 4, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     for (SootClass c : new ArrayList<>(Scene.v().getApplicationClasses())) {
       File packageFolder = new File(classFolder, c.getPackageName().replace('.', File.separatorChar));
       File clFile = new File(packageFolder, getSimpleClassName(c.getName()) + ".class");
@@ -263,7 +278,9 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
 
         // Iterate over every method found in the class
         for (MethodNode method : classNode.methods) {
-          analyzeMethod(classNode.name, method);
+          exec.execute(() -> {
+            analyzeMethod(classNode.name, method);
+          });
         }
 
       } catch (IOException e) {
@@ -271,9 +288,11 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
       }
 
     }
+    exec.shutdown();
+    exec.awaitTermination(1, TimeUnit.DAYS);
   }
 
-  private static void analyzeMethod(String className, MethodNode method) {
+  private void analyzeMethod(String className, MethodNode method) {
     SootClass cl = Scene.v().getSootClass(AsmUtil.toQualifiedName(className));
     if (cl.isPhantomClass()) {
       return;
@@ -338,6 +357,7 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
       }
 
     }
+    checkedMethods.incrementAndGet();
   }
 
   public static String methodNodeToString(MethodNode methodNode) {
@@ -368,7 +388,9 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
         }
         return s;
       }
-      rest.append(s.toString()).append("\n");
+      if (DEBUG) {
+        rest.append(s.toString()).append("\n");
+      }
     }
     throw new IllegalArgumentException("Could not find the next statement in " + rest);
   }
