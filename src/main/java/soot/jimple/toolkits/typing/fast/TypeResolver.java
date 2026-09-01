@@ -77,6 +77,7 @@ import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.typing.Util;
 import soot.jimple.toolkits.typing.fast.UseChecker.UseCheckerCache;
 import soot.options.JBTROptions;
@@ -344,7 +345,9 @@ public class TypeResolver {
            */
           vold = localGenerator.generateLocal(t);
           this.tg.set(vold, t);
-          this.jb.getUnits().insertBefore(Jimple.v().newAssignStmt(vold, op), Util.findFirstNonIdentityUnit(this.jb, stmt));
+          AssignStmt newU = Jimple.v().newAssignStmt(vold, op);
+          CopyPropagator.copyLineTags(newU, stmt);
+          this.jb.getUnits().insertBefore(newU, Util.findFirstNonIdentityUnit(this.jb, stmt));
         }
         // Cast from the original type to the type that we use in the code
         return createCast(useType, stmt, vold, false);

@@ -54,6 +54,7 @@ import soot.jimple.internal.JimpleLocal;
 import soot.options.CPOptions;
 import soot.options.Options;
 import soot.shimple.PhiExpr;
+import soot.tagkit.BytecodeOffsetTag;
 import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
@@ -349,26 +350,33 @@ public class CopyPropagator extends BodyTransformer {
   }
 
   /**
-   * Copies the {@link SourceLnPosTag} and {@link LineNumberTag}s from the given host to the given ValueBox
+   * Copies the {@link SourceLnPosTag}, {@link LineNumberTag} and
+   * {@link BytecodeOffsetTag}s from the given host to the given ValueBox
    *
-   * @param useBox
+   * @param target
    *          The box to which the position tags should be copied
-   * @param host
+   * @param from
    *          The host from which the position tags should be copied
    * @return True if a copy was conducted, false otherwise
    */
-  private static boolean copyLineTags(ValueBox useBox, Host host) {
+  public static boolean copyLineTags(Host target, Host from) {
     boolean res = false;
 
-    Tag tag = host.getTag(SourceLnPosTag.NAME);
+    Tag tag = from.getTag(SourceLnPosTag.NAME);
     if (tag != null) {
-      useBox.addTag(tag);
+      target.addTag(tag);
       res = true;
     }
 
-    tag = host.getTag(LineNumberTag.NAME);
+    tag = from.getTag(LineNumberTag.NAME);
     if (tag != null) {
-      useBox.addTag(tag);
+      target.addTag(tag);
+      res = true;
+    }
+
+    tag = from.getTag(BytecodeOffsetTag.NAME);
+    if (tag != null) {
+      target.addTag(tag);
       res = true;
     }
 

@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.Body;
+import soot.PhaseOptions;
 import soot.Scene;
 import soot.Singletons;
 import soot.SootClass;
@@ -140,7 +141,7 @@ public final class TrapTightener extends TrapTransformer {
         }
       }
 
-      if (removedTraps) {
+      if (removedTraps && !"false".equalsIgnoreCase(PhaseOptions.v().getPhaseOptions("jb.uce").get("enabled"))) {
         new UnreachableCodeEliminator(throwAnalysis).transform(body);
       }
     }
