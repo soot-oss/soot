@@ -63,6 +63,7 @@ import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.options.Options;
+import soot.tagkit.TagManager;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
@@ -96,6 +97,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
   protected ThrowAnalysis throwAnalysis;
   protected boolean omitExceptingUnitEdges;
+  protected TagManager tagManager = TagManager.v();
 
   private boolean actAsNormalLocalSplitter;
 
@@ -386,7 +388,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           }
           AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, assign.getRightOp());
           units.insertAfter(newAssign, assign);
-          CopyPropagator.copyLineTags(newAssign.getUseBoxesIterator().next(), assign);
+          tagManager.copyLineTags(newAssign.getUseBoxesIterator().next(), assign);
         }
 
         for (Unit use : cluster.uses) {

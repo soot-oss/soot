@@ -59,9 +59,9 @@ import soot.jimple.RealConstant;
 import soot.jimple.Stmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.ImmediateBox;
-import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.options.Options;
 import soot.tagkit.Tag;
+import soot.tagkit.TagManager;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -88,6 +88,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
 
   protected ThrowAnalysis throwAnalysis;
   protected boolean omitExceptingUnitEdges;
+  protected TagManager tagManager = TagManager.v();
 
   public FlowSensitiveConstantPropagator(Singletons.Global g) {
   }
@@ -141,7 +142,7 @@ public class FlowSensitiveConstantPropagator extends BodyTransformer {
             List<Tag> oldTags = assign.getRightOpBox().getTags();
             assign.setRightOp(c);
             assign.getRightOpBox().getTags().addAll(oldTags);
-            CopyPropagator.copyLineTags(assign.getUseBoxesIterator().next(), assign);
+            tagManager.copyLineTags(assign.getUseBoxesIterator().next(), assign);
             continue;
           }
         }

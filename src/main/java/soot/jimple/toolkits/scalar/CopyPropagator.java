@@ -50,15 +50,10 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
-import soot.jimple.internal.JimpleLocal;
 import soot.options.CPOptions;
 import soot.options.Options;
 import soot.shimple.PhiExpr;
-import soot.tagkit.BytecodeOffsetTag;
-import soot.tagkit.Host;
-import soot.tagkit.LineNumberTag;
-import soot.tagkit.SourceLnPosTag;
-import soot.tagkit.Tag;
+import soot.tagkit.TagManager;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.ExceptionalUnitGraphFactory;
@@ -125,10 +120,10 @@ public class CopyPropagator extends BodyTransformer {
           Local loc = (Local) leftOp;
 
           Integer old = localToDefCount.get(loc);
-          Value rop  = def.getRightOp();
+          Value rop = def.getRightOp();
           int count = 1;
           if (rop instanceof PhiExpr) {
-            PhiExpr  e = (PhiExpr) rop;
+            PhiExpr e = (PhiExpr) rop;
             count = e.getArgCount();
           }
           localToDefCount.put(loc, (old == null) ? count : (old + count));
@@ -157,11 +152,11 @@ public class CopyPropagator extends BodyTransformer {
       boolean onlyStackLocals = options.only_stack_locals();
       boolean allLocals = onlyRegularLocals && onlyStackLocals;
       boolean isDotNet = o.src_prec() == Options.src_prec_dotnet;
+      TagManager tagManager = TagManager.v();
 
       // Perform a local propagation pass.
       for (Unit u : (new PseudoTopologicalOrderer<Unit>()).newList(graph, false)) {
-        nextUseBox:
-        for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
+        nextUseBox: for (Iterator<ValueBox> iterator = u.getUseBoxesIterator(); iterator.hasNext();) {
           ValueBox useBox = iterator.next();
           Value value = useBox.getValue();
           if (value instanceof Local) {
@@ -238,7 +233,7 @@ public class CopyPropagator extends BodyTransformer {
               if (rightOp instanceof Constant) {
                 if (ConstantPropagatorUtils.mayPropagate(graph, rightOp, def, u, useBox)) {
                   useBox.setValue(rightOp);
-                  copyLineTags(useBox, def);
+                  tagManager.copyLineTags(useBox, def);
                 }
 
               } else if (rightOp instanceof CastExpr) {
@@ -253,7 +248,7 @@ public class CopyPropagator extends BodyTransformer {
                       // But even for non-casts, using 0 as a ref-like type is legal here
                       if (!isDotNet) {
                         useBox.setValue(nc);
-                        copyLineTags(useBox, def);
+                        tagManager.copyLineTags(useBox, def);
                       }
                     }
                   }
@@ -266,7 +261,7 @@ public class CopyPropagator extends BodyTransformer {
                     throw new RuntimeException("Variable " + m + " used without definition!");
                   } else if (defCount == 1) {
                     useBox.setValue(m);
-                    copyLineTags(useBox, def);
+                    tagManager.copyLineTags(useBox, def);
                     fastCopyPropagationCount++;
                     continue;
                   }
@@ -293,7 +288,7 @@ public class CopyPropagator extends BodyTransformer {
                       }
                       if (s instanceof DefinitionStmt) {
                         if (((DefinitionStmt) s).getLeftOp() == m) {
-                          //was redefined
+                          // was redefined
                           continue nextUseBox;
                         }
                       }
@@ -325,61 +320,5 @@ public class CopyPropagator extends BodyTransformer {
     if (o.time()) {
       Timers.v().propagatorTimer.end();
     }
-  }
-
-  public static void copyLineTags(ValueBox useBox, DefinitionStmt def) {
-    // make sure to also retain user variables
-    Value v = useBox.getValue();
-    if (v instanceof JimpleLocal) {
-      JimpleLocal dest = (JimpleLocal) v;
-      Value srcV = def.getLeftOp();
-      if (srcV instanceof JimpleLocal) {
-        JimpleLocal src = (JimpleLocal) srcV;
-        if (src.isUserDefinedLocal() && !dest.isUserDefinedLocal()) {
-          // Resolving duplicates is done later (AsmMethodSource.ensureUniqueNames)
-          dest.setName(src.getName());
-          dest.setUserDefinedLocal();
-        }
-      }
-    }
-    // we might have a def statement which contains a propagated constant itself as right-op. we
-    // want to propagate the tags of this constant and not the def statement itself in this case.
-    if (!copyLineTags(useBox, def.getRightOpBox())) {
-      copyLineTags(useBox, (Host) def);
-    }
-  }
-
-  /**
-   * Copies the {@link SourceLnPosTag}, {@link LineNumberTag} and
-   * {@link BytecodeOffsetTag}s from the given host to the given ValueBox
-   *
-   * @param target
-   *          The box to which the position tags should be copied
-   * @param from
-   *          The host from which the position tags should be copied
-   * @return True if a copy was conducted, false otherwise
-   */
-  public static boolean copyLineTags(Host target, Host from) {
-    boolean res = false;
-
-    Tag tag = from.getTag(SourceLnPosTag.NAME);
-    if (tag != null) {
-      target.addTag(tag);
-      res = true;
-    }
-
-    tag = from.getTag(LineNumberTag.NAME);
-    if (tag != null) {
-      target.addTag(tag);
-      res = true;
-    }
-
-    tag = from.getTag(BytecodeOffsetTag.NAME);
-    if (tag != null) {
-      target.addTag(tag);
-      res = true;
-    }
-
-    return res;
   }
 }
