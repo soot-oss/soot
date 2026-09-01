@@ -229,11 +229,16 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
 
     Scene.v().loadNecessaryClasses();
     performMatching(classFolder);
-    System.out.println(String.format("ASMLineNumberTest: Checked %d methods", checkedMethods.get()));
+    int m = checkedMethods.get();
+    if (m < 100) {
+      throw new RuntimeException(String.format("Checked only %d methods", m));
+    }
+    System.out.println(String.format("ASMLineNumberTest: Checked %d methods", m));
   }
 
   private void performMatching(File classFolder) throws IOException, InterruptedException {
-    ThreadPoolExecutor exec = new ThreadPoolExecutor(2, 4, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    int poolSize = Runtime.getRuntime().availableProcessors();
+    ThreadPoolExecutor exec = new ThreadPoolExecutor(poolSize, poolSize, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     for (SootClass c : new ArrayList<>(Scene.v().getApplicationClasses())) {
       File packageFolder = new File(classFolder, c.getPackageName().replace('.', File.separatorChar));
       File clFile = new File(packageFolder, getSimpleClassName(c.getName()) + ".class");
@@ -313,9 +318,10 @@ public class ASMLineNumberTest extends AbstractTestingFramework {
       sb.append(types.get(i));
     }
     sb.append(")");
-    SootMethod m = cl.getMethod(sb.toString());
+    SootMethod m = cl.getMethodUnsafe(sb.toString());
     ;
-    if (!m.isConcrete()) {
+    if (m == null || !m.isConcrete()) {
+      //Usually no big deal
       return;
     }
     Body body = m.retrieveActiveBody();
