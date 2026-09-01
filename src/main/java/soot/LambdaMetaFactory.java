@@ -134,15 +134,21 @@ public class LambdaMetaFactory {
     @Override
     public String generateLambdaClassName(MethodHandle implMethod, MethodType samMethodType, String name, Type[] invokedType,
         SootMethod enclosingMethod, int bytecodeOffset) {
-      // class names cannot contain <>
-      String implMethodName = implMethod.getMethodRef().getName();
-      String dummyName = "<init>".equals(implMethodName) ? "init" : implMethodName;
-      // XXX: $ causes confusion in inner class inference; remove for now
-      dummyName = dummyName.replace('$', '_');
+      String methodName = enclosingMethod.getName();
+      switch (methodName) {
+        // class names cannot contain <>
+        case "<clinit>":
+          methodName = "_clinit_";
+          break;
+        case "<init>":
+          methodName = "_init_";
+          break;
+      }
+      
       final String enclosingClassname = enclosingMethod.getDeclaringClass().getName();
       String prefix = (enclosingClassname == null || enclosingClassname.isEmpty()) ? "soot.dummy" : enclosingClassname;
       StringBuilder finalName = new StringBuilder(prefix);
-      finalName.append('_').append(enclosingMethod.getName());
+      finalName.append('_').append(methodName);
       finalName.append('_');
       appendType(finalName, enclosingMethod.getReturnType());
       for (Type i : enclosingMethod.getParameterTypes()) {
@@ -166,6 +172,8 @@ public class LambdaMetaFactory {
       } else if (t instanceof RefType) {
         RefType rt = (RefType) t;
         sb.append(rt.getClassName().replace('.', '_').replace("$", "__"));
+      } else if (t instanceof VoidType) {
+        sb.append("void");
       } else {
         throw new IllegalArgumentException("Unsupported type: " + t);
       }
