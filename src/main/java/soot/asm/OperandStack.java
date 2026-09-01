@@ -106,6 +106,10 @@ public class OperandStack {
   public Operand popStackConstDual() {
     return popDual();
   }
+  
+  public boolean isEmpty() {
+    return stack.isEmpty();
+  }
 
   public List<Operand> getStack() {
     return stack;

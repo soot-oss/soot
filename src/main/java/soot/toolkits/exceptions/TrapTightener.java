@@ -184,7 +184,7 @@ public final class TrapTightener extends TrapTransformer {
         changed = true;
       }
     }
-    if (changed) {
+    if (changed && !"false".equalsIgnoreCase(PhaseOptions.v().getPhaseOptions("jb.uce").get("enabled"))) {
       UnreachableCodeEliminator.v().transform(body);
     }
 
