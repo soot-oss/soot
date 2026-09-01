@@ -156,6 +156,7 @@ public class LambdaMetaFactory {
         appendType(finalName, i);
       }
       finalName.append('_').append(bytecodeOffset);
+      finalName.append("$$lambda");
 
       return finalName.toString();
     }

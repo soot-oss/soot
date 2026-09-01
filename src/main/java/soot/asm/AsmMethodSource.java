@@ -262,6 +262,7 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
+import soot.asm.Operand.OperandType;
 import soot.dexpler.Util;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;
@@ -350,7 +351,11 @@ public class AsmMethodSource implements MethodSource {
 
   private Multimap<LabelNode, UnitBox> trapHandlers;
   private JimpleBody body;
-  private Map<AbstractInsnNode, Integer> lineNumberMap;
+  private Map<AbstractInsnNode, LocationMetadata> locationMap;
+
+  private static class LocationMetadata {
+    public int lineNumber = -1, bytecodeOffset = -1;
+  }
 
   public AsmMethodSource(int maxLocals, InsnList insns, List<LocalVariableNode> localVars,
       List<TryCatchBlockNode> tryCatchBlocks, String module) {
@@ -397,8 +402,6 @@ public class AsmMethodSource implements MethodSource {
   private OperandStack operandStack;
 
   private LinkedListMultimap<LabelNode, UnitBox> labels;
-
-  private int bytecodeOffset = -1;
 
   private Local getLocal(int idx) {
     if (idx >= maxLocals) {
@@ -459,14 +462,18 @@ public class AsmMethodSource implements MethodSource {
   }
 
   protected void setUnit(AbstractInsnNode insn, Unit u) {
-    if (lineNumberMap != null) {
-      Integer ln = lineNumberMap.get(insn);
-      if (ln != null && ln >= 0) {
-        setLineNumber(u, ln);
+    if (locationMap != null) {
+      LocationMetadata l = locationMap.get(insn);
+      if (l != null) {
+        int ln = l.lineNumber;
+        if (ln >= 0) {
+          setLineNumber(u, ln);
+        }
+        int bo = l.bytecodeOffset;
+        if (bo >= 0) {
+          setByteCodeOffset(u, bo);
+        }
       }
-    }
-    if (bytecodeOffset != -1) {
-      setByteCodeOffset(u, bytecodeOffset);
     }
 
     insnToStmt.put(insn, u);
@@ -481,7 +488,7 @@ public class AsmMethodSource implements MethodSource {
     } else if (((BytecodeOffsetTag) offsetTag).getBytecodeOffset() != bytecodeOffset) {
       throw new RuntimeException("Bytecode offset tag mismatch");
     }
-    
+
   }
 
   protected void setLineNumber(Unit u, int lineNumber) {
@@ -893,6 +900,7 @@ public class AsmMethodSource implements MethodSource {
     merging.mergeInputs(val);
     ReturnStmt ret = Jimple.v().newReturnStmt(val.toImmediate());
     setUnit(insn, ret);
+    handleStackLeftover();
   }
 
   private void convertInsn(InsnNode insn) {
@@ -933,6 +941,7 @@ public class AsmMethodSource implements MethodSource {
       convertReturnInsn(insn);
     } else if (op == RETURN) {
       if (!insnToStmt.containsKey(insn)) {
+        handleStackLeftover();
         setUnit(insn, Jimple.v().newReturnVoidStmt());
       }
     } else if (op == ATHROW) {
@@ -952,6 +961,27 @@ public class AsmMethodSource implements MethodSource {
       setUnit(insn, ts);
     } else {
       throw new AssertionError("Unknown insn op: " + op);
+    }
+  }
+
+  private void handleStackLeftover() {
+    while (!operandStack.isEmpty()) {
+      Operand leftover = operandStack.peek();
+      if (leftover == null) {
+        break;
+      }
+      OperandType type = leftover.type;
+
+      if (type == OperandType.DOUBLE || type == OperandType.DOUBLE) {
+        operandStack.popDual();
+      } else {
+        operandStack.pop();
+      }
+
+      if (leftover.value instanceof InvokeExpr) {
+        InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(leftover.value);
+        setUnit(leftover.insn, invokeStmt);
+      }
     }
   }
 
@@ -1307,9 +1337,9 @@ public class AsmMethodSource implements MethodSource {
     if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory")) {
       String bsmMethodRefStr = bsmMethodRef.toString();
       if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
-        bootstrap_model
-            = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name,
-                types, body.getMethod(), bytecodeOffset);
+        int bytecodeOffset = getBytecodeOffset(insn);
+        bootstrap_model = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types,
+            body.getMethod(), bytecodeOffset);
       }
     }
 
@@ -1356,6 +1386,29 @@ public class AsmMethodSource implements MethodSource {
      * assign all read ops in case the method modifies any of the fields
      */
     addReadOperandAssignments();
+  }
+
+  /**
+   * Searches backwards for the bytecode offset
+   * 
+   * @param insn
+   *          the instruction node
+   * @return the bytecode offset or -1
+   */
+  private int getBytecodeOffset(AbstractInsnNode insn) {
+    if (locationMap == null) {
+      return -1;
+    }
+    LocationMetadata info;
+    AbstractInsnNode i = insn;
+    while (i != null) {
+      info = locationMap.get(i);
+      if (info != null && info.bytecodeOffset > 0) {
+        return info.bytecodeOffset;
+      }
+      i = i.getPrevious();
+    }
+    return -1;
   }
 
   private SootMethodRef toSootMethodRef(Handle methodHandle) {
@@ -1662,6 +1715,9 @@ public class AsmMethodSource implements MethodSource {
     if (Options.v().keep_line_number()) {
       setLineNumberMap();
     }
+    if (Options.v().keep_offset()) {
+      setBytecodeOffsetMap();
+    }
 
     do {
       BranchedInsnInfo edge = worklist.pollLast();
@@ -1742,15 +1798,14 @@ public class AsmMethodSource implements MethodSource {
           case LINE:
             // was already handled in setLineNumberMap()
             continue;
+          case BytecodeOffsetNode.BYTECODE_OFFSET_TYPE:
+            if (insn instanceof BytecodeOffsetNode) {
+              // was already handled in setBytecodeOffsetMap()
+              break;
+            }
           case FRAME:
             // we can ignore it
             continue;
-          case BytecodeOffsetNode.BYTECODE_OFFSET_TYPE:
-            if (insn instanceof BytecodeOffsetNode) {
-              BytecodeOffsetNode bytecodeOffset = (BytecodeOffsetNode) insn;
-              this.bytecodeOffset = bytecodeOffset.bytecodeOffset;
-              break;
-            }
           default:
             throw new RuntimeException("Unknown instruction type: " + type);
         }
@@ -1790,7 +1845,10 @@ public class AsmMethodSource implements MethodSource {
   }
 
   private void setLineNumberMap() {
-    lineNumberMap = new HashMap<>(instructions.size() * 2 + 1);
+    if (locationMap == null) {
+      locationMap = new HashMap<>(instructions.size() * 2 + 1);
+    }
+
     AbstractInsnNode current = instructions.getFirst();
 
     int lastNumber = -1;
@@ -1799,7 +1857,25 @@ public class AsmMethodSource implements MethodSource {
         LineNumberNode ln = (LineNumberNode) current;
         lastNumber = ln.line;
       } else if (lastNumber >= 0) {
-        lineNumberMap.put(current, lastNumber);
+        locationMap.computeIfAbsent(current, (x) -> new LocationMetadata()).lineNumber = lastNumber;
+      }
+      current = current.getNext();
+    }
+  }
+
+  private void setBytecodeOffsetMap() {
+    if (locationMap == null) {
+      locationMap = new HashMap<>(instructions.size() * 2 + 1);
+    }
+    AbstractInsnNode current = instructions.getFirst();
+
+    int lastOffset = -1;
+    while (current != null) {
+      if (current instanceof BytecodeOffsetNode) {
+        BytecodeOffsetNode ln = (BytecodeOffsetNode) current;
+        lastOffset = ln.bytecodeOffset;
+      } else if (lastOffset >= 0) {
+        locationMap.computeIfAbsent(current, (x) -> new LocationMetadata()).bytecodeOffset = lastOffset;
       }
       current = current.getNext();
     }
@@ -2035,7 +2111,7 @@ public class AsmMethodSource implements MethodSource {
     labels = null;
     insnToStmt = null;
     body = null;
-    lineNumberMap = null;
+    locationMap = null;
 
     // We want to have somewhat correct ordering of the locals
     // (the asm backend's code depends on this)
