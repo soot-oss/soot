@@ -77,10 +77,10 @@ import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
-import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.typing.Util;
 import soot.jimple.toolkits.typing.fast.UseChecker.UseCheckerCache;
 import soot.options.JBTROptions;
+import soot.tagkit.TagManager;
 import soot.toolkits.scalar.LocalDefs;
 import soot.util.HashMultiMap;
 import soot.util.MultiMap;
@@ -119,6 +119,7 @@ public class TypeResolver {
   private final LocalGenerator localGenerator;
   private final UseCheckerCache useCheckerCache;
   private final JBTROptions opt;
+  private final TagManager tagManager = TagManager.v();
 
   private MultiMap<Local, Unit> localToUses;
 
@@ -346,7 +347,7 @@ public class TypeResolver {
           vold = localGenerator.generateLocal(t);
           this.tg.set(vold, t);
           AssignStmt newU = Jimple.v().newAssignStmt(vold, op);
-          CopyPropagator.copyLineTags(newU, stmt);
+          tagManager.copyLineTags(newU, stmt);
           this.jb.getUnits().insertBefore(newU, Util.findFirstNonIdentityUnit(this.jb, stmt));
         }
         // Cast from the original type to the type that we use in the code

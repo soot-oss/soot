@@ -24,6 +24,10 @@ package soot.tagkit;
 
 import soot.G;
 import soot.Singletons;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.internal.JimpleLocal;
 
 /** Utility functions for tags. */
 public class TagManager {
@@ -62,5 +66,71 @@ public class TagManager {
   /** Prints the given Tag, assuming that it belongs to the given class and field or method. */
   public String print(String aClassName, String aFieldOrMtdSignature, Tag aTag) {
     return tagPrinter.print(aClassName, aFieldOrMtdSignature, aTag);
+  }
+
+  /**
+   * Copies the {@link SourceLnPosTag}, {@link LineNumberTag} and {@link BytecodeOffsetTag}s from the given host to the given
+   * ValueBox
+   *
+   * @param target
+   *          The box to which the position tags should be copied
+   * @param from
+   *          The host from which the position tags should be copied
+   * @return True if a copy was conducted, false otherwise
+   */
+  public boolean copyLineTags(Host target, Host from) {
+    boolean res = false;
+
+    Tag tag = from.getTag(SourceLnPosTag.NAME);
+    if (tag != null) {
+      target.addTag(tag);
+      res = true;
+    }
+
+    tag = from.getTag(LineNumberTag.NAME);
+    if (tag != null) {
+      target.addTag(tag);
+      res = true;
+    }
+
+    tag = from.getTag(BytecodeOffsetTag.NAME);
+    if (tag != null) {
+      target.addTag(tag);
+      res = true;
+    }
+
+    return res;
+  }
+
+  /**
+   * Copies the {@link SourceLnPosTag}, {@link LineNumberTag} and {@link BytecodeOffsetTag}s from the given definition
+   * statement to the given ValueBox. Takes care to leave names of user defined local variables intact.
+   *
+   * @param target
+   *          The box to which the position tags should be copied
+   * @param from
+   *          The host from which the position tags should be copied
+   * @return True if a copy was conducted, false otherwise
+   */
+  public void copyLineTags(ValueBox usetarget, DefinitionStmt from) {
+    // make sure to also retain user variables
+    Value v = usetarget.getValue();
+    if (v instanceof JimpleLocal) {
+      JimpleLocal dest = (JimpleLocal) v;
+      Value srcV = from.getLeftOp();
+      if (srcV instanceof JimpleLocal) {
+        JimpleLocal src = (JimpleLocal) srcV;
+        if (src.isUserDefinedLocal() && !dest.isUserDefinedLocal()) {
+          // Resolving duplicates is done later (AsmMethodSource.ensureUniqueNames)
+          dest.setName(src.getName());
+          dest.setUserDefinedLocal();
+        }
+      }
+    }
+    // we might have a def statement which contains a propagated constant itself as right-op. we
+    // want to propagate the tags of this constant and not the def statement itself in this case.
+    if (!copyLineTags(usetarget, from.getRightOpBox())) {
+      copyLineTags(usetarget, (Host) from);
+    }
   }
 }
