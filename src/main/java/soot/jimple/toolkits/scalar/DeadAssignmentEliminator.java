@@ -73,6 +73,7 @@ import soot.jimple.RemExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.options.Options;
+import soot.tagkit.TagManager;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
@@ -119,6 +120,7 @@ public class DeadAssignmentEliminator extends BodyTransformer {
 
     Local thisLocal = null;
     Set<Unit> trapEnds = null;
+    TagManager tagManager = null;
 
     for (Iterator<Unit> it = units.iterator(); it.hasNext();) {
       Unit s = it.next();
@@ -304,6 +306,10 @@ public class DeadAssignmentEliminator extends BodyTransformer {
           // Transform it into a simple invoke.
           Stmt newInvoke = jimple.newInvokeStmt(s.getInvokeExpr());
           newInvoke.addAllTagsOf(s);
+          if (tagManager == null) {
+            tagManager = TagManager.v();
+          }
+          tagManager.copyLineTags(newInvoke, s);
           units.swapWith(s, newInvoke);
 
           // If we have a callgraph, we need to fix it

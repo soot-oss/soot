@@ -450,8 +450,9 @@ public class ThrowableSet {
    *           <code>ThrowableSet</code>.
    */
   public ThrowableSet add(ThrowableSet s) throws ThrowableSet.AlreadyHasExclusionsException {
-    final Manager mgr = Manager.v();
+    final Manager mgr;
     if (INSTRUMENTING) {
+      mgr = Manager.v();
       mgr.addsOfSet++;
     }
     if ((exceptionsExcluded.size() > 0) || (s.exceptionsExcluded.size() > 0)) {
