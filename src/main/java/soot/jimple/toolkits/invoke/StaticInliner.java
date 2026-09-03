@@ -146,7 +146,8 @@ public class StaticInliner extends SceneTransformer {
 
   private void computeAverageMethodSizeAndSaveOriginalSizes() {
     // long sum = 0, count = 0;
-    for (SootClass c : Scene.v().getApplicationClasses()) {
+    for (Iterator<SootClass> classesIt = Scene.v().getApplicationClasses().snapshotIterator(); classesIt.hasNext();) {
+      SootClass c = classesIt.next();
       for (Iterator<SootMethod> methodsIt = c.methodIterator(); methodsIt.hasNext();) {
         SootMethod m = methodsIt.next();
         if (m.isConcrete()) {
