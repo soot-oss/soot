@@ -21,7 +21,6 @@ package soot.asm;
  * <http://www.gnu.org/licenses/lgpl-2.1.html>.
  * #L%
  */
-
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ANEWARRAY;
@@ -477,7 +476,6 @@ public class AsmMethodSource implements MethodSource {
     }
 
     insnToStmt.put(insn, u);
-
   }
 
   protected void setByteCodeOffset(Unit u, int bytecodeOffset) {
@@ -980,7 +978,9 @@ public class AsmMethodSource implements MethodSource {
 
       if (leftover.value instanceof InvokeExpr) {
         InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(leftover.value);
-        setUnit(leftover.insn, invokeStmt);
+        if (!insnToStmt.containsKey(leftover.insn)) {
+          setUnit(leftover.insn, invokeStmt);
+        }
       }
     }
   }
