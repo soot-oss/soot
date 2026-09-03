@@ -79,17 +79,19 @@ public class AsmClassSource extends ClassSource {
       // resolved - before calling setOuterClass()
       if (!sc.hasOuterClass() && className.contains("$")) {
         String outerClassName = null;
-        // First, check if there is an InnerClassTag that explicitly declares this class as an
-        // inner class with a known outer class. This distinguishes genuine nested classes from
-        // non-nested classes that merely contain '$' in their name (e.g., "$Gson$Types").
-        for (soot.tagkit.Tag tag : sc.getTags()) {
-          if (tag instanceof InnerClassTag) {
-            InnerClassTag ict = (InnerClassTag) tag;
-            String innerName = ict.getInnerClass();
-            if (innerName != null && !innerName.contains("/") && AsmUtil.toQualifiedName(innerName).equals(className)
-                && ict.getOuterClass() != null) {
-              outerClassName = AsmUtil.toQualifiedName(ict.getOuterClass());
-              break;
+        // Use SootClass.isInnerClass() to check if this class is a genuine inner class via
+        // its InnerClassTag. This distinguishes genuine nested classes from non-nested classes
+        // that merely contain '$' in their name (e.g., "$Gson$Types", "A$B").
+        if (sc.isInnerClass()) {
+          for (soot.tagkit.Tag tag : sc.getTags()) {
+            if (tag instanceof InnerClassTag) {
+              InnerClassTag ict = (InnerClassTag) tag;
+              String innerClassName = ict.getInnerClass();
+              if (innerClassName != null && AsmUtil.toQualifiedName(innerClassName).equals(className)
+                  && ict.getOuterClass() != null) {
+                outerClassName = AsmUtil.toQualifiedName(ict.getOuterClass());
+                break;
+              }
             }
           }
         }

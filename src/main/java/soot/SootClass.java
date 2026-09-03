@@ -927,7 +927,25 @@ public class SootClass extends AbstractHost {
   }
 
   public boolean isInnerClass() {
-    return hasOuterClass();
+    if (hasOuterClass()) {
+      return true;
+    }
+    // Even if the outer class has not been resolved yet, we can check the InnerClassTag
+    // to determine whether this class is an inner class. This avoids relying on the
+    // dollar-sign heuristic, which incorrectly treats non-nested classes with '$' in
+    // their name (e.g., "$Gson$Types", "A$B") as inner classes.
+    String qualifiedName = getName();
+    for (soot.tagkit.Tag tag : getTags()) {
+      if (tag instanceof soot.tagkit.InnerClassTag) {
+        soot.tagkit.InnerClassTag ict = (soot.tagkit.InnerClassTag) tag;
+        String innerClassName = ict.getInnerClass();
+        if (innerClassName != null && innerClassName.replace('/', '.').equals(qualifiedName)
+            && ict.getOuterClass() != null) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
