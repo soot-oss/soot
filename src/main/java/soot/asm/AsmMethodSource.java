@@ -351,6 +351,7 @@ public class AsmMethodSource implements MethodSource {
   private Multimap<LabelNode, UnitBox> trapHandlers;
   private JimpleBody body;
   private Map<AbstractInsnNode, LocationMetadata> locationMap;
+  private Map<InvokeDynamicInsnNode, SootMethodRef> lambdaMethodRefsMap;
 
   private static class LocationMetadata {
     public int lineNumber = -1, bytecodeOffset = -1;
@@ -1337,9 +1338,14 @@ public class AsmMethodSource implements MethodSource {
     if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions("jb"), "model-lambdametafactory")) {
       String bsmMethodRefStr = bsmMethodRef.toString();
       if (bsmMethodRefStr.equals(METAFACTORY_SIGNATURE) || bsmMethodRefStr.equals(ALT_METAFACTORY_SIGNATURE)) {
-        int bytecodeOffset = getBytecodeOffset(insn);
-        bootstrap_model = LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types,
-            body.getMethod(), bytecodeOffset);
+        if (lambdaMethodRefsMap == null) {
+          lambdaMethodRefsMap = new HashMap<>();
+        }
+        bootstrap_model = lambdaMethodRefsMap.computeIfAbsent(insn, (cinsn) -> {
+          int bytecodeOffset = getBytecodeOffset(insn);
+          return LambdaMetaFactory.v().makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types, body.getMethod(),
+              bytecodeOffset);
+        });
       }
     }
 
@@ -2112,6 +2118,7 @@ public class AsmMethodSource implements MethodSource {
     insnToStmt = null;
     body = null;
     locationMap = null;
+    lambdaMethodRefsMap = null;
 
     // We want to have somewhat correct ordering of the locals
     // (the asm backend's code depends on this)
