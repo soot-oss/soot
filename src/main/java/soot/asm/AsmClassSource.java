@@ -37,6 +37,7 @@ import soot.IFoundFile;
 import soot.SootClass;
 import soot.SootResolver;
 import soot.UserInputException;
+import soot.tagkit.InnerClassTag;
 
 /**
  * ASM class source implementation.
@@ -77,17 +78,37 @@ public class AsmClassSource extends ClassSource {
       // add the outer class information, could not be called in the builder, since sc needs to be
       // resolved - before calling setOuterClass()
       if (!sc.hasOuterClass() && className.contains("$")) {
-        String outerClassName;
-        if (className.contains("$-")) {
-          /*
-           * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
-           * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
-           * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
-           * and anything before it is the outer classes name.
-           */
-          outerClassName = className.substring(0, className.indexOf("$-"));
-        } else {
-          outerClassName = className.substring(0, className.lastIndexOf('$'));
+        String outerClassName = null;
+        // Use SootClass.isInnerClass() to check if this class is a genuine inner class via
+        // its InnerClassTag. This distinguishes genuine nested classes from non-nested classes
+        // that merely contain '$' in their name (e.g., "$Gson$Types", "A$B").
+        if (sc.isInnerClass()) {
+          for (soot.tagkit.Tag tag : sc.getTags()) {
+            if (tag instanceof InnerClassTag) {
+              InnerClassTag ict = (InnerClassTag) tag;
+              String innerClassName = ict.getInnerClass();
+              if (innerClassName != null && AsmUtil.toQualifiedName(innerClassName).equals(className)
+                  && ict.getOuterClass() != null) {
+                outerClassName = AsmUtil.toQualifiedName(ict.getOuterClass());
+                break;
+              }
+            }
+          }
+        }
+        // If no matching InnerClassTag with a non-null outer class was found, fall back to the
+        // dollar-sign heuristic for legacy support.
+        if (outerClassName == null) {
+          if (className.contains("$-")) {
+            /*
+             * This is a special case for generated lambda classes of jack and jill compiler. Generated lambda classes may
+             * contain '$' which do not indicate an inner/outer class separator if the '$' occurs after a inner class with a
+             * name starting with '-'. Thus we search for '$-' and anything after it including '-' is the inner classes name
+             * and anything before it is the outer classes name.
+             */
+            outerClassName = className.substring(0, className.indexOf("$-"));
+          } else {
+            outerClassName = className.substring(0, className.lastIndexOf('$'));
+          }
         }
         sc.setOuterClass(SootResolver.v().makeClassRef(outerClassName));
       }
