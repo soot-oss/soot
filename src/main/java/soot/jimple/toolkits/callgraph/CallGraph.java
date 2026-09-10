@@ -311,6 +311,9 @@ public class CallGraph implements Iterable<Edge> {
     public Edge next() {
       Edge ret = position;
       position = position.nextBySrc();
+      if (position == ret) {
+        position = dummy;
+      }
       return ret;
     }
 
