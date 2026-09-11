@@ -53,6 +53,7 @@ import soot.util.EscapedWriter;
 import soot.util.HashChain;
 import soot.validation.BodyValidator;
 import soot.validation.CheckEscapingValidator;
+import soot.validation.CheckExitValidator;
 import soot.validation.CheckInitValidator;
 import soot.validation.CheckTypesValidator;
 import soot.validation.CheckVoidLocalesValidator;
@@ -119,7 +120,7 @@ public abstract class Body extends AbstractHost implements Serializable {
   private static class LazyValidatorsSingleton {
     static final BodyValidator[] V = new BodyValidator[] { LocalsValidator.v(), TrapsValidator.v(), UnitBoxesValidator.v(),
         UsesValidator.v(), ValueBoxesValidator.v(), CheckInitValidator.v(), CheckTypesValidator.v(),
-        CheckVoidLocalesValidator.v(), CheckEscapingValidator.v() };
+        CheckVoidLocalesValidator.v(), CheckEscapingValidator.v(), CheckExitValidator.v() };
 
     private LazyValidatorsSingleton() {
     }

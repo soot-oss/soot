@@ -22,10 +22,22 @@
 
 package soot.toDex;
 
+import com.android.tools.smali.dexlib2.Opcode;
 import com.android.tools.smali.dexlib2.Opcodes;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation;
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction31c;
 import com.android.tools.smali.dexlib2.iface.ClassDef;
+import com.android.tools.smali.dexlib2.iface.Method;
+import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.reference.StringReference;
+import com.android.tools.smali.dexlib2.writer.io.DeferredOutputStream;
+import com.android.tools.smali.dexlib2.writer.io.DeferredOutputStreamFactory;
 import com.android.tools.smali.dexlib2.writer.io.FileDataStore;
+import com.android.tools.smali.dexlib2.writer.io.MemoryDeferredOutputStream;
 import com.android.tools.smali.dexlib2.writer.pool.DexPool;
+import com.android.tools.smali.dexlib2.writer.pool.StringPool;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,8 +47,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import soot.asm.AsmJava9ClassProvider;
 
 /**
  * @author Manuel Benz created on 26.09.17
@@ -123,9 +133,48 @@ public class MultiDexBuilder {
       File file = new File(folder, "classes" + (count == 0 ? "" : count + 1) + ".dex");
       result.add(file);
       FileDataStore fds = new FileDataStore(file);
-      dexPool.writeTo(fds);
+      dexPool.writeTo(fds, new DeferredOutputStreamFactory() {
+        boolean first = true;
+
+        @Override
+        public DeferredOutputStream makeDeferredOutputStream() {
+          if (first) {
+            fixJumboStringInstructions();
+            first = false;
+          }
+          return new MemoryDeferredOutputStream(16 * 1024);
+        }
+      });
       fds.close();
     }
     return result;
+  }
+
+  /**
+   * Fixes Jumbo String instructions. While dexlib can also fix them, they encounter a problem due to the immutability. Thus,
+   * we fix it here.
+   */
+  private void fixJumboStringInstructions() {
+    StringPool stringSection = curPool.stringSection;
+    for (ClassDef clz : curPool.classSection.getSortedClasses()) {
+      for (Method m : clz.getMethods()) {
+
+        MutableMethodImplementation t = (MutableMethodImplementation) m.getImplementation();
+        if (t == null) {
+          continue;
+        }
+        List<BuilderInstruction> insns = t.getInstructions();
+        for (int i = 0; i < insns.size(); i++) {
+          BuilderInstruction insn = insns.get(i);
+          if (insn.getOpcode() == Opcode.CONST_STRING) {
+            if (stringSection.getItemIndex((StringReference) ((ReferenceInstruction) insn).getReference()) >= 65536) {
+              // Fix String jumbo instructions.
+              t.replaceInstruction(i, new BuilderInstruction31c(Opcode.CONST_STRING_JUMBO,
+                  ((OneRegisterInstruction) insn).getRegisterA(), ((ReferenceInstruction) insn).getReference()));
+            }
+          }
+        }
+      }
+    }
   }
 }

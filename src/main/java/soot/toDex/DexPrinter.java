@@ -45,10 +45,8 @@ import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
 import com.android.tools.smali.dexlib2.iface.value.EncodedValue;
 import com.android.tools.smali.dexlib2.immutable.ImmutableAnnotation;
 import com.android.tools.smali.dexlib2.immutable.ImmutableAnnotationElement;
-import com.android.tools.smali.dexlib2.immutable.ImmutableClassDef;
 import com.android.tools.smali.dexlib2.immutable.ImmutableExceptionHandler;
 import com.android.tools.smali.dexlib2.immutable.ImmutableField;
-import com.android.tools.smali.dexlib2.immutable.ImmutableMethod;
 import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter;
 import com.android.tools.smali.dexlib2.immutable.reference.ImmutableFieldReference;
 import com.android.tools.smali.dexlib2.immutable.reference.ImmutableMethodReference;
@@ -224,7 +222,8 @@ public class DexPrinter {
    * @return The new {@link MultiDexBuilder}
    */
   protected MultiDexBuilder createDexBuilder() {
-    // we have to create a dex file with the minimum sdk level set. If we build with the target sdk version,
+    // we have to create a dex file with the minimum sdk level set. If we build with
+    // the target sdk version,
     // we break the backwards compatibility of the app.
     Scene.AndroidVersionInfo androidSDKVersionInfo = Scene.v().getAndroidSDKVersionInfo();
 
@@ -662,7 +661,7 @@ public class DexPrinter {
 
     Collection<Method> methods = toMethods(c);
 
-    ClassDef classDef = new ImmutableClassDef(classType, accessFlags, superClass, interfaces, sourceFile,
+    ClassDef classDef = new MutableClassDef(classType, accessFlags, superClass, interfaces, sourceFile,
         buildClassAnnotations(c), fields, methods);
     addClassDefinition(classDef);
   }
@@ -1109,7 +1108,7 @@ public class DexPrinter {
 
       String returnType = SootToDexUtils.getDexTypeDescriptor(sm.getReturnType());
 
-      ImmutableMethod meth = new ImmutableMethod(classType, sm.getName(), parameters, returnType,
+      MutableMethod meth = new MutableMethod(classType, sm.getName(), parameters, returnType,
           SootToDexUtils.getDexAccessFlags(sm), buildMethodAnnotations(sm), null, impl);
       methods.add(meth);
     }
@@ -1389,8 +1388,10 @@ public class DexPrinter {
             int distance = Math.abs(targetOffset - instructionsToOffsets.get(j));
 
             if (distance <= offsetInsn.getMaxJumpOffset()) {
-              // Calculate how much the offset can change when CONST_STRING (4 byte) instructions are later converted to
-              // CONST_STRING_JUMBO instructions (6 byte). This can happen if the app has more than 2^16 strings
+              // Calculate how much the offset can change when CONST_STRING (4 byte)
+              // instructions are later converted to
+              // CONST_STRING_JUMBO instructions (6 byte). This can happen if the app has more
+              // than 2^16 strings
               Integer targetIndex = labelsToIndex.get(boj.getTarget());
               if (targetIndex != null) {
                 int start = Math.min(targetIndex, j);
@@ -1403,7 +1404,8 @@ public class DexPrinter {
                  * Because we only spend the effort to count the number of CONST_STRING instructions if there is a real
                  * chance that it changes the distance to overflow the allowed maximum.
                  */
-                int theoreticalMaximumIncrease = (end - start) * 2; // maximum increase = number of instructions * 2 byte
+                int theoreticalMaximumIncrease = (end - start) * 2; // maximum increase = number of
+                // instructions * 2 byte
                 if (distance + theoreticalMaximumIncrease > offsetInsn.getMaxJumpOffset()) {
                   //
                   int countConstString = 0;
@@ -1577,7 +1579,8 @@ public class DexPrinter {
   }
 
   protected void toTries(Collection<Trap> traps, MethodImplementationBuilder builder, LabelAssigner labelAssigner) {
-    // Original code: assume that the mapping startCodeAddress -> TryItem is enough for
+    // Original code: assume that the mapping startCodeAddress -> TryItem is enough
+    // for
     // a "code range", ignore different end Units / try lengths
     // That's definitely not enough since we can have two handlers H1, H2 with
     // H1:240-322, H2:242-322. There is no valid ordering for such
@@ -1585,7 +1588,8 @@ public class DexPrinter {
     // in dex. Current solution: If there is already a trap T' for a subrange of the
     // current trap T, merge T and T' on the fully range of T. This is not a 100%
     // correct since we extend traps over the requested range, but it's better than
-    // the previous code that produced APKs which failed Dalvik's bytecode verification.
+    // the previous code that produced APKs which failed Dalvik's bytecode
+    // verification.
     // (Steven Arzt, 09.08.2013)
     // There are cases in which we need to split traps, e.g. in cases like
     // ( (t1) ... (t2) )<big catch all around it> where the all three handlers do

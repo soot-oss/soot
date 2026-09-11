@@ -109,7 +109,7 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
         if (rhs instanceof NewExpr) {
           lv.add((NewExpr) rhs);
         } else if (rhs instanceof Local) {
-          lv.addAll(in.get((Local) rhs));
+          lv.addAll(in.get(rhs));
         } else {
           lv.add(UNKNOWN);
         }
