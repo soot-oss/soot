@@ -1336,6 +1336,11 @@ public class Options extends OptionsBase {
             )
                 write_local_annotations = true;
             else if (false
+                    || option.equals("save-offset")
+                    || option.equals("save-output-bytecode-offset")
+            )
+                save_output_bytecode_offset = true;
+            else if (false
                 || option.equals("annot-purity")
             ) {
                 pushOption("enabled:true");
@@ -1770,6 +1775,10 @@ public class Options extends OptionsBase {
     private boolean write_local_annotations = false;
     public void set_write_local_annotations(boolean setting) { write_local_annotations = setting; }
 
+    public boolean save_output_bytecode_offset() { return save_output_bytecode_offset; }
+    private boolean save_output_bytecode_offset = false;
+    public void set_save_output_bytecode_offset(boolean setting) { save_output_bytecode_offset = setting; }
+
     public boolean time() { return time; }
     private boolean time = false;
     public void set_time(boolean setting) { time = setting; }
@@ -1920,6 +1929,7 @@ public class Options extends OptionsBase {
                 + padOpt("-keep-bytecode-offset, -keep-offset", "Attach bytecode offset to IR")
                 + "\nOutput Attribute Options:\n"
                 + padOpt("-write-local-annotations", "Write out debug annotations on local names")
+                + padOpt("-save-offset, -save-output-bytecode-offset", "Attach the bytecode offset to IR after writing out")
                 + "\nAnnotation Options:\n"
                 + padOpt("-annot-purity", "Emit purity attributes")
                 + padOpt("-annot-nullpointer", "Emit null pointer attributes")

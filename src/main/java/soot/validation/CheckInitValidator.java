@@ -74,6 +74,6 @@ public enum CheckInitValidator implements BodyValidator {
 
   @Override
   public boolean isBasicValidator() {
-    return false;
+    return true;
   }
 }

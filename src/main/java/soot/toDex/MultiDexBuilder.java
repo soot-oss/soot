@@ -42,11 +42,20 @@ import com.android.tools.smali.dexlib2.writer.pool.StringPool;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.options.Options;
+import soot.tagkit.BytecodeOffsetTag;
 
 /**
  * @author Manuel Benz created on 26.09.17
@@ -57,6 +66,8 @@ public class MultiDexBuilder {
   protected final Opcodes opcodes;
   protected final List<DexPool> dexPools = new LinkedList<>();
   protected DexPool curPool;
+
+  private final boolean addBytecodeOffsets = Options.v().save_output_bytecode_offset();
 
   public MultiDexBuilder(Opcodes opcodes) {
     this.opcodes = opcodes;
@@ -164,13 +175,57 @@ public class MultiDexBuilder {
           continue;
         }
         List<BuilderInstruction> insns = t.getInstructions();
+        Map<Integer, Unit> previousBytecodeOffsetToStmt = null;
+        if (addBytecodeOffsets) {
+          SootClass sc
+              = Scene.v().getSootClassUnsafe(clz.getType().substring(1, clz.getType().length() - 1).replace('/', '.'));
+          if (sc != null) {
+            nextMethod: for (SootMethod sm : sc.getMethods()) {
+              if (sm.hasActiveBody() && sm.getName().equals(m.getName())
+                  && m.getParameterTypes().size() == sm.getParameterTypes().size()) {
+                String returnType = SootToDexUtils.getDexTypeDescriptor(sm.getReturnType());
+                if (returnType.equals(m.getReturnType())) {
+                  for (int i = 0; i < m.getParameters().size(); i++) {
+                    if (!m.getParameters().get(i).getType()
+                        .equals(SootToDexUtils.getDexTypeDescriptor(sm.getParameterType(i)))) {
+                      continue nextMethod;
+                    }
+                  }
+                  // this is the correct method.
+                  previousBytecodeOffsetToStmt = new HashMap<>();
+                  for (Unit u : sm.getActiveBody().getUnits()) {
+                    BytecodeOffsetTag bo = (BytecodeOffsetTag) u.getTag(BytecodeOffsetTag.NAME);
+                    if (bo != null) {
+                      previousBytecodeOffsetToStmt.put(bo.getBytecodeOffset(), u);
+                    }
+                  }
+                  break nextMethod;
+                }
+              }
+            }
+          }
+          if (previousBytecodeOffsetToStmt == null) {
+            throw new IllegalStateException("Method " + m.getName() + " not found in " + sc.getName());
+          }
+        }
+        int originalOffset = 0, realOffset = 0;
         for (int i = 0; i < insns.size(); i++) {
           BuilderInstruction insn = insns.get(i);
+          realOffset = insn.getLocation().getCodeAddress();
+          if (addBytecodeOffsets && realOffset != originalOffset) {
+            // We patched something
+            Unit stmt = previousBytecodeOffsetToStmt.get(originalOffset);
+            if (stmt != null) {
+              BytecodeOffsetTag.set(stmt, realOffset);
+            }
+          }
+          originalOffset += insn.getCodeUnits();
           if (insn.getOpcode() == Opcode.CONST_STRING) {
             if (stringSection.getItemIndex((StringReference) ((ReferenceInstruction) insn).getReference()) >= 65536) {
               // Fix String jumbo instructions.
-              t.replaceInstruction(i, new BuilderInstruction31c(Opcode.CONST_STRING_JUMBO,
-                  ((OneRegisterInstruction) insn).getRegisterA(), ((ReferenceInstruction) insn).getReference()));
+              BuilderInstruction31c newInsn = new BuilderInstruction31c(Opcode.CONST_STRING_JUMBO,
+                  ((OneRegisterInstruction) insn).getRegisterA(), ((ReferenceInstruction) insn).getReference());
+              t.replaceInstruction(i, newInsn);
             }
           }
         }

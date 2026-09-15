@@ -34,7 +34,7 @@ public class BytecodeOffsetTag implements Tag {
   /**
    * The index of the last byte-code instruction.
    */
-  protected final int offset;
+  protected int offset;
 
   /**
    * Constructs a tag from the index offset.
@@ -60,6 +60,13 @@ public class BytecodeOffsetTag implements Tag {
    */
   @Override
   public String toString() {
-    return Integer.toString(offset);
+    return String.valueOf(offset);
+  }
+
+  public static void set(Host host, int offset) {
+    // we cannot reuse an existing tag due to the offset being final
+    BytecodeOffsetTag bt = (BytecodeOffsetTag) host.getOrComputeTag(NAME, () -> new BytecodeOffsetTag(offset));
+    bt.offset = offset;
+
   }
 }

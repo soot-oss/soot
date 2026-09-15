@@ -158,7 +158,6 @@ public class JimpleLocal implements Local, ConvertToBaf {
     return userDefinedLocal;
   }
 
-  
   public static boolean isUserDefinedLocal(Local l) {
     if (l instanceof JimpleLocal) {
       return ((JimpleLocal) l).isUserDefinedLocal();

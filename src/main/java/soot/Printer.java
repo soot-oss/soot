@@ -226,7 +226,7 @@ public class Printer {
     incJimpleLnNum();
   }
 
-  private void printAnnotations(PrintWriter out, List<Tag> tags) {
+  protected void printAnnotations(PrintWriter out, List<Tag> tags) {
     for (Tag tag : tags) {
 
       if (tag instanceof InnerClassAttribute) {

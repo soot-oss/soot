@@ -107,6 +107,7 @@ public abstract class AbstractASMBackend {
   protected ClassVisitor cv;
   // A ClassLoader used by the ASM validator (if validation is enabled) to load classes from the Soot classpath
   protected ClassLoader sootClassLoader;
+  protected final boolean saveBytecodeOffsets = Options.v().save_output_bytecode_offset();
 
   /**
    * Creates a new ASM backend
@@ -758,7 +759,7 @@ public abstract class AbstractASMBackend {
     if (csuperClass != null) {
       superClass = ASMBackendUtils.slashify(csuperClass.getName());
     } else if (sc instanceof SootModuleInfo) {
-      //https://gitlab.ow2.org/asm/asm/-/blob/6a119d77037796d41e091379803eb121f13f7fca/src/org/objectweb/asm/util/CheckClassAdapter.java#L357
+      // https://gitlab.ow2.org/asm/asm/-/blob/6a119d77037796d41e091379803eb121f13f7fca/src/org/objectweb/asm/util/CheckClassAdapter.java#L357
       superClass = null;
     }
 
