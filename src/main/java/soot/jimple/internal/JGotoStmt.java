@@ -74,8 +74,6 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt {
 
   @Override
   public void setTarget(Unit target) {
-    if (target == null)
-      System.out.println();
     targetBox.setUnit(target);
   }
 

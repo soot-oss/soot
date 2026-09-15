@@ -87,9 +87,6 @@ public class JimpleLocal implements Local, ConvertToBaf {
   /** Sets the name of this object as given. */
   @Override
   public void setName(String name) {
-    if (name != null)
-      if (name.startsWith("m-1"))
-        System.out.println();
     this.name = (name == null) ? null : name.intern();
   }
 

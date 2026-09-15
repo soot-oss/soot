@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.asm.AsmUtil;
-import soot.asm.BytecodeOffsetVisitor;
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -404,10 +403,6 @@ public abstract class AbstractASMBackend {
       int access = getModifiers(sm.getModifiers(), sm);
       MethodVisitor mv = cv.visitMethod(access, sm.getName(), descBuilder.toString(), sig, exceptions);
       if (mv != null) {
-        if (saveBytecodeOffsets) {
-          mv = new BytecodeOffsetVisitor(mv);
-        }
-
         // Visit parameter annotations
         for (Tag t : sm.getTags()) {
           if (t instanceof VisibilityLocalVariableAnnotationTag) {
