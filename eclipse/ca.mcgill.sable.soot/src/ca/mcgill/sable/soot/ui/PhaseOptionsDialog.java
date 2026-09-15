@@ -2906,6 +2906,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Attribute_Optionswrite_local_annotations_widget().getAlias(), new Boolean(boolRes));
 		}
+		boolRes = getOutput_Attribute_Optionssave_output_bytecode_offset_widget().getButton().getSelection();
+		defBoolRes = false;
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Attribute_Optionssave_output_bytecode_offset_widget().getAlias(), new Boolean(boolRes));
+		}
 		boolRes = getAnnotation_Optionsannot_purity_widget().getButton().getSelection();
 		defBoolRes = false;
 
@@ -7487,6 +7493,16 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	
 	public BooleanOptionWidget getOutput_Attribute_Optionswrite_local_annotations_widget() {
 		return Output_Attribute_Optionswrite_local_annotations_widget;
+	}	
+	
+	private BooleanOptionWidget Output_Attribute_Optionssave_output_bytecode_offset_widget;
+	
+	private void setOutput_Attribute_Optionssave_output_bytecode_offset_widget(BooleanOptionWidget widget) {
+		Output_Attribute_Optionssave_output_bytecode_offset_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Attribute_Optionssave_output_bytecode_offset_widget() {
+		return Output_Attribute_Optionssave_output_bytecode_offset_widget;
 	}	
 	
 	private BooleanOptionWidget Annotation_Optionsannot_purity_widget;
@@ -15389,6 +15405,17 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		}
 
 		setOutput_Attribute_Optionswrite_local_annotations_widget(new BooleanOptionWidget(editGroupOutput_Attribute_Options, SWT.NONE, new OptionData("Write Out Local Annotations", "", "","write-local-annotations", "\nWrite out debug tables to indicate which register maps to which \nvariable in the Jimple code.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"save-offset save-output-bytecode-offset";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		} else {
+			defaultBool = false;
+		}
+
+		setOutput_Attribute_Optionssave_output_bytecode_offset_widget(new BooleanOptionWidget(editGroupOutput_Attribute_Options, SWT.NONE, new OptionData("Output Bytecode Offset", "", "","save-offset save-output-bytecode-offset", "\nWhen this option is activated, Soot keeps track of which \nstatement corresponds to which bytecode offset when writing the \noutput. It then inserts the bytecode offset w.r.t. the output \nfile as tags to the IR", defaultBool)));
 
 
 		return editGroupOutput_Attribute_Options;

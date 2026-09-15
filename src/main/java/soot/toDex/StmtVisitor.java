@@ -81,6 +81,8 @@ import soot.jimple.StmtSwitch;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThisRef;
 import soot.jimple.ThrowStmt;
+import soot.options.Options;
+import soot.tagkit.BytecodeOffsetTag;
 import soot.toDex.instructions.AbstractPayload;
 import soot.toDex.instructions.AddressInsn;
 import soot.toDex.instructions.ArrayDataPayload;
@@ -130,6 +132,7 @@ public class StmtVisitor implements StmtSwitch {
   private List<Insn> insns;
 
   private List<AbstractPayload> payloads;
+  private final boolean addBytecodeOffsets = Options.v().save_output_bytecode_offset();
 
   // maps used to map Jimple statements to dalvik instructions
   private Map<Insn, Stmt> insnStmtMap = new HashMap<>();
@@ -328,6 +331,7 @@ public class StmtVisitor implements StmtSwitch {
 
   public List<BuilderInstruction> getRealInsns(LabelAssigner labelAssigner) {
     List<BuilderInstruction> finalInsns = new ArrayList<>(insns.size());
+    int offset = 0;
     for (Insn i : insns) {
       if (i instanceof AddressInsn) {
         continue; // skip non-insns
@@ -345,6 +349,13 @@ public class StmtVisitor implements StmtSwitch {
       if (i instanceof AbstractPayload) {
         instructionPayloadMap.put(realInsn, (AbstractPayload) i);
       }
+      if (addBytecodeOffsets) {
+        Stmt stmt = insnStmtMap.get(i);
+        if (stmt != null) {
+          BytecodeOffsetTag.set(stmt, offset);
+        }
+      }
+      offset += i.getSize();
     }
     return finalInsns;
   }

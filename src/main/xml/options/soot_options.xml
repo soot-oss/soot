@@ -6824,6 +6824,14 @@ This locking scheme aims to achieve simple fine-grained locking.
                 Write out debug tables to indicate which register maps to which variable in the Jimple code.
             </long_desc>
         </boolopt>
+        <boolopt>
+            <name>Output Bytecode Offset</name>
+            <alias>save-offset</alias>
+            <alias>save-output-bytecode-offset</alias>
+            <short_desc>Attach the bytecode offset to IR after writing out</short_desc>
+            <long_desc>When this option is activated, Soot keeps track of which statement corresponds to which bytecode offset when writing the output.
+                It then inserts the bytecode offset w.r.t. the output file as tags to the IR</long_desc>
+        </boolopt>
     </section>
 
     <section>

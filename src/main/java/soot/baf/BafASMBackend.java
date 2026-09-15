@@ -62,6 +62,7 @@ import soot.TypeSwitch;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
+import soot.asm.BytecodeOffsetVisitor;
 import soot.baf.internal.BafLocal;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
@@ -79,6 +80,7 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
 import soot.options.Options;
+import soot.tagkit.BytecodeOffsetTag;
 import soot.tagkit.LineNumberTag;
 import soot.util.Chain;
 
@@ -313,6 +315,11 @@ public class BafASMBackend extends AbstractASMBackend {
    *          The Baf instruction to be converted into bytecode
    */
   protected void generateInstruction(final MethodVisitor mv, Inst inst) {
+    if (saveBytecodeOffsets) {
+      BytecodeOffsetVisitor bc = (BytecodeOffsetVisitor) mv;
+      int offset = bc.getCurrentOffset();
+      BytecodeOffsetTag.set(inst, offset);
+    }
     inst.apply(new InstSwitch() {
 
       @Override

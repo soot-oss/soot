@@ -53,6 +53,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import soot.asm.AsmUtil;
+import soot.asm.BytecodeOffsetVisitor;
 import soot.baf.BafBody;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -107,6 +108,7 @@ public abstract class AbstractASMBackend {
   protected ClassVisitor cv;
   // A ClassLoader used by the ASM validator (if validation is enabled) to load classes from the Soot classpath
   protected ClassLoader sootClassLoader;
+  protected final boolean saveBytecodeOffsets = Options.v().save_output_bytecode_offset();
 
   /**
    * Creates a new ASM backend
@@ -402,6 +404,10 @@ public abstract class AbstractASMBackend {
       int access = getModifiers(sm.getModifiers(), sm);
       MethodVisitor mv = cv.visitMethod(access, sm.getName(), descBuilder.toString(), sig, exceptions);
       if (mv != null) {
+        if (saveBytecodeOffsets) {
+          mv = new BytecodeOffsetVisitor(mv);
+        }
+
         // Visit parameter annotations
         for (Tag t : sm.getTags()) {
           if (t instanceof VisibilityLocalVariableAnnotationTag) {
@@ -758,7 +764,7 @@ public abstract class AbstractASMBackend {
     if (csuperClass != null) {
       superClass = ASMBackendUtils.slashify(csuperClass.getName());
     } else if (sc instanceof SootModuleInfo) {
-      //https://gitlab.ow2.org/asm/asm/-/blob/6a119d77037796d41e091379803eb121f13f7fca/src/org/objectweb/asm/util/CheckClassAdapter.java#L357
+      // https://gitlab.ow2.org/asm/asm/-/blob/6a119d77037796d41e091379803eb121f13f7fca/src/org/objectweb/asm/util/CheckClassAdapter.java#L357
       superClass = null;
     }
 
