@@ -62,7 +62,6 @@ import soot.TypeSwitch;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
-import soot.asm.BytecodeOffsetVisitor;
 import soot.baf.internal.BafLocal;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
@@ -316,9 +315,9 @@ public class BafASMBackend extends AbstractASMBackend {
    */
   protected void generateInstruction(final MethodVisitor mv, Inst inst) {
     if (saveBytecodeOffsets) {
-      BytecodeOffsetVisitor bc = (BytecodeOffsetVisitor) mv;
-      int offset = bc.getCurrentOffset();
-      BytecodeOffsetTag.set(inst, offset);
+      Label lbl = new Label();
+      mv.visitLabel(lbl);
+      BytecodeOffsetTag.set(inst, lbl.getOffset());
     }
     inst.apply(new InstSwitch() {
 
