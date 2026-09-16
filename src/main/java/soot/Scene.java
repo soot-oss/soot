@@ -92,6 +92,10 @@ public class Scene {
 
   private static final int defaultSdkVersion = 27;
   private static final Pattern arrayPattern = Pattern.compile("([^\\[\\]]*)(.*)");
+  private static final Pattern SIGNATURE_TOKEN = Pattern.compile("'[^']*'|[^\\s(),<>']+|[\\s(),<>]");
+  private static final String SIGNATURE_DELIMITERS = " \t\n\r(),<>";
+  private static final Set<String> PRIMITIVE_TYPE_NAMES =
+      Set.of("void", "boolean", "byte", "char", "short", "int", "long", "float", "double");
 
   protected final Map<String, RefType> nameToClass = new ConcurrentHashMap<String, RefType>();
 
@@ -229,7 +233,8 @@ public class Scene {
 
   /**
    * If this name is in the set of reserved names, then return a quoted version of it. Else pass it through. If the name
-   * consists of multiple parts separated by dots, the individual names are checked as well.
+   * consists of multiple parts separated by dots, the individual names are checked as well. Parts holding a full
+   * method signature (e.g. "R with(P)") are split further on signature delimiters.
    */
   public String quotedNameOf(String s) {
     // Pre-check: Is there a chance that we need to escape something?
@@ -249,22 +254,42 @@ public class Scene {
 
     StringBuilder res = new StringBuilder(s.length());
     for (String part : s.split("\\.")) {
-      int arr = part.indexOf('[');
-      String arrSuffix = "";
-      if (arr != -1) {
-        arrSuffix = part.substring(arr);
-        part = part.substring(0, arr);
-      }
       if (res.length() > 0) {
         res.append('.');
       }
-      if ((!part.isEmpty() && part.charAt(0) == '-') || reservedNames.contains(part)) {
-        res.append('\'').append(part).append('\'').append(arrSuffix);
-      } else {
-        res.append(part).append(arrSuffix);
+      List<String> tokens = new ArrayList<>();
+      Matcher matcher = SIGNATURE_TOKEN.matcher(part);
+      while (matcher.find()) {
+        tokens.add(matcher.group());
+      }
+      // Inside a signature, primitive type keywords must stay bare so the Jimple output remains parseable.
+      boolean signature = tokens.size() > 1;
+      for (String token : tokens) {
+        if (isQuoted(token) || (token.length() == 1 && SIGNATURE_DELIMITERS.indexOf(token.charAt(0)) != -1)) {
+          // Already quoted names and bare delimiters pass through.
+          res.append(token);
+          continue;
+        }
+        int arr = token.indexOf('[');
+        String arrSuffix = "";
+        if (arr != -1) {
+          arrSuffix = token.substring(arr);
+          token = token.substring(0, arr);
+        }
+        if (((!token.isEmpty() && token.charAt(0) == '-') || reservedNames.contains(token))
+            && !(signature && PRIMITIVE_TYPE_NAMES.contains(token))) {
+          res.append('\'').append(token).append('\'').append(arrSuffix);
+        } else {
+          res.append(token).append(arrSuffix);
+        }
       }
     }
     return res.toString();
+  }
+
+  private static boolean isQuoted(String token) {
+    int len = token.length();
+    return len > 1 && token.charAt(0) == '\'' && token.charAt(len - 1) == '\'';
   }
 
   /**
