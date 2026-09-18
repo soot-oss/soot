@@ -62,6 +62,9 @@ public class AbstractHost implements Host {
    */
   @Override
   public void removeTag(String aName) {
+    if (mTagList == null) {
+      return;
+    }
     Iterator<Tag> it = mTagList.iterator();
     while (it.hasNext()) {
       Tag tag = it.next();
@@ -182,7 +185,7 @@ public class AbstractHost implements Host {
   @Override
   public Tag getOrComputeTag(String aName, Supplier<Tag> supplier) {
     List<Tag> l = getOrCreateTagList();
-    
+
     for (Tag p : l) {
       if (p != null && p.getName().equals(aName)) {
         return p;

@@ -79,6 +79,7 @@ import soot.jimple.ParameterRef;
 import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
 import soot.options.Options;
+import soot.tagkit.BytecodeOffsetTag;
 import soot.tagkit.LineNumberTag;
 import soot.util.Chain;
 
@@ -313,6 +314,11 @@ public class BafASMBackend extends AbstractASMBackend {
    *          The Baf instruction to be converted into bytecode
    */
   protected void generateInstruction(final MethodVisitor mv, Inst inst) {
+    if (saveBytecodeOffsets) {
+      Label lbl = new Label();
+      mv.visitLabel(lbl);
+      BytecodeOffsetTag.set(inst, lbl.getOffset());
+    }
     inst.apply(new InstSwitch() {
 
       @Override
