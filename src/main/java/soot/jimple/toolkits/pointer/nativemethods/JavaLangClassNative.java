@@ -125,6 +125,10 @@ public class JavaLangClassNative extends NativeMethodClass {
       java_lang_Class_getDeclaredConstructors0(method, thisVar, returnVar, params);
       return;
 
+    } else if (subSignature.equals("java.lang.reflect.Field[] getDeclaredFields0(boolean)")) {
+      java_lang_Class_getDeclaredFields0(method, thisVar, returnVar, params);
+      return;
+
     } else {
       defaultMethod(method, thisVar, returnVar, params);
       return;
@@ -400,6 +404,20 @@ public class JavaLangClassNative extends NativeMethodClass {
     AbstractObject cons = Environment.v().getConstructorObject();
     helper.assignObjectTo(returnVar, array);
     helper.assignObjectTo(helper.arrayElementOf(returnVar), cons);
+  }
+
+  /**
+   * Returns an array of Field objects reflecting all the fields declared by the class or interface represented by this
+   * Class object.
+   *
+   * private native java.lang.reflect.Field[] getDeclaredFields0(boolean);
+   */
+  public void java_lang_Class_getDeclaredFields0(SootMethod method, ReferenceVariable thisVar,
+      ReferenceVariable returnVar, ReferenceVariable params[]) {
+    AbstractObject array = Environment.v().getArrayFields();
+    AbstractObject field = Environment.v().getFieldObject();
+    helper.assignObjectTo(returnVar, array);
+    helper.assignObjectTo(helper.arrayElementOf(returnVar), field);
   }
 
   /**
