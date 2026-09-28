@@ -41,6 +41,7 @@ import soot.util.backend.SootASMClassWriterTest;
     CompareArithmeticInstructionsTest.class, CompareInstructionsTest.class, ConstantPoolTest.class,
     ControlStructuresTest.class, DupsTest.class, EnumTest.class, ExceptionTest.class, ExtendedArithmeticLibTest.class,
     InnerClass2Test.class, InnerClassTest.class, InstanceOfCastsTest.class, InterfaceTest.class,
+    InterfaceStaticCallTest.class,
     // LambdaTest.class,
     LineNumbersTest.class, LogicalOperationsTest.class, MethodExampleTest.class, ModifiersTest.class, MonitorTest.class,
     NullTypesTest.class, OuterClassTest.class, ReturnsTest.class, StoresTest.class, TryCatchTest.class,
