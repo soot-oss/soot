@@ -1,6 +1,6 @@
 package soot.jimple.internal;
 
-import soot.BooleanType;
+import java.util.List;
 
 /*-
  * #%L
@@ -24,8 +24,7 @@ import soot.BooleanType;
  * #L%
  */
 
-import java.util.List;
-
+import soot.BooleanType;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
@@ -72,6 +71,16 @@ public class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr {
     // mirroring how JIfStmt converts the same condition: push 1 when equal, push 0 otherwise.
     Value op1 = getOp1();
     Value op2 = getOp2();
+
+    // Both sides are the same trivial constant (null == null, 0 == 0): fold to true directly
+    // instead of emitting a branch on a materialized constant.
+    if ((op1 instanceof NullConstant && op2 instanceof NullConstant)
+        || (isZero(op1) && isZero(op2))) {
+      Unit pushOne = Baf.v().newPushInst(IntConstant.v(1));
+      pushOne.addAllTagsOf(context.getCurrentUnit());
+      out.add(pushOne);
+      return;
+    }
 
     Unit pushZero = Baf.v().newPushInst(IntConstant.v(0));
     Unit end = Baf.v().newNopInst();

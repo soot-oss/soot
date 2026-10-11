@@ -153,4 +153,32 @@ public class JEqExprBafTest {
     assertWellFormed(bafBody);
     Assert.assertTrue("Expected an IfNe branch", contains(bafBody, IfNeInst.class));
   }
+
+  @Test
+  public void bothNullComparisonFoldsToTrue() {
+    Jimple jimp = Jimple.v();
+    Local result = jimp.newLocal("b", BooleanType.v());
+
+    BafBody bafBody =
+        convertAssignToBaf(result, jimp.newEqExpr(NullConstant.v(), NullConstant.v()));
+
+    assertWellFormed(bafBody);
+    Assert.assertFalse("Expected no branch for null == null", contains(bafBody, IfNonNullInst.class));
+    Assert.assertTrue("Expected pushed boolean constants", contains(bafBody, PushInst.class));
+    Assert.assertTrue("Expected the assigned value to be stored", contains(bafBody, StoreInst.class));
+  }
+
+  @Test
+  public void bothZeroComparisonFoldsToTrue() {
+    Jimple jimp = Jimple.v();
+    Local result = jimp.newLocal("b", BooleanType.v());
+
+    BafBody bafBody =
+        convertAssignToBaf(result, jimp.newEqExpr(IntConstant.v(0), IntConstant.v(0)));
+
+    assertWellFormed(bafBody);
+    Assert.assertFalse("Expected no branch for 0 == 0", contains(bafBody, IfNeInst.class));
+    Assert.assertTrue("Expected pushed boolean constants", contains(bafBody, PushInst.class));
+    Assert.assertTrue("Expected the assigned value to be stored", contains(bafBody, StoreInst.class));
+  }
 }
