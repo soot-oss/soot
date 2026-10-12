@@ -454,7 +454,7 @@
         <dependency>
             <groupId>com.android.tools.smali</groupId>
             <artifactId>smali-dexlib2</artifactId>
-            <version>3.0.9</version>
+            <version>3.0.10</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
