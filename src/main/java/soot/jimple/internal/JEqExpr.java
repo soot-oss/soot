@@ -1,6 +1,6 @@
 package soot.jimple.internal;
 
-import soot.BooleanType;
+import java.util.List;
 
 /*-
  * #%L
@@ -24,12 +24,18 @@ import soot.BooleanType;
  * #L%
  */
 
+import soot.BooleanType;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.baf.Baf;
+import soot.jimple.ConvertToBaf;
 import soot.jimple.EqExpr;
 import soot.jimple.ExprSwitch;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.NullConstant;
 import soot.util.Switch;
 
 public class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr {
@@ -57,6 +63,52 @@ public class JEqExpr extends AbstractJimpleIntBinopExpr implements EqExpr {
   protected Unit makeBafInst(Type opType) {
     throw new RuntimeException("unsupported conversion: " + this);
     // return Baf.v().newEqInst(this.getOp1().getType()); }
+  }
+
+  @Override
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    // BAF has no value-producing comparison, so materialize the boolean result with branches,
+    // mirroring how JIfStmt converts the same condition: push 1 when equal, push 0 otherwise.
+    Value op1 = getOp1();
+    Value op2 = getOp2();
+
+    // Both sides are the same trivial constant (null == null, 0 == 0): fold to true directly
+    // instead of emitting a branch on a materialized constant.
+    if ((op1 instanceof NullConstant && op2 instanceof NullConstant)
+        || (isZero(op1) && isZero(op2))) {
+      Unit pushOne = Baf.v().newPushInst(IntConstant.v(1));
+      pushOne.addAllTagsOf(context.getCurrentUnit());
+      out.add(pushOne);
+      return;
+    }
+
+    Unit pushZero = Baf.v().newPushInst(IntConstant.v(0));
+    Unit end = Baf.v().newNopInst();
+    Unit jumpToFalse;
+    if (op2 instanceof NullConstant || op1 instanceof NullConstant) {
+      Value ref = (op2 instanceof NullConstant) ? op1 : op2;
+      ((ConvertToBaf) ref).convertToBaf(context, out);
+      jumpToFalse = Baf.v().newIfNonNullInst(pushZero);
+    } else if (isZero(op2) || isZero(op1)) {
+      Value other = isZero(op2) ? op1 : op2;
+      ((ConvertToBaf) other).convertToBaf(context, out);
+      jumpToFalse = Baf.v().newIfNeInst(pushZero);
+    } else {
+      ((ConvertToBaf) op1).convertToBaf(context, out);
+      ((ConvertToBaf) op2).convertToBaf(context, out);
+      jumpToFalse = Baf.v().newIfCmpNeInst(op1.getType(), pushZero);
+    }
+
+    Unit pushOne = Baf.v().newPushInst(IntConstant.v(1));
+    Unit jumpToEnd = Baf.v().newGotoInst(end);
+    for (Unit u : new Unit[] { jumpToFalse, pushOne, jumpToEnd, pushZero, end }) {
+      u.addAllTagsOf(context.getCurrentUnit());
+      out.add(u);
+    }
+  }
+
+  private static boolean isZero(Value v) {
+    return v instanceof IntConstant && ((IntConstant) v).value == 0;
   }
 
   @Override
