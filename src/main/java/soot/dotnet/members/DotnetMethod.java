@@ -207,6 +207,9 @@ public class DotnetMethod extends AbstractDotnetMember {
           = assemblyFile.getMethodBody(declaringClass.getName(), m.getName(), protoMethod.getPeToken());
 
       Body b = this.jimplifyMethodBody(ilFunctionMsg);
+      if (Options.v().validate()) {
+    	b.validate();
+      }
       m.setActiveBody(b);
 
       return m.getActiveBody();
