@@ -22,6 +22,7 @@ package soot.dotnet.instructions;
  * #L%
  */
 
+import soot.ArrayType;
 import soot.Body;
 import soot.FastHierarchy;
 import soot.IntType;
@@ -88,6 +89,10 @@ public class CilStLocInstruction extends AbstractCilnstruction {
         && !variable.getType().toString().equals(DotNetBasicTypes.SYSTEM_OBJECT)) {
       // for validation, because array = obj, where array typeof byte[] and obj typeof System.Object
       value = Jimple.v().newCastExpr(value, variable.getType());
+    } else if (value instanceof Local && value.getType() instanceof ArrayType
+    	&& !(variable.getType() instanceof ArrayType)) {
+      // validate assignments such as var = newarray, where var is initially a type like System.Object
+      variable.setType(value.getType());
     }
 
     final FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
