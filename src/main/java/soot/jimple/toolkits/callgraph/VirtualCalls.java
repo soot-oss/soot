@@ -99,7 +99,7 @@ public class VirtualCalls {
 
   public SootMethod resolveNonSpecial(RefType t, SootMethodRef callee, boolean appOnly) {
     SootClass cls = t.getSootClass();
-    if (appOnly && cls.isLibraryClass()) {
+    if (appOnly && cls.isLibraryClass() && !Scene.v().hasLibraryMethodFilter()) {
       return null;
     } else if (!cls.isInterface()) {
       return Scene.v().getOrMakeFastHierarchy().resolveConcreteDispatch(cls, callee);

@@ -134,7 +134,7 @@ public class GeomEvaluator {
 
     // We first count the LOC
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (!sm.isConcrete()) {
+      if (!sm.isConcrete() || !Scene.v().isMethodAnalysisAllowed(sm)) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -347,7 +347,7 @@ public class GeomEvaluator {
     Value[] values = new Value[2];
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete() || !Scene.v().isMethodAnalysisAllowed(sm)) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -443,7 +443,7 @@ public class GeomEvaluator {
   public void checkCastsSafety() {
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete() || !Scene.v().isMethodAnalysisAllowed(sm)) {
         continue;
       }
       if (!sm.hasActiveBody()) {
@@ -530,7 +530,7 @@ public class GeomEvaluator {
     Date begin = new Date();
 
     for (SootMethod sm : ptsProvider.getAllReachableMethods()) {
-      if (sm.isJavaLibraryMethod() || !sm.isConcrete()) {
+      if (sm.isJavaLibraryMethod() || !sm.isConcrete() || !Scene.v().isMethodAnalysisAllowed(sm)) {
         continue;
       }
       if (!sm.hasActiveBody()) {

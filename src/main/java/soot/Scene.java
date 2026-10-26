@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -89,6 +90,49 @@ import soot.util.StringNumberer;
  */
 public class Scene {
   private static final Logger logger = LoggerFactory.getLogger(Scene.class);
+
+  private Predicate<SootMethod> libraryMethodFilter;
+
+  /**
+   * Sets an optional filter for deciding which library methods may have their bodies analyzed. Application methods
+   * remain eligible regardless of the filter. A configured filter replaces the class-level {@code apponly} restriction
+   * during call graph construction: resolved library targets are retained, but their implementations are traversed only
+   * if accepted. The filter is shared by call graph construction and method-level pointer constraints; it does not
+   * change class ownership.
+   *
+   * Rejecting a method prunes its traversal, including implicit edges normally discovered while processing that method.
+   * Retaining an incoming target does not recover its hidden behavior. This policy does not restrict body access by
+   * consumers that do not consult it, such as reflection-log source disambiguation and independent analyses.
+   *
+   * Configure the filter before analysis and keep its decisions stable throughout that analysis. Changing it does not
+   * rebuild existing graphs or constraints. Passing {@code null} removes the additional restriction and restores the
+   * existing analysis options for subsequent analysis.
+   * A new Scene created by {@link G#reset()} has no filter.
+   */
+  public void setLibraryMethodFilter(Predicate<SootMethod> filter) {
+    libraryMethodFilter = filter;
+  }
+
+  /** Returns whether an explicit library method filter is configured. */
+  public boolean hasLibraryMethodFilter() {
+    return libraryMethodFilter != null;
+  }
+
+  /**
+   * Returns whether the library method policy permits analysis of this method. Application methods are always
+   * accepted; library methods are accepted when no filter is configured or the filter accepts them. Callers still
+   * apply other analysis options, such as {@code apponly} when no filter is configured, and check that a method can
+   * have an analyzable implementation. An accepted method must still become reachable to participate in analysis.
+   */
+  public boolean isMethodAnalysisAllowed(SootMethod method) {
+    if (libraryMethodFilter == null) {
+      return true;
+    }
+    if (method.getDeclaringClass().isApplicationClass()) {
+      return true;
+    }
+    return libraryMethodFilter.test(method);
+  }
 
   private static final int defaultSdkVersion = 27;
   private static final Pattern arrayPattern = Pattern.compile("([^\\[\\]]*)(.*)");
