@@ -290,12 +290,7 @@ public class LibraryMethodSelectionTest {
         Modifier.PUBLIC | (isStatic ? Modifier.STATIC : 0));
     owner.addMethod(result);
     result.setSource((method, phase) -> {
-      Body body = Jimple.v().newBody(method);
-      if (!method.isStatic()) {
-        Local receiver = Jimple.v().newLocal("this", owner.getType());
-        body.getLocals().add(receiver);
-        body.getUnits().add(Jimple.v().newIdentityStmt(receiver, Jimple.v().newThisRef(owner.getType())));
-      }
+      Body body = newMethodBody(method);
       body.getUnits().add(Jimple.v().newReturnVoidStmt());
       return body;
     });
@@ -304,13 +299,7 @@ public class LibraryMethodSelectionTest {
 
   private Local setAllocatingBody(SootMethod method, SootMethod callback) {
     method.setReturnType(api.getType());
-    Body body = Jimple.v().newBody(method);
-    if (!method.isStatic()) {
-      Local receiver = Jimple.v().newLocal("this", method.getDeclaringClass().getType());
-      body.getLocals().add(receiver);
-      body.getUnits().add(Jimple.v().newIdentityStmt(receiver,
-          Jimple.v().newThisRef(method.getDeclaringClass().getType())));
-    }
+    Body body = newMethodBody(method);
     Local allocation = addLocal(body, "created");
     body.getUnits().add(Jimple.v().newAssignStmt(allocation, Jimple.v().newNewExpr(api.getType())));
     if (callback != null) {
@@ -319,6 +308,17 @@ public class LibraryMethodSelectionTest {
     body.getUnits().add(Jimple.v().newReturnStmt(allocation));
     method.setSource((target, phase) -> body);
     return allocation;
+  }
+
+  private Body newMethodBody(SootMethod method) {
+    Body body = Jimple.v().newBody(method);
+    if (!method.isStatic()) {
+      Local receiver = Jimple.v().newLocal("this", method.getDeclaringClass().getType());
+      body.getLocals().add(receiver);
+      body.getUnits().add(Jimple.v().newIdentityStmt(receiver,
+          Jimple.v().newThisRef(method.getDeclaringClass().getType())));
+    }
+    return body;
   }
 
   private Local addLocal(Body body, String name) {

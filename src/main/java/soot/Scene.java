@@ -102,6 +102,17 @@ public class Scene {
    * method bodies used by SPARK pointer constraints, pre-jimplification, evaluation, or other analyses. A selected
    * method must still become reachable and have an analyzable implementation for its body to be processed.
    *
+   * Each call replaces the previously configured filter. Combine multiple selections with
+   * {@link Predicate#or(Predicate)} before setting the filter.
+   *
+   * For example, after loading the model methods into the current Scene, configure SPARK before starting analysis:
+   * <pre>{@code
+   * Set<SootMethod> models = Set.copyOf(modelMethods);
+   * Options.v().setPhaseOption("cg.spark", "enabled:true");
+   * Options.v().setPhaseOption("cg.spark", "apponly:true");
+   * Scene.v().setLibraryMethodFilter(models::contains);
+   * }</pre>
+   *
    * Configure the filter before analysis and keep its decisions stable throughout that analysis. Changing it does not
    * rebuild existing graphs or constraints. Passing {@code null} removes the additional library permissions and restores the
    * existing call graph restrictions for subsequent analysis.
