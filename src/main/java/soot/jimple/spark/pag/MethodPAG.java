@@ -181,8 +181,10 @@ public final class MethodPAG {
       if (pag().getOpts().simulate_natives()) {
         buildNative();
       }
-    } else if (method.isConcrete() && Scene.v().isMethodAnalysisAllowed(method)) {
-      buildNormal();
+    } else {
+      if (method.isConcrete() && !method.isPhantom()) {
+        buildNormal();
+      }
     }
     addMiscEdges();
   }

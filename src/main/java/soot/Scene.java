@@ -94,19 +94,17 @@ public class Scene {
   private Predicate<SootMethod> libraryMethodFilter;
 
   /**
-   * Sets an optional filter for deciding which library methods may have their bodies analyzed. Application methods
-   * remain eligible regardless of the filter. A configured filter replaces the class-level {@code apponly} restriction
-   * during call graph construction: resolved library targets are retained, but their implementations are traversed only
-   * if accepted. The filter is shared by call graph construction and method-level pointer constraints; it does not
-   * change class ownership.
+   * Sets an optional filter selecting library methods that may be processed despite an {@code apponly} call graph
+   * restriction. Selected methods retain their library ownership. When {@code apponly} is disabled, the existing call
+   * graph behavior is unchanged and this filter does not restrict library methods.
    *
-   * Rejecting a method prunes its traversal, including implicit edges normally discovered while processing that method.
-   * Retaining an incoming target does not recover its hidden behavior. This policy does not restrict body access by
-   * consumers that do not consult it, such as reflection-log source disambiguation and independent analyses.
+   * This selection adds exceptions to call graph restrictions; it does not change entry point selection or restrict
+   * method bodies used by SPARK pointer constraints, pre-jimplification, evaluation, or other analyses. A selected
+   * method must still become reachable and have an analyzable implementation for its body to be processed.
    *
    * Configure the filter before analysis and keep its decisions stable throughout that analysis. Changing it does not
-   * rebuild existing graphs or constraints. Passing {@code null} removes the additional restriction and restores the
-   * existing analysis options for subsequent analysis.
+   * rebuild existing graphs or constraints. Passing {@code null} removes the additional library permissions and restores the
+   * existing call graph restrictions for subsequent analysis.
    * A new Scene created by {@link G#reset()} has no filter.
    */
   public void setLibraryMethodFilter(Predicate<SootMethod> filter) {
@@ -119,19 +117,12 @@ public class Scene {
   }
 
   /**
-   * Returns whether the library method policy permits analysis of this method. Application methods are always
-   * accepted; library methods are accepted when no filter is configured or the filter accepts them. Callers still
-   * apply other analysis options, such as {@code apponly} when no filter is configured, and check that a method can
-   * have an analyzable implementation. An accepted method must still become reachable to participate in analysis.
+   * Returns whether this library method is explicitly selected as an exception to an {@code apponly} restriction.
+   * Returns false for application and phantom classes, or when no filter is configured. This is an additional library
+   * permission, rather than the complete analysis decision; callers retain their existing rules for other methods.
    */
-  public boolean isMethodAnalysisAllowed(SootMethod method) {
-    if (libraryMethodFilter == null) {
-      return true;
-    }
-    if (method.getDeclaringClass().isApplicationClass()) {
-      return true;
-    }
-    return libraryMethodFilter.test(method);
+  public boolean isLibraryMethodAnalysisAllowed(SootMethod method) {
+    return libraryMethodFilter != null && method.getDeclaringClass().isLibraryClass() && libraryMethodFilter.test(method);
   }
 
   private static final int defaultSdkVersion = 27;
