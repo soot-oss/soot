@@ -1,0 +1,315 @@
+syntax = "proto3";
+
+option java_package = "soot.dotnet.proto";
+option java_outer_classname = "ProtoIlInstructions";
+option csharp_namespace = "Soot.Dotnet.Decompiler.Models.Protobuf";
+
+/*
+  Proto message for method bodies with their instructions
+ */
+
+import "AssemblyAllTypes.proto";
+
+message IlFunctionMsg {
+  IlBlockContainerMsg body = 1;
+  repeated IlVariableMsg variables = 2;
+}
+
+message IlBlockContainerMsg {
+  // IL BlockContainer
+  repeated IlBlock blocks = 1;
+}
+
+message IlBlock {
+  repeated IlInstructionMsg list_of_il_instructions = 1;
+  string block_name = 2;
+  IlInstructionMsg final_instruction = 3;
+}
+
+message IlInstructionMsg {
+  enum IlOpCode {
+    NONE_OP = 0;
+    NOP = 1;
+    CALL = 4;
+    LEAVE = 5;
+    LDSTR = 6;
+
+    STOBJ = 7;
+    LDFLDA = 8;
+    LDC_I4 = 9;
+    LDLOC = 10;
+    LDOBJ = 11;
+    STLOC = 12;
+    NEWOBJ = 13;
+    CALLVIRT = 14;
+    BINARY_NUMERIC_INSTRUCTION = 15;
+
+    BRANCH = 16;
+    COMP = 17;
+    IF_INSTRUCTION = 18;
+    
+    LDSFLDA = 19;
+    LDNULL = 20;
+    LDLEN = 21;
+    CONV = 22;
+    NEWARR = 23;
+    LDELEMA = 24;
+    CASTCLASS = 25;
+    ISINST = 26;
+    BOX = 27;
+    UNBOXANY = 28;
+    UNBOX = 29;
+
+    TRY_CATCH = 30;
+    LDLOCA = 31;
+    DEFAULT_VALUE = 32;
+    NOT = 33;
+    TRY_FINALLY = 34;
+    TRY_FAULT = 35;
+    BLOCK_CONTAINER = 36;
+    BLOCK = 37;
+    TRY_CATCH_HANDLER = 38;
+    RETHROW = 39;
+    THROW = 40;
+    
+    DEBUG_BREAK = 41;
+    CK_FINITE = 42;
+    CP_BLK = 44;
+    CP_OBJ = 45;
+    DUP = 46;
+    INIT_BLK = 47;
+    INIT_OBJ = 48;
+    LDC_I8 = 49;
+    LDC_R4 = 50;
+    LDC_R8 = 51;
+    LD_FLD = 52;
+    LD_FTN = 53;
+    LD_SFLD = 54;
+    LD_TOKEN = 55;
+    LD_VIRT_FTN = 56;
+    LOC_ALLOC = 57;
+    MK_REF_ANY = 58;
+    NO = 59;
+    READONLY = 60;
+    REF_ANY_TYPE = 61;
+    REF_ANY_VAL = 62;
+    SIZE_OF = 63;
+    ST_SFLD = 64;
+    SWITCH = 65;
+    TAIL = 66;
+    UNALIGNED = 67;
+    VOLATILE = 68;
+
+    LD_MEMBER_TOKEN = 69;
+    LD_TYPE_TOKEN = 70;
+    
+    INVALID_BRANCH = 71;
+    CALL_INDIRECT = 72;
+    MATCH_INSTRUCTION = 73;
+    LDC_DECIMAL = 74;
+    STRING_TO_INT = 75;
+    ILFUNCTION = 76;
+    ADDRESS_OF = 77;
+    
+  }
+  IlOpCode op_code = 1;
+
+  // CALL LDMEMBERTOKEN
+  MethodDefinition method = 4;
+  repeated IlInstructionMsg arguments = 5;
+  
+  // LEAVE STOBJ STLOC
+  IlInstructionMsg value_instruction = 6;
+  
+  IlFunctionMsg lambdaFunction = 86;
+
+  // LDSTR LDC_I4
+  string value_constant_string = 7;
+  int64 value_constant_int64 = 38;
+  float value_constant_float = 39;
+  double value_constant_double = 40;
+  bool value_constant_bool = 61;
+  uint64 value_constant_uint64 = 65;
+
+   IlType constant_type = 23;
+  // STOBJ LDFLDA LDOBJ
+  IlInstructionMsg target = 8;
+
+  
+  // STOBJ LDOBJ NEWARR LDELEMA CASTCLASS ISINST UNBOXANY
+  TypeDefinition type = 9;
+  
+  // LDFLDA LDMEMBERTOKEN
+  FieldDefinition field = 10;
+  
+  // LDLOC STLOC TryCatchHandler
+  IlVariableMsg variable = 11;
+  
+  // BINARY_NUMERIC_INSTRUCTION
+  enum IlBinaryNumericOperator {
+    NONE_BINARY = 0;
+    Add = 1;
+    Sub = 2;
+    Mul  = 3;
+    Div = 4;
+    Rem = 5;
+    BitAnd = 6;
+    BitOr = 7;
+    BitXor = 8;
+    ShiftLeft = 9;
+    ShiftRight = 10;
+  }
+  IlBinaryNumericOperator operator = 12;
+  // TODO may insert Result type + Underlying type
+  
+  // BINARY_NUMERIC_INSTRUCTION COMP CONV
+  enum IlSign {
+    NONE_SIGN = 0;
+    Signed = 1;
+    Unsigned = 2;
+  }
+  IlSign sign = 20;
+  IlInstructionMsg left = 14;
+  IlInstructionMsg right = 15;
+  
+  // BRANCH
+  string target_label = 18;
+  // bool triggers_finally_block = 19;
+
+  // COMP
+  enum IlComparisonKind {
+    NONE_KIND = 0;
+    Equality = 1;
+    Inequality = 2;
+    LessThan = 3;
+    LessThanOrEqual = 4;
+    GreaterThan = 5;
+    GreaterThanOrEqual = 6;
+  }
+  IlComparisonKind comparison_kind = 21;
+  
+  // IF_INSTRUCTION
+  IlInstructionMsg condition = 22;
+  IlInstructionMsg true_inst = 83;
+  IlInstructionMsg false_inst = 84;
+
+  //LDLEN LDELEMA
+  IlInstructionMsg array = 30;
+  
+  // CONV
+  enum IlConversionKind {
+    NONE_CONVERSION = 0;
+    Invalid = 1;
+    Nop = 2;
+    IntToFloat = 3;
+    FloatToInt = 4;
+    FloatPrecisionChange = 5;
+    SignExtend = 6;
+    ZeroExtend = 7;
+    Truncate = 8;
+    StopGCTracking = 9;
+    StartGCTracking = 10;
+    ObjectInterior = 11;
+  }
+  IlConversionKind conversion_kind = 25;
+  enum IlStackType {
+    NONE_STACK_TYPE = 0;
+      Unknown_STACK = 1;
+      I4_STACK = 2;
+      I_STACK = 3;
+      I8_STACK = 4;
+      F4 = 5;
+      F8 = 6;
+      O = 7;
+      Ref_STACK = 8;
+      Void = 9;
+      // value type other than the primitives above (struct, enum)
+      V = 10;
+  }
+  IlStackType input_type = 26;
+  enum IlPrimitiveType {
+    NONE_PRIMITIVE_TYPE = 0;
+    None = 1;
+    I1 = 2;
+    I2 = 3;
+    I4 = 4;
+    I8 = 5;
+    R4 = 6;
+    R8 = 7;
+    U1 = 8;
+    U2 = 9;
+    U4 = 10;
+    U8 = 11;
+    I = 12;
+    U = 13;
+    Ref = 14;
+    R = 15;
+    Unknown = 16;
+  }
+  IlPrimitiveType target_type = 28;
+  
+  // CONV CASTCLASS ISINST BOX UNBOXANY
+  IlInstructionMsg argument = 29;
+
+  // CONV LDLEN UNBOXANY
+  IlStackType result_type = 27;
+  
+  // NEWARR LDELEMA
+  repeated IlInstructionMsg indices = 31;
+  
+  // TRY
+  IlBlockContainerMsg try_block = 32;
+  repeated IlTryCatchHandlerMsg handlers = 33;
+  IlBlockContainerMsg finally_block = 34;
+  IlBlockContainerMsg fault_block = 35;
+
+  // TRYCATCHHANDLER
+  IlBlockContainerMsg body = 37;
+  
+  // SWITCH_INSTR
+  IlInstructionMsg key_instr = 41;
+  IlInstructionMsg default_inst = 42;
+  repeated IlSwitchSectionMsg switch_sections = 43;
+
+  bool check_for_overflow = 44;
+  bool is_leaving_function = 45;
+  
+}
+
+ 
+message IlVariableMsg {
+  TypeDefinition type = 1;
+  string name = 2;
+  bool has_initial_value = 3;
+  
+  enum IlVariableKind {
+    NONE = 0;
+    LOCAL = 1;
+    PINNED_LOCAL = 2;
+    PINNED_REGION_LOCAL = 3;
+    USING_LOCAL = 4;
+    FOREACH_LOCAL = 5;
+    INITIALIZER_TARGET = 6;
+    PARAMETER = 7;
+    EXCEPTION_STACK_SLOT = 8;
+    EXCEPTION_LOCAL = 9;
+    STACKSLOT = 10;
+    NAMED_ARGUMENT = 11;
+    DISPLAY_CLASS_LOCAL = 12;
+    PATTERN_LOCAL = 13;
+    DECONSTRUCTION_INIT_TEMPORARY = 14;
+  }
+  IlVariableKind variable_kind = 4;
+}
+
+message IlTryCatchHandlerMsg {
+  IlBlockContainerMsg body = 1;
+  IlVariableMsg variable = 2;
+  IlBlockContainerMsg filter = 3;
+  bool has_filter = 4;
+}
+
+message IlSwitchSectionMsg {
+  int64 label = 1;
+  IlInstructionMsg target_instr = 2;
+}

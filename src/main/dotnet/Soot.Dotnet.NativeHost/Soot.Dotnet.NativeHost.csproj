@@ -1,0 +1,162 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- Keep the build output of the managed companion out of this project: the native library is the product. -->
+    <AssemblyName>Soot.Dotnet.NativeHost</AssemblyName>
+    <RootNamespace>Soot.Dotnet.NativeHost</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <!-- Hide all the source files in VS to make the project cleaner, but keep them in the build so that
+       source changes rerun the C++ compiler. -->
+  <ItemGroup>
+    <Content Include="*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="inc/*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+    <Content Include="inc.vs/*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>false</Visible>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Overridable so that Maven can stage the library directly in the wrapper directory. -->
+    <NativeBinDir Condition="'$(NativeBinDir)' == ''">$(MSBuildProjectDirectory)/bin/$(Configuration)/native</NativeBinDir>
+    <NativeOutputName>NativeHost</NativeOutputName>
+
+    <NativePlatform>$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)</NativePlatform>
+    <NativeObjDir>$(MSBuildThisFileDirectory)obj/$(Configuration)/native/</NativeObjDir>
+    <NativeHostDirectory>$(MSBuildThisFileDirectory)</NativeHostDirectory>
+
+    <JavaHome Condition="'$(JavaHome)' == ''">$(JAVA_HOME)</JavaHome>
+
+    <!-- Platform the native library is built for. Defaults to the host, so a plain build is unchanged.
+         Pass -p:NativeTarget=win-x64 (plus -p:NativeCompiler=x86_64-w64-mingw32-g++) to cross-compile. -->
+    <NativeTarget Condition="'$(NativeTarget)' == ''">$(NETCoreSdkRuntimeIdentifier)</NativeTarget>
+    <NativeTargetIsWindows>$(NativeTarget.StartsWith('win'))</NativeTargetIsWindows>
+    <NativeTargetIsOsx>$(NativeTarget.StartsWith('osx'))</NativeTargetIsOsx>
+
+    <NativeOutputExtension Condition="'$(NativeTargetIsWindows)' == 'true'">.dll</NativeOutputExtension>
+    <NativeOutputExtension Condition="'$(NativeTargetIsOsx)' == 'true'">.dylib</NativeOutputExtension>
+    <NativeOutputExtension Condition="'$(NativeOutputExtension)' == ''">.so</NativeOutputExtension>
+    <NativeOutputPrefix Condition="'$(NativeTargetIsWindows)' != 'true'">lib</NativeOutputPrefix>
+    <NativeOutputFilePath>$(NativeBinDir)/$(NativeOutputPrefix)$(NativeOutputName)$(NativeOutputExtension)</NativeOutputFilePath>
+
+    <JavaIncDir>$(JavaHome)/include</JavaIncDir>
+    <!-- A Linux JDK has no include/win32, so a cross build uses the vendored Windows jni_md.h. -->
+    <JavaPlatformIncDir Condition="'$(NativeTargetIsWindows)' == 'true'">$(NativeHostDirectory)win-includes-java11</JavaPlatformIncDir>
+    <JavaPlatformIncDir Condition="'$(NativeTargetIsOsx)' == 'true'">$(JavaHome)/include/darwin</JavaPlatformIncDir>
+    <JavaPlatformIncDir Condition="'$(JavaPlatformIncDir)' == ''">$(JavaHome)/include/linux</JavaPlatformIncDir>
+
+    <!-- nethost comes from the host pack of the target: the SDK's own pack when targeting the host, the
+         restored NuGet package when cross-compiling. -->
+    <NetHostDir Condition="'$(NativeTargetIsWindows)' == 'true'">$(PkgMicrosoft_NETCore_App_Host_win-x64)/runtimes/$(NativeTarget)/native</NetHostDir>
+    <NetHostDir Condition="'$(NetHostDir)' == ''">$(NetCoreTargetingPackRoot)/Microsoft.NETCore.App.Host.$(NativeTarget)/$(BundledNETCoreAppPackageVersion)/runtimes/$(NativeTarget)/native</NetHostDir>
+
+    <NetHostName Condition="'$(NativeTargetIsWindows)' == 'true'">nethost.dll</NetHostName>
+    <NetHostName Condition="'$(NativeTargetIsOsx)' == 'true'">libnethost.dylib</NetHostName>
+    <NetHostName Condition="'$(NetHostName)' == ''">libnethost.so</NetHostName>
+
+    <!-- Default compiler probing is for the host; a cross build names the compiler explicitly. -->
+    <NativeCompilerProbeAllowed Condition="!$([MSBuild]::IsOsPlatform('Windows')) AND '$(NativeTargetIsWindows)' != 'true'">true</NativeCompilerProbeAllowed>
+    <NativeCompiler Condition="'$(NativeCompilerProbeAllowed)' == 'true' AND '$(NativeCompiler)' == '' AND Exists('/usr/bin/g++')">/usr/bin/g++</NativeCompiler>
+    <NativeCompiler Condition="'$(NativeCompilerProbeAllowed)' == 'true' AND '$(NativeCompiler)' == '' AND Exists('/usr/local/bin/g++')">/usr/local/bin/g++</NativeCompiler>
+    <NativeCompiler Condition="'$(NativeCompilerProbeAllowed)' == 'true' AND '$(NativeCompiler)' == '' AND Exists('/bin/g++')">/bin/g++</NativeCompiler>
+    <NativeCompiler Condition="'$(NativeCompilerProbeAllowed)' == 'true' AND '$(NativeCompiler)' == '' AND Exists('/usr/bin/c++')">/usr/bin/c++</NativeCompiler>
+    <NativeCompiler Condition="'$(NativeCompilerProbeAllowed)' == 'true' AND '$(NativeCompiler)' == '' AND Exists('/usr/bin/clang++')">/usr/bin/clang++</NativeCompiler>
+    <NativeCompiler Condition="'$(NativeCompilerProbeAllowed)' == 'true' AND '$(NativeCompiler)' == '' AND Exists('/usr/local/bin/clang++')">/usr/local/bin/clang++</NativeCompiler>
+    <NativeCompiler Condition="'$(NativeCompilerProbeAllowed)' == 'true' AND '$(NativeCompiler)' == '' AND Exists('/opt/homebrew/bin/clang++')">/opt/homebrew/bin/clang++</NativeCompiler>
+  </PropertyGroup>
+
+  <!-- Properties for MSVCFindCompilerPaths -->
+  <PropertyGroup Condition="$([MSBuild]::IsOsPlatform('Windows'))">
+    <MSVCPlatform>x64</MSVCPlatform>
+    <MSVCPlatform Condition="$(NETCoreSDKRuntimeIdentifier.Contains('x86'))">x86</MSVCPlatform>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <NativeSource Include="NativeHost.cpp" />
+    <NativeSource Include="Settings.cpp" />
+    <NativeSource Include="soot_dotnet_AssemblyFile.cpp" />
+    <Clean Include="$(NativeBinDir)/$(NativeOutputName).*" />
+    <Clean Include="$(NativeObjDir)/*.*" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <SourceFiles>@(NativeSource-> '"%(RootDir)%(Directory)%(Filename)%(Extension)"', ' ')</SourceFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CompilerPaths" Version="[1.0.2, )" Condition="$([MSBuild]::IsOsPlatform('Windows'))" />
+    <!-- Host pack of a cross-compilation target. GeneratePathProperty exposes its location as
+         $(PkgMicrosoft_NETCore_App_Host_<rid>) so NetHostDir needs no version guesswork. -->
+    <PackageReference Include="Microsoft.NETCore.App.Host.$(NativeTarget)" Version="$(BundledNETCoreAppPackageVersion)"
+                      GeneratePathProperty="true" PrivateAssets="all" ExcludeAssets="all" Condition="'$(NativeTargetIsWindows)' == 'true'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Soot.Dotnet.Decompiler\Soot.Dotnet.Decompiler.csproj" />
+  </ItemGroup>
+
+  <!-- Builds the native project. The output goes directly to the bin directory. -->
+  <Target Name="PrepareForNativeBuild">
+    <Error Condition="'$(JavaHome)' == ''" Text="JAVA_HOME (or the JavaHome MSBuild property) must point to a JDK so that the JNI headers can be found." />
+    <Error Condition="!Exists('$(JavaIncDir)/jni.h')" Text="JNI headers not found in '$(JavaIncDir)'. Set JAVA_HOME to a JDK." />
+    <Error Condition="!Exists('$(NetHostDir)/$(NetHostName)')" Text="nethost not found in '$(NetHostDir)'. Install a matching .NET SDK, or run 'dotnet restore -r $(NativeTarget)' first." />
+    <Error Condition="!$([MSBuild]::IsOsPlatform('Windows')) AND '$(NativeCompiler)' == ''"
+           Text="No C++ compiler found. Install one (Debian/Ubuntu: 'apt-get install g++', Alpine: 'apk add g++'), for a Windows target 'apt-get install mingw-w64', or pass -p:NativeCompiler=/path/to/compiler." />
+    <!-- A bare name (no slash) is resolved through PATH by the Exec, so only check paths. -->
+    <Error Condition="!$([MSBuild]::IsOsPlatform('Windows')) AND '$(NativeCompiler)' != '' AND $(NativeCompiler.Contains('/')) AND !Exists('$(NativeCompiler)')"
+           Text="The C++ compiler '$(NativeCompiler)' does not exist. Pass a valid -p:NativeCompiler=/path/to/compiler." />
+
+    <MakeDir Directories="$(NativeBinDir)" />
+    <MakeDir Directories="$(NativeObjDir)" />
+  </Target>
+
+  <Target Name="BuildNativeProjectGcc" AfterTargets="Build" DependsOnTargets="PrepareForNativeBuild"
+          Condition="!$([MSBuild]::IsOsPlatform('Windows')) AND ('$(NativeTargetIsWindows)' != 'true' OR '$(NativeCompiler)' != '')">
+    <PropertyGroup>
+      <IncPaths>-I$(NativeHostDirectory)inc -I"$(NetHostDir)" -I"$(JavaIncDir)" -I"$(JavaPlatformIncDir)"</IncPaths>
+      <CompilerArgs>-g -shared -fPIC</CompilerArgs>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(NativeTargetIsWindows)' == 'true'">
+      <PreprocessorDefines>-D WINDOWS</PreprocessorDefines>
+      <!-- Static libgcc/libstdc++ keep libgcc_s_seh-1.dll and libstdc++-6.dll out of the shipped set. -->
+      <LinkArgs>-lnethost -L"$(NetHostDir)" -static-libgcc -static-libstdc++</LinkArgs>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(NativeTargetIsOsx)' == 'true'">
+      <PreprocessorDefines>-D OSX</PreprocessorDefines>
+      <LinkArgs>-ldl -lnethost -L"$(NetHostDir)" -Wl,-rpath,'@loader_path' -undefined dynamic_lookup</LinkArgs>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(PreprocessorDefines)' == ''">
+      <PreprocessorDefines>-D LINUX</PreprocessorDefines>
+      <LinkArgs>-ldl -lnethost -L"$(NetHostDir)" -Wl,-rpath,'$ORIGIN',--disable-new-dtags</LinkArgs>
+    </PropertyGroup>
+
+    <Exec Command="&quot;$(NativeCompiler)&quot; $(SourceFiles) $(IncPaths) $(PreprocessorDefines) -std=c++17 -o &quot;$(NativeOutputFilePath)&quot; $(CompilerArgs) $(LinkArgs)" WorkingDirectory="$(NativeObjDir)" />
+
+    <Copy SourceFiles="$(NetHostDir)/$(NetHostName)" DestinationFolder="$(NativeBinDir)" SkipUnchangedFiles="True" />
+  </Target>
+
+  <Target Name="BuildNativeProjectWindows" AfterTargets="Build" DependsOnTargets="PrepareForNativeBuild;MSVCFindCompilerPaths"
+          Condition="$([MSBuild]::IsOsPlatform('Windows')) AND '$(NativeCompiler)' == ''">
+    <PropertyGroup>
+      <IncPaths>@(MSVCIncludePaths-> '/I "%(RootDir)%(Directory)%(Filename)"', ' ')</IncPaths>
+      <IncPaths>$(IncPaths) /I inc /I "$(NetHostDir)" /I "$(JavaIncDir)" /I "$(JavaPlatformIncDir)"</IncPaths>
+      <CompilerArgs>/EHsc /Od /GS /sdl /Zi /LD</CompilerArgs>
+      <PreprocessorDefines>/D WINDOWS</PreprocessorDefines>
+      <LibPaths>@(MSVCLibPaths-> '/LIBPATH:"%(RootDir)%(Directory)%(Filename)"', ' ')</LibPaths>
+      <LibPaths>$(LibPaths) "$(NetHostDir)\nethost.lib"</LibPaths>
+    </PropertyGroup>
+    <Exec Command="&quot;$(MSVCCompilerPath)&quot; $(SourceFiles) $(IncPaths) $(PreprocessorDefines) $(CompilerArgs) /link $(LibPaths) /out:&quot;$(NativeOutputFilePath)&quot;" WorkingDirectory="$(NativeObjDir)" />
+
+    <Copy SourceFiles="$(NetHostDir)/$(NetHostName)" DestinationFolder="$(NativeBinDir)" SkipUnchangedFiles="True" />
+  </Target>
+</Project>

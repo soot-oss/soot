@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <!-- The managed library is loaded by hostfxr from the NativeHost. Allow running on newer runtimes. -->
+        <RollForward>LatestMajor</RollForward>
+        <AssemblyName>Soot.Dotnet.Decompiler</AssemblyName>
+        <RootNamespace>Soot.Dotnet.Decompiler</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Generated protobuf bindings, produced by the Maven protobuf-bindings profile. -->
+        <Compile Include="../../generated/protobuf-dotnet/**/*.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.36.2" />
+        <PackageReference Include="ICSharpCode.Decompiler" Version="11.2.0.10050" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+        <PackageReference Include="System.Runtime.Caching" Version="8.0.1" />
+        <PackageReference Include="NLog" Version="6.2.2" />
+        <PackageReference Include="NLog.Extensions.Logging" Version="6.3.0" />
+        <!-- Transitive via Microsoft.Extensions.*; 8.0.0 is affected by CVE-2024-30105. -->
+        <PackageReference Include="System.Text.Json" Version="8.0.6" />
+    </ItemGroup>
+
+    <!-- For IDE and plain `dotnet build` usage: put the complete managed output next to the native host. -->
+    <Target Name="CopyContent" AfterTargets="Build">
+        <PropertyGroup>
+            <NativeHostOutputDir>$(SootGeneratedDir)Soot.Dotnet.NativeHost/bin/$(Configuration)/$(TargetFramework)</NativeHostOutputDir>
+        </PropertyGroup>
+        <ItemGroup>
+            <DecompilerOutput Include="$(TargetDir)*.*" />
+        </ItemGroup>
+        <MakeDir Directories="$(NativeHostOutputDir)" />
+        <Copy SourceFiles="@(DecompilerOutput)" DestinationFolder="$(NativeHostOutputDir)" SkipUnchangedFiles="true" />
+    </Target>
+
+</Project>

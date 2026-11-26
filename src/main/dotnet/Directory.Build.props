@@ -1,0 +1,14 @@
+<Project>
+
+  <!--
+    All build output of the .NET projects goes to src/main/generated/dotnet-build instead of bin/obj next to the
+    sources, so that no generated files end up in the source tree. `mvn clean` removes that directory.
+    BaseIntermediateOutputPath must be set this early for NuGet restore to pick it up.
+  -->
+  <PropertyGroup>
+    <SootGeneratedDir>$(MSBuildThisFileDirectory)../generated/dotnet-build/</SootGeneratedDir>
+    <BaseIntermediateOutputPath>$(SootGeneratedDir)$(MSBuildProjectName)/obj/</BaseIntermediateOutputPath>
+    <BaseOutputPath>$(SootGeneratedDir)$(MSBuildProjectName)/bin/</BaseOutputPath>
+  </PropertyGroup>
+
+</Project>

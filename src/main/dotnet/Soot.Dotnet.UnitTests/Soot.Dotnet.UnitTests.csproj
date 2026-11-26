@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <!-- The testhost is a framework-dependent net8.0 app; allow running it on a newer installed runtime. -->
+        <RollForward>LatestMajor</RollForward>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Soot.Dotnet.UnitTests</RootNamespace>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Google.Protobuf" Version="3.36.2" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
+      <PackageReference Include="xunit" Version="2.4.2" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Soot.Dotnet.Decompiler\Soot.Dotnet.Decompiler.csproj" />
+        <!-- Only to enforce build order; the snippets are used as input assemblies. -->
+        <ProjectReference Include="..\Soot.Dotnet.TestSnippets\Soot.Dotnet.TestSnippets.csproj" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+</Project>

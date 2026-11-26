@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <!-- Intentional fixture noise: unused locals, extern methods without DllImport, obsolete WebClient. -->
+        <NoWarn>$(NoWarn);CS0168;CS0219;CS0626;SYSLIB0014</NoWarn>
+    </PropertyGroup>
+
+</Project>

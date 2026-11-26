@@ -1,0 +1,44 @@
+/*-
+ * #%L
+ * Soot - a J*va Optimization Framework
+ * %%
+ * Copyright (C) 2021 Thomas Schmeiduch
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 2.1 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * #L%
+ */
+
+#define CONDITION1
+#define CONDITION2
+
+using System;
+using System.Diagnostics;
+
+namespace Soot.Dotnet.TestSnippets
+{
+    public class TestAttributes
+    {
+        [Obsolete]
+        public void DoSth()
+        {
+        }
+
+        [Conditional("CONDITION1"), Conditional("CONDITION2")]
+        public void DoSth2()
+        {
+        }
+        
+    }
+}

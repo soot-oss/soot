@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_package = "soot.dotnet.proto";
+option java_outer_classname = "ProtoDotnetNativeHost";
+option csharp_namespace = "Soot.Dotnet.Decompiler.Models.Protobuf";
+
+/*
+  Proto message for parameters which Soot (Java) requests to the Decompiler (Csharp), while calling via NativeHost
+ */
+
+message AnalyzerParamsMsg {
+  AnalyzerMethodCall analyzer_method_call = 1;
+  string assembly_file_absolute_path = 2;
+  string type_reflection_name = 3;
+  string method_name = 4;
+  string method_name_suffix = 11;
+  int32 method_pe_token = 12;
+  string property_name = 6;
+  bool property_is_setter = 7;
+  string event_name = 8;
+  EventAccessorType event_accessor_type = 9;
+  bool debug_mode = 10;
+}
+
+enum AnalyzerMethodCall {
+  NO_CALL = 0;
+  GET_ALL_TYPES = 1;
+  GET_METHOD_BODY = 2;
+  GET_METHOD_BODY_OF_PROPERTY = 3;
+  GET_METHOD_BODY_OF_EVENT = 4;
+  GET_TYPE_DEF = 5;
+}
+
+enum EventAccessorType {
+  NO_EVENT_METHOD = 0;
+  ADD_ACCESSOR = 1;
+  INVOKE_ACCESSOR = 2;
+  REMOVE_ACCESSOR = 3;
+}

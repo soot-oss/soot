@@ -23,7 +23,6 @@
 package soot;
 
 import com.android.tools.smali.dexlib2.iface.DexFile;
-import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.ForwardingLoadingCache;
@@ -65,6 +64,7 @@ import soot.asm.AsmUtil;
 import soot.dexpler.DexFileProvider;
 import soot.dotnet.AssemblyFile;
 import soot.dotnet.DotnetClassProvider;
+import soot.dotnet.DotnetNativeHost;
 import soot.options.Options;
 import soot.util.SharedCloseable;
 
@@ -230,12 +230,28 @@ public class SourceLocator {
   }
 
   /**
+   * Initializes the classpath. For the .NET frontend, the runtime directory of the local .NET installation is appended
+   * automatically so that framework assemblies resolve without an explicit {@code -cp} entry.
+   */
+  private void ensureClassPath() {
+    if (classPath != null) {
+      return;
+    }
+    List<String> effectiveClassPath = new ArrayList<>(explodeClassPath(Scene.v().getSootClassPath()));
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      String runtimeDirectory = DotnetNativeHost.getRuntimeDirectory();
+      if (runtimeDirectory != null && !effectiveClassPath.contains(runtimeDirectory)) {
+        effectiveClassPath.add(runtimeDirectory);
+      }
+    }
+    classPath = effectiveClassPath;
+  }
+
+  /**
    * Given a class name, uses the soot-class-path to return a ClassSource for the given class.
    */
   public ClassSource getClassSource(String className) {
-    if (classPath == null) {
-      classPath = explodeClassPath(Scene.v().getSootClassPath());
-    }
+    ensureClassPath();
     if (classProviders == null) {
       setupClassProviders();
     }
@@ -406,9 +422,11 @@ public class SourceLocator {
     // load dotnet assemblies
     else if ((Options.v().src_prec() == Options.src_prec_dotnet && cst == ClassSourceType.directory)
         || cst == ClassSourceType.dll || cst == ClassSourceType.exe) {
-      if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path())) {
-        throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
+      if (!DotnetNativeHost.isAvailable()) {
+        throw new RuntimeException("No .NET NativeHost library available! Build Soot with the .NET wrapper "
+            + "or use the -dotnet-nativehost-path Soot parameter.");
       }
+      ensureClassPath();
 
       File file = new File(aPath);
       File[] files = new File[1];

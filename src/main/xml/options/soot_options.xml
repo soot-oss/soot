@@ -470,10 +470,14 @@
         <stropt>
             <name>Dotnet NativeHost Path</name>
             <alias>dotnet-nativehost-path</alias>
-            <short_desc>Use <alias/> to locate your NativeHost Java JNI library.</short_desc>
+            <short_desc>Use <alias/> to locate your NativeHost Java JNI library. Optional if Soot bundles the wrapper.</short_desc>
             <long_desc>
                 <p>
                     Use dotnet-nativehost-path to load the NativeHost library which is needed for soot.dotnet.
+                    The value may point to the library itself or to the directory containing it. If it is not set,
+                    Soot uses the .NET wrapper bundled into its own jar and extracts it to a temporary directory.
+                    The system property <tt>soot.dotnet.wrapper.path</tt> and the environment variable
+                    <tt>SOOT_DOTNET_WRAPPER</tt> are consulted as further fallbacks.
                 </p>
             </long_desc>
         </stropt>

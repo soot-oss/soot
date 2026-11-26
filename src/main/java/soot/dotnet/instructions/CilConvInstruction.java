@@ -56,52 +56,18 @@ public class CilConvInstruction extends AbstractCilnstruction {
 
   @Override
   public Value jimplifyExpr(Body jb) {
-    ProtoIlInstructions.IlInstructionMsg.IlSign inputSign = instruction.getSign();
-    ProtoIlInstructions.IlInstructionMsg.IlStackType inputType = instruction.getInputType();
     ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType targetType = instruction.getTargetType();
-    ProtoIlInstructions.IlInstructionMsg.IlStackType resultType = instruction.getResultType();
 
     CilInstruction cilExpr = CilInstructionFactory.fromInstructionMsg(instruction.getArgument(), dotnetBody, cilBlock);
     Value argument = cilExpr.jimplifyExpr(jb);
 
-    Type convType;
-    switch (targetType) {
-      case I1: // SByte
-        convType = ByteType.v();
-        break;
-      case U1: // Byte
-        convType = UByteType.v();
-        break;
-      case I2: // Int16
-        convType = ShortType.v();
-        break;
-      case U2: // UInt16
-        convType = UShortType.v();
-        break;
-      case U4: // UInt32
-        convType = UIntType.v();
-        break;
-      case I4: // Int32
-      case I: // System.IntPtr
-      case U: // System.UIntPtr
-      case Ref: // managed reference - always pointer as integer
-        convType = IntType.v();
-        break;
-      case I8: // Int64
-        convType = LongType.v();
-      case U8: // UInt64
-        convType = ULongType.v();
-        break;
-      case R4: // Single
-        convType = FloatType.v();
-        break;
-      case R: // 254 - floating point type
-      case R8: // Double
-        convType = DoubleType.v();
-        break;
-      default:
-        convType = UnknownType.v();
-        break;
+    Type convType = targetTypeToSootType(targetType);
+    if (convType == null) {
+      // ILSpy did not determine a primitive target, e.g. for a conversion that only sets the stack type.
+      convType = stackTypeToSootType(instruction.getResultType());
+    }
+    if (convType == null) {
+      convType = UnknownType.v();
     }
     argument = simplifyComplexExpression(jb, argument);
     if (convType instanceof UnknownType) {
@@ -119,4 +85,63 @@ public class CilConvInstruction extends AbstractCilnstruction {
       return Jimple.v().newCastExpr(argument, convType);
     }
   }
+
+  /**
+   * Maps the primitive target of a conversion to the Jimple type to cast to, or {@code null} if there is none.
+   */
+  private static Type targetTypeToSootType(ProtoIlInstructions.IlInstructionMsg.IlPrimitiveType targetType) {
+    switch (targetType) {
+      case I1: // SByte
+        return ByteType.v();
+      case U1: // Byte
+        return UByteType.v();
+      case I2: // Int16
+        return ShortType.v();
+      case U2: // UInt16
+        return UShortType.v();
+      case U4: // UInt32
+        return UIntType.v();
+      case I4: // Int32
+      case I: // System.IntPtr
+      case U: // System.UIntPtr
+      case Ref: // managed reference - always pointer as integer
+        return IntType.v();
+      case I8: // Int64
+        return LongType.v();
+      case U8: // UInt64
+        return ULongType.v();
+      case R4: // Single
+        return FloatType.v();
+      case R: // 254 - floating point type
+      case R8: // Double
+        return DoubleType.v();
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * Maps a stack type to a Jimple type when no primitive target is available. Value types ({@code V}) and references
+   * ({@code O}) carry no primitive type, so they stay {@code null} and the type assigner decides.
+   */
+  private static Type stackTypeToSootType(ProtoIlInstructions.IlInstructionMsg.IlStackType stackType) {
+    switch (stackType) {
+      case I4_STACK:
+      case I_STACK:
+        return IntType.v();
+      case I8_STACK:
+        return LongType.v();
+      case F4:
+        return FloatType.v();
+      case F8:
+        return DoubleType.v();
+      case Ref_STACK: // managed pointer, treated as integer like the Ref target above
+        return IntType.v();
+      case V: // value type
+      case O: // reference
+      default:
+        return null;
+    }
+  }
+
 }

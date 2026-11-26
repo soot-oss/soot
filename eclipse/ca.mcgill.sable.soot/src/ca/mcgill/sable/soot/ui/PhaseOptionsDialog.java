@@ -8079,7 +8079,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultString = "";
 		}
 
-		setInput_Optionsdotnet_nativehost_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Dotnet NativeHost Path",  "", "","dotnet-nativehost-path", "\nUse dotnet-nativehost-path to load the NativeHost library which \nis needed for soot.dotnet.", defaultString)));
+		setInput_Optionsdotnet_nativehost_path_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Dotnet NativeHost Path",  "", "","dotnet-nativehost-path", "\nUse dotnet-nativehost-path to load the NativeHost library which \nis needed for soot.dotnet. The value may point to the library \nitself or to the directory containing it. If it is not set, Soot \nuses the .NET wrapper bundled into its own jar and extracts it \nto a temporary directory. The system property \nsoot.dotnet.wrapper.path and the environment variable \nSOOT_DOTNET_WRAPPER are consulted as further fallbacks.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"virtualedges-path";
