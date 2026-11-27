@@ -23,8 +23,12 @@ package soot.dotnet;
  */
 
 import com.google.common.base.Strings;
+import com.google.protobuf.CodedInputStream;
+import com.google.protobuf.MessageLite;
+import com.google.protobuf.Parser;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +45,7 @@ import soot.dotnet.proto.ProtoAssemblyAllTypes;
 import soot.dotnet.proto.ProtoAssemblyAllTypes.TypeDefinition;
 import soot.dotnet.proto.ProtoDotnetNativeHost;
 import soot.dotnet.proto.ProtoIlInstructions;
+import soot.dotnet.util.LargeStackRunner;
 import soot.options.Options;
 import soot.toolkits.scalar.Pair;
 
@@ -56,6 +61,11 @@ public class AssemblyFile extends File {
   private static final Object lockobj = new Object();
 
   /**
+   * Maximum nesting of parsed protobuf messages. Deeply nested CIL produces one message level per expression.
+   */
+  private static final int RECURSION_LIMIT = 100_000;
+
+  /**
    * Constructs a new AssemblyFile with the path to the file
    *
    * @param fullyQualifiedAssemblyPathFilename
@@ -64,7 +74,7 @@ public class AssemblyFile extends File {
   public AssemblyFile(String fullyQualifiedAssemblyPathFilename) {
     super(fullyQualifiedAssemblyPathFilename);
     this.fullyQualifiedAssemblyPathFilename = fullyQualifiedAssemblyPathFilename;
-    this.pathNativeHost = Options.v().dotnet_nativehost_path();
+    this.pathNativeHost = DotnetNativeHost.getNativeHostPath();
 
     if (!loaded) {
       // load JNI library
@@ -72,7 +82,16 @@ public class AssemblyFile extends File {
         if (loaded) {
           return;
         }
-        System.load(this.pathNativeHost);
+        if (DotnetNativeHost.isWindows()) {
+          // The wrapper links against nethost.dll from its own directory: preload it so the import resolves, then
+          // add the directory to the DLL search path for everything the host loads later on.
+          File directory = new File(this.pathNativeHost).getParentFile();
+          System.load(new File(directory, "nethost.dll").getAbsolutePath());
+          System.load(this.pathNativeHost);
+          nativeSetDllDirectory(directory.getAbsolutePath());
+        } else {
+          System.load(this.pathNativeHost);
+        }
         loaded = true;
       }
     }
@@ -117,14 +136,13 @@ public class AssemblyFile extends File {
       ProtoDotnetNativeHost.AnalyzerParamsMsg.Builder analyzerParamsBuilder
           = createAnalyzerParamsBuilder("", ProtoDotnetNativeHost.AnalyzerMethodCall.GET_ALL_TYPES);
       ProtoDotnetNativeHost.AnalyzerParamsMsg analyzerParamsMsg = analyzerParamsBuilder.build();
-      logger.info("Getting all .NET types");
 
       byte[] protobufMessageBytes;
       synchronized (lockobj) {
         protobufMessageBytes = nativeGetAllTypesMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       }
-      ProtoAssemblyAllTypes.AssemblyAllTypes a = ProtoAssemblyAllTypes.AssemblyAllTypes.parseFrom(protobufMessageBytes);
-      logger.info("Finished: Getting all .NET types");
+      ProtoAssemblyAllTypes.AssemblyAllTypes a = parse(protobufMessageBytes,
+          ProtoAssemblyAllTypes.AssemblyAllTypes.parser());
       List<ProtoAssemblyAllTypes.TypeDefinition> allTypesList = a.getListOfTypesList();
       allTypeMap = new HashMap<>();
       for (TypeDefinition p : allTypesList) {
@@ -161,12 +179,33 @@ public class AssemblyFile extends File {
       synchronized (lockobj) {
         protoMsgBytes = nativeGetMethodBodyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       }
-      return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
+      return parse(protoMsgBytes, ProtoIlInstructions.IlFunctionMsg.parser());
     } catch (Exception e) {
       if (Options.v().verbose()) {
         logger.warn("Exception while getting method body of method " + className + "." + method + ": " + e.getMessage());
       }
       return null;
+    }
+  }
+
+  /**
+   * Parses a protobuf message on a large-stack thread. CIL nesting is only bounded by the compiler, so the default
+   * recursion limit of the protobuf parser is raised for these messages and the thread driving the frontend may not
+   * have enough stack for the parser recursion.
+   */
+  private static <T extends MessageLite> T parse(byte[] bytes, Parser<T> parser) throws IOException {
+    try {
+      return LargeStackRunner.call(() -> {
+        CodedInputStream input = CodedInputStream.newInstance(bytes);
+        input.setRecursionLimit(RECURSION_LIMIT);
+        return parser.parseFrom(input);
+      });
+    } catch (IOException e) {
+      throw e;
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new IOException(e);
     }
   }
 
@@ -206,7 +245,7 @@ public class AssemblyFile extends File {
       synchronized (lockobj) {
         protoMsgBytes = nativeGetMethodBodyOfPropertyMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       }
-      return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
+      return parse(protoMsgBytes, ProtoIlInstructions.IlFunctionMsg.parser());
     } catch (Exception e) {
       if (Options.v().verbose()) {
         logger.warn(
@@ -256,7 +295,7 @@ public class AssemblyFile extends File {
       synchronized (lockobj) {
         protoMsgBytes = nativeGetMethodBodyOfEventMsg(pathNativeHost, analyzerParamsMsg.toByteArray());
       }
-      return ProtoIlInstructions.IlFunctionMsg.parseFrom(protoMsgBytes);
+      return parse(protoMsgBytes, ProtoIlInstructions.IlFunctionMsg.parser());
     } catch (Exception e) {
       if (Options.v().verbose()) {
         logger.warn("Exception while getting method body of event " + className + "." + eventName + ": " + e.getMessage());
@@ -427,10 +466,19 @@ public class AssemblyFile extends File {
    *          /Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib
    * @param absolutePathAssembly
    *          e.g. /home/user/cs/myassembly.dll
-   * @param name 
+   * @param name
    *          the name of the resource
    * @return the content of the resource or null if not found
    */
   public native byte[] nativeGetManifestResourceStream(String pathToNativeHost, String absolutePathAssembly, String name);
+
+  /**
+   * Adds a directory to the Windows DLL search path. Only implemented for Windows; returns {@code false} elsewhere.
+   *
+   * @param path
+   *          the directory containing the wrapper libraries
+   * @return true if the directory was set
+   */
+  private static native boolean nativeSetDllDirectory(String path);
 
 }

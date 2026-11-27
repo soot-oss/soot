@@ -46,6 +46,7 @@ import soot.dotnet.specifications.DotnetAttributeArgument;
 import soot.dotnet.specifications.DotnetModifier;
 import soot.dotnet.types.DotNetBasicTypes;
 import soot.dotnet.types.DotnetTypeFactory;
+import soot.dotnet.util.LargeStackRunner;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.options.Options;
@@ -201,14 +202,21 @@ public class DotnetMethod extends AbstractDotnetMember {
    */
   private MethodSource createMethodSource() {
     return (m, phaseName) -> {
-      // Get body of method
-      AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getName());
-      ProtoIlInstructions.IlFunctionMsg ilFunctionMsg
-          = assemblyFile.getMethodBody(declaringClass.getName(), m.getName(), protoMethod.getPeToken());
-
-      Body b = this.jimplifyMethodBody(ilFunctionMsg);
+      Body b;
+      try {
+        // Deeply nested CIL makes the parser and the Jimple conversion recurse once per nesting level, so run them on
+        // a large-stack thread instead of the (possibly small) stack of the thread driving the frontend.
+        b = LargeStackRunner.call(() -> {
+          AssemblyFile assemblyFile = (AssemblyFile) SourceLocator.v().dexClassIndex().get(declaringClass.getName());
+          ProtoIlInstructions.IlFunctionMsg ilFunctionMsg
+              = assemblyFile.getMethodBody(declaringClass.getName(), m.getName(), protoMethod.getPeToken());
+          return jimplifyMethodBody(ilFunctionMsg);
+        });
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
       if (Options.v().validate()) {
-    	b.validate();
+        b.validate();
       }
       m.setActiveBody(b);
 

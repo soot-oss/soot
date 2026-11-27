@@ -45,15 +45,20 @@ import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.UnitPatchingChain;
 import soot.Value;
 import soot.VoidType;
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
+import soot.jimple.AssignStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
 import soot.options.Options;
 import soot.shimple.ShimpleBody;
 import soot.util.Chain;
@@ -258,7 +263,7 @@ public abstract class AbstractTestingFramework {
     // class loaded is a distinct Class instance, even when they have the same name.
     return new ClassLoader() {
       @Override
-      public Class findClass(String name) {
+      public Class<?> findClass(String name) {
         return defineClass(name, classBytes, 0, classBytes.length);
       }
     }.findClass(sc.getName());
@@ -369,4 +374,118 @@ public abstract class AbstractTestingFramework {
           !m.isConcrete() || m.hasActiveBody() || m.getSource() != null);
     }
   }
+
+
+  /**
+   * Returns the single method with the given name and parameter count.
+   */
+  protected static SootMethod method(SootClass clazz, String name, int parameterCount) {
+    SootMethod match = null;
+    for (SootMethod candidate : clazz.getMethods()) {
+      if (candidate.getName().equals(name) && candidate.getParameterCount() == parameterCount) {
+        Assert.assertNull("Ambiguous method " + name + " in " + clazz.getName(), match);
+        match = candidate;
+      }
+    }
+    Assert.assertNotNull("Method " + name + "/" + parameterCount + " not found in " + clazz.getName(), match);
+    return match;
+  }
+
+  protected static SootMethod method(SootClass clazz, String name) {
+    SootMethod match = null;
+    for (SootMethod candidate : clazz.getMethods()) {
+      if (candidate.getName().equals(name)) {
+        Assert.assertNull("Ambiguous method " + name + " in " + clazz.getName(), match);
+        match = candidate;
+      }
+    }
+    Assert.assertNotNull("Method " + name + " not found in " + clazz.getName(), match);
+    return match;
+  }
+
+  protected static JimpleBody body(SootMethod m) {
+    Body b = m.retrieveActiveBody();
+    Assert.assertTrue("Expected a Jimple body for " + m.getSignature() + " but got " + b.getClass(),
+        b instanceof JimpleBody);
+    return (JimpleBody) b;
+  }
+
+  /**
+   * Returns the Jimple body of the named method and asserts that it is non-empty.
+   */
+  protected static JimpleBody body(SootClass clazz, String name, int parameterCount) {
+    JimpleBody b = body(method(clazz, name, parameterCount));
+    Assert.assertFalse("Body of " + name + " is empty", b.getUnits().isEmpty());
+    return b;
+  }
+
+  /**
+   * Asserts that at least one unit of the body is an instance of the given type.
+   */
+  protected static <T extends Unit> T assertUnit(JimpleBody b, Class<T> type) {
+    for (Unit u : b.getUnits()) {
+      if (type.isInstance(u)) {
+        return type.cast(u);
+      }
+    }
+    Assert.fail("Expected a " + type.getSimpleName() + " unit, but got:\n" + b);
+    return null;
+  }
+
+  /**
+   * Returns all invoke expressions of the body.
+   */
+  protected static List<InvokeExpr> invokeExprs(JimpleBody b) {
+    List<InvokeExpr> result = new ArrayList<>();
+    for (Unit u : b.getUnits()) {
+      if (u instanceof Stmt && ((Stmt) u).containsInvokeExpr()) {
+        result.add(((Stmt) u).getInvokeExpr());
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Returns all field references of the body.
+   */
+  protected static List<FieldRef> fieldRefs(JimpleBody b) {
+    List<FieldRef> result = new ArrayList<>();
+    for (Unit u : b.getUnits()) {
+      if (!(u instanceof AssignStmt)) {
+        continue;
+      }
+      Value left = ((AssignStmt) u).getLeftOp();
+      Value right = ((AssignStmt) u).getRightOp();
+      if (left instanceof FieldRef) {
+        result.add((FieldRef) left);
+      }
+      if (right instanceof FieldRef) {
+        result.add((FieldRef) right);
+      }
+    }
+    return result;
+  }
+
+  protected static int countUnitsOfType(JimpleBody b, Class<? extends Unit> type) {
+    int count = 0;
+    for (Unit u : b.getUnits()) {
+      if (type.isInstance(u)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Asserts that the textual Jimple of the body contains the given fragment.
+   */
+  protected static void assertJimple(JimpleBody b, String fragment) {
+    for (Unit u : b.getUnits()) {
+      if (u.toString().contains(fragment)) {
+        return;
+      }
+    }
+    Assert.fail("Expected Jimple fragment '" + fragment + "' in:\n" + b.toString());
+  }
+
 }

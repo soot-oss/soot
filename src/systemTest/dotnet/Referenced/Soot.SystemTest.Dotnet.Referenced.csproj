@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Separate assembly that references Soot.SystemTest.Dotnet, to test cross-assembly resolution. -->
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Soot.SystemTest.Dotnet.Referenced</AssemblyName>
+    <RootNamespace>Soot.SystemTest.Dotnet.Referenced</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Soot.SystemTest.Dotnet.csproj" />
+  </ItemGroup>
+
+</Project>

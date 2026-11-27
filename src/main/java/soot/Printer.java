@@ -430,6 +430,9 @@ public class Printer {
   }
 
   private static String getJimpleTypeString(String jni) {
+    if (Options.v().src_prec() == Options.src_prec_dotnet) {
+      return Scene.v().quotedNameOf(jni);
+    }
     Type t = AsmUtil.toJimpleType(jni, Optional.absent());
     String array = "";
     if (t instanceof ArrayType) {

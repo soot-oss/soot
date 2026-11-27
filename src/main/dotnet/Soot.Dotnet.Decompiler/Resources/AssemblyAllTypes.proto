@@ -1,0 +1,212 @@
+syntax = "proto3";
+
+option java_package = "soot.dotnet.proto";
+option java_outer_classname = "ProtoAssemblyAllTypes";
+option csharp_namespace = "Soot.Dotnet.Decompiler.Models.Protobuf";
+
+/*
+  All TypeDefinitions with member definitions
+ */
+
+// All types and references of one assembly
+message AssemblyAllTypes {
+  repeated TypeDefinition list_of_types = 1;
+  repeated string all_referenced_module_types = 2;
+}
+
+enum Accessibility {
+  NONE = 0;
+  PRIVATE = 1;
+  PUBLIC = 2;
+  INTERNAL = 3;
+  PROTECTED = 4;
+  PROTECTED_AND_INTERNAL = 5;
+  PROTECTED_OR_INTERNAL = 6;
+}
+ // TYPE
+  enum IlType {
+    type_unknown = 0;
+    type_string = 1;
+    type_int32 = 2;
+    type_int64 = 3;
+    type_uint32 = 4;
+    type_uint64 = 5;
+    type_float = 6;
+    type_double = 7;
+    type_bool = 8;
+    type_byte = 9;
+    type_sbyte = 10;
+    type_uint16 = 11;
+    type_int16 = 12;
+    type_char = 13;
+    type_decimal = 14;
+  }
+enum TypeKindDef {
+  NO_TYPE = 0;
+  OTHER = 1;
+  CLASS = 2;
+  INTERFACE = 3;
+  STRUCT = 4;
+  DELEGATE = 5;
+  ENUM = 6;
+  VOID = 7;
+  UNKNOWN = 8;
+  NULL = 9;
+  NONE_TYPE = 10;
+  DYNAMIC = 11;
+  UNBOUND_TYPE_ARG = 12;
+  TYPE_PARAMETER = 13;
+  ARRAY = 14;
+  POINTER = 15;
+  BY_REF = 16;
+  INTERSECTION = 17;
+  ARG_LIST = 18;
+  TUPLE = 19;
+  MOD_OPT = 20;
+  MOD_REQ = 21;
+  N_INT = 22;
+  N_UINT = 23;
+  FUNCTION_POINTER = 24;
+  
+  BY_REF_AND_ARRAY = 25;
+}
+
+message TypeDefinition {
+  Accessibility accessibility = 1;
+  string fullname = 2;
+  string namespace = 3;
+  bool is_abstract = 4;
+  bool is_read_only = 5;
+  bool is_sealed = 6;
+  bool is_static = 7;
+  string declaring_outer_class = 8;
+  repeated TypeDefinition direct_base_types = 9;
+  TypeKindDef type_kind = 10;
+  repeated MethodDefinition methods = 11;
+  repeated FieldDefinition fields = 12;
+  repeated PropertyDefinition properties = 13;
+  repeated TypeDefinition nested_types = 14;
+  repeated AttributeDefinition attributes = 15;
+  repeated TypeDefinition generic_type_arguments = 16;
+  int32 array_dimensions = 17;
+  repeated EventDefinition events = 18;
+  int32 pe_token = 19; //hexadecimal x8 pe token
+}
+
+message MethodDefinition {
+  Accessibility accessibility = 1;
+  string name = 2;
+  bool has_body = 3;
+  repeated ParameterDefinition parameter = 4;
+  bool is_abstract = 5;
+  bool is_accessor = 6;
+  bool is_constructor = 7;
+  bool is_destructor = 8;
+  bool is_explicit_interface_implementation = 9;
+  bool is_static = 10;
+  bool is_virtual = 11;
+  bool is_operator = 16;
+  bool is_extern = 17;
+  bool is_unsafe = 18;
+  bool is_sealed = 19;
+  TypeDefinition return_type = 12;
+  repeated AttributeDefinition attributes = 13;
+  string full_name = 14;
+  TypeDefinition declaring_type = 15;
+  int32 pe_token = 20; //hexadecimal x8 pe token
+}
+
+/**
+Parameter of a method
+ */
+message ParameterDefinition {
+  TypeDefinition type = 1;
+  string parameter_name = 2;
+  bool is_ref = 3;
+  bool is_out = 4;
+  bool is_in = 5;
+  bool is_optional = 6;
+}
+
+message FieldDefinition {
+  Accessibility accessibility = 1;
+  bool is_abstract = 2;
+  bool is_sealed = 3;
+  bool is_explicit_interface_implementation = 4;
+  bool is_override = 5;
+  bool is_virtual = 6;
+  bool is_const = 7;
+  bool is_read_only = 8;
+  bool is_static = 9;
+  TypeDefinition type = 10;
+  TypeKindDef type_kind = 14;
+  string name = 11;
+  string full_name = 12;
+  TypeDefinition declaring_type = 13;
+  repeated AttributeDefinition attributes = 15;
+  int32 pe_token = 16; //hexadecimal x8 pe token
+
+  string value_constant_string = 17;
+  int64 value_constant_int64 = 19;
+  float value_constant_float = 20;
+  double value_constant_double = 21;
+  bool value_constant_bool = 55;
+  uint64 value_constant_uint64 = 59;
+   IlType constant_type = 29;
+  optional bytes initial_value = 60;
+
+}
+
+message PropertyDefinition {
+  Accessibility accessibility = 1;
+  bool can_get = 2;
+  bool can_set = 3;
+  bool is_abstract = 4;
+  bool is_sealed = 5;
+  bool is_explicit_interface_implementation = 6;
+  bool is_override = 7;
+  bool is_virtual = 8;
+  bool is_static = 9;
+  bool is_extern = 15;
+  MethodDefinition getter = 10;
+  MethodDefinition setter = 11;
+  TypeDefinition type = 12;
+  TypeKindDef type_kind = 14;
+  string name = 13;
+  repeated AttributeDefinition attributes = 16;
+  int32 pe_token = 17; //hexadecimal x8 pe token
+}
+
+/*
+C# Attributes of a method (square brackets above method head)
+ */
+message AttributeDefinition {
+  TypeDefinition attribute_type = 1;
+  string constructor = 2;
+  repeated AttributeArgumentDefinition fixed_arguments = 3;
+  // ILspy uses fixed arg
+  repeated AttributeArgumentDefinition named_arguments = 4;
+}
+
+message AttributeArgumentDefinition {
+  TypeDefinition type = 1;
+  string name = 2;
+  repeated string value_string = 3;
+  repeated int32 value_int32 = 4;
+  repeated int64 value_int64 = 5;
+  repeated double value_double = 6;
+  repeated float value_float = 7;
+}
+
+message EventDefinition {
+  Accessibility accessibility = 1;
+  MethodDefinition add_accessor_method = 2;
+  bool can_add = 3;
+  bool can_invoke = 4;
+  bool can_remove = 5;
+  string full_name = 6;
+  MethodDefinition invoke_accessor_method = 7;
+  string name = 8;
+  MethodDefinition remove_accessor_method = 9;
+  int32 pe_token = 10; //hexadecimal x8 pe token
+}

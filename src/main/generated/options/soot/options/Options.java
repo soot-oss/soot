@@ -1812,7 +1812,7 @@ public class Options extends OptionsBase {
                 + "\nInput Options:\n"
                 + padOpt("-cp ARG -soot-class-path ARG -soot-classpath ARG", "Use ARG as the classpath for finding classes.")
                 + padOpt("-soot-modulepath ARG", "Use ARG as the modulepath for finding classes.")
-                + padOpt("-dotnet-nativehost-path ARG", "Use  to locate your NativeHost Java JNI library.")
+                + padOpt("-dotnet-nativehost-path ARG", "Use  to locate your NativeHost Java JNI library. Optional if Soot bundles the wrapper.")
                 + padOpt("-pp, -prepend-classpath", "Prepend the given soot classpath to the default classpath.")
                 + padOpt("-ice, -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath.")
                 + padOpt("-search-dex-in-archives", "Also includes Jar and Zip files when searching for DEX files under the provided classpath.")

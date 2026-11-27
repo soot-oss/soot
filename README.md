@@ -104,6 +104,26 @@ The `soot-<RELEASE>.jar`  file contains only Soot, allowing you to manually pick
 
 If you cannot work with the prebuild versions and need to build Soot on your own, please consider the [wiki](https://github.com/soot-oss/soot/wiki/Building-Soot-from-the-Command-Line-(Recommended)) for further steps.
 
+## .NET frontend
+
+`mvn package` also builds Soot's .NET frontend (`soot.dotnet`) and bundles it into the jar, so no wrapper path has to
+be configured at runtime. Requirements are a .NET SDK 8.0 or newer, a JDK (JNI headers) and a C++17 compiler.
+
+To skip the wrapper and build Soot only, pass `-DskipDotnet`:
+
+```sh
+mvn package -DskipDotnet
+```
+
+The wrapper sources live in [`src/main/dotnet`](src/main/dotnet); see its README for details.
+
+The jar contains the wrapper for the build machine's platform. To also cross-compile it for Windows from Linux, install
+MinGW-w64 and activate the `dotnet-wrapper-windows` profile, so the same jar runs on both:
+
+```sh
+mvn package -Pdotnet-wrapper-windows
+```
+
 # About Soot's source code
 
 Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.

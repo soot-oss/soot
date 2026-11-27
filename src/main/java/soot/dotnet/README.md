@@ -1,15 +1,17 @@
 # soot.dotnet
-To start soot.dotnet, we also need the counterpart modules Soot.Dotnet. The project is located at https://github.com/schtho/soot-dotnet.
-soot.dotnet uses Java JNI such that we need to add VM commands to load the library.
 
-Add to your Java VM options the library option with the path (e.g. `-Djava.library.path=/Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug`). Otherwise this frontend does not work.
+`soot.dotnet` analyzes .NET assemblies. It calls into a native JNI bridge (`NativeHost`) that hosts a .NET runtime and
+the `Soot.Dotnet.Decompiler` library. The wrapper sources live in [`src/main/dotnet`](../../../../dotnet); the Maven
+build compiles and bundles them.
 
 ### Example Parameter Configuration
-Run Soot with following parameters as example:
+The NativeHost library and its managed dependencies are bundled in Soot's jar and extracted automatically. Only the
+analyzed assembly needs to be configured:
+
 ```
 -allow-phantom-refs
 -src-prec dotnet
-# ignore unsafe methods 
+# ignore unsafe methods
 -no-resolve-all-dotnet-methods
 # create empty Jimple Body if error occurs while jimplifying
 -ignore-methodsource-error
@@ -18,9 +20,15 @@ Run Soot with following parameters as example:
 -debug-resolver
 -throw-analysis dotnet
 -validate
--cp /usr/local/share/dotnet/shared/Microsoft.NETCore.App/3.1.13/
--dotnet-nativehost-path /Users/user/soot-dotnet/src/Soot.Dotnet.NativeHost/bin/Debug/libNativeHost.dylib
 -f J
-System.Type
+MyAssembly.dll
 ```
+
+With `-src-prec dotnet`, Soot automatically adds the local .NET runtime directory to the classpath so that framework
+assemblies resolve. Pass `-cp` only to add further reference assemblies.
+
+To use a wrapper outside the jar, set `-dotnet-nativehost-path <library-or-directory>`,
+`-Dsoot.dotnet.wrapper.path=<library-or-directory>` or `SOOT_DOTNET_WRAPPER=<library-or-directory>`. To disable the
+bundled wrapper at build time, build Soot with `-DskipDotnet`.
+
 We need phantom-refs because there are some statements which cannot be handled at the moment.

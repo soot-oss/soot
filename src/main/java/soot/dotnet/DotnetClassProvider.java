@@ -22,8 +22,6 @@ package soot.dotnet;
  * #L%
  */
 
-import com.google.common.base.Strings;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,8 +96,9 @@ public class DotnetClassProvider implements ClassProvider {
    *          paths to index
    */
   private static void buildAssemblyIndex(Map<String, File> index, List<String> classPath) {
-    if (Strings.isNullOrEmpty(Options.v().dotnet_nativehost_path())) {
-      throw new RuntimeException("Dotnet NativeHost Path is not set! Use -dotnet-nativehost-path Soot parameter!");
+    if (!DotnetNativeHost.isAvailable()) {
+      throw new RuntimeException("No .NET NativeHost library available! Build Soot with the .NET wrapper "
+          + "or use the -dotnet-nativehost-path Soot parameter.");
     }
 
     for (String path : classPath) {

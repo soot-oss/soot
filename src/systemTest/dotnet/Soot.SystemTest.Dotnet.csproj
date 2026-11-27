@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Target assemblies for the soot.dotnet system tests. The Java tests in src/systemTest/java/soot/dotnet
+    analyze the built assembly with Soot's .NET frontend and assert on the generated Jimple.
+  -->
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Soot.SystemTest.Dotnet</AssemblyName>
+    <RootNamespace>Soot.SystemTest.Dotnet</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <!-- The nested project below is built separately. -->
+  <ItemGroup>
+    <Compile Remove="Referenced/**" />
+    <None Remove="Referenced/**" />
+  </ItemGroup>
+
+</Project>

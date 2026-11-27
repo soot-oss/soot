@@ -62,6 +62,13 @@
         <maven.compiler.target>11</maven.compiler.target>
         <xml-maven-plugin.version>1.2.1</xml-maven-plugin.version>
         <maven-resources-plugin.version>3.5.0</maven-resources-plugin.version>
+        <exec-maven-plugin.version>3.7.0</exec-maven-plugin.version>
+        <protoc-jar-maven-plugin.version>3.11.4</protoc-jar-maven-plugin.version>
+        <protoc.version>4.36.2</protoc.version>
+        <!-- Staging directory of the .NET wrapper; bundled into the Soot jar as soot/dotnet/wrapper. -->
+        <dotnet.wrapper.dir>${project.build.directory}/dotnet/wrapper</dotnet.wrapper.dir>
+        <!-- Assemblies built from src/systemTest/dotnet for the soot.dotnet system tests. -->
+        <dotnet.systemtest.targets.dir>${project.build.directory}/systemTest-dotnet-targets</dotnet.systemtest.targets.dir>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.6</maven-surefire-plugin.version>
@@ -79,11 +86,40 @@
         <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
         <licence-check.failOnMissingHeader>true</licence-check.failOnMissingHeader>
         <testcase.groups.excluded>categories.Java9Test,categories.Java11Test</testcase.groups.excluded>
-        <asm.version>9.10.1</asm.version>
+        <asm.version>9.11.1</asm.version>
     </properties>
     <build>
         <finalName>sootclasses-trunk</finalName>
         <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${basedir}/src/main/dotnet</directory>
+                            <includes>
+                                <include>**/bin/**</include>
+                                <include>**/obj/**</include>
+                                <include>**/nativehost</include>
+                            </includes>
+                        </fileset>
+                        <fileset>
+                            <directory>${basedir}/src/main/generated/dotnet-build</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${basedir}/src/main/dotnet/Soot.Dotnet.NativeHost/build</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${basedir}/src/systemTest/dotnet</directory>
+                            <includes>
+                                <include>**/bin/**</include>
+                                <include>**/obj/**</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>xml-maven-plugin</artifactId>
@@ -218,6 +254,23 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <!-- Bundle the .NET wrapper so that soot.dotnet works without -dotnet-nativehost-path -->
+                    <execution>
+                        <id>copy dotnet wrapper</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/soot/dotnet/wrapper</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${dotnet.wrapper.dir}</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -304,10 +357,13 @@
                         --add-opens=java.base/java.util.stream=ALL-UNNAMED
                         --add-opens=java.base/java.io=ALL-UNNAMED
                         --add-opens=java.base/java.net=ALL-UNNAMED
+                        --add-opens=java.base/java.nio=ALL-UNNAMED
                         --add-opens=java.base/java.nio.file=ALL-UNNAMED
                         --add-opens=java.base/java.nio.channels.spi=ALL-UNNAMED
                         --add-opens=java.base/sun.nio.ch=ALL-UNNAMED
+                        --add-opens=java.base/sun.nio.fs=ALL-UNNAMED
                         --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+                        --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED
                     </argLine>
                 </configuration>
                 <executions>
@@ -559,12 +615,12 @@
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
-            <version>3.25.8</version>
+            <version>4.36.2</version>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java-util</artifactId>
-            <version>3.25.8</version>
+            <version>4.36.2</version>
         </dependency>
 		<dependency>
 		    <groupId>io.agentscope</groupId>
@@ -594,6 +650,210 @@
         </repository>
     </repositories>
     <profiles>
+        <!--
+          Regenerates the protobuf bindings (C# and Java) from the .proto sources before anything is compiled.
+          Active by default; disable with -DskipProtoc. Runs in generate-sources, i.e. before the .NET build.
+        -->
+        <profile>
+            <id>protobuf-bindings</id>
+            <activation>
+                <property>
+                    <name>!skipProtoc</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.os72</groupId>
+                        <artifactId>protoc-jar-maven-plugin</artifactId>
+                        <version>${protoc-jar-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>generate-protobuf-bindings</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <protocVersion>${protoc.version}</protocVersion>
+                                    <inputDirectories>
+                                        <inputDirectory>${basedir}/src/main/dotnet/Soot.Dotnet.Decompiler/Resources</inputDirectory>
+                                    </inputDirectories>
+                                    <outputTargets>
+                                        <outputTarget>
+                                            <type>java</type>
+                                            <outputDirectory>${basedir}/src/main/generated/protobuf</outputDirectory>
+                                            <cleanOutputFolder>true</cleanOutputFolder>
+                                            <addSources>none</addSources>
+                                        </outputTarget>
+                                        <outputTarget>
+                                            <type>csharp</type>
+                                            <outputDirectory>${basedir}/src/main/generated/protobuf-dotnet</outputDirectory>
+                                            <cleanOutputFolder>true</cleanOutputFolder>
+                                            <addSources>none</addSources>
+                                        </outputTarget>
+                                    </outputTargets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--
+          Builds the .NET frontend wrapper (managed decompiler + JNI NativeHost) and bundles it into the jar.
+          Active by default; disable with -DskipDotnet or -P '!dotnet-wrapper'.
+          Requires a .NET SDK (8.0 or newer), a JDK for the JNI headers, and a C++ compiler.
+        -->
+        <profile>
+            <id>dotnet-wrapper</id>
+            <activation>
+                <property>
+                    <name>!skipDotnet</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>dotnet-publish-decompiler</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>dotnet</executable>
+                                    <workingDirectory>${basedir}/src/main/dotnet</workingDirectory>
+                                    <arguments>
+                                        <argument>publish</argument>
+                                        <argument>Soot.Dotnet.Decompiler</argument>
+                                        <argument>--configuration</argument>
+                                        <argument>Release</argument>
+                                        <argument>--output</argument>
+                                        <argument>${dotnet.wrapper.dir}</argument>
+                                        <argument>--nologo</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>dotnet-build-nativehost</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>dotnet</executable>
+                                    <workingDirectory>${basedir}/src/main/dotnet</workingDirectory>
+                                    <arguments>
+                                        <argument>build</argument>
+                                        <argument>Soot.Dotnet.NativeHost/Soot.Dotnet.NativeHost.csproj</argument>
+                                        <argument>--configuration</argument>
+                                        <argument>Release</argument>
+                                        <argument>--nologo</argument>
+                                        <argument>-p:NativeBinDir=${dotnet.wrapper.dir}</argument>
+                                        <argument>-p:JavaHome=${java.home}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>dotnet-test</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>dotnet</executable>
+                                    <workingDirectory>${basedir}/src/main/dotnet</workingDirectory>
+                                    <skip>${skipTests}</skip>
+                                    <arguments>
+                                        <argument>test</argument>
+                                        <argument>Soot.Dotnet.UnitTests/Soot.Dotnet.UnitTests.csproj</argument>
+                                        <argument>--configuration</argument>
+                                        <argument>Debug</argument>
+                                        <argument>--nologo</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <!-- Target assemblies analyzed by the Java system tests in src/systemTest/java/soot/dotnet -->
+                            <execution>
+                                <id>dotnet-build-systemtest-targets</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>dotnet</executable>
+                                    <workingDirectory>${basedir}/src/systemTest/dotnet</workingDirectory>
+                                    <skip>${skipTests}</skip>
+                                    <arguments>
+                                        <argument>build</argument>
+                                        <argument>Referenced</argument>
+                                        <argument>--configuration</argument>
+                                        <argument>Release</argument>
+                                        <argument>--output</argument>
+                                        <argument>${dotnet.systemtest.targets.dir}</argument>
+                                        <argument>--nologo</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!--
+          Additionally cross-compiles the JNI NativeHost for Windows with MinGW-w64 and puts it next to the host
+          library, so the jar carries both platforms. Activate with -Pdotnet-wrapper-windows.
+          Requires the MinGW-w64 toolchain (Debian/Ubuntu: 'apt-get install mingw-w64'); the Windows arm of the
+          build restores the Microsoft.NETCore.App.Host.win-x64 package for nethost itself. Override the
+          defaults with -Ddotnet.windows.compiler=... / -Ddotnet.windows.target=....
+
+          Not active by default: it adds ~3 MB of static libstdc++ to the jar and pulls in the MinGW toolchain.
+        -->
+        <profile>
+            <id>cross-dotnet-wrapper-windows</id>
+            <properties>
+                <dotnet.windows.target>win-x64</dotnet.windows.target>
+                <dotnet.windows.compiler>x86_64-w64-mingw32-g++</dotnet.windows.compiler>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>dotnet-build-nativehost-windows</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>dotnet</executable>
+                                    <workingDirectory>${basedir}/src/main/dotnet</workingDirectory>
+                                    <arguments>
+                                        <argument>build</argument>
+                                        <argument>Soot.Dotnet.NativeHost/Soot.Dotnet.NativeHost.csproj</argument>
+                                        <argument>--configuration</argument>
+                                        <argument>Release</argument>
+                                        <argument>--nologo</argument>
+                                        <argument>-p:NativeTarget=${dotnet.windows.target}</argument>
+                                        <argument>-p:NativeCompiler=${dotnet.windows.compiler}</argument>
+                                        <argument>-p:NativeBinDir=${dotnet.wrapper.dir}</argument>
+                                        <argument>-p:JavaHome=${java.home}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>Java8</id>
             <properties>

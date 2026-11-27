@@ -15,3 +15,27 @@
 /.settings
 
 /target
+
+# .NET wrapper build output
+/src/main/dotnet/**/bin/
+/src/main/dotnet/**/obj/
+/src/systemTest/dotnet/**/bin/
+/src/systemTest/dotnet/**/obj/
+/src/main/generated/dotnet-build/
+
+# Vendored copy of the NuGet native host pack (resolved from the SDK instead)
+/src/main/dotnet/Soot.Dotnet.NativeHost/Microsoft.NETCore.App.Host.win-x64/
+
+# CMake build results and in-source configure results
+/src/main/dotnet/Soot.Dotnet.NativeHost/build/
+/src/main/dotnet/Soot.Dotnet.NativeHost/nativehost
+/src/main/dotnet/Soot.Dotnet.NativeHost/CMakeCache.txt
+/src/main/dotnet/Soot.Dotnet.NativeHost/CMakeFiles/
+/src/main/dotnet/Soot.Dotnet.NativeHost/cmake_install.cmake
+/src/main/dotnet/Soot.Dotnet.NativeHost/Makefile
+/src/main/dotnet/Soot.Dotnet.NativeHost/nethost.def
+
+# Visual Studio
+.vs/
+*.suo
+*.user
